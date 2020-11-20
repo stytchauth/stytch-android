@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorSecondary">#000000</color>
+    <color name="titleTextColor">#000000</color>
+    <color name="editTextColor">#000000</color>
+    <color name="editHintTextColor">#555555</color>
+    <color name="buttonBg">#000000</color>
+    <color name="buttonTextColor">#ffffff</color>
+    <color name="editTextBackgroundBorderColor">#38000000</color>
+    <color name="poweredByColor">#928e8e</color>
+    <color name="colorBackground">#ffffff</color>
+
+</resources>

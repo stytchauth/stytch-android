@@ -1,0 +1,19 @@
+<resources>
+
+<!--    LoginFragment  -->
+    <string name="stytch_login_title">Sign up or log in</string>
+    <string name="stytch_login_description">Sign up or log in with your email, no password needed.</string>
+    <string name="stytch_login_email_hint">example@email.com</string>
+    <string name="stytch_login_button_title">Sign in with Email</string>
+
+    <string name="stytch_login_waitnig_verification_title">Email sent to example@gmail.com.</string>
+    <string name="stytch_login_waitnig_verification_description">Didn’t get email? Check your spam folder, or</string>
+    <string name="stytch_login_waitnig_verification_button_title">Resend magic link</string>
+
+    <string name="stytch_watermark_powered_by">Powered by</string>
+    <string name="stytch_error_unknown">Something went wrong</string>
+    <string name="stytch_error_server_response">error_server_response</string>
+    <string name="stytch_error_bad_token">error_bad_token</string>
+    <string name="stytch_error_no_internet">error_no_internet</string>
+
+</resources>
