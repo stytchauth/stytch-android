@@ -1,13 +1,11 @@
 package com.stytch.sdk.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.stytch.sdk.R
-import com.stytch.sdk.StytchSDK
-import com.stytch.sdk.helpers.LoggerLocal
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchUI
 
 
 class StytchMainActivity : AppCompatActivity() {
@@ -31,13 +29,8 @@ class StytchMainActivity : AppCompatActivity() {
         val action: String? = intent?.action
         val data = intent?.data ?: return
 
-
         if (action == Intent.ACTION_VIEW) {
-            if (data.host == StytchSDK.instance.config.deepLinkHost
-                && data.scheme == StytchSDK.instance.config.deepLinkScheme
-            ) {
-                loginFragment.verifyToken(data.getQueryParameter("token"))
-            }
+            loginFragment.onNewIntent(data)
         }
         super.onNewIntent(intent)
     }

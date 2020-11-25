@@ -6,15 +6,14 @@ import com.stytch.sdk.api.responses.BasicErrorResponse
 import com.stytch.sdk.api.responses.BasicResponse
 import com.stytch.sdk.helpers.LoggerLocal
 import retrofit2.Response
+import java.io.IOException
 import java.net.UnknownHostException
 
 private const val TAG = "ExceptionRecognizer"
 
 object ExceptionRecognizer {
 
-    //    TODO:("use parmas")
     fun <T> recognize(response: Response<T>) {
-
         LoggerLocal.d(TAG, "recognizingError: ${response.body()}")
         val errorModel =
             Gson().fromJson(response.errorBody()?.string(), BasicErrorResponse::class.java)
@@ -26,18 +25,12 @@ object ExceptionRecognizer {
                 "unable_to_auth_magic_link" -> {
                     throw WrongMagicLinkException()
                 }
+                "invalid_user_id" -> {
+                    throw BlankWarningException(errorModel.error_type)
+                }
                 else -> {
                     throw BlankWarningException(errorModel.error_type)
 //                    throw WarningException(R.string.error_unknown)
-                }
-            }
-        }
-
-        response.body()?.let {
-            LoggerLocal.d(TAG, "response.body() != null")
-            when (it) {
-                is BasicResponse -> {
-
                 }
             }
         }

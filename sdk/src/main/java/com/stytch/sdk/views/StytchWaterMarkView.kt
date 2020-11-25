@@ -34,8 +34,8 @@ class StytchWaterMarkView @JvmOverloads constructor(
             constrainHeight(poweredByText.id, ConstraintSet.WRAP_CONTENT)
             constrainWidth(poweredByText.id, ConstraintSet.WRAP_CONTENT)
 
-            constrainHeight(poweredByImage.id, 56.dp)
-            constrainWidth(poweredByImage.id, 56.dp)
+            constrainHeight(poweredByImage.id, 56.dp.toInt())
+            constrainWidth(poweredByImage.id, 56.dp.toInt())
 
             connect(
                 poweredByText.id,
@@ -43,7 +43,7 @@ class StytchWaterMarkView @JvmOverloads constructor(
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.START
             )
-            connect(poweredByText.id, ConstraintSet.END, poweredByImage.id, ConstraintSet.START, 8.dp)
+            connect(poweredByText.id, ConstraintSet.END, poweredByImage.id, ConstraintSet.START, 8.dp.toInt())
             centerVertically(poweredByText.id, ConstraintSet.PARENT_ID)
 
             connect(poweredByImage.id, ConstraintSet.START, poweredByText.id, ConstraintSet.END)

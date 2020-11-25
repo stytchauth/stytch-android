@@ -1,8 +1,7 @@
 package com.stytch.sdk.ui
 
-import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,10 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchUI
 import com.stytch.sdk.helpers.dp
+import com.stytch.sdk.helpers.hideKeyboard
 import com.stytch.sdk.views.StytchButton
 import com.stytch.sdk.views.StytchEditText
 import com.stytch.sdk.views.StytchTextView
@@ -41,6 +43,13 @@ class StytchLoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_stytch_login, container, false)
+
+        view.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                Stytch.instance.config.customization.backgroundId
+            )
+        )
         loadingIndicator = view.findViewById(R.id.loadingIndicator)
         createViews(view.findViewById(R.id.holderLayout))
         return view
@@ -73,39 +82,37 @@ class StytchLoginFragment : Fragment() {
     }
 
     private fun createWaterMarkView() {
-        waterMarkView = StytchWaterMarkView(requireContext())
+        if (Stytch.instance.config.customization.showBrandLogo) {
+            waterMarkView = StytchWaterMarkView(requireContext())
+        }
     }
 
     private fun createButton() {
         actionButton = StytchButton(requireContext()).apply {
             setText(R.string.stytch_login_button_title)
+            setCustomization(Stytch.instance.config.customization.buttonTextCustomization)
         }
     }
 
     private fun createEditText() {
         emailEditText = StytchEditText(requireContext()).apply {
-            setHint(R.string.stytch_login_email_hint)
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.editTextColor))
-            setHintTextColor(ContextCompat.getColor(requireContext(), R.color.editHintTextColor))
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+            setHintCustomization(Stytch.instance.config.customization.editHintCustomization)
+            setTextCustomization(Stytch.instance.config.customization.editTextCustomization)
+            updateHint(R.string.stytch_login_email_hint)
         }
     }
 
     private fun createDescriptionTextView() {
         descriptionTextView = StytchTextView(requireContext()).apply {
             setText(R.string.stytch_login_description)
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.titleTextColor))
-            setTypeface(null, Typeface.NORMAL)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+            setCustomization(Stytch.instance.config.customization.subtitleCustomization)
         }
     }
 
     private fun createTitleTextView() {
         titleTextView = StytchTextView(requireContext()).apply {
             setText(R.string.stytch_login_title)
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.titleTextColor))
-            setTypeface(null, Typeface.BOLD)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 30f)
+            setCustomization(Stytch.instance.config.customization.titleCustomization)
         }
     }
 
@@ -114,9 +121,9 @@ class StytchLoginFragment : Fragment() {
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             LinearLayoutCompat.LayoutParams.WRAP_CONTENT
         ).apply {
-            topMargin = 32.dp
-            marginStart = 24.dp
-            marginEnd = 24.dp
+            topMargin = 32.dp.toInt()
+            marginStart = 24.dp.toInt()
+            marginEnd = 24.dp.toInt()
         }
         holder.addView(titleTextView, layoutParams)
 
@@ -124,23 +131,26 @@ class StytchLoginFragment : Fragment() {
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             LinearLayoutCompat.LayoutParams.WRAP_CONTENT
         ).apply {
-            topMargin = 24.dp
-            marginStart = 24.dp
-            marginEnd = 24.dp
+            topMargin = 24.dp.toInt()
+            marginStart = 24.dp.toInt()
+            marginEnd = 24.dp.toInt()
         }
         holder.addView(descriptionTextView, layoutParams)
         holder.addView(emailEditText, layoutParams)
         holder.addView(actionButton, layoutParams)
 
-        layoutParams = LinearLayoutCompat.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        ).apply {
-            topMargin = 0.dp
-            marginStart = 24.dp
-            marginEnd = 24.dp
+        waterMarkView?.let { waterMarkView ->
+            layoutParams = LinearLayoutCompat.LayoutParams(
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = 0.dp.toInt()
+                marginStart = 24.dp.toInt()
+                marginEnd = 24.dp.toInt()
+            }
+            holder.addView(waterMarkView, layoutParams)
         }
-        holder.addView(waterMarkView, layoutParams)
+
     }
 
 
@@ -156,6 +166,7 @@ class StytchLoginFragment : Fragment() {
                 }
             }
             LoginViewModel.State.WaitingVerification -> {
+                hideKeyboard()
                 animateTextView(
                     titleTextView,
                     getString(R.string.stytch_login_waitnig_verification_title)
@@ -194,16 +205,16 @@ class StytchLoginFragment : Fragment() {
         })
     }
 
-    private fun observeLoggedInSuccessfullyLiveData(){
-        viewModel.loggedInSuccessfullyLiveData.observe(viewLifecycleOwner, {event ->
+    private fun observeLoggedInSuccessfullyLiveData() {
+        viewModel.loggedInSuccessfullyLiveData.observe(viewLifecycleOwner, { event ->
             event.getEventNotHandled()?.let {
-//                TODO: returnsuccess status from SDK
+//                TODO: return success status from SDK
             }
         })
     }
 
-    fun verifyToken(token: String?) {
-        viewModel.verifyToken(token)
+    fun onNewIntent(uri: Uri) {
+        viewModel.verifyToken(uri)
     }
 
 

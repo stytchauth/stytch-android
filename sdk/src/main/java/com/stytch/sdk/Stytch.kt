@@ -1,0 +1,61 @@
+package com.stytch.sdk
+
+import android.net.Uri
+import com.stytch.sdk.api.StytchResult
+import com.stytch.sdk.helpers.Constants
+import com.stytch.sdk.helpers.StytchFlowManager
+
+class Stytch private constructor() {
+    internal lateinit var config: StytchConfig
+
+    private lateinit var flowManager: StytchFlowManager
+
+    var listener: StytchListener? = null
+
+    fun configure(projectID: String, secret: String, scheme: String, verifyEmail: Boolean = false) {
+        config = StytchConfig.Builder()
+            .withAuth(projectID, secret)
+            .withDeepLinkScheme(scheme)
+            .withDeepLinkHost(Constants.HOST)
+            .withVerifyEmail(verifyEmail)
+            .build()
+        flowManager = StytchFlowManager()
+    }
+
+    fun login(email: String) {
+//        TODO: check email
+        flowManager.login(email)
+    }
+
+    fun resendEmailVerification(){
+        flowManager.resendEmailVerification()
+    }
+
+    fun handleDeepLink(uri: Uri): Boolean{
+        if (uri.scheme == config.deepLinkScheme) {
+//           TODO: handle email verification
+            flowManager.verifyToken(uri.getQueryParameter("token"))
+            return true
+        }
+
+        return false
+
+    }
+
+
+    companion object {
+        val instance = Stytch()
+    }
+
+    interface StytchListener {
+
+        fun onSuccess(result: StytchResult)
+        fun onError(error: StytchError)
+        fun onVerificationEmailSent(email: String)
+        fun onMagicLinkSent(email: String)
+
+        fun onUserCreated() {} //TODO: remove or add logic
+
+    }
+
+}

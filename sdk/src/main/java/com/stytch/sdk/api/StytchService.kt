@@ -1,12 +1,8 @@
 package com.stytch.sdk.api
 
 
-import com.stytch.sdk.api.requests.CreateUserRequest
-import com.stytch.sdk.api.requests.SendMagicLingRequest
-import com.stytch.sdk.api.requests.VerifyTokenRequest
-import com.stytch.sdk.api.responses.CreateUserResponse
-import com.stytch.sdk.api.responses.SendMagicLingResponse
-import com.stytch.sdk.api.responses.VerifyTokenResponse
+import com.stytch.sdk.api.requests.*
+import com.stytch.sdk.api.responses.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -28,5 +24,18 @@ interface StytchService {
         @Path("token") token: String,
         @Body request: VerifyTokenRequest
     ): Call<VerifyTokenResponse>
+
+    @POST("emails/{email_id}/send_verification")
+    fun sendEmailVerification(
+        @Path("email_id") emailId: String,
+        @Body request: SendEmailVerificationRequest
+    ): Call<SendEmailVerificationResponse>
+
+
+    @POST("users/{user_id}")
+    fun deleteUser(
+        @Path("user_id") userId: String,
+        @Body request: DeleteUserRequest
+    ): Call<DeleteUserResponse>
 
 }

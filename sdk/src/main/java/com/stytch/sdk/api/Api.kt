@@ -2,10 +2,10 @@ package com.stytch.sdk.api
 
 import android.util.Base64
 import com.stytch.sdk.BuildConfig
-import com.stytch.sdk.api.requests.CreateUserRequest
-import com.stytch.sdk.api.requests.SendMagicLingRequest
-import com.stytch.sdk.api.requests.VerifyTokenRequest
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.api.requests.*
 import com.stytch.sdk.api.responses.CreateUserResponse
+import com.stytch.sdk.api.responses.SendEmailVerificationResponse
 import com.stytch.sdk.api.responses.SendMagicLingResponse
 import com.stytch.sdk.api.responses.VerifyTokenResponse
 import com.stytch.sdk.exceptions.ExceptionRecognizer
@@ -48,7 +48,7 @@ class Api {
             httpClient.addInterceptor(interceptor)
         }
 
-        val authInterceptor = AuthInterceptor(generateAuth())
+        val authInterceptor = AuthInterceptor()
         httpClient.addInterceptor(authInterceptor)
 
 
@@ -61,41 +61,30 @@ class Api {
             .create(StytchService::class.java)
     }
 
-
-    private fun generateAuth(): String {
-        val secret = "secret-test-6-ma0PNENqjBVX6Dx2aPUIdhLFObauXx07c="
-        val projectId = "project-test-d0dbafe6-a019-47ea-8550-d021c1c76ea9"
-
-        return "Basic ${Base64.encodeToString("$projectId:$secret".toByteArray(), Base64.NO_WRAP)}"
-    }
-
     fun sendMagicLink(
-        email: String,
-        onSuccess: (SendMagicLingResponse) -> Unit,
-        onError: ((Throwable) -> Unit)?
-    ) {
-        service.sendMagicLink(SendMagicLingRequest(email, "https://stytch", 60)).enqueue(
-            generateCallback(onSuccess, onError)
-        )
+        email: String
+    ): Response<SendMagicLingResponse> {
+        return service.sendMagicLink(SendMagicLingRequest(email, "https://stytch", 60)).execute()
     }
 
     fun createUser(
-        email: String,
-        onSuccess: (CreateUserResponse) -> Unit,
-        onError: ((Throwable) -> Unit)?
-    ) {
-        service.createUser(CreateUserRequest(email)).enqueue(
-            generateCallback(onSuccess, onError)
-        )
+        email: String
+    ): Response<CreateUserResponse> {
+        return service.createUser(CreateUserRequest(email)).execute()
     }
 
     fun verifyToken(
-        token: String,
-        onSuccess: (VerifyTokenResponse) -> Unit,
-        onError: ((Throwable) -> Unit)?
-    ) {
-        service.verifyToken(token, VerifyTokenRequest())
-            .enqueue(generateCallback(onSuccess, onError))
+        token: String
+    ): Response<VerifyTokenResponse> {
+        return service.verifyToken(token, VerifyTokenRequest()).execute()
+    }
+
+    fun sendEmailVerification(emailId: String, userId: String): Response<SendEmailVerificationResponse> {
+        return service.sendEmailVerification(emailId, SendEmailVerificationRequest()).execute()
+    }
+
+    fun deleteUser(userId: String){
+        service.deleteUser(userId, DeleteUserRequest()).execute()
     }
 
     private fun <T> checkResult(
