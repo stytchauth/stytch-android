@@ -218,7 +218,7 @@ class StytchLoginFragment : Fragment() {
         viewModel.closeLiveData.observe(viewLifecycleOwner, {event ->
             event.getEventNotHandled()?.let {
                 if(it){
-                    StytchUI.instance.uiListener?.onFailure()
+                    activity?.finish()
                 }
             }
         })

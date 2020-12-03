@@ -140,8 +140,10 @@ StytchUI.StytchUIListener{
         Log.d(TAG,"onFailure: Oh no")
     }
     
-    override fun onEvent() {
-        Log.d(TAG,"onEvent: Oh no")
+    override fun onEvent(event: StytchEvent) {
+        Log.d(TAG,"Event Type: ${event.type}")
+        Log.d(TAG,"Is user created: ${event.created}")
+        Log.d(TAG,"User ID: ${event.userId}")
     }
 }
 ```

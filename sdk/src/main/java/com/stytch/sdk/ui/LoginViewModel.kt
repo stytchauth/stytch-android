@@ -23,6 +23,7 @@ class LoginViewModel : ViewModel() {
     val stytchListener = object : Stytch.StytchListener {
         override fun onSuccess(result: StytchResult) {
             StytchUI.instance.uiListener?.onSuccess(result)
+            closeLiveData.value = Event(true)
         }
 
         override fun onFailure(error: StytchError) {
@@ -38,6 +39,7 @@ class LoginViewModel : ViewModel() {
                     stateLiveData.value = State.Login
                 }
                 StytchError.InvalidConfiguration -> {
+                    StytchUI.instance.uiListener?.onFailure()
                     closeLiveData.value = Event(true)
                 }
             }
