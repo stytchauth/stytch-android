@@ -30,7 +30,7 @@ import com.stytch.sdk.views.StytchWaterMarkView
  * Use the [StytchLoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class StytchLoginFragment : Fragment() {
+internal class StytchLoginFragment : Fragment() {
 
     private var titleTextView: StytchTextView? = null
     private var descriptionTextView: StytchTextView? = null

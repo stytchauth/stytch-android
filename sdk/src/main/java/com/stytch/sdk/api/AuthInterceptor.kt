@@ -5,7 +5,7 @@ import com.stytch.sdk.Stytch
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthInterceptor(): Interceptor {
+internal class AuthInterceptor(): Interceptor {
 
     private fun generateAuth(): String {
         return "Basic ${Base64.encodeToString("${Stytch.instance.config.projectID}:${Stytch.instance.config.secret}".toByteArray(), Base64.NO_WRAP)}"

@@ -11,7 +11,7 @@ import java.net.UnknownHostException
 
 private const val TAG = "ExceptionRecognizer"
 
-object ExceptionRecognizer {
+internal object ExceptionRecognizer {
 
     fun <T> recognize(response: Response<T>) {
         LoggerLocal.d(TAG, "recognizingError: ${response.body()}")

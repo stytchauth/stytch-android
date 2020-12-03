@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class WrongMagicLinkException(): Exception() {
+internal class WrongMagicLinkException(): Exception() {
 }

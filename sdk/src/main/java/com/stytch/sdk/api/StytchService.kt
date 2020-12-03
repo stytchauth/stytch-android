@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 
-interface StytchService {
+internal interface StytchService {
 
     @POST("magic_links/send_by_email")
     fun sendMagicLink(

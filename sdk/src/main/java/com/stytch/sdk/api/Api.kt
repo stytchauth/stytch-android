@@ -1,6 +1,5 @@
 package com.stytch.sdk.api
 
-import com.stytch.sdk.BuildConfig
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.api.requests.*
 import com.stytch.sdk.api.responses.CreateUserResponse
@@ -28,7 +27,7 @@ const val BASE_URL = "https://test.stytch.com/v1/"
 
 private const val TAG = "Api"
 
-class Api {
+internal class Api {
 
     private val service: StytchService
 
@@ -39,11 +38,11 @@ class Api {
             .writeTimeout(120L, TimeUnit.SECONDS)
             .connectTimeout(120L, TimeUnit.SECONDS)
 
-        if (BuildConfig.DEBUG) { // Adds logging to the OkHttp client
+//        if (BuildConfig.DEBUG) { // Adds logging to the OkHttp client
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             httpClient.addInterceptor(interceptor)
-        }
+//        }
 
         val authInterceptor = AuthInterceptor()
         httpClient.addInterceptor(authInterceptor)

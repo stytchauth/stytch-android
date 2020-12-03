@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class WarningException(val errorMessageId:Int): Exception() {
+internal class WarningException(val errorMessageId:Int): Exception() {
 }

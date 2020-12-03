@@ -1,4 +1,4 @@
 package com.stytch.sdk.api.requests
 
-class SendEmailVerificationRequest(): BasicRequest() {
+public class SendEmailVerificationRequest(): BasicRequest() {
 }

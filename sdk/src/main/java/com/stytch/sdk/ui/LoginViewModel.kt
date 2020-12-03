@@ -12,8 +12,7 @@ import com.stytch.sdk.helpers.ErrorManager
 import com.stytch.sdk.helpers.Event
 import com.stytch.sdk.helpers.LoggerLocal
 
-class LoginViewModel : ViewModel() {
-
+internal class LoginViewModel : ViewModel() {
 
     val stateLiveData = MutableLiveData<State>().apply { value = State.Login }
     val loadingLiveData = MutableLiveData<Boolean>().apply { value = false }

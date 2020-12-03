@@ -1,11 +1,18 @@
 package com.stytch.sdk.api.responses
 
-class BasicErrorResponse(
-    val status: Int,
-    val message: String?,
-    val error_type: String?,
-    val error_message: String?,
-    val error_url: String?
+import com.google.gson.annotations.SerializedName
+
+public class BasicErrorResponse(
+    @SerializedName("status")
+    public val status: Int,
+    @SerializedName("message")
+    public val message: String?,
+    @SerializedName("error_type")
+    public val error_type: String?,
+    @SerializedName("error_message")
+    public val error_message: String?,
+    @SerializedName("error_url")
+    public val error_url: String?
 
 ) {
 }

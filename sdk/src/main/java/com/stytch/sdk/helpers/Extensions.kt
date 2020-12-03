@@ -12,12 +12,12 @@ val Number.px: Float
 val Number.dp: Float
     get() = this.toFloat() * Resources.getSystem().displayMetrics.density
 
-fun Fragment.hideKeyboard() {
+internal fun Fragment.hideKeyboard() {
     val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     imm?.hideSoftInputFromWindow(view?.windowToken, 0)
 }
 
-fun Int.invertedWhiteBlack(): Int {
+internal fun Int.invertedWhiteBlack(): Int {
     val red = Color.red(this)
     val green = Color.green(this)
     val blue = Color.blue(this)

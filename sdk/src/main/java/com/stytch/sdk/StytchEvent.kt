@@ -1,6 +1,6 @@
 package com.stytch.sdk
 
-class StytchEvent private constructor(val type: String, val created: Boolean, val userId: String) {
+public class StytchEvent private constructor(val type: String, val created: Boolean, val userId: String) {
 
     companion object {
 

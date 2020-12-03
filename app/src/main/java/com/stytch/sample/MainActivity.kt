@@ -1,15 +1,15 @@
 package com.stytch.sample
 
-import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import com.stytch.sdk.*
+import androidx.appcompat.app.AppCompatActivity
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchUI
+import com.stytch.sdk.StytchUICustomization
 import com.stytch.sdk.api.StytchResult
-import com.stytch.sdk.helpers.LoggerLocal
-import com.stytch.sdk.helpers.dp
 
-class MainActivity : AppCompatActivity() {
+internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         val secret = "secret-test-6-ma0PNENqjBVX6Dx2aPUIdhLFObauXx07c="
         val projectId = "project-test-d0dbafe6-a019-47ea-8550-d021c1c76ea9"
-        Stytch.instance.configure(
+
+        Stytch.instance.configure (
             projectId,
             secret,
             "https"
@@ -28,13 +29,12 @@ class MainActivity : AppCompatActivity() {
 
 //        Stytch.instance.login("demid@stytch.com")
 
-
-
         StytchUI.instance.showUI(
             this,
-            object: StytchUI.StytchUIListener{
+            object : StytchUI.StytchUIListener {
+
                 override fun onSuccess(result: StytchResult) {
-                    LoggerLocal.d(TAG,"onSuccess: $result")
+                    Log.d(TAG, "onSuccess: $result")
                 }
 
                 override fun onFailure() {

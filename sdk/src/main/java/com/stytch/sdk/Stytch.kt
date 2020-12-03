@@ -5,14 +5,14 @@ import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.helpers.StytchFlowManager
 
-class Stytch private constructor() {
+public class Stytch private constructor() {
     internal lateinit var config: StytchConfig
 
     private lateinit var flowManager: StytchFlowManager
 
-    var listener: StytchListener? = null
+    public var listener: StytchListener? = null
 
-    fun configure(projectID: String, secret: String, scheme: String) {
+    public fun configure(projectID: String, secret: String, scheme: String) {
         config = StytchConfig.Builder()
             .withAuth(projectID, secret)
             .withDeepLinkScheme(scheme)
@@ -21,7 +21,7 @@ class Stytch private constructor() {
         flowManager = StytchFlowManager()
     }
 
-    fun login(email: String) {
+    public fun login(email: String) {
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             listener?.onFailure(StytchError.InvalidEmail)
             return
@@ -33,7 +33,7 @@ class Stytch private constructor() {
         flowManager.resendEmailVerification()
     }
 
-    fun handleDeepLink(uri: Uri): Boolean {
+    public fun handleDeepLink(uri: Uri): Boolean {
         if (uri.scheme == config.deepLinkScheme) {
             flowManager.verifyToken(uri.getQueryParameter("token"))
             return true
@@ -42,15 +42,15 @@ class Stytch private constructor() {
     }
 
 
-    companion object {
-        val instance = Stytch()
+    public companion object {
+        public val instance = Stytch()
     }
 
-    interface StytchListener {
+    public interface StytchListener {
 
-        fun onSuccess(result: StytchResult)
-        fun onFailure(error: StytchError)
-        fun onMagicLinkSent(email: String)
+        public fun onSuccess(result: StytchResult)
+        public fun onFailure(error: StytchError)
+        public fun onMagicLinkSent(email: String)
     }
 
 }

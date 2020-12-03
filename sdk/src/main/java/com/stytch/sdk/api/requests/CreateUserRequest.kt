@@ -1,6 +1,9 @@
 package com.stytch.sdk.api.requests
 
-class CreateUserRequest(
-    val email: String
+import com.google.gson.annotations.SerializedName
+
+public class CreateUserRequest(
+    @SerializedName("email")
+    public val email: String
 ): BasicRequest(){
 }

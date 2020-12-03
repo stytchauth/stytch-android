@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class BadRequestException: Exception() {
+internal class BadRequestException: Exception() {
 }

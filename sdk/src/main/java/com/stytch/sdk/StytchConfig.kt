@@ -1,6 +1,6 @@
 package com.stytch.sdk
 
-class StytchConfig private constructor(
+internal class StytchConfig private constructor(
     val projectID: String,
     val secret: String,
     val deepLinkScheme: String,

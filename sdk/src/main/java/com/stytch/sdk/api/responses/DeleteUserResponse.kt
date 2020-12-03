@@ -1,4 +1,4 @@
 package com.stytch.sdk.api.responses
 
-class DeleteUserResponse(): BasicResponse() {
+public class DeleteUserResponse(): BasicResponse() {
 }

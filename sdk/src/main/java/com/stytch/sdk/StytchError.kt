@@ -1,6 +1,6 @@
 package com.stytch.sdk
 
-enum class StytchError(val messageId: Int) {
+public enum class StytchError(val messageId: Int) {
     InvalidEmail(R.string.stytch_error_invalid_input),
     Connection(R.string.stytch_error_no_internet),
     Unknown(R.string.stytch_error_unknown),

@@ -3,7 +3,7 @@ package com.stytch.sdk
 import android.graphics.Typeface
 import com.stytch.sdk.helpers.dp
 
-class StytchUICustomization {
+public class StytchUICustomization {
     var buttonCornerRadius: Float = 5.dp
     var buttonBackgroundColorId: Int = R.color.buttonBg
 

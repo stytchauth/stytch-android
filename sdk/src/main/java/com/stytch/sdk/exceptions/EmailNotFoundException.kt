@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class EmailNotFoundException(): Exception() {
+internal class EmailNotFoundException(): Exception() {
 }

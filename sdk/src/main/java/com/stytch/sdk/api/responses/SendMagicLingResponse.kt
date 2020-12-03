@@ -1,7 +1,11 @@
 package com.stytch.sdk.api.responses
 
-class SendMagicLingResponse(
-    val request_id: String,
-    val user_id: String
-): BasicResponse() {
+import com.google.gson.annotations.SerializedName
+
+public class SendMagicLingResponse(
+    @SerializedName("request_id")
+    public val request_id: String,
+    @SerializedName("user_id")
+    public val user_id: String
+) : BasicResponse() {
 }

@@ -16,7 +16,7 @@ import com.stytch.sdk.StytchTextStyle
 import com.stytch.sdk.helpers.CustomTypefaceSpan
 import com.stytch.sdk.helpers.dp
 
-class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :
+internal class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :
     AppCompatEditText(context, attributeSet, defStyleAttr) {
 
     private var hintStyle: StytchTextStyle? = null

@@ -12,7 +12,7 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchTextStyle
 
 
-class StytchButton constructor(
+internal class StytchButton constructor(
     context: Context, attrs: AttributeSet?, defStyleAttr: Int
 ) : AppCompatButton(context, attrs, defStyleAttr) {
 

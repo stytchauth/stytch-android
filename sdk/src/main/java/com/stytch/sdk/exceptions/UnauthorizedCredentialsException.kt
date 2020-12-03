@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class UnauthorizedCredentialsException(): Exception() {
+internal class UnauthorizedCredentialsException(): Exception() {
 }

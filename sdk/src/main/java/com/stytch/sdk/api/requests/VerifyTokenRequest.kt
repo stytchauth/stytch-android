@@ -1,7 +1,11 @@
 package com.stytch.sdk.api.requests
 
-class VerifyTokenRequest(
-  val ip_match_required: Boolean? = null,
-  val user_agent_match_required: Boolean? = null
+import com.google.gson.annotations.SerializedName
+
+public class VerifyTokenRequest(
+  @SerializedName("ip_match_required")
+  public val ip_match_required: Boolean? = null,
+  @SerializedName("user_agent_match_required")
+  public val user_agent_match_required: Boolean? = null
 ): BasicRequest(){
 }

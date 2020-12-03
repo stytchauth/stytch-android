@@ -15,7 +15,7 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.invertedWhiteBlack
 
-class StytchWaterMarkView @JvmOverloads constructor(
+internal class StytchWaterMarkView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
@@ -95,13 +95,14 @@ class StytchWaterMarkView @JvmOverloads constructor(
             Stytch.instance.config.uiCustomization.backgroundId
         ).invertedWhiteBlack()
 
-        poweredByImage.backgroundTintList =
-            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
-
         poweredByImage = AppCompatImageView(context).apply {
             id = View.generateViewId()
             setImageResource(R.drawable.ic_stytch_logo)
         }
+
+        poweredByImage.imageTintList  =
+            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+
     }
 
 

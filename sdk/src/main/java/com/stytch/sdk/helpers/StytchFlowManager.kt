@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.UnknownHostException
 
-class StytchFlowManager {
+internal class StytchFlowManager {
 
     private var email: String = ""
     private var emailId: String = ""

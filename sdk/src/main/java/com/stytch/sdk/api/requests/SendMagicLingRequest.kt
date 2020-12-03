@@ -1,8 +1,13 @@
 package com.stytch.sdk.api.requests
 
-class SendMagicLingRequest(
-    val email: String,
-    val magic_link_url: String,
-    val expiration_minutes: Long
-): BasicRequest(){
+import com.google.gson.annotations.SerializedName
+
+public class SendMagicLingRequest(
+    @SerializedName("email")
+    public val email: String,
+    @SerializedName("magic_link_url")
+    public val magic_link_url: String,
+    @SerializedName("expiration_minutes")
+    public val expiration_minutes: Long
+) : BasicRequest() {
 }

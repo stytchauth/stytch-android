@@ -8,11 +8,11 @@ import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.ui.StytchMainActivity
 
-class StytchUI private constructor() {
+public class StytchUI private constructor() {
 
     internal var uiListener: StytchUIListener? = null
 
-    fun showUI(
+    public fun showUI(
         activity: Activity,
         listener: StytchUIListener,
         uiCustomization: StytchUICustomization = StytchUICustomization()
@@ -27,7 +27,7 @@ class StytchUI private constructor() {
         }
     }
 
-    fun showUI(
+    public fun showUI(
         activity: AppCompatActivity,
         listener: StytchUIListener,
         uiUICustomization: StytchUICustomization = StytchUICustomization()
@@ -43,7 +43,7 @@ class StytchUI private constructor() {
 
     }
 
-    fun showUI(
+    public fun showUI(
         fragment: Fragment,
         listener: StytchUIListener,
         uiUICustomization: StytchUICustomization = StytchUICustomization()
@@ -58,15 +58,15 @@ class StytchUI private constructor() {
         }
     }
 
-    interface StytchUIListener {
+    public interface StytchUIListener {
         fun onEvent(event: StytchEvent) {}
         fun onSuccess(result: StytchResult)
         fun onFailure()
     }
 
-    companion object {
+    public companion object {
         private const val ACTIVITY_REQUEST_CODE = 674
 
-        val instance = StytchUI()
+        public val instance = StytchUI()
     }
 }

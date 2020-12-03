@@ -1,4 +1,4 @@
 package com.stytch.sdk.exceptions
 
-class UnknownException: Exception() {
+internal class UnknownException: Exception() {
 }

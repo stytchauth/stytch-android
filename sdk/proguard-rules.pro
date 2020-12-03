@@ -12,9 +12,17 @@
 #   public *;
 #}
 
+-keep public class com.stytch.sdk.** {
+    public protected *;
+}
+
+-keep public class com.stytch.sdk.api.** {
+    public protected *;
+}
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.

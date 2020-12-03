@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ErrorManager"
 
-class ErrorManager {
+internal class ErrorManager {
 
     private val errorMessage = MutableLiveData<Event<String>>()
     private val errorMessageId = MutableLiveData<Event<Int>>()
