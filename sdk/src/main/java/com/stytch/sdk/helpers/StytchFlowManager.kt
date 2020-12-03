@@ -6,10 +6,7 @@ import com.stytch.sdk.StytchEvent
 import com.stytch.sdk.StytchUI
 import com.stytch.sdk.api.Api
 import com.stytch.sdk.api.StytchResult
-import com.stytch.sdk.exceptions.EmailNotFoundException
-import com.stytch.sdk.exceptions.ExceptionRecognizer
-import com.stytch.sdk.exceptions.UnknownException
-import com.stytch.sdk.exceptions.WrongMagicLinkException
+import com.stytch.sdk.exceptions.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -107,9 +104,6 @@ class StytchFlowManager {
             val response = Api.instance.sendEmailVerification(emailId, userId)
             ExceptionRecognizer.recognize(response)
             if (response.body() == null) throw UnknownException()
-//            withContext(Dispatchers.Main) {
-//                Stytch.instance.listener?.onVerificationEmailSent(email)
-//            }
         } catch (ex: Exception) {
             ex.printStackTrace()
             handleError(ex)
@@ -129,6 +123,11 @@ class StytchFlowManager {
             is WrongMagicLinkException -> {
                 withContext(Dispatchers.Main) {
                     Stytch.instance.listener?.onFailure(StytchError.InvalidMagicToken)
+                }
+            }
+            is UnauthorizedCredentialsException -> {
+                withContext(Dispatchers.Main) {
+                    Stytch.instance.listener?.onFailure(StytchError.InvalidConfiguration)
                 }
             }
             else -> {

@@ -18,6 +18,7 @@ class LoginViewModel : ViewModel() {
     val stateLiveData = MutableLiveData<State>().apply { value = State.Login }
     val loadingLiveData = MutableLiveData<Boolean>().apply { value = false }
     val errorManager = ErrorManager()
+    val closeLiveData = MutableLiveData<Event<Boolean>>()
 
     val stytchListener = object : Stytch.StytchListener {
         override fun onSuccess(result: StytchResult) {
@@ -26,8 +27,20 @@ class LoginViewModel : ViewModel() {
 
         override fun onFailure(error: StytchError) {
             loadingLiveData.value = false
-            errorManager.showError(error.name)
-            StytchUI.instance.uiListener?.onFailure()
+            when (error) {
+                StytchError.InvalidMagicToken,
+                StytchError.Connection -> {
+                    errorManager.showError(error.messageId)
+                }
+                StytchError.Unknown,
+                StytchError.InvalidEmail -> {
+                    errorManager.showError(error.messageId)
+                    stateLiveData.value = State.Login
+                }
+                StytchError.InvalidConfiguration -> {
+                    closeLiveData.value = Event(true)
+                }
+            }
         }
 
         override fun onMagicLinkSent(email: String) {
@@ -39,10 +52,10 @@ class LoginViewModel : ViewModel() {
     }
 
     fun signInClicked(email: String?) {
-//        "email-test-12fb246b-e78d-4bb9-9e38-f6b7796b4a86"
-//        user-test-ff7a8219-70b5-462d-9ec0-ef858fdbdf5f
-        LoggerLocal.d(TAG,"checkEmail: $email")
-        if(email.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        LoggerLocal.d(TAG, "checkEmail: $email")
+        if (email.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches()
+        ) {
             errorManager.showError(R.string.stytch_error_invalid_input)
             return
         }
@@ -53,7 +66,6 @@ class LoginViewModel : ViewModel() {
 
 
     fun resendClicked() {
-//        loadingLiveData.value = true
         stateLiveData.value = State.Login
     }
 

@@ -29,13 +29,7 @@ class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr
     )
 
     init {
-//        setBackgroundResource(R.drawable.stytch_edit_bg)
         setPadding(16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt())
-//        backgroundTintList = ContextCompat.getColorStateList(
-//            context,
-//            Stytch.instance.config.customization.editBackgroundColorId
-//        )
-
         background = getBackgroundShape(
             ContextCompat.getColor(
                 context,

@@ -12,17 +12,20 @@ class Stytch private constructor() {
 
     var listener: StytchListener? = null
 
-    fun configure(projectID: String, secret: String, scheme: String, verifyEmail: Boolean = false) {
+    fun configure(projectID: String, secret: String, scheme: String) {
         config = StytchConfig.Builder()
             .withAuth(projectID, secret)
             .withDeepLinkScheme(scheme)
             .withDeepLinkHost(Constants.HOST)
-            .withVerifyEmail(verifyEmail)
             .build()
         flowManager = StytchFlowManager()
     }
 
     fun login(email: String) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            listener?.onFailure(StytchError.InvalidEmail)
+            return
+        }
         flowManager.login(email)
     }
 
@@ -47,11 +50,7 @@ class Stytch private constructor() {
 
         fun onSuccess(result: StytchResult)
         fun onFailure(error: StytchError)
-//        fun onVerificationEmailSent(email: String)
         fun onMagicLinkSent(email: String)
-
-//        fun onUserCreated() {}
-
     }
 
 }

@@ -35,8 +35,6 @@ class StytchUI private constructor() {
         try {
             uiListener = listener
             Stytch.instance.config.uiCustomization = uiUICustomization
-            //        "email-test-12fb246b-e78d-4bb9-9e38-f6b7796b4a86"
-//        user-test-ff7a8219-70b5-462d-9ec0-ef858fdbdf5f
             val intent = Intent(activity, StytchMainActivity::class.java)
             activity.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
         } catch (ex: UninitializedPropertyAccessException) {

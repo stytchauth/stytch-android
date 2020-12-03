@@ -12,7 +12,7 @@ class StytchConfig private constructor(
     public class Builder {
 
         private var deepLinkScheme: String = "app"
-        private var deepLinkHost: String = "stytch"
+        private var deepLinkHost: String = "stytch.com"
         private var UICustomization: StytchUICustomization = StytchUICustomization()
         private var verifyEmail: Boolean = false
         private var projectID: String = ""

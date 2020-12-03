@@ -29,11 +29,10 @@ object ExceptionRecognizer {
                     throw BlankWarningException(errorModel.error_type)
                 }
                 "unauthorized_credentials" -> {
-                    throw BlankWarningException(errorModel.error_type)
+                    throw UnauthorizedCredentialsException()
                 }
                 else -> {
                     throw BlankWarningException(errorModel.error_type)
-//                    throw WarningException(R.string.error_unknown)
                 }
             }
         }

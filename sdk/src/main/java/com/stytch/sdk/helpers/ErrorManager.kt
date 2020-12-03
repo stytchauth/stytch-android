@@ -1,7 +1,5 @@
 package com.stytch.sdk.helpers
 
-import android.content.DialogInterface
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -69,12 +67,10 @@ class ErrorManager {
                 event.getEventNotHandled()?.let {
                     LoggerLocal.e(tag, it)
                     view?.let { view ->
-//
                         AlertDialog.Builder(fragment.requireContext())
                             .setTitle(it)
                             .setPositiveButton(android.R.string.ok ,null)
                             .show()
-//                        Snackbar.make(view, it, Snackbar.LENGTH_LONG).config(view.context).show()
                     }
                 }
             })
@@ -85,7 +81,6 @@ class ErrorManager {
                             .setTitle(it)
                             .setPositiveButton(android.R.string.ok ,null)
                             .show()
-//                        Snackbar.make(view, it, Snackbar.LENGTH_LONG).config(view.context).show()
                     }
                 }
             })

@@ -1,19 +1,24 @@
 package com.stytch.sdk.ui
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchUI
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.hideKeyboard
+import com.stytch.sdk.helpers.invertedWhiteBlack
 import com.stytch.sdk.views.StytchButton
 import com.stytch.sdk.views.StytchEditText
 import com.stytch.sdk.views.StytchTextView
@@ -32,7 +37,7 @@ class StytchLoginFragment : Fragment() {
     private var emailEditText: StytchEditText? = null
     private var actionButton: StytchButton? = null
     private var waterMarkView: StytchWaterMarkView? = null
-    private var loadingIndicator: View? = null
+    private var loadingIndicator: ProgressBar? = null
 
     private lateinit var viewModel: LoginViewModel
 
@@ -101,7 +106,7 @@ class StytchLoginFragment : Fragment() {
     }
 
     private fun createDescriptionTextView() {
-        if(Stytch.instance.config.uiCustomization.showSubtitle) {
+        if (Stytch.instance.config.uiCustomization.showSubtitle) {
             descriptionTextView = StytchTextView(requireContext()).apply {
                 setText(R.string.stytch_login_description)
                 setCustomization(Stytch.instance.config.uiCustomization.subtitleStyle)
@@ -112,7 +117,7 @@ class StytchLoginFragment : Fragment() {
     }
 
     private fun createTitleTextView() {
-        if(Stytch.instance.config.uiCustomization.showTitle) {
+        if (Stytch.instance.config.uiCustomization.showTitle) {
             titleTextView = StytchTextView(requireContext()).apply {
                 setText(R.string.stytch_login_title)
                 setCustomization(Stytch.instance.config.uiCustomization.titleStyle)
@@ -179,7 +184,10 @@ class StytchLoginFragment : Fragment() {
                 hideKeyboard()
                 animateTextView(
                     titleTextView,
-                    getString(R.string.stytch_login_waiting_verification_title, emailEditText?.text?.toString())
+                    getString(
+                        R.string.stytch_login_waiting_verification_title,
+                        emailEditText?.text?.toString()
+                    )
                 )
                 animateTextView(
                     descriptionTextView,
@@ -207,9 +215,24 @@ class StytchLoginFragment : Fragment() {
 
     private fun observeErrors() {
         viewModel.errorManager.observeErrors(this, viewLifecycleOwner, TAG)
+        viewModel.closeLiveData.observe(viewLifecycleOwner, {event ->
+            event.getEventNotHandled()?.let {
+                if(it){
+                    StytchUI.instance.uiListener?.onFailure()
+                }
+            }
+        })
     }
 
     private fun observeLoading() {
+        val color = ContextCompat.getColor(
+            requireContext(),
+            Stytch.instance.config.uiCustomization.backgroundId
+        ).invertedWhiteBlack()
+
+        loadingIndicator?.indeterminateTintList =
+            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+
         viewModel.loadingLiveData.observe(viewLifecycleOwner, { showLoading ->
             loadingIndicator?.visibility = if (showLoading) View.VISIBLE else View.GONE
         })

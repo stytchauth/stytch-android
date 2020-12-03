@@ -1,6 +1,5 @@
 package com.stytch.sdk.api
 
-import android.util.Base64
 import com.stytch.sdk.BuildConfig
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.api.requests.*
@@ -28,12 +27,10 @@ const val BASE_URL = "https://test.stytch.com/v1/"
 
 
 private const val TAG = "Api"
-private const val API_KEY = "----"
 
 class Api {
 
     private val service: StytchService
-    private val accessToken: String = ""
 
     init {
         val httpClient = OkHttpClient.Builder()
@@ -64,7 +61,7 @@ class Api {
     fun sendMagicLink(
         email: String
     ): Response<SendMagicLingResponse> {
-        return service.sendMagicLink(SendMagicLingRequest(email, "https://stytch", 60)).execute()
+        return service.sendMagicLink(SendMagicLingRequest(email, "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/magic_link", 60)).execute()
     }
 
     fun createUser(

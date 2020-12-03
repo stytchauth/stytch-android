@@ -23,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         Stytch.instance.configure(
             projectId,
             secret,
-            "https",
-            true
+            "https"
         )
 
 //        Stytch.instance.login("demid@stytch.com")

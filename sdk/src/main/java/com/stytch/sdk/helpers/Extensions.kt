@@ -2,6 +2,7 @@ package com.stytch.sdk.helpers
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 
@@ -14,4 +15,11 @@ val Number.dp: Float
 fun Fragment.hideKeyboard() {
     val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+}
+
+fun Int.invertedWhiteBlack(): Int {
+    val red = Color.red(this)
+    val green = Color.green(this)
+    val blue = Color.blue(this)
+    return if ((red * 0.299 + green * 0.587 + blue * 0.114) * 255.0 > 140) Color.BLACK else Color.WHITE
 }

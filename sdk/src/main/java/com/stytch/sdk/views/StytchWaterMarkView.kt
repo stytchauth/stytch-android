@@ -1,6 +1,8 @@
 package com.stytch.sdk.views
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -9,7 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.stytch.sdk.R
+import com.stytch.sdk.Stytch
 import com.stytch.sdk.helpers.dp
+import com.stytch.sdk.helpers.invertedWhiteBlack
 
 class StytchWaterMarkView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -43,7 +47,13 @@ class StytchWaterMarkView @JvmOverloads constructor(
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.START
             )
-            connect(poweredByText.id, ConstraintSet.END, poweredByImage.id, ConstraintSet.START, 8.dp.toInt())
+            connect(
+                poweredByText.id,
+                ConstraintSet.END,
+                poweredByImage.id,
+                ConstraintSet.START,
+                8.dp.toInt()
+            )
             centerVertically(poweredByText.id, ConstraintSet.PARENT_ID)
 
             connect(poweredByImage.id, ConstraintSet.START, poweredByText.id, ConstraintSet.END)
@@ -80,9 +90,19 @@ class StytchWaterMarkView @JvmOverloads constructor(
     }
 
     private fun createLogo() {
+        val color = ContextCompat.getColor(
+            context,
+            Stytch.instance.config.uiCustomization.backgroundId
+        ).invertedWhiteBlack()
+
+        poweredByImage.backgroundTintList =
+            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+
         poweredByImage = AppCompatImageView(context).apply {
             id = View.generateViewId()
-            setImageResource(R.drawable.ic_stytcth_logo)
+            setImageResource(R.drawable.ic_stytch_logo)
         }
     }
+
+
 }
