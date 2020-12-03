@@ -8,6 +8,7 @@
     <color name="buttonBg">#000000</color>
     <color name="buttonTextColor">#ffffff</color>
     <color name="editTextBackgroundBorderColor">#38000000</color>
+    <color name="editTextBackgroundColor">#ffffff</color>
     <color name="poweredByColor">#928e8e</color>
     <color name="colorBackground">#ffffff</color>
 

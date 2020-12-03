@@ -1,6 +1,8 @@
 package com.stytch.sdk.views
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
@@ -9,17 +11,15 @@ import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchTextCustomization
-import com.stytch.sdk.StytchUI
+import com.stytch.sdk.StytchTextStyle
 import com.stytch.sdk.helpers.CustomTypefaceSpan
 import com.stytch.sdk.helpers.dp
 
 class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :
     AppCompatEditText(context, attributeSet, defStyleAttr) {
 
-    private var hintCustomization: StytchTextCustomization? = null
+    private var hintStyle: StytchTextStyle? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?) : this(
@@ -29,31 +29,44 @@ class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr
     )
 
     init {
-        setBackgroundResource(R.drawable.stytch_edit_bg)
+//        setBackgroundResource(R.drawable.stytch_edit_bg)
         setPadding(16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt())
-        backgroundTintList = ContextCompat.getColorStateList(
-            context,
-            Stytch.instance.config.customization.editBackgroundColorId
+//        backgroundTintList = ContextCompat.getColorStateList(
+//            context,
+//            Stytch.instance.config.customization.editBackgroundColorId
+//        )
+
+        background = getBackgroundShape(
+            ContextCompat.getColor(
+                context,
+                Stytch.instance.config.uiCustomization.inputBackgroundColorId
+            ),
+            ContextCompat.getColor(
+                context,
+                Stytch.instance.config.uiCustomization.inputBackgroundBorderColorId
+            ),
+            Stytch.instance.config.uiCustomization.inputCornerRadius,
+            1.dp.toInt()
         )
     }
 
-    fun setHintCustomization(customization: StytchTextCustomization) {
-        hintCustomization = customization
-        setHintTextColor(ContextCompat.getColor(context, customization.colorId))
+    fun setHintCustomization(style: StytchTextStyle) {
+        hintStyle = style
+        setHintTextColor(ContextCompat.getColor(context, style.colorId))
     }
 
-    fun setTextCustomization(customization: StytchTextCustomization) {
-        setTextColor(ContextCompat.getColor(context, customization.colorId))
-        setTypeface(customization.font)
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, customization.size)
-        setCursorDrawableColor(customization.colorId)
+    fun setTextCustomization(style: StytchTextStyle) {
+        setTextColor(ContextCompat.getColor(context, style.colorId))
+        setTypeface(style.font)
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
+        setCursorDrawableColor(style.colorId)
     }
 
     fun updateHint(textId: Int) {
         val text = context.getString(textId)
         val spannableText = SpannableString(text)
 
-        hintCustomization?.let { customization ->
+        hintStyle?.let { customization ->
 
             customization.font?.let { font ->
                 spannableText.setSpan(
@@ -78,6 +91,19 @@ class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr
 
     fun setCursorDrawableColor(@ColorInt color: Int) {
 //        TODO: change cursor color
+    }
+
+    private fun getBackgroundShape(
+        backgroundColor: Int,
+        borderColor: Int,
+        borderRadius: Float,
+        borderWidth: Int
+    ): Drawable? {
+        val drawable = GradientDrawable()
+        drawable.cornerRadius = borderRadius
+        drawable.setStroke(borderWidth, borderColor)
+        drawable.colors = intArrayOf(backgroundColor, backgroundColor)
+        return drawable
     }
 
 

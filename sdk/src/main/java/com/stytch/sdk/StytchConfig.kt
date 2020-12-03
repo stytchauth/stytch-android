@@ -6,14 +6,14 @@ class StytchConfig private constructor(
     val deepLinkScheme: String,
     val deepLinkHost: String,
     val verifyEmail: Boolean,
-    var customization: StytchCustomization
+    var uiCustomization: StytchUICustomization
 ) {
 
     public class Builder {
 
         private var deepLinkScheme: String = "app"
         private var deepLinkHost: String = "stytch"
-        private var customization: StytchCustomization = StytchCustomization()
+        private var UICustomization: StytchUICustomization = StytchUICustomization()
         private var verifyEmail: Boolean = false
         private var projectID: String = ""
         private var secret: String = ""
@@ -28,8 +28,8 @@ class StytchConfig private constructor(
             return this
         }
 
-        fun withCustomization(customization: StytchCustomization): Builder {
-            this.customization = customization
+        fun withCustomization(UICustomization: StytchUICustomization): Builder {
+            this.UICustomization = UICustomization
             return this
         }
 
@@ -52,7 +52,7 @@ class StytchConfig private constructor(
                 deepLinkScheme,
                 deepLinkHost,
                 verifyEmail,
-                customization
+                UICustomization
             )
         }
 

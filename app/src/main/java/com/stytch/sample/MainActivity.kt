@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.stytch.sdk.*
-import com.stytch.sdk.api.Api
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.LoggerLocal
 import com.stytch.sdk.helpers.dp
@@ -32,16 +31,14 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        StytchUI.instance.launchFlow(
+        StytchUI.instance.showUI(
             this,
             object: StytchUI.StytchUIListener{
                 override fun onSuccess(result: StytchResult) {
                     LoggerLocal.d(TAG,"onSuccess: $result")
-//                    TODO("Not yet implemented")
                 }
 
-                override fun onError() {
-//                    TODO("Not yet implemented")
+                override fun onFailure() {
                 }
 
             },
@@ -49,41 +46,43 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun createCustomization(): StytchCustomization {
-        return StytchCustomization().apply {
-            this.backgroundId = R.color.purple_200
-            buttonBackgroundColorId = R.color.purple_500
-            editBackgroundColorId = android.R.color.holo_orange_light
-            showBrandLogo = false
-
-            titleCustomization = StytchTextCustomization().apply {
-                size = 10.dp
-                colorId = android.R.color.holo_red_dark
-                font = Typeface.create(null as Typeface?, Typeface.BOLD)
-            }
-
-            subtitleCustomization.apply {
-                size = 23.dp
-                colorId = android.R.color.holo_blue_bright
-                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
-            }
-
-            editHintCustomization.apply {
-                size = 12.dp
-                colorId = android.R.color.holo_green_dark
-                font = Typeface.create(null as Typeface?, Typeface.BOLD)
-            }
-
-            editTextCustomization.apply {
-                colorId = android.R.color.white
-                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
-            }
-
-            buttonTextCustomization.apply {
-                colorId = android.R.color.holo_blue_dark
-                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
-                size = 4.dp
-            }
+    private fun createCustomization(): StytchUICustomization {
+        return StytchUICustomization().apply {
+//            this.backgroundId = R.color.purple_200
+//            buttonBackgroundColorId = R.color.purple_500
+//            inputBackgroundColorId = android.R.color.holo_orange_light
+//            showBrandLogo = false
+//            showSubtitle = false
+//            showTitle = false
+//
+//            titleStyle = StytchTextStyle().apply {
+//                size = 10.dp
+//                colorId = android.R.color.holo_red_dark
+//                font = Typeface.create(null as Typeface?, Typeface.BOLD)
+//            }
+//
+//            subtitleStyle.apply {
+//                size = 23.dp
+//                colorId = android.R.color.holo_blue_bright
+//                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
+//            }
+//
+//            editHintStyle.apply {
+//                size = 12.dp
+//                colorId = android.R.color.holo_green_dark
+//                font = Typeface.create(null as Typeface?, Typeface.BOLD)
+//            }
+//
+//            editTextStyle.apply {
+//                colorId = android.R.color.white
+//                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
+//            }
+//
+//            buttonTextStyle.apply {
+//                colorId = android.R.color.holo_blue_dark
+//                font = Typeface.create(null as Typeface?, Typeface.ITALIC)
+//                size = 4.dp
+//            }
         }
     }
 

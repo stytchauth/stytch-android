@@ -23,23 +23,19 @@ class Stytch private constructor() {
     }
 
     fun login(email: String) {
-//        TODO: check email
         flowManager.login(email)
     }
 
-    fun resendEmailVerification(){
+    private fun resendEmailVerification() {
         flowManager.resendEmailVerification()
     }
 
-    fun handleDeepLink(uri: Uri): Boolean{
+    fun handleDeepLink(uri: Uri): Boolean {
         if (uri.scheme == config.deepLinkScheme) {
-//           TODO: handle email verification
             flowManager.verifyToken(uri.getQueryParameter("token"))
             return true
         }
-
         return false
-
     }
 
 
@@ -50,11 +46,11 @@ class Stytch private constructor() {
     interface StytchListener {
 
         fun onSuccess(result: StytchResult)
-        fun onError(error: StytchError)
-        fun onVerificationEmailSent(email: String)
+        fun onFailure(error: StytchError)
+//        fun onVerificationEmailSent(email: String)
         fun onMagicLinkSent(email: String)
 
-        fun onUserCreated() {} //TODO: remove or add logic
+//        fun onUserCreated() {}
 
     }
 

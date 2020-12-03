@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchUI
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.hideKeyboard
 import com.stytch.sdk.views.StytchButton
@@ -47,7 +46,7 @@ class StytchLoginFragment : Fragment() {
         view.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                Stytch.instance.config.customization.backgroundId
+                Stytch.instance.config.uiCustomization.backgroundId
             )
         )
         loadingIndicator = view.findViewById(R.id.loadingIndicator)
@@ -68,7 +67,6 @@ class StytchLoginFragment : Fragment() {
         observeState()
         observeLoading()
         observeErrors()
-        observeLoggedInSuccessfullyLiveData()
     }
 
     private fun createViews(holder: LinearLayoutCompat) {
@@ -82,7 +80,7 @@ class StytchLoginFragment : Fragment() {
     }
 
     private fun createWaterMarkView() {
-        if (Stytch.instance.config.customization.showBrandLogo) {
+        if (Stytch.instance.config.uiCustomization.showBrandLogo) {
             waterMarkView = StytchWaterMarkView(requireContext())
         }
     }
@@ -90,29 +88,37 @@ class StytchLoginFragment : Fragment() {
     private fun createButton() {
         actionButton = StytchButton(requireContext()).apply {
             setText(R.string.stytch_login_button_title)
-            setCustomization(Stytch.instance.config.customization.buttonTextCustomization)
+            setCustomization(Stytch.instance.config.uiCustomization.buttonTextStyle)
         }
     }
 
     private fun createEditText() {
         emailEditText = StytchEditText(requireContext()).apply {
-            setHintCustomization(Stytch.instance.config.customization.editHintCustomization)
-            setTextCustomization(Stytch.instance.config.customization.editTextCustomization)
+            setHintCustomization(Stytch.instance.config.uiCustomization.editHintStyle)
+            setTextCustomization(Stytch.instance.config.uiCustomization.editTextStyle)
             updateHint(R.string.stytch_login_email_hint)
         }
     }
 
     private fun createDescriptionTextView() {
-        descriptionTextView = StytchTextView(requireContext()).apply {
-            setText(R.string.stytch_login_description)
-            setCustomization(Stytch.instance.config.customization.subtitleCustomization)
+        if(Stytch.instance.config.uiCustomization.showSubtitle) {
+            descriptionTextView = StytchTextView(requireContext()).apply {
+                setText(R.string.stytch_login_description)
+                setCustomization(Stytch.instance.config.uiCustomization.subtitleStyle)
+            }
+        } else {
+            descriptionTextView = null
         }
     }
 
     private fun createTitleTextView() {
-        titleTextView = StytchTextView(requireContext()).apply {
-            setText(R.string.stytch_login_title)
-            setCustomization(Stytch.instance.config.customization.titleCustomization)
+        if(Stytch.instance.config.uiCustomization.showTitle) {
+            titleTextView = StytchTextView(requireContext()).apply {
+                setText(R.string.stytch_login_title)
+                setCustomization(Stytch.instance.config.uiCustomization.titleStyle)
+            }
+        } else {
+            titleTextView = null
         }
     }
 
@@ -125,7 +131,9 @@ class StytchLoginFragment : Fragment() {
             marginStart = 24.dp.toInt()
             marginEnd = 24.dp.toInt()
         }
-        holder.addView(titleTextView, layoutParams)
+        titleTextView?.let { titleTextView ->
+            holder.addView(titleTextView, layoutParams)
+        }
 
         layoutParams = LinearLayoutCompat.LayoutParams(
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
@@ -135,7 +143,9 @@ class StytchLoginFragment : Fragment() {
             marginStart = 24.dp.toInt()
             marginEnd = 24.dp.toInt()
         }
-        holder.addView(descriptionTextView, layoutParams)
+        descriptionTextView?.let { descriptionTextView ->
+            holder.addView(descriptionTextView, layoutParams)
+        }
         holder.addView(emailEditText, layoutParams)
         holder.addView(actionButton, layoutParams)
 
@@ -169,13 +179,13 @@ class StytchLoginFragment : Fragment() {
                 hideKeyboard()
                 animateTextView(
                     titleTextView,
-                    getString(R.string.stytch_login_waitnig_verification_title)
+                    getString(R.string.stytch_login_waiting_verification_title, emailEditText?.text?.toString())
                 )
                 animateTextView(
                     descriptionTextView,
-                    getString(R.string.stytch_login_waitnig_verification_description)
+                    getString(R.string.stytch_login_waiting_verification_description)
                 )
-                actionButton?.setText(R.string.stytch_login_waitnig_verification_button_title)
+                actionButton?.setText(R.string.stytch_login_waiting_verification_button_title)
                 emailEditText?.visibility = View.GONE
                 actionButton?.setOnClickListener {
                     viewModel.resendClicked()
@@ -202,14 +212,6 @@ class StytchLoginFragment : Fragment() {
     private fun observeLoading() {
         viewModel.loadingLiveData.observe(viewLifecycleOwner, { showLoading ->
             loadingIndicator?.visibility = if (showLoading) View.VISIBLE else View.GONE
-        })
-    }
-
-    private fun observeLoggedInSuccessfullyLiveData() {
-        viewModel.loggedInSuccessfullyLiveData.observe(viewLifecycleOwner, { event ->
-            event.getEventNotHandled()?.let {
-//                TODO: return success status from SDK
-            }
         })
     }
 

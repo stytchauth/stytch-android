@@ -4,7 +4,7 @@
 
     <application>
         <activity android:name=".ui.StytchMainActivity"
-            android:theme="@style/Theme.StycthTheme"/>
+            android:theme="@style/Theme.StytchTheme"/>
     </application>
 
 </manifest>

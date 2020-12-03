@@ -5,16 +5,16 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import com.stytch.sdk.StytchTextCustomization
+import com.stytch.sdk.StytchTextStyle
 
 class StytchTextView  @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatTextView(context, attrs, defStyleAttr){
 
-    fun setCustomization(customization: StytchTextCustomization) {
-        setTextColor(ContextCompat.getColor(context, customization.colorId))
-        setTypeface(customization.font)
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, customization.size)
+    fun setCustomization(style: StytchTextStyle) {
+        setTextColor(ContextCompat.getColor(context, style.colorId))
+        setTypeface(style.font)
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
     }
 
 }

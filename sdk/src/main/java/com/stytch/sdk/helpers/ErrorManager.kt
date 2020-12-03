@@ -1,16 +1,18 @@
 package com.stytch.sdk.helpers
 
+import android.content.DialogInterface
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.stytch.sdk.R
 import com.stytch.sdk.exceptions.BlankWarningException
 import com.stytch.sdk.exceptions.WarningException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "ErrorManager"
 
@@ -61,23 +63,28 @@ class ErrorManager {
     }
 
     fun observeErrors(fragment: Fragment, viewLifecycleOwner: LifecycleOwner, tag: String) {
-//        TODO: show error in appropriate View
+        val view = fragment.view
         GlobalScope.launch(Dispatchers.Main) {
-            val view = fragment.view
-            errorMessage.observe(viewLifecycleOwner, Observer { event ->
+            errorMessage.observe(viewLifecycleOwner, { event ->
                 event.getEventNotHandled()?.let {
                     LoggerLocal.e(tag, it)
                     view?.let { view ->
 //
-                        Toast.makeText(view.context, it, Toast.LENGTH_LONG).show()
+                        AlertDialog.Builder(fragment.requireContext())
+                            .setTitle(it)
+                            .setPositiveButton(android.R.string.ok ,null)
+                            .show()
 //                        Snackbar.make(view, it, Snackbar.LENGTH_LONG).config(view.context).show()
                     }
                 }
             })
-            errorMessageId.observe(viewLifecycleOwner, Observer { event ->
+            errorMessageId.observe(viewLifecycleOwner, { event ->
                 event.getEventNotHandled()?.let {
                     view?.let { view ->
-                        Toast.makeText(view.context, it, Toast.LENGTH_LONG).show()
+                        AlertDialog.Builder(fragment.requireContext())
+                            .setTitle(it)
+                            .setPositiveButton(android.R.string.ok ,null)
+                            .show()
 //                        Snackbar.make(view, it, Snackbar.LENGTH_LONG).config(view.context).show()
                     }
                 }

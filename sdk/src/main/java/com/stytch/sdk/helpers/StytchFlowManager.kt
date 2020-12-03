@@ -2,6 +2,8 @@ package com.stytch.sdk.helpers
 
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchError
+import com.stytch.sdk.StytchEvent
+import com.stytch.sdk.StytchUI
 import com.stytch.sdk.api.Api
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.exceptions.EmailNotFoundException
@@ -20,7 +22,10 @@ class StytchFlowManager {
     private var emailId: String = ""
     private var userId: String = ""
 
+    private var newUserCreated: Boolean = false
+
     fun login(email: String) {
+        newUserCreated = false
         this.email = email
         GlobalScope.launch(Dispatchers.IO) {
             login()
@@ -64,6 +69,11 @@ class StytchFlowManager {
             ExceptionRecognizer.recognize(response)
             if (response.body() == null) throw UnknownException()
             withContext(Dispatchers.Main) {
+                if(newUserCreated){
+                    StytchUI.instance.uiListener?.onEvent(StytchEvent.userCreatedEvent(response.body()!!.user_id))
+                } else {
+                    StytchUI.instance.uiListener?.onEvent(StytchEvent.userFoundEvent(response.body()!!.user_id))
+                }
                 Stytch.instance.listener?.onMagicLinkSent(email)
             }
         } catch (ex: Exception) {
@@ -74,6 +84,7 @@ class StytchFlowManager {
     }
 
     private suspend fun createUser(email: String) {
+        newUserCreated = true
         try {
             val response = Api.instance.createUser(email)
             ExceptionRecognizer.recognize(response)
@@ -96,9 +107,9 @@ class StytchFlowManager {
             val response = Api.instance.sendEmailVerification(emailId, userId)
             ExceptionRecognizer.recognize(response)
             if (response.body() == null) throw UnknownException()
-            withContext(Dispatchers.Main) {
-                Stytch.instance.listener?.onVerificationEmailSent(email)
-            }
+//            withContext(Dispatchers.Main) {
+//                Stytch.instance.listener?.onVerificationEmailSent(email)
+//            }
         } catch (ex: Exception) {
             ex.printStackTrace()
             handleError(ex)
@@ -109,7 +120,7 @@ class StytchFlowManager {
         when (ex) {
             is UnknownHostException -> {
                 withContext(Dispatchers.Main) {
-                    Stytch.instance.listener?.onError(StytchError.Connection)
+                    Stytch.instance.listener?.onFailure(StytchError.Connection)
                 }
             }
             is EmailNotFoundException -> {
@@ -117,12 +128,12 @@ class StytchFlowManager {
             }
             is WrongMagicLinkException -> {
                 withContext(Dispatchers.Main) {
-                    Stytch.instance.listener?.onError(StytchError.InvalidMagicToken)
+                    Stytch.instance.listener?.onFailure(StytchError.InvalidMagicToken)
                 }
             }
             else -> {
                 withContext(Dispatchers.Main) {
-                    Stytch.instance.listener?.onError(StytchError.Unknown)
+                    Stytch.instance.listener?.onFailure(StytchError.Unknown)
                 }
             }
         }

@@ -25,17 +25,15 @@
         </activity>
 
         <activity android:name="com.stytch.sdk.ui.StytchMainActivity"
-            android:theme="@style/Theme.StycthTheme"
+            android:theme="@style/Theme.StytchTheme"
             android:launchMode="singleTask">
 
             <intent-filter android:label="stytch_sdk_deep_link">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "example://gizmos” -->
                 <data android:scheme="https"
                     android:host="stytch" />
-
             </intent-filter>
         </activity>
 

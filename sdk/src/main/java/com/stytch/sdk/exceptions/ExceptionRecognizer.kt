@@ -28,6 +28,9 @@ object ExceptionRecognizer {
                 "invalid_user_id" -> {
                     throw BlankWarningException(errorModel.error_type)
                 }
+                "unauthorized_credentials" -> {
+                    throw BlankWarningException(errorModel.error_type)
+                }
                 else -> {
                     throw BlankWarningException(errorModel.error_type)
 //                    throw WarningException(R.string.error_unknown)
