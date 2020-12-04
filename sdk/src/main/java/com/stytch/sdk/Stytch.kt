@@ -1,14 +1,18 @@
 package com.stytch.sdk
 
+import android.content.Intent
 import android.net.Uri
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.helpers.StytchFlowManager
+import com.stytch.sdk.ui.StytchMainActivity
 
 public class Stytch private constructor() {
     internal lateinit var config: StytchConfig
 
     private lateinit var flowManager: StytchFlowManager
+
+    public var environment = StytchEnvironment.LIVE
 
     public var listener: StytchListener? = null
 
@@ -16,12 +20,12 @@ public class Stytch private constructor() {
         config = StytchConfig.Builder()
             .withAuth(projectID, secret)
             .withDeepLinkScheme(scheme)
-            .withDeepLinkHost(Constants.HOST)
             .build()
         flowManager = StytchFlowManager()
     }
 
     public fun login(email: String) {
+        checkIfConfigured()
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             listener?.onFailure(StytchError.InvalidEmail)
             return
@@ -30,10 +34,12 @@ public class Stytch private constructor() {
     }
 
     private fun resendEmailVerification() {
+        checkIfConfigured()
         flowManager.resendEmailVerification()
     }
 
     public fun handleDeepLink(uri: Uri): Boolean {
+        checkIfConfigured()
         if (uri.scheme == config.deepLinkScheme) {
             flowManager.verifyToken(uri.getQueryParameter("token"))
             return true
@@ -41,6 +47,13 @@ public class Stytch private constructor() {
         return false
     }
 
+    private fun checkIfConfigured(){
+        try {
+            config.projectID
+        } catch (ex: UninitializedPropertyAccessException) {
+            throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
+        }
+    }
 
     public companion object {
         public val instance = Stytch()
