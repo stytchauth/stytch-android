@@ -4,15 +4,19 @@ internal class StytchConfig private constructor(
     val projectID: String,
     val secret: String,
     val deepLinkScheme: String,
-    val deepLinkHost: String,
     val verifyEmail: Boolean,
     var uiCustomization: StytchUICustomization
 ) {
 
+    val deepLinkHost: String
+        get() = when (Stytch.instance.environment) {
+            StytchEnvironment.LIVE -> "api.stytch.com"
+            StytchEnvironment.TEST -> "test.stytch.com"
+        }
+
     public class Builder {
 
         private var deepLinkScheme: String = "app"
-        private var deepLinkHost: String = "stytch.com"
         private var UICustomization: StytchUICustomization = StytchUICustomization()
         private var verifyEmail: Boolean = false
         private var projectID: String = ""
@@ -20,11 +24,6 @@ internal class StytchConfig private constructor(
 
         fun withDeepLinkScheme(scheme: String): Builder {
             deepLinkScheme = scheme
-            return this
-        }
-
-        fun withDeepLinkHost(host: String): Builder {
-            deepLinkHost = host
             return this
         }
 
@@ -40,8 +39,8 @@ internal class StytchConfig private constructor(
 
         fun withAuth(projectID: String, secret: String): Builder {
             this.projectID = projectID
-            this. secret = secret
-            return  this
+            this.secret = secret
+            return this
         }
 
 
@@ -50,7 +49,6 @@ internal class StytchConfig private constructor(
                 projectID,
                 secret,
                 deepLinkScheme,
-                deepLinkHost,
                 verifyEmail,
                 UICustomization
             )

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchEnvironment
 import com.stytch.sdk.StytchUI
 import com.stytch.sdk.StytchUICustomization
 import com.stytch.sdk.api.StytchResult
@@ -27,7 +28,7 @@ internal class MainActivity : AppCompatActivity() {
             "https"
         )
 
-//        Stytch.instance.login("demid@stytch.com")
+        Stytch.instance.environment = StytchEnvironment.TEST
 
         StytchUI.instance.showUI(
             this,

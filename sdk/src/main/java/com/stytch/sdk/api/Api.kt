@@ -21,46 +21,22 @@ import java.net.NetworkInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
-const val BASE_URL = "https://test.stytch.com/v1/"
-
-
 private const val TAG = "Api"
 
 internal class Api {
 
-    private val service: StytchService
-
-    init {
-        val httpClient = OkHttpClient.Builder()
-        httpClient
-            .readTimeout(120L, TimeUnit.SECONDS)
-            .writeTimeout(120L, TimeUnit.SECONDS)
-            .connectTimeout(120L, TimeUnit.SECONDS)
-
-//        if (BuildConfig.DEBUG) { // Adds logging to the OkHttp client
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
-            httpClient.addInterceptor(interceptor)
-//        }
-
-        val authInterceptor = AuthInterceptor()
-        httpClient.addInterceptor(authInterceptor)
-
-
-        val client = httpClient.build()
-        service = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-            .create(StytchService::class.java)
-    }
+    private val service: StytchService get() = ServiceGenerator.createService()
 
     fun sendMagicLink(
         email: String
     ): Response<SendMagicLingResponse> {
-        return service.sendMagicLink(SendMagicLingRequest(email, "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/magic_link", 60)).execute()
+        return service.sendMagicLink(
+            SendMagicLingRequest(
+                email,
+                "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/magic_link",
+                60
+            )
+        ).execute()
     }
 
     fun createUser(
@@ -75,11 +51,14 @@ internal class Api {
         return service.verifyToken(token, VerifyTokenRequest()).execute()
     }
 
-    fun sendEmailVerification(emailId: String, userId: String): Response<SendEmailVerificationResponse> {
+    fun sendEmailVerification(
+        emailId: String,
+        userId: String
+    ): Response<SendEmailVerificationResponse> {
         return service.sendEmailVerification(emailId, SendEmailVerificationRequest()).execute()
     }
 
-    fun deleteUser(userId: String){
+    fun deleteUser(userId: String) {
         service.deleteUser(userId, DeleteUserRequest()).execute()
     }
 
@@ -114,7 +93,7 @@ internal class Api {
 
 
     companion object {
-        val instance = Api()
+        var instance = Api()
 
         fun getIPAddress(useIPv4: Boolean): String? {
             try {
