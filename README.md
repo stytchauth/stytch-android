@@ -12,6 +12,8 @@
 
 ## Overview
 
+Stytch's SDKs make it simple to seamlessly onboard, authenticate, and engage users. Improve security and user experience with passwordless authentication.
+
 ## Permissions
 
 Open your app's `AndroidManifest.xml` file and add the following permission.
@@ -36,6 +38,8 @@ repositories {
 }
 ```
 
+Add stytch-android to your build.gradle dependencies.
+
 ```app-gradle
 
 android {
@@ -57,20 +61,23 @@ dependencies {
 
 ### Configuration
 
+Pick a unique URL scheme for redirecting the user back to your app.
+For this example, we'll use YOUR_APP_NAME://.
 Before using sdk you must configure it:
 
 ```
     Stytch.instance.configure(
         PROJECT_ID,
         SECRET,
-        YOUR_APP_SCHEME
+        YOUR_APP_NAME
     )
 ```
 
-Add deep link intent into manifest, for StytchUI YOUR_ACTIVITY = "com.stytch.sdk.ui.StytchMainActivity"
+Add this in your AndroidManifest.xml.
+For StytchUI ACTIVITY_NAME = "com.stytch.sdk.ui.StytchMainActivity"
 
 ```
-<activity android:name="YOUR_ACTIVITY"
+<activity android:name="ACTIVITY_NAME"
     android:theme="@style/Theme.StytchTheme"
     android:launchMode="singleTask">
 
@@ -128,7 +135,7 @@ StytchTextStyle
 StytchUI.StytchUIListener provides callbacks methods
 - `onEvent` - called after user found or created
 - `onSuccess` - calls after successful user authorization
-- `onFailure` - nope
+- `onFailure` - called when invalid configuration
 
 ```
 StytchUI.StytchUIListener{
