@@ -63,14 +63,19 @@ dependencies {
 
 Pick a unique URL scheme for redirecting the user back to your app.
 For this example, we'll use YOUR_APP_NAME://.
+There is TESTing server for development.
 Before using sdk you must configure it:
 
 ```
     Stytch.instance.configure(
         PROJECT_ID,
         SECRET,
-        YOUR_APP_NAME
+        YOUR_APP_NAME,
+        HOST
     )
+
+    Stytch.instance.environment = StytchEnvironment.TEST
+
 ```
 
 Add this in your AndroidManifest.xml.
@@ -86,7 +91,7 @@ For StytchUI ACTIVITY_NAME = "com.stytch.sdk.ui.StytchMainActivity"
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme=<YOUR_APP_SCHEME>
-            android:host="stytch" />
+            android:host="stytch.com" />
     </intent-filter>
 </activity>
 ```
