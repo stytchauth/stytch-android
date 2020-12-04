@@ -25,7 +25,8 @@ internal class MainActivity : AppCompatActivity() {
         Stytch.instance.configure (
             projectId,
             secret,
-            "https"
+            "https",
+            "stytch.com"
         )
 
         Stytch.instance.environment = StytchEnvironment.TEST

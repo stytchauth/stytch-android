@@ -1,11 +1,9 @@
 package com.stytch.sdk
 
-import android.content.Intent
 import android.net.Uri
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.helpers.StytchFlowManager
-import com.stytch.sdk.ui.StytchMainActivity
 
 public class Stytch private constructor() {
     internal lateinit var config: StytchConfig
@@ -16,10 +14,11 @@ public class Stytch private constructor() {
 
     public var listener: StytchListener? = null
 
-    public fun configure(projectID: String, secret: String, scheme: String) {
+    public fun configure(projectID: String, secret: String, scheme: String, host: String) {
         config = StytchConfig.Builder()
             .withAuth(projectID, secret)
             .withDeepLinkScheme(scheme)
+            .withDeepLinkHost(host)
             .build()
         flowManager = StytchFlowManager()
     }
