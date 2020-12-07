@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchEnvironment
-import com.stytch.sdk.StytchUI
-import com.stytch.sdk.StytchUICustomization
+import com.stytch.sdk.*
 import com.stytch.sdk.api.StytchResult
 
 internal class MainActivity : AppCompatActivity() {
@@ -30,6 +27,7 @@ internal class MainActivity : AppCompatActivity() {
         )
 
         Stytch.instance.environment = StytchEnvironment.TEST
+        Stytch.instance.loginMethod = StytchLoginMethod.LoginOrInvite
 
         StytchUI.instance.showUI(
             this,

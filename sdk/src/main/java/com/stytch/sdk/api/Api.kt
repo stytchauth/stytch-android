@@ -8,18 +8,15 @@ import com.stytch.sdk.api.responses.SendMagicLingResponse
 import com.stytch.sdk.api.responses.VerifyTokenResponse
 import com.stytch.sdk.exceptions.ExceptionRecognizer
 import com.stytch.sdk.exceptions.UnknownException
+import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.helpers.LoggerLocal
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.stytch.sdk.helpers.deepLink
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "Api"
 
@@ -31,10 +28,38 @@ internal class Api {
         email: String
     ): Response<SendMagicLingResponse> {
         return service.sendMagicLink(
-            SendMagicLingRequest(
+            SendMagicLinkRequest(
                 email,
                 "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/magic_link",
                 60
+            )
+        ).execute()
+    }
+
+    fun loginOrInvite(
+        email: String
+    ): Response<SendMagicLingResponse> {
+        return service.loginOrInvite(
+            LoginOrInviteRequest(
+                email,
+                Constants.LOGIN_PATH.deepLink(),
+                Constants.INVITE_PATH.deepLink(),
+                Constants.LOGIN_EXPIDARTION,
+                Constants.INVITE_EXPIRATION
+            )
+        ).execute()
+    }
+
+    fun loginOrSignUp(
+        email: String
+    ): Response<SendMagicLingResponse> {
+        return service.loginOrSignUp(
+            LoginOrSignUpRequest(
+                email,
+                Constants.LOGIN_PATH.deepLink(),
+                Constants.SIGN_UP_PATH.deepLink(),
+                Constants.LOGIN_EXPIDARTION,
+                Constants.SIGNUP_EXPIRATION
             )
         ).execute()
     }
