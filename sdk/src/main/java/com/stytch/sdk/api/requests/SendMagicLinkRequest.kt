@@ -2,7 +2,7 @@ package com.stytch.sdk.api.requests
 
 import com.google.gson.annotations.SerializedName
 
-public class SendMagicLingRequest(
+public class SendMagicLinkRequest(
     @SerializedName("email")
     public val email: String,
     @SerializedName("magic_link_url")

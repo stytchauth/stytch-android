@@ -11,7 +11,17 @@ internal interface StytchService {
 
     @POST("magic_links/send_by_email")
     fun sendMagicLink(
-        @Body request: SendMagicLingRequest
+        @Body request: SendMagicLinkRequest
+    ): Call<SendMagicLingResponse>
+
+    @POST("magic_links/login_or_invite")
+    fun loginOrInvite(
+        @Body request: LoginOrInviteRequest
+    ): Call<SendMagicLingResponse>
+
+    @POST("magic_links/login_or_create")
+    fun loginOrSignUp(
+        @Body request: LoginOrSignUpRequest
     ): Call<SendMagicLingResponse>
 
     @POST("users")

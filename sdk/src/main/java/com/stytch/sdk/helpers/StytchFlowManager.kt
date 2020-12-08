@@ -1,9 +1,6 @@
 package com.stytch.sdk.helpers
 
-import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchError
-import com.stytch.sdk.StytchEvent
-import com.stytch.sdk.StytchUI
+import com.stytch.sdk.*
 import com.stytch.sdk.api.Api
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.exceptions.*
@@ -62,11 +59,17 @@ internal class StytchFlowManager {
 
     private suspend fun login() {
         try {
-            val response = Api.instance.sendMagicLink(email)
-            ExceptionRecognizer.recognize(response)
-            if (response.body() == null) throw UnknownException()
+
+            val response = when (Stytch.instance.loginMethod) {
+                StytchLoginMethod.LoginOrSignUp -> Api.instance.loginOrSignUp(email)
+                StytchLoginMethod.LoginOrInvite -> Api.instance.loginOrInvite(email)
+            }
+
+            if (response.body() == null)
+                throw UnknownException()
             withContext(Dispatchers.Main) {
-                if(newUserCreated){
+//                TODO: ????
+                if (newUserCreated) {
                     StytchUI.instance.uiListener?.onEvent(StytchEvent.userCreatedEvent(response.body()!!.user_id))
                 } else {
                     StytchUI.instance.uiListener?.onEvent(StytchEvent.userFoundEvent(response.body()!!.user_id))

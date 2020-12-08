@@ -12,6 +12,8 @@ public class Stytch private constructor() {
 
     public var environment = StytchEnvironment.LIVE
 
+    public var loginMethod = StytchLoginMethod.LoginOrSignUp
+
     public var listener: StytchListener? = null
 
     public fun configure(projectID: String, secret: String, scheme: String, host: String) {
@@ -40,8 +42,27 @@ public class Stytch private constructor() {
     public fun handleDeepLink(uri: Uri): Boolean {
         checkIfConfigured()
         if (uri.scheme == config.deepLinkScheme) {
-            flowManager.verifyToken(uri.getQueryParameter("token"))
-            return true
+            uri.path?.let { path ->
+//                TODO: handle different deep link paths
+                when{
+                    path.contains(Constants.LOGIN_PATH) -> {
+                        flowManager.verifyToken(uri.getQueryParameter("token"))
+                        return true
+                    }
+                    path.contains(Constants.INVITE_PATH) -> {
+                        flowManager.verifyToken(uri.getQueryParameter("token"))
+                        return true
+                    }
+                    path.contains(Constants.SIGN_UP_PATH) -> {
+                        flowManager.verifyToken(uri.getQueryParameter("token"))
+                        return true
+                    }
+                    else -> {
+                        return false
+                    }
+                }
+            }
+            return false
         }
         return false
     }
