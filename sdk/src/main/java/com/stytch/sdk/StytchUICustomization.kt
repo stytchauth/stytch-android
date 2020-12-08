@@ -29,12 +29,12 @@ public class StytchUICustomization {
         size = 16.dp
     }
 
-    var editTextStyle: StytchTextStyle = StytchTextStyle().apply {
+    var inputTextStyle: StytchTextStyle = StytchTextStyle().apply {
         colorId = R.color.editTextColor
         size = 16.dp
     }
 
-    var editHintStyle: StytchTextStyle = StytchTextStyle().apply {
+    var inputHintStyle: StytchTextStyle = StytchTextStyle().apply {
         colorId = R.color.editHintTextColor
         size = 16.dp
     }
