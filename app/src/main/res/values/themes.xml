@@ -1,9 +1,0 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Sample" parent="Theme.AppCompat.DayNight">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <!-- Status bar color. -->
-        <!-- Customize your theme here. -->
-    </style>
-</resources>

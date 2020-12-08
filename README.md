@@ -63,8 +63,7 @@ dependencies {
 
 Pick a unique URL scheme for redirecting the user back to your app.
 For this example, we'll use YOUR_APP_NAME://.
-There is TESTing server for development.
-Before using sdk you must configure it:
+To start using Stytch, you must configure it:
 
 ```
     Stytch.instance.configure(
@@ -73,9 +72,12 @@ Before using sdk you must configure it:
         YOUR_APP_NAME,
         HOST
     )
+```
 
+You can specify Stytch environment `TEST` or `LIVE`:
+
+```
     Stytch.instance.environment = StytchEnvironment.TEST
-
 ```
 
 Add this in your AndroidManifest.xml.
