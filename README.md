@@ -80,6 +80,13 @@ You can specify Stytch environment `TEST` or `LIVE`:
     Stytch.instance.environment = StytchEnvironment.TEST
 ```
 
+You can specify Stytch loginMethod `LoginOrSignUp` (default) or `LoginOrInvite`:
+`LoginOrSignUp`  - Send either a login or sign up magic link to the user based on if the email is associated with a user already. 
+`LoginOrInvite` - Send either a login or invite magic link to the user based on if the email is associated with a user already. If an invite is sent a user is not created until the token is authenticated. 
+```
+Stytch.instance.loginMethod = StytchLoginMethod.LoginOrInvite
+```
+
 Add this in your AndroidManifest.xml.
 For StytchUI ACTIVITY_NAME = "com.stytch.sdk.ui.StytchMainActivity"
 
