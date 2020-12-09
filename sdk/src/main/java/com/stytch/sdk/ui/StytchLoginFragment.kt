@@ -1,7 +1,6 @@
 package com.stytch.sdk.ui
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchUI
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.hideKeyboard
 import com.stytch.sdk.helpers.invertedWhiteBlack
@@ -99,8 +97,8 @@ internal class StytchLoginFragment : Fragment() {
 
     private fun createEditText() {
         emailEditText = StytchEditText(requireContext()).apply {
-            setHintCustomization(Stytch.instance.config.uiCustomization.editHintStyle)
-            setTextCustomization(Stytch.instance.config.uiCustomization.editTextStyle)
+            setHintCustomization(Stytch.instance.config.uiCustomization.inputHintStyle)
+            setTextCustomization(Stytch.instance.config.uiCustomization.inputTextStyle)
             updateHint(R.string.stytch_login_email_hint)
         }
     }

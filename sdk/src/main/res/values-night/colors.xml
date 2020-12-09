@@ -3,11 +3,12 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorSecondary">#ffffff</color>
     <color name="titleTextColor">#ffffff</color>
+    <color name="subtitleTextColor">#EBEBEB</color>
     <color name="editTextColor">#ffffff</color>
-    <color name="editHintTextColor">#AAAAAA</color>
+    <color name="editHintTextColor">#a9aa9</color>
     <color name="buttonBg">#ffffff</color>
-    <color name="buttonTextColor">#000000</color>
-    <color name="editTextBackgroundBorderColor">#38ffffff</color>
+    <color name="buttonTextColor">#090c09</color>
+    <color name="editTextBackgroundBorderColor">#a9aa9</color>
     <color name="editTextBackgroundColor">#000000</color>
     <color name="poweredByColor">#928e8e</color>
     <color name="colorBackground">#000000</color>
