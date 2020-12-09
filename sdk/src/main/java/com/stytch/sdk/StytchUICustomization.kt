@@ -24,7 +24,7 @@ public class StytchUICustomization {
     }
 
     var subtitleStyle: StytchTextStyle = StytchTextStyle().apply {
-        colorId = R.color.titleTextColor
+        colorId = R.color.subtitleTextColor
         font = Typeface.create(null as Typeface?, Typeface.NORMAL)
         size = 16.dp
     }
