@@ -53,7 +53,7 @@ android {
 }
             
 dependencies {
-    implementation 'com.stytch.sdk:sdk:0.1.0'
+    implementation 'com.stytch.sdk:sdk:0.1.2'
 }
 ```
 
