@@ -90,18 +90,22 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
     }
 
     private fun createLogo() {
-        val color = ContextCompat.getColor(
-            context,
-            Stytch.instance.config.uiCustomization.backgroundId
-        ).invertedWhiteBlack()
+        Stytch.instance.config?.let { config ->
+            val color = ContextCompat.getColor(
+                context,
+                config.uiCustomization.backgroundId
+            ).invertedWhiteBlack()
 
-        poweredByImage = AppCompatImageView(context).apply {
-            id = View.generateViewId()
-            setImageResource(R.drawable.ic_stytch_logo)
+            poweredByImage = AppCompatImageView(context).apply {
+                id = View.generateViewId()
+                setImageResource(R.drawable.ic_stytch_logo)
+            }
+
+            poweredByImage.imageTintList  =
+                ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
         }
 
-        poweredByImage.imageTintList  =
-            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+
 
     }
 

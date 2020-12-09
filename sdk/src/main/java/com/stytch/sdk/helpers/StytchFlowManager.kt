@@ -90,7 +90,7 @@ internal class StytchFlowManager {
             ExceptionRecognizer.recognize(response)
             if (response.body() == null) throw UnknownException()
             emailId = response.body()!!.email_id
-            if (Stytch.instance.config.verifyEmail) {
+            if (Stytch.instance.config?.verifyEmail == true) {
                 verifyEmail(response.body()!!.email_id, response.body()!!.user_id)
             } else {
                 login()

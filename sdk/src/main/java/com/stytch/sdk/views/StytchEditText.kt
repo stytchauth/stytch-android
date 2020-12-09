@@ -30,18 +30,20 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
 
     init {
         setPadding(16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt())
-        background = getBackgroundShape(
-            ContextCompat.getColor(
-                context,
-                Stytch.instance.config.uiCustomization.inputBackgroundColorId
-            ),
-            ContextCompat.getColor(
-                context,
-                Stytch.instance.config.uiCustomization.inputBackgroundBorderColorId
-            ),
-            Stytch.instance.config.uiCustomization.inputCornerRadius,
-            1.dp.toInt()
-        )
+        Stytch.instance.config?.let { config ->
+            background = getBackgroundShape(
+                ContextCompat.getColor(
+                    context,
+                    config.uiCustomization.inputBackgroundColorId
+                ),
+                ContextCompat.getColor(
+                    context,
+                    config.uiCustomization.inputBackgroundBorderColorId
+                ),
+                config.uiCustomization.inputCornerRadius,
+                1.dp.toInt()
+            )
+        }
     }
 
     fun setHintCustomization(style: StytchTextStyle) {

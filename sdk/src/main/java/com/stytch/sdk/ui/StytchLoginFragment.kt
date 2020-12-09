@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchUI
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.hideKeyboard
 import com.stytch.sdk.helpers.invertedWhiteBlack
@@ -46,14 +47,18 @@ internal class StytchLoginFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_stytch_login, container, false)
 
-        view.setBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                Stytch.instance.config.uiCustomization.backgroundId
+        Stytch.instance.config?.let {
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    it.uiCustomization.backgroundId
+                )
             )
-        )
+        }
+
         loadingIndicator = view.findViewById(R.id.loadingIndicator)
         createViews(view.findViewById(R.id.holderLayout))
+        checkConfig()
         return view
     }
 
@@ -83,7 +88,7 @@ internal class StytchLoginFragment : Fragment() {
     }
 
     private fun createWaterMarkView() {
-        if (Stytch.instance.config.uiCustomization.showBrandLogo) {
+        if (Stytch.instance.config?.uiCustomization?.showBrandLogo == true) {
             waterMarkView = StytchWaterMarkView(requireContext())
         }
     }
@@ -91,23 +96,30 @@ internal class StytchLoginFragment : Fragment() {
     private fun createButton() {
         actionButton = StytchButton(requireContext()).apply {
             setText(R.string.stytch_login_button_title)
-            setCustomization(Stytch.instance.config.uiCustomization.buttonTextStyle)
+            Stytch.instance.config?.let { config ->
+                setCustomization(config.uiCustomization.buttonTextStyle)
+            }
         }
     }
 
     private fun createEditText() {
         emailEditText = StytchEditText(requireContext()).apply {
-            setHintCustomization(Stytch.instance.config.uiCustomization.inputHintStyle)
-            setTextCustomization(Stytch.instance.config.uiCustomization.inputTextStyle)
+            Stytch.instance.config?.let { config ->
+                setHintCustomization(config.uiCustomization.inputHintStyle)
+                setTextCustomization(config.uiCustomization.inputTextStyle)
+            }
+
             updateHint(R.string.stytch_login_email_hint)
         }
     }
 
     private fun createDescriptionTextView() {
-        if (Stytch.instance.config.uiCustomization.showSubtitle) {
+        if (Stytch.instance.config?.uiCustomization?.showSubtitle == true) {
             descriptionTextView = StytchTextView(requireContext()).apply {
                 setText(R.string.stytch_login_description)
-                setCustomization(Stytch.instance.config.uiCustomization.subtitleStyle)
+                Stytch.instance.config?.let { config ->
+                    setCustomization(config.uiCustomization.subtitleStyle)
+                }
             }
         } else {
             descriptionTextView = null
@@ -115,10 +127,12 @@ internal class StytchLoginFragment : Fragment() {
     }
 
     private fun createTitleTextView() {
-        if (Stytch.instance.config.uiCustomization.showTitle) {
+        if (Stytch.instance.config?.uiCustomization?.showTitle == true) {
             titleTextView = StytchTextView(requireContext()).apply {
                 setText(R.string.stytch_login_title)
-                setCustomization(Stytch.instance.config.uiCustomization.titleStyle)
+                Stytch.instance.config?.let { config ->
+                    setCustomization(config.uiCustomization.titleStyle)
+                }
             }
         } else {
             titleTextView = null
@@ -213,9 +227,9 @@ internal class StytchLoginFragment : Fragment() {
 
     private fun observeErrors() {
         viewModel.errorManager.observeErrors(this, viewLifecycleOwner, TAG)
-        viewModel.closeLiveData.observe(viewLifecycleOwner, {event ->
+        viewModel.closeLiveData.observe(viewLifecycleOwner, { event ->
             event.getEventNotHandled()?.let {
-                if(it){
+                if (it) {
                     activity?.finish()
                 }
             }
@@ -223,14 +237,15 @@ internal class StytchLoginFragment : Fragment() {
     }
 
     private fun observeLoading() {
-        val color = ContextCompat.getColor(
-            requireContext(),
-            Stytch.instance.config.uiCustomization.backgroundId
-        ).invertedWhiteBlack()
+        Stytch.instance.config?.let { config ->
+            val color = ContextCompat.getColor(
+                requireContext(),
+                config.uiCustomization.backgroundId
+            ).invertedWhiteBlack()
 
-        loadingIndicator?.indeterminateTintList =
-            ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
-
+            loadingIndicator?.indeterminateTintList =
+                ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+        }
         viewModel.loadingLiveData.observe(viewLifecycleOwner, { showLoading ->
             loadingIndicator?.visibility = if (showLoading) View.VISIBLE else View.GONE
         })
@@ -238,6 +253,13 @@ internal class StytchLoginFragment : Fragment() {
 
     fun onNewIntent(uri: Uri) {
         viewModel.verifyToken(uri)
+    }
+
+    private fun checkConfig() {
+        if (Stytch.instance.config == null) {
+            StytchUI.instance.uiListener?.onFailure()
+            activity?.finish()
+        }
     }
 
 

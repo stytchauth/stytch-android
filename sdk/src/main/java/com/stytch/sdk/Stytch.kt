@@ -6,7 +6,7 @@ import com.stytch.sdk.helpers.Constants
 import com.stytch.sdk.helpers.StytchFlowManager
 
 public class Stytch private constructor() {
-    internal lateinit var config: StytchConfig
+    internal var config: StytchConfig? = null
 
     private lateinit var flowManager: StytchFlowManager
 
@@ -41,10 +41,10 @@ public class Stytch private constructor() {
 
     public fun handleDeepLink(uri: Uri): Boolean {
         checkIfConfigured()
-        if (uri.scheme == config.deepLinkScheme) {
+        if (uri.scheme == config?.deepLinkScheme) {
             uri.path?.let { path ->
 //                TODO: handle different deep link paths
-                when{
+                when {
                     path.contains(Constants.LOGIN_PATH) -> {
                         flowManager.verifyToken(uri.getQueryParameter("token"))
                         return true
@@ -67,10 +67,8 @@ public class Stytch private constructor() {
         return false
     }
 
-    private fun checkIfConfigured(){
-        try {
-            config.projectID
-        } catch (ex: UninitializedPropertyAccessException) {
+    private fun checkIfConfigured() {
+        if (config == null) {
             throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
         }
     }
@@ -80,7 +78,6 @@ public class Stytch private constructor() {
     }
 
     public interface StytchListener {
-
         public fun onSuccess(result: StytchResult)
         public fun onFailure(error: StytchError)
         public fun onMagicLinkSent(email: String)

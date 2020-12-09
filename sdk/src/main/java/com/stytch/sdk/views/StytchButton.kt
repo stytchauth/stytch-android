@@ -27,15 +27,22 @@ internal class StytchButton constructor(
         setTextColor(ContextCompat.getColor(context, R.color.buttonTextColor))
         setBackgroundResource(R.drawable.stytch_button_bg_rounded)
         isAllCaps = false
-        backgroundTintList = ContextCompat.getColorStateList(
-            context,
-            Stytch.instance.config.uiCustomization.buttonBackgroundColorId
-        )
+        Stytch.instance.config?.let { config ->
+            backgroundTintList = ContextCompat.getColorStateList(
+                context,
+               config.uiCustomization.buttonBackgroundColorId
+            )
+        }
 
-        background = getBackgroundShape(
-            ContextCompat.getColor(context,  Stytch.instance.config.uiCustomization.buttonBackgroundColorId),
-            Stytch.instance.config.uiCustomization.buttonCornerRadius
-        )
+        Stytch.instance.config?.let { config ->
+            background = getBackgroundShape(
+                ContextCompat.getColor(
+                    context,
+                    config.uiCustomization.buttonBackgroundColorId
+                ),
+                config.uiCustomization.buttonCornerRadius
+            )
+        }
 
     }
 

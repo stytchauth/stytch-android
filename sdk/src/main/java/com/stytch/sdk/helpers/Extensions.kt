@@ -26,5 +26,5 @@ internal fun Int.invertedWhiteBlack(): Int {
 }
 
 internal fun String.deepLink(): String{
-    return "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/$this"
+    return "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/$this"
 }

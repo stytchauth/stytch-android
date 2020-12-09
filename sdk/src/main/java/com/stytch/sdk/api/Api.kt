@@ -30,7 +30,7 @@ internal class Api {
         return service.sendMagicLink(
             SendMagicLinkRequest(
                 email,
-                "${Stytch.instance.config.deepLinkScheme}://${Stytch.instance.config.deepLinkHost}/magic_link",
+                "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/magic_link",
                 60
             )
         ).execute()

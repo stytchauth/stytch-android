@@ -19,10 +19,10 @@ public class StytchUI private constructor() {
     ) {
         try {
             uiListener = listener
-            Stytch.instance.config?.uiCustomization = uiCustomization
+            Stytch.instance.config!!.uiCustomization = uiCustomization
             val intent = Intent(activity, StytchMainActivity::class.java)
             activity.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: UninitializedPropertyAccessException) {
+        } catch (ex: Exception) {
             throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
         }
     }
@@ -34,13 +34,12 @@ public class StytchUI private constructor() {
     ) {
         try {
             uiListener = listener
-            Stytch.instance.config.uiCustomization = uiUICustomization
+            Stytch.instance.config!!.uiCustomization = uiUICustomization
             val intent = Intent(activity, StytchMainActivity::class.java)
             activity.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: UninitializedPropertyAccessException) {
+        } catch (ex: Exception) {
             throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
         }
-
     }
 
     public fun showUI(
@@ -50,10 +49,10 @@ public class StytchUI private constructor() {
     ) {
         try {
             uiListener = listener
-            Stytch.instance.config?.uiCustomization = uiUICustomization
+            Stytch.instance.config!!.uiCustomization = uiUICustomization
             val intent = Intent(fragment.requireContext(), StytchMainActivity::class.java)
             fragment.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: UninitializedPropertyAccessException) {
+        } catch (ex: Exception) {
             throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
         }
     }
