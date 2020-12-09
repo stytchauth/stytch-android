@@ -5,7 +5,7 @@
     <color name="titleTextColor">#ffffff</color>
     <color name="subtitleTextColor">#EBEBEB</color>
     <color name="editTextColor">#ffffff</color>
-    <color name="editHintTextColor">#a9aa9</color>
+    <color name="editHintTextColor">#a9aaa9</color>
     <color name="buttonBg">#ffffff</color>
     <color name="buttonTextColor">#090c09</color>
     <color name="editTextBackgroundBorderColor">#a9aa9</color>
