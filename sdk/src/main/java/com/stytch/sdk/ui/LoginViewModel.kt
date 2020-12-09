@@ -21,6 +21,7 @@ internal class LoginViewModel : ViewModel() {
 
     val stytchListener = object : Stytch.StytchListener {
         override fun onSuccess(result: StytchResult) {
+            loadingLiveData.value = false
             StytchUI.instance.uiListener?.onSuccess(result)
             closeLiveData.value = Event(true)
         }
@@ -38,6 +39,7 @@ internal class LoginViewModel : ViewModel() {
                     stateLiveData.value = State.Login
                 }
                 StytchError.InvalidConfiguration -> {
+                    loadingLiveData.value = true
                     StytchUI.instance.uiListener?.onFailure()
                     closeLiveData.value = Event(true)
                 }
@@ -71,6 +73,7 @@ internal class LoginViewModel : ViewModel() {
     }
 
     fun verifyToken(uri: Uri) {
+        loadingLiveData.value = true
         Stytch.instance.handleDeepLink(uri)
     }
 

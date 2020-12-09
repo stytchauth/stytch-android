@@ -53,7 +53,7 @@ android {
 }
             
 dependencies {
-    implementation '<INSERT_PACKAGE_HERE>:<INSERT_VERSION_HERE>'
+    implementation 'com.stytch.sdk:sdk:0.1.0'
 }
 ```
 
