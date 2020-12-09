@@ -9,8 +9,8 @@
     <color name="buttonBg">#ffffff</color>
     <color name="buttonTextColor">#090c09</color>
     <color name="editTextBackgroundBorderColor">#a9aaa9</color>
-    <color name="editTextBackgroundColor">#000000</color>
+    <color name="editTextBackgroundColor">#090C09</color>
     <color name="poweredByColor">#928e8e</color>
-    <color name="colorBackground">#000000</color>
+    <color name="colorBackground">#090C09</color>
 
 </resources>
