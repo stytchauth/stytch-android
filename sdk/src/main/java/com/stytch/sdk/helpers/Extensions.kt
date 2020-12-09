@@ -22,7 +22,7 @@ internal fun Int.invertedWhiteBlack(): Int {
     val red = Color.red(this)
     val green = Color.green(this)
     val blue = Color.blue(this)
-    return if ((red * 0.299 + green * 0.587 + blue * 0.114) * 255.0 > 140) Color.BLACK else Color.WHITE
+    return if ((red * 0.299 + green * 0.587 + blue * 0.114) > 140) Color.BLACK else Color.WHITE
 }
 
 internal fun String.deepLink(): String{
