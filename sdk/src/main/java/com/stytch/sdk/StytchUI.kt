@@ -12,50 +12,20 @@ public class StytchUI private constructor() {
 
     internal var uiListener: StytchUIListener? = null
 
-    public fun showUI(
-        activity: Activity,
-        listener: StytchUIListener,
-        uiCustomization: StytchUICustomization = StytchUICustomization()
-    ) {
-        try {
-            uiListener = listener
-            Stytch.instance.config!!.uiCustomization = uiCustomization
-            val intent = Intent(activity, StytchMainActivity::class.java)
-            activity.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: Exception) {
-            throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
-        }
-    }
+	var uiCustomization = StytchUICustomization()
+		set(value) {
+			try {
+				Stytch.instance.config!!.uiCustomization = value
+			} catch (ex: Exception) {
+				throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
+			}
 
-    public fun showUI(
-        activity: AppCompatActivity,
-        listener: StytchUIListener,
-        uiUICustomization: StytchUICustomization = StytchUICustomization()
-    ) {
-        try {
-            uiListener = listener
-            Stytch.instance.config!!.uiCustomization = uiUICustomization
-            val intent = Intent(activity, StytchMainActivity::class.java)
-            activity.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: Exception) {
-            throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
-        }
-    }
+		}
 
-    public fun showUI(
-        fragment: Fragment,
-        listener: StytchUIListener,
-        uiUICustomization: StytchUICustomization = StytchUICustomization()
-    ) {
-        try {
-            uiListener = listener
-            Stytch.instance.config!!.uiCustomization = uiUICustomization
-            val intent = Intent(fragment.requireContext(), StytchMainActivity::class.java)
-            fragment.startActivityForResult(intent, ACTIVITY_REQUEST_CODE)
-        } catch (ex: Exception) {
-            throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
-        }
-    }
+	public fun loginViewController(): StytchMainActivity
+	{
+		return StytchMainActivity()
+	}
 
     public interface StytchUIListener {
         fun onEvent(event: StytchEvent) {}

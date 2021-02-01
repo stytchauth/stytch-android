@@ -8,7 +8,7 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchUI
 
 
-internal class StytchMainActivity : AppCompatActivity() {
+public class StytchMainActivity : AppCompatActivity() {
 
     private var loginFragment: StytchLoginFragment = StytchLoginFragment.newInstance()
 
