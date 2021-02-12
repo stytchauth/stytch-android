@@ -10,7 +10,7 @@ import com.stytch.sdk.ui.StytchMainActivity
 
 public class StytchUI private constructor() {
 
-    internal var uiListener: StytchUIListener? = null
+    var uiListener: StytchUIListener? = null
 
     var uiCustomization = StytchUICustomization()
 		set(value) {
@@ -20,11 +20,6 @@ public class StytchUI private constructor() {
 				throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
 			}
         }
-
-        public fun loginViewController(): StytchMainActivity
-	{
-		return StytchMainActivity()
-	}
 
     public interface StytchUIListener {
         fun onEvent(event: StytchEvent) {}
