@@ -1,6 +1,7 @@
 package com.stytch.sdk.views
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
@@ -28,17 +29,24 @@ internal class StytchButton constructor(
         setBackgroundResource(R.drawable.stytch_button_bg_rounded)
         isAllCaps = false
         Stytch.instance.config?.let { config ->
-            backgroundTintList = ContextCompat.getColorStateList(
-                context,
-               config.uiCustomization.buttonBackgroundColorId
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_enabled),
+                intArrayOf(-android.R.attr.state_enabled),
             )
+
+            val color = config.uiCustomization.buttonBackgroundColor.getColor(context)
+
+            val colors = intArrayOf(
+                color,
+                color
+            )
+            backgroundTintList = ColorStateList(states, colors);
         }
 
         Stytch.instance.config?.let { config ->
             background = getBackgroundShape(
-                ContextCompat.getColor(
-                    context,
-                    config.uiCustomization.buttonBackgroundColorId
+                config.uiCustomization.buttonBackgroundColor.getColor(
+                    context
                 ),
                 config.uiCustomization.buttonCornerRadius
             )
@@ -47,7 +55,7 @@ internal class StytchButton constructor(
     }
 
     fun setCustomization(style: StytchTextStyle) {
-        setTextColor(ContextCompat.getColor(context, style.colorId))
+        setTextColor(style.color.getColor(context))
         setTypeface(style.font)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
     }

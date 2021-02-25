@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
@@ -49,10 +48,8 @@ internal class StytchLoginFragment : Fragment() {
 
         Stytch.instance.config?.let {
             view.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    it.uiCustomization.backgroundId
-                )
+                it.uiCustomization.backgroundColor.getColor(requireContext())
+
             )
         }
 
@@ -238,10 +235,8 @@ internal class StytchLoginFragment : Fragment() {
 
     private fun observeLoading() {
         Stytch.instance.config?.let { config ->
-            val color = ContextCompat.getColor(
-                requireContext(),
-                config.uiCustomization.backgroundId
-            ).invertedWhiteBlack()
+            val color =
+                config.uiCustomization.backgroundColor.getColor(requireContext()).invertedWhiteBlack()
 
             loadingIndicator?.indeterminateTintList =
                 ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))

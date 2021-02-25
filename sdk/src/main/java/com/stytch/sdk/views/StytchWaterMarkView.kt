@@ -2,7 +2,6 @@ package com.stytch.sdk.views
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -91,20 +90,17 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
 
     private fun createLogo() {
         Stytch.instance.config?.let { config ->
-            val color = ContextCompat.getColor(
-                context,
-                config.uiCustomization.backgroundId
-            ).invertedWhiteBlack()
+            val color =
+                config.uiCustomization.backgroundColor.getColor(context).invertedWhiteBlack()
 
             poweredByImage = AppCompatImageView(context).apply {
                 id = View.generateViewId()
                 setImageResource(R.drawable.ic_stytch_logo)
             }
 
-            poweredByImage.imageTintList  =
+            poweredByImage.imageTintList =
                 ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
         }
-
 
 
     }

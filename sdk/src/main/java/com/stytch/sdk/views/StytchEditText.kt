@@ -10,7 +10,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchTextStyle
 import com.stytch.sdk.helpers.CustomTypefaceSpan
@@ -32,14 +31,8 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
         setPadding(16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt())
         Stytch.instance.config?.let { config ->
             background = getBackgroundShape(
-                ContextCompat.getColor(
-                    context,
-                    config.uiCustomization.inputBackgroundColorId
-                ),
-                ContextCompat.getColor(
-                    context,
-                    config.uiCustomization.inputBackgroundBorderColorId
-                ),
+                config.uiCustomization.inputBackgroundColor.getColor(context),
+                config.uiCustomization.inputBackgroundBorderColor.getColor(context),
                 config.uiCustomization.inputCornerRadius,
                 1.dp.toInt()
             )
@@ -48,14 +41,14 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
 
     fun setHintCustomization(style: StytchTextStyle) {
         hintStyle = style
-        setHintTextColor(ContextCompat.getColor(context, style.colorId))
+        setHintTextColor(style.color.getColor(context))
     }
 
     fun setTextCustomization(style: StytchTextStyle) {
-        setTextColor(ContextCompat.getColor(context, style.colorId))
+        setTextColor(style.color.getColor(context))
         setTypeface(style.font)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
-        setCursorDrawableColor(style.colorId)
+        setCursorDrawableColor(style.color.getColor(context))
     }
 
     fun updateHint(textId: Int) {

@@ -5,6 +5,6 @@ import com.stytch.sdk.helpers.dp
 
 public class StytchTextStyle {
     var size: Float = 10.dp
-    var colorId: Int = R.color.editTextColor
+    var color: StytchColor = StytchColor.fromColorId(R.color.editTextColor)
     var font: Typeface? = null
 }
