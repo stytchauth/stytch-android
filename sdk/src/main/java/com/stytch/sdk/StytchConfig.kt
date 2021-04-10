@@ -6,6 +6,7 @@ internal class StytchConfig private constructor(
     val deepLinkScheme: String,
     val deepLinkHost: String,
     val verifyEmail: Boolean,
+	val universalLink: String?,
     var uiCustomization: StytchUICustomization
 ) {
 
@@ -14,10 +15,12 @@ internal class StytchConfig private constructor(
 
         private var deepLinkScheme: String = "app"
         private var deepLinkHost: String = "stytch.com"
+		private var universalLink: String
         private var UICustomization: StytchUICustomization = StytchUICustomization()
         private var verifyEmail: Boolean = false
         private var projectID: String = ""
         private var secret: String = ""
+		private var universalLink: Uri?
 
         fun withDeepLinkScheme(scheme: String): Builder {
             deepLinkScheme = scheme
@@ -28,6 +31,13 @@ internal class StytchConfig private constructor(
             deepLinkHost = host
             return this
         }
+
+		func withUniversalLink(link: Uri): Builder {
+			universalLink = link
+            deepLinkScheme = link.scheme 
+            deepLinkHost = link.host
+			return this
+		}
 
         fun withCustomization(UICustomization: StytchUICustomization): Builder {
             this.UICustomization = UICustomization
@@ -53,6 +63,7 @@ internal class StytchConfig private constructor(
                 deepLinkScheme,
                 deepLinkHost,
                 verifyEmail,
+                universalLink,
                 UICustomization
             )
         }

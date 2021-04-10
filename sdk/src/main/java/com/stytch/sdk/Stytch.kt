@@ -24,6 +24,14 @@ public class Stytch private constructor() {
             .build()
         flowManager = StytchFlowManager()
     }
+	
+	public fun configure(projectID: String, secret: String, universalLink: Uri) {
+		config = StytchConfig.Builder()
+				.withAuth(projectID, secret)
+				.withUniversalLink(universalLink)
+				.build()
+		flowManager = StytchFlowManager()
+	}
 
     public fun login(email: String) {
         checkIfConfigured()
