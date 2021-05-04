@@ -1,7 +1,13 @@
 package com.stytch.sdk.api
 
 import com.stytch.sdk.Stytch
-import com.stytch.sdk.api.requests.*
+import com.stytch.sdk.api.requests.CreateUserRequest
+import com.stytch.sdk.api.requests.DeleteUserRequest
+import com.stytch.sdk.api.requests.LoginOrInviteRequest
+import com.stytch.sdk.api.requests.LoginOrSignUpRequest
+import com.stytch.sdk.api.requests.SendEmailVerificationRequest
+import com.stytch.sdk.api.requests.SendMagicLinkRequest
+import com.stytch.sdk.api.requests.VerifyTokenRequest
 import com.stytch.sdk.api.responses.CreateUserResponse
 import com.stytch.sdk.api.responses.SendEmailVerificationResponse
 import com.stytch.sdk.api.responses.SendMagicLingResponse
@@ -16,7 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.InetAddress
 import java.net.NetworkInterface
-import java.util.*
+import java.util.Collections
 
 private const val TAG = "Api"
 

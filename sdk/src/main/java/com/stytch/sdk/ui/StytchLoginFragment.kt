@@ -22,7 +22,6 @@ import com.stytch.sdk.views.StytchEditText
 import com.stytch.sdk.views.StytchTextView
 import com.stytch.sdk.views.StytchWaterMarkView
 
-
 /**
  * A simple [Fragment] subclass.
  * Use the [StytchLoginFragment.newInstance] factory method to
@@ -65,7 +64,6 @@ internal class StytchLoginFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         observe()
-
     }
 
     private fun observe() {
@@ -174,9 +172,7 @@ internal class StytchLoginFragment : Fragment() {
             }
             holder.addView(waterMarkView, layoutParams)
         }
-
     }
-
 
     private fun setupViewByState(state: LoginViewModel.State) {
         when (state) {
@@ -257,9 +253,7 @@ internal class StytchLoginFragment : Fragment() {
         }
     }
 
-
     companion object {
-
         private const val TAG = "StytchLoginFragment"
 
         /**
@@ -268,14 +262,10 @@ internal class StytchLoginFragment : Fragment() {
          *
          * @return A new instance of fragment StytchLoginFragment.
          */
-
         @JvmStatic
-        fun newInstance() =
-            StytchLoginFragment().apply {
-                arguments = Bundle().apply {
-                }
+        fun newInstance() = StytchLoginFragment().apply {
+            arguments = Bundle().apply {
             }
-
-
+        }
     }
 }

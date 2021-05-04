@@ -7,7 +7,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 internal object ServiceGenerator {
     var apiBaseUrl = "https://api.stytch.com/v1/"
     var testApiBaseUrl = "https://test.stytch.com/v1/"
@@ -35,5 +34,4 @@ internal object ServiceGenerator {
             .build()
             .create(StytchService::class.java)
     }
-
 }

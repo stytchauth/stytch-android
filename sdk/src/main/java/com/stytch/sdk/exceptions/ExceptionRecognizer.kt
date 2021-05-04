@@ -56,5 +56,4 @@ internal object ExceptionRecognizer {
 
         onError?.invoke(exception)
     }
-
 }

@@ -56,17 +56,13 @@ public class StytchUICustomization {
 
 public class StytchColor private constructor(
     private val colorId: Int? = null,
-    private val color: Int? = null
+    private val color: Int? = null,
 ) {
-
 
     @ColorInt
     fun getColor(context: Context): Int {
         if (colorId != null) {
-            return ContextCompat.getColor(
-                context,
-                colorId
-            )
+            return ContextCompat.getColor(context, colorId)
         }
         if (color != null) {
             return color

@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
 private const val TAG = "ErrorManager"
 
 internal class ErrorManager {
@@ -29,7 +28,6 @@ internal class ErrorManager {
         GlobalScope.launch(Dispatchers.Main) {
             errorMessageId.value = Event(messageId)
         }
-
     }
 
     fun showError(error: Throwable) {

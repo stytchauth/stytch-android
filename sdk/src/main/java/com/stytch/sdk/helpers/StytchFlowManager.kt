@@ -1,9 +1,17 @@
 package com.stytch.sdk.helpers
 
-import com.stytch.sdk.*
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchError
+import com.stytch.sdk.StytchEvent
+import com.stytch.sdk.StytchLoginMethod
+import com.stytch.sdk.StytchUI
 import com.stytch.sdk.api.Api
 import com.stytch.sdk.api.StytchResult
-import com.stytch.sdk.exceptions.*
+import com.stytch.sdk.exceptions.EmailNotFoundException
+import com.stytch.sdk.exceptions.ExceptionRecognizer
+import com.stytch.sdk.exceptions.UnauthorizedCredentialsException
+import com.stytch.sdk.exceptions.UnknownException
+import com.stytch.sdk.exceptions.WrongMagicLinkException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -115,15 +123,15 @@ internal class StytchFlowManager {
 
     private suspend fun handleError(ex: Exception) {
         when (ex) {
-            is UnknownHostException -> {
+            is UnknownHostException    -> {
                 withContext(Dispatchers.Main) {
                     Stytch.instance.listener?.onFailure(StytchError.Connection)
                 }
             }
-            is EmailNotFoundException -> {
+            is EmailNotFoundException  -> {
                 createUser(email)
             }
-            is WrongMagicLinkException -> {
+            is WrongMagicLinkException          -> {
                 withContext(Dispatchers.Main) {
                     Stytch.instance.listener?.onFailure(StytchError.InvalidMagicToken)
                 }
@@ -133,7 +141,7 @@ internal class StytchFlowManager {
                     Stytch.instance.listener?.onFailure(StytchError.InvalidConfiguration)
                 }
             }
-            else -> {
+            else                                -> {
                 withContext(Dispatchers.Main) {
                     Stytch.instance.listener?.onFailure(StytchError.Unknown)
                 }
@@ -142,8 +150,6 @@ internal class StytchFlowManager {
     }
 
     companion object {
-
         private const val TAG = "StytchFlowManager"
-
     }
 }

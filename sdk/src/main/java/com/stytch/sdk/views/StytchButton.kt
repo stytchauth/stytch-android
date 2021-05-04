@@ -12,17 +12,11 @@ import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchTextStyle
 
-
 internal class StytchButton constructor(
-    context: Context, attrs: AttributeSet?, defStyleAttr: Int
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.buttonStyle,
 ) : AppCompatButton(context, attrs, defStyleAttr) {
-
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(
-        context,
-        attrs,
-        android.R.attr.buttonStyle
-    )
 
     init {
         setTextColor(ContextCompat.getColor(context, R.color.buttonTextColor))
@@ -56,7 +50,7 @@ internal class StytchButton constructor(
 
     fun setCustomization(style: StytchTextStyle) {
         setTextColor(style.color.getColor(context))
-        setTypeface(style.font)
+        typeface = style.font
         setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
     }
 

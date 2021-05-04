@@ -14,8 +14,10 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.helpers.dp
 import com.stytch.sdk.helpers.invertedWhiteBlack
 
-internal class StytchWaterMarkView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+internal class StytchWaterMarkView constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     lateinit var poweredByText: StytchTextView
@@ -44,14 +46,14 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
                 poweredByText.id,
                 ConstraintSet.START,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.START
+                ConstraintSet.START,
             )
             connect(
                 poweredByText.id,
                 ConstraintSet.END,
                 poweredByImage.id,
                 ConstraintSet.START,
-                8.dp.toInt()
+                8.dp.toInt(),
             )
             centerVertically(poweredByText.id, ConstraintSet.PARENT_ID)
 
@@ -60,7 +62,7 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
                 poweredByImage.id,
                 ConstraintSet.END,
                 ConstraintSet.PARENT_ID,
-                ConstraintSet.END
+                ConstraintSet.END,
             )
             centerVertically(poweredByImage.id, ConstraintSet.PARENT_ID)
 
@@ -71,7 +73,7 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
                 ConstraintSet.RIGHT,
                 intArrayOf(poweredByText.id, poweredByImage.id),
                 null,
-                ConstraintSet.CHAIN_PACKED
+                ConstraintSet.CHAIN_PACKED,
             )
 
             applyTo(this@StytchWaterMarkView)
@@ -90,20 +92,15 @@ internal class StytchWaterMarkView @JvmOverloads constructor(
 
     private fun createLogo() {
         Stytch.instance.config?.let { config ->
-            val color =
-                config.uiCustomization.backgroundColor.getColor(context).invertedWhiteBlack()
+            val color = config.uiCustomization.backgroundColor.getColor(context).invertedWhiteBlack()
 
             poweredByImage = AppCompatImageView(context).apply {
                 id = View.generateViewId()
                 setImageResource(R.drawable.ic_stytch_logo)
             }
 
-            poweredByImage.imageTintList =
-                ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
+            poweredByImage.imageTintList = ColorStateList(arrayOf(intArrayOf(android.R.attr.state_enabled)), intArrayOf(color))
         }
-
-
     }
-
 
 }

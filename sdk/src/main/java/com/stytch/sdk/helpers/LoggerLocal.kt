@@ -23,8 +23,5 @@ class LoggerLocal {
                 Log.w(tag, msg, throwable)
             }
         }
-
-
     }
-
 }

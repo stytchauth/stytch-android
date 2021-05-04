@@ -9,12 +9,11 @@ internal class StytchConfig private constructor(
     var uiCustomization: StytchUICustomization
 ) {
 
-
     public class Builder {
 
         private var deepLinkScheme: String = "app"
         private var deepLinkHost: String = "stytch.com"
-        private var UICustomization: StytchUICustomization = StytchUICustomization()
+        private var uiCustomization: StytchUICustomization = StytchUICustomization()
         private var verifyEmail: Boolean = false
         private var projectID: String = ""
         private var secret: String = ""
@@ -30,7 +29,7 @@ internal class StytchConfig private constructor(
         }
 
         fun withCustomization(UICustomization: StytchUICustomization): Builder {
-            this.UICustomization = UICustomization
+            this.uiCustomization = UICustomization
             return this
         }
 
@@ -45,18 +44,16 @@ internal class StytchConfig private constructor(
             return this
         }
 
-
         fun build(): StytchConfig {
             return StytchConfig(
-                projectID,
-                secret,
-                deepLinkScheme,
-                deepLinkHost,
-                verifyEmail,
-                UICustomization
+                    projectID,
+                    secret,
+                    deepLinkScheme,
+                    deepLinkHost,
+                    verifyEmail,
+                    uiCustomization,
             )
         }
-
-
     }
+
 }

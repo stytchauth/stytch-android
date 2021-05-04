@@ -8,24 +8,23 @@ import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
+import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchTextStyle
 import com.stytch.sdk.helpers.CustomTypefaceSpan
 import com.stytch.sdk.helpers.dp
 
-internal class StytchEditText(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :
-    AppCompatEditText(context, attributeSet, defStyleAttr) {
+internal class StytchEditText @JvmOverloads constructor(
+        context: Context,
+        attributeSet: AttributeSet? = null,
+        defStyleAttr: Int = R.attr.editTextStyle,
+        forEmailAddress: Boolean = true,
+) : AppCompatEditText(context, attributeSet, defStyleAttr) {
 
     private var hintStyle: StytchTextStyle? = null
-
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attributeSet: AttributeSet?) : this(
-        context,
-        attributeSet,
-        android.R.attr.editTextStyle
-    )
 
     init {
         setPadding(16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt(), 16.dp.toInt())
@@ -34,8 +33,11 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
                 config.uiCustomization.inputBackgroundColor.getColor(context),
                 config.uiCustomization.inputBackgroundBorderColor.getColor(context),
                 config.uiCustomization.inputCornerRadius,
-                1.dp.toInt()
+                1.dp.toInt(),
             )
+        }
+        if (forEmailAddress) {
+            inputType = EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         }
     }
 
@@ -46,7 +48,7 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
 
     fun setTextCustomization(style: StytchTextStyle) {
         setTextColor(style.color.getColor(context))
-        setTypeface(style.font)
+        typeface = style.font
         setTextSize(TypedValue.COMPLEX_UNIT_PX, style.size)
         setCursorDrawableColor(style.color.getColor(context))
     }
@@ -75,7 +77,7 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
 
         }
 
-        setHint(spannableText)
+        hint = spannableText
     }
 
     fun setCursorDrawableColor(@ColorInt color: Int) {
@@ -94,6 +96,5 @@ internal class StytchEditText(context: Context, attributeSet: AttributeSet?, def
         drawable.colors = intArrayOf(backgroundColor, backgroundColor)
         return drawable
     }
-
 
 }

@@ -10,5 +10,4 @@ internal object Constants {
     val LOGIN_EXPIDARTION = 60L
     val INVITE_EXPIRATION = 7*24*60L
     val SIGNUP_EXPIRATION = 7*24*60L
-
 }

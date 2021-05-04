@@ -56,9 +56,7 @@ internal class LoginViewModel : ViewModel() {
 
     fun signInClicked(email: String?) {
         LoggerLocal.d(TAG, "checkEmail: $email")
-        if (email.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
-                .matches()
-        ) {
+        if (email.isNullOrBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             errorManager.showError(R.string.stytch_error_invalid_input)
             return
         }
@@ -66,7 +64,6 @@ internal class LoginViewModel : ViewModel() {
         stateLiveData.value = State.WaitingVerification
         Stytch.instance.login(email)
     }
-
 
     fun resendClicked() {
         stateLiveData.value = State.Login
@@ -77,7 +74,6 @@ internal class LoginViewModel : ViewModel() {
         Stytch.instance.handleDeepLink(uri)
     }
 
-
     enum class State {
         Login,
         WaitingVerification
@@ -86,5 +82,4 @@ internal class LoginViewModel : ViewModel() {
     companion object {
         private const val TAG = "LoginViewModel"
     }
-
 }

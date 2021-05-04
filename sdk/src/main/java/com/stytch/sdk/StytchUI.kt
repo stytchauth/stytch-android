@@ -1,17 +1,13 @@
 package com.stytch.sdk
 
-import android.app.Activity
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.stytch.sdk.api.StytchResult
 import com.stytch.sdk.helpers.Constants
-import com.stytch.sdk.ui.StytchMainActivity
 
 public class StytchUI private constructor() {
 
     var uiListener: StytchUIListener? = null
 
+    // TODO ??
     var uiCustomization = StytchUICustomization()
 		set(value) {
 			try {
