@@ -1,11 +1,14 @@
 package com.stytch.sdk
 
+import android.net.Uri
+
 internal class StytchConfig private constructor(
     val projectID: String,
     val secret: String,
     val deepLinkScheme: String,
     val deepLinkHost: String,
     val verifyEmail: Boolean,
+    val universalLink: String?,
     var uiCustomization: StytchUICustomization
 ) {
 
@@ -17,6 +20,7 @@ internal class StytchConfig private constructor(
         private var verifyEmail: Boolean = false
         private var projectID: String = ""
         private var secret: String = ""
+        private var universalLink: String? = null
 
         fun withDeepLinkScheme(scheme: String): Builder {
             deepLinkScheme = scheme
@@ -25,6 +29,13 @@ internal class StytchConfig private constructor(
 
         fun withDeepLinkHost(host: String): Builder {
             deepLinkHost = host
+            return this
+        }
+
+        fun withUniversalLink(link: Uri): Builder {
+            universalLink = link.path
+            link.scheme?.let { deepLinkScheme = it }
+            link.host?.let { deepLinkHost = it }
             return this
         }
 
@@ -51,6 +62,7 @@ internal class StytchConfig private constructor(
                     deepLinkScheme,
                     deepLinkHost,
                     verifyEmail,
+                    universalLink,
                     uiCustomization,
             )
         }

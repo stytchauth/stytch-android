@@ -25,6 +25,15 @@ public class Stytch private constructor() {
         flowManager = StytchFlowManager()
     }
 
+    public fun configure(projectID: String, secret: String, scheme: String, universalLink: Uri) {
+        config = StytchConfig.Builder()
+                .withAuth(projectID, secret)
+                .withDeepLinkScheme(scheme)
+                .withUniversalLink(universalLink)
+                .build()
+        flowManager = StytchFlowManager()
+    }
+
     public fun login(email: String) {
         checkIfConfigured()
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
