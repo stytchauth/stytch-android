@@ -32,7 +32,7 @@ public class StytchMainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
     }
 
-    companion object {
+    public companion object {
         private const val TAG = "StytchMainActivity"
         private const val LOGIN_FRAGMENT_TAG = "loginFragment"
     }

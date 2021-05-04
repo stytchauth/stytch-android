@@ -10,9 +10,9 @@ public class Stytch private constructor() {
 
     private lateinit var flowManager: StytchFlowManager
 
-    public var environment = StytchEnvironment.LIVE
+    public var environment: StytchEnvironment = StytchEnvironment.LIVE
 
-    public var loginMethod = StytchLoginMethod.LoginOrSignUp
+    public var loginMethod: StytchLoginMethod = StytchLoginMethod.LoginOrSignUp
 
     public var listener: StytchListener? = null
 
@@ -74,7 +74,7 @@ public class Stytch private constructor() {
     }
 
     public companion object {
-        public val instance = Stytch()
+        public val instance: Stytch = Stytch()
     }
 
     public interface StytchListener {

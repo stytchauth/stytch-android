@@ -50,7 +50,7 @@ internal class Api {
                 email,
                 Constants.LOGIN_PATH.deepLink(),
                 Constants.INVITE_PATH.deepLink(),
-                Constants.LOGIN_EXPIDARTION,
+                Constants.LOGIN_EXPIRATION,
                 Constants.INVITE_EXPIRATION
             )
         ).execute()
@@ -64,7 +64,7 @@ internal class Api {
                 email,
                 Constants.LOGIN_PATH.deepLink(),
                 Constants.SIGN_UP_PATH.deepLink(),
-                Constants.LOGIN_EXPIDARTION,
+                Constants.LOGIN_EXPIRATION,
                 Constants.SIGNUP_EXPIRATION
             )
         ).execute()

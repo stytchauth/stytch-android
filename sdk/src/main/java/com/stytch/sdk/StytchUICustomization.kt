@@ -9,44 +9,44 @@ import com.stytch.sdk.helpers.dp
 import java.lang.RuntimeException
 
 public class StytchUICustomization {
-    var buttonCornerRadius: Float = 5.dp
-    var buttonBackgroundColor: StytchColor = StytchColor.fromColorId(R.color.buttonBg)
+    public var buttonCornerRadius: Float = 5.dp
+    public var buttonBackgroundColor: StytchColor = StytchColor.fromColorId(R.color.buttonBg)
 
-    var inputBackgroundColor: StytchColor =
+    public var inputBackgroundColor: StytchColor =
         StytchColor.fromColorId(R.color.editTextBackgroundColor)
-    var inputBackgroundBorderColor: StytchColor =
+    public var inputBackgroundBorderColor: StytchColor =
         StytchColor.fromColorId(R.color.editTextBackgroundBorderColor)
-    var inputCornerRadius: Float = 5.dp
+    public var inputCornerRadius: Float = 5.dp
 
-    var backgroundColor: StytchColor = StytchColor.fromColorId(R.color.colorBackground)
-    var showBrandLogo: Boolean = true
+    public var backgroundColor: StytchColor = StytchColor.fromColorId(R.color.colorBackground)
+    public var showBrandLogo: Boolean = true
 
-    var showTitle: Boolean = true
-    var showSubtitle: Boolean = true
+    public var showTitle: Boolean = true
+    public var showSubtitle: Boolean = true
 
-    var titleStyle: StytchTextStyle = StytchTextStyle().apply {
+    public var titleStyle: StytchTextStyle = StytchTextStyle().apply {
         color = StytchColor.fromColorId(R.color.titleTextColor)
         font = Typeface.create(null as Typeface?, Typeface.BOLD)
         size = 30.dp
     }
 
-    var subtitleStyle: StytchTextStyle = StytchTextStyle().apply {
+    public var subtitleStyle: StytchTextStyle = StytchTextStyle().apply {
         color = StytchColor.fromColorId(R.color.subtitleTextColor)
         font = Typeface.create(null as Typeface?, Typeface.NORMAL)
         size = 16.dp
     }
 
-    var inputTextStyle: StytchTextStyle = StytchTextStyle().apply {
+    public var inputTextStyle: StytchTextStyle = StytchTextStyle().apply {
         color = StytchColor.fromColorId(R.color.editTextColor)
         size = 16.dp
     }
 
-    var inputHintStyle: StytchTextStyle = StytchTextStyle().apply {
+    public var inputHintStyle: StytchTextStyle = StytchTextStyle().apply {
         color = StytchColor.fromColorId(R.color.editHintTextColor)
         size = 16.dp
     }
 
-    var buttonTextStyle: StytchTextStyle = StytchTextStyle().apply {
+    public var buttonTextStyle: StytchTextStyle = StytchTextStyle().apply {
         color = StytchColor.fromColorId(R.color.buttonTextColor)
         font = Typeface.create(null as Typeface?, Typeface.BOLD)
         size = 16.dp
@@ -60,7 +60,7 @@ public class StytchColor private constructor(
 ) {
 
     @ColorInt
-    fun getColor(context: Context): Int {
+    public fun getColor(context: Context): Int {
         if (colorId != null) {
             return ContextCompat.getColor(context, colorId)
         }
@@ -71,12 +71,12 @@ public class StytchColor private constructor(
         throw RuntimeException("StytchColor bad status. Please check color initialization.")
     }
 
-    companion object {
-        fun fromColorId(@ColorRes colorId: Int): StytchColor {
+    public companion object {
+        public fun fromColorId(@ColorRes colorId: Int): StytchColor {
             return StytchColor(colorId = colorId)
         }
 
-        fun fromColor(@ColorInt color: Int): StytchColor {
+        public fun fromColor(@ColorInt color: Int): StytchColor {
             return StytchColor(color = color)
         }
     }

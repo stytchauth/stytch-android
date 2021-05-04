@@ -21,40 +21,40 @@ internal interface StytchService {
 
     @POST("magic_links/send_by_email")
     fun sendMagicLink(
-        @Body request: SendMagicLinkRequest
+        @Body request: SendMagicLinkRequest,
     ): Call<SendMagicLingResponse>
 
     @POST("magic_links/login_or_invite")
     fun loginOrInvite(
-        @Body request: LoginOrInviteRequest
+        @Body request: LoginOrInviteRequest,
     ): Call<SendMagicLingResponse>
 
     @POST("magic_links/login_or_create")
     fun loginOrSignUp(
-        @Body request: LoginOrSignUpRequest
+        @Body request: LoginOrSignUpRequest,
     ): Call<SendMagicLingResponse>
 
     @POST("users")
     fun createUser(
-        @Body request: CreateUserRequest
+        @Body request: CreateUserRequest,
     ): Call<CreateUserResponse>
 
     @POST("magic_links/{token}/authenticate")
     fun verifyToken(
             @Path("token") token: String,
-            @Body request: VerifyTokenRequest
+            @Body request: VerifyTokenRequest,
     ): Call<VerifyTokenResponse>
 
     @POST("emails/{email_id}/send_verification")
     fun sendEmailVerification(
         @Path("email_id") emailId: String,
-        @Body request: SendEmailVerificationRequest
+        @Body request: SendEmailVerificationRequest,
     ): Call<SendEmailVerificationResponse>
 
 
     @POST("users/{user_id}")
     fun deleteUser(
         @Path("user_id") userId: String,
-        @Body request: DeleteUserRequest
+        @Body request: DeleteUserRequest,
     ): Call<DeleteUserResponse>
 }

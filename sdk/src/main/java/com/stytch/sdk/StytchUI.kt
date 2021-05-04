@@ -5,10 +5,10 @@ import com.stytch.sdk.helpers.Constants
 
 public class StytchUI private constructor() {
 
-    var uiListener: StytchUIListener? = null
+    public var uiListener: StytchUIListener? = null
 
     // TODO ??
-    var uiCustomization = StytchUICustomization()
+    public var uiCustomization: StytchUICustomization = StytchUICustomization()
 		set(value) {
 			try {
 				Stytch.instance.config!!.uiCustomization = value
@@ -18,14 +18,14 @@ public class StytchUI private constructor() {
         }
 
     public interface StytchUIListener {
-        fun onEvent(event: StytchEvent) {}
-        fun onSuccess(result: StytchResult)
-        fun onFailure()
+        public fun onEvent(event: StytchEvent) {}
+        public fun onSuccess(result: StytchResult)
+        public fun onFailure()
     }
 
     public companion object {
         private const val ACTIVITY_REQUEST_CODE = 674
 
-        public val instance = StytchUI()
+        public val instance: StytchUI = StytchUI()
     }
 }

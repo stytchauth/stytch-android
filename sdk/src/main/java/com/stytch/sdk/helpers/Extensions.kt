@@ -7,10 +7,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.stytch.sdk.Stytch
 
-val Number.px: Float
+public val Number.px: Float
     get() = this.toFloat() / Resources.getSystem().displayMetrics.density
 
-val Number.dp: Float
+public val Number.dp: Float
     get() = this.toFloat() * Resources.getSystem().displayMetrics.density
 
 internal fun Fragment.hideKeyboard() {
