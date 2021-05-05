@@ -1,17 +1,19 @@
-package com.stytch.sdk.exceptions
+package com.stytch.sdk
 
 import com.google.gson.Gson
-import com.stytch.sdk.R
-import com.stytch.sdk.api.responses.BasicErrorResponse
-import com.stytch.sdk.api.responses.BasicResponse
-import com.stytch.sdk.helpers.LoggerLocal
 import retrofit2.Response
-import java.io.IOException
 import java.net.UnknownHostException
 
-private const val TAG = "ExceptionRecognizer"
+internal class BadRequestException : Exception()
+internal class BlankWarningException(val errorMessage: String?) : Exception()
+internal class EmailNotFoundException : Exception()
+internal class UnauthorizedCredentialsException : Exception()
+internal class UnknownException : Exception()
+internal class WarningException(val errorMessageId:Int) : Exception()
+internal class WrongMagicLinkException : Exception()
 
 internal object ExceptionRecognizer {
+    private const val TAG = "ExceptionRecognizer"
 
     fun <T> recognize(response: Response<T>) {
         LoggerLocal.d(TAG, "recognizingError: ${response.body()}")
