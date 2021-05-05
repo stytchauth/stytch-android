@@ -67,6 +67,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        // Enable Kotlin Explicit API mode: https://kotlinlang.org/docs/whatsnew14.html#explicit-api-mode-for-library-authors
         freeCompilerArgs += '-Xexplicit-api=strict'
     }
 }
