@@ -9,7 +9,7 @@ internal class BlankWarningException(val errorMessage: String?) : Exception()
 internal class EmailNotFoundException : Exception()
 internal class UnauthorizedCredentialsException : Exception()
 internal class UnknownException : Exception()
-internal class WarningException(val errorMessageId:Int) : Exception()
+internal class WarningException(val errorMessageId: Int) : Exception()
 internal class WrongMagicLinkException : Exception()
 
 internal object ExceptionRecognizer {

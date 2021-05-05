@@ -88,7 +88,7 @@ internal class StytchConfig private constructor(
     val deepLinkScheme: String,
     val deepLinkHost: String,
     val verifyEmail: Boolean,
-    var uiCustomization: StytchUICustomization
+    var uiCustomization: StytchUICustomization,
 ) {
 
     public class Builder {
@@ -142,7 +142,7 @@ internal class StytchConfig private constructor(
 
 public enum class StytchEnvironment {
     LIVE,
-    TEST
+    TEST,
 }
 
 public enum class StytchError(public val messageId: Int) {
@@ -152,7 +152,6 @@ public enum class StytchError(public val messageId: Int) {
     InvalidMagicToken(R.string.stytch_error_invalid_magic_token),
     InvalidConfiguration(R.string.stytch_error_bad_token)
 }
-
 
 public class StytchEvent private constructor(
     public val type: String,
@@ -175,5 +174,5 @@ public class StytchEvent private constructor(
 
 public enum class StytchLoginMethod {
     LoginOrSignUp,
-    LoginOrInvite
+    LoginOrInvite,
 }

@@ -13,7 +13,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import com.stytch.sdk.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,8 +27,8 @@ internal object Constants {
     const val SIGN_UP_PATH = "signup_magic_link"
 
     const val LOGIN_EXPIRATION = 60L
-    const val INVITE_EXPIRATION = 7*24*60L
-    const val SIGNUP_EXPIRATION = 7*24*60L
+    const val INVITE_EXPIRATION = 7 * 24 * 60L
+    const val SIGNUP_EXPIRATION = 7 * 24 * 60L
 }
 
 internal class CustomTypefaceSpan(family: String?, private val newType: Typeface) : TypefaceSpan(family) {
@@ -112,7 +111,7 @@ internal class ErrorManager {
                     view?.let { view ->
                         AlertDialog.Builder(fragment.requireContext())
                             .setTitle(it)
-                            .setPositiveButton(android.R.string.ok ,null)
+                            .setPositiveButton(android.R.string.ok, null)
                             .show()
                     }
                 }
@@ -122,7 +121,7 @@ internal class ErrorManager {
                     view?.let { view ->
                         AlertDialog.Builder(fragment.requireContext())
                             .setTitle(it)
-                            .setPositiveButton(android.R.string.ok ,null)
+                            .setPositiveButton(android.R.string.ok, null)
                             .show()
                     }
                 }
@@ -134,7 +133,6 @@ internal class ErrorManager {
         private const val TAG = "ErrorManager"
     }
 }
-
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
@@ -184,7 +182,7 @@ internal fun Int.invertedWhiteBlack(): Int {
     return if ((red * 0.299 + green * 0.587 + blue * 0.114) > 140) Color.BLACK else Color.WHITE
 }
 
-internal fun String.deepLink(): String{
+internal fun String.deepLink(): String {
     return "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/$this"
 }
 
@@ -334,7 +332,7 @@ internal class StytchFlowManager {
                     Stytch.instance.listener?.onFailure(StytchError.InvalidConfiguration)
                 }
             }
-            else                                -> {
+            else -> {
                 withContext(Dispatchers.Main) {
                     Stytch.instance.listener?.onFailure(StytchError.Unknown)
                 }

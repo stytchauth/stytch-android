@@ -51,7 +51,6 @@ internal interface StytchService {
         @Body request: SendEmailVerificationRequest,
     ): Call<SendEmailVerificationResponse>
 
-
     @POST("users/{user_id}")
     fun deleteUser(
         @Path("user_id") userId: String,
@@ -64,7 +63,7 @@ internal class Api {
     private val service: StytchService get() = ServiceGenerator.createService()
 
     fun sendMagicLink(
-        email: String
+        email: String,
     ): Response<SendMagicLingResponse> {
         return service.sendMagicLink(
             SendMagicLinkRequest(
@@ -76,7 +75,7 @@ internal class Api {
     }
 
     fun loginOrInvite(
-        email: String
+        email: String,
     ): Response<SendMagicLingResponse> {
         return service.loginOrInvite(
             LoginOrInviteRequest(
@@ -90,7 +89,7 @@ internal class Api {
     }
 
     fun loginOrSignUp(
-        email: String
+        email: String,
     ): Response<SendMagicLingResponse> {
         return service.loginOrSignUp(
             LoginOrSignUpRequest(
@@ -104,20 +103,20 @@ internal class Api {
     }
 
     fun createUser(
-        email: String
+        email: String,
     ): Response<CreateUserResponse> {
         return service.createUser(CreateUserRequest(email)).execute()
     }
 
     fun verifyToken(
-        token: String
+        token: String,
     ): Response<VerifyTokenResponse> {
         return service.verifyToken(token, VerifyTokenRequest()).execute()
     }
 
     fun sendEmailVerification(
         emailId: String,
-        userId: String
+        userId: String,
     ): Response<SendEmailVerificationResponse> {
         return service.sendEmailVerification(emailId, SendEmailVerificationRequest()).execute()
     }
@@ -129,7 +128,7 @@ internal class Api {
     private fun <T> checkResult(
         response: Response<T>,
         onSuccess: (T) -> Unit,
-        onError: ((Throwable) -> Unit)? = null
+        onError: ((Throwable) -> Unit)? = null,
     ) {
         try {
             ExceptionRecognizer.recognize(response)
@@ -142,7 +141,7 @@ internal class Api {
 
     private fun <T> generateCallback(
         onSuccess: (T) -> Unit,
-        onError: ((Throwable) -> Unit)? = null
+        onError: ((Throwable) -> Unit)? = null,
     ): Callback<T> {
         return object : Callback<T> {
             override fun onFailure(call: Call<T>, t: Throwable) {
@@ -154,7 +153,6 @@ internal class Api {
             }
         }
     }
-
 
     companion object {
         private const val TAG = "Api"
@@ -194,10 +192,14 @@ internal class Api {
 
 }
 
-internal class AuthInterceptor: Interceptor {
+internal class AuthInterceptor : Interceptor {
 
     private fun generateAuth(): String {
-        return "Basic ${Base64.encodeToString("${Stytch.instance.config?.projectID}:${Stytch.instance.config?.secret}".toByteArray(), Base64.NO_WRAP)}"
+        val encoding = Base64.encodeToString(
+            "${Stytch.instance.config?.projectID}:${Stytch.instance.config?.secret}".toByteArray(),
+            Base64.NO_WRAP,
+        )
+        return "Basic $encoding"
     }
 
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
@@ -226,7 +228,7 @@ internal object ServiceGenerator {
         val client = httpClient.build()
         return Retrofit.Builder()
             .baseUrl(
-                when(Stytch.instance.environment){
+                when (Stytch.instance.environment) {
                     StytchEnvironment.LIVE -> apiBaseUrl
                     StytchEnvironment.TEST -> testApiBaseUrl
                 }
@@ -241,7 +243,7 @@ internal object ServiceGenerator {
 public data class StytchResult(
     public val userId: String,
     public val requestId: String,
-){
+) {
     override fun toString(): String {
         return "StytchResult(userId='$userId', requestId='$requestId')"
     }
@@ -266,7 +268,7 @@ public class CreateUserResponse(
 ) : BasicResponse() {
 }
 
-public class DeleteUserResponse: BasicResponse() {
+public class DeleteUserResponse : BasicResponse() {
 }
 
 public class SendEmailVerificationResponse(
@@ -304,10 +306,10 @@ public open class BasicRequest {
 
 public class CreateUserRequest(
     @SerializedName("email") public val email: String,
-): BasicRequest() {
+) : BasicRequest() {
 }
 
-public class DeleteUserRequest(): BasicRequest() {
+public class DeleteUserRequest() : BasicRequest() {
 }
 
 public class LoginOrInviteRequest(
@@ -328,7 +330,7 @@ public class LoginOrSignUpRequest(
 ) : BasicRequest() {
 }
 
-public class SendEmailVerificationRequest(): BasicRequest() {
+public class SendEmailVerificationRequest() : BasicRequest() {
 }
 
 public class SendMagicLinkRequest(
@@ -341,5 +343,5 @@ public class SendMagicLinkRequest(
 public class VerifyTokenRequest(
     @SerializedName("ip_match_required") public val ip_match_required: Boolean? = null,
     @SerializedName("user_agent_match_required") public val user_agent_match_required: Boolean? = null,
-): BasicRequest() {
+) : BasicRequest() {
 }

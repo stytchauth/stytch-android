@@ -38,12 +38,12 @@ public class StytchUI private constructor() {
 
     // TODO ??
     public var uiCustomization: StytchUICustomization = StytchUICustomization()
-		set(value) {
-			try {
-				Stytch.instance.config!!.uiCustomization = value
-			} catch (ex: Exception) {
-				throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
-			}
+        set(value) {
+            try {
+                Stytch.instance.config!!.uiCustomization = value
+            } catch (ex: Exception) {
+                throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
+            }
         }
 
     public interface StytchUIListener {
@@ -261,7 +261,7 @@ internal class StytchEditText @JvmOverloads constructor(
         backgroundColor: Int,
         borderColor: Int,
         borderRadius: Float,
-        borderWidth: Int
+        borderWidth: Int,
     ): Drawable? {
         val drawable = GradientDrawable()
         drawable.cornerRadius = borderRadius
@@ -428,7 +428,7 @@ internal class StytchLoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_stytch_login, container, false)
@@ -676,11 +676,13 @@ internal class LoginViewModel : ViewModel() {
             loadingLiveData.value = false
             when (error) {
                 StytchError.InvalidMagicToken,
-                StytchError.Connection -> {
+                StytchError.Connection,
+                -> {
                     errorManager.showError(error.messageId)
                 }
                 StytchError.Unknown,
-                StytchError.InvalidEmail -> {
+                StytchError.InvalidEmail,
+                -> {
                     errorManager.showError(error.messageId)
                     stateLiveData.value = State.Login
                 }
