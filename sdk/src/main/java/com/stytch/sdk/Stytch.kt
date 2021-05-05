@@ -150,7 +150,7 @@ public enum class StytchError(public val messageId: Int) {
     Connection(R.string.stytch_error_no_internet),
     Unknown(R.string.stytch_error_unknown),
     InvalidMagicToken(R.string.stytch_error_invalid_magic_token),
-    InvalidConfiguration(R.string.stytch_error_bad_token)
+    InvalidConfiguration(R.string.stytch_error_bad_token),
 }
 
 public class StytchEvent private constructor(
@@ -175,4 +175,13 @@ public class StytchEvent private constructor(
 public enum class StytchLoginMethod {
     LoginOrSignUp,
     LoginOrInvite,
+}
+
+public data class StytchResult(
+    public val userId: String,
+    public val requestId: String,
+) {
+    override fun toString(): String {
+        return "StytchResult(userId='$userId', requestId='$requestId')"
+    }
 }

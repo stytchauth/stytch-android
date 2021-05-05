@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import com.google.gson.Gson
+import com.stytch.sdk.api.BasicErrorResponse
 import retrofit2.Response
 import java.net.UnknownHostException
 
