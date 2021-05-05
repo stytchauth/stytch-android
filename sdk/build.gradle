@@ -19,9 +19,9 @@ ext {
     siteUrl = 'https://github.com/stytchauth/stytch-android'
     gitUrl = 'https://github.com/stytchauth/stytch-android.git'
 
-    developerId = 'martynas-stytch'
-    developerName = 'Martynas'
-    developerEmail = 'martynas@stytch.com'
+    developerId = 'kyle-stytch'
+    developerName = 'Kyle Dunne'
+    developerEmail = 'kyle@stytch.com'
 
     licenseName = 'MIT License'
     licenseUrl = 'https://opensource.org/licenses/MIT'
