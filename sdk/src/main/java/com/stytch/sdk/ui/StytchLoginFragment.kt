@@ -1,27 +1,27 @@
 package com.stytch.sdk.ui
 
+import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.R
 import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchUI
-import com.stytch.sdk.helpers.dp
-import com.stytch.sdk.helpers.hideKeyboard
-import com.stytch.sdk.helpers.invertedWhiteBlack
-import com.stytch.sdk.views.StytchButton
-import com.stytch.sdk.views.StytchEditText
-import com.stytch.sdk.views.StytchTextView
-import com.stytch.sdk.views.StytchWaterMarkView
-
+import com.stytch.sdk.dp
+import com.stytch.sdk.ui.view.StytchButton
+import com.stytch.sdk.ui.view.StytchEditText
+import com.stytch.sdk.ui.view.StytchTextView
+import com.stytch.sdk.ui.view.StytchWaterMarkView
 
 /**
  * A simple [Fragment] subclass.
@@ -41,7 +41,7 @@ internal class StytchLoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_stytch_login, container, false)
@@ -65,7 +65,6 @@ internal class StytchLoginFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         observe()
-
     }
 
     private fun observe() {
@@ -174,9 +173,7 @@ internal class StytchLoginFragment : Fragment() {
             }
             holder.addView(waterMarkView, layoutParams)
         }
-
     }
-
 
     private fun setupViewByState(state: LoginViewModel.State) {
         when (state) {
@@ -257,9 +254,7 @@ internal class StytchLoginFragment : Fragment() {
         }
     }
 
-
     companion object {
-
         private const val TAG = "StytchLoginFragment"
 
         /**
@@ -268,14 +263,22 @@ internal class StytchLoginFragment : Fragment() {
          *
          * @return A new instance of fragment StytchLoginFragment.
          */
-
         @JvmStatic
-        fun newInstance() =
-            StytchLoginFragment().apply {
-                arguments = Bundle().apply {
-                }
+        fun newInstance() = StytchLoginFragment().apply {
+            arguments = Bundle().apply {
             }
-
-
+        }
     }
+}
+
+internal fun Fragment.hideKeyboard() {
+    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+}
+
+internal fun Int.invertedWhiteBlack(): Int {
+    val red = Color.red(this)
+    val green = Color.green(this)
+    val blue = Color.blue(this)
+    return if ((red * 0.299 + green * 0.587 + blue * 0.114) > 140) Color.BLACK else Color.WHITE
 }

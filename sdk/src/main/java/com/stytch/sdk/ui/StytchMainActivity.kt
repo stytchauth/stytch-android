@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.stytch.sdk.R
-import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchUI
-
 
 public class StytchMainActivity : AppCompatActivity() {
 
@@ -35,10 +32,8 @@ public class StytchMainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
     }
 
-
-    companion object {
+    public companion object {
         private const val TAG = "StytchMainActivity"
         private const val LOGIN_FRAGMENT_TAG = "loginFragment"
     }
-
 }
