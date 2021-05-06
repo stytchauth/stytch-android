@@ -3,7 +3,7 @@
     <string name="stytch_login_title">Sign up or log in</string>
     <string name="stytch_login_description">Sign up or log in with your email, no password needed.</string>
     <string name="stytch_login_email_hint">example@email.com</string>
-    <string name="stytch_login_button_title">Sign in with email</string>
+    <string name="stytch_login_button_title">Continue with email</string>
     <string name="stytch_login_waiting_verification_title">Email sent to %1$s.</string>
     <string name="stytch_login_waiting_verification_description">"Didn't get an email? Check your spam folder, or"</string>
     <string name="stytch_login_waiting_verification_button_title">Resend magic link</string>
