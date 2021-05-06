@@ -29,7 +29,7 @@ internal class StytchApi {
         return service.sendMagicLink(
             SendMagicLinkRequest(
                 email,
-                "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/magic_link",
+                "${Stytch.instance.config?.deeplinkScheme}://${Stytch.instance.config?.deeplinkHost}/magic_link",
                 60
             )
         ).execute()
@@ -202,5 +202,5 @@ internal object ServiceGenerator {
 }
 
 internal fun String.deepLink(): String {
-    return "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/$this"
+    return "${Stytch.instance.config?.deeplinkScheme}://${Stytch.instance.config?.deeplinkHost}/$this"
 }
