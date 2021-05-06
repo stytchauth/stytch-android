@@ -38,7 +38,7 @@ public class Stytch private constructor() {
 
     public fun handleDeepLink(uri: Uri): Boolean {
         checkIfConfigured()
-        if (uri.scheme == config?.deepLinkScheme) {
+        if (uri.scheme == config?.deepLinkScheme && uri.host == config?.deepLinkHost) {
             uri.path?.let { path ->
 //                TODO: handle different deep link paths
                 when {
