@@ -22,20 +22,13 @@ public class CreateUserRequest(
 
 public class DeleteUserRequest : BasicRequest()
 
-public class LoginOrInviteRequest(
-    @SerializedName("email") public val email: String,
-    @SerializedName("login_magic_link_url") public val login_magic_link_url: String,
-    @SerializedName("invite_magic_link_url") public val invite_magic_link_url: String,
-    @SerializedName("login_expiration_minutes") public val login_expiration_minutes: Long,
-    @SerializedName("invite_expiration_minutes") public val invite_expiration_minutes: Long,
-) : BasicRequest()
-
 public class LoginOrSignUpRequest(
     @SerializedName("email") public val email: String,
     @SerializedName("login_magic_link_url") public val login_magic_link_url: String,
     @SerializedName("signup_magic_link_url") public val signup_magic_link_url: String,
     @SerializedName("login_expiration_minutes") public val login_expiration_minutes: Long,
     @SerializedName("signup_expiration_minutes") public val signup_expiration_minutes: Long,
+    @SerializedName("create_user_as_pending") public val create_user_as_pending: Boolean,
 ) : BasicRequest()
 
 public class SendEmailVerificationRequest() : BasicRequest()

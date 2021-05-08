@@ -9,8 +9,6 @@ public class Stytch private constructor() {
 
     public var environment: StytchEnvironment = StytchEnvironment.LIVE
 
-    public var loginMethod: StytchLoginMethod = StytchLoginMethod.LoginOrSignUp
-
     public var listener: StytchListener? = null
 
     public fun configure(projectID: String, secret: String, scheme: String, host: String) {
@@ -22,13 +20,13 @@ public class Stytch private constructor() {
         flowManager = StytchFlowManager()
     }
 
-    public fun login(email: String) {
+    public fun login(email: String, createUserAsPending: Boolean = true) {
         checkIfConfigured()
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             listener?.onFailure(StytchError.InvalidEmail)
             return
         }
-        flowManager.login(email)
+        flowManager.login(email, createUserAsPending)
     }
 
     private fun resendEmailVerification() {
@@ -170,11 +168,6 @@ public class StytchEvent private constructor(
             return StytchEvent(USER_EVENT, false, userId)
         }
     }
-}
-
-public enum class StytchLoginMethod {
-    LoginOrSignUp,
-    LoginOrInvite,
 }
 
 public data class StytchResult(

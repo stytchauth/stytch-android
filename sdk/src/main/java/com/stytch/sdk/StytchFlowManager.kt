@@ -12,12 +12,14 @@ internal class StytchFlowManager {
     private var email: String = ""
     private var emailId: String = ""
     private var userId: String = ""
+    private var createUserAsPending: Boolean = true
 
     private var newUserCreated: Boolean = false
 
-    fun login(email: String) {
+    fun login(email: String, createUserAsPending: Boolean) {
         newUserCreated = false
         this.email = email
+        this.createUserAsPending = createUserAsPending
         GlobalScope.launch(Dispatchers.IO) {
             login()
         }
@@ -57,10 +59,7 @@ internal class StytchFlowManager {
     private suspend fun login() {
         try {
 
-            val response = when (Stytch.instance.loginMethod) {
-                StytchLoginMethod.LoginOrSignUp -> StytchApi.instance.loginOrSignUp(email)
-                StytchLoginMethod.LoginOrInvite -> StytchApi.instance.loginOrInvite(email)
-            }
+            val response = StytchApi.instance.loginOrSignUp(email, createUserAsPending)
 
             if (response.body() == null)
                 throw UnknownException()
