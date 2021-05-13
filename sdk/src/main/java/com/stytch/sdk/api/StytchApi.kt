@@ -29,28 +29,15 @@ internal class StytchApi {
         return service.sendMagicLink(
             SendMagicLinkRequest(
                 email,
-                "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/magic_link",
+                "${Stytch.instance.config?.deeplinkScheme}://${Stytch.instance.config?.deeplinkHost}/magic_link",
                 60
-            )
-        ).execute()
-    }
-
-    fun loginOrInvite(
-        email: String,
-    ): Response<SendMagicLingResponse> {
-        return service.loginOrInvite(
-            LoginOrInviteRequest(
-                email,
-                Constants.LOGIN_PATH.deepLink(),
-                Constants.INVITE_PATH.deepLink(),
-                Constants.LOGIN_EXPIRATION,
-                Constants.INVITE_EXPIRATION
             )
         ).execute()
     }
 
     fun loginOrSignUp(
         email: String,
+        createUserAsPending: Boolean,
     ): Response<SendMagicLingResponse> {
         return service.loginOrSignUp(
             LoginOrSignUpRequest(
@@ -58,7 +45,8 @@ internal class StytchApi {
                 Constants.LOGIN_PATH.deepLink(),
                 Constants.SIGN_UP_PATH.deepLink(),
                 Constants.LOGIN_EXPIRATION,
-                Constants.SIGNUP_EXPIRATION
+                Constants.SIGNUP_EXPIRATION,
+                createUserAsPending,
             )
         ).execute()
     }
@@ -202,5 +190,5 @@ internal object ServiceGenerator {
 }
 
 internal fun String.deepLink(): String {
-    return "${Stytch.instance.config?.deepLinkScheme}://${Stytch.instance.config?.deepLinkHost}/$this"
+    return "${Stytch.instance.config?.deeplinkScheme}://${Stytch.instance.config?.deeplinkHost}/$this"
 }

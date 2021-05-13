@@ -9,26 +9,31 @@ public class Stytch private constructor() {
 
     public var environment: StytchEnvironment = StytchEnvironment.LIVE
 
-    public var loginMethod: StytchLoginMethod = StytchLoginMethod.LoginOrSignUp
-
     public var listener: StytchListener? = null
 
     public fun configure(projectID: String, secret: String, scheme: String, host: String) {
-        config = StytchConfig.Builder()
-            .withAuth(projectID, secret)
-            .withDeepLinkScheme(scheme)
-            .withDeepLinkHost(host)
-            .build()
+        config = StytchConfig(
+            projectID = projectID,
+            secret = secret,
+            deeplinkScheme = scheme,
+            deeplinkHost = host,
+        )
         flowManager = StytchFlowManager()
     }
 
-    public fun login(email: String) {
+    public fun configure(projectID: String, secret: String, deeplink: Uri) {
+        val scheme = deeplink.scheme ?: throw Exception("Provided deeplink Uri has a null scheme")
+        val host = deeplink.host ?: throw Exception("Provided deeplink Uri has a null host")
+        configure(projectID, secret, scheme, host)
+    }
+
+    public fun login(email: String, createUserAsPending: Boolean = true) {
         checkIfConfigured()
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             listener?.onFailure(StytchError.InvalidEmail)
             return
         }
-        flowManager.login(email)
+        flowManager.login(email, createUserAsPending)
     }
 
     private fun resendEmailVerification() {
@@ -38,7 +43,7 @@ public class Stytch private constructor() {
 
     public fun handleDeepLink(uri: Uri): Boolean {
         checkIfConfigured()
-        if (uri.scheme == config?.deepLinkScheme && uri.host == config?.deepLinkHost) {
+        if (uri.scheme == config?.deeplinkScheme && uri.host == config?.deeplinkHost) {
             uri.path?.let { path ->
 //                TODO: handle different deep link paths
                 when {
@@ -82,63 +87,14 @@ public class Stytch private constructor() {
 
 }
 
-internal class StytchConfig private constructor(
-    val projectID: String,
-    val secret: String,
-    val deepLinkScheme: String,
-    val deepLinkHost: String,
-    val verifyEmail: Boolean,
-    var uiCustomization: StytchUICustomization,
-) {
-
-    public class Builder {
-
-        private var deepLinkScheme: String = "app"
-        private var deepLinkHost: String = "stytch.com"
-        private var uiCustomization: StytchUICustomization = StytchUICustomization()
-        private var verifyEmail: Boolean = false
-        private var projectID: String = ""
-        private var secret: String = ""
-
-        fun withDeepLinkScheme(scheme: String): Builder {
-            deepLinkScheme = scheme
-            return this
-        }
-
-        fun withDeepLinkHost(host: String): Builder {
-            deepLinkHost = host
-            return this
-        }
-
-        fun withCustomization(UICustomization: StytchUICustomization): Builder {
-            this.uiCustomization = UICustomization
-            return this
-        }
-
-        fun withVerifyEmail(verifyEmail: Boolean): Builder {
-            this.verifyEmail = verifyEmail
-            return this
-        }
-
-        fun withAuth(projectID: String, secret: String): Builder {
-            this.projectID = projectID
-            this.secret = secret
-            return this
-        }
-
-        fun build(): StytchConfig {
-            return StytchConfig(
-                projectID,
-                secret,
-                deepLinkScheme,
-                deepLinkHost,
-                verifyEmail,
-                uiCustomization,
-            )
-        }
-    }
-
-}
+internal class StytchConfig(
+    val projectID: String = "",
+    val secret: String = "",
+    val deeplinkScheme: String = "https",
+    val deeplinkHost: String = "test.stytch.com",
+    val verifyEmail: Boolean = false,
+    var uiCustomization: StytchUICustomization = StytchUICustomization(),
+)
 
 public enum class StytchEnvironment {
     LIVE,
@@ -170,11 +126,6 @@ public class StytchEvent private constructor(
             return StytchEvent(USER_EVENT, false, userId)
         }
     }
-}
-
-public enum class StytchLoginMethod {
-    LoginOrSignUp,
-    LoginOrInvite,
 }
 
 public data class StytchResult(

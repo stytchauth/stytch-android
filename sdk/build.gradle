@@ -1,14 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'com.github.dcendents.android-maven'
-    id 'com.jfrog.bintray'
 }
 
 ext {
-    bintrayRepo = 'stytch-android' // Name of the Bintray repo you created
-    bintrayName = 'com.stytch.sdk' // Bintray package name
-
     publishedGroupId = 'com.stytch.sdk' // Group ID of the SDK which will be added in implementation line of gradle
     artifact = 'sdk' // Artifact ID of the SDK which will be added in implementation line of gradle
     libraryVersion = '0.1.0' // Version of the library you created in Bintray
@@ -26,14 +21,6 @@ ext {
     licenseName = 'MIT License'
     licenseUrl = 'https://opensource.org/licenses/MIT'
     allLicenses = ["MIT"]
-
-    //Bintray Credentials
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-    bintrayUsername = properties.getProperty('BINTRAY_USERNAME')
-    bintrayUserOrg = properties.getProperty('BINTRAY_ORG')
-    bintrayApiKey = properties.getProperty('BINTRAY_API_KEY')
 }
 
 android {
@@ -91,4 +78,3 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 }
-apply from: 'bintray.script'
