@@ -1,0 +1,101 @@
+package com.stytch.sdk
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.View
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
+import com.stytch.sdk.StytchUI.uiCustomization
+
+internal open class StytchEditText(context: Context, attrs: AttributeSet?) : AppCompatEditText(context, attrs) {
+    init {
+        setTextColor(uiCustomization.inputTextStyle.color.getColor(context))
+        typeface = uiCustomization.inputTextStyle.font.getFont(context)
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.inputTextStyle.size.toFloat())
+        // TODO setCursorDrawableColor(style.color.getColor(context))
+
+        setHintTextColor(uiCustomization.inputHintStyle.color.getColor(context))
+
+        background = GradientDrawable().apply {
+            cornerRadius = uiCustomization.inputCornerRadius.toFloat()
+            setStroke(1.dp.toFloat().toInt(), uiCustomization.inputBackgroundBorderColor.getColor(context))
+            val textFieldBackgroundColor = uiCustomization.inputBackgroundColor.getColor(context)
+            colors = intArrayOf(textFieldBackgroundColor, textFieldBackgroundColor)
+        }
+    }
+
+    final override fun setTextColor(color: Int) {
+        super.setTextColor(color)
+    }
+
+    final override fun setTextSize(unit: Int, size: Float) {
+        super.setTextSize(unit, size)
+    }
+}
+
+internal open class StytchSingleDigitEditText(context: Context, attrs: AttributeSet?) : StytchEditText(context, attrs) {
+
+}
+
+internal open class StytchTextView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet?,
+    textStyle: StytchTextStyle = uiCustomization.subtitleStyle,
+) : AppCompatTextView(context, attrs) {
+    init {
+        setTextColor(textStyle.color.getColor(context))
+        typeface = textStyle.font.getFont(context)
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, textStyle.size.toFloat())
+    }
+
+    final override fun setTextColor(color: Int) {
+        super.setTextColor(color)
+    }
+
+    final override fun setTextSize(unit: Int, size: Float) {
+        super.setTextSize(unit, size)
+    }
+}
+
+internal class StytchTitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.titleStyle) {
+    init {
+        visibility = if (uiCustomization.showTitle) View.VISIBLE else View.GONE
+    }
+}
+
+internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.subtitleStyle) {
+    init {
+        visibility = if (uiCustomization.showSubtitle) View.VISIBLE else View.GONE
+    }
+}
+
+internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
+
+internal class StytchButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs) {
+    init {
+        val enabledColor = uiCustomization.buttonEnabledBackgroundColor.getColor(context)
+        val disabledColor = uiCustomization.buttonDisabledBackgroundColor.getColor(context)
+
+        background = GradientDrawable().apply {
+            cornerRadius = uiCustomization.buttonCornerRadius.toFloat()
+            colors = intArrayOf(enabledColor, disabledColor)
+        }
+
+        val states = arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(-android.R.attr.state_enabled))
+        val colors = intArrayOf(enabledColor, disabledColor)
+        backgroundTintList = ColorStateList(states, colors)
+
+        transformationMethod = null
+
+        val enabledTextColor = uiCustomization.buttonTextStyle.color.getColor(context)
+        val disabledTextColor = uiCustomization.buttonDisabledTextColor.getColor(context)
+        val textColors = intArrayOf(enabledTextColor, disabledTextColor)
+        setTextColor(ColorStateList(states, textColors))
+        typeface = uiCustomization.buttonTextStyle.font.getFont(context)
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.buttonTextStyle.size.toFloat())
+    }
+}

@@ -1,38 +1,50 @@
 package com.stytch.sdk
 
-import android.util.Log
+import android.content.Intent
+import android.util.Base64
+import android.util.Patterns
+import java.io.Serializable
 
-internal object Constants {
-    const val HOST = "stytch.com"
-    const val NOT_INITIALIZED_WARNING = "Stytch is not configured. call Stytch.instance.configure(...) first"
-    const val LOGIN_PATH = "login_magic_link"
-    const val INVITE_PATH = "invite_magic_link"
-    const val SIGN_UP_PATH = "signup_magic_link"
-
-    const val LOGIN_EXPIRATION = 60L
-    const val INVITE_EXPIRATION = 7 * 24 * 60L
-    const val SIGNUP_EXPIRATION = 7 * 24 * 60L
+internal fun String.isValidEmailAddress(): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
 
-public class LoggerLocal {
+internal fun generateAuthorizationHeader(projectId: String, secret: String): String {
+    return "Basic " + Base64.encodeToString(
+        "$projectId:$secret".toByteArray(),
+        Base64.NO_WRAP,
+    )
+}
 
-    public companion object {
-        public fun d(tag: String, msg: String, throwable: Throwable? = null) {
-            if (BuildConfig.DEBUG) {
-                Log.d(tag, msg, throwable)
-            }
-        }
+internal fun assertInitialized() {
+    if (!Stytch.isInitialized) {
+        TODO("Error: Stytch not initialized")
+    }
+}
 
-        public fun e(tag: String, msg: String, throwable: Throwable? = null) {
-            if (BuildConfig.DEBUG) {
-                Log.e(tag, msg, throwable)
-            }
-        }
+public fun Intent?.toStytchUser(): StytchResponseTypes.AuthenticateUserResponse {
+    try {
+        return this!!.extras!!
+            .getSerializable(StytchResponseTypes.AuthenticateUserResponse::class.qualifiedName) as StytchResponseTypes.AuthenticateUserResponse
+    } catch (throwable: Throwable) {
+        error("Stytch Error: called 'Intent?.toStytchUser()' on an invalid Intent. Did you make sure that 'resultCode == Activity.RESULT_OK'?")
+    }
+}
 
-        public fun w(tag: String, msg: String, throwable: Throwable? = null) {
-            if (BuildConfig.DEBUG) {
-                Log.w(tag, msg, throwable)
-            }
-        }
+public fun Intent?.toStytchError(): StytchError {
+    return when (this) {
+        null -> StytchError.CancelledByUser
+        else -> StytchError.Unknown
+    }
+}
+
+public sealed class StytchError private constructor() {
+    public object CancelledByUser : StytchError()
+    public object Unknown : StytchError()
+}
+
+public inline fun <reified T : Serializable> intentWithExtra(extra: T): Intent {
+    return Intent().apply {
+        putExtra(T::class.qualifiedName, extra)
     }
 }

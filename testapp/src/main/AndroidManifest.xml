@@ -2,18 +2,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stytch.testapp">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Sample">
+        android:theme="@style/Theme.StytchAndroidSDK"
+        >
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.stytch.sdk.StytchEmailMagicLinkActivity"
+            android:launchMode="singleTask"
+            >
+
+            <intent-filter android:label="Sign in" android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                android:host="test.stytch.com" />
             </intent-filter>
         </activity>
     </application>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <com.stytch.sdk.StytchTitleTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="27dp"
+            android:layout_marginTop="33dp"
+            tools:textSize="30sp"
+            android:text="@string/enter_passcode"
+            />
+
+        <com.stytch.sdk.StytchSubtitleTextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="27dp"
+            android:layout_marginEnd="33dp"
+            android:layout_marginTop="23dp"
+            tools:textSize="18sp"
+            tools:text="A 6-digit passcode was sent to you at (123) 456-7890"
+            />
+
+        <LinearLayout
+            android:id="@+id/digits_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            >
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/first_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toStartOf="@id/description"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/second_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/first_digit"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/third_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/second_digit"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/fourth_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/third_digit"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/fifth_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/fourth_digit"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+            <com.stytch.sdk.StytchSingleDigitEditText
+                android:id="@+id/sixth_digit"
+                android:layout_width="45dp"
+                android:layout_height="48dp"
+                android:hint="@string/_0"
+                android:textAlignment="center"
+                android:inputType="number"
+                tools:ignore="Autofill"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintStart_toEndOf="@id/fifth_digit"
+                android:layout_marginTop="22dp"
+                android:layout_marginStart="6dp"
+                android:maxLength="1"
+                />
+
+        </LinearLayout>
+
+        <com.stytch.sdk.StytchTextView
+            android:id="@+id/didnt_get_it_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/digits_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="27dp"
+            android:textSize="16sp"
+            android:text="@string/didnt_get_it"
+            />
+
+        <com.stytch.sdk.StytchTextView
+            android:id="@+id/resend_code_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/digits_layout"
+            app:layout_constraintStart_toEndOf="@id/didnt_get_it_text_view"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="4dp"
+            android:textSize="16sp"
+            android:text="@string/resend_code"
+            />
+
+        <com.stytch.sdk.StytchButton
+            android:id="@+id/continue_button"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:layout_constraintBottom_toTopOf="@id/powered_by_stytch_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="27dp"
+            android:layout_marginBottom="18dp"
+            android:text="@string/_continue"
+            />
+
+        <ImageView
+            android:id="@+id/powered_by_stytch_image"
+            android:layout_width="161dp"
+            android:layout_height="16dp"
+            android:src="@drawable/powered_by_stytch"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="23dp"
+            android:contentDescription="@string/powered_by_stytch"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
