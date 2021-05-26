@@ -57,6 +57,9 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
                         navigator.goTo(EmailMagicLinkConfirmationScreen(enteredEmail))
                     }
                 }
+                is StytchResult.NetworkError -> {
+
+                }
                 is StytchResult.Error   -> {
                     TODO("Error sending email")
                 }

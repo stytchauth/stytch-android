@@ -356,7 +356,8 @@ private val moshiErrorAdapter by lazy { moshi.adapter(StytchErrorResponse::class
 
 public sealed class StytchResult<out T> {
     public data class Success<out T>(val value: T): StytchResult<T>(), Serializable
-    public data class Error(val errorCode: Int?, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>(), Serializable
+    public object NetworkError : StytchResult<Nothing>()
+    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>(), Serializable
 }
 
 internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
@@ -364,15 +365,19 @@ internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> 
     try {
         StytchResult.Success(apiCall())
     } catch (throwable: Throwable) {
-        try {
-            val httpException = throwable as? HttpException
-            val errorCode = httpException?.code()
-            val stytchErrorResponse = httpException?.response()?.errorBody()?.source()?.let {
-                moshiErrorAdapter.fromJson(it)
+        when (throwable) {
+            is HttpException -> {
+                val errorCode = throwable.code()
+                val stytchErrorResponse = try {
+                    throwable.response()?.errorBody()?.source()?.let {
+                        moshiErrorAdapter.fromJson(it)
+                    }
+                } catch (t: Throwable) {
+                    null
+                }
+                StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
             }
-            StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
-        } catch (throwable: Throwable) {
-            StytchResult.Error(null, null)
+            else -> StytchResult.NetworkError
         }
     }
 }

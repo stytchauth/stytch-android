@@ -83,6 +83,9 @@ internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
                         }
                     }
                 }
+                StytchResult.NetworkError -> {
+
+                }
             }
         }
     }
@@ -211,6 +214,9 @@ internal class SMSPasscodeEnterPasscodeScreen(
                 is StytchResult.Error   -> {
                     Log.d("SMS_Authenticate", "Error ${result.errorCode}: ${result.errorResponse}")
                     //StytchUIFlows.SMSOneTimePasscode.callback(StytchUIResult.failure(it))
+                }
+                StytchResult.NetworkError -> {
+
                 }
             }
         }
