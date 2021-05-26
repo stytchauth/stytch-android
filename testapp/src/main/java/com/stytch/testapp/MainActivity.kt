@@ -1,7 +1,5 @@
 package com.stytch.testapp
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,8 +9,8 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEnvironment
 import com.stytch.sdk.StytchUI
-import com.stytch.sdk.toStytchError
-import com.stytch.sdk.toStytchUser
+import com.stytch.sdk.registerStytchEmailMagicLinkActivity
+import com.stytch.sdk.registerStytchSMSPasscodeActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,6 +18,14 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     lateinit var resultTextView: TextView
+
+    val stytchEmailMagicLinkActivityLauncher = registerStytchEmailMagicLinkActivity {
+        showResult(it)
+    }
+
+    val stytchSMSPasscodeActivityLauncher = registerStytchSMSPasscodeActivity {
+        showResult(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,31 +56,6 @@ class MainActivity : AppCompatActivity() {
         resultTextView = findViewById(R.id.result_text_view)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            EMAIL_MAGIC_LINK_UI_RESULT -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val user = data.toStytchUser()
-                    showResult(user)
-                } else {
-                    val error = data.toStytchError()
-                    showResult(error)
-                }
-            }
-            SMS_PASSCODE_UI_RESULT -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val user = data.toStytchUser()
-                    showResult(user)
-                } else {
-                    val error = data.toStytchError()
-                    showResult(error)
-                }
-            }
-        }
-    }
-
     private fun showResult(result: Any) {
         val theResult = result.toString()
         GlobalScope.launch(Dispatchers.Main) {
@@ -86,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleDarkMode() {
         AppCompatDelegate.setDefaultNightMode(
-            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) AppCompatDelegate.MODE_NIGHT_YES
+            if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
@@ -102,28 +83,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testMagicLinkUIFlow() {
-        val intent = StytchUI.EmailMagicLink.createIntent(
-            appContext = this,
+        val configuration = StytchUI.EmailMagicLink.Configuration(
             loginMagicLinkUrl = "https://test.stytch.com/login",
             signupMagicLinkUrl = "https://test.stytch.com/signup",
             createUserAsPending = true,
         )
-
-        startActivityForResult(intent, EMAIL_MAGIC_LINK_UI_RESULT)
+        stytchEmailMagicLinkActivityLauncher.launch(configuration)
     }
 
     private fun testSMSPasscodeUIFlow() {
-        val intent = StytchUI.SMSPasscode.createIntent(
-            appContext = this,
+        val configuration = StytchUI.SMSPasscode.Configuration(
             createUserAsPending = true,
             hashStringSet = false,
         )
-
-        startActivityForResult(intent, SMS_PASSCODE_UI_RESULT)
-    }
-
-    companion object {
-        const val EMAIL_MAGIC_LINK_UI_RESULT = 1
-        const val SMS_PASSCODE_UI_RESULT = 2
+        stytchSMSPasscodeActivityLauncher.launch(configuration)
     }
 }

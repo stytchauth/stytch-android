@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 public object Stytch {
@@ -311,49 +312,19 @@ public object StytchUI {
             return _uiCustomization!!
         }
 
-    internal lateinit var loginMagicLinkUrl: String
-    internal lateinit var signupMagicLinkUrl: String
-    internal var createUserAsPending = false
-    internal var hashStringSet = false
-
     public object EmailMagicLink {
-        public fun createIntent(
-            appContext: Context,
-            loginMagicLinkUrl: String,
-            signupMagicLinkUrl: String,
-            createUserAsPending: Boolean,
-        ): Intent {
-            assertInitialized()
-
-            StytchUI.loginMagicLinkUrl = loginMagicLinkUrl
-            StytchUI.signupMagicLinkUrl = signupMagicLinkUrl
-            StytchUI.createUserAsPending = createUserAsPending
-
-            return Intent(appContext, StytchEmailMagicLinkActivity::class.java)
-        }
-
-        public fun getResult() {
-
-        }
+        public data class Configuration(
+            val loginMagicLinkUrl: String,
+            val signupMagicLinkUrl: String,
+            val createUserAsPending: Boolean,
+        ): Serializable
     }
 
     public object SMSPasscode {
-        public fun createIntent(
-            appContext: Context,
-            hashStringSet: Boolean,
-            createUserAsPending: Boolean,
-        ): Intent {
-            assertInitialized()
-
-            StytchUI.hashStringSet = hashStringSet
-            StytchUI.createUserAsPending = createUserAsPending
-
-            return Intent(appContext, StytchSMSPasscodeActivity::class.java)
-        }
-
-        public fun getResult() {
-
-        }
+        public data class Configuration(
+            val hashStringSet: Boolean,
+            val createUserAsPending: Boolean,
+        ): Serializable
     }
 }
 

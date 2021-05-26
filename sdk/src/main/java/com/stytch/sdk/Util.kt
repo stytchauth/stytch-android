@@ -1,8 +1,12 @@
 package com.stytch.sdk
 
+import android.content.Context
 import android.content.Intent
 import android.util.Base64
 import android.util.Patterns
+import androidx.activity.result.ActivityResultCaller
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import java.io.Serializable
 
 internal fun String.isValidEmailAddress(): Boolean {
@@ -46,4 +50,46 @@ public inline fun <reified T : Serializable> intentWithExtra(extra: T): Intent {
     return Intent().apply {
         putExtra(T::class.qualifiedName, extra)
     }
+}
+
+public class StytchUIResult
+
+public fun ActivityResultCaller.registerStytchEmailMagicLinkActivity(onResult: (StytchUIResult) -> Unit) : ActivityResultLauncher<StytchUI.EmailMagicLink.Configuration> {
+    return registerForActivityResult(stytchEmailMagicLinkActivityContract, onResult)
+}
+
+public fun ActivityResultCaller.registerStytchSMSPasscodeActivity(onResult: (StytchUIResult) -> Unit) : ActivityResultLauncher<StytchUI.SMSPasscode.Configuration> {
+    return registerForActivityResult(stytchSMSPasscodeActivityContract, onResult)
+}
+
+internal val stytchEmailMagicLinkActivityContract by lazy {
+    object : ActivityResultContract<StytchUI.EmailMagicLink.Configuration, StytchUIResult>() {
+        override fun createIntent(context: Context, input: StytchUI.EmailMagicLink.Configuration): Intent {
+            return Intent(context, StytchEmailMagicLinkActivity::class.java).withSerializableExtra(input)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
+            return intent.toStytchUIResult()
+        }
+    }
+}
+
+internal val stytchSMSPasscodeActivityContract by lazy {
+    object : ActivityResultContract<StytchUI.SMSPasscode.Configuration, StytchUIResult>() {
+        override fun createIntent(context: Context, input: StytchUI.SMSPasscode.Configuration): Intent {
+            return Intent(context, StytchEmailMagicLinkActivity::class.java).withSerializableExtra(input)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
+            return intent.toStytchUIResult()
+        }
+    }
+}
+
+internal fun Intent?.toStytchUIResult(): StytchUIResult {
+    return StytchUIResult()
+}
+
+internal inline fun <reified T : Serializable> Intent.withSerializableExtra(extra: T): Intent = apply {
+    putExtra(T::class.qualifiedName, extra)
 }
