@@ -73,6 +73,8 @@ internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : 
     }
 }
 
+internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.consentTextStyle)
+
 internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
 
 internal class StytchButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs) {

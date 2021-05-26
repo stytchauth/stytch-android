@@ -25,4 +25,5 @@
     <string name="email_magic_link_or_sms_one_time_passcode_home_description">Sign up or log in with your email or phone number, no password needed</string>
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
+    <string name="sms_consent_text">By continuing, you consent to receive an SMS for verification. Message and data rates may apply.</string>
 </resources>

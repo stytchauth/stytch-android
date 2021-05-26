@@ -24,6 +24,10 @@ public class StytchUICustomization(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 16.sp,
     ),
+    public var consentTextStyle: StytchTextStyle = StytchTextStyle(
+        color = StytchColor.fromColorId(R.color.primaryBrandColor),
+        size = 14.sp,
+    ),
     public var inputTextStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 16.sp,

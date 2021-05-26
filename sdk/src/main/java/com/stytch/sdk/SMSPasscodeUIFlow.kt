@@ -111,6 +111,7 @@ internal class SMSPasscodeHomeView(context: Context) : BaseScreenView<SMSPasscod
     val description: TextView
     val plusOneTextView: TextView
     val phoneNumberTextField: EditText
+    val smsConsentTextView: TextView
     val continueButton: Button
     val invalidPhoneNumberErrorTextView: TextView
 
@@ -120,6 +121,7 @@ internal class SMSPasscodeHomeView(context: Context) : BaseScreenView<SMSPasscod
         description = findViewById(R.id.description)
         plusOneTextView = findViewById(R.id.plus_one_text_view)
         phoneNumberTextField = findViewById(R.id.phone_number_text_field)
+        smsConsentTextView = findViewById(R.id.sms_consent_text_view)
         continueButton = findViewById(R.id.continue_button)
         invalidPhoneNumberErrorTextView = findViewById(R.id.invalid_phone_number_error_text_view)
         setBackgroundColor(resources.getColor(R.color.backgroundColor))

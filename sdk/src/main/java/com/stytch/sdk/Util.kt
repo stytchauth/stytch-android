@@ -18,14 +18,13 @@ internal fun generateAuthorizationHeader(projectId: String, secret: String): Str
 
 internal fun assertInitialized() {
     if (!Stytch.isInitialized) {
-        TODO("Error: Stytch not initialized")
+        error("Stytch Error: Stytch not initialized. You must call 'Stytch.configure(...)' before using any functionality of the Stytch SDK.")
     }
 }
 
 public fun Intent?.toStytchUser(): StytchResponseTypes.AuthenticateUserResponse {
     try {
-        return this!!.extras!!
-            .getSerializable(StytchResponseTypes.AuthenticateUserResponse::class.qualifiedName) as StytchResponseTypes.AuthenticateUserResponse
+        return this!!.extras!!.getSerializable(StytchResponseTypes.AuthenticateUserResponse::class.qualifiedName) as StytchResponseTypes.AuthenticateUserResponse
     } catch (throwable: Throwable) {
         error("Stytch Error: called 'Intent?.toStytchUser()' on an invalid Intent. Did you make sure that 'resultCode == Activity.RESULT_OK'?")
     }
