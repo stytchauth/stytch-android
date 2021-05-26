@@ -20,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
+internal class SMSPasscodeHomeScreen(private val configuration: StytchUI.SMSPasscode.Configuration) : Screen<SMSPasscodeHomeView>() {
     private var phoneHintPickerShown = false
 
     override fun createView(context: Context): SMSPasscodeHomeView {
@@ -52,7 +52,7 @@ internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
         GlobalScope.launch(Dispatchers.IO) {
             val result = StytchApi.OTP.loginOrCreateUserBySMS(
                 phoneNumber = "+1$enteredPhoneNumber",
-                createUserAsPending = StytchUI.createUserAsPending,
+                createUserAsPending = configuration.createUserAsPending,
             )
 
             when (result) {

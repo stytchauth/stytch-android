@@ -16,7 +16,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
+internal class EmailMagicLinkHomeScreen(private val configuration: StytchUI.EmailMagicLink.Configuration) : Screen<EmailMagicLinkHomeView>() {
     private var emailHintPickerShown = false
 
     override fun createView(context: Context): EmailMagicLinkHomeView {
@@ -46,9 +46,9 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
         GlobalScope.launch(Dispatchers.IO) {
             val result = StytchApi.MagicLinks.loginOrCreateUserByEmail(
                 email = enteredEmail,
-                loginMagicLinkUrl = StytchUI.loginMagicLinkUrl,
-                signupMagicLinkUrl = StytchUI.signupMagicLinkUrl,
-                createUserAsPending = StytchUI.createUserAsPending,
+                loginMagicLinkUrl = configuration.loginMagicLinkUrl,
+                signupMagicLinkUrl = configuration.signupMagicLinkUrl,
+                createUserAsPending = configuration.createUserAsPending,
             )
 
             when (result) {

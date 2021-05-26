@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
+import com.wealthfront.magellan.Screen
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -328,7 +329,14 @@ public object StytchUI {
     }
 }
 
-internal class StytchEmailMagicLinkActivity : StytchActivity(EmailMagicLinkHomeScreen()) {
+internal class StytchEmailMagicLinkActivity : StytchActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val configuration = intent.getSerializableExtra<StytchUI.EmailMagicLink.Configuration>()
+        configuration?.let { initNavigator(EmailMagicLinkHomeScreen(configuration)) }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val token = intent?.data?.getQueryParameter("token")
@@ -339,12 +347,13 @@ internal class StytchEmailMagicLinkActivity : StytchActivity(EmailMagicLinkHomeS
                 when (result) {
                     is StytchResult.Success -> {
                         Log.d("StytchLog", "Successful Magic Link Authentication")
-                        setResult(Activity.RESULT_OK, intentWithExtra(result.value))
+                        setResult(RESULT_OK, intentWithExtra(result.value))
                         finish()
                     }
                     is StytchResult.Error   -> {
                         Log.d("StytchLog", "Failed Magic Link Authentication")
                     }
+                    StytchResult.NetworkError -> TODO()
                 }
             }
         }
@@ -365,7 +374,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity(EmailMagicLinkHomeS
     }
 }
 
-public class StytchSMSPasscodeActivity : StytchActivity(SMSPasscodeHomeScreen()) {
+public class StytchSMSPasscodeActivity : StytchActivity() {
     private val smsVerificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             runCatching {
@@ -382,6 +391,8 @@ public class StytchSMSPasscodeActivity : StytchActivity(SMSPasscodeHomeScreen())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val configuration = intent.getSerializableExtra<StytchUI.SMSPasscode.Configuration>()
+        configuration?.let { initNavigator(SMSPasscodeHomeScreen(configuration)) }
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
         registerReceiver(smsVerificationReceiver, intentFilter)
     }

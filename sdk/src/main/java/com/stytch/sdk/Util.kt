@@ -93,3 +93,7 @@ internal fun Intent?.toStytchUIResult(): StytchUIResult {
 internal inline fun <reified T : Serializable> Intent.withSerializableExtra(extra: T): Intent = apply {
     putExtra(T::class.qualifiedName, extra)
 }
+
+internal inline fun <reified T : Serializable> Intent?.getSerializableExtra(): T? {
+    return this?.extras?.getSerializable(T::class.qualifiedName) as? T
+}

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wealthfront.magellan.Navigator
 import com.wealthfront.magellan.Screen
 
-public abstract class StytchActivity internal constructor(private val startScreen: Screen<*>) : AppCompatActivity() {
+public abstract class StytchActivity internal constructor() : AppCompatActivity() {
     protected lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,10 @@ public abstract class StytchActivity internal constructor(private val startScree
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         actionBar?.customize()
         supportActionBar?.customize()
-        navigator = Navigator.withRoot(startScreen).build()
+    }
+
+    protected fun initNavigator(startingScreen: Screen<*>) {
+        navigator = Navigator.withRoot(startingScreen).build()
     }
 
     private fun android.app.ActionBar.customize() {
