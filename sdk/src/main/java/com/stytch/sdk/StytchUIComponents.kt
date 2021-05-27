@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
@@ -27,6 +28,17 @@ internal open class StytchEditText(context: Context, attrs: AttributeSet?) : App
             colors = intArrayOf(textFieldBackgroundColor, textFieldBackgroundColor)
         }
     }
+
+    var isInErrorState = false
+        set(value) {
+            if (value == field) return
+            field = value
+            val color = if (field) uiCustomization.errorTextStyle.color else uiCustomization.inputBackgroundBorderColor
+            (background as GradientDrawable).setStroke(
+                1.dp.toFloat().toInt(),
+                color.getColor(context),
+            )
+        }
 
     final override fun setTextColor(color: Int) {
         super.setTextColor(color)
@@ -75,7 +87,12 @@ internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : 
 
 internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.consentTextStyle)
 
-internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
+internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle) {
+    fun show(@StringRes message: Int) {
+        setText(message)
+        visibility = View.VISIBLE
+    }
+}
 
 internal class StytchButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs) {
     init {

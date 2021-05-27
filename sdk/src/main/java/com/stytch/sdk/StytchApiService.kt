@@ -1,5 +1,6 @@
 package com.stytch.sdk
 
+import android.util.Log
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -259,11 +260,12 @@ public object StytchResponseTypes {
     )
 }
 
+@JsonClass(generateAdapter = true)
 public data class StytchErrorResponse(
     val status_code: Int,
     val request_id: String,
     val error_type: String,
-    val error_method: String,
+    val error_method: String?,
     val error_url: String,
 )
 
@@ -351,14 +353,14 @@ internal interface StytchApiService {
     ): StytchResponseTypes.AuthenticateUserResponse
 }
 
-internal val moshi by lazy { Moshi.Builder().build() }
-private val moshiErrorAdapter by lazy { moshi.adapter(StytchErrorResponse::class.java) }
-
 public sealed class StytchResult<out T> {
     public data class Success<out T>(val value: T): StytchResult<T>(), Serializable
     public object NetworkError : StytchResult<Nothing>()
     public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>(), Serializable
 }
+
+internal val moshi by lazy { Moshi.Builder().build() }
+internal val moshiErrorAdapter by lazy { moshi.adapter(StytchErrorResponse::class.java) }
 
 internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
     assertInitialized()
@@ -375,9 +377,17 @@ internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> 
                 } catch (t: Throwable) {
                     null
                 }
+                warningLog("http error code: $errorCode, errorResponse: $stytchErrorResponse")
                 StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
             }
-            else -> StytchResult.NetworkError
+            else -> {
+                warningLog("Network Error")
+                StytchResult.NetworkError
+            }
         }
     }
+}
+
+internal fun warningLog(message: String) {
+    Log.w("StytchLog", "Stytch warning: $message")
 }

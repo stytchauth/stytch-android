@@ -26,33 +26,16 @@ internal fun assertInitialized() {
     }
 }
 
-public fun Intent?.toStytchUser(): StytchResponseTypes.AuthenticateUserResponse {
-    try {
-        return this!!.extras!!.getSerializable(StytchResponseTypes.AuthenticateUserResponse::class.qualifiedName) as StytchResponseTypes.AuthenticateUserResponse
-    } catch (throwable: Throwable) {
-        error("Stytch Error: called 'Intent?.toStytchUser()' on an invalid Intent. Did you make sure that 'resultCode == Activity.RESULT_OK'?")
-    }
-}
-
-public fun Intent?.toStytchError(): StytchError {
-    return when (this) {
-        null -> StytchError.CancelledByUser
-        else -> StytchError.Unknown
-    }
-}
-
-public sealed class StytchError private constructor() {
-    public object CancelledByUser : StytchError()
-    public object Unknown : StytchError()
-}
-
 public inline fun <reified T : Serializable> intentWithExtra(extra: T): Intent {
     return Intent().apply {
         putExtra(T::class.qualifiedName, extra)
     }
 }
 
-public class StytchUIResult
+public sealed class StytchUIResult {
+    public data class Success(val user: StytchResponseTypes.AuthenticateUserResponse) : StytchUIResult()
+    public object CancelledByUser : StytchUIResult()
+}
 
 public fun ActivityResultCaller.registerStytchEmailMagicLinkActivity(onResult: (StytchUIResult) -> Unit) : ActivityResultLauncher<StytchUI.EmailMagicLink.Configuration> {
     return registerForActivityResult(stytchEmailMagicLinkActivityContract, onResult)
@@ -87,7 +70,14 @@ internal val stytchSMSPasscodeActivityContract by lazy {
 }
 
 internal fun Intent?.toStytchUIResult(): StytchUIResult {
-    return StytchUIResult()
+    return when (this) {
+        null -> StytchUIResult.CancelledByUser
+        else -> {
+            val user = getSerializableExtra<StytchResponseTypes.AuthenticateUserResponse>()
+                ?: error("Stytch Error: Internal Error. Could not deserialize user.")
+            StytchUIResult.Success(user)
+        }
+    }
 }
 
 internal inline fun <reified T : Serializable> Intent.withSerializableExtra(extra: T): Intent = apply {
@@ -96,4 +86,9 @@ internal inline fun <reified T : Serializable> Intent.withSerializableExtra(extr
 
 internal inline fun <reified T : Serializable> Intent?.getSerializableExtra(): T? {
     return this?.extras?.getSerializable(T::class.qualifiedName) as? T
+}
+
+public object StytchErrorTypes {
+    public const val EMAIL_NOT_FOUND: String = "email_not_found"
+    public const val BILLING_NOT_VERIFIED_FOR_EMAIL: String = "billing_not_verified_for_email"
 }

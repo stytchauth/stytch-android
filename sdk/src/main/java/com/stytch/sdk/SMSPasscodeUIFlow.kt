@@ -33,9 +33,7 @@ internal class SMSPasscodeHomeScreen(private val configuration: StytchUI.SMSPass
                 invalidPhoneNumberErrorTextView.visibility = View.GONE
                 (view.phoneNumberTextField.background as GradientDrawable).setStroke(
                     1.dp.toFloat().toInt(),
-                    StytchUI.uiCustomization.inputBackgroundBorderColor.getColor(
-                        activity
-                    )
+                    StytchUI.uiCustomization.inputBackgroundBorderColor.getColor(activity),
                 )
             }
 

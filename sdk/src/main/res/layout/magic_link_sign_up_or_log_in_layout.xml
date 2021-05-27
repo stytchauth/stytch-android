@@ -52,6 +52,20 @@
             android:paddingHorizontal="9dp"
             />
 
+        <com.stytch.sdk.StytchErrorTextView
+            android:id="@+id/error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/email_text_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="27dp"
+            android:gravity="start"
+            android:textAlignment="textStart"
+            android:visibility="gone"
+            />
+
         <com.stytch.sdk.StytchButton
             android:id="@+id/continue_button"
             android:layout_width="match_parent"

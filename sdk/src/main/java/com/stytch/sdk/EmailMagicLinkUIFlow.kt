@@ -3,6 +3,7 @@ package com.stytch.sdk
 import android.content.Context
 import android.text.InputFilter
 import android.text.Spanned
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -29,6 +30,8 @@ internal class EmailMagicLinkHomeScreen(private val configuration: StytchUI.Emai
                 }
             )
             emailTextField.addTextChangedListener {
+                view.errorTextView.visibility = View.GONE
+                view.emailTextField.isInErrorState = false
                 continueButton.isEnabled = it?.toString()?.isValidEmailAddress() == true
             }
 
@@ -40,6 +43,7 @@ internal class EmailMagicLinkHomeScreen(private val configuration: StytchUI.Emai
     }
 
     private fun onContinueButtonClicked() {
+        view.errorTextView.visibility = View.GONE
         val enteredEmail = view.emailTextField.text.toString()
         view.continueButton.isEnabled = false
         view.continueButton.text = view.resources.getString(R.string.sending_email)
@@ -51,17 +55,32 @@ internal class EmailMagicLinkHomeScreen(private val configuration: StytchUI.Emai
                 createUserAsPending = configuration.createUserAsPending,
             )
 
-            when (result) {
-                is StytchResult.Success -> {
-                    withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is StytchResult.Success -> {
                         navigator.goTo(EmailMagicLinkConfirmationScreen(enteredEmail))
                     }
-                }
-                is StytchResult.NetworkError -> {
-
-                }
-                is StytchResult.Error   -> {
-                    TODO("Error sending email")
+                    is StytchResult.NetworkError -> {
+                        view.errorTextView.show(R.string.network_error)
+                        view.continueButton.setText(R.string._continue)
+                    }
+                    is StytchResult.Error   -> {
+                        when (result.errorResponse?.error_type) {
+                            null -> {
+                                view.errorTextView.show(R.string.unknown_error)
+                                view.continueButton.setText(R.string._continue)
+                            }
+                            StytchErrorTypes.EMAIL_NOT_FOUND, StytchErrorTypes.BILLING_NOT_VERIFIED_FOR_EMAIL -> {
+                                view.errorTextView.show(R.string.invalid_email_error)
+                                view.emailTextField.isInErrorState = true
+                                view.continueButton.setText(R.string._continue)
+                            }
+                            else -> {
+                                view.errorTextView.show(R.string.unknown_error)
+                                view.continueButton.setText(R.string._continue)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -89,7 +108,8 @@ internal class EmailMagicLinkHomeScreen(private val configuration: StytchUI.Emai
 internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMagicLinkHomeScreen>(context) {
     val title: TextView
     val description: TextView
-    val emailTextField: EditText
+    val emailTextField: StytchEditText
+    val errorTextView: StytchErrorTextView
     val continueButton: Button
 
     init {
@@ -97,6 +117,7 @@ internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMa
         title = findViewById(R.id.title)
         description = findViewById(R.id.description)
         emailTextField = findViewById(R.id.email_text_field)
+        errorTextView = findViewById(R.id.error_text_view)
         continueButton = findViewById(R.id.continue_button)
     }
 }

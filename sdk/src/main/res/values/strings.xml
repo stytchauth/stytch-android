@@ -26,4 +26,7 @@
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
     <string name="sms_consent_text">By continuing, you consent to receive an SMS for verification. Message and data rates may apply.</string>
+    <string name="network_error">Could not connect to network. Please check your internet connection</string>
+    <string name="unknown_error">Something went wrong. Please wait a moment and then try again.</string>
+    <string name="invalid_email_error">Invalid email. Please try again.</string>
 </resources>
