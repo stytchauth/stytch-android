@@ -5,7 +5,6 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.credentials.Credentials

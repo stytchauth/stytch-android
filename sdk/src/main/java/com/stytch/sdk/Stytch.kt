@@ -7,11 +7,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResultCaller
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
-import com.wealthfront.magellan.Screen
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -319,6 +321,32 @@ public object StytchUI {
             val signupMagicLinkUrl: String,
             val createUserAsPending: Boolean,
         ): Serializable
+
+        public fun activityLauncher(
+            context: ActivityResultCaller,
+            onResult: (StytchUIResult) -> Unit,
+        ): ActivityResultLauncher<Configuration> {
+            return context.registerForActivityResult(activityResultContract, onResult)
+        }
+
+        internal val activityResultContract by lazy {
+            object : ActivityResultContract<Configuration, StytchUIResult>() {
+                override fun createIntent(context: Context, input: Configuration): Intent {
+                    return this@EmailMagicLink.createIntent(context, input)
+                }
+
+                override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
+                    return intent.toStytchUIResultInternal()
+                }
+            }
+        }
+
+        public fun createIntent(
+            appContext: Context,
+            configuration: Configuration,
+        ): Intent {
+            return Intent(appContext, StytchEmailMagicLinkActivity::class.java).withSerializableExtra(configuration)
+        }
     }
 
     public object SMSPasscode {
@@ -326,6 +354,32 @@ public object StytchUI {
             val hashStringSet: Boolean,
             val createUserAsPending: Boolean,
         ): Serializable
+
+        public fun activityLauncher(
+            context: ActivityResultCaller,
+            onResult: (StytchUIResult) -> Unit,
+        ): ActivityResultLauncher<Configuration> {
+            return context.registerForActivityResult(activityResultContract, onResult)
+        }
+
+        internal val activityResultContract by lazy {
+            object : ActivityResultContract<Configuration, StytchUIResult>() {
+                override fun createIntent(context: Context, input: Configuration): Intent {
+                    return this@SMSPasscode.createIntent(context, input)
+                }
+
+                override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
+                    return intent.toStytchUIResultInternal()
+                }
+            }
+        }
+
+        public fun createIntent(
+            appContext: Context,
+            configuration: Configuration,
+        ): Intent {
+            return Intent(appContext, StytchSMSPasscodeActivity::class.java).withSerializableExtra(configuration)
+        }
     }
 }
 
@@ -334,7 +388,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val configuration = intent.getSerializableExtra<StytchUI.EmailMagicLink.Configuration>()
-        configuration?.let { initNavigator(EmailMagicLinkHomeScreen(configuration)) }
+        configuration?.let { initNavigator(EmailMagicLinkHomeScreen(it)) }
     }
 
     override fun onNewIntent(intent: Intent?) {

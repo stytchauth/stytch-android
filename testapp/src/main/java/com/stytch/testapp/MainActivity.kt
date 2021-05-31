@@ -9,8 +9,6 @@ import com.stytch.sdk.Stytch
 import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEnvironment
 import com.stytch.sdk.StytchUI
-import com.stytch.sdk.registerStytchEmailMagicLinkActivity
-import com.stytch.sdk.registerStytchSMSPasscodeActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,11 +17,11 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
     lateinit var resultTextView: TextView
 
-    val stytchEmailMagicLinkActivityLauncher = registerStytchEmailMagicLinkActivity {
+    val stytchEmailMagicLinkActivityLauncher = StytchUI.EmailMagicLink.activityLauncher(this) {
         showResult(it)
     }
 
-    val stytchSMSPasscodeActivityLauncher = registerStytchSMSPasscodeActivity {
+    val stytchSMSPasscodeActivityLauncher = StytchUI.SMSPasscode.activityLauncher(this) {
         showResult(it)
     }
 
