@@ -21,32 +21,47 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
-    private var phoneHintPickerShown = false
+    var phoneHintPickerShown = false
+    var inErrorState = false
+    var errorMessage: String? = null
+    var isPhoneNumberTextFieldInErrorState = false
+    var buttonText: String? = null
+    var isButtonEnabled = false
+    var phoneNumberTextFieldText = ""
 
     override fun createView(context: Context): SMSPasscodeHomeView {
         return SMSPasscodeHomeView(context).apply {
             setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
-            continueButton.isEnabled = false
 
             phoneNumberTextField.addTextChangedListener {
-                continueButton.isEnabled = phoneNumberTextField.text.isNotEmpty()
-                invalidPhoneNumberErrorTextView.visibility = View.GONE
-                (view.phoneNumberTextField.background as GradientDrawable).setStroke(
-                    1.dp.toFloat().toInt(),
-                    StytchUI.uiCustomization.inputBackgroundBorderColor.getColor(activity),
-                )
+                val asString = it.toString()
+                if (asString != phoneNumberTextFieldText) {
+                    phoneNumberTextFieldText = asString
+                    isButtonEnabled = !view.phoneNumberTextField.text.isNullOrEmpty()
+                    inErrorState = false
+                    isPhoneNumberTextFieldInErrorState = false
+                    view.updateIsButtonEnabled()
+                    view.updateInErrorState()
+                    view.updateIsPhoneNumberTextFieldInErrorState()
+                }
             }
 
-            //phoneNumberTextField.requestFocus()
+            if (buttonText == null) buttonText = resources.getString(R.string._continue)
+
+            updateAllState(this@SMSPasscodeHomeScreen)
 
             continueButton.setOnClickListener { onContinueButtonClicked() }
         }
     }
 
     private fun onContinueButtonClicked() {
-        view.continueButton.isEnabled = false
-        view.continueButton.text = view.resources.getString(R.string.sending_passcode)
         val enteredPhoneNumber = view.phoneNumberTextField.text.toString()
+
+        isButtonEnabled = false
+        buttonText = activity.getString(R.string.sending_passcode)
+        view.updateIsButtonEnabled()
+        view.updateButtonText()
+
         GlobalScope.launch(Dispatchers.IO) {
             val result = StytchApi.OTP.loginOrCreateUserBySMS(
                 phoneNumber = "+1$enteredPhoneNumber",
@@ -56,7 +71,7 @@ internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
             when (result) {
                 is StytchResult.Success -> {
                     val task = SmsRetriever.getClient(activity).startSmsUserConsent(null)
-                    if (task.isSuccessful) Log.i("StytchLog", "SMS Retriever task started successfully")
+                    if (task.isSuccessful) Log.d("StytchLog", "SMS Retriever task started successfully")
                     else Log.w("StytchLog", "SMS Retriever task not started successfully (SMS autofill will not work)")
                     withContext(Dispatchers.Main) {
                         navigator.goTo(
@@ -70,14 +85,12 @@ internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
                 is StytchResult.Error   -> {
                     if (result.errorCode in 400..499) {
                         withContext(Dispatchers.Main) {
-                            view.continueButton.text = view.resources.getString(R.string._continue)
-                            view.invalidPhoneNumberErrorTextView.visibility = View.VISIBLE
-                            (view.phoneNumberTextField.background as GradientDrawable).setStroke(
-                                1.dp.toFloat().toInt(),
-                                StytchUI.uiCustomization.errorTextStyle.color.getColor(
-                                    activity
-                                )
-                            )
+                            buttonText = activity.getString(R.string._continue)
+                            inErrorState = true
+                            isPhoneNumberTextFieldInErrorState = true
+                            view.updateButtonText()
+                            view.updateInErrorState()
+                            view.updateIsPhoneNumberTextFieldInErrorState()
                         }
                     }
                 }
@@ -111,10 +124,10 @@ internal class SMSPasscodeHomeView(context: Context) : BaseScreenView<SMSPasscod
     val title: TextView
     val description: TextView
     val plusOneTextView: TextView
-    val phoneNumberTextField: EditText
+    val phoneNumberTextField: StytchEditText
     val smsConsentTextView: TextView
     val continueButton: Button
-    val invalidPhoneNumberErrorTextView: TextView
+    val errorTextView: StytchErrorTextView
 
     init {
         inflate(context, R.layout.sms_enter_phone_number_layout, this)
@@ -124,8 +137,36 @@ internal class SMSPasscodeHomeView(context: Context) : BaseScreenView<SMSPasscod
         phoneNumberTextField = findViewById(R.id.phone_number_text_field)
         smsConsentTextView = findViewById(R.id.sms_consent_text_view)
         continueButton = findViewById(R.id.continue_button)
-        invalidPhoneNumberErrorTextView = findViewById(R.id.invalid_phone_number_error_text_view)
+        errorTextView = findViewById(R.id.error_text_view)
         setBackgroundColor(resources.getColor(R.color.backgroundColor))
+    }
+
+    fun updateAllState(screen: SMSPasscodeHomeScreen) {
+        updateInErrorState(screen)
+        updateErrorMessage(screen)
+        updateIsPhoneNumberTextFieldInErrorState(screen)
+        updateButtonText(screen)
+        updateIsButtonEnabled(screen)
+    }
+
+    fun updateInErrorState(screen: SMSPasscodeHomeScreen = this.screen) {
+        errorTextView.visibility = if (screen.inErrorState) View.VISIBLE else View.GONE
+    }
+
+    fun updateErrorMessage(screen: SMSPasscodeHomeScreen = this.screen) {
+        errorTextView.text = screen.errorMessage
+    }
+
+    fun updateIsPhoneNumberTextFieldInErrorState(screen: SMSPasscodeHomeScreen = this.screen) {
+        phoneNumberTextField.isInErrorState = screen.isPhoneNumberTextFieldInErrorState
+    }
+
+    fun updateButtonText(screen: SMSPasscodeHomeScreen = this.screen) {
+        continueButton.text = screen.buttonText
+    }
+
+    fun updateIsButtonEnabled(screen: SMSPasscodeHomeScreen = this.screen) {
+        continueButton.isEnabled = screen.isButtonEnabled
     }
 }
 

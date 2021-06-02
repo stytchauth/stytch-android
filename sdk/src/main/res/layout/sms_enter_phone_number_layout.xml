@@ -71,7 +71,7 @@
         </LinearLayout>
 
         <com.stytch.sdk.StytchErrorTextView
-            android:id="@+id/invalid_phone_number_error_text_view"
+            android:id="@+id/error_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/phone_number_text_field_row"

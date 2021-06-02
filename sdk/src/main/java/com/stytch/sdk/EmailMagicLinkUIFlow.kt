@@ -197,6 +197,7 @@ internal class EmailMagicLinkConfirmationScreen(
     override fun createView(context: Context): EmailMagicLinkConfirmationView {
         return EmailMagicLinkConfirmationView(context).apply {
             setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
+
             description.text = resources.getString(R.string.magic_link_sent_description, emailAddress)
 
             tryAgainButton.setOnClickListener {
