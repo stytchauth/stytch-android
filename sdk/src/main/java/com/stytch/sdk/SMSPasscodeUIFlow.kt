@@ -55,9 +55,9 @@ internal class SMSPasscodeHomeScreen : Screen<SMSPasscodeHomeView>() {
 
             when (result) {
                 is StytchResult.Success -> {
-                    val task = SmsRetriever.getClient(activity).startSmsUserConsent(/*"+14153225608"*/null)
-                    if (task.isSuccessful) Log.d("SMSPasscodeUIFlow", "SMS Retriever task started successfully")
-                    else Log.d("SMSPasscodeUIFlow", "SMS Retriever task not successful")
+                    val task = SmsRetriever.getClient(activity).startSmsUserConsent(null)
+                    if (task.isSuccessful) Log.i("StytchLog", "SMS Retriever task started successfully")
+                    else Log.w("StytchLog", "SMS Retriever task not started successfully (SMS autofill will not work)")
                     withContext(Dispatchers.Main) {
                         navigator.goTo(
                             SMSPasscodeEnterPasscodeScreen(
