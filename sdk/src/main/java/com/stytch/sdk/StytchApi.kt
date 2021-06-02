@@ -1,18 +1,15 @@
 package com.stytch.sdk
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 public object StytchApi {
-
-    public fun asyncUtil(block: suspend () -> Unit) {
-        GlobalScope.launch { block() }
-    }
-
     public object Users {
         public suspend fun createUser(
             email: String? = null,
@@ -241,7 +238,7 @@ public object StytchApi {
         }
     }
 
-    private val apiService by lazy {
+    internal val apiService by lazy {
         Stytch.assertInitialized()
         Retrofit.Builder()
             .baseUrl(Stytch.environment.baseUrl)
@@ -264,5 +261,64 @@ public object StytchApi {
             )
             .build()
             .create(StytchApiService::class.java)
+    }
+}
+
+public object StytchCallbackApi {
+    // TODO add remaining endpoints (?)
+
+    public object OTP {
+        public fun sendOneTimePasscodeBySMS(
+            phoneNumber: String,
+            expirationMinutes: Int? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.SendOneTimePasscodeBySMSResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.OTP.sendOneTimePasscodeBySMS(
+                phoneNumber = phoneNumber,
+                expirationMinutes = expirationMinutes,
+                attributes = attributes,
+            )
+        }
+
+        public suspend fun loginOrCreateUserBySMS(
+            phoneNumber: String,
+            expirationMinutes: Int? = null,
+            createUserAsPending: Boolean? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.OTP.loginOrCreateUserBySMS(
+                phoneNumber = phoneNumber,
+                expirationMinutes = expirationMinutes,
+                attributes = attributes,
+            )
+        }
+
+        public suspend fun authenticateOneTimePasscode(
+            methodId: String,
+            code: String,
+            options: StytchDataTypes.Options? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.AuthenticateUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.OTP.authenticateOneTimePasscode(
+                methodId = methodId,
+                code = code,
+                options = options,
+                attributes = attributes,
+            )
+        }
+    }
+
+    private val apiService by lazy { StytchApi.apiService }
+
+    private fun <T> ((T) -> Unit).queue(block: suspend () -> T) {
+        GlobalScope.launch {
+            val result = block()
+            withContext(Dispatchers.Main) {
+                this@queue(result)
+            }
+        }
     }
 }
