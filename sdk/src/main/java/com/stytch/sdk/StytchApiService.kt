@@ -354,16 +354,16 @@ internal interface StytchApiService {
 }
 
 public sealed class StytchResult<out T> {
-    public data class Success<out T>(val value: T): StytchResult<T>(), Serializable
+    public data class Success<out T>(val value: T): StytchResult<T>()
     public object NetworkError : StytchResult<Nothing>()
-    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>(), Serializable
+    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>()
 }
 
 internal val moshi by lazy { Moshi.Builder().build() }
 internal val moshiErrorAdapter by lazy { moshi.adapter(StytchErrorResponse::class.java) }
 
 internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
-    assertInitialized()
+    Stytch.assertInitialized()
     try {
         StytchResult.Success(apiCall())
     } catch (throwable: Throwable) {

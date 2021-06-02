@@ -81,19 +81,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testMagicLinkUIFlow() {
-        val configuration = StytchUI.EmailMagicLink.Configuration(
+        StytchUI.EmailMagicLink.configure(
             loginMagicLinkUrl = "https://test.stytch.com/login",
             signupMagicLinkUrl = "https://test.stytch.com/signup",
             createUserAsPending = true,
         )
-        stytchEmailMagicLinkActivityLauncher.launch(configuration)
+        stytchEmailMagicLinkActivityLauncher.launch(Unit)
     }
 
     private fun testSMSPasscodeUIFlow() {
-        val configuration = StytchUI.SMSPasscode.Configuration(
+        StytchUI.SMSPasscode.configure(
             createUserAsPending = true,
             hashStringSet = false,
         )
-        stytchSMSPasscodeActivityLauncher.launch(configuration)
+        stytchSMSPasscodeActivityLauncher.launch(Unit)
     }
 }
