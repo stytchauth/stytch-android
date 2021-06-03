@@ -6,23 +6,27 @@ import android.text.Spanned
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
 import com.wealthfront.magellan.BaseScreenView
 import com.wealthfront.magellan.Screen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
     var emailHintPickerShown = false
-    var emailTextFieldInErrorState = false
-    var errorMessage: String? = null
-    var inErrorState = false
-    var buttonText: String? = null
-    var isButtonEnabled = false
+    var isEmailTextFieldInErrorState = MutableStateFlow(false)
+    var errorMessage = MutableStateFlow<@StringRes Int>(R.string.invalid_email_error)
+    var isInErrorState = MutableStateFlow(false)
+    var buttonText = MutableStateFlow<@StringRes Int>(R.string._continue)
+    var isButtonEnabled = MutableStateFlow(false)
     var currentTextFieldText = ""
 
     override fun createView(context: Context): EmailMagicLinkHomeView {
@@ -39,33 +43,23 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
                     val asString = it.toString()
                     if (asString != currentTextFieldText) {
                         currentTextFieldText = asString
-                        inErrorState = false
-                        emailTextFieldInErrorState = false
-                        isButtonEnabled = it?.toString()?.isValidEmailAddress() == true
-                        view.updateInErrorState()
-                        view.updateEmailTextFieldInErrorState()
-                        view.updateIsButtonEnabled()
+                        this@EmailMagicLinkHomeScreen.isInErrorState.value = false
+                        isEmailTextFieldInErrorState.value = false
+                        isButtonEnabled.value = asString.isValidEmailAddress()
                     }
                 }
             }
 
             continueButton.setOnClickListener { onContinueButtonClicked() }
-
-            if (buttonText == null) buttonText = resources.getString(R.string._continue)
-
-            updateAllState(this@EmailMagicLinkHomeScreen)
         }
     }
 
     private fun onContinueButtonClicked() {
         val enteredEmail = view.emailTextField.text.toString()
 
-        inErrorState = false
-        isButtonEnabled = false
-        buttonText = view.resources.getString(R.string.sending_email)
-        view.updateInErrorState()
-        view.updateIsButtonEnabled()
-        view.updateButtonText()
+        isInErrorState.value = false
+        isButtonEnabled.value = false
+        buttonText.value = R.string.sending_email
 
         GlobalScope.launch(Dispatchers.IO) {
             val result = StytchApi.MagicLinks.loginOrCreateUserByEmail(
@@ -78,47 +72,33 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
             withContext(Dispatchers.Main) {
                 when (result) {
                     is StytchResult.Success -> {
-                        buttonText = activity.getString(R.string._continue)
-                        isButtonEnabled = true
+                        buttonText.value = R.string._continue
+                        isButtonEnabled.value = true
                         navigator.goTo(EmailMagicLinkConfirmationScreen(enteredEmail))
                     }
                     is StytchResult.NetworkError -> {
-                        inErrorState = true
-                        errorMessage = activity.getString(R.string.network_error)
-                        buttonText = activity.getString(R.string._continue)
-                        isButtonEnabled = true
-                        view.updateInErrorState()
-                        view.updateErrorMessage()
-                        view.updateButtonText()
-                        view.updateIsButtonEnabled()
+                        isInErrorState.value = true
+                        errorMessage.value = R.string.network_error
+                        buttonText.value = R.string._continue
+                        isButtonEnabled.value = true
                     }
-                    is StytchResult.Error   -> {
+                    is StytchResult.Error -> {
                         when (result.errorResponse?.error_type) {
                             null -> {
-                                inErrorState = true
-                                errorMessage = activity.getString(R.string.unknown_error)
-                                buttonText = activity.getString(R.string._continue)
-                                view.updateInErrorState()
-                                view.updateErrorMessage()
-                                view.updateButtonText()
+                                isInErrorState.value = true
+                                errorMessage.value = R.string.unknown_error
+                                buttonText.value = R.string._continue
                             }
                             StytchErrorTypes.EMAIL_NOT_FOUND, StytchErrorTypes.BILLING_NOT_VERIFIED_FOR_EMAIL -> {
-                                inErrorState = true
-                                errorMessage = activity.getString(R.string.invalid_email_error)
-                                emailTextFieldInErrorState = true
-                                buttonText = activity.getString(R.string._continue)
-                                view.updateInErrorState()
-                                view.updateErrorMessage()
-                                view.updateEmailTextFieldInErrorState()
-                                view.updateButtonText()
+                                isInErrorState.value = true
+                                errorMessage.value = R.string.invalid_email_error
+                                isEmailTextFieldInErrorState.value = true
+                                buttonText.value = R.string._continue
                             }
                             else -> {
-                                inErrorState = true
-                                errorMessage = activity.getString(R.string.unknown_error)
-                                buttonText = activity.getString(R.string._continue)
-                                view.updateInErrorState()
-                                view.updateErrorMessage()
-                                view.updateButtonText()
+                                isInErrorState.value = true
+                                errorMessage.value = R.string.unknown_error
+                                buttonText.value = R.string._continue
                             }
                         }
                     }
@@ -138,6 +118,14 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
             val intent = Credentials.getClient(activity).getHintPickerIntent(hintRequest)
             activity.startIntentSenderForResult(intent.intentSender, IntentCodes.EMAIL_PICKER_INTENT_CODE.ordinal, null, 0, 0, 0)
         }
+
+        view.coroutineScope = StytchScreenViewCoroutineScope()
+        view.subscribeToState()
+    }
+
+    override fun onHide(context: Context?) {
+        super.onHide(context)
+        view.coroutineScope.cancel()
     }
 
     fun emailAddressHintGiven(emailAddress: String) {
@@ -152,6 +140,7 @@ internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMa
     val emailTextField: StytchEditText
     val errorTextView: StytchErrorTextView
     val continueButton: Button
+    lateinit var coroutineScope: CoroutineScope
 
     init {
         inflate(context, R.layout.magic_link_sign_up_or_log_in_layout, this)
@@ -162,32 +151,24 @@ internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMa
         continueButton = findViewById(R.id.continue_button)
     }
 
-    fun updateAllState(screen: EmailMagicLinkHomeScreen) {
-        updateButtonText(screen)
-        updateErrorMessage(screen)
-        updateInErrorState(screen)
-        updateEmailTextFieldInErrorState(screen)
-        updateIsButtonEnabled(screen)
-    }
-
-    fun updateButtonText(screen: EmailMagicLinkHomeScreen = this.screen) {
-        continueButton.text = screen.buttonText
-    }
-
-    fun updateErrorMessage(screen: EmailMagicLinkHomeScreen = this.screen) {
-        errorTextView.text = screen.errorMessage
-    }
-
-    fun updateInErrorState(screen: EmailMagicLinkHomeScreen = this.screen) {
-        errorTextView.visibility = if (screen.inErrorState) View.VISIBLE else View.GONE
-    }
-
-    fun updateEmailTextFieldInErrorState(screen: EmailMagicLinkHomeScreen = this.screen) {
-        emailTextField.isInErrorState = screen.emailTextFieldInErrorState
-    }
-
-    fun updateIsButtonEnabled(screen: EmailMagicLinkHomeScreen = this.screen) {
-        continueButton.isEnabled = screen.isButtonEnabled
+    fun subscribeToState() {
+        with(coroutineScope) {
+            listen(screen.isEmailTextFieldInErrorState) {
+                emailTextField.isInErrorState = it
+            }
+            listen(screen.errorMessage) {
+                errorTextView.text = resources.getString(it)
+            }
+            listen(screen.isInErrorState) {
+                errorTextView.visibility = if (it) View.VISIBLE else View.GONE
+            }
+            listen(screen.buttonText) {
+                continueButton.text = resources.getString(it)
+            }
+            listen(screen.isButtonEnabled) {
+                continueButton.isEnabled = it
+            }
+        }
     }
 }
 

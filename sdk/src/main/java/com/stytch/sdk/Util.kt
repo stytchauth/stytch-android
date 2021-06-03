@@ -4,6 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.io.Serializable
 
 internal fun String.isValidEmailAddress(): Boolean {
@@ -58,4 +64,15 @@ public object StytchErrorTypes {
 
 internal object Constants {
     const val ACTIVITY_ID_EXTRA_NAME = "activity_id"
+}
+
+@Suppress("FunctionName")
+internal fun StytchScreenViewCoroutineScope(): CoroutineScope {
+    return CoroutineScope(SupervisorJob()) // TODO
+}
+
+internal inline fun <T> CoroutineScope.listen(stateFlow: StateFlow<T>, crossinline collectBlock: suspend (T) -> Unit) {
+    launch(Dispatchers.Main) {
+        stateFlow.collect(collectBlock)
+    }
 }
