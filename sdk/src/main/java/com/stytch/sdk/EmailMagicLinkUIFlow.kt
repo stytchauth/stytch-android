@@ -10,20 +10,16 @@ import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
-import com.wealthfront.magellan.BaseScreenView
-import com.wealthfront.magellan.Screen
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
+internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>() {
     var emailHintPickerShown = false
     var isEmailTextFieldInErrorState = MutableStateFlow(false)
-    var errorMessage = MutableStateFlow<@StringRes Int>(R.string.invalid_email_error)
+    var errorMessage = MutableStateFlow<@StringRes Int>(R.string.unknown_error)
     var isInErrorState = MutableStateFlow(false)
     var buttonText = MutableStateFlow<@StringRes Int>(R.string._continue)
     var isButtonEnabled = MutableStateFlow(false)
@@ -118,14 +114,6 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
             val intent = Credentials.getClient(activity).getHintPickerIntent(hintRequest)
             activity.startIntentSenderForResult(intent.intentSender, IntentCodes.EMAIL_PICKER_INTENT_CODE.ordinal, null, 0, 0, 0)
         }
-
-        view.coroutineScope = StytchScreenViewCoroutineScope()
-        view.subscribeToState()
-    }
-
-    override fun onHide(context: Context?) {
-        super.onHide(context)
-        view.coroutineScope.cancel()
     }
 
     fun emailAddressHintGiven(emailAddress: String) {
@@ -134,13 +122,12 @@ internal class EmailMagicLinkHomeScreen : Screen<EmailMagicLinkHomeView>() {
     }
 }
 
-internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMagicLinkHomeScreen>(context) {
+internal class EmailMagicLinkHomeView(context: Context) : StytchScreenView<EmailMagicLinkHomeScreen>(context) {
     val title: TextView
     val description: TextView
     val emailTextField: StytchEditText
     val errorTextView: StytchErrorTextView
     val continueButton: Button
-    lateinit var coroutineScope: CoroutineScope
 
     init {
         inflate(context, R.layout.magic_link_sign_up_or_log_in_layout, this)
@@ -151,30 +138,28 @@ internal class EmailMagicLinkHomeView(context: Context) : BaseScreenView<EmailMa
         continueButton = findViewById(R.id.continue_button)
     }
 
-    fun subscribeToState() {
-        with(coroutineScope) {
-            listen(screen.isEmailTextFieldInErrorState) {
-                emailTextField.isInErrorState = it
-            }
-            listen(screen.errorMessage) {
-                errorTextView.text = resources.getString(it)
-            }
-            listen(screen.isInErrorState) {
-                errorTextView.visibility = if (it) View.VISIBLE else View.GONE
-            }
-            listen(screen.buttonText) {
-                continueButton.text = resources.getString(it)
-            }
-            listen(screen.isButtonEnabled) {
-                continueButton.isEnabled = it
-            }
+    override fun subscribeToState() {
+        screen.isEmailTextFieldInErrorState.subscribe {
+            emailTextField.isInErrorState = it
+        }
+        screen.errorMessage.subscribe {
+            errorTextView.text = resources.getString(it)
+        }
+        screen.isInErrorState.subscribe {
+            errorTextView.visibility = if (it) View.VISIBLE else View.GONE
+        }
+        screen.buttonText.subscribe {
+            continueButton.text = resources.getString(it)
+        }
+        screen.isButtonEnabled.subscribe {
+            continueButton.isEnabled = it
         }
     }
 }
 
 internal class EmailMagicLinkConfirmationScreen(
     private val emailAddress: String,
-) : Screen<EmailMagicLinkConfirmationView>() {
+) : StytchScreen<EmailMagicLinkConfirmationView>() {
     override fun createView(context: Context): EmailMagicLinkConfirmationView {
         return EmailMagicLinkConfirmationView(context).apply {
             setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
@@ -188,7 +173,7 @@ internal class EmailMagicLinkConfirmationScreen(
     }
 }
 
-internal class EmailMagicLinkConfirmationView(context: Context) : BaseScreenView<EmailMagicLinkConfirmationScreen>(context) {
+internal class EmailMagicLinkConfirmationView(context: Context) : StytchScreenView<EmailMagicLinkConfirmationScreen>(context) {
     val title: TextView
     val description: TextView
     val tryAgainButton: Button
@@ -198,5 +183,8 @@ internal class EmailMagicLinkConfirmationView(context: Context) : BaseScreenView
         title = findViewById(R.id.title)
         description = findViewById(R.id.description)
         tryAgainButton = findViewById(R.id.try_again_button)
+    }
+
+    override fun subscribeToState() {
     }
 }
