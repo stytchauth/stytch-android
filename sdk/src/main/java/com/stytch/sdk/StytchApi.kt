@@ -90,7 +90,7 @@ public object StytchApi {
 
         public suspend fun getPendingUsers(
             limit: Int? = null,
-            startingAfterId: String? = null
+            startingAfterId: String? = null,
         ): StytchResult<StytchResponseTypes.GetPendingUsersResponse> = safeApiCall {
             apiService.getPendingUsers(
                 StytchRequestTypes.GetPendingUsersRequest(
@@ -322,8 +322,6 @@ public object StytchCallbackApi {
             )
         }
     }
-
-    private val apiService by lazy { StytchApi.apiService }
 
     private fun <T> ((T) -> Unit).queue(block: suspend () -> T) {
         GlobalScope.launch {
@@ -559,7 +557,7 @@ public object StytchResponseTypes {
         val request_id: String,
         val user_id: String,
         val method_id: String,
-    ): Serializable
+    ) : Serializable
 
     @JsonClass(generateAdapter = true)
     public data class RevokeAPendingInviteResponse(
@@ -589,6 +587,14 @@ public data class StytchErrorResponse(
     val error_method: String?,
     val error_url: String,
 )
+
+public object StytchErrorTypes {
+    public const val EMAIL_NOT_FOUND: String = "email_not_found"
+    public const val BILLING_NOT_VERIFIED_FOR_EMAIL: String = "billing_not_verified_for_email"
+    public const val UNABLE_TO_AUTH_MAGIC_LINK: String = "unable_to_auth_magic_link"
+    public const val INVALID_USER_ID: String = "invalid_user_id"
+    public const val UNAUTHORIZED_CREDENTIALS: String = "unauthorized_credentials"
+}
 
 internal interface StytchApiService {
     @POST("users")
@@ -675,9 +681,9 @@ internal interface StytchApiService {
 }
 
 public sealed class StytchResult<out T> {
-    public data class Success<out T>(val value: T): StytchResult<T>()
+    public data class Success<out T>(val value: T) : StytchResult<T>()
     public object NetworkError : StytchResult<Nothing>()
-    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?): StytchResult<Nothing>()
+    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?) : StytchResult<Nothing>()
 }
 
 internal val moshi by lazy { Moshi.Builder().build() }

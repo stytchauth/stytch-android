@@ -6,11 +6,52 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import com.stytch.sdk.StytchUI.uiCustomization
+import com.wealthfront.magellan.BaseScreenView
+import com.wealthfront.magellan.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
+internal abstract class StytchScreen<V : StytchScreenView<*>> : Screen<V>() {
+    @CallSuper
+    override fun onShow(context: Context?) {
+        super.onShow(context)
+
+        view.coroutineScope = CoroutineScope(SupervisorJob()) // TODO
+        view.subscribeToState()
+    }
+
+    @CallSuper
+    override fun onHide(context: Context?) {
+        super.onHide(context)
+
+        view.coroutineScope.cancel()
+    }
+}
+
+@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
+internal abstract class StytchScreenView<S : Screen<*>>(context: Context) : BaseScreenView<S>(context) {
+    lateinit var coroutineScope: CoroutineScope
+
+    abstract fun subscribeToState()
+
+    protected inline fun <T> StateFlow<T>.subscribe(crossinline collectBlock: suspend (T) -> Unit) {
+        coroutineScope.launch(Dispatchers.Main) {
+            this@subscribe.collect(collectBlock)
+        }
+    }
+}
 
 internal open class StytchEditText(context: Context, attrs: AttributeSet?) : AppCompatEditText(context, attrs) {
     init {
@@ -87,12 +128,7 @@ internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : 
 
 internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.consentTextStyle)
 
-internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle) {
-    fun show(@StringRes message: Int) {
-        setText(message)
-        visibility = View.VISIBLE
-    }
-}
+internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
 
 internal class StytchButton(context: Context, attrs: AttributeSet?) : AppCompatButton(context, attrs) {
     init {
