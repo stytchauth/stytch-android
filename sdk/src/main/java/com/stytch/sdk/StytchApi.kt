@@ -276,7 +276,180 @@ public object StytchApi {
 }
 
 public object StytchCallbackApi {
-    // TODO add remaining endpoints (?)
+    public object Users {
+        public fun createUser(
+            email: String? = null,
+            phoneNumber: String? = null,
+            name: StytchDataTypes.Name? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.CreateUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.createUser(
+                email = email,
+                phoneNumber = phoneNumber,
+                name = name,
+                attributes = attributes,
+            )
+        }
+
+        public fun getUser(
+            userId: String,
+            callback: (StytchResult<StytchResponseTypes.GetUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.getUser(
+                userId = userId,
+            )
+        }
+
+        public fun updateUser(
+            userId: String,
+            name: StytchDataTypes.Name? = null,
+            email: String? = null,
+            phoneNumber: String? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.UpdateUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.updateUser(
+                userId = userId,
+                name = name,
+                email = email,
+                phoneNumber = phoneNumber,
+                attributes = attributes,
+            )
+        }
+
+        public fun deleteUser(
+            userId: String,
+            callback: (StytchResult<StytchResponseTypes.DeleteUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.deleteUser(
+                userId = userId,
+            )
+        }
+
+        public fun deleteUserEmail(
+            userId: String,
+            callback: (StytchResult<StytchResponseTypes.DeleteUserEmailResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.deleteUserEmail(
+                userId = userId,
+            )
+        }
+
+        public fun deleteUserPhoneNumber(
+            userId: String,
+            callback: (StytchResult<StytchResponseTypes.DeleteUserPhoneNumberResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.deleteUserPhoneNumber(
+                userId = userId,
+            )
+        }
+
+        public fun getPendingUsers(
+            limit: Int? = null,
+            startingAfterId: String? = null,
+            callback: (StytchResult<StytchResponseTypes.GetPendingUsersResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.Users.getPendingUsers(
+                limit = limit,
+                startingAfterId = startingAfterId,
+            )
+        }
+    }
+
+    public object MagicLinks {
+        public fun sendMagicLink(
+            userId: String,
+            methodId: String,
+            magicLinkUrl: String,
+            expirationMinutes: Int? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.SendMagicLinkResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.sendMagicLink(
+                userId = userId,
+                methodId = methodId,
+                magicLinkUrl = magicLinkUrl,
+                expirationMinutes = expirationMinutes,
+                attributes = attributes,
+            )
+        }
+
+        public fun sendMagicLinkByEmail(
+            email: String,
+            magicLinkUrl: String,
+            expirationMinutes: Int? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.SendMagicLinkByEmailResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.sendMagicLinkByEmail(
+                email = email,
+                magicLinkUrl = magicLinkUrl,
+                expirationMinutes = expirationMinutes,
+                attributes = attributes,
+            )
+        }
+
+        public fun loginOrCreateUserByEmail(
+            email: String,
+            loginMagicLinkUrl: String,
+            signupMagicLinkUrl: String,
+            loginExpirationMinutes: Int? = null,
+            signupExpirationMinutes: Int? = null,
+            createUserAsPending: Boolean? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.loginOrCreateUserByEmail(
+                email = email,
+                loginMagicLinkUrl = loginMagicLinkUrl,
+                signupMagicLinkUrl = signupMagicLinkUrl,
+                loginExpirationMinutes = loginExpirationMinutes,
+                signupExpirationMinutes = signupExpirationMinutes,
+                createUserAsPending = createUserAsPending,
+                attributes = attributes,
+            )
+        }
+
+        public fun inviteByEmail(
+            email: String,
+            magicLinkUrl: String,
+            expirationMinutes: Int? = null,
+            name: StytchDataTypes.Name? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.InviteByEmailResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.inviteByEmail(
+                email = email,
+                magicLinkUrl = magicLinkUrl,
+                expirationMinutes = expirationMinutes,
+                name = name,
+                attributes = attributes,
+            )
+        }
+
+        public fun authenticateMagicLink(
+            token: String,
+            options: StytchDataTypes.Options? = null,
+            attributes: StytchDataTypes.Attributes? = null,
+            callback: (StytchResult<StytchResponseTypes.AuthenticateUserResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.authenticateMagicLink(
+                token = token,
+                options = options,
+                attributes = attributes,
+            )
+        }
+
+        public fun revokeAPendingInvite(
+            email: String,
+            callback: (StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse>) -> Unit,
+        ): Unit = callback.queue {
+            StytchApi.MagicLinks.revokeAPendingInvite(
+                email = email,
+            )
+        }
+    }
 
     public object OTP {
         public fun sendOneTimePasscodeBySMS(
