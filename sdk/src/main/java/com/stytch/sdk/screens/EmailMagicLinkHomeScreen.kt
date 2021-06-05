@@ -16,7 +16,7 @@ import com.stytch.sdk.R
 import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEditText
 import com.stytch.sdk.StytchErrorTextView
-import com.stytch.sdk.StytchErrorTypes
+import com.stytch.sdk.StytchErrorType
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
@@ -38,8 +38,6 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
 
     override fun createView(context: Context): EmailMagicLinkHomeView {
         return EmailMagicLinkHomeView(context).apply {
-            setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
-
             emailTextField.apply {
                 filters = arrayOf(
                     InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ->
@@ -90,13 +88,8 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
                         isButtonEnabled.value = true
                     }
                     is StytchResult.Error -> {
-                        when (result.errorResponse?.error_type) {
-                            null -> {
-                                isInErrorState.value = true
-                                errorMessage.value = R.string.unknown_error
-                                buttonText.value = R.string._continue
-                            }
-                            StytchErrorTypes.EMAIL_NOT_FOUND, StytchErrorTypes.BILLING_NOT_VERIFIED_FOR_EMAIL -> {
+                        when (result.errorType) {
+                            StytchErrorType.EMAIL_NOT_FOUND, StytchErrorType.BILLING_NOT_VERIFIED_FOR_EMAIL -> {
                                 isInErrorState.value = true
                                 errorMessage.value = R.string.invalid_email_error
                                 isEmailTextFieldInErrorState.value = true

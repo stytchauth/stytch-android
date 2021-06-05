@@ -140,11 +140,22 @@
 
         </LinearLayout>
 
+        <com.stytch.sdk.StytchErrorTextView
+            android:id="@+id/error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/digits_layout"
+            app:layout_constraintStart_toStartOf="@id/digits_layout"
+            android:layout_marginTop="10dp"
+            android:text="@string/invalid_phone_number_please_try_again"
+            android:visibility="gone"
+            />
+
         <com.stytch.sdk.StytchTextView
             android:id="@+id/didnt_get_it_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/digits_layout"
+            app:layout_constraintTop_toBottomOf="@id/error_text_view"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="13dp"
             android:layout_marginStart="27dp"
@@ -156,7 +167,7 @@
             android:id="@+id/resend_code_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/digits_layout"
+            app:layout_constraintTop_toBottomOf="@id/error_text_view"
             app:layout_constraintStart_toEndOf="@id/didnt_get_it_text_view"
             android:layout_marginTop="13dp"
             android:layout_marginStart="4dp"

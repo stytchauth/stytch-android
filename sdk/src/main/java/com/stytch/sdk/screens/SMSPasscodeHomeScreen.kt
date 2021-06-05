@@ -15,6 +15,7 @@ import com.stytch.sdk.R
 import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEditText
 import com.stytch.sdk.StytchErrorTextView
+import com.stytch.sdk.StytchErrorType
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
@@ -36,13 +37,11 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
 
     override fun createView(context: Context): SMSPasscodeHomeView {
         return SMSPasscodeHomeView(context).apply {
-            setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
-
             phoneNumberTextField.addTextChangedListener {
                 val asString = it.toString()
                 if (asString != phoneNumberTextFieldText) {
                     phoneNumberTextFieldText = asString
-                    isButtonEnabled.value = !view.phoneNumberTextField.text.isNullOrEmpty()
+                    isButtonEnabled.value = view.phoneNumberTextField.text.isNotNullOrEmpty()
                     this@SMSPasscodeHomeScreen.isInErrorState.value = false
                     isPhoneNumberTextFieldInErrorState.value = false
                 }
@@ -80,18 +79,29 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
                         )
                     }
                 }
+                StytchResult.NetworkError -> {
+                    isInErrorState.value = true
+                    errorMessage.value = R.string.network_error
+                    buttonText.value = R.string._continue
+                    isButtonEnabled.value = true
+                }
                 is StytchResult.Error -> {
-                    if (result.errorCode in 400..499) {
-                        withContext(Dispatchers.Main) {
-                            buttonText.value = R.string._continue
+                    when (result.errorType) {
+                        StytchErrorType.INVALID_PHONE_NUMBER -> {
                             isInErrorState.value = true
                             isPhoneNumberTextFieldInErrorState.value = true
+                            errorMessage.value = R.string.invalid_phone_number_please_try_again
+                            buttonText.value = R.string._continue
+                            isButtonEnabled.value = false
+                        }
+                        else -> {
+                            isInErrorState.value = true
+                            errorMessage.value = R.string.unknown_error
+                            buttonText.value = R.string._continue
                         }
                     }
                 }
-                StytchResult.NetworkError -> {
 
-                }
             }
         }
     }
@@ -133,7 +143,6 @@ internal class SMSPasscodeHomeView(context: Context) : StytchScreenView<SMSPassc
         smsConsentTextView = findViewById(R.id.sms_consent_text_view)
         continueButton = findViewById(R.id.continue_button)
         errorTextView = findViewById(R.id.error_text_view)
-        setBackgroundColor(resources.getColor(R.color.backgroundColor))
     }
 
     override fun subscribeToState() {

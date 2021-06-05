@@ -29,4 +29,5 @@
     <string name="network_error">Could not connect to network. Please check your internet connection</string>
     <string name="unknown_error">Something went wrong. Please wait a moment and then try again.</string>
     <string name="invalid_email_error">Invalid email. Please try again.</string>
+    <string name="invalid_passcode">Invalid passcode, please try again</string>
 </resources>

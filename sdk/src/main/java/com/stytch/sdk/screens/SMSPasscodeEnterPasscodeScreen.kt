@@ -1,9 +1,8 @@
 package com.stytch.sdk.screens
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
-import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -11,11 +10,13 @@ import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.stytch.sdk.R
 import com.stytch.sdk.StytchApi
+import com.stytch.sdk.StytchErrorTextView
+import com.stytch.sdk.StytchErrorType
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
-import com.stytch.sdk.StytchUI
-import com.stytch.sdk.intentWithExtra
+import com.stytch.sdk.StytchSingleDigitEditText
+import com.stytch.sdk.finishSuccessfullyWithResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,13 +27,13 @@ internal class SMSPasscodeEnterPasscodeScreen(
     private val phoneNumber: String,
 ) : StytchScreen<SMSPasscodeEnterPasscodeView>() {
     var isInErrorState = MutableStateFlow(false)
+    var areDigitsInErrorState = MutableStateFlow(false)
     var errorMessage = MutableStateFlow<@StringRes Int>(R.string.unknown_error)
     var buttonText = MutableStateFlow<@StringRes Int>(R.string._continue)
     var isButtonEnabled = MutableStateFlow(false)
 
     override fun createView(context: Context): SMSPasscodeEnterPasscodeView {
         return SMSPasscodeEnterPasscodeView(context).apply {
-            setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
             description.text = resources.getString(R.string.passcode_sent_description, phoneNumber)
             resendCodeTextView.typeface = Typeface.create(resendCodeTextView.typeface, Typeface.BOLD)
 
@@ -40,7 +41,7 @@ internal class SMSPasscodeEnterPasscodeScreen(
 
             firstDigit.addTextChangedListener {
                 updateContinueButtonState()
-                if (!it.isNullOrEmpty()) {
+                if (it.isNotNullOrEmpty()) {
                     firstDigit.clearFocus()
                     secondDigit.requestFocus()
                 }
@@ -101,17 +102,31 @@ internal class SMSPasscodeEnterPasscodeScreen(
 
             when (result) {
                 is StytchResult.Success -> {
-                    Log.d("SMS_Authenticate", "Successful: ${result.value.user_id}")
-                    activity.setResult(Activity.RESULT_OK, intentWithExtra(result.value))
-                    activity.finish()
-                }
-                is StytchResult.Error -> {
-                    Log.d("SMS_Authenticate", "Error ${result.errorCode}: ${result.errorResponse}")
-                    //StytchUIFlows.SMSOneTimePasscode.callback(StytchUIResult.failure(it))
+                    activity.finishSuccessfullyWithResult(result.value)
                 }
                 StytchResult.NetworkError -> {
-
+                    isInErrorState.value = true
+                    errorMessage.value = R.string.network_error
+                    buttonText.value = R.string._continue
+                    isButtonEnabled.value = true
                 }
+                is StytchResult.Error -> {
+                    when (result.errorType) {
+                        StytchErrorType.UNABLE_TO_AUTH_OTP_CODE, StytchErrorType.OTP_CODE_NOT_FOUND -> {
+                            isInErrorState.value = true
+                            areDigitsInErrorState.value = true
+                            errorMessage.value = R.string.invalid_passcode
+                            buttonText.value = R.string._continue
+                            isButtonEnabled.value = false
+                        }
+                        else -> {
+                            isInErrorState.value = true
+                            errorMessage.value = R.string.unknown_error
+                            buttonText.value = R.string._continue
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -130,6 +145,7 @@ internal class SMSPasscodeEnterPasscodeScreen(
     }
 
     fun updateContinueButtonState() {
+        areDigitsInErrorState.value = false
         isButtonEnabled.value = view.areAllDigitsEntered()
     }
 }
@@ -137,12 +153,13 @@ internal class SMSPasscodeEnterPasscodeScreen(
 internal class SMSPasscodeEnterPasscodeView(context: Context) : StytchScreenView<SMSPasscodeEnterPasscodeScreen>(context) {
     val title: TextView
     val description: TextView
-    val firstDigit: EditText
-    val secondDigit: EditText
-    val thirdDigit: EditText
-    val fourthDigit: EditText
-    val fifthDigit: EditText
-    val sixthDigit: EditText
+    val firstDigit: StytchSingleDigitEditText
+    val secondDigit: StytchSingleDigitEditText
+    val thirdDigit: StytchSingleDigitEditText
+    val fourthDigit: StytchSingleDigitEditText
+    val fifthDigit: StytchSingleDigitEditText
+    val sixthDigit: StytchSingleDigitEditText
+    val errorTextView: StytchErrorTextView
     val didntGetItTextView: TextView
     val resendCodeTextView: TextView
     val continueButton: Button
@@ -157,13 +174,28 @@ internal class SMSPasscodeEnterPasscodeView(context: Context) : StytchScreenView
         fourthDigit = findViewById(R.id.fourth_digit)
         fifthDigit = findViewById(R.id.fifth_digit)
         sixthDigit = findViewById(R.id.sixth_digit)
+        errorTextView = findViewById(R.id.error_text_view)
         didntGetItTextView = findViewById(R.id.didnt_get_it_text_view)
         resendCodeTextView = findViewById(R.id.resend_code_text_view)
         continueButton = findViewById(R.id.continue_button)
-        setBackgroundColor(resources.getColor(R.color.backgroundColor))
     }
 
     override fun subscribeToState() {
+        screen.errorMessage.subscribe {
+            errorTextView.text = resources.getString(it)
+        }
+        screen.isInErrorState.subscribe {
+            errorTextView.visibility = if (it) View.VISIBLE else View.GONE
+        }
+        screen.areDigitsInErrorState.subscribe {
+            firstDigit.isInErrorState = it
+            secondDigit.isInErrorState = it
+            thirdDigit.isInErrorState = it
+            fourthDigit.isInErrorState = it
+            fifthDigit.isInErrorState = it
+            sixthDigit.isInErrorState = it
+
+        }
         screen.buttonText.subscribe {
             continueButton.text = resources.getString(it)
         }
@@ -173,11 +205,16 @@ internal class SMSPasscodeEnterPasscodeView(context: Context) : StytchScreenView
     }
 
     fun areAllDigitsEntered(): Boolean {
-        return firstDigit.text.isNotEmpty() &&
-                secondDigit.text.isNotEmpty() &&
-                thirdDigit.text.isNotEmpty() &&
-                fourthDigit.text.isNotEmpty() &&
-                fifthDigit.text.isNotEmpty() &&
-                sixthDigit.text.isNotEmpty()
+        return firstDigit.text.isNotNullOrEmpty() &&
+                secondDigit.text.isNotNullOrEmpty() &&
+                thirdDigit.text.isNotNullOrEmpty() &&
+                fourthDigit.text.isNotNullOrEmpty() &&
+                fifthDigit.text.isNotNullOrEmpty() &&
+                sixthDigit.text.isNotNullOrEmpty()
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
+    return !isNullOrEmpty()
 }

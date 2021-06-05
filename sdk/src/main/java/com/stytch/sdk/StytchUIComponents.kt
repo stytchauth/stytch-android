@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.CallSuper
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
@@ -44,12 +43,20 @@ internal abstract class StytchScreen<V : StytchScreenView<*>> : Screen<V>() {
 internal abstract class StytchScreenView<S : Screen<*>>(context: Context) : BaseScreenView<S>(context) {
     lateinit var coroutineScope: CoroutineScope
 
+    init {
+        setBackgroundColor(uiCustomization.backgroundColor.getColor(context))
+    }
+
     abstract fun subscribeToState()
 
     protected inline fun <T> StateFlow<T>.subscribe(crossinline collectBlock: suspend (T) -> Unit) {
         coroutineScope.launch(Dispatchers.Main) {
             this@subscribe.collect(collectBlock)
         }
+    }
+
+    final override fun setBackgroundColor(color: Int) {
+        super.setBackgroundColor(color)
     }
 }
 

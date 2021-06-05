@@ -6,15 +6,12 @@ import android.widget.TextView
 import com.stytch.sdk.R
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
-import com.stytch.sdk.StytchUI
 
 internal class EmailMagicLinkConfirmationScreen(
     private val emailAddress: String,
 ) : StytchScreen<EmailMagicLinkConfirmationView>() {
     override fun createView(context: Context): EmailMagicLinkConfirmationView {
         return EmailMagicLinkConfirmationView(context).apply {
-            setBackgroundColor(StytchUI.uiCustomization.backgroundColor.getColor(context))
-
             description.text = resources.getString(R.string.magic_link_sent_description, emailAddress)
 
             tryAgainButton.setOnClickListener {

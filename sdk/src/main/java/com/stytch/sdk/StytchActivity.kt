@@ -23,6 +23,7 @@ import com.stytch.sdk.screens.SMSPasscodeHomeScreen
 import com.wealthfront.magellan.Navigator
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 internal abstract class StytchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,6 +120,11 @@ internal abstract class StytchActivity : AppCompatActivity() {
 
         const val ACTIVITY_ID_EXTRA_NAME = "activity_id"
     }
+}
+
+internal inline fun <reified T : Serializable> Activity.finishSuccessfullyWithResult(result: T) {
+    setResult(Activity.RESULT_OK, intentWithExtra(result))
+    finish()
 }
 
 internal enum class IntentCodes {

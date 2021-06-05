@@ -761,12 +761,24 @@ public data class StytchErrorResponse(
     val error_url: String,
 )
 
-public object StytchErrorTypes {
-    public const val EMAIL_NOT_FOUND: String = "email_not_found"
-    public const val BILLING_NOT_VERIFIED_FOR_EMAIL: String = "billing_not_verified_for_email"
-    public const val UNABLE_TO_AUTH_MAGIC_LINK: String = "unable_to_auth_magic_link"
-    public const val INVALID_USER_ID: String = "invalid_user_id"
-    public const val UNAUTHORIZED_CREDENTIALS: String = "unauthorized_credentials"
+public enum class StytchErrorType(public val stringValue: String) {
+    EMAIL_NOT_FOUND("email_not_found"),
+    BILLING_NOT_VERIFIED_FOR_EMAIL("billing_not_verified_for_email"),
+    UNABLE_TO_AUTH_MAGIC_LINK("unable_to_auth_magic_link"),
+    INVALID_USER_ID("invalid_user_id"),
+    UNAUTHORIZED_CREDENTIALS("unauthorized_credentials"),
+    INTERNAL_SERVER_ERROR("internal_server_error"),
+    TOO_MANY_REQUESTS("too_many_requests"),
+    INVALID_PHONE_NUMBER("invalid_phone_number"),
+    UNABLE_TO_AUTH_OTP_CODE("unable_to_auth_otp_code"),
+    OTP_CODE_NOT_FOUND("otp_code_not_found"),
+}
+
+internal fun String.toStytchErrorType(): StytchErrorType? {
+    StytchErrorType.values().forEach {
+        if (this == it.stringValue) return it
+    }
+    return null
 }
 
 internal interface StytchApiService {
@@ -856,7 +868,11 @@ internal interface StytchApiService {
 public sealed class StytchResult<out T> {
     public data class Success<out T>(val value: T) : StytchResult<T>()
     public object NetworkError : StytchResult<Nothing>()
-    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?) : StytchResult<Nothing>()
+    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?) : StytchResult<Nothing>() {
+        public val errorType: StytchErrorType? by lazy {
+            errorResponse?.error_type?.toStytchErrorType()
+        }
+    }
 }
 
 internal val moshi by lazy { Moshi.Builder().build() }
