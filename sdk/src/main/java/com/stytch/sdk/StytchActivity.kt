@@ -138,7 +138,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
 
     override fun createNavigator(): Navigator {
         if (!StytchUI.EmailMagicLink.configured) {
-            error("Stytch Error: Launch StytchUI Email Magic Link activity with first calling StytchUI.EmailMagicLink.configure(...)")
+            error("Stytch Error: Launched StytchUI Email Magic Link activity with first calling StytchUI.EmailMagicLink.configure(...)")
         }
         return Navigator.withRoot(EmailMagicLinkHomeScreen()).build()
     }
@@ -152,14 +152,14 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
                 val result = StytchApi.MagicLinks.authenticateMagicLink(token)
                 when (result) {
                     is StytchResult.Success -> {
-                        Log.d("StytchLog", "Successful Magic Link Authentication")
-                        setResult(RESULT_OK, intentWithExtra(result.value))
-                        finish()
+                        finishSuccessfullyWithResult(result.value)
                     }
                     is StytchResult.Error -> {
-                        Log.d("StytchLog", "Failed Magic Link Authentication")
+                        TODO()
                     }
-                    StytchResult.NetworkError -> TODO()
+                    StytchResult.NetworkError -> {
+                        TODO()
+                    }
                 }
             }
         }
@@ -203,7 +203,7 @@ internal class StytchSMSPasscodeActivity : StytchActivity() {
 
     override fun createNavigator(): Navigator {
         if (!StytchUI.SMSPasscode.configured) {
-            error("Stytch Error: Launch StytchUI SMS Passcode activity with first calling StytchUI.SMSPasscode.configure(...)")
+            error("Stytch Error: Launched StytchUI SMS Passcode activity with first calling StytchUI.SMSPasscode.configure(...)")
         }
         return Navigator.withRoot(SMSPasscodeHomeScreen()).build()
     }
