@@ -10,6 +10,13 @@
     >
 
     <Button
+        android:id="@+id/toggle_activity_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Switch to Java Activity"
+        />
+
+    <Button
         android:id="@+id/toggle_dark_mode_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

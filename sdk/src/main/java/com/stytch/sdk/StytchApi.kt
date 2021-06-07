@@ -277,6 +277,7 @@ public object StytchApi {
 
 public object StytchCallbackApi {
     public object Users {
+        @JvmStatic
         public fun createUser(
             email: String? = null,
             phoneNumber: String? = null,
@@ -292,6 +293,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun getUser(
             userId: String,
             callback: (StytchResult<StytchResponseTypes.GetUserResponse>) -> Unit,
@@ -301,6 +303,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun updateUser(
             userId: String,
             name: StytchDataTypes.Name? = null,
@@ -318,6 +321,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun deleteUser(
             userId: String,
             callback: (StytchResult<StytchResponseTypes.DeleteUserResponse>) -> Unit,
@@ -327,6 +331,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun deleteUserEmail(
             userId: String,
             callback: (StytchResult<StytchResponseTypes.DeleteUserEmailResponse>) -> Unit,
@@ -336,6 +341,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun deleteUserPhoneNumber(
             userId: String,
             callback: (StytchResult<StytchResponseTypes.DeleteUserPhoneNumberResponse>) -> Unit,
@@ -345,6 +351,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun getPendingUsers(
             limit: Int? = null,
             startingAfterId: String? = null,
@@ -358,6 +365,7 @@ public object StytchCallbackApi {
     }
 
     public object MagicLinks {
+        @JvmStatic
         public fun sendMagicLink(
             userId: String,
             methodId: String,
@@ -375,6 +383,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun sendMagicLinkByEmail(
             email: String,
             magicLinkUrl: String,
@@ -390,6 +399,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun loginOrCreateUserByEmail(
             email: String,
             loginMagicLinkUrl: String,
@@ -411,6 +421,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun inviteByEmail(
             email: String,
             magicLinkUrl: String,
@@ -428,6 +439,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun authenticateMagicLink(
             token: String,
             options: StytchDataTypes.Options? = null,
@@ -441,6 +453,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun revokeAPendingInvite(
             email: String,
             callback: (StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse>) -> Unit,
@@ -452,6 +465,7 @@ public object StytchCallbackApi {
     }
 
     public object OTP {
+        @JvmStatic
         public fun sendOneTimePasscodeBySMS(
             phoneNumber: String,
             expirationMinutes: Int? = null,
@@ -465,6 +479,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun loginOrCreateUserBySMS(
             phoneNumber: String,
             expirationMinutes: Int? = null,
@@ -480,6 +495,7 @@ public object StytchCallbackApi {
             )
         }
 
+        @JvmStatic
         public fun authenticateOneTimePasscode(
             methodId: String,
             code: String,

@@ -14,10 +14,16 @@
         android:theme="@style/Theme.StytchAndroidSDK"
         >
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".JavaActivity" android:noHistory="true">
+            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

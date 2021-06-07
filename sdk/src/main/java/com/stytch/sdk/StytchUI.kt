@@ -31,6 +31,7 @@ public object StytchUI {
         internal lateinit var signupMagicLinkUrl: String
         internal var createUserAsPending = false
 
+        @JvmStatic
         public fun configure(
             loginMagicLinkUrl: String,
             signupMagicLinkUrl: String,
@@ -42,6 +43,7 @@ public object StytchUI {
             this.createUserAsPending = createUserAsPending
         }
 
+        @JvmStatic
         public fun activityLauncher(
             context: ActivityResultCaller,
             onResult: (StytchUIResult) -> Unit,
@@ -61,6 +63,7 @@ public object StytchUI {
             }
         }
 
+        @JvmStatic
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchEmailMagicLinkActivity::class.java)
         }
@@ -71,6 +74,7 @@ public object StytchUI {
         internal var hashStringSet = false
         internal var createUserAsPending = false
 
+        @JvmStatic
         public fun configure(
             hashStringSet: Boolean,
             createUserAsPending: Boolean,
@@ -80,6 +84,7 @@ public object StytchUI {
             this.createUserAsPending = createUserAsPending
         }
 
+        @JvmStatic
         public fun activityLauncher(
             context: ActivityResultCaller,
             onResult: (StytchUIResult) -> Unit,
@@ -99,6 +104,7 @@ public object StytchUI {
             }
         }
 
+        @JvmStatic
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchSMSPasscodeActivity::class.java)
         }

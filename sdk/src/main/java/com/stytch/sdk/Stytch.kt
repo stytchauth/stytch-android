@@ -7,6 +7,7 @@ public object Stytch {
     internal lateinit var authorizationHeader: String
     internal lateinit var environment: StytchEnvironment
 
+    @JvmStatic
     public fun configure(
         projectId: String,
         secret: String,
