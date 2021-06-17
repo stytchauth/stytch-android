@@ -11,8 +11,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.MainThread
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
@@ -119,6 +123,22 @@ internal abstract class StytchActivity : AppCompatActivity() {
         }
 
         const val ACTIVITY_ID_EXTRA_NAME = "activity_id"
+    }
+}
+
+public class StytchActivityLauncher internal constructor(private val backingLauncher: ActivityResultLauncher<Unit>) {
+    @JvmOverloads
+    public fun launch(options: ActivityOptionsCompat? = null) {
+        backingLauncher.launch(Unit, options)
+    }
+
+    @MainThread
+    public fun unregister() {
+        backingLauncher.unregister()
+    }
+
+    public fun getContract(): ActivityResultContract<Unit, *> {
+        return backingLauncher.contract
     }
 }
 

@@ -6,7 +6,6 @@ import android.content.res.Resources
 import android.graphics.Typeface
 import android.support.annotation.FontRes
 import androidx.activity.result.ActivityResultCaller
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -47,8 +46,8 @@ public object StytchUI {
         public fun activityLauncher(
             context: ActivityResultCaller,
             onResult: (StytchUIResult) -> Unit,
-        ): ActivityResultLauncher<Unit> {
-            return context.registerForActivityResult(activityResultContract, onResult)
+        ): StytchActivityLauncher {
+            return StytchActivityLauncher(context.registerForActivityResult(activityResultContract, onResult))
         }
 
         private val activityResultContract by lazy {
@@ -88,8 +87,8 @@ public object StytchUI {
         public fun activityLauncher(
             context: ActivityResultCaller,
             onResult: (StytchUIResult) -> Unit,
-        ): ActivityResultLauncher<Unit> {
-            return context.registerForActivityResult(activityResultContract, onResult)
+        ): StytchActivityLauncher {
+            return StytchActivityLauncher(context.registerForActivityResult(activityResultContract, onResult))
         }
 
         private val activityResultContract by lazy {
