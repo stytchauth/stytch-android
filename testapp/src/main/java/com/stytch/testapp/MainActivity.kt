@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             signupMagicLinkUrl = "https://test.stytch.com/signup",
             createUserAsPending = true,
         )
-        stytchEmailMagicLinkActivityLauncher.launch(Unit)
+        stytchEmailMagicLinkActivityLauncher.launch()
     }
 
     private fun testSMSPasscodeUIFlow() {
@@ -104,6 +104,6 @@ class MainActivity : AppCompatActivity() {
             createUserAsPending = true,
             hashStringSet = false,
         )
-        stytchSMSPasscodeActivityLauncher.launch(Unit)
+        stytchSMSPasscodeActivityLauncher.launch()
     }
 }

@@ -6,12 +6,12 @@ import android.os.Handler;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.stytch.sdk.Stytch;
+import com.stytch.sdk.StytchActivityLauncher;
 import com.stytch.sdk.StytchCallbackApi;
 import com.stytch.sdk.StytchEnvironment;
 import com.stytch.sdk.StytchUI;
@@ -22,13 +22,13 @@ import timber.log.Timber;
 public class JavaActivity extends AppCompatActivity {
     TextView resultTextView;
 
-    ActivityResultLauncher<Unit> stytchEmailMagicLinkActivityLauncher =
+    StytchActivityLauncher stytchEmailMagicLinkActivityLauncher =
             StytchUI.EmailMagicLink.activityLauncher(this, result -> {
                 showResult(result);
                 return Unit.INSTANCE;
             });
 
-    ActivityResultLauncher<Unit> stytchSmsPasscodeActivityLauncher =
+    StytchActivityLauncher stytchSmsPasscodeActivityLauncher =
             StytchUI.SMSPasscode.activityLauncher(this, result -> {
                 showResult(result);
                 return Unit.INSTANCE;
@@ -95,7 +95,7 @@ public class JavaActivity extends AppCompatActivity {
                 "https://test.stytch.com/signup",
                 true
         );
-        stytchEmailMagicLinkActivityLauncher.launch(Unit.INSTANCE);
+        stytchEmailMagicLinkActivityLauncher.launch();
     }
 
     private void testSmsPasscodeUIFlow() {
@@ -103,6 +103,6 @@ public class JavaActivity extends AppCompatActivity {
                 false,
                 true
         );
-        stytchSmsPasscodeActivityLauncher.launch(Unit.INSTANCE);
+        stytchSmsPasscodeActivityLauncher.launch();
     }
 }
