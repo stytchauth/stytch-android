@@ -808,7 +808,7 @@ internal interface StytchApiService {
         @Path("user_id") userId: String,
     ): StytchResponseTypes.GetUserResponse
 
-    @PUT("users/{user_id")
+    @PUT("users/{user_id}")
     suspend fun updateUser(
         @Path("user_id") userId: String,
         @Body request: StytchRequestTypes.UpdateUserRequest,
