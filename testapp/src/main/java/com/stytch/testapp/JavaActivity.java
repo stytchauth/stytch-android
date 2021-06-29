@@ -16,6 +16,8 @@ import com.stytch.sdk.StytchCallbackApi;
 import com.stytch.sdk.StytchEnvironment;
 import com.stytch.sdk.StytchUI;
 
+import org.jetbrains.annotations.NotNull;
+
 import kotlin.Unit;
 import timber.log.Timber;
 
@@ -76,9 +78,12 @@ public class JavaActivity extends AppCompatActivity {
     }
 
     private void testMagicLinkDirectApi() {
-        StytchCallbackApi.MagicLinks.sendMagicLinkByEmail(
+        StytchCallbackApi.MagicLinks.Email.loginOrCreateUser(
                 "kyle@stytch.com",
                 "https://test.stytch.com/login",
+                "https://test.stytch.com/signup",
+                null,
+                null,
                 null,
                 null,
                 result -> {
@@ -92,7 +97,14 @@ public class JavaActivity extends AppCompatActivity {
         StytchUI.EmailMagicLink.configure(
                 "https://test.stytch.com/login",
                 "https://test.stytch.com/signup",
-                true
+                true,
+                new StytchUI.EmailMagicLink.Authenticator() {
+                    @Override
+                    public void authenticateToken(@NotNull String token) {
+                        boolean success = true;
+                        onComplete(success);
+                    }
+                }
         );
         stytchEmailMagicLinkActivityLauncher.launch();
     }
@@ -100,7 +112,13 @@ public class JavaActivity extends AppCompatActivity {
     private void testSmsPasscodeUIFlow() {
         StytchUI.SMSPasscode.configure(
                 false,
-                true
+                new StytchUI.SMSPasscode.Authenticator() {
+                    @Override
+                    public void authenticateToken(@NotNull String token) {
+                        boolean success = true;
+                        onComplete(success);
+                    }
+                }
         );
         stytchSmsPasscodeActivityLauncher.launch();
     }

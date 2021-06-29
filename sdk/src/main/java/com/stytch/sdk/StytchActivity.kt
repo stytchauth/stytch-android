@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
@@ -25,8 +24,6 @@ import com.stytch.sdk.screens.EmailMagicLinkHomeScreen
 import com.stytch.sdk.screens.SMSPasscodeEnterPasscodeScreen
 import com.stytch.sdk.screens.SMSPasscodeHomeScreen
 import com.wealthfront.magellan.Navigator
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.Serializable
 
 internal abstract class StytchActivity : AppCompatActivity() {
@@ -163,24 +160,21 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
         return Navigator.withRoot(EmailMagicLinkHomeScreen()).build()
     }
 
+    private fun onTokenAuthenticationComplete(success: Boolean) {
+        if (success) {
+            finish()
+        } else {
+            TODO()
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val token = intent?.data?.getQueryParameter("token")
         if (token != null) {
-            // Verify deeplink
-            GlobalScope.launch {
-                val result = StytchApi.MagicLinks.authenticateMagicLink(token)
-                when (result) {
-                    is StytchResult.Success -> {
-                        finishSuccessfullyWithResult(result.value)
-                    }
-                    is StytchResult.Error -> {
-                        TODO()
-                    }
-                    StytchResult.NetworkError -> {
-                        TODO()
-                    }
-                }
+            StytchUI.EmailMagicLink.authenticator.apply {
+                callback = this@StytchEmailMagicLinkActivity::onTokenAuthenticationComplete
+                authenticateToken(token)
             }
         }
     }
@@ -191,7 +185,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
             IntentCodes.EMAIL_PICKER_INTENT_CODE.ordinal -> {
                 if (resultCode != Activity.RESULT_OK) return
                 val emailAddress = data?.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
-                Log.d("StytchLog", "$emailAddress")
+                StytchLog.d("$emailAddress")
                 emailAddress?.let {
                     (navigator?.currentScreen() as? EmailMagicLinkHomeScreen)?.emailAddressHintGiven(it)
                 }

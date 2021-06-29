@@ -29,17 +29,20 @@ public object StytchUI {
         internal lateinit var loginMagicLinkUrl: String
         internal lateinit var signupMagicLinkUrl: String
         internal var createUserAsPending = false
+        internal lateinit var authenticator: Authenticator
 
         @JvmStatic
         public fun configure(
             loginMagicLinkUrl: String,
             signupMagicLinkUrl: String,
             createUserAsPending: Boolean,
+            authenticator: Authenticator,
         ) {
             configured = true
             this.loginMagicLinkUrl = loginMagicLinkUrl
             this.signupMagicLinkUrl = signupMagicLinkUrl
             this.createUserAsPending = createUserAsPending
+            this.authenticator = authenticator
         }
 
         @JvmStatic
@@ -66,21 +69,36 @@ public object StytchUI {
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchEmailMagicLinkActivity::class.java)
         }
+
+        public abstract class Authenticator {
+            internal lateinit var callback: (Boolean) -> Unit
+
+            public fun onComplete(success: Boolean) {
+                callback(success)
+            }
+
+            /**
+             * Once the magic link is authenticated,
+             * you must call [onComplete] with either true (if token was successfully authenticated)
+             * or false (if token authentication failed).
+             */
+            public abstract fun authenticateToken(token: String)
+        }
     }
 
     public object SMSPasscode {
         internal var configured = false
-        internal var hashStringSet = false
         internal var createUserAsPending = false
+        internal lateinit var authenticator: Authenticator
 
         @JvmStatic
         public fun configure(
-            hashStringSet: Boolean,
             createUserAsPending: Boolean,
+            authenticator: Authenticator,
         ) {
             configured = true
-            this.hashStringSet = hashStringSet
             this.createUserAsPending = createUserAsPending
+            this.authenticator = authenticator
         }
 
         @JvmStatic
@@ -107,11 +125,26 @@ public object StytchUI {
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchSMSPasscodeActivity::class.java)
         }
+
+        public abstract class Authenticator {
+            internal lateinit var callback: (Boolean) -> Unit
+
+            public fun onComplete(success: Boolean) {
+                callback(success)
+            }
+
+            /**
+             * Once the magic link is authenticated,
+             * you must call [callback] with either true (if token was successfully authenticated)
+             * or false (if token authentication failed).
+             */
+            public abstract fun authenticateToken(token: String)
+        }
     }
 }
 
 public sealed class StytchUIResult {
-    public data class Success(val user: StytchResponseTypes.AuthenticateUserResponse) : StytchUIResult()
+    public object Success : StytchUIResult()
     public object CancelledByUser : StytchUIResult()
 }
 
@@ -119,11 +152,7 @@ public fun Intent?.toStytchUIResult(): StytchUIResult {
     disposeAllScreens()
     return when (this) {
         null -> StytchUIResult.CancelledByUser
-        else -> {
-            val user = getSerializableExtra<StytchResponseTypes.AuthenticateUserResponse>()
-                ?: error("Stytch Error: Called Intent?.toStytchUIResult on an invalid Intent. Are you checking for the correct request code in onActivityResult()?")
-            StytchUIResult.Success(user)
-        }
+        else -> StytchUIResult.Success
     }
 }
 

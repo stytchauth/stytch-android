@@ -1,6 +1,5 @@
 package com.stytch.sdk
 
-import android.util.Log
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -12,166 +11,71 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
-import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 public object StytchApi {
-    public object Users {
-        public suspend fun createUser(
-            email: String? = null,
-            phoneNumber: String? = null,
-            name: StytchDataTypes.Name? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.CreateUserResponse> = safeApiCall {
-            apiService.createUser(
-                StytchRequestTypes.CreateUserRequest(
-                    email = email,
-                    phone_number = phoneNumber,
-                    name = name,
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun getUser(
-            userId: String,
-        ): StytchResult<StytchResponseTypes.GetUserResponse> = safeApiCall {
-            apiService.getUser(
-                userId = userId,
-            )
-        }
-
-        public suspend fun getPendingUsers(
-            limit: Int? = null,
-            startingAfterId: String? = null,
-        ): StytchResult<StytchResponseTypes.GetPendingUsersResponse> = safeApiCall {
-            apiService.getPendingUsers(
-                StytchRequestTypes.GetPendingUsersRequest(
-                    limit = limit,
-                    starting_after_id = startingAfterId,
-                )
-            )
-        }
-    }
-
     public object MagicLinks {
-        public suspend fun sendMagicLink(
-            userId: String,
-            methodId: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.SendMagicLinkResponse> = safeApiCall {
-            apiService.sendMagicLink(
-                StytchRequestTypes.SendMagicLinkRequest(
-                    user_id = userId,
-                    method_id = methodId,
-                    magic_link_url = magicLinkUrl,
-                    expiration_minutes = expirationMinutes,
-                    attributes = attributes,
+        public object Email {
+            public suspend fun loginOrCreateUser(
+                email: String,
+                loginMagicLinkUrl: String,
+                signupMagicLinkUrl: String,
+                loginExpirationMinutes: Int? = null,
+                signupExpirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+            ): StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse> = safeApiCall {
+                apiService.loginOrCreateUserByEmail(
+                    StytchRequestTypes.LoginOrCreateUserByEmailRequest(
+                        email = email,
+                        login_magic_link_url = loginMagicLinkUrl,
+                        signup_magic_link_url = signupMagicLinkUrl,
+                        login_expiration_minutes = loginExpirationMinutes,
+                        signup_expiration_minutes = signupExpirationMinutes,
+                        create_user_as_pending = createUserAsPending,
+                        attributes = attributes,
+                    )
                 )
-            )
-        }
-
-        public suspend fun sendMagicLinkByEmail(
-            email: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.SendMagicLinkByEmailResponse> = safeApiCall {
-            apiService.sendMagicLinkByEmail(
-                StytchRequestTypes.SendMagicLinkByEmailRequest(
-                    email = email,
-                    magic_link_url = magicLinkUrl,
-                    expiration_minutes = expirationMinutes,
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun loginOrCreateUserByEmail(
-            email: String,
-            loginMagicLinkUrl: String,
-            signupMagicLinkUrl: String,
-            loginExpirationMinutes: Int? = null,
-            signupExpirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse> = safeApiCall {
-            apiService.loginOrCreateUserByEmail(
-                StytchRequestTypes.LoginOrCreateUserByEmailRequest(
-                    email = email,
-                    login_magic_link_url = loginMagicLinkUrl,
-                    signup_magic_link_url = signupMagicLinkUrl,
-                    login_expiration_minutes = loginExpirationMinutes,
-                    signup_expiration_minutes = signupExpirationMinutes,
-                    create_user_as_pending = createUserAsPending,
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun inviteByEmail(
-            email: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            name: StytchDataTypes.Name? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.InviteByEmailResponse> = safeApiCall {
-            apiService.inviteByEmail(
-                StytchRequestTypes.InviteByEmailRequest(
-                    email = email,
-                    magic_link_url = magicLinkUrl,
-                    expiration_minutes = expirationMinutes,
-                    name = name,
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun revokeAPendingInvite(
-            email: String,
-        ): StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse> = safeApiCall {
-            apiService.revokeAPendingInvite(
-                StytchRequestTypes.RevokeAPendingInviteRequest(
-                    email = email,
-                )
-            )
+            }
         }
     }
 
-    public object OTP {
-        public suspend fun sendOneTimePasscodeBySMS(
-            phoneNumber: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.SendOneTimePasscodeBySMSResponse> = safeApiCall {
-            apiService.sendOneTimePasscodeBySMS(
-                StytchRequestTypes.SendOneTimePasscodeBySMSRequest(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes,
-                    attributes = attributes,
+    public object OTPs {
+        public object SMS {
+            public suspend fun loginOrCreateUser(
+                phoneNumber: String,
+                expirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+            ): StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse> = safeApiCall {
+                apiService.loginOrCreateUserBySMS(
+                    StytchRequestTypes.LoginOrCreateUserBySMSRequest(
+                        phone_number = phoneNumber,
+                        expiration_minutes = expirationMinutes,
+                        create_user_as_pending = createUserAsPending,
+                        attributes = attributes,
+                    )
                 )
-            )
+            }
         }
 
-        public suspend fun loginOrCreateUserBySMS(
-            phoneNumber: String,
-            expirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse> = safeApiCall {
-            apiService.loginOrCreateUserBySMS(
-                StytchRequestTypes.LoginOrCreateUserBySMSRequest(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes,
-                    create_user_as_pending = createUserAsPending,
-                    attributes = attributes,
+        public object WhatsApp {
+            public suspend fun loginOrCreateUser(
+                phoneNumber: String,
+                expirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+            ): StytchResult<StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse> = safeApiCall {
+                apiService.loginOrCreateUserByWhatsApp(
+                    StytchRequestTypes.LoginOrCreateUserByWhatsAppRequest(
+                        phone_number = phoneNumber,
+                        expiration_minutes = expirationMinutes,
+                        create_user_as_pending = createUserAsPending,
+                        attributes = attributes,
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -202,161 +106,67 @@ public object StytchApi {
 }
 
 public object StytchCallbackApi {
-    public object Users {
-        @JvmStatic
-        public fun createUser(
-            email: String? = null,
-            phoneNumber: String? = null,
-            name: StytchDataTypes.Name? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.CreateUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.createUser(
-                email = email,
-                phoneNumber = phoneNumber,
-                name = name,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun getUser(
-            userId: String,
-            callback: (StytchResult<StytchResponseTypes.GetUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.getUser(
-                userId = userId,
-            )
-        }
-
-        @JvmStatic
-        public fun getPendingUsers(
-            limit: Int? = null,
-            startingAfterId: String? = null,
-            callback: (StytchResult<StytchResponseTypes.GetPendingUsersResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.getPendingUsers(
-                limit = limit,
-                startingAfterId = startingAfterId,
-            )
-        }
-    }
-
     public object MagicLinks {
-        @JvmStatic
-        public fun sendMagicLink(
-            userId: String,
-            methodId: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.SendMagicLinkResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.sendMagicLink(
-                userId = userId,
-                methodId = methodId,
-                magicLinkUrl = magicLinkUrl,
-                expirationMinutes = expirationMinutes,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun sendMagicLinkByEmail(
-            email: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.SendMagicLinkByEmailResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.sendMagicLinkByEmail(
-                email = email,
-                magicLinkUrl = magicLinkUrl,
-                expirationMinutes = expirationMinutes,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun loginOrCreateUserByEmail(
-            email: String,
-            loginMagicLinkUrl: String,
-            signupMagicLinkUrl: String,
-            loginExpirationMinutes: Int? = null,
-            signupExpirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.loginOrCreateUserByEmail(
-                email = email,
-                loginMagicLinkUrl = loginMagicLinkUrl,
-                signupMagicLinkUrl = signupMagicLinkUrl,
-                loginExpirationMinutes = loginExpirationMinutes,
-                signupExpirationMinutes = signupExpirationMinutes,
-                createUserAsPending = createUserAsPending,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun inviteByEmail(
-            email: String,
-            magicLinkUrl: String,
-            expirationMinutes: Int? = null,
-            name: StytchDataTypes.Name? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.InviteByEmailResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.inviteByEmail(
-                email = email,
-                magicLinkUrl = magicLinkUrl,
-                expirationMinutes = expirationMinutes,
-                name = name,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun revokeAPendingInvite(
-            email: String,
-            callback: (StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.revokeAPendingInvite(
-                email = email,
-            )
+        public object Email {
+            @JvmStatic
+            public fun loginOrCreateUser(
+                email: String,
+                loginMagicLinkUrl: String,
+                signupMagicLinkUrl: String,
+                loginExpirationMinutes: Int? = null,
+                signupExpirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+                callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
+            ): Unit = callback.queue {
+                StytchApi.MagicLinks.Email.loginOrCreateUser(
+                    email = email,
+                    loginMagicLinkUrl = loginMagicLinkUrl,
+                    signupMagicLinkUrl = signupMagicLinkUrl,
+                    loginExpirationMinutes = loginExpirationMinutes,
+                    signupExpirationMinutes = signupExpirationMinutes,
+                    createUserAsPending = createUserAsPending,
+                    attributes = attributes,
+                )
+            }
         }
     }
 
-    public object OTP {
-        @JvmStatic
-        public fun sendOneTimePasscodeBySMS(
-            phoneNumber: String,
-            expirationMinutes: Int? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.SendOneTimePasscodeBySMSResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.OTP.sendOneTimePasscodeBySMS(
-                phoneNumber = phoneNumber,
-                expirationMinutes = expirationMinutes,
-                attributes = attributes,
-            )
+    public object OTPs {
+        public object SMS {
+            @JvmStatic
+            public fun loginOrCreateUser(
+                phoneNumber: String,
+                expirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+                callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse>) -> Unit,
+            ): Unit = callback.queue {
+                StytchApi.OTPs.SMS.loginOrCreateUser(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes,
+                    createUserAsPending = createUserAsPending,
+                    attributes = attributes,
+                )
+            }
         }
 
-        @JvmStatic
-        public fun loginOrCreateUserBySMS(
-            phoneNumber: String,
-            expirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.OTP.loginOrCreateUserBySMS(
-                phoneNumber = phoneNumber,
-                expirationMinutes = expirationMinutes,
-                createUserAsPending = createUserAsPending,
-                attributes = attributes,
-            )
+        public object WhatsApp {
+            @JvmStatic
+            public fun loginOrCreateUser(
+                phoneNumber: String,
+                expirationMinutes: Int? = null,
+                createUserAsPending: Boolean? = null,
+                attributes: StytchDataTypes.Attributes? = null,
+                callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse>) -> Unit,
+            ): Unit = callback.queue {
+                StytchApi.OTPs.WhatsApp.loginOrCreateUser(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes,
+                    createUserAsPending = createUserAsPending,
+                    attributes = attributes,
+                )
+            }
         }
     }
 
@@ -372,85 +182,13 @@ public object StytchCallbackApi {
 
 public object StytchDataTypes {
     @JsonClass(generateAdapter = true)
-    public data class Name(
-        val first_name: String?,
-        val middle_name: String?,
-        val last_name: String?,
-    )
-
-    @JsonClass(generateAdapter = true)
     public data class Attributes(
         val ip_address: String?,
         val user_agent: String?,
     )
-
-    @JsonClass(generateAdapter = true)
-    public data class Emails(
-        val email: String?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class PhoneNumbers(
-        val phone_number: String?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class Options(
-        val ip_match_required: Boolean?,
-        val user_agent_match_required: Boolean?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class User(
-        val user_id: String,
-        val name: Name?,
-        val emails: List<Emails>?,
-        val phone_numbers: List<PhoneNumbers>?,
-        val status: String,
-        val invited_at: String?,
-    )
 }
 
 public object StytchRequestTypes {
-    @JsonClass(generateAdapter = true)
-    public data class CreateUserRequest(
-        val email: String?,
-        val phone_number: String?,
-        val name: StytchDataTypes.Name?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class UpdateUserRequest(
-        val name: StytchDataTypes.Name?,
-        val emails: StytchDataTypes.Emails?,
-        val phone_numbers: StytchDataTypes.PhoneNumbers?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class GetPendingUsersRequest(
-        val limit: Int?,
-        val starting_after_id: String?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendMagicLinkRequest(
-        val user_id: String,
-        val method_id: String,
-        val magic_link_url: String,
-        val expiration_minutes: Int?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendMagicLinkByEmailRequest(
-        val email: String,
-        val magic_link_url: String,
-        val expiration_minutes: Int?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
     @JsonClass(generateAdapter = true)
     public data class LoginOrCreateUserByEmailRequest(
         val email: String,
@@ -463,33 +201,6 @@ public object StytchRequestTypes {
     )
 
     @JsonClass(generateAdapter = true)
-    public data class InviteByEmailRequest(
-        val email: String,
-        val magic_link_url: String,
-        val expiration_minutes: Int?,
-        val name: StytchDataTypes.Name?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class AuthenticateMagicLinkRequest(
-        val options: StytchDataTypes.Options?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class RevokeAPendingInviteRequest(
-        val email: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendOneTimePasscodeBySMSRequest(
-        val phone_number: String,
-        val expiration_minutes: Int?,
-        val attributes: StytchDataTypes.Attributes?,
-    )
-
-    @JsonClass(generateAdapter = true)
     public data class LoginOrCreateUserBySMSRequest(
         val phone_number: String,
         val expiration_minutes: Int?,
@@ -498,82 +209,15 @@ public object StytchRequestTypes {
     )
 
     @JsonClass(generateAdapter = true)
-    public data class AuthenticateOneTimePasscodeRequest(
-        val method_id: String,
-        val code: String,
-        val options: StytchDataTypes.Options?,
+    public data class LoginOrCreateUserByWhatsAppRequest(
+        val phone_number: String,
+        val expiration_minutes: Int?,
+        val create_user_as_pending: Boolean?,
         val attributes: StytchDataTypes.Attributes?,
     )
 }
 
 public object StytchResponseTypes {
-    @JsonClass(generateAdapter = true)
-    public data class CreateUserResponse(
-        val request_id: String,
-        val user_id: String,
-        val email_id: String?,
-        val phone_id: String?,
-        val status: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class GetUserResponse(
-        val request_id: String,
-        val user_id: String,
-        val name: StytchDataTypes.Name?,
-        val emails: StytchDataTypes.Emails?,
-        val phone_numbers: StytchDataTypes.PhoneNumbers?,
-        val status: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class UpdateUserResponse(
-        val request_id: String,
-        val user_id: String,
-        val emails: StytchDataTypes.Emails?,
-        val phone_numbers: StytchDataTypes.PhoneNumbers?,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class DeleteUserResponse(
-        val request_id: String,
-        val user_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class DeleteUserEmailResponse(
-        val request_id: String,
-        val user_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class DeleteUserPhoneNumberResponse(
-        val request_id: String,
-        val user_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class GetPendingUsersResponse(
-        val request_id: String,
-        val users: List<StytchDataTypes.User>,
-        val has_more: Boolean,
-        val next_starting_after_id: String,
-        val total: Int,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendMagicLinkResponse(
-        val request_id: String,
-        val user_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendMagicLinkByEmailResponse(
-        val request_id: String,
-        val user_id: String,
-        val email_id: String,
-    )
-
     @JsonClass(generateAdapter = true)
     public data class LoginOrCreateUserByEmailResponse(
         val request_id: String,
@@ -583,33 +227,14 @@ public object StytchResponseTypes {
     )
 
     @JsonClass(generateAdapter = true)
-    public data class InviteByEmailResponse(
-        val request_id: String,
-        val user_id: String,
-        val email_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class AuthenticateUserResponse(
-        val request_id: String,
-        val user_id: String,
-        val method_id: String,
-    ) : Serializable
-
-    @JsonClass(generateAdapter = true)
-    public data class RevokeAPendingInviteResponse(
-        val request_id: String,
-    )
-
-    @JsonClass(generateAdapter = true)
-    public data class SendOneTimePasscodeBySMSResponse(
+    public data class LoginOrCreateUserBySMSResponse(
         val request_id: String,
         val user_id: String,
         val phone_id: String,
     )
 
     @JsonClass(generateAdapter = true)
-    public data class LoginOrCreateUserBySMSResponse(
+    public data class LoginOrCreateUserByWhatsAppResponse(
         val request_id: String,
         val user_id: String,
         val phone_id: String,
@@ -646,55 +271,20 @@ internal fun String.toStytchErrorType(): StytchErrorType? {
 }
 
 internal interface StytchApiService {
-    @POST("users")
-    suspend fun createUser(
-        @Body request: StytchRequestTypes.CreateUserRequest,
-    ): StytchResponseTypes.CreateUserResponse
-
-    @GET("users/{user_id}")
-    suspend fun getUser(
-        @Path("user_id") userId: String,
-    ): StytchResponseTypes.GetUserResponse
-
-    @GET("users/pending")
-    suspend fun getPendingUsers(
-        @Body request: StytchRequestTypes.GetPendingUsersRequest,
-    ): StytchResponseTypes.GetPendingUsersResponse
-
-    @POST("magic_links/send")
-    suspend fun sendMagicLink(
-        @Body request: StytchRequestTypes.SendMagicLinkRequest,
-    ): StytchResponseTypes.SendMagicLinkResponse
-
-    @POST("magic_links/send_by_email")
-    suspend fun sendMagicLinkByEmail(
-        @Body request: StytchRequestTypes.SendMagicLinkByEmailRequest,
-    ): StytchResponseTypes.SendMagicLinkByEmailResponse
-
-    @POST("magic_links/login_or_create")
+    @POST("magic_links/email/login_or_create")
     suspend fun loginOrCreateUserByEmail(
         @Body request: StytchRequestTypes.LoginOrCreateUserByEmailRequest,
     ): StytchResponseTypes.LoginOrCreateUserByEmailResponse
 
-    @POST("magic_links/invite_by_email")
-    suspend fun inviteByEmail(
-        @Body request: StytchRequestTypes.InviteByEmailRequest,
-    ): StytchResponseTypes.InviteByEmailResponse
-
-    @POST("magic_links/revoke_invite")
-    suspend fun revokeAPendingInvite(
-        @Body request: StytchRequestTypes.RevokeAPendingInviteRequest,
-    ): StytchResponseTypes.RevokeAPendingInviteResponse
-
-    @POST("otp/send_by_sms")
-    suspend fun sendOneTimePasscodeBySMS(
-        @Body request: StytchRequestTypes.SendOneTimePasscodeBySMSRequest,
-    ): StytchResponseTypes.SendOneTimePasscodeBySMSResponse
-
-    @POST("otp/login_or_create")
+    @POST("otps/sms/login_or_create")
     suspend fun loginOrCreateUserBySMS(
         @Body request: StytchRequestTypes.LoginOrCreateUserBySMSRequest,
     ): StytchResponseTypes.LoginOrCreateUserBySMSResponse
+
+    @POST("otps/whatsapp/login_or_create")
+    suspend fun loginOrCreateUserByWhatsApp(
+        @Body request: StytchRequestTypes.LoginOrCreateUserByWhatsAppRequest,
+    ): StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse
 }
 
 public sealed class StytchResult<out T> {
@@ -707,9 +297,6 @@ public sealed class StytchResult<out T> {
     }
 }
 
-internal val moshi by lazy { Moshi.Builder().build() }
-internal val moshiErrorAdapter by lazy { moshi.adapter(StytchErrorResponse::class.java) }
-
 internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
     Stytch.assertInitialized()
     try {
@@ -720,22 +307,18 @@ internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> 
                 val errorCode = throwable.code()
                 val stytchErrorResponse = try {
                     throwable.response()?.errorBody()?.source()?.let {
-                        moshiErrorAdapter.fromJson(it)
+                        Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
                     }
                 } catch (t: Throwable) {
                     null
                 }
-                warningLog("http error code: $errorCode, errorResponse: $stytchErrorResponse")
+                StytchLog.w("http error code: $errorCode, errorResponse: $stytchErrorResponse")
                 StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
             }
             else -> {
-                warningLog("Network Error")
+                StytchLog.w("Network Error")
                 StytchResult.NetworkError
             }
         }
     }
-}
-
-internal fun warningLog(message: String) {
-    Log.w("StytchLog", "Stytch warning: $message")
 }

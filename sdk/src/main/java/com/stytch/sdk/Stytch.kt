@@ -1,6 +1,6 @@
 package com.stytch.sdk
 
-import android.util.Base64
+import android.util.Log
 
 public object Stytch {
     internal var isInitialized = false
@@ -13,15 +13,12 @@ public object Stytch {
         environment: StytchEnvironment,
     ) {
         isInitialized = true
-        authorizationHeader = generateAuthorizationHeader(projectId = publicToken, secret = publicToken)
+        authorizationHeader = generateAuthorizationHeader(publicToken)
         this.environment = environment
     }
 
-    private fun generateAuthorizationHeader(projectId: String, secret: String): String {
-        return "Basic " + Base64.encodeToString(
-            "$projectId:$secret".toByteArray(),
-            Base64.NO_WRAP,
-        )
+    private fun generateAuthorizationHeader(publicToken: String): String {
+        return publicToken // TODO
     }
 
     internal fun assertInitialized() {
@@ -34,4 +31,12 @@ public object Stytch {
 public enum class StytchEnvironment(internal val baseUrl: String) {
     LIVE("https://api.stytch.com/v1/"),
     TEST("https://test.stytch.com/v1/"),
+}
+
+internal object StytchLog {
+    fun e(message: String) = Log.e("StytchLog", "Stytch error: $message")
+    fun w(message: String) = Log.w("StytchLog", "Stytch warning: $message")
+    fun i(message: String) = Log.i("StytchLog", message)
+    fun d(message: String) = Log.d("StytchLog", message)
+    fun v(message: String) = Log.v("StytchLog", message)
 }

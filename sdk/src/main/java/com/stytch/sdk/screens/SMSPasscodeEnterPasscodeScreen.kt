@@ -4,23 +4,16 @@ import android.content.Context
 import android.graphics.Typeface
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.stytch.sdk.R
-import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchErrorTextView
-import com.stytch.sdk.StytchErrorType
-import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
 import com.stytch.sdk.StytchSingleDigitEditText
-import com.stytch.sdk.finishSuccessfullyWithResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import com.stytch.sdk.StytchUI
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 internal class SMSPasscodeEnterPasscodeScreen(
     private val methodId: String,
@@ -94,40 +87,9 @@ internal class SMSPasscodeEnterPasscodeScreen(
         isButtonEnabled.value = false
         buttonText.value = R.string.verifying_code
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.OTP.authenticateOneTimePasscode(
-                methodId = methodId,
-                code = enteredCode,
-            )
-
-            when (result) {
-                is StytchResult.Success -> {
-                    activity.finishSuccessfullyWithResult(result.value)
-                }
-                StytchResult.NetworkError -> {
-                    isInErrorState.value = true
-                    errorMessage.value = R.string.network_error
-                    buttonText.value = R.string._continue
-                    isButtonEnabled.value = true
-                }
-                is StytchResult.Error -> {
-                    when (result.errorType) {
-                        StytchErrorType.UNABLE_TO_AUTH_OTP_CODE, StytchErrorType.OTP_CODE_NOT_FOUND -> {
-                            isInErrorState.value = true
-                            areDigitsInErrorState.value = true
-                            errorMessage.value = R.string.invalid_passcode
-                            buttonText.value = R.string._continue
-                            isButtonEnabled.value = false
-                        }
-                        else -> {
-                            isInErrorState.value = true
-                            errorMessage.value = R.string.unknown_error
-                            buttonText.value = R.string._continue
-                        }
-                    }
-                }
-
-            }
+        StytchUI.SMSPasscode.authenticator.apply {
+            callback = this@SMSPasscodeEnterPasscodeScreen::onTokenAuthenticationComplete
+            authenticateToken(enteredCode)
         }
     }
 
@@ -147,6 +109,18 @@ internal class SMSPasscodeEnterPasscodeScreen(
     fun updateContinueButtonState() {
         areDigitsInErrorState.value = false
         isButtonEnabled.value = view.areAllDigitsEntered()
+    }
+
+    private fun onTokenAuthenticationComplete(success: Boolean) {
+        if (success) {
+            activity.finish()
+        } else {
+            isInErrorState.value = true
+            areDigitsInErrorState.value = true
+            errorMessage.value = R.string.invalid_passcode
+            buttonText.value = R.string._continue
+            isButtonEnabled.value = false
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 package com.stytch.sdk.screens
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -16,6 +15,7 @@ import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEditText
 import com.stytch.sdk.StytchErrorTextView
 import com.stytch.sdk.StytchErrorType
+import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
@@ -58,7 +58,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
         buttonText.value = R.string.sending_passcode
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.OTP.loginOrCreateUserBySMS(
+            val result = StytchApi.OTPs.SMS.loginOrCreateUser(
                 phoneNumber = "+1$enteredPhoneNumber",
                 createUserAsPending = StytchUI.SMSPasscode.createUserAsPending,
             )
@@ -66,8 +66,8 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
             when (result) {
                 is StytchResult.Success -> {
                     val task = SmsRetriever.getClient(activity).startSmsUserConsent(null)
-                    if (task.isSuccessful) Log.d("StytchLog", "SMS Retriever task started successfully")
-                    else Log.w("StytchLog", "SMS Retriever task not started successfully (SMS autofill will not work)")
+                    if (task.isSuccessful) StytchLog.d("SMS Retriever task started successfully")
+                    else StytchLog.w("SMS Retriever task not started successfully (SMS autofill will not work)")
                     withContext(Dispatchers.Main) {
                         buttonText.value = R.string._continue
                         isButtonEnabled.value = true

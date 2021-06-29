@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.magic_link_ui_flow_button).setOnClickListener {
-            testMagicLinkUIFlow()
+            testEmailMagicLinkUIFlow()
         }
 
         findViewById<Button>(R.id.sms_passcode_ui_flow_button).setOnClickListener {
@@ -81,19 +81,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun testMagicLinkDirectApi() {
         GlobalScope.launch {
-            val result = StytchApi.MagicLinks.sendMagicLinkByEmail(
+            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
                 email = "kyle@stytch.com",
-                magicLinkUrl = "https://test.stytch.com/login",
+                loginMagicLinkUrl = "https://test.stytch.com/login",
+                signupMagicLinkUrl = "https://test.stytch.com/signup",
             )
             showResult(result)
         }
     }
 
-    private fun testMagicLinkUIFlow() {
+    private fun testEmailMagicLinkUIFlow() {
         StytchUI.EmailMagicLink.configure(
             loginMagicLinkUrl = "https://test.stytch.com/login",
             signupMagicLinkUrl = "https://test.stytch.com/signup",
             createUserAsPending = true,
+            authenticator = object : StytchUI.EmailMagicLink.Authenticator() {
+                override fun authenticateToken(token: String) {
+                    val success = true
+                    onComplete(success)
+                }
+            }
         )
         stytchEmailMagicLinkActivityLauncher.launch()
     }
@@ -101,7 +108,12 @@ class MainActivity : AppCompatActivity() {
     private fun testSMSPasscodeUIFlow() {
         StytchUI.SMSPasscode.configure(
             createUserAsPending = true,
-            hashStringSet = false,
+            authenticator = object : StytchUI.SMSPasscode.Authenticator() {
+                override fun authenticateToken(token: String) {
+                    val success = true
+                    onComplete(success)
+                }
+            }
         )
         stytchSMSPasscodeActivityLauncher.launch()
     }
