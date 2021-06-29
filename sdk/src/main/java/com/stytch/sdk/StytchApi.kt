@@ -12,10 +12,8 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
@@ -42,48 +40,6 @@ public object StytchApi {
             userId: String,
         ): StytchResult<StytchResponseTypes.GetUserResponse> = safeApiCall {
             apiService.getUser(
-                userId = userId,
-            )
-        }
-
-        public suspend fun updateUser(
-            userId: String,
-            name: StytchDataTypes.Name? = null,
-            email: String? = null,
-            phoneNumber: String? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.UpdateUserResponse> = safeApiCall {
-            apiService.updateUser(
-                userId = userId,
-                request = StytchRequestTypes.UpdateUserRequest(
-                    name = name,
-                    emails = if (email == null) null else StytchDataTypes.Emails(email),
-                    phone_numbers = if (phoneNumber == null) null else StytchDataTypes.PhoneNumbers(phoneNumber),
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun deleteUser(
-            userId: String,
-        ): StytchResult<StytchResponseTypes.DeleteUserResponse> = safeApiCall {
-            apiService.deleteUser(
-                userId = userId,
-            )
-        }
-
-        public suspend fun deleteUserEmail(
-            userId: String,
-        ): StytchResult<StytchResponseTypes.DeleteUserEmailResponse> = safeApiCall {
-            apiService.deleteUserEmail(
-                userId = userId,
-            )
-        }
-
-        public suspend fun deleteUserPhoneNumber(
-            userId: String,
-        ): StytchResult<StytchResponseTypes.DeleteUserPhoneNumberResponse> = safeApiCall {
-            apiService.deleteUserPhoneNumber(
                 userId = userId,
             )
         }
@@ -176,20 +132,6 @@ public object StytchApi {
             )
         }
 
-        public suspend fun authenticateMagicLink(
-            token: String,
-            options: StytchDataTypes.Options? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.AuthenticateUserResponse> = safeApiCall {
-            apiService.authenticateMagicLink(
-                token = token,
-                StytchRequestTypes.AuthenticateMagicLinkRequest(
-                    options = options,
-                    attributes = attributes,
-                )
-            )
-        }
-
         public suspend fun revokeAPendingInvite(
             email: String,
         ): StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse> = safeApiCall {
@@ -227,22 +169,6 @@ public object StytchApi {
                     phone_number = phoneNumber,
                     expiration_minutes = expirationMinutes,
                     create_user_as_pending = createUserAsPending,
-                    attributes = attributes,
-                )
-            )
-        }
-
-        public suspend fun authenticateOneTimePasscode(
-            methodId: String,
-            code: String,
-            options: StytchDataTypes.Options? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.AuthenticateUserResponse> = safeApiCall {
-            apiService.authenticateOneTimePasscode(
-                StytchRequestTypes.AuthenticateOneTimePasscodeRequest(
-                    method_id = methodId,
-                    code = code,
-                    options = options,
                     attributes = attributes,
                 )
             )
@@ -299,54 +225,6 @@ public object StytchCallbackApi {
             callback: (StytchResult<StytchResponseTypes.GetUserResponse>) -> Unit,
         ): Unit = callback.queue {
             StytchApi.Users.getUser(
-                userId = userId,
-            )
-        }
-
-        @JvmStatic
-        public fun updateUser(
-            userId: String,
-            name: StytchDataTypes.Name? = null,
-            email: String? = null,
-            phoneNumber: String? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.UpdateUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.updateUser(
-                userId = userId,
-                name = name,
-                email = email,
-                phoneNumber = phoneNumber,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun deleteUser(
-            userId: String,
-            callback: (StytchResult<StytchResponseTypes.DeleteUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.deleteUser(
-                userId = userId,
-            )
-        }
-
-        @JvmStatic
-        public fun deleteUserEmail(
-            userId: String,
-            callback: (StytchResult<StytchResponseTypes.DeleteUserEmailResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.deleteUserEmail(
-                userId = userId,
-            )
-        }
-
-        @JvmStatic
-        public fun deleteUserPhoneNumber(
-            userId: String,
-            callback: (StytchResult<StytchResponseTypes.DeleteUserPhoneNumberResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.Users.deleteUserPhoneNumber(
                 userId = userId,
             )
         }
@@ -440,20 +318,6 @@ public object StytchCallbackApi {
         }
 
         @JvmStatic
-        public fun authenticateMagicLink(
-            token: String,
-            options: StytchDataTypes.Options? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.AuthenticateUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.MagicLinks.authenticateMagicLink(
-                token = token,
-                options = options,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
         public fun revokeAPendingInvite(
             email: String,
             callback: (StytchResult<StytchResponseTypes.RevokeAPendingInviteResponse>) -> Unit,
@@ -491,22 +355,6 @@ public object StytchCallbackApi {
                 phoneNumber = phoneNumber,
                 expirationMinutes = expirationMinutes,
                 createUserAsPending = createUserAsPending,
-                attributes = attributes,
-            )
-        }
-
-        @JvmStatic
-        public fun authenticateOneTimePasscode(
-            methodId: String,
-            code: String,
-            options: StytchDataTypes.Options? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            callback: (StytchResult<StytchResponseTypes.AuthenticateUserResponse>) -> Unit,
-        ): Unit = callback.queue {
-            StytchApi.OTP.authenticateOneTimePasscode(
-                methodId = methodId,
-                code = code,
-                options = options,
                 attributes = attributes,
             )
         }
@@ -808,27 +656,6 @@ internal interface StytchApiService {
         @Path("user_id") userId: String,
     ): StytchResponseTypes.GetUserResponse
 
-    @PUT("users/{user_id}")
-    suspend fun updateUser(
-        @Path("user_id") userId: String,
-        @Body request: StytchRequestTypes.UpdateUserRequest,
-    ): StytchResponseTypes.UpdateUserResponse
-
-    @DELETE("users/{user_id}")
-    suspend fun deleteUser(
-        @Path("user_id") userId: String,
-    ): StytchResponseTypes.DeleteUserResponse
-
-    @DELETE("users/emails/{user_id}")
-    suspend fun deleteUserEmail(
-        @Path("user_id") userId: String,
-    ): StytchResponseTypes.DeleteUserEmailResponse
-
-    @DELETE("users/phone_numbers/{user_id}")
-    suspend fun deleteUserPhoneNumber(
-        @Path("user_id") userId: String,
-    ): StytchResponseTypes.DeleteUserPhoneNumberResponse
-
     @GET("users/pending")
     suspend fun getPendingUsers(
         @Body request: StytchRequestTypes.GetPendingUsersRequest,
@@ -854,12 +681,6 @@ internal interface StytchApiService {
         @Body request: StytchRequestTypes.InviteByEmailRequest,
     ): StytchResponseTypes.InviteByEmailResponse
 
-    @POST("magic_links/{token}/authenticate")
-    suspend fun authenticateMagicLink(
-        @Path("token") token: String,
-        @Body request: StytchRequestTypes.AuthenticateMagicLinkRequest,
-    ): StytchResponseTypes.AuthenticateUserResponse
-
     @POST("magic_links/revoke_invite")
     suspend fun revokeAPendingInvite(
         @Body request: StytchRequestTypes.RevokeAPendingInviteRequest,
@@ -874,11 +695,6 @@ internal interface StytchApiService {
     suspend fun loginOrCreateUserBySMS(
         @Body request: StytchRequestTypes.LoginOrCreateUserBySMSRequest,
     ): StytchResponseTypes.LoginOrCreateUserBySMSResponse
-
-    @POST("otp/authenticate")
-    suspend fun authenticateOneTimePasscode(
-        @Body request: StytchRequestTypes.AuthenticateOneTimePasscodeRequest,
-    ): StytchResponseTypes.AuthenticateUserResponse
 }
 
 public sealed class StytchResult<out T> {

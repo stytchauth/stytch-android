@@ -40,8 +40,7 @@ public class JavaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stytch.configure(
-                "project-test-2328d332-7850-486a-99c6-cd7956b518c2",
-                "secret-test-2tbeMPP3cYW-jXbpt-Ag1yeYDUW4ReEBxHw=",
+                "TODO",
                 StytchEnvironment.TEST
         );
 

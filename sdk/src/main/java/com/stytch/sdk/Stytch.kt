@@ -9,12 +9,11 @@ public object Stytch {
 
     @JvmStatic
     public fun configure(
-        projectId: String,
-        secret: String,
+        publicToken: String,
         environment: StytchEnvironment,
     ) {
         isInitialized = true
-        authorizationHeader = generateAuthorizationHeader(projectId = projectId, secret = secret)
+        authorizationHeader = generateAuthorizationHeader(projectId = publicToken, secret = publicToken)
         this.environment = environment
     }
 
