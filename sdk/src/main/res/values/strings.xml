@@ -1,17 +1,33 @@
-<resources>
-
-    <string name="stytch_login_title">Sign up or log in</string>
-    <string name="stytch_login_description">Sign up or log in with your email, no password needed.</string>
-    <string name="stytch_login_email_hint">example@email.com</string>
-    <string name="stytch_login_button_title">Continue with email</string>
-    <string name="stytch_login_waiting_verification_title">Email sent to %1$s.</string>
-    <string name="stytch_login_waiting_verification_description">"Didn't get an email? Check your spam folder, or"</string>
-    <string name="stytch_login_waiting_verification_button_title">Resend magic link</string>
-    <string name="stytch_watermark_powered_by">Powered by</string>
-    <string name="stytch_error_unknown">Something went wrong</string>
-    <string name="stytch_error_bad_token">Bad SDK configuration</string>
-    <string name="stytch_error_no_internet">Could not connect to server</string>
-    <string name="stytch_error_invalid_input">Invalid email</string>
-    <string name="stytch_error_invalid_magic_token">Magic link could not be authenticated</string>
-
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Stytch Android SDK</string>
+    <string name="example_email_com">example@email.com</string>
+    <string name="magic_links_home_screen_description">Sign up or log in with your email, no password needed</string>
+    <string name="enter_email">Enter email</string>
+    <string name="try_again">Try Again</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="sms_passcode_home_screen_description">Sign up or log in with a one-time passcode sent to your phone number</string>
+    <string name="phone_number_hint">(123) 456–7890</string>
+    <string name="enter_passcode">Enter passcode</string>
+    <string name="_0">0</string>
+    <string name="didnt_get_it">Didn\'t get it?</string>
+    <string name="resend_code">Resend code</string>
+    <string name="_continue">Continue</string>
+    <string name="check_your_email">Check your email</string>
+    <string name="plus_1">+1</string>
+    <string name="sending_passcode" tools:ignore="TypographyEllipsis">Sending passcode...</string>
+    <string name="sending_email" tools:ignore="TypographyEllipsis">Sending email...</string>
+    <string name="magic_link_sent_description">An email was sent to %1$s. Didn\'t get it?</string>
+    <string name="passcode_sent_description">A 6-digit passcode was sent to you at %1$s</string>
+    <string name="verifying_code" tools:ignore="TypographyEllipsis">Verifying code...</string>
+    <string name="powered_by_stytch">Powered by Stytch</string>
+    <string name="invalid_phone_number_please_try_again">Invalid phone number, please try again.</string>
+    <string name="sign_up_or_log_in">Sign up or log in</string>
+    <string name="email_magic_link_or_sms_one_time_passcode_home_description">Sign up or log in with your email or phone number, no password needed</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="sms_consent_text">By continuing, you consent to receive an SMS for verification. Message and data rates may apply.</string>
+    <string name="network_error">Could not connect to network. Please check your internet connection</string>
+    <string name="unknown_error">Something went wrong. Please wait a moment and then try again.</string>
+    <string name="invalid_email_error">Invalid email. Please try again.</string>
+    <string name="invalid_passcode">Invalid passcode, please try again</string>
 </resources>

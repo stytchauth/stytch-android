@@ -1,22 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity"
     >
 
     <Button
-        android:id="@+id/launch_stytch_ui_button"
+        android:id="@+id/toggle_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/log_in"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Switch to Java Activity"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/toggle_dark_mode_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toggle Dark Mode"
+        />
+
+    <Button
+        android:id="@+id/magic_link_direct_api_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Email Magic Link Direct Api"
+        />
+
+    <Button
+        android:id="@+id/magic_link_ui_flow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Email Magic Link UI Flow"
+        />
+
+    <Button
+        android:id="@+id/sms_passcode_ui_flow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test SMS Passcode UI Flow"
+        />
+
+    <TextView
+        android:id="@+id/result_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="22dp"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        android:text="Awaiting result..."
+        />
+
+</LinearLayout>

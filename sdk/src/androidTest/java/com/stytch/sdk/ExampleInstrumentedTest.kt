@@ -19,6 +19,6 @@ internal class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.stytch.sdk.test", appContext.packageName)
+        assertEquals("com.stytch.sdk", appContext.packageName)
     }
 }

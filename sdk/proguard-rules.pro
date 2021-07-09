@@ -16,10 +16,6 @@
     public protected *;
 }
 
--keep public class com.stytch.sdk.api.** {
-    public protected *;
-}
-
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 -keepattributes SourceFile,LineNumberTable

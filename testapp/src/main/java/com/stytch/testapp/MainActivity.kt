@@ -4,56 +4,117 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchColor
+import com.stytch.sdk.StytchApi
 import com.stytch.sdk.StytchEnvironment
-import com.stytch.sdk.StytchResult
 import com.stytch.sdk.StytchUI
-import com.stytch.sdk.StytchUICustomization
-import com.stytch.sdk.dp
-import com.stytch.sdk.ui.StytchMainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class MainActivity : AppCompatActivity(), StytchUI.StytchUIListener {
-    private lateinit var loginButton: Button
+class MainActivity : AppCompatActivity() {
+    lateinit var resultTextView: TextView
+
+    val stytchEmailMagicLinkActivityLauncher = StytchUI.EmailMagicLink.activityLauncher(this) {
+        showResult(it)
+    }
+
+    val stytchSMSPasscodeActivityLauncher = StytchUI.SMSPasscode.activityLauncher(this) {
+        showResult(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Stytch.instance.configure(
-            projectID = "project-test-2328d332-7850-486a-99c6-cd7956b518c2",
-            secret = "secret-test-2tbeMPP3cYW-jXbpt-Ag1yeYDUW4ReEBxHw=",
-            scheme = "https",
-            host = "test.stytch.com",
+        Stytch.configure(
+            publicToken = "public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73",
+            environment = StytchEnvironment.TEST,
         )
-        Stytch.instance.environment = StytchEnvironment.TEST
-        StytchUI.instance.uiListener = this
-        StytchUI.instance.uiCustomization = StytchUICustomization().apply {
-            buttonCornerRadius = 7.dp
-            buttonBackgroundColor = StytchColor.fromColorId(R.color.purple_200)
-            inputBackgroundColor = StytchColor.fromColorId(R.color.design_default_color_background)
-            inputBackgroundBorderColor = StytchColor.fromColorId(R.color.design_default_color_secondary_variant)
-            inputCornerRadius = 3.dp
-            backgroundColor = StytchColor.fromColorId(R.color.design_default_color_background)
-            showBrandLogo = false
-            showTitle = false
-            showSubtitle = false
+
+        findViewById<Button>(R.id.toggle_activity_button).apply {
+            text = "Switch to Java Activity"
+            setOnClickListener { switchToJavaActivity() }
         }
 
-        loginButton = findViewById(R.id.launch_stytch_ui_button)
+        findViewById<Button>(R.id.toggle_dark_mode_button).setOnClickListener {
+            toggleDarkMode()
+        }
 
-        loginButton.setOnClickListener {
-            val launchStytchIntent = Intent(this, StytchMainActivity::class.java)
-            startActivity(launchStytchIntent)
+        findViewById<Button>(R.id.magic_link_direct_api_button).setOnClickListener {
+            testMagicLinkDirectApi()
+        }
+
+        findViewById<Button>(R.id.magic_link_ui_flow_button).setOnClickListener {
+            testEmailMagicLinkUIFlow()
+        }
+
+        findViewById<Button>(R.id.sms_passcode_ui_flow_button).setOnClickListener {
+            testSMSPasscodeUIFlow()
+        }
+
+        resultTextView = findViewById(R.id.result_text_view)
+    }
+
+    private fun switchToJavaActivity() {
+        startActivity(Intent(this, JavaActivity::class.java))
+    }
+
+    private fun toggleDarkMode() {
+        AppCompatDelegate.setDefaultNightMode(
+            if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
+
+    private fun showResult(result: Any) {
+        val asString = result.toString()
+        GlobalScope.launch(Dispatchers.Main) {
+            resultTextView.text = asString
+            showToast(asString)
+            Timber.tag("StytchTestApp").i("Result received: $asString")
         }
     }
 
-    override fun onSuccess(result: StytchResult) {
-        Toast.makeText(this, "SUCCESS!!!", Toast.LENGTH_LONG).show()
+    private fun testMagicLinkDirectApi() {
+        GlobalScope.launch {
+            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
+                email = "kyle@stytch.com",
+                loginMagicLinkUrl = "https://test.stytch.com/login",
+                signupMagicLinkUrl = "https://test.stytch.com/signup",
+            )
+            showResult(result)
+        }
     }
 
-    override fun onFailure() {
-        Toast.makeText(this, "FAILURE :(", Toast.LENGTH_LONG).show()
+    private fun testEmailMagicLinkUIFlow() {
+        StytchUI.EmailMagicLink.configure(
+            loginMagicLinkUrl = "https://test.stytch.com/login",
+            signupMagicLinkUrl = "https://test.stytch.com/signup",
+            createUserAsPending = true,
+            authenticator = object : StytchUI.EmailMagicLink.Authenticator() {
+                override fun authenticateToken(token: String) {
+                    val success = true
+                    onComplete(success)
+                }
+            }
+        )
+        stytchEmailMagicLinkActivityLauncher.launch()
+    }
+
+    private fun testSMSPasscodeUIFlow() {
+        StytchUI.SMSPasscode.configure(
+            createUserAsPending = true,
+            authenticator = object : StytchUI.SMSPasscode.Authenticator() {
+                override fun authenticateToken(token: String) {
+                    val success = true
+                    onComplete(success)
+                }
+            }
+        )
+        stytchSMSPasscodeActivityLauncher.launch()
     }
 }

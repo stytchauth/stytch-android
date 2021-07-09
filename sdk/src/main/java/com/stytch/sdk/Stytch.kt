@@ -1,138 +1,38 @@
 package com.stytch.sdk
 
-import android.net.Uri
+import android.util.Log
 
-public class Stytch private constructor() {
-    internal var config: StytchConfig? = null
+public object Stytch {
+    internal var isInitialized = false
+    internal lateinit var publicToken: String
+    internal lateinit var environment: StytchEnvironment
 
-    private lateinit var flowManager: StytchFlowManager
-
-    public var environment: StytchEnvironment = StytchEnvironment.LIVE
-
-    public var listener: StytchListener? = null
-
-    public fun configure(projectID: String, secret: String, scheme: String, host: String) {
-        config = StytchConfig(
-            projectID = projectID,
-            secret = secret,
-            deeplinkScheme = scheme,
-            deeplinkHost = host,
-        )
-        flowManager = StytchFlowManager()
+    @JvmStatic
+    public fun configure(
+        publicToken: String,
+        environment: StytchEnvironment,
+    ) {
+        isInitialized = true
+        this.publicToken = publicToken
+        this.environment = environment
     }
 
-    public fun configure(projectID: String, secret: String, deeplink: Uri) {
-        val scheme = deeplink.scheme ?: throw Exception("Provided deeplink Uri has a null scheme")
-        val host = deeplink.host ?: throw Exception("Provided deeplink Uri has a null host")
-        configure(projectID, secret, scheme, host)
-    }
-
-    public fun login(email: String, createUserAsPending: Boolean = true) {
-        checkIfConfigured()
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            listener?.onFailure(StytchError.InvalidEmail)
-            return
-        }
-        flowManager.login(email, createUserAsPending)
-    }
-
-    private fun resendEmailVerification() {
-        checkIfConfigured()
-        flowManager.resendEmailVerification()
-    }
-
-    public fun handleDeepLink(uri: Uri): Boolean {
-        checkIfConfigured()
-        if (uri.scheme == config?.deeplinkScheme && uri.host == config?.deeplinkHost) {
-            uri.path?.let { path ->
-//                TODO: handle different deep link paths
-                when {
-                    path.contains(Constants.LOGIN_PATH) -> {
-                        flowManager.verifyToken(uri.getQueryParameter("token"))
-                        return true
-                    }
-                    path.contains(Constants.INVITE_PATH) -> {
-                        flowManager.verifyToken(uri.getQueryParameter("token"))
-                        return true
-                    }
-                    path.contains(Constants.SIGN_UP_PATH) -> {
-                        flowManager.verifyToken(uri.getQueryParameter("token"))
-                        return true
-                    }
-                    else -> {
-                        return false
-                    }
-                }
-            }
-            return false
-        }
-        return false
-    }
-
-    private fun checkIfConfigured() {
-        if (config == null) {
-            throw UninitializedPropertyAccessException(Constants.NOT_INITIALIZED_WARNING)
-        }
-    }
-
-    public companion object {
-        public val instance: Stytch = Stytch()
-    }
-
-    public interface StytchListener {
-        public fun onSuccess(result: StytchResult)
-        public fun onFailure(error: StytchError)
-        public fun onMagicLinkSent(email: String)
-    }
-
-}
-
-internal class StytchConfig(
-    val projectID: String = "",
-    val secret: String = "",
-    val deeplinkScheme: String = "https",
-    val deeplinkHost: String = "test.stytch.com",
-    val verifyEmail: Boolean = false,
-    var uiCustomization: StytchUICustomization = StytchUICustomization(),
-)
-
-public enum class StytchEnvironment {
-    LIVE,
-    TEST,
-}
-
-public enum class StytchError(public val messageId: Int) {
-    InvalidEmail(R.string.stytch_error_invalid_input),
-    Connection(R.string.stytch_error_no_internet),
-    Unknown(R.string.stytch_error_unknown),
-    InvalidMagicToken(R.string.stytch_error_invalid_magic_token),
-    InvalidConfiguration(R.string.stytch_error_bad_token),
-}
-
-public class StytchEvent private constructor(
-    public val type: String,
-    public val created: Boolean,
-    public val userId: String,
-) {
-
-    public companion object {
-        private const val USER_EVENT = "user_event"
-
-        public fun userCreatedEvent(userId: String): StytchEvent {
-            return StytchEvent(USER_EVENT, true, userId)
-        }
-
-        public fun userFoundEvent(userId: String): StytchEvent {
-            return StytchEvent(USER_EVENT, false, userId)
+    internal fun assertInitialized() {
+        if (!isInitialized) {
+            error("Stytch Error: Stytch not initialized. You must call 'Stytch.configure(...)' before using any functionality of the Stytch SDK.")
         }
     }
 }
 
-public data class StytchResult(
-    public val userId: String,
-    public val requestId: String,
-) {
-    override fun toString(): String {
-        return "StytchResult(userId='$userId', requestId='$requestId')"
-    }
+public enum class StytchEnvironment(internal val baseUrl: String) {
+    LIVE("https://api.stytch.com/v1/"),
+    TEST("https://test.stytch.com/v1/"),
+}
+
+internal object StytchLog {
+    fun e(message: String) = Log.e("StytchLog", "Stytch error: $message")
+    fun w(message: String) = Log.w("StytchLog", "Stytch warning: $message")
+    fun i(message: String) = Log.i("StytchLog", message)
+    fun d(message: String) = Log.d("StytchLog", message)
+    fun v(message: String) = Log.v("StytchLog", message)
 }
