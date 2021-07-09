@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.stytch.sdk.StytchUI.uiCustomization
 import com.wealthfront.magellan.BaseScreenView
 import com.wealthfront.magellan.Screen
+import com.wealthfront.magellan.ScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,12 +42,20 @@ internal abstract class StytchScreen<V : StytchScreenView<*>> : Screen<V>() {
 }
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-internal abstract class StytchScreenView<S : Screen<*>>(context: Context) : BaseScreenView<S>(context) {
+internal abstract class StytchScreenView<S : Screen<*>>(context: Context) : ScrollView(context), ScreenView<S> {
     lateinit var coroutineScope: CoroutineScope
+
+    private lateinit var screen: S
 
     init {
         setBackgroundColor(uiCustomization.backgroundColor.getColor(context))
     }
+
+    override fun setScreen(screen: S) {
+        this.screen = screen
+    }
+
+    override fun getScreen(): S = screen
 
     abstract fun subscribeToState()
 

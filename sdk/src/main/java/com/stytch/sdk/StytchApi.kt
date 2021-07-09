@@ -210,9 +210,8 @@ public object StytchResponseTypes {
 @JsonClass(generateAdapter = true)
 public data class StytchErrorResponse(
     val status_code: Int,
-    val request_id: String?,
+    val request_id: String,
     val error_type: String,
-    val error_method: String?,
     val error_message: String?,
     val error_url: String,
 )
@@ -269,7 +268,6 @@ internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> 
                 val errorCode = throwable.code()
                 val stytchErrorResponse = try {
                     throwable.response()?.errorBody()?.source()?.let {
-                        StytchLog.w(throwable.response()?.errorBody()?.string().toString())
                         Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
                     }
                 } catch (t: Throwable) {
