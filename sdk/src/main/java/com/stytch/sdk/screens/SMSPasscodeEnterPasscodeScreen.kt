@@ -13,6 +13,7 @@ import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
 import com.stytch.sdk.StytchSingleDigitEditText
 import com.stytch.sdk.StytchUI
+import com.stytch.sdk.finishSuccessfullyWithResult
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class SMSPasscodeEnterPasscodeScreen(
@@ -113,7 +114,7 @@ internal class SMSPasscodeEnterPasscodeScreen(
 
     private fun onTokenAuthenticationComplete(success: Boolean) {
         if (success) {
-            activity.finish()
+            activity.finishSuccessfullyWithResult(true)
         } else {
             isInErrorState.value = true
             areDigitsInErrorState.value = true

@@ -162,7 +162,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
 
     private fun onTokenAuthenticationComplete(success: Boolean) {
         if (success) {
-            finish()
+            finishSuccessfullyWithResult(true)
         } else {
             TODO()
         }

@@ -14,7 +14,7 @@
         android:theme="@style/Theme.StytchAndroidSDK"
         >
 
-        <activity android:name=".MainActivity" android:noHistory="true">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".JavaActivity" android:noHistory="true">
+        <activity android:name=".JavaActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
