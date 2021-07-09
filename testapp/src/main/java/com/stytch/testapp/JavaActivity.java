@@ -42,7 +42,7 @@ public class JavaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stytch.configure(
-                "TODO",
+                "public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73",
                 StytchEnvironment.TEST
         );
 

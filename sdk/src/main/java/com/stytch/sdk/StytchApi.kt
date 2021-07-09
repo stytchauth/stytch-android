@@ -27,14 +27,17 @@ public object StytchApi {
                 attributes: StytchDataTypes.Attributes? = null,
             ): StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
-                    StytchRequestTypes.LoginOrCreateUserByEmailRequest(
-                        email = email,
-                        login_magic_link_url = loginMagicLinkUrl,
-                        signup_magic_link_url = signupMagicLinkUrl,
-                        login_expiration_minutes = loginExpirationMinutes,
-                        signup_expiration_minutes = signupExpirationMinutes,
-                        create_user_as_pending = createUserAsPending,
-                        attributes = attributes,
+                    StytchRequestTypes.SDKLoginOrCreateUserByEmailRequest(
+                        public_token = Stytch.publicToken,
+                        request = StytchRequestTypes.LoginOrCreateUserByEmailRequest(
+                            email = email,
+                            login_magic_link_url = loginMagicLinkUrl,
+                            signup_magic_link_url = signupMagicLinkUrl,
+                            login_expiration_minutes = loginExpirationMinutes,
+                            signup_expiration_minutes = signupExpirationMinutes,
+                            create_user_as_pending = createUserAsPending,
+                            attributes = attributes,
+                        )
                     )
                 )
             }
@@ -50,29 +53,14 @@ public object StytchApi {
                 attributes: StytchDataTypes.Attributes? = null,
             ): StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse> = safeApiCall {
                 apiService.loginOrCreateUserBySMS(
-                    StytchRequestTypes.LoginOrCreateUserBySMSRequest(
-                        phone_number = phoneNumber,
-                        expiration_minutes = expirationMinutes,
-                        create_user_as_pending = createUserAsPending,
-                        attributes = attributes,
-                    )
-                )
-            }
-        }
-
-        public object WhatsApp {
-            public suspend fun loginOrCreateUser(
-                phoneNumber: String,
-                expirationMinutes: Int? = null,
-                createUserAsPending: Boolean? = null,
-                attributes: StytchDataTypes.Attributes? = null,
-            ): StytchResult<StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse> = safeApiCall {
-                apiService.loginOrCreateUserByWhatsApp(
-                    StytchRequestTypes.LoginOrCreateUserByWhatsAppRequest(
-                        phone_number = phoneNumber,
-                        expiration_minutes = expirationMinutes,
-                        create_user_as_pending = createUserAsPending,
-                        attributes = attributes,
+                    StytchRequestTypes.SDKLoginOrCreateUserBySMSRequest(
+                        public_token = Stytch.publicToken,
+                        request = StytchRequestTypes.LoginOrCreateUserBySMSRequest(
+                            phone_number = phoneNumber,
+                            expiration_minutes = expirationMinutes,
+                            create_user_as_pending = createUserAsPending,
+                            attributes = attributes,
+                        )
                     )
                 )
             }
@@ -93,7 +81,6 @@ public object StytchApi {
                         chain.proceed(
                             chain.request()
                                 .newBuilder()
-                                .addHeader("Authorization", Stytch.authorizationHeader)
                                 .addHeader("Content-Type", "application/json")
                                 .build()
                         )
@@ -150,24 +137,6 @@ public object StytchCallbackApi {
                 )
             }
         }
-
-        public object WhatsApp {
-            @JvmStatic
-            public fun loginOrCreateUser(
-                phoneNumber: String,
-                expirationMinutes: Int? = null,
-                createUserAsPending: Boolean? = null,
-                attributes: StytchDataTypes.Attributes? = null,
-                callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse>) -> Unit,
-            ): Unit = callback.queue {
-                StytchApi.OTPs.WhatsApp.loginOrCreateUser(
-                    phoneNumber = phoneNumber,
-                    expirationMinutes = expirationMinutes,
-                    createUserAsPending = createUserAsPending,
-                    attributes = attributes,
-                )
-            }
-        }
     }
 
     private fun <T> ((T) -> Unit).queue(block: suspend () -> T) {
@@ -188,9 +157,9 @@ public object StytchDataTypes {
     )
 }
 
-public object StytchRequestTypes {
+internal object StytchRequestTypes {
     @JsonClass(generateAdapter = true)
-    public data class LoginOrCreateUserByEmailRequest(
+    data class LoginOrCreateUserByEmailRequest(
         val email: String,
         val login_magic_link_url: String,
         val signup_magic_link_url: String,
@@ -201,7 +170,13 @@ public object StytchRequestTypes {
     )
 
     @JsonClass(generateAdapter = true)
-    public data class LoginOrCreateUserBySMSRequest(
+    data class SDKLoginOrCreateUserByEmailRequest(
+        val public_token: String,
+        val request: LoginOrCreateUserByEmailRequest,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class LoginOrCreateUserBySMSRequest(
         val phone_number: String,
         val expiration_minutes: Int?,
         val create_user_as_pending: Boolean?,
@@ -209,11 +184,9 @@ public object StytchRequestTypes {
     )
 
     @JsonClass(generateAdapter = true)
-    public data class LoginOrCreateUserByWhatsAppRequest(
-        val phone_number: String,
-        val expiration_minutes: Int?,
-        val create_user_as_pending: Boolean?,
-        val attributes: StytchDataTypes.Attributes?,
+    data class SDKLoginOrCreateUserBySMSRequest(
+        val public_token: String,
+        val request: LoginOrCreateUserBySMSRequest,
     )
 }
 
@@ -232,21 +205,15 @@ public object StytchResponseTypes {
         val user_id: String,
         val phone_id: String,
     )
-
-    @JsonClass(generateAdapter = true)
-    public data class LoginOrCreateUserByWhatsAppResponse(
-        val request_id: String,
-        val user_id: String,
-        val phone_id: String,
-    )
 }
 
 @JsonClass(generateAdapter = true)
 public data class StytchErrorResponse(
     val status_code: Int,
-    val request_id: String,
+    val request_id: String?,
     val error_type: String,
     val error_method: String?,
+    val error_message: String?,
     val error_url: String,
 )
 
@@ -271,20 +238,15 @@ internal fun String.toStytchErrorType(): StytchErrorType? {
 }
 
 internal interface StytchApiService {
-    @POST("magic_links/email/login_or_create")
+    @POST("sdk/magic_links/email/login_or_create")
     suspend fun loginOrCreateUserByEmail(
-        @Body request: StytchRequestTypes.LoginOrCreateUserByEmailRequest,
+        @Body request: StytchRequestTypes.SDKLoginOrCreateUserByEmailRequest,
     ): StytchResponseTypes.LoginOrCreateUserByEmailResponse
 
-    @POST("otps/sms/login_or_create")
+    @POST("sdk/otps/sms/login_or_create")
     suspend fun loginOrCreateUserBySMS(
-        @Body request: StytchRequestTypes.LoginOrCreateUserBySMSRequest,
+        @Body request: StytchRequestTypes.SDKLoginOrCreateUserBySMSRequest,
     ): StytchResponseTypes.LoginOrCreateUserBySMSResponse
-
-    @POST("otps/whatsapp/login_or_create")
-    suspend fun loginOrCreateUserByWhatsApp(
-        @Body request: StytchRequestTypes.LoginOrCreateUserByWhatsAppRequest,
-    ): StytchResponseTypes.LoginOrCreateUserByWhatsAppResponse
 }
 
 public sealed class StytchResult<out T> {
@@ -307,6 +269,7 @@ internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> 
                 val errorCode = throwable.code()
                 val stytchErrorResponse = try {
                     throwable.response()?.errorBody()?.source()?.let {
+                        StytchLog.w(throwable.response()?.errorBody()?.string().toString())
                         Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
                     }
                 } catch (t: Throwable) {
