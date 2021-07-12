@@ -210,7 +210,18 @@ public class StytchUICustomization(
         color = StytchColor.fromColorId(R.color.errorTextColor),
         size = 14.sp,
     ),
-)
+) {
+    public companion object {
+        /**
+         * Convenience method for use from Java, builds a default customization.
+         * Fields can then be customized directly.
+         */
+        @JvmStatic
+        public fun createDefault(): StytchUICustomization {
+            return StytchUICustomization()
+        }
+    }
+}
 
 public class StytchTextStyle(
     public var size: ScalablePixels = 10.sp,
