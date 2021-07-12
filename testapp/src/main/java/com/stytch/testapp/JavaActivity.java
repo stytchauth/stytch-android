@@ -114,7 +114,7 @@ public class JavaActivity extends AppCompatActivity {
                 false,
                 new StytchUI.SMSPasscode.Authenticator() {
                     @Override
-                    public void authenticateToken(@NotNull String token) {
+                    public void authenticateToken(@NotNull String methodId, @NotNull String token) {
                         boolean success = true;
                         onComplete(success);
                     }

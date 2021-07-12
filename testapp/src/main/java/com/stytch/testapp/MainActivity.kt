@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         StytchUI.SMSPasscode.configure(
             createUserAsPending = true,
             authenticator = object : StytchUI.SMSPasscode.Authenticator() {
-                override fun authenticateToken(token: String) {
+                override fun authenticateToken(methodId: String, token: String) {
                     val success = true
                     onComplete(success)
                 }

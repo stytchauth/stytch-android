@@ -138,7 +138,18 @@ public object StytchUI {
              * you must call [callback] with either true (if token was successfully authenticated)
              * or false (if token authentication failed).
              */
-            public abstract fun authenticateToken(token: String)
+            public abstract fun authenticateToken(methodId: String, token: String)
+        }
+    }
+
+    internal fun onTokenAuthenticated(success: Boolean) {
+        val currentScreen = StytchActivity.navigator?.currentScreen() as? StytchScreen
+        currentScreen?.let {
+            if (success) {
+                it.getActivity().finishSuccessfullyWithResult(true)
+            } else {
+                it.onAuthenticationError()
+            }
         }
     }
 }
@@ -214,7 +225,7 @@ public value class DensityIndependentPixels(private val pixels: Float) {
 
 @JvmInline
 public value class ScalablePixels(private val pixels: Float) {
-    internal fun toFloat(): Float = pixels // Resources.getSystem().displayMetrics.density // TODO adjust for font size
+    internal fun toFloat(): Float = pixels * Resources.getSystem().displayMetrics.scaledDensity
 }
 
 public val Number.dp: DensityIndependentPixels get() = DensityIndependentPixels(this.toFloat())

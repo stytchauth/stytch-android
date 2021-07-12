@@ -19,6 +19,11 @@ internal class EmailMagicLinkConfirmationScreen(
             }
         }
     }
+
+    override fun onAuthenticationError() {
+        navigator.goBack()
+        (navigator.currentScreen() as? StytchScreen)?.onAuthenticationError()
+    }
 }
 
 internal class EmailMagicLinkConfirmationView(context: Context) : StytchScreenView<EmailMagicLinkConfirmationScreen>(context) {

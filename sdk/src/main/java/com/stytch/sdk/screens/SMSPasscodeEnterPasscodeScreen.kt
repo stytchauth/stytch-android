@@ -90,7 +90,7 @@ internal class SMSPasscodeEnterPasscodeScreen(
 
         StytchUI.SMSPasscode.authenticator.apply {
             callback = this@SMSPasscodeEnterPasscodeScreen::onTokenAuthenticationComplete
-            authenticateToken(enteredCode)
+            authenticateToken(methodId, enteredCode)
         }
     }
 
@@ -116,12 +116,16 @@ internal class SMSPasscodeEnterPasscodeScreen(
         if (success) {
             activity.finishSuccessfullyWithResult(true)
         } else {
-            isInErrorState.value = true
-            areDigitsInErrorState.value = true
-            errorMessage.value = R.string.invalid_passcode
-            buttonText.value = R.string._continue
-            isButtonEnabled.value = false
+            onAuthenticationError()
         }
+    }
+
+    override fun onAuthenticationError() {
+        isInErrorState.value = true
+        areDigitsInErrorState.value = true
+        errorMessage.value = R.string.invalid_passcode
+        buttonText.value = R.string._continue
+        isButtonEnabled.value = false
     }
 }
 

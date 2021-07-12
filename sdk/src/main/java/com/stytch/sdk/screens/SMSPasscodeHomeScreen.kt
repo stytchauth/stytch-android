@@ -123,6 +123,11 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
         view.phoneNumberTextField.setText(phoneNumber.slice(2 until phoneNumber.length))
         onContinueButtonClicked()
     }
+
+    override fun onAuthenticationError() {
+        errorMessage.value = R.string.authentication_failed_please_try_again
+        isInErrorState.value = true
+    }
 }
 
 internal class SMSPasscodeHomeView(context: Context) : StytchScreenView<SMSPasscodeHomeScreen>(context) {

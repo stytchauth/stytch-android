@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import com.stytch.sdk.StytchUI.uiCustomization
-import com.wealthfront.magellan.BaseScreenView
 import com.wealthfront.magellan.Screen
 import com.wealthfront.magellan.ScreenView
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +38,8 @@ internal abstract class StytchScreen<V : StytchScreenView<*>> : Screen<V>() {
 
         view.coroutineScope.cancel()
     }
+
+    abstract fun onAuthenticationError()
 }
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")

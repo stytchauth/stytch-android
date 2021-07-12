@@ -160,20 +160,12 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
         return Navigator.withRoot(EmailMagicLinkHomeScreen()).build()
     }
 
-    private fun onTokenAuthenticationComplete(success: Boolean) {
-        if (success) {
-            finishSuccessfullyWithResult(true)
-        } else {
-            TODO()
-        }
-    }
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val token = intent?.data?.getQueryParameter("token")
         if (token != null) {
             StytchUI.EmailMagicLink.authenticator.apply {
-                callback = this@StytchEmailMagicLinkActivity::onTokenAuthenticationComplete
+                callback = StytchUI::onTokenAuthenticated
                 authenticateToken(token)
             }
         }

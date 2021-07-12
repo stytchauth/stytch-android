@@ -124,6 +124,11 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
         view.emailTextField.setText(emailAddress)
         onContinueButtonClicked()
     }
+
+    override fun onAuthenticationError() {
+        errorMessage.value = R.string.authentication_failed_please_try_again
+        isInErrorState.value = true
+    }
 }
 
 internal class EmailMagicLinkHomeView(context: Context) : StytchScreenView<EmailMagicLinkHomeScreen>(context) {
