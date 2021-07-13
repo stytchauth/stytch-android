@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 public object StytchApi {
     public object MagicLinks {
         public object Email {
-            public suspend fun loginOrCreateUser(
+            public suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String,
                 signupMagicLinkUrl: String,
@@ -46,7 +46,7 @@ public object StytchApi {
 
     public object OTPs {
         public object SMS {
-            public suspend fun loginOrCreateUser(
+            public suspend fun loginOrCreate(
                 phoneNumber: String,
                 expirationMinutes: Int? = null,
                 createUserAsPending: Boolean? = null,
@@ -96,7 +96,7 @@ public object StytchCallbackApi {
     public object MagicLinks {
         public object Email {
             @JvmStatic
-            public fun loginOrCreateUser(
+            public fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String,
                 signupMagicLinkUrl: String,
@@ -106,7 +106,7 @@ public object StytchCallbackApi {
                 attributes: StytchDataTypes.Attributes? = null,
                 callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
             ): Unit = callback.queue {
-                StytchApi.MagicLinks.Email.loginOrCreateUser(
+                StytchApi.MagicLinks.Email.loginOrCreate(
                     email = email,
                     loginMagicLinkUrl = loginMagicLinkUrl,
                     signupMagicLinkUrl = signupMagicLinkUrl,
@@ -122,14 +122,14 @@ public object StytchCallbackApi {
     public object OTPs {
         public object SMS {
             @JvmStatic
-            public fun loginOrCreateUser(
+            public fun loginOrCreate(
                 phoneNumber: String,
                 expirationMinutes: Int? = null,
                 createUserAsPending: Boolean? = null,
                 attributes: StytchDataTypes.Attributes? = null,
                 callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse>) -> Unit,
             ): Unit = callback.queue {
-                StytchApi.OTPs.SMS.loginOrCreateUser(
+                StytchApi.OTPs.SMS.loginOrCreate(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes,
                     createUserAsPending = createUserAsPending,

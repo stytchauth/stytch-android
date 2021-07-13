@@ -171,18 +171,16 @@ public class StytchUICustomization(
     public var backgroundColor: StytchColor = StytchColor.fromColorId(R.color.backgroundColor),
     public var hideActionBar: Boolean = false,
     public var actionBarColor: StytchColor = StytchColor.fromColorId(R.color.tertiaryBrandColor),
-    public var showTitle: Boolean = true,
     public var titleStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         font = StytchFont.fromFontId(R.font.ibm_plex_sans, style = StytchFont.Style.BOLD),
         size = 30.sp,
     ),
-    public var showSubtitle: Boolean = true,
     public var subtitleStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 16.sp,
     ),
-    public var consentTextStyle: StytchTextStyle = StytchTextStyle(
+    public var smsConsentTextStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 14.sp,
     ),

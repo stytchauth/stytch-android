@@ -67,7 +67,7 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
         buttonText.value = R.string.sending_email
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
+            val result = StytchApi.MagicLinks.Email.loginOrCreate(
                 email = enteredEmail,
                 loginMagicLinkUrl = StytchUI.EmailMagicLink.loginMagicLinkUrl,
                 signupMagicLinkUrl = StytchUI.EmailMagicLink.signupMagicLinkUrl,

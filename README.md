@@ -4,6 +4,183 @@
 
 * [Overview](#overview)
 * [Requirements](#requirements)
+* [Dependency](#dependency)
+* [Getting Started](#getting-started)
+  * [Pre-built UI](#pre-built-ui)
+    * [Email Magic Link Authentication](#email-magic-link-authentication)
+    * [SMS Passcode Authentication](#sms-passcode-authentication)
+  * [Direct API](#direct-api)
+
+## Overview
+
+Stytch's Android SDK makes it simple to sign up new users and log in existing users to your service. Passwordless authentication provides improved security, a better user experience, and better user retention than traditional username and password authentication.
+
+With this SDK, you can use one of our elegant prebuilt UI flows (that offer extensive customization options), our use the Stytch API directly and build your own UI for maximum control.
+
+## Requirements
+
+This SDK supports Android API level 21 and above ([distribution stats](https://developer.android.com/about/dashboards/index.html))
+
+## Dependency
+
+Add the Stytch dependency to your app/build.gradle file:
+
+`implementation 'com.stytch.sdk:sdk:0.3.0'`
+
+## Getting Started
+
+1. Go to https://stytch.com/dashboard, and sign up/log in with your email address.
+
+2. Once you are on the dashboard, click on the "API Keys" tab on the left. Scroll down to the "Public tokens" section and copy your public token.
+
+3. In your android app, before you can any other part of the Stytch SDK, you must first call the `Stytch.configure` function and pass in your public token:
+
+```
+import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchEnvironment
+
+...
+
+Stytch.configure(
+    publicToken = public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73, // Replace with your public token
+    environment = StytchEnvironment.TEST,
+)
+```
+
+## Pre-built UI
+
+This SDK offers currently offers two beautiful pre-built UI flows: `StytchUI.EmailMagicLink` and `StytchUI.SMSPasscode` (with more coming soon!)
+
+(If you instead want to build your own UI from scratch, see the [Direct Api](#direct-api) section below.)
+
+In either case, before setting up these UI flows, you can customize how the Stytch UI looks by optionally setting the `StytchUI.uiCustomization` variable. (If you do not set this variable, the default Stytch theme will be used.)
+
+To do so, create an instance of the `StytchUICustomization` class:
+
+```
+import com.stytch.StytchUI
+import com.stytch.StytchUICustomization
+
+...
+
+StytchUI.uiCustomization = StytchUICustomization(
+    // customize attributes here
+)
+```
+
+This is a full list of all the attributes you can customize:
+
+StytchUICustomization
+- `backgroundColor: StytchColor` - Window background color
+- `hideActionBar: Boolean` - If true, no toolbar/action bar will be shown at top of screen
+- `actionBarColor: StytchColor` - Toolbar/Action bar color
+- `titleStyle: StytchTextStyle` - Title text style
+- `subtitleStyle: StytchTextStyle` - Subtitle text style
+- `consentTextStyle: StytchTextStyle` - (SMS Passcode flow only) SMS consent text style
+- `inputTextStyle: StytchTextStyle` - User input (email/phone number/passcode) text style
+- `inputHintStyle: StytchTextStyle` - Hint text style
+- `inputBackgroundColor: StytchColor` - Background color of input boxes
+- `inputCornerRadius: DensityIndependentPixels` - Radius of rounded corners of input boxes, in [dp](https://developer.android.com/training/multiscreen/screendensities)
+- `buttonTextStyle: StytchTextStyle` - Button text style
+- `buttonDisabledTextColor: StytchColor` - Set a different text color when buttons are in the disabled state
+- `buttonEnabledBackgroundColor: StytchColor` - Button background color when in enabled state
+- `buttonDisabledBackgroundColor: StytchColor` - Button background color when in disabled state
+- `buttonCornerRadius: DensityIndependentPixels` - Radius of rounded corners of button, in [dp](https://developer.android.com/training/multiscreen/screendensities)
+- `errorTextStyle: StytchTextStyle` - Error message text style
+
+StytchTextStyle
+- `size: ScalablePixels` - Text size in [sp](https://developer.android.com/training/multiscreen/screendensities)
+- `color: StytchColor` - Text Color
+- `font: StytchFont` - Text font
+
+After customizing the UI to your liking, the next step is to configure the UI flow of your choice:
+- [Email Magic Link](#email-magic-link-authentication)
+- [SMS Passcode](#sms-passcode-authentication)
+
+## Email Magic Link Authentication
+
+TODO
+
+## SMS Passcode Authentication
+
+TODO
+
+## Direct API
+
+If you want to build your own UI from scratch, you can still authenticate users using either passwordless method (email magic link or SMS passcode) by using the Stytch direct API.
+
+Email Magic Link example:
+
+```
+import kotlinx.coroutines.GlobalScope
+import com.stytch.sdk.StytchApi
+
+...
+
+GlobalScope.launch {
+    val result = StytchApi.MagicLinks.Email.loginOrCreate(
+        email = "[user email]",
+        loginMagicLinkUrl = "[your url]/login",
+        signupMagicLinkUrl = "[your url]/signup",
+    )
+    // handle result here
+}
+```
+
+Alternatively, if you do not use Kotlin coroutines in your codebase, you can instead provide an asynchronous callback by using the `StytchCallbackApi` object:
+
+```
+import com.stytch.sdk.StytchCallbackApi
+
+...
+
+StytchCallbackApi.MagicLinks.Email.loginOrCreate(
+    email = "[user email]",
+    loginMagicLinkUrl = "[your url]/login",
+    signupMagicLinkUrl = "[your url]/signup",
+) { result ->
+    // handle result here
+}
+```
+
+SMS Passcode example:
+
+```
+import kotlinx.coroutines.GlobalScope
+import com.stytch.sdk.StytchApi
+
+...
+
+GlobalScope.launch {
+    val result = StytchApi.MagicLinks.Email.loginOrCreate(
+        phoneNumber = "[user phone number]",
+    )
+    // handle result here
+}
+```
+
+Alternatively, if you do not use Kotlin coroutines in your codebase, you can instead provide an asynchronous callback by using the `StytchCallbackApi` object:
+
+```
+import com.stytch.sdk.StytchCallbackApi
+
+...
+
+StytchCallbackApi.MagicLinks.Email.loginOrCreate(
+    phoneNumber = "[user phone number]",
+) { result ->
+    // handle result here
+}
+```
+
+-------------------------------------------------
+
+# Stytch Android SDK
+
+## Table of contents
+
+* [Overview](#overview)
+* [Requirements](#requirements)
 * [Installation](#installation)
 * [Getting Started](#getting-started)
   * [Configuration](#configuration)

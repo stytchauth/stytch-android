@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun testMagicLinkDirectApi() {
         GlobalScope.launch {
-            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
+            val result = StytchApi.MagicLinks.Email.loginOrCreate(
                 email = "kyle@stytch.com",
                 loginMagicLinkUrl = "https://test.stytch.com/login",
                 signupMagicLinkUrl = "https://test.stytch.com/signup",

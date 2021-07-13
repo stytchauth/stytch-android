@@ -78,7 +78,7 @@ public class JavaActivity extends AppCompatActivity {
     }
 
     private void testMagicLinkDirectApi() {
-        StytchCallbackApi.MagicLinks.Email.loginOrCreateUser(
+        StytchCallbackApi.MagicLinks.Email.loginOrCreate(
                 "kyle@stytch.com",
                 "https://test.stytch.com/login",
                 "https://test.stytch.com/signup",

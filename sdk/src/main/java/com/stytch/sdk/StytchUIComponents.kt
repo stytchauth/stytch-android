@@ -132,19 +132,11 @@ internal open class StytchTextView @JvmOverloads constructor(
     }
 }
 
-internal class StytchTitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.titleStyle) {
-    init {
-        visibility = if (uiCustomization.showTitle) View.VISIBLE else View.GONE
-    }
-}
+internal class StytchTitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.titleStyle)
 
-internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.subtitleStyle) {
-    init {
-        visibility = if (uiCustomization.showSubtitle) View.VISIBLE else View.GONE
-    }
-}
+internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.subtitleStyle)
 
-internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.consentTextStyle)
+internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.smsConsentTextStyle)
 
 internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
 

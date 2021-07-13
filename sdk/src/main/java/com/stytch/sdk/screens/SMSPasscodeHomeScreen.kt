@@ -58,7 +58,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
         buttonText.value = R.string.sending_passcode
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.OTPs.SMS.loginOrCreateUser(
+            val result = StytchApi.OTPs.SMS.loginOrCreate(
                 phoneNumber = "+1$enteredPhoneNumber",
                 createUserAsPending = StytchUI.SMSPasscode.createUserAsPending,
             )
