@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             createUserAsPending = true,
             authenticator = { token ->
                 showResult("Received token '$token'")
-                StytchUI.onTokenAuthenticated(success = false)
+                StytchUI.onTokenAuthenticated()
             }
         )
         val intent = StytchUI.EmailMagicLink.createIntent(this)
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             createUserAsPending = true,
             authenticator = { methodId, token ->
                 showResult("Received methodId '$methodId' and token '$token'")
-                StytchUI.onTokenAuthenticated(success = false)
+                StytchUI.onTokenAuthenticated()
             }
         )
         val intent = StytchUI.SMSPasscode.createIntent(this)

@@ -88,7 +88,16 @@ public object StytchUI {
     }
 
     @JvmStatic
-    public fun onTokenAuthenticated(success: Boolean) {
+    public fun onTokenAuthenticated() {
+        onTokenAuthenticated(true)
+    }
+
+    @JvmStatic
+    public fun onTokenAuthenticationFailed() {
+        onTokenAuthenticated(false)
+    }
+
+    private fun onTokenAuthenticated(success: Boolean) {
         val currentScreen = StytchActivity.navigator?.currentScreen() as? StytchScreen
         currentScreen?.let {
             if (success) {

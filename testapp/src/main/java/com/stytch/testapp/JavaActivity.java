@@ -85,7 +85,7 @@ public class JavaActivity extends AppCompatActivity {
                 true,
                 token -> {
                     showResult("Received token '" + token);
-                    StytchUI.onTokenAuthenticated(true);
+                    StytchUI.onTokenAuthenticated();
                 }
         );
         Intent intent = StytchUI.EmailMagicLink.createIntent(this);
@@ -97,7 +97,7 @@ public class JavaActivity extends AppCompatActivity {
                 false,
                 (methodId, token) -> {
                     showResult("Received methodId '" + methodId + "' and token '" + token + "'");
-                    StytchUI.onTokenAuthenticated(true);
+                    StytchUI.onTokenAuthenticated();
                 }
         );
         Intent intent = StytchUI.SMSPasscode.createIntent(this);
