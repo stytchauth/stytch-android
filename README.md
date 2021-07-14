@@ -51,7 +51,7 @@ Stytch.configure(
 
 This SDK offers currently offers two beautiful pre-built UI flows: `StytchUI.EmailMagicLink` and `StytchUI.SMSPasscode` (with more coming soon!)
 
-(If you instead want to build your own UI from scratch, see the [Direct Api](#direct-api) section below.)
+(If you instead want to build your own UI from scratch, see the [Direct API](#direct-api) section below.)
 
 In either case, before setting up these UI flows, you can customize how the Stytch UI looks by optionally setting the `StytchUI.uiCustomization` variable. (If you do not set this variable, the default Stytch theme will be used.)
 

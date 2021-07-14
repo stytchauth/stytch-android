@@ -66,7 +66,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
             when (result) {
                 is StytchResult.Success -> {
                     val task = SmsRetriever.getClient(activity).startSmsUserConsent(null)
-                    if (task.isSuccessful) StytchLog.d("SMS Retriever task started successfully")
+                    if (task.isSuccessful) StytchLog.i("SMS Retriever task started successfully")
                     else StytchLog.w("SMS Retriever task not started successfully (SMS autofill will not work)")
                     withContext(Dispatchers.Main) {
                         buttonText.value = R.string._continue

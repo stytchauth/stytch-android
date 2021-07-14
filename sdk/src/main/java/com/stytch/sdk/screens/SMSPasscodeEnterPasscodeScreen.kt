@@ -13,7 +13,6 @@ import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
 import com.stytch.sdk.StytchSingleDigitEditText
 import com.stytch.sdk.StytchUI
-import com.stytch.sdk.finishSuccessfullyWithResult
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class SMSPasscodeEnterPasscodeScreen(
@@ -88,10 +87,7 @@ internal class SMSPasscodeEnterPasscodeScreen(
         isButtonEnabled.value = false
         buttonText.value = R.string.verifying_code
 
-        StytchUI.SMSPasscode.authenticator.apply {
-            callback = this@SMSPasscodeEnterPasscodeScreen::onTokenAuthenticationComplete
-            authenticateToken(methodId, enteredCode)
-        }
+        StytchUI.SMSPasscode.authenticator.authenticateToken(methodId, enteredCode)
     }
 
     fun smsReceived(messageText: String) {
@@ -110,14 +106,6 @@ internal class SMSPasscodeEnterPasscodeScreen(
     fun updateContinueButtonState() {
         areDigitsInErrorState.value = false
         isButtonEnabled.value = view.areAllDigitsEntered()
-    }
-
-    private fun onTokenAuthenticationComplete(success: Boolean) {
-        if (success) {
-            activity.finishSuccessfullyWithResult(true)
-        } else {
-            onAuthenticationError()
-        }
     }
 
     override fun onAuthenticationError() {

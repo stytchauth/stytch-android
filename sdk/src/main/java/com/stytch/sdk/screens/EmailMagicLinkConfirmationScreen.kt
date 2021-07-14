@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.stytch.sdk.R
 import com.stytch.sdk.StytchScreen
 import com.stytch.sdk.StytchScreenView
+import com.wealthfront.magellan.transitions.NoAnimationTransition
 
 internal class EmailMagicLinkConfirmationScreen(
     private val emailAddress: String,
@@ -21,6 +22,7 @@ internal class EmailMagicLinkConfirmationScreen(
     }
 
     override fun onAuthenticationError() {
+        navigator.overrideTransition(NoAnimationTransition())
         navigator.goBack()
         (navigator.currentScreen() as? StytchScreen)?.onAuthenticationError()
     }

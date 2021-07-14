@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 public object StytchApi {
     public object MagicLinks {
         public object Email {
+            /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
             public suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String,
@@ -46,6 +47,7 @@ public object StytchApi {
 
     public object OTPs {
         public object SMS {
+            /** https://stytch.com/docs/api/log-in-or-create-user-by-sms */
             public suspend fun loginOrCreate(
                 phoneNumber: String,
                 expirationMinutes: Int? = null,
@@ -67,7 +69,7 @@ public object StytchApi {
         }
     }
 
-    internal val apiService by lazy {
+    internal val apiService: StytchApiService by lazy {
         Stytch.assertInitialized()
         Retrofit.Builder()
             .baseUrl(Stytch.environment.baseUrl)
@@ -95,8 +97,8 @@ public object StytchApi {
 public object StytchCallbackApi {
     public object MagicLinks {
         public object Email {
-            @JvmStatic
-            public fun loginOrCreate(
+            /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
+            @JvmStatic public fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String,
                 signupMagicLinkUrl: String,
@@ -121,8 +123,8 @@ public object StytchCallbackApi {
 
     public object OTPs {
         public object SMS {
-            @JvmStatic
-            public fun loginOrCreate(
+            /** https://stytch.com/docs/api/log-in-or-create-user-by-sms */
+            @JvmStatic public fun loginOrCreate(
                 phoneNumber: String,
                 expirationMinutes: Int? = null,
                 createUserAsPending: Boolean? = null,
