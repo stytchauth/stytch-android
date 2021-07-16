@@ -67,7 +67,7 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
         buttonText.value = R.string.sending_email
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
+            val result = StytchApi.MagicLinks.Email.loginOrCreate(
                 email = enteredEmail,
                 loginMagicLinkUrl = StytchUI.EmailMagicLink.loginMagicLinkUrl,
                 signupMagicLinkUrl = StytchUI.EmailMagicLink.signupMagicLinkUrl,
@@ -123,6 +123,11 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
     fun emailAddressHintGiven(emailAddress: String) {
         view.emailTextField.setText(emailAddress)
         onContinueButtonClicked()
+    }
+
+    override fun onAuthenticationError() {
+        errorMessage.value = R.string.authentication_failed_please_try_again
+        isInErrorState.value = true
     }
 }
 

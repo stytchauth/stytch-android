@@ -5,13 +5,10 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.support.annotation.FontRes
-import androidx.activity.result.ActivityResultCaller
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import java.io.Serializable
 
 public object StytchUI {
     private var _uiCustomization: StytchUICustomization? = null
@@ -46,43 +43,17 @@ public object StytchUI {
         }
 
         @JvmStatic
-        public fun activityLauncher(
-            context: ActivityResultCaller,
-            onResult: (StytchUIResult) -> Unit,
-        ): StytchActivityLauncher {
-            return StytchActivityLauncher(context.registerForActivityResult(activityResultContract, onResult))
-        }
-
-        private val activityResultContract by lazy {
-            object : ActivityResultContract<Unit, StytchUIResult>() {
-                override fun createIntent(context: Context, input: Unit): Intent {
-                    return this@EmailMagicLink.createIntent(context)
-                }
-
-                override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
-                    return intent.toStytchUIResult()
-                }
-            }
-        }
-
-        @JvmStatic
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchEmailMagicLinkActivity::class.java)
         }
 
-        public abstract class Authenticator {
-            internal lateinit var callback: (Boolean) -> Unit
-
-            public fun onComplete(success: Boolean) {
-                callback(success)
-            }
-
+        public fun interface Authenticator {
             /**
              * Once the magic link is authenticated,
-             * you must call [onComplete] with either true (if token was successfully authenticated)
+             * you must call [StytchUI.onTokenAuthenticated] with either true (if token was successfully authenticated)
              * or false (if token authentication failed).
              */
-            public abstract fun authenticateToken(token: String)
+            public fun authenticateToken(token: String)
         }
     }
 
@@ -102,57 +73,39 @@ public object StytchUI {
         }
 
         @JvmStatic
-        public fun activityLauncher(
-            context: ActivityResultCaller,
-            onResult: (StytchUIResult) -> Unit,
-        ): StytchActivityLauncher {
-            return StytchActivityLauncher(context.registerForActivityResult(activityResultContract, onResult))
-        }
-
-        private val activityResultContract by lazy {
-            object : ActivityResultContract<Unit, StytchUIResult>() {
-                override fun createIntent(context: Context, input: Unit): Intent {
-                    return this@SMSPasscode.createIntent(context)
-                }
-
-                override fun parseResult(resultCode: Int, intent: Intent?): StytchUIResult {
-                    return intent.toStytchUIResult()
-                }
-            }
-        }
-
-        @JvmStatic
         public fun createIntent(appContext: Context): Intent {
             return stytchIntent(appContext, StytchSMSPasscodeActivity::class.java)
         }
 
-        public abstract class Authenticator {
-            internal lateinit var callback: (Boolean) -> Unit
-
-            public fun onComplete(success: Boolean) {
-                callback(success)
-            }
-
+        public fun interface Authenticator {
             /**
              * Once the magic link is authenticated,
-             * you must call [callback] with either true (if token was successfully authenticated)
+             * you must call [StytchUI.onTokenAuthenticated] with either true (if token was successfully authenticated)
              * or false (if token authentication failed).
              */
-            public abstract fun authenticateToken(token: String)
+            public fun authenticateToken(methodId: String, token: String)
         }
     }
-}
 
-public sealed class StytchUIResult {
-    public object Success : StytchUIResult()
-    public object CancelledByUser : StytchUIResult()
-}
+    @JvmStatic
+    public fun onTokenAuthenticated() {
+        onTokenAuthenticated(true)
+    }
 
-public fun Intent?.toStytchUIResult(): StytchUIResult {
-    disposeAllScreens()
-    return when (this) {
-        null -> StytchUIResult.CancelledByUser
-        else -> StytchUIResult.Success
+    @JvmStatic
+    public fun onTokenAuthenticationFailed() {
+        onTokenAuthenticated(false)
+    }
+
+    private fun onTokenAuthenticated(success: Boolean) {
+        val currentScreen = StytchActivity.navigator?.currentScreen() as? StytchScreen
+        currentScreen?.let {
+            if (success) {
+                it.getActivity().finish()
+            } else {
+                it.onAuthenticationError()
+            }
+        }
     }
 }
 
@@ -160,18 +113,16 @@ public class StytchUICustomization(
     public var backgroundColor: StytchColor = StytchColor.fromColorId(R.color.backgroundColor),
     public var hideActionBar: Boolean = false,
     public var actionBarColor: StytchColor = StytchColor.fromColorId(R.color.tertiaryBrandColor),
-    public var showTitle: Boolean = true,
     public var titleStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         font = StytchFont.fromFontId(R.font.ibm_plex_sans, style = StytchFont.Style.BOLD),
         size = 30.sp,
     ),
-    public var showSubtitle: Boolean = true,
     public var subtitleStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 16.sp,
     ),
-    public var consentTextStyle: StytchTextStyle = StytchTextStyle(
+    public var smsConsentTextStyle: StytchTextStyle = StytchTextStyle(
         color = StytchColor.fromColorId(R.color.primaryBrandColor),
         size = 14.sp,
     ),
@@ -199,7 +150,18 @@ public class StytchUICustomization(
         color = StytchColor.fromColorId(R.color.errorTextColor),
         size = 14.sp,
     ),
-)
+) {
+    public companion object {
+        /**
+         * Convenience method for use from Java, builds a default customization.
+         * Fields can then be customized directly.
+         */
+        @JvmStatic
+        public fun createDefault(): StytchUICustomization {
+            return StytchUICustomization()
+        }
+    }
+}
 
 public class StytchTextStyle(
     public var size: ScalablePixels = 10.sp,
@@ -213,8 +175,8 @@ public value class DensityIndependentPixels(private val pixels: Float) {
 }
 
 @JvmInline
-public value class ScalablePixels(private val pixels: Float) {
-    internal fun toFloat(): Float = pixels // Resources.getSystem().displayMetrics.density // TODO adjust for font size
+public value class ScalablePixels constructor(internal val pixels: Float) {
+    internal fun toFloat(): Float = pixels * Resources.getSystem().displayMetrics.scaledDensity
 }
 
 public val Number.dp: DensityIndependentPixels get() = DensityIndependentPixels(this.toFloat())
@@ -281,20 +243,4 @@ internal fun <T : StytchActivity> stytchIntent(context: Context, activity: Class
     return Intent(context, activity).apply {
         putExtra(StytchActivity.ACTIVITY_ID_EXTRA_NAME, StytchActivity.getNextActivityId())
     }
-}
-
-internal inline fun <reified T : Serializable> intentWithExtra(extra: T): Intent {
-    return Intent().withSerializableExtra(extra)
-}
-
-internal inline fun <reified T : Serializable> Intent.withSerializableExtra(extra: T): Intent = apply {
-    putExtra(T::class.qualifiedName, extra)
-}
-
-internal inline fun <reified T : Serializable> Intent?.getSerializableExtra(): T? {
-    return this?.extras?.getSerializable(T::class.qualifiedName) as? T
-}
-
-internal fun disposeAllScreens() {
-    StytchActivity.navigator = null
 }

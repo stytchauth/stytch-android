@@ -18,20 +18,12 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
     lateinit var resultTextView: TextView
 
-    val stytchEmailMagicLinkActivityLauncher = StytchUI.EmailMagicLink.activityLauncher(this) {
-        showResult(it)
-    }
-
-    val stytchSMSPasscodeActivityLauncher = StytchUI.SMSPasscode.activityLauncher(this) {
-        showResult(it)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Stytch.configure(
-            publicToken = "public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73",
+            publicToken = "public-token-test-6906b71d-b14d-403c-becc-c4c88ac5fcfa",
             environment = StytchEnvironment.TEST,
         )
 
@@ -81,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun testMagicLinkDirectApi() {
         GlobalScope.launch {
-            val result = StytchApi.MagicLinks.Email.loginOrCreateUser(
+            val result = StytchApi.MagicLinks.Email.loginOrCreate(
                 email = "kyle@stytch.com",
                 loginMagicLinkUrl = "https://test.stytch.com/login",
                 signupMagicLinkUrl = "https://test.stytch.com/signup",
@@ -95,26 +87,24 @@ class MainActivity : AppCompatActivity() {
             loginMagicLinkUrl = "https://test.stytch.com/login",
             signupMagicLinkUrl = "https://test.stytch.com/signup",
             createUserAsPending = true,
-            authenticator = object : StytchUI.EmailMagicLink.Authenticator() {
-                override fun authenticateToken(token: String) {
-                    val success = true
-                    onComplete(success)
-                }
+            authenticator = { token ->
+                showResult("Received token '$token'")
+                StytchUI.onTokenAuthenticated()
             }
         )
-        stytchEmailMagicLinkActivityLauncher.launch()
+        val intent = StytchUI.EmailMagicLink.createIntent(this)
+        startActivity(intent)
     }
 
     private fun testSMSPasscodeUIFlow() {
         StytchUI.SMSPasscode.configure(
             createUserAsPending = true,
-            authenticator = object : StytchUI.SMSPasscode.Authenticator() {
-                override fun authenticateToken(token: String) {
-                    val success = true
-                    onComplete(success)
-                }
+            authenticator = { methodId, token ->
+                showResult("Received methodId '$methodId' and token '$token'")
+                StytchUI.onTokenAuthenticated()
             }
         )
-        stytchSMSPasscodeActivityLauncher.launch()
+        val intent = StytchUI.SMSPasscode.createIntent(this)
+        startActivity(intent)
     }
 }

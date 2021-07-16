@@ -5,14 +5,12 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.View
 import android.widget.ScrollView
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import com.stytch.sdk.StytchUI.uiCustomization
-import com.wealthfront.magellan.BaseScreenView
 import com.wealthfront.magellan.Screen
 import com.wealthfront.magellan.ScreenView
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +37,8 @@ internal abstract class StytchScreen<V : StytchScreenView<*>> : Screen<V>() {
 
         view.coroutineScope.cancel()
     }
+
+    abstract fun onAuthenticationError()
 }
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
@@ -74,7 +74,7 @@ internal open class StytchEditText(context: Context, attrs: AttributeSet?) : App
     init {
         setTextColor(uiCustomization.inputTextStyle.color.getColor(context))
         typeface = uiCustomization.inputTextStyle.font.getFont(context)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.inputTextStyle.size.toFloat())
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.inputTextStyle.size.pixels)
         // TODO setCursorDrawableColor(style.color.getColor(context))
 
         setHintTextColor(uiCustomization.inputHintStyle.color.getColor(context))
@@ -119,7 +119,7 @@ internal open class StytchTextView @JvmOverloads constructor(
     init {
         setTextColor(textStyle.color.getColor(context))
         typeface = textStyle.font.getFont(context)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, textStyle.size.toFloat())
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, textStyle.size.pixels)
     }
 
     final override fun setTextColor(color: Int) {
@@ -131,19 +131,11 @@ internal open class StytchTextView @JvmOverloads constructor(
     }
 }
 
-internal class StytchTitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.titleStyle) {
-    init {
-        visibility = if (uiCustomization.showTitle) View.VISIBLE else View.GONE
-    }
-}
+internal class StytchTitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.titleStyle)
 
-internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.subtitleStyle) {
-    init {
-        visibility = if (uiCustomization.showSubtitle) View.VISIBLE else View.GONE
-    }
-}
+internal class StytchSubtitleTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.subtitleStyle)
 
-internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.consentTextStyle)
+internal class StytchSMSConsentTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.smsConsentTextStyle)
 
 internal class StytchErrorTextView(context: Context, attrs: AttributeSet?) : StytchTextView(context, attrs, uiCustomization.errorTextStyle)
 
@@ -168,6 +160,6 @@ internal class StytchButton(context: Context, attrs: AttributeSet?) : AppCompatB
         val textColors = intArrayOf(enabledTextColor, disabledTextColor)
         setTextColor(ColorStateList(states, textColors))
         typeface = uiCustomization.buttonTextStyle.font.getFont(context)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.buttonTextStyle.size.toFloat())
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, uiCustomization.buttonTextStyle.size.pixels)
     }
 }

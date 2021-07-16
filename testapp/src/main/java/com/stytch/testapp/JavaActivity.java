@@ -11,12 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.stytch.sdk.Stytch;
-import com.stytch.sdk.StytchActivityLauncher;
 import com.stytch.sdk.StytchCallbackApi;
 import com.stytch.sdk.StytchEnvironment;
 import com.stytch.sdk.StytchUI;
-
-import org.jetbrains.annotations.NotNull;
 
 import kotlin.Unit;
 import timber.log.Timber;
@@ -24,25 +21,13 @@ import timber.log.Timber;
 public class JavaActivity extends AppCompatActivity {
     TextView resultTextView;
 
-    StytchActivityLauncher stytchEmailMagicLinkActivityLauncher =
-            StytchUI.EmailMagicLink.activityLauncher(this, result -> {
-                showResult(result);
-                return Unit.INSTANCE;
-            });
-
-    StytchActivityLauncher stytchSmsPasscodeActivityLauncher =
-            StytchUI.SMSPasscode.activityLauncher(this, result -> {
-                showResult(result);
-                return Unit.INSTANCE;
-            });
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Stytch.configure(
-                "public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73",
+                "public-token-test-6906b71d-b14d-403c-becc-c4c88ac5fcfa",
                 StytchEnvironment.TEST
         );
 
@@ -78,7 +63,7 @@ public class JavaActivity extends AppCompatActivity {
     }
 
     private void testMagicLinkDirectApi() {
-        StytchCallbackApi.MagicLinks.Email.loginOrCreateUser(
+        StytchCallbackApi.MagicLinks.Email.loginOrCreate(
                 "kyle@stytch.com",
                 "https://test.stytch.com/login",
                 "https://test.stytch.com/signup",
@@ -98,28 +83,24 @@ public class JavaActivity extends AppCompatActivity {
                 "https://test.stytch.com/login",
                 "https://test.stytch.com/signup",
                 true,
-                new StytchUI.EmailMagicLink.Authenticator() {
-                    @Override
-                    public void authenticateToken(@NotNull String token) {
-                        boolean success = true;
-                        onComplete(success);
-                    }
+                token -> {
+                    showResult("Received token '" + token);
+                    StytchUI.onTokenAuthenticated();
                 }
         );
-        stytchEmailMagicLinkActivityLauncher.launch();
+        Intent intent = StytchUI.EmailMagicLink.createIntent(this);
+        startActivity(intent);
     }
 
     private void testSmsPasscodeUIFlow() {
         StytchUI.SMSPasscode.configure(
                 false,
-                new StytchUI.SMSPasscode.Authenticator() {
-                    @Override
-                    public void authenticateToken(@NotNull String token) {
-                        boolean success = true;
-                        onComplete(success);
-                    }
+                (methodId, token) -> {
+                    showResult("Received methodId '" + methodId + "' and token '" + token + "'");
+                    StytchUI.onTokenAuthenticated();
                 }
         );
-        stytchSmsPasscodeActivityLauncher.launch();
+        Intent intent = StytchUI.SMSPasscode.createIntent(this);
+        startActivity(intent);
     }
 }

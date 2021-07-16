@@ -10,12 +10,8 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.WindowManager
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.annotation.MainThread
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
@@ -24,7 +20,6 @@ import com.stytch.sdk.screens.EmailMagicLinkHomeScreen
 import com.stytch.sdk.screens.SMSPasscodeEnterPasscodeScreen
 import com.stytch.sdk.screens.SMSPasscodeHomeScreen
 import com.wealthfront.magellan.Navigator
-import java.io.Serializable
 
 internal abstract class StytchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,8 +101,9 @@ internal abstract class StytchActivity : AppCompatActivity() {
     }
 
     companion object {
+        // The navigator clears references to context objects when the activity is destroyed
+        // See StytchActivity::onDestroy
         @SuppressLint("StaticFieldLeak")
-        // navigator is set to null whenever a StytchUIResult is deserialized
         var navigator: Navigator? = null
 
         private var currentActivityId = -1
@@ -123,27 +119,6 @@ internal abstract class StytchActivity : AppCompatActivity() {
     }
 }
 
-public class StytchActivityLauncher internal constructor(private val backingLauncher: ActivityResultLauncher<Unit>) {
-    @JvmOverloads
-    public fun launch(options: ActivityOptionsCompat? = null) {
-        backingLauncher.launch(Unit, options)
-    }
-
-    @MainThread
-    public fun unregister() {
-        backingLauncher.unregister()
-    }
-
-    public fun getContract(): ActivityResultContract<Unit, *> {
-        return backingLauncher.contract
-    }
-}
-
-internal inline fun <reified T : Serializable> Activity.finishSuccessfullyWithResult(result: T) {
-    setResult(Activity.RESULT_OK, intentWithExtra(result))
-    finish()
-}
-
 internal enum class IntentCodes {
     EMAIL_PICKER_INTENT_CODE,
     PHONE_NUMBER_PICKER_INTENT_CODE,
@@ -155,27 +130,16 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
 
     override fun createNavigator(): Navigator {
         if (!StytchUI.EmailMagicLink.configured) {
-            error("Stytch Error: Launched StytchUI Email Magic Link activity with first calling StytchUI.EmailMagicLink.configure(...)")
+            stytchError("Launched StytchUI Email Magic Link activity with first calling StytchUI.EmailMagicLink.configure(...)")
         }
         return Navigator.withRoot(EmailMagicLinkHomeScreen()).build()
-    }
-
-    private fun onTokenAuthenticationComplete(success: Boolean) {
-        if (success) {
-            finishSuccessfullyWithResult(true)
-        } else {
-            TODO()
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val token = intent?.data?.getQueryParameter("token")
         if (token != null) {
-            StytchUI.EmailMagicLink.authenticator.apply {
-                callback = this@StytchEmailMagicLinkActivity::onTokenAuthenticationComplete
-                authenticateToken(token)
-            }
+            StytchUI.EmailMagicLink.authenticator.authenticateToken(token)
         }
     }
 
@@ -185,7 +149,6 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
             IntentCodes.EMAIL_PICKER_INTENT_CODE.ordinal -> {
                 if (resultCode != Activity.RESULT_OK) return
                 val emailAddress = data?.getParcelableExtra<Credential>(Credential.EXTRA_KEY)?.id
-                StytchLog.d("$emailAddress")
                 emailAddress?.let {
                     (navigator?.currentScreen() as? EmailMagicLinkHomeScreen)?.emailAddressHintGiven(it)
                 }
@@ -217,7 +180,7 @@ internal class StytchSMSPasscodeActivity : StytchActivity() {
 
     override fun createNavigator(): Navigator {
         if (!StytchUI.SMSPasscode.configured) {
-            error("Stytch Error: Launched StytchUI SMS Passcode activity with first calling StytchUI.SMSPasscode.configure(...)")
+            stytchError("Launched StytchUI SMS Passcode activity with first calling StytchUI.SMSPasscode.configure(...)")
         }
         return Navigator.withRoot(SMSPasscodeHomeScreen()).build()
     }

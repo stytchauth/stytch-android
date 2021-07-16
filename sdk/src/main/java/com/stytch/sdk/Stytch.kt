@@ -19,7 +19,7 @@ public object Stytch {
 
     internal fun assertInitialized() {
         if (!isInitialized) {
-            error("Stytch Error: Stytch not initialized. You must call 'Stytch.configure(...)' before using any functionality of the Stytch SDK.")
+            stytchError("Stytch not initialized. You must call 'Stytch.configure(...)' before using any functionality of the Stytch SDK.")
         }
     }
 }
@@ -35,4 +35,8 @@ internal object StytchLog {
     fun i(message: String) = Log.i("StytchLog", message)
     fun d(message: String) = Log.d("StytchLog", message)
     fun v(message: String) = Log.v("StytchLog", message)
+}
+
+internal fun stytchError(message: String): Nothing {
+    error("Stytch error: $message")
 }

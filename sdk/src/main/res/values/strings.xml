@@ -21,6 +21,7 @@
     <string name="verifying_code" tools:ignore="TypographyEllipsis">Verifying code...</string>
     <string name="powered_by_stytch">Powered by Stytch</string>
     <string name="invalid_phone_number_please_try_again">Invalid phone number, please try again.</string>
+    <string name="authentication_failed_please_try_again">Authentication failed. Please try again.</string>
     <string name="sign_up_or_log_in">Sign up or log in</string>
     <string name="email_magic_link_or_sms_one_time_passcode_home_description">Sign up or log in with your email or phone number, no password needed</string>
     <string name="email">Email</string>

@@ -58,7 +58,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
         buttonText.value = R.string.sending_passcode
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.OTPs.SMS.loginOrCreateUser(
+            val result = StytchApi.OTPs.SMS.loginOrCreate(
                 phoneNumber = "+1$enteredPhoneNumber",
                 createUserAsPending = StytchUI.SMSPasscode.createUserAsPending,
             )
@@ -66,7 +66,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
             when (result) {
                 is StytchResult.Success -> {
                     val task = SmsRetriever.getClient(activity).startSmsUserConsent(null)
-                    if (task.isSuccessful) StytchLog.d("SMS Retriever task started successfully")
+                    if (task.isSuccessful) StytchLog.i("SMS Retriever task started successfully")
                     else StytchLog.w("SMS Retriever task not started successfully (SMS autofill will not work)")
                     withContext(Dispatchers.Main) {
                         buttonText.value = R.string._continue
@@ -122,6 +122,11 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
     fun phoneNumberHintGiven(phoneNumber: String) {
         view.phoneNumberTextField.setText(phoneNumber.slice(2 until phoneNumber.length))
         onContinueButtonClicked()
+    }
+
+    override fun onAuthenticationError() {
+        errorMessage.value = R.string.authentication_failed_please_try_again
+        isInErrorState.value = true
     }
 }
 
