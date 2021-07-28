@@ -11,7 +11,7 @@
         android:name=".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StytchAndroidSDK"
+        android:theme="@style/Theme.StytchTheme"
         >
 
         <activity android:name=".MainActivity">
