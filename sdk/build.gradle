@@ -2,30 +2,15 @@ plugins {
   id 'com.android.library'
   id 'kotlin-android'
   id 'kotlin-kapt'
-  id 'maven-publish'
 }
 
 ext {
-  stytchGroupId = 'com.stytch.sdk'
-  // Group ID of the SDK which will be added in implementation line of gradle
-  stytchArtifact = 'sdk' // Artifact ID of the SDK which will be added in implementation line of gradle
-  stytchLibraryVersion = '0.3.0' // Version of the library you created in Bintray
-
-  libraryName = 'Stytch Android SDK' // It is generally the module name
-  libraryDescription = 'Stytch is a platform for user authentication..'
-  // Small description of the library
-
-  siteUrl = 'https://github.com/stytchauth/stytch-android'
-  gitUrl = 'https://github.com/stytchauth/stytch-android.git'
-
-  developerId = 'kyle-stytch'
-  developerName = 'Kyle Dunne'
-  developerEmail = 'kyle@stytch.com'
-
-  licenseName = 'MIT License'
-  licenseUrl = 'https://opensource.org/licenses/MIT'
-  allLicenses = ["MIT"]
+  PUBLISH_GROUP_ID = 'com.stytch.sdk'
+  PUBLISH_VERSION = '0.3.0'
+  PUBLISH_ARTIFACT_ID = 'sdk'
 }
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
   compileSdkVersion 30
@@ -81,18 +66,4 @@ dependencies {
   testImplementation 'junit:junit:4.13.2'
   androidTestImplementation 'androidx.test.ext:junit:1.1.2'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-}
-
-project.afterEvaluate {
-  publishing {
-    publications {
-      mavenRelease(MavenPublication) {
-        from components.release
-
-        groupId = stytchGroupId
-        artifactId = stytchArtifact
-        version = stytchLibraryVersion
-      }
-    }
-  }
 }
