@@ -11,10 +11,11 @@
         android:name=".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StytchTheme"
         >
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.StytchAndroidTestApp"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".JavaActivity">
+        <activity android:name=".JavaActivity"
+            android:theme="@style/Theme.StytchAndroidTestApp"
+            >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

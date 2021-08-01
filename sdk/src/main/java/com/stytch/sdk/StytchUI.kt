@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Typeface
-import android.support.annotation.FontRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.FontRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 
