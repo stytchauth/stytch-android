@@ -198,7 +198,6 @@ public object StytchResponseTypes {
         val request_id: String,
         val user_id: String,
         val email_id: String,
-        val user_created: Boolean,
     )
 
     @JsonClass(generateAdapter = true)
