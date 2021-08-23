@@ -25,7 +25,7 @@ This SDK supports Android API level 21 and above ([distribution stats](https://d
 
 Add the Stytch dependency to your app/build.gradle file:
 
-`implementation 'com.stytch.sdk:sdk:0.3.0'`
+`implementation 'com.stytch.sdk:sdk:0.4.2'`
 
 ## Getting Started
 
