@@ -12,22 +12,27 @@ public object StytchClient {
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param hostUrl This is an https url which will be used as the domain for setting session-token cookies to be sent to your servers on subsequent requests
      */
-    public fun configure(publicToken: String, hostUrl: Uri){
+    public fun configure(publicToken: String, hostUrl: Uri) {
         TODO("implement")
     }
 
+    //    TODO:("Magic Links")
+    public object MagicLinks {
+//        fun loginOrCreate(parameters:completion:),
+//        fun authenticate(parameters:completion:)
+    }
 
-//    TODO:("Magic Links")
-//    fun loginOrCreate(parameters:completion:),
-//    fun authenticate(parameters:completion:)
-
-//    TODO:("Sessions")
+    //    TODO:("Sessions")
+    public object Sessions {
 //    fun revoke(completion:)
 //    fun authenticate(parameters:completion:)
+    }
 
-//    TODO:("OTP")
+    //    TODO:("OTP")
+    public object OneTimePasscodes{
 //    fun loginOrCreate(parameters:completion:)
 //    fun authenticate(parameters:completion:)
+    }
 
 //    TODO("OAuth")
 //    TODO("User Management")
