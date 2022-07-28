@@ -143,6 +143,7 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -155,6 +156,8 @@ internal class StytchEmailMagicLinkActivity : StytchActivity() {
             }
         }
     }
+
+
 }
 
 internal class StytchSMSPasscodeActivity : StytchActivity() {
@@ -185,6 +188,7 @@ internal class StytchSMSPasscodeActivity : StytchActivity() {
         return Navigator.withRoot(SMSPasscodeHomeScreen()).build()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {

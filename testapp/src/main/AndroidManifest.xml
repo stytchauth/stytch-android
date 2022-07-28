@@ -15,6 +15,7 @@
 
         <activity android:name=".MainActivity"
             android:theme="@style/Theme.StytchAndroidTestApp"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +25,7 @@
         </activity>
 
         <activity android:name=".JavaActivity"
+            android:exported="true"
             android:theme="@style/Theme.StytchAndroidTestApp"
             >
             <intent-filter>
@@ -32,6 +34,7 @@
         </activity>
 
         <activity
+            android:exported="true"
             android:name="com.stytch.sdk.StytchEmailMagicLinkActivity"
             android:launchMode="singleTask"
             >

@@ -29,9 +29,9 @@ import kotlinx.coroutines.withContext
 internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
     var phoneHintPickerShown = false
     var isInErrorState = MutableStateFlow(false)
-    var errorMessage = MutableStateFlow<@StringRes Int>(R.string.unknown_error)
+    var errorMessage = MutableStateFlow< Int>(R.string.unknown_error)
     var isPhoneNumberTextFieldInErrorState = MutableStateFlow(false)
-    var buttonText = MutableStateFlow<@StringRes Int>(R.string._continue)
+    var buttonText = MutableStateFlow< Int>(R.string._continue)
     var isButtonEnabled = MutableStateFlow(false)
     var phoneNumberTextFieldText = ""
 

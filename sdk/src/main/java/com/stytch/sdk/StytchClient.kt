@@ -1,10 +1,10 @@
 package com.stytch.sdk
 
-import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
+public typealias LoginOrCreateUserByEmailResponse = StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>
 
 /**
  * The entrypoint for all Stytch-related interaction.
@@ -16,34 +16,31 @@ public object StytchClient {
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param hostUrl This is an https url which will be used as the domain for setting session-token cookies to be sent to your servers on subsequent requests
      */
-    public fun configure(publicToken: String, hostUrl: Uri) {
-        TODO("implement")
+    public fun configure(publicToken: String, hostUrl: String) {
+        StytchApi.configure(publicToken, hostUrl)
     }
 
     //    TODO:("Magic Links")
     public object MagicLinks {
-        public fun loginOrCreate(
-            email: String,
-            loginMagicLinkUrl: String,
-            signupMagicLinkUrl: String,
-            loginExpirationMinutes: Int? = null,
-            signupExpirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-        ): StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse> {
-            return runBlocking {
-                StytchApi.MagicLinks.Email.loginOrCreate(
-                    email = email,
-                    loginMagicLinkUrl = loginMagicLinkUrl,
-                    signupMagicLinkUrl = signupMagicLinkUrl,
-                    loginExpirationMinutes = loginExpirationMinutes,
-                    signupExpirationMinutes = signupExpirationMinutes,
-                    createUserAsPending = createUserAsPending,
-                    attributes = attributes,
+        /**
+         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * @param parameters required to receive magic link
+         * @return LoginOrCreateUserByEmailResponse response from backend
+         */
+        public suspend fun loginOrCreate(parameters: Parameters) : LoginOrCreateUserByEmailResponse {
+            return StytchApi.MagicLinks.Email.loginOrCreateNew(
+                    email = parameters.email,
+                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                    signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                    loginExpirationMinutes = parameters.loginExpirationInMinutes,
+                    signupExpirationMinutes = parameters.signupExpirationInMinutes
                 )
-            }
         }
 
+//        TODO:("use Parameters data class")
+//        TODO:("wrap loginOrCreate(parameters: Parameters)")
+//        TODO:("merge all callbacks into single callback returning LoginOrCreateUserByEmailResponse")
+//        TODO:("remove `Async` from function name")
         public fun loginOrCreateAsync(
             email: String,
             loginMagicLinkUrl: String,
@@ -73,8 +70,16 @@ public object StytchClient {
                 }
             }
         }
-//        fun loginOrCreate(parameters:completion:),
 //        fun authenticate(parameters:completion:)
+
+        public data class Parameters(
+            val email: String,
+            val loginMagicLinkUrl: String? = null,
+            val loginExpirationInMinutes: Int = 60,
+            val signupMagicLinkUrl: String? = null,
+            val signupExpirationInMinutes: Int = 60
+        )
+        public  class MagicLinksEmailLoginOrCreateResponse : StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>()
     }
 
     //    TODO:("Sessions")
@@ -91,5 +96,6 @@ public object StytchClient {
 
 //    TODO("OAuth")
 //    TODO("User Management")
+
 
 }

@@ -21,8 +21,8 @@ internal class SMSPasscodeEnterPasscodeScreen(
 ) : StytchScreen<SMSPasscodeEnterPasscodeView>() {
     var isInErrorState = MutableStateFlow(false)
     var areDigitsInErrorState = MutableStateFlow(false)
-    var errorMessage = MutableStateFlow<@StringRes Int>(R.string.unknown_error)
-    var buttonText = MutableStateFlow<@StringRes Int>(R.string._continue)
+    var errorMessage = MutableStateFlow< Int>(R.string.unknown_error)
+    var buttonText = MutableStateFlow< Int>(R.string._continue)
     var isButtonEnabled = MutableStateFlow(false)
 
     override fun createView(context: Context): SMSPasscodeEnterPasscodeView {
