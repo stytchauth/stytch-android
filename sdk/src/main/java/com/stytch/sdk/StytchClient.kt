@@ -27,48 +27,21 @@ public object StytchClient {
          * @param parameters required to receive magic link
          * @return LoginOrCreateUserByEmailResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters) : LoginOrCreateUserByEmailResponse {
+        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateUserByEmailResponse {
             return StytchApi.MagicLinks.Email.loginOrCreateNew(
-                    email = parameters.email,
-                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                    signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                    loginExpirationMinutes = parameters.loginExpirationInMinutes,
-                    signupExpirationMinutes = parameters.signupExpirationInMinutes
-                )
+                email = parameters.email,
+                loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                loginExpirationMinutes = parameters.loginExpirationInMinutes,
+                signupExpirationMinutes = parameters.signupExpirationInMinutes
+            )
         }
 
-//        TODO:("use Parameters data class")
-//        TODO:("wrap loginOrCreate(parameters: Parameters)")
-//        TODO:("merge all callbacks into single callback returning LoginOrCreateUserByEmailResponse")
-//        TODO:("remove `Async` from function name")
-        public fun loginOrCreateAsync(
-            email: String,
-            loginMagicLinkUrl: String,
-            signupMagicLinkUrl: String,
-            loginExpirationMinutes: Int? = null,
-            signupExpirationMinutes: Int? = null,
-            createUserAsPending: Boolean? = null,
-            attributes: StytchDataTypes.Attributes? = null,
-            onSuccess: (result: StytchResult.Success<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
-            onError: (errorCode: Int, errorResponse: StytchErrorResponse?) -> Unit,
-            onNetworkError: (result: StytchResult<Nothing>) -> Unit,
+        public suspend fun loginOrCreate(
+            parameters: Parameters,
+            callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
-            GlobalScope.launch(Dispatchers.IO) {
-                val result = StytchApi.MagicLinks.Email.loginOrCreate(
-                    email = email,
-                    loginMagicLinkUrl = loginMagicLinkUrl,
-                    signupMagicLinkUrl = signupMagicLinkUrl,
-                    loginExpirationMinutes = loginExpirationMinutes,
-                    signupExpirationMinutes = signupExpirationMinutes,
-                    createUserAsPending = createUserAsPending,
-                    attributes = attributes,
-                )
-                when (result) {
-                    is StytchResult.Success -> onSuccess(result)
-                    is StytchResult.Error -> onError(result.errorCode, result.errorResponse)
-                    is StytchResult.NetworkError -> onNetworkError(result)
-                }
-            }
+            callback(loginOrCreate(parameters))
         }
 //        fun authenticate(parameters:completion:)
 
@@ -77,9 +50,10 @@ public object StytchClient {
             val loginMagicLinkUrl: String? = null,
             val loginExpirationInMinutes: Int = 60,
             val signupMagicLinkUrl: String? = null,
-            val signupExpirationInMinutes: Int = 60
+            val signupExpirationInMinutes: Int = 60,
         )
-        public  class MagicLinksEmailLoginOrCreateResponse : StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>()
+
+        public class MagicLinksEmailLoginOrCreateResponse : StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>()
     }
 
     //    TODO:("Sessions")
@@ -96,6 +70,5 @@ public object StytchClient {
 
 //    TODO("OAuth")
 //    TODO("User Management")
-
 
 }
