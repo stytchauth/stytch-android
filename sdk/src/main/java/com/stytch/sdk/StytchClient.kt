@@ -3,6 +3,7 @@ package com.stytch.sdk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>
 
@@ -37,11 +38,23 @@ public object StytchClient {
             )
         }
 
-        public suspend fun loginOrCreate(
+        /**
+         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * @param parameters required to receive magic link
+         * @param callback calls callback with LoginOrCreateUserByEmailResponse response from backend
+         */
+        public fun loginOrCreate(
             parameters: Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
-            callback(loginOrCreate(parameters))
+//          call endpoint in IO thread
+            GlobalScope.launch(Dispatchers.IO){
+                val result = loginOrCreate(parameters)
+//              change to main thread to call callback
+                withContext(Dispatchers.Main){
+                    callback(result)
+                }
+            }
         }
 //        fun authenticate(parameters:completion:)
 
