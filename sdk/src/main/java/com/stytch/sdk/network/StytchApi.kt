@@ -2,7 +2,7 @@ package com.stytch.sdk.network
 
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.DeviceInfo
-import com.stytch.sdk.Stytch
+import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchDataTypes
 import com.stytch.sdk.StytchErrorResponse
 import com.stytch.sdk.StytchLog
@@ -51,8 +51,7 @@ internal object StytchApi {
         }
 
     private val apiService: StytchApiService by lazy {
-        Stytch.assertInitialized()
-
+        StytchClient.assertInitialized()
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         Retrofit.Builder()
@@ -111,7 +110,7 @@ internal object StytchApi {
     }
 
     private suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
-        Stytch.assertInitialized()
+        StytchClient.assertInitialized()
         try {
             StytchResult.Success(apiCall())
         } catch (throwable: Throwable) {
