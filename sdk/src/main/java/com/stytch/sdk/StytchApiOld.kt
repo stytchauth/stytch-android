@@ -1,16 +1,16 @@
 package com.stytch.sdk
 
-import android.app.Application
 import android.util.Base64
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import com.stytch.sdk.network.StytchApiService
+import com.stytch.sdk.network.StytchRequests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import okio.ByteString.Companion.encode
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -18,7 +18,8 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
-public object StytchApi {
+@Deprecated("use StytchApi")
+public object StytchApiOld {
 
     private lateinit var publicToken: String
     private lateinit var hostUrl: String
@@ -62,27 +63,6 @@ public object StytchApi {
                     )
                 )
             }
-
-            public suspend fun loginOrCreateNew(
-                email: String,
-                loginMagicLinkUrl: String?,
-                signupMagicLinkUrl: String?,
-                loginExpirationMinutes: Int? = null,
-                signupExpirationMinutes: Int? = null,
-            ): StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse> = safeApiCall {
-                apiService.loginOrCreateUserByEmailNew(
-                    StytchRequestTypes.LoginOrCreateUserByEmailRequest(
-                        email = email,
-                        login_magic_link_url = loginMagicLinkUrl,
-                        signup_magic_link_url = signupMagicLinkUrl,
-                        login_expiration_minutes = loginExpirationMinutes,
-                        signup_expiration_minutes = signupExpirationMinutes,
-                        create_user_as_pending = null,
-                        attributes = null
-                    )
-                )
-            }
-
         }
     }
 
@@ -129,7 +109,7 @@ public object StytchApi {
                         val authHeader = Base64.encodeToString("${publicToken}:${stytchSessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
                         val infoHeader = Base64.encodeToString(InfoHeaderModel(
                             sdk = InfoHeaderModel.Item("stytch-kotlin", "0.4.2"),
-                            app = InfoHeaderModel.Item(packageName, "1.0.0"),
+                            app = InfoHeaderModel.Item("com.stytch.testapp", "1.0.0"),
                             os = InfoHeaderModel.Item("Android", "30"),
                             device = InfoHeaderModel.Item("test", "test")
                         ).json.toByteArray(), Base64.NO_WRAP)
@@ -165,7 +145,7 @@ public object StytchCallbackApi {
                 attributes: StytchDataTypes.Attributes? = null,
                 callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserByEmailResponse>) -> Unit,
             ): Unit = callback.queue {
-                StytchApi.MagicLinks.Email.loginOrCreate(
+                StytchApiOld.MagicLinks.Email.loginOrCreate(
                     email = email,
                     loginMagicLinkUrl = loginMagicLinkUrl,
                     signupMagicLinkUrl = signupMagicLinkUrl,
@@ -189,7 +169,7 @@ public object StytchCallbackApi {
                 attributes: StytchDataTypes.Attributes? = null,
                 callback: (StytchResult<StytchResponseTypes.LoginOrCreateUserBySMSResponse>) -> Unit,
             ): Unit = callback.queue {
-                StytchApi.OTPs.SMS.loginOrCreate(
+                StytchApiOld.OTPs.SMS.loginOrCreate(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes,
                     createUserAsPending = createUserAsPending,
@@ -250,12 +230,14 @@ internal object StytchRequestTypes {
     )
 }
 
+@Deprecated("")
 public object StytchResponseTypes {
+
     @JsonClass(generateAdapter = true)
     public data class LoginOrCreateUserByEmailResponse(
         val request_id: String,
         val user_id: String,
-        val email_id: String,
+        val email_id: String?,
     )
 
     @JsonClass(generateAdapter = true)
@@ -295,34 +277,10 @@ internal fun String.toStytchErrorType(): StytchErrorType? {
     return null
 }
 
-internal interface StytchApiService {
-    @POST("magic_links/email/login_or_create")
-    suspend fun loginOrCreateUserByEmail(
-        @Body request: StytchRequestTypes.SDKLoginOrCreateUserByEmailRequest,
-    ): StytchResponseTypes.LoginOrCreateUserByEmailResponse
 
-    @POST("magic_links/email/login_or_create")
-    suspend fun loginOrCreateUserByEmailNew(
-        @Body request: StytchRequestTypes.LoginOrCreateUserByEmailRequest,
-    ): StytchResponseTypes.LoginOrCreateUserByEmailResponse
 
-    @POST("sdk/otps/sms/login_or_create")
-    suspend fun loginOrCreateUserBySMS(
-        @Body request: StytchRequestTypes.SDKLoginOrCreateUserBySMSRequest,
-    ): StytchResponseTypes.LoginOrCreateUserBySMSResponse
-}
 
-public sealed class StytchResult<out T> {
-    public data class Success<out T>(val value: T) : StytchResult<T>()
-    public object NetworkError : StytchResult<Nothing>()
-    public object SdkNotConfigured : StytchResult<Nothing>()
-    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?) : StytchResult<Nothing>() {
-        public val errorType: StytchErrorType? by lazy {
-            errorResponse?.error_type?.toStytchErrorType()
-        }
-    }
-}
-
+@Deprecated("")
 internal suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
     Stytch.assertInitialized()
     try {

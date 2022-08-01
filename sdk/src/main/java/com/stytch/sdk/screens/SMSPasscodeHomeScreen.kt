@@ -4,14 +4,13 @@ import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.stytch.sdk.IntentCodes
 import com.stytch.sdk.R
-import com.stytch.sdk.StytchApi
+import com.stytch.sdk.StytchApiOld
 import com.stytch.sdk.StytchEditText
 import com.stytch.sdk.StytchErrorTextView
 import com.stytch.sdk.StytchErrorType
@@ -58,7 +57,7 @@ internal class SMSPasscodeHomeScreen : StytchScreen<SMSPasscodeHomeView>() {
         buttonText.value = R.string.sending_passcode
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.OTPs.SMS.loginOrCreate(
+            val result = StytchApiOld.OTPs.SMS.loginOrCreate(
                 phoneNumber = "+1$enteredPhoneNumber",
                 createUserAsPending = StytchUI.SMSPasscode.createUserAsPending,
             )

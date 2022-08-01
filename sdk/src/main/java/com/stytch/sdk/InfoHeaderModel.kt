@@ -26,17 +26,12 @@ internal data class InfoHeaderModel(
 
     internal data class Item(
         val identifier: String,
-        val version: String
+        val version: String,
+        val identifierName: String = "identifier",
+        val versionName: String = "version",
     ){
         val json: String get() {
-            return "{ \"identifier\": \"$identifier\", \"version\": \"$version\" }"
+            return "{ \"$identifierName\": \"$identifier\", \"$versionName\": \"$version\" }"
         }
     }
 }
-
-//  {
-//                              "sdk": { "identifier": XXX, "version": XXX },
-//                              "app": { "identifier": XXX, "version": XXX },
-//                              "os": { "identifier": XXX, "version": XXX },
-//                              "device": { "model": XXX, "screen_size": XXX }
-//                            }

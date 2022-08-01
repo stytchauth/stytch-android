@@ -1,4 +1,5 @@
 package com.stytch.sdk
 
-public class BasicResponse {
-}
+public open class BasicResponse<T>(
+    public val data: T
+)

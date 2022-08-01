@@ -7,13 +7,12 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
 import com.stytch.sdk.IntentCodes
 import com.stytch.sdk.R
-import com.stytch.sdk.StytchApi
+import com.stytch.sdk.StytchApiOld
 import com.stytch.sdk.StytchEditText
 import com.stytch.sdk.StytchErrorTextView
 import com.stytch.sdk.StytchErrorType
@@ -67,7 +66,7 @@ internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>()
         buttonText.value = R.string.sending_email
 
         GlobalScope.launch(Dispatchers.IO) {
-            val result = StytchApi.MagicLinks.Email.loginOrCreate(
+            val result = StytchApiOld.MagicLinks.Email.loginOrCreate(
                 email = enteredEmail,
                 loginMagicLinkUrl = StytchUI.EmailMagicLink.loginMagicLinkUrl,
                 signupMagicLinkUrl = StytchUI.EmailMagicLink.signupMagicLinkUrl,
