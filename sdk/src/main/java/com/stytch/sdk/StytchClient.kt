@@ -1,13 +1,24 @@
 package com.stytch.sdk
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
+import androidx.core.net.toUri
+import com.stytch.sdk.Constants.QUERY_PUBLIC_TOKEN
+import com.stytch.sdk.Constants.QUERY_TOKEN
+import com.stytch.sdk.Constants.QUERY_TOKEN_TYPE
+import com.stytch.sdk.Constants.TOKEN_TYPE_MAGIC_LINKS
+import com.stytch.sdk.Constants.TOKEN_TYPE_OAUTH
+import com.stytch.sdk.Constants.TOKEN_TYPE_PASSWORD_RESET
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchResponses
+import com.stytch.sdk.screens.isNotNullOrEmpty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<StytchResponses.LoginOrCreateUserByEmailResponse>
 public typealias BaseResponse = StytchResult<StytchResponses.BasicResponse>
@@ -29,7 +40,7 @@ public object StytchClient {
 
     internal fun assertInitialized() {
         if (!StytchApi.isInitialized) {
-            stytchError("Stytch not initialized. You must call 'Stytch.configure(...)' before using any functionality of the Stytch SDK.")
+            stytchError("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi.")
         }
     }
 
@@ -50,13 +61,11 @@ public object StytchClient {
          */
         public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateUserByEmailResponse {
             assertInitialized()
-            return StytchApi.MagicLinks.Email.loginOrCreateEmail(
-                email = parameters.email,
+            return StytchApi.MagicLinks.Email.loginOrCreateEmail(email = parameters.email,
                 loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                 signupMagicLinkUrl = parameters.signupMagicLinkUrl,
                 loginExpirationMinutes = parameters.loginExpirationInMinutes,
-                signupExpirationMinutes = parameters.signupExpirationInMinutes
-            )
+                signupExpirationMinutes = parameters.signupExpirationInMinutes)
         }
 
         /**
@@ -85,10 +94,7 @@ public object StytchClient {
          */
         public suspend fun authenticate(token: String, sessionExpirationMinutes: Int = 60): BaseResponse {
             assertInitialized()
-            return StytchApi.MagicLinks.Email.authenticate(
-                token,
-                sessionExpirationMinutes
-            )
+            return StytchApi.MagicLinks.Email.authenticate(token, sessionExpirationMinutes)
         }
 
         public fun authenticate(
@@ -145,4 +151,24 @@ public object StytchClient {
         return deviceInfo
     }
 
+//    public suspend fun handle(uri: Uri, sessionDuration: Int): BaseResponse {
+//        val token = uri.getQueryParameter(QUERY_TOKEN)
+//        val tokenType = uri.getQueryParameter(QUERY_TOKEN_TYPE)
+//        val publicToken = uri.getQueryParameter(QUERY_PUBLIC_TOKEN)
+//
+//        if (token.isNullOrEmpty() || tokenType.isNullOrEmpty() || publicToken.isNullOrEmpty())
+//            throw IllegalStateException() // TODO create a more graceful handling of bad parameters
+//
+//        when (tokenType) {
+//            TOKEN_TYPE_MAGIC_LINKS -> {
+//                return MagicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
+//            }
+//            TOKEN_TYPE_OAUTH -> {
+//                // TODO: Implement oauth handling
+//            }
+//            TOKEN_TYPE_PASSWORD_RESET -> {
+//                // TODO: Implement password reset handling
+//            }
+//        }
+//    }
 }

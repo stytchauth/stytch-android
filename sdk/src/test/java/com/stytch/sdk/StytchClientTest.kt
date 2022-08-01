@@ -1,23 +1,22 @@
 package com.stytch.sdk
 
-import android.util.Log
+import android.content.Context
+import com.stytch.sdk.network.StytchApi
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.spyk
-import kotlinx.coroutines.GlobalScope
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mockito
+import org.mockito.ArgumentMatchers.any
 
 internal class StytchClientTest {
 
-    val stytchObject = spyk<Stytch>(recordPrivateCalls = true)
-    val stytchApiMagicLinksSpy = spyk<StytchApi.MagicLinks.Email>()
+    val mContextMock = mockk<Context>(relaxed = true)
+    val stytchApiMagicLinksEmailMock = mockk<StytchApi.MagicLinks.Email>()
 
     val params = StytchClient.MagicLinks.Parameters(
         email = "email@email.com"
@@ -38,41 +37,45 @@ internal class StytchClientTest {
         }
     }
 
-//    @Test
-//    fun `IllegalStateException exception not thrown when if Sdk configured`() {
-//        val params = StytchClient.MagicLinks.Parameters(
-//            email = "email@email.com"
-//        )
-//        Stytch.configure("", StytchEnvironment.TEST)
-//        runBlocking {
-//            try {
-////              Call method with configuration
-//                StytchClient.MagicLinks.loginOrCreate(params)
-//            } catch (exception: IllegalStateException) {
-////              if exception was thrown test failed
-//                return@runBlocking
-//            }
-////            test failed if no exception was thrown
-//            assert(true)
-//        }
-//    }
+    @Test
+    fun `should trigger StytchApi configure when calling StytchClient configure`() {
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        val stytchApiMock = spyk<StytchApi>(recordPrivateCalls = true)
+        val deviceInfo = DeviceInfo()
+        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) } returns deviceInfo
+        stytchClientObject.configure(mContextMock, "", "")
+        verify { stytchApiMock.configure("", "", deviceInfo) }
+    }
 
-    @Before
-    fun before() {
-        coEvery { stytchApiMagicLinksSpy.loginOrCreateNew(params.email, null, null, 60, 60) }.returns(StytchResult.NetworkError)
-        every { stytchObject getProperty "isInitialized" }.returns(true)
+    @After
+    fun after() {
+        unmockkAll()
+        coEvery {
+            stytchApiMagicLinksEmailMock.loginOrCreateEmail(
+                email = params.email,
+                loginMagicLinkUrl = params.loginMagicLinkUrl,
+                loginExpirationMinutes = params.loginExpirationInMinutes,
+                signupMagicLinkUrl = params.signupMagicLinkUrl,
+                signupExpirationMinutes = params.signupExpirationInMinutes)
+        } returns StytchResult.Success(any())
     }
 
     @Test
-    fun `should return Stytch SDK as initialized`() {
-        assert(stytchObject.isInitialized)
+    fun `should return result success loginOrCreate called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.configure(mContextMock, "", "")
+        val result = runBlocking {
+            StytchClient.MagicLinks.loginOrCreate(params)
+        }
+        assert(result is StytchResult.Success)
     }
 
     @Test
-    fun `should return network error result when loginOrCreate called with no urls`() {
-        runBlocking {
-            val res = StytchClient.MagicLinks.loginOrCreate(params)
-            assert(res is StytchResult.NetworkError)
+    fun `should return result success loginOrCreate called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.MagicLinks.loginOrCreate(params) {
+            assert(it is StytchResult.Success)
         }
     }
 
