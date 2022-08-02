@@ -1,24 +1,14 @@
 package com.stytch.sdk
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
-import androidx.core.net.toUri
-import com.stytch.sdk.Constants.QUERY_PUBLIC_TOKEN
-import com.stytch.sdk.Constants.QUERY_TOKEN
-import com.stytch.sdk.Constants.QUERY_TOKEN_TYPE
-import com.stytch.sdk.Constants.TOKEN_TYPE_MAGIC_LINKS
-import com.stytch.sdk.Constants.TOKEN_TYPE_OAUTH
-import com.stytch.sdk.Constants.TOKEN_TYPE_PASSWORD_RESET
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchResponses
-import com.stytch.sdk.screens.isNotNullOrEmpty
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
 
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<StytchResponses.LoginOrCreateUserByEmailResponse>
 public typealias BaseResponse = StytchResult<StytchResponses.BasicResponse>
@@ -27,6 +17,9 @@ public typealias BaseResponse = StytchResult<StytchResponses.BasicResponse>
  * The entrypoint for all Stytch-related interaction.
  */
 public object StytchClient {
+
+    private var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
 
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
@@ -42,6 +35,14 @@ public object StytchClient {
         if (!StytchApi.isInitialized) {
             stytchError("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi.")
         }
+    }
+
+    /**
+     * Set dispatchers for UI and IO tasks
+     */
+    public fun setDispatchers(uiDispatcher: CoroutineDispatcher, ioDispatcher: CoroutineDispatcher) {
+        this.uiDispatcher = uiDispatcher
+        this.ioDispatcher = ioDispatcher
     }
 
     public object MagicLinks {
@@ -78,10 +79,10 @@ public object StytchClient {
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
 //          call endpoint in IO thread
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch(ioDispatcher) {
                 val result = loginOrCreate(parameters)
 //              change to main thread to call callback
-                withContext(Dispatchers.Main) {
+                withContext(uiDispatcher) {
                     callback(result)
                 }
             }
@@ -103,10 +104,10 @@ public object StytchClient {
             callback: (response: BaseResponse) -> Unit,
         ) {
 //          call endpoint in IO thread
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch(ioDispatcher) {
                 val result = authenticate(token, sessionExpirationMinutes)
 //              change to main thread to call callback
-                withContext(Dispatchers.Main) {
+                withContext(uiDispatcher) {
                     callback(result)
                 }
             }
