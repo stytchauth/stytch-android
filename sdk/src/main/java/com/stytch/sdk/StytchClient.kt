@@ -181,4 +181,14 @@ public object StytchClient {
             }
         }
     }
+
+    public fun handle(uri: Uri, sessionDuration: Int, callback: (response: BaseResponse)->Unit){
+        GlobalScope.launch(ioDispatcher) {
+            val result = handle(uri, sessionDuration)
+//              change to main thread to call callback
+            withContext(uiDispatcher) {
+                callback(result)
+            }
+        }
+    }
 }
