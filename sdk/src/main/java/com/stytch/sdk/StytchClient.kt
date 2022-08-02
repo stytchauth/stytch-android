@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchResponses
@@ -138,7 +139,7 @@ public object StytchClient {
         deviceInfo.osName = Build.VERSION.CODENAME
 
         try {
-            //          throw exceptions if packageName not found
+//          throw exceptions if packageName not found
             deviceInfo.applicationVersion =
                 context.applicationContext.packageManager.getPackageInfo(deviceInfo.applicationPackageName!!, 0).versionName
         } catch (ex: Exception) {
@@ -152,24 +153,32 @@ public object StytchClient {
         return deviceInfo
     }
 
-//    public suspend fun handle(uri: Uri, sessionDuration: Int): BaseResponse {
-//        val token = uri.getQueryParameter(QUERY_TOKEN)
-//        val tokenType = uri.getQueryParameter(QUERY_TOKEN_TYPE)
-//        val publicToken = uri.getQueryParameter(QUERY_PUBLIC_TOKEN)
-//
-//        if (token.isNullOrEmpty() || tokenType.isNullOrEmpty() || publicToken.isNullOrEmpty())
-//            throw IllegalStateException() // TODO create a more graceful handling of bad parameters
-//
-//        when (tokenType) {
-//            TOKEN_TYPE_MAGIC_LINKS -> {
-//                return MagicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
-//            }
-//            TOKEN_TYPE_OAUTH -> {
-//                // TODO: Implement oauth handling
-//            }
-//            TOKEN_TYPE_PASSWORD_RESET -> {
-//                // TODO: Implement password reset handling
-//            }
-//        }
-//    }
+    /**
+     * Handle magic link
+     * @param uri - intent.data from deep link
+     * @param sessionDuration - sessionDuration
+     */
+    public suspend fun handle(uri: Uri, sessionDuration: Int): BaseResponse {
+        val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+        val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
+        val publicToken = uri.getQueryParameter(Constants.QUERY_PUBLIC_TOKEN)
+
+        if (token.isNullOrEmpty() || publicToken.isNullOrEmpty())
+             TODO("create a more graceful handling of bad parameters")
+
+        when (tokenType) {
+            TokenType.MAGIC_LINKS -> {
+                return MagicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
+            }
+            TokenType.OAUTH ->{
+                TODO("Implement oauth handling")
+            }
+            TokenType.PASSWORD_RESET ->{
+                TODO("Implement password reset handling")
+            }
+            TokenType.UNKNOWN -> {
+                TODO("return Error")
+            }
+        }
+    }
 }
