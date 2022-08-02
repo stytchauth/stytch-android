@@ -29,9 +29,9 @@ import kotlinx.coroutines.withContext
 internal class EmailMagicLinkHomeScreen : StytchScreen<EmailMagicLinkHomeView>() {
     var emailHintPickerShown = false
     var isEmailTextFieldInErrorState = MutableStateFlow(false)
-    var errorMessage = MutableStateFlow< Int>(R.string.unknown_error)
+    var errorMessage = MutableStateFlow<Int>(R.string.unknown_error)
     var isInErrorState = MutableStateFlow(false)
-    var buttonText = MutableStateFlow< Int>(R.string._continue)
+    var buttonText = MutableStateFlow<Int>(R.string._continue)
     var isButtonEnabled = MutableStateFlow(false)
     var currentTextFieldText = ""
 

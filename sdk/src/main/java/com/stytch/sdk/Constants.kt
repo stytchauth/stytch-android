@@ -10,8 +10,4 @@ internal object Constants {
     const val QUERY_TOKEN_TYPE = "stytch_token_type"
     const val QUERY_TOKEN = "token"
 
-//  Token types
-    const val TOKEN_TYPE_MAGIC_LINKS = "magic_links"
-    const val TOKEN_TYPE_OAUTH = "oauth"
-    const val TOKEN_TYPE_PASSWORD_RESET = "password_reset"
 }

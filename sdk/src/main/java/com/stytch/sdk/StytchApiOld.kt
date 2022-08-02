@@ -1,21 +1,16 @@
 package com.stytch.sdk
 
-import android.util.Base64
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.network.StytchApiService
-import com.stytch.sdk.network.StytchRequests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
 @Deprecated("use StytchApi")
@@ -93,36 +88,14 @@ public object StytchApiOld {
     internal val apiService: StytchApiService by lazy {
         Stytch.assertInitialized()
 
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         Retrofit.Builder()
-//            .baseUrl(Stytch.environment.baseUrl)
-            .baseUrl(hostUrl)
+            .baseUrl(Stytch.environment.baseUrl)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
                     .readTimeout(120L, TimeUnit.SECONDS)
                     .writeTimeout(120L, TimeUnit.SECONDS)
                     .connectTimeout(120L, TimeUnit.SECONDS)
-                    .addInterceptor { chain ->
-
-                        val authHeader = Base64.encodeToString("${publicToken}:${stytchSessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
-                        val infoHeader = Base64.encodeToString(InfoHeaderModel(
-                            sdk = InfoHeaderModel.Item("stytch-kotlin", "0.4.2"),
-                            app = InfoHeaderModel.Item("com.stytch.testapp", "1.0.0"),
-                            os = InfoHeaderModel.Item("Android", "30"),
-                            device = InfoHeaderModel.Item("test", "test")
-                        ).json.toByteArray(), Base64.NO_WRAP)
-                        chain.proceed(
-                            chain.request()
-                                .newBuilder()
-                                .addHeader("Content-Type", "application/json")
-                                .addHeader("Authorization", "Basic $authHeader")
-                                .addHeader("X-SDK-Client", "$infoHeader")
-                                .build()
-                        )
-                    }
-                    .addInterceptor(loggingInterceptor)
                     .build()
             )
             .build()
