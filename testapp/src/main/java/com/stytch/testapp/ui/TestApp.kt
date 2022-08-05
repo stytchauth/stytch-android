@@ -1,13 +1,12 @@
 package com.stytch.testapp.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -20,9 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.testapp.R
+import com.stytch.testapp.SignInViewModel
 
 @Composable
-fun TestApp() {
+fun TestAppScreen(viewModel: SignInViewModel = viewModel()) {
     Scaffold(
         modifier = Modifier
             .fillMaxHeight()
@@ -33,10 +33,8 @@ fun TestApp() {
         },
         content = { contentPadding ->
             Column() {
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test Email Magic Link Direct API", onClick = { /*TODO*/ })
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test Email Magic Link UI Flow", onClick = { /*TODO*/ })
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test SMS Passcode UI Flow", onClick = { /*TODO*/ })
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test something else", onClick = { /*TODO*/ })
+                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Authenticate", onClick = { /*TODO*/ })
+                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test Email Magic Link Flow", onClick = { /*TODO*/ })
             }
         }
     )

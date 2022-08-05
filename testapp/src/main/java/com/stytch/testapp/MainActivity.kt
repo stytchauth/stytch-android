@@ -2,21 +2,13 @@ package com.stytch.testapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatDelegate
-import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchEnvironment
-import com.stytch.sdk.StytchUI
 import com.stytch.testapp.theme.TestAppTheme
-import com.stytch.testapp.ui.TestApp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.stytch.testapp.ui.TestAppScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var resultTextView: TextView
 
@@ -24,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TestAppTheme {
-                TestApp()
+                TestAppScreen()
             }
         }
     }
