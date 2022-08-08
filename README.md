@@ -47,55 +47,9 @@ Stytch.configure(
 )
 ```
 
-## Pre-built UI
+## Example app
 
-This SDK offers currently offers two beautiful pre-built UI flows: `StytchUI.EmailMagicLink` and `StytchUI.SMSPasscode` (with more coming soon!)
-
-(If you instead want to build your own UI from scratch, see the [Direct API](#direct-api) section below.)
-
-In either case, before setting up these UI flows, you can customize how the Stytch UI looks by optionally setting the `StytchUI.uiCustomization` variable. (If you do not set this variable, the default Stytch theme will be used.)
-
-To do so, create an instance of the `StytchUICustomization` class:
-
-```
-import com.stytch.StytchUI
-import com.stytch.StytchUICustomization
-
-...
-
-StytchUI.uiCustomization = StytchUICustomization(
-    // customize attributes here
-)
-```
-
-This is a full list of all the attributes you can customize:
-
-StytchUICustomization
-- `backgroundColor: StytchColor` - Window background color
-- `hideActionBar: Boolean` - If true, no toolbar/action bar will be shown at top of screen
-- `actionBarColor: StytchColor` - Toolbar/Action bar color
-- `titleStyle: StytchTextStyle` - Title text style
-- `subtitleStyle: StytchTextStyle` - Subtitle text style
-- `consentTextStyle: StytchTextStyle` - (SMS Passcode flow only) SMS consent text style
-- `inputTextStyle: StytchTextStyle` - User input (email/phone number/passcode) text style
-- `inputHintStyle: StytchTextStyle` - Hint text style
-- `inputBackgroundColor: StytchColor` - Background color of input boxes
-- `inputCornerRadius: DensityIndependentPixels` - Radius of rounded corners of input boxes, in [dp](https://developer.android.com/training/multiscreen/screendensities)
-- `buttonTextStyle: StytchTextStyle` - Button text style
-- `buttonDisabledTextColor: StytchColor` - Set a different text color when buttons are in the disabled state
-- `buttonEnabledBackgroundColor: StytchColor` - Button background color when in enabled state
-- `buttonDisabledBackgroundColor: StytchColor` - Button background color when in disabled state
-- `buttonCornerRadius: DensityIndependentPixels` - Radius of rounded corners of button, in [dp](https://developer.android.com/training/multiscreen/screendensities)
-- `errorTextStyle: StytchTextStyle` - Error message text style
-
-StytchTextStyle
-- `size: ScalablePixels` - Text size in [sp](https://developer.android.com/training/multiscreen/screendensities)
-- `color: StytchColor` - Text Color
-- `font: StytchFont` - Text font
-
-After customizing the UI to your liking, the next step is to configure the UI flow of your choice:
-- [Email Magic Link](#email-magic-link-authentication)
-- [SMS Passcode](#sms-passcode-authentication)
+Ir order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local gradle.properties. The token can be received in your Stytch dashboard.
 
 ## Email Magic Link Authentication
 
