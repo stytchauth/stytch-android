@@ -33,9 +33,10 @@ fun TestAppScreen(viewModel: SignInViewModel = viewModel()) {
         },
         content = { contentPadding ->
             Column() {
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Authenticate", onClick = { /*TODO*/ })
-                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test Email Magic Link Flow", onClick = { /*TODO*/ })
+                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Authenticate", onClick = { viewModel.authenticate() })
+                StytchButton(modifier = Modifier.fillMaxWidth(), text = "Test Email Magic Link Flow", onClick = { viewModel.loginOrCreate() })
             }
+            Text(text = viewModel.currentResponse.value ?: "")
         }
     )
 }

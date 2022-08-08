@@ -1,5 +1,8 @@
 package com.stytch.testapp
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.StytchClient
@@ -10,15 +13,21 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(val repository: SignInRepository) : ViewModel() {
 
-    fun authenticate(){
+    private val _currentResponse = MutableLiveData("")
+    val currentResponse: LiveData<String>
+        get() = _currentResponse
+
+    fun authenticate() {
         viewModelScope.launch {
-            repository.authenticate("", 60)
+            val result = repository.authenticate(BuildConfig.PUBLIC_TOKEN_FROM_DASHHBOARD, 60)
+            _currentResponse.value = result.toString()
         }
     }
 
-    fun loginOrCreate(){
+    fun loginOrCreate() {
         viewModelScope.launch {
-            repository.loginOrCreate(StytchClient.MagicLinks.Parameters("test@test.com"))
+            val result = repository.loginOrCreate(StytchClient.MagicLinks.Parameters("test@test.com"))
+            _currentResponse.value = result.toString()
         }
     }
 

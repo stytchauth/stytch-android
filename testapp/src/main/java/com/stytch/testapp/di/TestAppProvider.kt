@@ -4,6 +4,7 @@ import android.content.Context
 import com.stytch.sdk.StytchClient
 import com.stytch.testapp.BuildConfig
 import com.stytch.testapp.SignInRepository
+import com.stytch.testapp.SignInRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,15 +21,16 @@ private const val HOST_URL = "https://web.stytch.com/sdk/v1/"
 class TestAppProvider {
 
     @Provides
-    fun providesStytchClient(@ApplicationContext context: Context) = StytchClient.apply {
-        configure(context = context, publicToken = BuildConfig.PUBLIC_TOKEN_FROM_DASHHBOARD, hostUrl = HOST_URL)
+    @Singleton
+    fun providesMagicLinks(@ApplicationContext context: Context): StytchClient.MagicLinks {
+        StytchClient.apply {
+            configure(context = context, publicToken = BuildConfig.PUBLIC_TOKEN_FROM_DASHHBOARD, hostUrl = HOST_URL)
+        }
+        return StytchClient.MagicLinks
     }
 
     @Provides
-    fun providesMagicLinks(stytchClient: StytchClient) = StytchClient.MagicLinks
-
-    @Provides
     @Singleton
-    fun provideSignInRepository() = SignInRepository()
+    fun provideSignInRepository(magicLinks: StytchClient.MagicLinks): SignInRepository = SignInRepositoryImpl(magicLinks = magicLinks)
 
 }
