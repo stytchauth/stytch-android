@@ -26,7 +26,7 @@ import com.stytch.exampleapp.SignInViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun TestAppScreen(viewModel: SignInViewModel = viewModel()) {
+fun ExampleAppScreen(viewModel: SignInViewModel = viewModel()) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Scaffold(

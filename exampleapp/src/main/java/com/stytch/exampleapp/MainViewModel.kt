@@ -1,16 +1,25 @@
 package com.stytch.exampleapp
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.StytchClient
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SignInViewModel @Inject constructor(val repository: SignInRepository) : ViewModel() {
+private const val HOST_URL = "https://web.stytch.com/sdk/v1/"
+
+class SignInViewModel(application: Application) : AndroidViewModel(application) {
+
+    init {
+        // Initialize StytchClient
+        StytchClient.configure(
+            context = application.applicationContext,
+            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
+            hostUrl = HOST_URL
+        )
+    }
 
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
@@ -22,7 +31,7 @@ class SignInViewModel @Inject constructor(val repository: SignInRepository) : Vi
     fun authenticate() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = repository.authenticate(BuildConfig.STYTCH_PUBLIC_TOKEN, 60)
+            val result = StytchClient.MagicLinks.authenticate(BuildConfig.STYTCH_PUBLIC_TOKEN, 60)
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false
@@ -32,7 +41,7 @@ class SignInViewModel @Inject constructor(val repository: SignInRepository) : Vi
     fun loginOrCreate() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = repository.loginOrCreate(StytchClient.MagicLinks.Parameters("test@stytch.com"))
+            val result = StytchClient.MagicLinks.loginOrCreate(StytchClient.MagicLinks.Parameters("test@stytch.com"))
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false

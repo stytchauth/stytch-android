@@ -1,12 +1,10 @@
 package com.stytch.exampleapp.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 val LightThemeColors = lightColors(
     primary = Purple200,
@@ -36,16 +34,8 @@ val DarkThemeColors = darkColors(
     onError = Black
 )
 
-val Colors.snackbarAction: Color
-    @Composable
-    get() = if (isLight) Purple200 else Purple700
-
-val Colors.progressIndicatorBackground: Color
-    @Composable
-    get() = if (isLight) Color.Black.copy(alpha = 0.12f) else Color.White.copy(alpha = 0.24f)
-
 @Composable
-fun TestAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun AppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
         DarkThemeColors
     } else {
