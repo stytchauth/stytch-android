@@ -5,7 +5,7 @@ buildscript {
     retrofit_version = '2.9.0'
     moshi_version = '1.13.0'
     magellan_version = '1.1.0'
-    kotlin_coroutines_version = '1.4.3'
+    kotlin_coroutines_version = '1.6.4'
     koin_version = '2.2.2'
   }
   repositories {
