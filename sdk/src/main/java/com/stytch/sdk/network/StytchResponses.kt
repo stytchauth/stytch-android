@@ -19,4 +19,14 @@ public object StytchResponses {
         val request_id: String
     )
 
+    @JsonClass(generateAdapter = true)
+    public data class StytchErrorResponse(
+        val status_code: Int,
+        val request_id: String,
+        val error_type: String,
+        val error_message: String?,
+        val error_url: String,
+    )
+
+
 }

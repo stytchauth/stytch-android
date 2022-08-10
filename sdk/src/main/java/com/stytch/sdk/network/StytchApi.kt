@@ -3,8 +3,6 @@ package com.stytch.sdk.network
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchDataTypes
-import com.stytch.sdk.StytchErrorResponse
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.stytchError
@@ -80,7 +78,6 @@ internal object StytchApi {
                 loginExpirationMinutes: Int? = null,
                 signupExpirationMinutes: Int? = null,
                 createUserAsPending: Boolean? = null,
-                attributes: StytchDataTypes.Attributes? = null,
             ): StytchResult<StytchResponses.LoginOrCreateUserByEmailResponse> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.LoginOrCreateUserByEmailRequest(
@@ -89,8 +86,7 @@ internal object StytchApi {
                         signup_magic_link_url = signupMagicLinkUrl,
                         login_expiration_minutes = loginExpirationMinutes,
                         signup_expiration_minutes = signupExpirationMinutes,
-                        create_user_as_pending = createUserAsPending,
-                        attributes = attributes,
+                        create_user_as_pending = createUserAsPending
                     )
                 )
             }
@@ -119,7 +115,7 @@ internal object StytchApi {
                     val errorCode = throwable.code()
                     val stytchErrorResponse = try {
                         throwable.response()?.errorBody()?.source()?.let {
-                            Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
+                            Moshi.Builder().build().adapter(StytchResponses.StytchErrorResponse::class.java).fromJson(it)
                         }
                     } catch (t: Throwable) {
                         null
