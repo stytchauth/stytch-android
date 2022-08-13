@@ -10,14 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StytchTheme"
         >
-
-        <activity android:name=".StytchEmailMagicLinkActivity"
-            android:windowSoftInputMode="stateVisible"
-            />
-
-        <activity android:name=".StytchSMSPasscodeActivity"
-            android:windowSoftInputMode="stateVisible"
-            />
     </application>
 
 </manifest>

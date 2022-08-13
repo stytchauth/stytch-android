@@ -5,22 +5,25 @@ import android.net.Uri
 import android.os.Build
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchResponses
+import com.stytch.sdk.network.responseData.BasicData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-public typealias LoginOrCreateUserByEmailResponse = StytchResult<StytchResponses.LoginOrCreateUserByEmailResponse>
-public typealias BaseResponse = StytchResult<StytchResponses.BasicResponse>
+public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
+public typealias BaseResponse = StytchResult<BasicData>
 
 /**
  * The entrypoint for all Stytch-related interaction.
  */
 public object StytchClient {
 
-    private var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    private var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
+    internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+        private set
+    internal var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
+        private set
 
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
@@ -34,9 +37,16 @@ public object StytchClient {
 
     internal fun assertInitialized() {
         if (!StytchApi.isInitialized) {
-            stytchError("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi.")
+            stytchError("StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient.")
         }
     }
+
+    public var magicLinks: MagicLinks = MagicLinksImpl()
+        get() {
+            assertInitialized()
+            return field
+        }
+        private set
 
     /**
      * Set dispatchers for UI and IO tasks
@@ -44,76 +54,6 @@ public object StytchClient {
     public fun setDispatchers(uiDispatcher: CoroutineDispatcher, ioDispatcher: CoroutineDispatcher) {
         this.uiDispatcher = uiDispatcher
         this.ioDispatcher = ioDispatcher
-    }
-
-    public object MagicLinks {
-
-        public data class Parameters(
-            val email: String,
-            val loginMagicLinkUrl: String? = null,
-            val loginExpirationInMinutes: Int? = null,
-            val signupMagicLinkUrl: String? = null,
-            val signupExpirationInMinutes: Int? = null,
-        )
-
-        /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
-         * @param parameters required to receive magic link
-         * @return LoginOrCreateUserByEmailResponse response from backend
-         */
-        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateUserByEmailResponse {
-            assertInitialized()
-            return StytchApi.MagicLinks.Email.loginOrCreateEmail(email = parameters.email,
-                loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                loginExpirationMinutes = parameters.loginExpirationInMinutes,
-                signupExpirationMinutes = parameters.signupExpirationInMinutes)
-        }
-
-        /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
-         * @param parameters required to receive magic link
-         * @param callback calls callback with LoginOrCreateUserByEmailResponse response from backend
-         */
-        public fun loginOrCreate(
-            parameters: Parameters,
-            callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
-        ) {
-//          call endpoint in IO thread
-            GlobalScope.launch(ioDispatcher) {
-                val result = loginOrCreate(parameters)
-//              change to main thread to call callback
-                withContext(uiDispatcher) {
-                    callback(result)
-                }
-            }
-        }
-
-        /**
-         * Wraps the magic link authenticate API endpoint which validates the magic link token passed in. If this method succeeds, the user will be logged in, granted an active session
-         * @param parameters required to receive magic link
-         * @return LoginOrCreateUserByEmailResponse response from backend
-         */
-        public suspend fun authenticate(token: String, sessionExpirationMinutes: Int = 60): BaseResponse {
-            assertInitialized()
-            return StytchApi.MagicLinks.Email.authenticate(token, sessionExpirationMinutes)
-        }
-
-        public fun authenticate(
-            token: String,
-            sessionExpirationMinutes: Int = 60,
-            callback: (response: BaseResponse) -> Unit,
-        ) {
-//          call endpoint in IO thread
-            GlobalScope.launch(ioDispatcher) {
-                val result = authenticate(token, sessionExpirationMinutes)
-//              change to main thread to call callback
-                withContext(uiDispatcher) {
-                    callback(result)
-                }
-            }
-        }
-
     }
 
     //    TODO:("Sessions")
@@ -159,36 +99,40 @@ public object StytchClient {
      * @param sessionDuration - sessionDuration
      */
     public suspend fun handle(uri: Uri, sessionDuration: Int): BaseResponse {
-        val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
-        val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
-        val publicToken = uri.getQueryParameter(Constants.QUERY_PUBLIC_TOKEN)
+        assertInitialized()
+        val result: BaseResponse
+        withContext(ioDispatcher) {
+            val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+            val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
 
-        if (token.isNullOrEmpty() || publicToken.isNullOrEmpty())
-             TODO("create a more graceful handling of bad parameters")
+            if (token.isNullOrEmpty())
+                TODO("create a more graceful handling of bad parameters")
 
-        when (tokenType) {
-            TokenType.MAGIC_LINKS -> {
-                return MagicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
-            }
-            TokenType.OAUTH ->{
-                TODO("Implement oauth handling")
-            }
-            TokenType.PASSWORD_RESET ->{
-                TODO("Implement password reset handling")
-            }
-            TokenType.UNKNOWN -> {
-                TODO("return Error")
+            when (tokenType) {
+                TokenType.MAGIC_LINKS -> {
+                    result = magicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
+                }
+                TokenType.OAUTH -> {
+                    TODO("Implement oauth handling")
+                }
+                TokenType.PASSWORD_RESET -> {
+                    TODO("Implement password reset handling")
+                }
+                TokenType.UNKNOWN -> {
+                    TODO("return Error")
+                }
             }
         }
+
+        return result
     }
 
-    public fun handle(uri: Uri, sessionDuration: Int, callback: (response: BaseResponse)->Unit){
-        GlobalScope.launch(ioDispatcher) {
+    public fun handle(uri: Uri, sessionDuration: Int, callback: (response: BaseResponse) -> Unit) {
+        GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDuration)
 //              change to main thread to call callback
-            withContext(uiDispatcher) {
-                callback(result)
-            }
+            callback(result)
         }
     }
+
 }

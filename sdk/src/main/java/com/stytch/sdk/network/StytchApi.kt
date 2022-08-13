@@ -5,11 +5,12 @@ import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
+import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.stytchError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -50,8 +51,6 @@ internal object StytchApi {
 
     private val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         Retrofit.Builder()
             .baseUrl(hostUrl)
             .addConverterFactory(MoshiConverterFactory.create())
@@ -61,7 +60,6 @@ internal object StytchApi {
                     .writeTimeout(120L, TimeUnit.SECONDS)
                     .connectTimeout(120L, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
-                    .addInterceptor(loggingInterceptor)
                     .build()
             )
             .build()
@@ -78,7 +76,7 @@ internal object StytchApi {
                 loginExpirationMinutes: Int? = null,
                 signupExpirationMinutes: Int? = null,
                 createUserAsPending: Boolean? = null,
-            ): StytchResult<StytchResponses.LoginOrCreateUserByEmailResponse> = safeApiCall {
+            ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.LoginOrCreateUserByEmailRequest(
                         email = email,
@@ -92,7 +90,7 @@ internal object StytchApi {
             }
 
             suspend fun authenticate(token: String, sessionDurationMinutes: Int = 60):
-                    StytchResult<StytchResponses.BasicResponse> =
+                    StytchResult<BasicData> =
                 safeApiCall {
                     apiService.authenticate(
                         StytchRequests.Authenticate(
@@ -105,17 +103,17 @@ internal object StytchApi {
         }
     }
 
-    private suspend fun <T> safeApiCall(apiCall: suspend () -> T): StytchResult<T> = withContext(Dispatchers.IO) {
+    private suspend fun <T1, T: StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> = withContext(Dispatchers.IO) {
         StytchClient.assertInitialized()
         try {
-            StytchResult.Success(apiCall())
+            StytchResult.Success(apiCall().data)
         } catch (throwable: Throwable) {
             when (throwable) {
                 is HttpException -> {
                     val errorCode = throwable.code()
                     val stytchErrorResponse = try {
                         throwable.response()?.errorBody()?.source()?.let {
-                            Moshi.Builder().build().adapter(StytchResponses.StytchErrorResponse::class.java).fromJson(it)
+                            Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
                         }
                     } catch (t: Throwable) {
                         null
