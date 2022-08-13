@@ -8,5 +8,4 @@ internal object Constants {
 //  Query parameters
     const val QUERY_TOKEN_TYPE = "stytch_token_type"
     const val QUERY_TOKEN = "token"
-
 }

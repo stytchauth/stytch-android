@@ -5,17 +5,17 @@ import com.stytch.sdk.network.responseData.BasicData
 
 internal object StytchResponses {
 
-    @JsonClass(generateAdapter = true)
-    internal class LoginOrCreateUserByEmailResponse(data: BasicData): StytchDataResponse<BasicData>(data)
+    object MagicLinks{
+        object Email{
+            @JsonClass(generateAdapter = true)
+            class LoginOrCreateUserByEmailResponse(data: BasicData): StytchDataResponse<BasicData>(data)
+        }
+    }
 
     @JsonClass(generateAdapter = true)
-    internal class BasicResponse(data: BasicData): StytchDataResponse<BasicData>(data)
+    class BasicResponse(data: BasicData): StytchDataResponse<BasicData>(data)
 
-    internal open class StytchDataResponse<T>(
+    open class StytchDataResponse<T>(
         val data: T
     )
-
-
-
-
 }

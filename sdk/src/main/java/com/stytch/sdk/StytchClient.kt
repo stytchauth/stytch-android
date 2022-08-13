@@ -3,8 +3,8 @@ package com.stytch.sdk
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import com.stytch.sdk.network.StytchApi
-import com.stytch.sdk.network.StytchResponses
 import com.stytch.sdk.network.responseData.BasicData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -42,11 +42,11 @@ public object StytchClient {
     }
 
     public var magicLinks: MagicLinks = MagicLinksImpl()
+        private set
         get() {
             assertInitialized()
             return field
         }
-        private set
 
     /**
      * Set dispatchers for UI and IO tasks
@@ -96,9 +96,9 @@ public object StytchClient {
     /**
      * Handle magic link
      * @param uri - intent.data from deep link
-     * @param sessionDuration - sessionDuration
+     * @param sessionDurationInMinutes - sessionDuration
      */
-    public suspend fun handle(uri: Uri, sessionDuration: Int): BaseResponse {
+    public suspend fun handle(uri: Uri, sessionDurationInMinutes: UInt): BaseResponse {
         assertInitialized()
         val result: BaseResponse
         withContext(ioDispatcher) {
@@ -110,7 +110,7 @@ public object StytchClient {
 
             when (tokenType) {
                 TokenType.MAGIC_LINKS -> {
-                    result = magicLinks.authenticate(token = token, sessionExpirationMinutes = sessionDuration)
+                    result = magicLinks.authenticate(token = token, sessionDurationInMinutes = sessionDurationInMinutes)
                 }
                 TokenType.OAUTH -> {
                     TODO("Implement oauth handling")
@@ -127,12 +127,23 @@ public object StytchClient {
         return result
     }
 
-    public fun handle(uri: Uri, sessionDuration: Int, callback: (response: BaseResponse) -> Unit) {
+    public fun handle(uri: Uri, sessionDuration: UInt, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDuration)
 //              change to main thread to call callback
             callback(result)
         }
     }
+}
 
+internal object StytchLog {
+    fun e(message: String) = Log.e("StytchLog", "Stytch error: $message")
+    fun w(message: String) = Log.w("StytchLog", "Stytch warning: $message")
+    fun i(message: String) = Log.i("StytchLog", message)
+    fun d(message: String) = Log.d("StytchLog", message)
+    fun v(message: String) = Log.v("StytchLog", message)
+}
+
+internal fun stytchError(message: String): Nothing {
+    error("Stytch error: $message")
 }

@@ -72,63 +72,53 @@ internal object StytchApi {
             suspend fun loginOrCreateEmail(
                 email: String,
                 loginMagicLinkUrl: String?,
-                signupMagicLinkUrl: String?,
-                loginExpirationMinutes: Int? = null,
-                signupExpirationMinutes: Int? = null,
-                createUserAsPending: Boolean? = null,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
-                    StytchRequests.LoginOrCreateUserByEmailRequest(
+                    StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest(
                         email = email,
                         login_magic_link_url = loginMagicLinkUrl,
-                        signup_magic_link_url = signupMagicLinkUrl,
-                        login_expiration_minutes = loginExpirationMinutes,
-                        signup_expiration_minutes = signupExpirationMinutes,
-                        create_user_as_pending = createUserAsPending
                     )
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationMinutes: Int = 60):
+            suspend fun authenticate(token: String, sessionDurationInMinutes: UInt = 60u):
                     StytchResult<BasicData> =
                 safeApiCall {
                     apiService.authenticate(
-                        StytchRequests.Authenticate(
+                        StytchRequests.MagicLinks.Authenticate(
                             token,
-                            sessionDurationMinutes
+                            sessionDurationInMinutes.toInt()
                         )
                     )
                 }
-
         }
     }
 
-    private suspend fun <T1, T: StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> = withContext(Dispatchers.IO) {
-        StytchClient.assertInitialized()
-        try {
-            StytchResult.Success(apiCall().data)
-        } catch (throwable: Throwable) {
-            when (throwable) {
-                is HttpException -> {
-                    val errorCode = throwable.code()
-                    val stytchErrorResponse = try {
-                        throwable.response()?.errorBody()?.source()?.let {
-                            Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
+    private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> =
+        withContext(Dispatchers.IO) {
+            StytchClient.assertInitialized()
+            try {
+                StytchResult.Success(apiCall().data)
+            } catch (throwable: Throwable) {
+                when (throwable) {
+                    is HttpException -> {
+                        val errorCode = throwable.code()
+                        val stytchErrorResponse = try {
+                            throwable.response()?.errorBody()?.source()?.let {
+                                Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
+                            }
+                        } catch (t: Throwable) {
+                            null
                         }
-                    } catch (t: Throwable) {
-                        null
+                        StytchLog.w("http error code: $errorCode, errorResponse: $stytchErrorResponse")
+                        StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
                     }
-                    StytchLog.w("http error code: $errorCode, errorResponse: $stytchErrorResponse")
-                    StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
-                }
-                else -> {
-                    throwable.printStackTrace()
-                    StytchLog.w("Network Error")
-                    StytchResult.NetworkError
+                    else -> {
+                        throwable.printStackTrace()
+                        StytchLog.w("Network Error")
+                        StytchResult.NetworkError
+                    }
                 }
             }
         }
-    }
-
 }
-

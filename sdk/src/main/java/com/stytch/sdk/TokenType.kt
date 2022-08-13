@@ -1,18 +1,20 @@
 package com.stytch.sdk
 
-internal enum class TokenType(val raw: String?) {
-    MAGIC_LINKS("magic_links"),
-    OAUTH("oauth"),
-    PASSWORD_RESET("password_reset"),
-    UNKNOWN(null);
+import java.util.Locale
 
-    companion object{
-        fun fromString(typeString: String?): TokenType{
-            values().forEach { tokenType ->
-                if(tokenType.raw.equals(typeString, true))
-                    return tokenType
+internal enum class TokenType {
+    MAGIC_LINKS,
+    OAUTH,
+    PASSWORD_RESET,
+    UNKNOWN;
+
+    companion object {
+        fun fromString(typeString: String?): TokenType {
+            return try {
+                valueOf(typeString?.uppercase(Locale.ENGLISH)!!)
+            } catch (_: Exception) {
+                UNKNOWN
             }
-            return UNKNOWN
         }
     }
 }
