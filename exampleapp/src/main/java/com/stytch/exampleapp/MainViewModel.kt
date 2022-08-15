@@ -3,6 +3,7 @@ package com.stytch.exampleapp
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.MagicLinks
 import com.stytch.sdk.StytchClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +32,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     fun authenticate() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.MagicLinks.authenticate(BuildConfig.STYTCH_PUBLIC_TOKEN, 60)
+            val result = StytchClient.magicLinks.authenticate(BuildConfig.STYTCH_PUBLIC_TOKEN, 60u)
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false
@@ -41,7 +42,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     fun loginOrCreate() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.MagicLinks.loginOrCreate(StytchClient.MagicLinks.Parameters("test@stytch.com"))
+            val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.Parameters("test@stytch.com"))
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false
