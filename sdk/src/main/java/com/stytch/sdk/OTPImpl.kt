@@ -37,7 +37,7 @@ internal class OTPImpl internal constructor() : OTP {
         return result
     }
 
-    override suspend fun loginOrCreateUserWithSMS(parameters: OTP.PhoneParameters, callback: (response: BaseResponse) -> Unit) {
+    override fun loginOrCreateUserWithSMS(parameters: OTP.PhoneParameters, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = loginOrCreateUserWithSMS(parameters)
             callback(result)
@@ -56,7 +56,7 @@ internal class OTPImpl internal constructor() : OTP {
         return result
     }
 
-    override suspend fun loginOrCreateUserWithWhatsapp(parameters: OTP.PhoneParameters, callback: (response: BaseResponse) -> Unit) {
+    override fun loginOrCreateUserWithWhatsapp(parameters: OTP.PhoneParameters, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = loginOrCreateUserWithWhatsapp(parameters)
             callback(result)
@@ -75,7 +75,7 @@ internal class OTPImpl internal constructor() : OTP {
         return result
     }
 
-    override suspend fun loginOrCreateUserWithEmail(parameters: OTP.EmailParameters, callback: (response: BaseResponse) -> Unit) {
+    override fun loginOrCreateUserWithEmail(parameters: OTP.EmailParameters, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = loginOrCreateUserWithEmail(parameters)
             callback(result)
