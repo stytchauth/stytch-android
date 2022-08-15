@@ -72,21 +72,26 @@ internal object StytchApi {
             suspend fun loginOrCreateEmail(
                 email: String,
                 loginMagicLinkUrl: String?,
+                codeChallenge: String,
+                codeChallengeMethod: String
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest(
                         email = email,
                         login_magic_link_url = loginMagicLinkUrl,
+                        code_challenge = codeChallenge,
+                        code_challenge_method = codeChallengeMethod
                     )
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationInMinutes: UInt = 60u):
+            suspend fun authenticate(token: String, sessionDurationInMinutes: UInt = 60u, codeVerifier: String):
                     StytchResult<BasicData> =
                 safeApiCall {
                     apiService.authenticate(
                         StytchRequests.MagicLinks.Authenticate(
                             token,
+                            codeVerifier,
                             sessionDurationInMinutes.toInt()
                         )
                     )

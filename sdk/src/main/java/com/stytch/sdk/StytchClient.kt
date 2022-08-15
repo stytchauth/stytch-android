@@ -98,7 +98,7 @@ public object StytchClient {
      * @param uri - intent.data from deep link
      * @param sessionDurationInMinutes - sessionDuration
      */
-    public suspend fun handle(uri: Uri, sessionDurationInMinutes: UInt): BaseResponse {
+    public suspend fun handle(uri: Uri, codeVerifier: String, sessionDurationInMinutes: UInt): BaseResponse {
         assertInitialized()
         val result: BaseResponse
         withContext(ioDispatcher) {
@@ -110,7 +110,7 @@ public object StytchClient {
 
             when (tokenType) {
                 TokenType.MAGIC_LINKS -> {
-                    result = magicLinks.authenticate(token = token, sessionDurationInMinutes = sessionDurationInMinutes)
+                    result = magicLinks.authenticate(MagicLinks.AuthParameters(token, codeVerifier, sessionDurationInMinutes))
                 }
                 TokenType.OAUTH -> {
                     TODO("Implement oauth handling")
@@ -127,9 +127,9 @@ public object StytchClient {
         return result
     }
 
-    public fun handle(uri: Uri, sessionDuration: UInt, callback: (response: BaseResponse) -> Unit) {
+    public fun handle(uri: Uri, codeVerifier: String, sessionDuration: UInt, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(uiDispatcher) {
-            val result = handle(uri, sessionDuration)
+            val result = handle(uri, codeVerifier, sessionDuration)
 //              change to main thread to call callback
             callback(result)
         }

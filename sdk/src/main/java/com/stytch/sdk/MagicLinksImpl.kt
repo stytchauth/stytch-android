@@ -9,21 +9,24 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
 
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(token: String, sessionDurationInMinutes: UInt): BaseResponse {
+    override suspend fun authenticate(authParams: MagicLinks.AuthParameters): BaseResponse {
         val result: BaseResponse
         withContext(StytchClient.ioDispatcher) {
-            result = StytchApi.MagicLinks.Email.authenticate(token, sessionDurationInMinutes)
+            result = StytchApi.MagicLinks.Email.authenticate(
+                authParams.token,
+                authParams.sessionDurationInMinutes,
+                authParams.codeVerifier
+            )
         }
         return result
     }
 
     override fun authenticate(
-        token: String,
-        sessionDurationInMinutes: UInt,
+        authParams: MagicLinks.AuthParameters,
         callback: (response: BaseResponse) -> Unit,
     ) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
-            val result = authenticate(token, sessionDurationInMinutes)
+            val result = authenticate(authParams)
 //              change to main thread to call callback
             callback(result)
         }
@@ -31,13 +34,15 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
 
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
 
-        override suspend fun loginOrCreate(parameters: MagicLinks.Parameters): LoginOrCreateUserByEmailResponse {
+        override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): LoginOrCreateUserByEmailResponse {
             val result: LoginOrCreateUserByEmailResponse
 
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.MagicLinks.Email.loginOrCreateEmail(
                     email = parameters.email,
-                    loginMagicLinkUrl = parameters.loginMagicLinkUrl
+                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                    codeChallenge = parameters.codeChallenge,
+                    codeChallengeMethod = parameters.codeChallengeMethod
                 )
             }
 
@@ -45,7 +50,7 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
         }
 
         override fun loginOrCreate(
-            parameters: MagicLinks.Parameters,
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
 //          call endpoint in IO thread
