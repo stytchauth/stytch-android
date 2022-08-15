@@ -9,17 +9,25 @@ import io.mockk.mockkObject
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 
 internal class StytchClientTest {
 
     val mContextMock = mockk<Context>(relaxed = true)
+    val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
-    val params = StytchClient.MagicLinks.Parameters(
-        email = "email@email.com"
+    val params = MagicLinks.EmailMagicLinks.Parameters(
+        email = "email@email.com",
+        codeChallenge = "codeChallenge",
+        codeChallengeMethod = "codeChallengeMethod"
     )
 
     @Test
@@ -29,7 +37,7 @@ internal class StytchClientTest {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.MagicLinks.loginOrCreate(params)
+                StytchClient.magicLinks.email.loginOrCreate(params)
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -46,7 +54,7 @@ internal class StytchClientTest {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.MagicLinks.authenticate("token")
+                StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier"))
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -66,8 +74,15 @@ internal class StytchClientTest {
         verify { StytchApi.configure("", "", deviceInfo) }
     }
 
+    @Before
+    fun before(){
+        Dispatchers.setMain(mainThreadSurrogate)
+    }
+
     @After
     fun after() {
+        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
+        mainThreadSurrogate.close()
         unmockkAll()
     }
 
@@ -76,12 +91,17 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(params.email, null, null)
+            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+                email = params.email,
+                codeChallenge = params.codeChallenge,
+                codeChallengeMethod = params.codeChallengeMethod,
+                loginMagicLinkUrl = null
+            )
         }.returns(StytchResult.Success(any()))
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.MagicLinks.loginOrCreate(params)
+            StytchClient.magicLinks.email.loginOrCreate(params)
         }
         assert(result is StytchResult.Success)
     }
@@ -91,11 +111,15 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(params.email, null, null)
+            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+                email = params.email,
+                codeChallenge = params.codeChallenge,
+                codeChallengeMethod = params.codeChallengeMethod,
+                loginMagicLinkUrl = null)
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.MagicLinks.loginOrCreate(params) {
+        StytchClient.magicLinks.email.loginOrCreate(params) {
             assert(it is StytchResult.Success)
         }
     }
@@ -105,12 +129,12 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.authenticate("token")
+            StytchApi.MagicLinks.Email.authenticate("token", codeVerifier = "codeVerifier")
         }.returns(StytchResult.Success(any()))
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.MagicLinks.authenticate("token")
+            StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier"))
         }
         assert(result is StytchResult.Success)
     }
@@ -120,11 +144,11 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.authenticate("token")
+            StytchApi.MagicLinks.Email.authenticate("token", codeVerifier = "codeVerifier")
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.MagicLinks.authenticate("token") {
+        StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier")) {
             assert(it is StytchResult.Success)
         }
     }
