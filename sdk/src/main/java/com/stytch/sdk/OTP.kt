@@ -28,21 +28,21 @@ public interface OTP {
 
     public suspend fun loginOrCreateUserWithSMS(params: PhoneParameters): BaseResponse
 
-    public suspend fun loginOrCreateUserWithSMS(
+    public fun loginOrCreateUserWithSMS(
         parameters: PhoneParameters,
         callback: (response: BaseResponse) -> Unit,
     )
 
     public suspend fun loginOrCreateUserWithWhatsapp(parameters: PhoneParameters): BaseResponse
 
-    public suspend fun loginOrCreateUserWithWhatsapp(
+    public fun loginOrCreateUserWithWhatsapp(
         parameters: PhoneParameters,
         callback: (response: BaseResponse) -> Unit,
     )
 
     public suspend fun loginOrCreateUserWithEmail(parameters: EmailParameters): BaseResponse
 
-    public suspend fun loginOrCreateUserWithEmail(
+    public fun loginOrCreateUserWithEmail(
         parameters: EmailParameters,
         callback: (response: BaseResponse) -> Unit,
     )

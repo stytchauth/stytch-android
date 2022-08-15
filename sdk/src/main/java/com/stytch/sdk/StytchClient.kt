@@ -51,6 +51,13 @@ public object StytchClient {
             return field
         }
 
+    public var otp: OTP = OTPImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
     /**
      * Set dispatchers for UI and IO tasks
      */
