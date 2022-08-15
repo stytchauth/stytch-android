@@ -16,17 +16,17 @@ internal interface StytchApiService {
     ): StytchResponses.BasicResponse
 
     @POST("otps/sms/login_or_create")
-    suspend fun loginOrCreateUserBySMS(
+    suspend fun loginOrCreateUserByOTPWithSMS(
         @Body request: StytchRequests.OTP.SMS,
     ): StytchResponses.BasicResponse
 
     @POST("otps/whatsapp/login_or_create")
-    suspend fun loginOrCreateByWhatsapp(
+    suspend fun loginOrCreateUserByOTPWithWhatsapp(
         @Body request: StytchRequests.OTP.Whatsapp,
     ): StytchResponses.BasicResponse
 
     @POST("otps/email/login_or_create")
-    suspend fun loginOrCreateByEmail(
+    suspend fun loginOrCreateUserByOTPWithEmail(
         @Body request: StytchRequests.OTP.Email,
     ): StytchResponses.BasicResponse
 
