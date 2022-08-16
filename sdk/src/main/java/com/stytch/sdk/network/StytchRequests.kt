@@ -10,8 +10,8 @@ internal object StytchRequests {
             data class LoginOrCreateUserByEmailRequest(
                 val email: String,
                 val login_magic_link_url: String?,
-                val code_challenge: String,
-                val code_challenge_method: String
+                val code_challenge: String?,
+                val code_challenge_method: String?
 
             )
         }

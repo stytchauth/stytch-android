@@ -15,9 +15,7 @@ internal data class InfoHeaderModel(
              "os": ${os.json},
              "device": ${device.json}
            }
- """.trimIndent().also {
-                StytchLog.d(it)
-            }
+ """.trimIndent()
         }
 
     internal data class Item(

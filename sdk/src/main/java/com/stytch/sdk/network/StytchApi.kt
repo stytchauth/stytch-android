@@ -1,7 +1,9 @@
 package com.stytch.sdk.network
 
+import android.content.Context
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.DeviceInfo
+import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
@@ -22,6 +24,7 @@ internal object StytchApi {
     private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
     private var stytchSessionToken: String? = null
+    private lateinit var storageHelper: StorageHelper
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
@@ -36,10 +39,11 @@ internal object StytchApi {
         )
     }
 
-    internal fun configure(publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
+    internal fun configure(context: Context, publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.hostUrl = hostUrl
         this.deviceInfo = deviceInfo
+        storageHelper = StorageHelper(context)
     }
 
     internal val isInitialized: Boolean
@@ -47,6 +51,7 @@ internal object StytchApi {
             return ::publicToken.isInitialized
                     && ::hostUrl.isInitialized
                     && ::deviceInfo.isInitialized
+                    && ::storageHelper.isInitialized
         }
 
     private val apiService: StytchApiService by lazy {
@@ -60,6 +65,7 @@ internal object StytchApi {
                     .writeTimeout(120L, TimeUnit.SECONDS)
                     .connectTimeout(120L, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
+                    .cookieJar(SessionCookieJar())
                     .build()
             )
             .build()
@@ -73,14 +79,14 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String
+                codeChallengeMethod: String,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest(
                         email = email,
                         login_magic_link_url = loginMagicLinkUrl,
-                        code_challenge = codeChallenge,
-                        code_challenge_method = codeChallengeMethod
+                        code_challenge = null,
+                        code_challenge_method = null
                     )
                 )
             }

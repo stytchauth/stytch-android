@@ -32,7 +32,7 @@ public object StytchClient {
      */
     public fun configure(context: Context, publicToken: String, hostUrl: String) {
         val deviceInfo = getDeviceInfo(context)
-        StytchApi.configure(publicToken, hostUrl, deviceInfo)
+        StytchApi.configure(context, publicToken, hostUrl, deviceInfo)
     }
 
     internal fun assertInitialized() {
@@ -134,6 +134,7 @@ public object StytchClient {
             callback(result)
         }
     }
+
 }
 
 internal object StytchLog {
