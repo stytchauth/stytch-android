@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.exampleapp.R
-import com.stytch.exampleapp.SignInViewModel
+import com.stytch.exampleapp.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ExampleAppScreen(viewModel: SignInViewModel = viewModel()) {
+fun ExampleAppScreen(viewModel: MainViewModel = viewModel()) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Scaffold(
@@ -39,9 +39,6 @@ fun ExampleAppScreen(viewModel: SignInViewModel = viewModel()) {
         },
         content = {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                StytchButton(modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.authenticate),
-                    onClick = { viewModel.authenticate() })
                 StytchButton(modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.test_email_magic_link_flow),
                     onClick = { viewModel.loginOrCreate() })

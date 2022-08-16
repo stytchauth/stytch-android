@@ -2,4 +2,6 @@
     <string name="app_name">Example App</string>
     <string name="authenticate">Authenticate</string>
     <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
+    <string name="deep_link_title">Deep links</string>
+    <string name="host">exampleapp.com</string>
 </resources>
