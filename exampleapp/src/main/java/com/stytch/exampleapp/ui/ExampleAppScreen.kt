@@ -7,18 +7,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.exampleapp.R
@@ -29,44 +36,51 @@ import com.stytch.exampleapp.MainViewModel
 fun ExampleAppScreen(viewModel: MainViewModel = viewModel()) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
-    Scaffold(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
-        contentColor = MaterialTheme.colors.onBackground,
-        topBar = {
-            Toolbar(toolbarText = stringResource(id = R.string.app_name))
-        },
-        content = {
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                StytchButton(modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.test_email_magic_link_flow),
-                    onClick = { viewModel.loginOrCreate() })
-                if (loading.value) {
-                    CircularProgressIndicator()
-                } else {
-                    Text(text = responseState.value, modifier = Modifier.padding(8.dp))
-                }
+    Scaffold(modifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth(), contentColor = MaterialTheme.colors.onBackground, topBar = {
+        Toolbar(toolbarText = stringResource(id = R.string.app_name))
+    }, content = {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.emailTextState,
+                placeholder = {
+                    Text(text = stringResource(id = R.string.email))
+                },
+                onValueChange = {
+                    viewModel.emailTextState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize))
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.phoneNumberTextState,
+                placeholder = {
+                    Text(text = stringResource(id = R.string.phone_number))
+                },
+                onValueChange = {
+                    viewModel.phoneNumberTextState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize))
+            StytchButton(modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.test_email_magic_link_flow),
+                onClick = { viewModel.loginOrCreate() })
+            if (loading.value) {
+                CircularProgressIndicator()
+            } else {
+                Text(text = responseState.value, modifier = Modifier.padding(8.dp))
             }
         }
-    )
+    })
 }
 
 @Composable
 fun Toolbar(toolbarText: String) {
-    TopAppBar(
-        title = {
-            Text(
-                text = toolbarText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            )
-        },
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 2.dp
-    )
+    TopAppBar(title = {
+        Text(text = toolbarText, textAlign = TextAlign.Center, modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center))
+    }, backgroundColor = MaterialTheme.colors.surface, elevation = 2.dp)
 }
 
 @Composable

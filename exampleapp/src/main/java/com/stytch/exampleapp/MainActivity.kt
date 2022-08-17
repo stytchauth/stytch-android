@@ -3,6 +3,7 @@ package com.stytch.exampleapp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         intent.data?.let { appLinkData ->
-            viewModel.authenticate(appLinkData)
+            Toast.makeText(this, getString(R.string.deeplink_received_toast), Toast.LENGTH_LONG).show()
             viewModel.handleUri(appLinkData)
         }
     }

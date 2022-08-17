@@ -2,6 +2,10 @@ package com.stytch.exampleapp
 
 import android.app.Application
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.MagicLinks
@@ -16,7 +20,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         // Initialize StytchClient
         StytchClient.configure(
             context = application.applicationContext,
-            publicToken = "",
+            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
             hostUrl = "https://${application.getString(R.string.host)}"
         )
     }
@@ -27,17 +31,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
-
-    fun authenticate(uri: Uri) {
-        viewModelScope.launch {
-            _loadingState.value = true
-//            val result = StytchClient.magicLinks.authenticate(BuildConfig.STYTCH_PUBLIC_TOKEN, 60u)
-            val result = StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("", codeVerifier = ""))
-            _currentResponse.value = result.toString()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
-    }
+    var emailTextState by mutableStateOf(TextFieldValue(""))
+    var phoneNumberTextState by mutableStateOf(TextFieldValue(""))
 
     fun handleUri(uri: Uri) {
         viewModelScope.launch {
@@ -52,8 +47,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun loginOrCreate() {
         viewModelScope.launch {
             _loadingState.value = true
-//            val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.Parameters("test@stytch.com"))
-            val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters("test@stytch.com", "", ""))
+            val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text, "", ""))
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false

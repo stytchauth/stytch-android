@@ -4,4 +4,7 @@
     <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
     <string name="deep_link_title">Deep links</string>
     <string name="host">exampleapp.com</string>
+    <string name="deeplink_received_toast">Deeplink received</string>
+    <string name="email">Email</string>
+    <string name="mobile_number">Mobile number</string>
 </resources>
