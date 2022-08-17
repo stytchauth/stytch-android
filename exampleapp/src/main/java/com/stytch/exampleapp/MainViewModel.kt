@@ -37,7 +37,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun handleUri(uri: Uri) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.handle(uri = uri, codeVerifier = "", sessionDurationInMinutes = 60u)
+            val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
             _currentResponse.value = result.toString()
         }.invokeOnCompletion {
             _loadingState.value = false
