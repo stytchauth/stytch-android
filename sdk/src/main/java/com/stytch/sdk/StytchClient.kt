@@ -20,6 +20,8 @@ public typealias BaseResponse = StytchResult<BasicData>
  */
 public object StytchClient {
 
+    internal lateinit var storageHelper: StorageHelper
+
     internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
         private set
     internal var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
@@ -33,6 +35,7 @@ public object StytchClient {
     public fun configure(context: Context, publicToken: String, hostUrl: String) {
         val deviceInfo = getDeviceInfo(context)
         StytchApi.configure(publicToken, hostUrl, deviceInfo)
+        storageHelper = StorageHelper(context)
     }
 
     internal fun assertInitialized() {
@@ -96,9 +99,9 @@ public object StytchClient {
     /**
      * Handle magic link
      * @param uri - intent.data from deep link
-     * @param sessionDurationInMinutes - sessionDuration
+     * @param sessionDurationMinutes - sessionDuration
      */
-    public suspend fun handle(uri: Uri, codeVerifier: String, sessionDurationInMinutes: UInt): BaseResponse {
+    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): BaseResponse {
         assertInitialized()
         val result: BaseResponse
         withContext(ioDispatcher) {
@@ -110,7 +113,7 @@ public object StytchClient {
 
             when (tokenType) {
                 TokenType.MAGIC_LINKS -> {
-                    result = magicLinks.authenticate(MagicLinks.AuthParameters(token, codeVerifier, sessionDurationInMinutes))
+                    result = magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
                 }
                 TokenType.OAUTH -> {
                     TODO("Implement oauth handling")
@@ -127,9 +130,9 @@ public object StytchClient {
         return result
     }
 
-    public fun handle(uri: Uri, codeVerifier: String, sessionDuration: UInt, callback: (response: BaseResponse) -> Unit) {
+    public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: BaseResponse) -> Unit) {
         GlobalScope.launch(uiDispatcher) {
-            val result = handle(uri, codeVerifier, sessionDuration)
+            val result = handle(uri, sessionDurationMinutes)
 //              change to main thread to call callback
             callback(result)
         }
