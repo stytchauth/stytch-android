@@ -5,29 +5,27 @@ import com.stytch.sdk.network.StytchApi
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
+import java.security.KeyStore
 
 internal class StytchClientTest {
 
-    val mContextMock = mockk<Context>(relaxed = true)
-    val mainThreadSurrogate = newSingleThreadContext("UI thread")
+    var mContextMock = mockk<Context>(relaxed = true)
+    val dispatcher = Dispatchers.Unconfined
 
     val params = MagicLinks.EmailMagicLinks.Parameters(
-        email = "email@email.com",
-        codeChallenge = "codeChallenge",
-        codeChallengeMethod = "codeChallengeMethod"
+        email = "email@email.com"
     )
 
     @Test
@@ -54,7 +52,7 @@ internal class StytchClientTest {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier"))
+                StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token"))
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -68,6 +66,7 @@ internal class StytchClientTest {
     fun `should trigger StytchApi configure when calling StytchClient configure`() {
         mockkObject(StytchApi)
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
         val deviceInfo = DeviceInfo()
         every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
         stytchClientObject.configure(mContextMock, "", "")
@@ -76,25 +75,31 @@ internal class StytchClientTest {
 
     @Before
     fun before(){
-        Dispatchers.setMain(mainThreadSurrogate)
+        mockkConstructor(StorageHelper::class)
+        mockkStatic(KeyStore::class)
+        mockkObject(EncryptionManager)
+        every { EncryptionManager.createNewKeys(any(), any(), any()) } returns Unit
+        mContextMock = mockk<Context>(relaxed = true)
+        every { KeyStore.getInstance(any())} returns mockk(relaxed = true)
+        every { anyConstructed<StorageHelper>().loadValue(any()) } returns ""
+        every { anyConstructed<StorageHelper>().getHashedCodeChallenge(any()) } returns Pair("","")
     }
 
     @After
     fun after() {
-        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
-        mainThreadSurrogate.close()
         unmockkAll()
     }
 
     @Test
     fun `should return result success loginOrCreate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
             StytchApi.MagicLinks.Email.loginOrCreateEmail(
                 email = params.email,
-                codeChallenge = params.codeChallenge,
-                codeChallengeMethod = params.codeChallengeMethod,
+                codeChallenge = "",
+                codeChallengeMethod = "",
                 loginMagicLinkUrl = null
             )
         }.returns(StytchResult.Success(any()))
@@ -109,13 +114,14 @@ internal class StytchClientTest {
     @Test
     fun `should return result success loginOrCreate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
             StytchApi.MagicLinks.Email.loginOrCreateEmail(
                 email = params.email,
-                codeChallenge = params.codeChallenge,
-                codeChallengeMethod = params.codeChallengeMethod,
-                loginMagicLinkUrl = null)
+                loginMagicLinkUrl = null,
+            codeChallenge = any(),
+            codeChallengeMethod = any())
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
@@ -127,14 +133,15 @@ internal class StytchClientTest {
     @Test
     fun `should return result success authenticate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.authenticate("token", codeVerifier = "codeVerifier")
+            StytchApi.MagicLinks.Email.authenticate(any(), codeVerifier = any(),  sessionDurationMinutes = any())
         }.returns(StytchResult.Success(any()))
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier"))
+            StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token"))
         }
         assert(result is StytchResult.Success)
     }
@@ -142,15 +149,15 @@ internal class StytchClientTest {
     @Test
     fun `should return result success authenticate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.authenticate("token", codeVerifier = "codeVerifier")
+            StytchApi.MagicLinks.Email.authenticate("token", sessionDurationMinutes = 60u, codeVerifier = "", )
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token", "codeVerifier")) {
+        StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token")) {
             assert(it is StytchResult.Success)
         }
     }
-
 }
