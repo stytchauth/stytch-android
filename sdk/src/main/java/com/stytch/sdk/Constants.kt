@@ -10,4 +10,6 @@ internal object Constants {
     const val QUERY_TOKEN = "token"
 
     const val CODE_CHALLENGE_BYTE_COUNT = 32
+
+    const val DEFAULT_EXPIRATION_TIME_MINUTES = 30u
 }

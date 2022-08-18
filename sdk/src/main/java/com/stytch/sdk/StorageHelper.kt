@@ -38,15 +38,21 @@ internal class StorageHelper(context: Context) {
 
     /**
      * @return Pair(codeChallengeMethod, codeChallenge)
+     * @throws StytchExceptions.NoCodeChallengeFound
      */
     internal fun getHashedCodeChallenge(generateNew: Boolean = false): Pair<String, String> {
-        val codeChallenge = if (generateNew) {
-            EncryptionManager.generateCodeChallenge()
-        } else {
-            loadValue(PREFERENCES_CODE_CHALLENGE)
-        } ?: EncryptionManager.generateCodeChallenge() // generate new codeChallenge if no value found in preferences
+        val codeChallenge: String?
 
-        saveValue(PREFERENCES_CODE_CHALLENGE, codeChallenge)
+        if (generateNew) {
+            codeChallenge = EncryptionManager.generateCodeChallenge()
+            saveValue(PREFERENCES_CODE_CHALLENGE, codeChallenge)
+        } else {
+            codeChallenge = loadValue(PREFERENCES_CODE_CHALLENGE)
+        }
+
+        if (codeChallenge == null) {
+            throw StytchExceptions.NoCodeChallengeFound
+        }
 
         return "S256" to EncryptionManager.getSha256(codeChallenge)
     }

@@ -4,7 +4,7 @@ public interface MagicLinks {
 
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = 60u,
+        val sessionDurationMinutes: UInt = Constants.DEFAULT_EXPIRATION_TIME_MINUTES,
     )
 
     public val email: EmailMagicLinks
@@ -14,11 +14,11 @@ public interface MagicLinks {
      * @return LoginOrCreateUserByEmailResponse response from backend
      */
     public suspend fun authenticate(
-        authParams: AuthParameters,
+        parameters: AuthParameters,
     ): BaseResponse
 
     public fun authenticate(
-        authParams: AuthParameters,
+        parameters: AuthParameters,
         callback: (response: BaseResponse) -> Unit,
     )
 
@@ -28,8 +28,8 @@ public interface MagicLinks {
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: UInt = 60u,
-            val signupExpirationMinutes: UInt = 60u
+            val loginExpirationMinutes: UInt? = null,
+            val signupExpirationMinutes: UInt? = null,
         )
 
         /**

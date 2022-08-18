@@ -1,6 +1,7 @@
 package com.stytch.sdk.network
 
 import com.squareup.moshi.Moshi
+import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchLog
@@ -85,7 +86,7 @@ internal object StytchApi {
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = 60u, codeVerifier: String):
+            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_EXPIRATION_TIME_MINUTES, codeVerifier: String):
                     StytchResult<BasicData> =
                 safeApiCall {
                     apiService.authenticate(

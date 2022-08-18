@@ -109,10 +109,10 @@ internal object EncryptionManager {
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
         val sha256 = digest.fold("") { str, byte -> str + "%02x".format(byte) }
-        return encodeBase64(sha256)
+        return urlEncode(sha256)
     }
 
-    private fun encodeBase64(value: String): String {
+    private fun urlEncode(value: String): String {
         return value
             .replace("+", "-")
             .replace("/", "_")
