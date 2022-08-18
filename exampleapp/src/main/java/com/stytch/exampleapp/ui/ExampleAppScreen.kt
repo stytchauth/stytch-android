@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.exampleapp.R
 import com.stytch.exampleapp.MainViewModel
+import com.stytch.exampleapp.theme.Red300
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -45,23 +46,41 @@ fun ExampleAppScreen(viewModel: MainViewModel = viewModel()) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = viewModel.emailTextState,
-                placeholder = {
+                isError = viewModel.showEmailError,
+                singleLine = true,
+                label = {
                     Text(text = stringResource(id = R.string.email))
                 },
                 onValueChange = {
                     viewModel.emailTextState = it
                 },
                 shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize))
+            if (viewModel.showEmailError) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = stringResource(id = R.string.please_enter_email),
+                    style = MaterialTheme.typography.caption.copy(color = Red300),
+                )
+            }
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = viewModel.phoneNumberTextState,
-                placeholder = {
+                isError = viewModel.showPhoneError,
+                singleLine = true,
+                label = {
                     Text(text = stringResource(id = R.string.phone_number))
                 },
                 onValueChange = {
                     viewModel.phoneNumberTextState = it
                 },
                 shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize))
+            if (viewModel.showPhoneError) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = stringResource(id = R.string.please_enter_phone_number),
+                    style = MaterialTheme.typography.caption.copy(color = Red300),
+                )
+            }
             StytchButton(modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.test_email_magic_link_flow),
                 onClick = { viewModel.loginOrCreate() })
