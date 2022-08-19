@@ -4,7 +4,7 @@ public interface MagicLinks {
 
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_EXPIRATION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )
 
     public val email: EmailMagicLinks

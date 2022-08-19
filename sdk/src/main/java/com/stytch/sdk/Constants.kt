@@ -11,5 +11,5 @@ internal object Constants {
 
     const val CODE_CHALLENGE_BYTE_COUNT = 32
 
-    const val DEFAULT_EXPIRATION_TIME_MINUTES = 30u
+    const val DEFAULT_SESSION_TIME_MINUTES = 30u
 }

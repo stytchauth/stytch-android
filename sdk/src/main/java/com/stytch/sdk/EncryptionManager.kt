@@ -104,16 +104,21 @@ internal object EncryptionManager {
         return randomBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
 
+    fun encryptCodeChallenge(codeChallenge: String): String{
+        return convertToBase64UrlEncoded(getSha256(codeChallenge))
+    }
+
     fun getSha256(value: String): String {
         val bytes = value.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
         val sha256 = digest.fold("") { str, byte -> str + "%02x".format(byte) }
-        return urlEncode(sha256)
+        return sha256
     }
 
-    private fun urlEncode(value: String): String {
-        return value
+    fun convertToBase64UrlEncoded(value: String): String {
+        val base64String = Base64.encode(value.toByteArray(Charsets.UTF_8), Base64.NO_WRAP).toString()
+        return base64String
             .replace("+", "-")
             .replace("/", "_")
             .replace("=", "")

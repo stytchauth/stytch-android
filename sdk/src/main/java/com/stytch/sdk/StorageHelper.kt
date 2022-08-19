@@ -54,6 +54,6 @@ internal class StorageHelper(context: Context) {
             throw StytchExceptions.NoCodeChallengeFound
         }
 
-        return "S256" to EncryptionManager.getSha256(codeChallenge)
+        return "S256" to EncryptionManager.encryptCodeChallenge(codeChallenge)
     }
 }
