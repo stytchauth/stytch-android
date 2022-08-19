@@ -117,7 +117,7 @@ internal object EncryptionManager {
     }
 
     fun convertToBase64UrlEncoded(value: String): String {
-        val base64String = Base64.encode(value.toByteArray(Charsets.UTF_8), Base64.NO_WRAP).toString()
+        val base64String = Base64.encodeToString(value.toByteArray(), Base64.NO_WRAP)
         return base64String
             .replace("+", "-")
             .replace("/", "_")
