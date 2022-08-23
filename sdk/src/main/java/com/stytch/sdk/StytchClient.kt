@@ -51,7 +51,7 @@ public object StytchClient {
             return field
         }
 
-    public var otp: OTP = OTPImpl()
+    public var otps: OTP = OTPImpl()
         private set
         get() {
             assertInitialized()

@@ -32,14 +32,19 @@ internal class StytchClientTest {
         email = "email@email.com"
     )
 
-    val otpEmailParams = OTP.EmailParameters(
-        email = "email@email.com",
-        expirationInMinutes = 60u
+    val otpWhatsappParams = OTP.WhatsappOTP.Parameters(
+        phoneNumber = "+1200000000",
+        expirationMinutes = 60u
     )
 
-    val otpPhoneParams = OTP.PhoneParameters(
+    val otpSmsParams = OTP.SmsOTP.Parameters(
         phoneNumber = "+1200000000",
-        expirationInMinutes = 60u
+        expirationMinutes = 60u
+    )
+
+    val otpEmailParams = OTP.EmailOTP.Parameters(
+        email = "email@email.com",
+        expirationMinutes = 60u
     )
 
     @Test
@@ -60,13 +65,13 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling OTP_loginOrCreateUserWithSMS`() {
+    fun `throw IllegalStateException exception if Sdk was not configured while calling SmsOTP_loginOrCreate`() {
         runBlocking {
             try {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.otp.loginOrCreateUserWithSMS(otpPhoneParams)
+                StytchClient.otps.sms.loginOrCreate(otpSmsParams)
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -77,13 +82,13 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling OTP_loginOrCreateUserWithWhatsapp`() {
+    fun `throw IllegalStateException exception if Sdk was not configured while calling WhatsappOTP_loginOrCreate`() {
         runBlocking {
             try {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.otp.loginOrCreateUserWithWhatsapp(otpPhoneParams)
+                StytchClient.otps.whatsapp.loginOrCreate(otpWhatsappParams)
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -94,13 +99,13 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling OTP_loginOrCreateUserWithEmail`() {
+    fun `throw IllegalStateException exception if Sdk was not configured while calling EmailOTP_loginOrCreateUser`() {
         runBlocking {
             try {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.otp.loginOrCreateUserWithEmail(otpEmailParams)
+                StytchClient.otps.email.loginOrCreate(otpEmailParams)
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -134,7 +139,7 @@ internal class StytchClientTest {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.otp.authenticate(OTP.AuthParameters(token = "token"))
+                StytchClient.otps.authenticate(OTP.AuthParameters(token = "token"))
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -255,7 +260,7 @@ internal class StytchClientTest {
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otp.authenticate(OTP.AuthParameters("token", 60u)) {
+        StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u)) {
             assert(it is StytchResult.Success)
         }
     }
@@ -270,13 +275,13 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.otp.authenticate(OTP.AuthParameters("token", 60u))
+            StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u))
         }
         assert(result is StytchResult.Success)
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithSMS called with callback`() {
+    fun `should return result success SmsOTP_loginOrCreateUser called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -284,13 +289,13 @@ internal class StytchClientTest {
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otp.loginOrCreateUserWithSMS(OTP.PhoneParameters("+12000000", 60u)) {
+        StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u)) {
             assert(it is StytchResult.Success)
         }
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithSMS called without callback`() {
+    fun `should return result success SmsOTP_loginOrCreate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -299,13 +304,13 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.otp.loginOrCreateUserWithSMS(OTP.PhoneParameters("+12000000", 60u))
+            StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u))
         }
         assert(result is StytchResult.Success)
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithWhatsapp called with callback`() {
+    fun `should return result success WhatsappOTP_loginOrCreate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -313,13 +318,13 @@ internal class StytchClientTest {
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otp.loginOrCreateUserWithWhatsapp(OTP.PhoneParameters("+12000000", 60u)) {
+        StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsappOTP.Parameters("+12000000", 60u)) {
             assert(it is StytchResult.Success)
         }
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithWhatsapp called without callback`() {
+    fun `should return result success WhatsappOTP_loginOrCreate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -328,13 +333,13 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.otp.loginOrCreateUserWithWhatsapp(OTP.PhoneParameters("+12000000", 60u))
+            StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsappOTP.Parameters("+12000000", 60u))
         }
         assert(result is StytchResult.Success)
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithEmail called with callback`() {
+    fun `should return result success EmailOTP_loginOrCreate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -342,13 +347,13 @@ internal class StytchClientTest {
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otp.loginOrCreateUserWithEmail(OTP.EmailParameters("email@email.com", 60u)) {
+        StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u)) {
             assert(it is StytchResult.Success)
         }
     }
 
     @Test
-    fun `should return result success OTP_loginOrCreateUserWithEmail called without callback`() {
+    fun `should return result success EmailOTP_loginOrCreate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
@@ -357,7 +362,7 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.otp.loginOrCreateUserWithEmail(OTP.EmailParameters("email@email.com", 60u))
+            StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u))
         }
         assert(result is StytchResult.Success)
     }

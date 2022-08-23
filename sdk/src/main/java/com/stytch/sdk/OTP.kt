@@ -4,46 +4,68 @@ public interface OTP {
 
     public data class AuthParameters(
         val token: String,
-        val sessionDurationInMinutes: UInt = 60u,
+        val sessionDurationMinutes: UInt = 60u,
     )
 
-    public data class PhoneParameters(
-        val phoneNumber: String,
-        val expirationInMinutes: UInt = 60u,
-    )
-
-    public data class EmailParameters(
-        val email: String,
-        val expirationInMinutes: UInt = 60u,
-    )
+    public val sms: SmsOTP
+    public val whatsapp: WhatsappOTP
+    public val email: EmailOTP
 
     public suspend fun authenticate(
-        authParams: AuthParameters,
+        parameters: AuthParameters,
     ): BaseResponse
 
     public fun authenticate(
-        authParams: AuthParameters,
+        parameters: AuthParameters,
         callback: (response: BaseResponse) -> Unit,
     )
 
-    public suspend fun loginOrCreateUserWithSMS(params: PhoneParameters): BaseResponse
+    public interface SmsOTP {
 
-    public fun loginOrCreateUserWithSMS(
-        parameters: PhoneParameters,
-        callback: (response: BaseResponse) -> Unit,
-    )
+        public data class Parameters(
+            val phoneNumber: String,
+            val expirationMinutes: UInt = 60u,
+        )
 
-    public suspend fun loginOrCreateUserWithWhatsapp(parameters: PhoneParameters): BaseResponse
+        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
 
-    public fun loginOrCreateUserWithWhatsapp(
-        parameters: PhoneParameters,
-        callback: (response: BaseResponse) -> Unit,
-    )
+        public fun loginOrCreate(
+            parameters: Parameters,
+            callback: (response: BaseResponse) -> Unit,
+        )
 
-    public suspend fun loginOrCreateUserWithEmail(parameters: EmailParameters): BaseResponse
+    }
 
-    public fun loginOrCreateUserWithEmail(
-        parameters: EmailParameters,
-        callback: (response: BaseResponse) -> Unit,
-    )
+    public interface WhatsappOTP {
+
+        public data class Parameters(
+            val phoneNumber: String,
+            val expirationMinutes: UInt = 60u,
+        )
+
+        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+
+        public fun loginOrCreate(
+            parameters: Parameters,
+            callback: (response: BaseResponse) -> Unit,
+        )
+
+    }
+
+    public interface EmailOTP {
+
+        public data class Parameters(
+            val email: String,
+            val expirationMinutes: UInt = 60u,
+        )
+
+        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+
+        public fun loginOrCreate(
+            parameters: Parameters,
+            callback: (response: BaseResponse) -> Unit,
+        )
+
+    }
+
 }
