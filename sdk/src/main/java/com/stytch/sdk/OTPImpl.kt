@@ -16,7 +16,7 @@ internal class OTPImpl internal constructor() : OTP {
         withContext(StytchClient.ioDispatcher) {
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
-                sessionDurationInMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes
             )
         }
         return result
@@ -35,7 +35,7 @@ internal class OTPImpl internal constructor() : OTP {
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateByOTPWithSMS(
                     phoneNumber = parameters.phoneNumber,
-                    expirationInMinutes = parameters.expirationMinutes
+                    expirationMinutes = parameters.expirationMinutes
                 )
             }
 
@@ -57,7 +57,7 @@ internal class OTPImpl internal constructor() : OTP {
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsapp(
                     phoneNumber = parameters.phoneNumber,
-                    expirationInMinutes = parameters.expirationMinutes
+                    expirationMinutes = parameters.expirationMinutes
                 )
             }
 
@@ -79,7 +79,7 @@ internal class OTPImpl internal constructor() : OTP {
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithEmail(
                     email = parameters.email,
-                    expirationInMinutes = parameters.expirationMinutes
+                    expirationMinutes = parameters.expirationMinutes
                 )
             }
 
