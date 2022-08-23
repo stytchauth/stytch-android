@@ -8,7 +8,7 @@ internal object StytchResponses {
     object MagicLinks{
         object Email{
             @JsonClass(generateAdapter = true)
-            class LoginOrCreateUserByEmailResponse(data: BasicData): StytchDataResponse<BasicData>(data)
+            class LoginOrCreateUserResponse(data: BasicData): StytchDataResponse<BasicData>(data)
         }
     }
 

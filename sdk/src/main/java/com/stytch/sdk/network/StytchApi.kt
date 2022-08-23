@@ -2,6 +2,7 @@ package com.stytch.sdk.network
 
 import android.content.Context
 import com.squareup.moshi.Moshi
+import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.StytchClient
@@ -82,7 +83,7 @@ internal object StytchApi {
                 codeChallengeMethod: String,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
-                    StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest(
+                    StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
                         login_magic_link_url = loginMagicLinkUrl,
                         code_challenge = null,
@@ -91,14 +92,14 @@ internal object StytchApi {
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationInMinutes: UInt = 60u, codeVerifier: String):
+            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
                     StytchResult<BasicData> =
                 safeApiCall {
                     apiService.authenticate(
-                        StytchRequests.MagicLinks.Authenticate(
+                        StytchRequests.MagicLinks.AuthenticateRequest(
                             token,
                             codeVerifier,
-                            sessionDurationInMinutes.toInt()
+                            sessionDurationMinutes.toInt()
                         )
                     )
                 }

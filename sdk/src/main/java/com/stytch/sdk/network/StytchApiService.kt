@@ -7,12 +7,12 @@ internal interface StytchApiService {
 
     @POST("magic_links/email/login_or_create")
     suspend fun loginOrCreateUserByEmail(
-        @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest,
-    ): StytchResponses.MagicLinks.Email.LoginOrCreateUserByEmailResponse
+        @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest,
+    ): StytchResponses.MagicLinks.Email.LoginOrCreateUserResponse
 
     @POST("magic_links/authenticate")
     suspend fun authenticate(
-        @Body request: StytchRequests.MagicLinks.Authenticate
+        @Body request: StytchRequests.MagicLinks.AuthenticateRequest
     ): StytchResponses.BasicResponse
 
     @POST("magic_links/email/login_or_create")
