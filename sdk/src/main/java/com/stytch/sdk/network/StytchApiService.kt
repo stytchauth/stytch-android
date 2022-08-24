@@ -46,4 +46,9 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.Authenticate,
     ): StytchResponses.AuthenticateResponse
     //endregionOTP
+
+    @POST("passwords")
+    suspend fun passwords(
+        @Body request: StytchRequests.OTP.SMS,
+    ): StytchResponses.BasicResponse
 }

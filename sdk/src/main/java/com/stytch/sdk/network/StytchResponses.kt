@@ -18,6 +18,37 @@ internal object StytchResponses {
         class RevokeResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
     }
 
+    object Passwords {
+        @JsonClass(generateAdapter = true)
+        class CreateResponse(
+            val request_id: String,
+            val status_code: Int,
+            val email_id: Int,
+            val user_id: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            val request_id: String,
+            val status_code: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        class ResetByEmailStartResponse(
+            val request_id: String,
+            val status_code: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        class RestByEmailResponse(
+            val request_id: String,
+            val status_code: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        class StrengthCheckResponse()
+    }
+
     @JsonClass(generateAdapter = true)
     class BasicResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
 
