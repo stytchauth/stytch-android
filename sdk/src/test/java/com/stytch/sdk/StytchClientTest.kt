@@ -96,7 +96,7 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+            StytchApi.MagicLinks.Email.loginOrCreate(
                 email = params.email,
                 codeChallenge = "",
                 codeChallengeMethod = "",
@@ -117,7 +117,7 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+            StytchApi.MagicLinks.Email.loginOrCreate(
                 email = params.email,
                 loginMagicLinkUrl = null,
             codeChallenge = any(),

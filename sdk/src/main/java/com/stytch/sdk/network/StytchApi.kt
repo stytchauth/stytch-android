@@ -1,13 +1,12 @@
 package com.stytch.sdk.network
 
-import android.content.Context
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
-import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
+import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.stytchError
@@ -25,7 +24,6 @@ internal object StytchApi {
     private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
     private var stytchSessionToken: String? = null
-    private lateinit var storageHelper: StorageHelper
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
@@ -40,11 +38,10 @@ internal object StytchApi {
         )
     }
 
-    internal fun configure(context: Context, publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
+    internal fun configure(publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.hostUrl = hostUrl
         this.deviceInfo = deviceInfo
-        storageHelper = StorageHelper(context)
     }
 
     internal val isInitialized: Boolean
@@ -52,7 +49,6 @@ internal object StytchApi {
             return ::publicToken.isInitialized
                     && ::hostUrl.isInitialized
                     && ::deviceInfo.isInitialized
-                    && ::storageHelper.isInitialized
         }
 
     private val apiService: StytchApiService by lazy {
@@ -76,7 +72,7 @@ internal object StytchApi {
     internal object MagicLinks {
         object Email {
             /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
-            suspend fun loginOrCreateEmail(
+            suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
@@ -86,14 +82,14 @@ internal object StytchApi {
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
                         login_magic_link_url = loginMagicLinkUrl,
-                        code_challenge = null,
-                        code_challenge_method = null
+                        code_challenge = codeChallenge,
+                        code_challenge_method = codeChallengeMethod
                     )
                 )
             }
 
             suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
-                    StytchResult<BasicData> =
+                    StytchResult<AuthData> =
                 safeApiCall {
                     apiService.authenticate(
                         StytchRequests.MagicLinks.AuthenticateRequest(
@@ -104,6 +100,37 @@ internal object StytchApi {
                     )
                 }
         }
+    }
+
+    internal object Sessions {
+
+        suspend fun authenticate(
+            sessionDurationMinutes: Int,
+            sessionToken: String?,
+            sessionJwt: String?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.authenticateSessions(
+                StytchRequests.Sessions.AuthenticateRequest(
+                    sessionDurationMinutes,
+                    sessionToken,
+                    if (sessionToken == null) sessionJwt else null
+                )
+            )
+        }
+
+        suspend fun revoke(
+            sessionToken: String?,
+            sessionJwt: String?,
+        ):
+                StytchResult<BasicData> =
+            safeApiCall {
+                apiService.revokeSessions(
+                    StytchRequests.Sessions.RevokeRequest(
+                        sessionToken,
+                        if (sessionToken == null) sessionJwt else null
+                    )
+                )
+            }
     }
 
     private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> =

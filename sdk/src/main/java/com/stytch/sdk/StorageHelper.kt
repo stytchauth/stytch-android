@@ -5,7 +5,7 @@ import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch KeyStore Alias"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
-private const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
+internal const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
 
 internal class StorageHelper(context: Context) {
 
@@ -20,7 +20,15 @@ internal class StorageHelper(context: Context) {
     /**
      * Encrypt and save value to SharedPreferences
      */
-    internal fun saveValue(name: String, value: String) {
+    internal fun saveValue(name: String, value: String?) {
+        if (value == null) {
+            with(sharedPreferences.edit()) {
+                putString(name, value)
+                apply()
+            }
+            return
+        }
+
         val encryptedData = EncryptionManager.encryptString(keyStore, KEY_ALIAS, value)
         with(sharedPreferences.edit()) {
             putString(name, encryptedData)
@@ -33,7 +41,8 @@ internal class StorageHelper(context: Context) {
      */
     internal fun loadValue(name: String): String? {
         val encryptedString = sharedPreferences.getString(name, null)
-        return EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
+        val res = EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
+        return res
     }
 
     /**

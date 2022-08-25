@@ -5,6 +5,7 @@ import retrofit2.http.POST
 
 internal interface StytchApiService {
 
+    //region Magic Links
     @POST("magic_links/email/login_or_create")
     suspend fun loginOrCreateUserByEmail(
         @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest,
@@ -12,19 +13,15 @@ internal interface StytchApiService {
 
     @POST("magic_links/authenticate")
     suspend fun authenticate(
-        @Body request: StytchRequests.MagicLinks.AuthenticateRequest
-    ): StytchResponses.BasicResponse
+        @Body request: StytchRequests.MagicLinks.AuthenticateRequest,
+    ): StytchResponses.AuthenticateResponse
+    //endregion Magic Links
 
-    @POST("magic_links/email/login_or_create")
-    suspend fun loginOrCreateUserByEmail(
-        @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserByEmailRequest,
-    ): StytchResponses.MagicLinks.Email.LoginOrCreateUserByEmailResponse
+    //region Sessions
+    @POST("sessions/authenticate")
+    suspend fun authenticateSessions(@Body request: StytchRequests.Sessions.AuthenticateRequest): StytchResponses.Sessions.AuthenticateResponse
 
-    @POST("magic_links/authenticate")
-    suspend fun authenticateWithSession(
-        @Body request: StytchRequests.MagicLinks.Authenticate
-    ): StytchResponses.BasicResponse
-
-
-
+    @POST("sessions/revoke")
+    suspend fun revokeSessions(@Body request: StytchRequests.Sessions.RevokeRequest): StytchResponses.Sessions.RevokeResponse
+    //endregion Sessions
 }

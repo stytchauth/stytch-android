@@ -43,6 +43,9 @@ internal object EncryptionManager {
     }
 
     fun decryptString(keyStore: KeyStore, alias: String, encryptedText: String?): String? {
+//       prevent decryption if value is null
+        encryptedText ?: return null
+
         var decryptedText: String? = null
         try {
             val privateKeyEntry = keyStore.getEntry(alias, null) as KeyStore.PrivateKeyEntry
@@ -71,19 +74,19 @@ internal object EncryptionManager {
         try {
             // Create new key if needed
             if (!keyStore.containsAlias(alias)) {
-                    val start = Calendar.getInstance()
-                    val end = Calendar.getInstance()
-                    end.add(Calendar.YEAR, 1)
-                    val spec = KeyPairGeneratorSpec.Builder(context)
-                        .setAlias(alias)
-                        .setSubject(X500Principal("CN=stytch CN, O=Android Authority"))
-                        .setSerialNumber(BigInteger.ONE)
-                        .setStartDate(start.time)
-                        .setEndDate(end.time)
-                        .build()
-                    val generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
-                    generator.initialize(spec)
-                    generator.generateKeyPair()
+                val start = Calendar.getInstance()
+                val end = Calendar.getInstance()
+                end.add(Calendar.YEAR, 1)
+                val spec = KeyPairGeneratorSpec.Builder(context)
+                    .setAlias(alias)
+                    .setSubject(X500Principal("CN=stytch CN, O=Android Authority"))
+                    .setSerialNumber(BigInteger.ONE)
+                    .setStartDate(start.time)
+                    .setEndDate(end.time)
+                    .build()
+                val generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
+                generator.initialize(spec)
+                generator.generateKeyPair()
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -100,16 +103,22 @@ internal object EncryptionManager {
     }
 
     fun generateCodeChallenge(): String {
-        val randomBytes: ByteArray = Random.nextBytes(Constants.CODE_CHALLENGE_BYTE_COUNT)
-        return randomBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+        val randomGenerator = Random(System.currentTimeMillis())
+        val randomBytes: ByteArray = randomGenerator.nextBytes(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        return randomBytes.toHexString()
     }
 
-    fun encryptCodeChallenge(codeChallenge: String): String{
+    fun encryptCodeChallenge(codeChallenge: String): String {
+        StytchLog.e("codeChallenge: $codeChallenge")
+        val bytes = codeChallenge.hexStringToByteArray()
+        StytchLog.e("codeChallenge toHex: ${bytes.toHexString()}")
+
         return convertToBase64UrlEncoded(getSha256(codeChallenge))
     }
 
-    fun getSha256(value: String): String {
-        val bytes = value.toByteArray()
+    fun getSha256(hexString: String): String {
+//        convert hexString to bytes
+        val bytes = hexString.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
         val sha256 = digest.fold("") { str, byte -> str + "%02x".format(byte) }
@@ -117,11 +126,18 @@ internal object EncryptionManager {
     }
 
     fun convertToBase64UrlEncoded(value: String): String {
-        val base64String = Base64.encodeToString(value.toByteArray(), Base64.NO_WRAP)
+        val base64String = Base64.encodeToString(value.hexStringToByteArray(), Base64.NO_WRAP)
         return base64String
             .replace("+", "-")
             .replace("/", "_")
             .replace("=", "")
     }
 
+    fun String.hexStringToByteArray(): ByteArray {
+        return chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+    }
+
+    fun ByteArray.toHexString(): String {
+        return joinToString(separator = "") { byte -> "%02x".format(byte) }
+    }
 }
