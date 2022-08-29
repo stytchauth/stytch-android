@@ -31,7 +31,7 @@ internal object StytchRequests {
         )
 
         @JsonClass(generateAdapter = true)
-        data class Whatsapp(
+        data class WhatsApp(
             val phone_number: String,
             val expiration_minutes: Int,
         )

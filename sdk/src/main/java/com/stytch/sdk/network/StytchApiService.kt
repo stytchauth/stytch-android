@@ -21,8 +21,8 @@ internal interface StytchApiService {
     ): StytchResponses.BasicResponse
 
     @POST("otps/whatsapp/login_or_create")
-    suspend fun loginOrCreateUserByOTPWithWhatsapp(
-        @Body request: StytchRequests.OTP.Whatsapp,
+    suspend fun loginOrCreateUserByOTPWithWhatsApp(
+        @Body request: StytchRequests.OTP.WhatsApp,
     ): StytchResponses.BasicResponse
 
     @POST("otps/email/login_or_create")

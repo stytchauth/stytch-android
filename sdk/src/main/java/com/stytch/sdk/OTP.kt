@@ -8,7 +8,7 @@ public interface OTP {
     )
 
     public val sms: SmsOTP
-    public val whatsapp: WhatsappOTP
+    public val whatsapp: WhatsAppOTP
     public val email: EmailOTP
 
     public suspend fun authenticate(
@@ -46,7 +46,7 @@ public interface OTP {
 
     }
 
-    public interface WhatsappOTP {
+    public interface WhatsAppOTP {
 
         public data class Parameters(
             val phoneNumber: String,
@@ -54,15 +54,15 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s Whatsapp OTP login_or_create endpoint. Requests a Whatsapp OTP for a user to log in or create an account depending on the presence and/or status current account.
-         * @param parameters required to receive a Whatsapp OTP
+         * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * @param parameters required to receive a WhatsApp OTP
          * @return BaseResponse response from backend
          */
         public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s Whatsapp OTP login_or_create endpoint. Requests a Whatsapp OTP for a user to log in or create an account depending on the presence and/or status current account.
-         * @param parameters required to receive a Whatsapp OTP
+         * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * @param parameters required to receive a WhatsApp OTP
          * @param callback calls callback with BaseResponse response from backend
          */
         public fun loginOrCreate(

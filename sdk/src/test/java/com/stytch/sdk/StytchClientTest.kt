@@ -32,7 +32,7 @@ internal class StytchClientTest {
         email = "email@email.com"
     )
 
-    val otpWhatsappParams = OTP.WhatsappOTP.Parameters(
+    val otpWhatsAppParams = OTP.WhatsAppOTP.Parameters(
         phoneNumber = "+1200000000",
         expirationMinutes = 60u
     )
@@ -82,13 +82,13 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling WhatsappOTP_loginOrCreate`() {
+    fun `throw IllegalStateException exception if Sdk was not configured while calling WhatsAppOTP_loginOrCreate`() {
         runBlocking {
             try {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.otps.whatsapp.loginOrCreate(otpWhatsappParams)
+                StytchClient.otps.whatsapp.loginOrCreate(otpWhatsAppParams)
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -310,30 +310,30 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `should return result success WhatsappOTP_loginOrCreate called with callback`() {
+    fun `should return result success WhatsAppOTP_loginOrCreate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsapp("+12000000", 60u)
+            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
 
         stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsappOTP.Parameters("+12000000", 60u)) {
+        StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u)) {
             assert(it is StytchResult.Success)
         }
     }
 
     @Test
-    fun `should return result success WhatsappOTP_loginOrCreate called without callback`() {
+    fun `should return result success WhatsAppOTP_loginOrCreate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
         mockkObject(StytchApi.OTP)
         coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsapp("+12000000", 60u)
+            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
         stytchClientObject.configure(mContextMock, "", "")
 
         val result = runBlocking {
-            StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsappOTP.Parameters("+12000000", 60u))
+            StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u))
         }
         assert(result is StytchResult.Success)
     }

@@ -113,12 +113,12 @@ internal object StytchApi {
             )
         }
 
-        suspend fun loginOrCreateUserByOTPWithWhatsapp(
+        suspend fun loginOrCreateUserByOTPWithWhatsApp(
             phoneNumber: String,
             expirationMinutes: UInt,
         ): StytchResult<BasicData> = safeApiCall {
-            apiService.loginOrCreateUserByOTPWithWhatsapp(
-                StytchRequests.OTP.Whatsapp(
+            apiService.loginOrCreateUserByOTPWithWhatsApp(
+                StytchRequests.OTP.WhatsApp(
                     phone_number = phoneNumber,
                     expiration_minutes = expirationMinutes.toInt()
                 )

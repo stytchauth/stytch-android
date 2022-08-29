@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 internal class OTPImpl internal constructor() : OTP {
 
     override val sms: OTP.SmsOTP = SmsOTPImpl()
-    override val whatsapp: OTP.WhatsappOTP = WhatsappOTPImpl()
+    override val whatsapp: OTP.WhatsAppOTP = WhatsAppOTPImpl()
     override val email: OTP.EmailOTP = EmailOTPImpl()
 
     override suspend fun authenticate(parameters: OTP.AuthParameters): BaseResponse {
@@ -51,11 +51,11 @@ internal class OTPImpl internal constructor() : OTP {
 
     }
 
-    private inner class WhatsappOTPImpl : OTP.WhatsappOTP {
-        override suspend fun loginOrCreate(parameters: OTP.WhatsappOTP.Parameters): BaseResponse {
+    private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
+        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsapp(
+                result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes
                 )
@@ -64,7 +64,7 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.WhatsappOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
