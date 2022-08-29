@@ -74,7 +74,7 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String
+                codeChallengeMethod: String,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
@@ -98,6 +98,55 @@ internal object StytchApi {
                     )
                 }
         }
+    }
+
+    internal object OTP {
+        suspend fun loginOrCreateByOTPWithSMS(
+            phoneNumber: String,
+            expirationMinutes: UInt,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.loginOrCreateUserByOTPWithSMS(
+                StytchRequests.OTP.SMS(
+                    phone_number = phoneNumber,
+                    expiration_minutes = expirationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun loginOrCreateUserByOTPWithWhatsApp(
+            phoneNumber: String,
+            expirationMinutes: UInt,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.loginOrCreateUserByOTPWithWhatsApp(
+                StytchRequests.OTP.WhatsApp(
+                    phone_number = phoneNumber,
+                    expiration_minutes = expirationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun loginOrCreateUserByOTPWithEmail(
+            email: String,
+            expirationMinutes: UInt,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.loginOrCreateUserByOTPWithEmail(
+                StytchRequests.OTP.Email(
+                    email = email,
+                    expiration_minutes = expirationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
+                StytchResult<BasicData> =
+            safeApiCall {
+                apiService.authenticateWithOTP(
+                    StytchRequests.OTP.Authenticate(
+                        token,
+                        sessionDurationMinutes.toInt()
+                    )
+                )
+            }
     }
 
     private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> =
