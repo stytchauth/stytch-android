@@ -50,5 +50,5 @@ internal interface StytchApiService {
     @POST("passwords")
     suspend fun passwords(
         @Body request: StytchRequests.OTP.SMS,
-    ): StytchResponses.BasicResponse
+    ): StytchResponses.Passwords.CreateResponse
 }

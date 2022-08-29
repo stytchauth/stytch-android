@@ -161,3 +161,71 @@ public data class UserData(
         val verified: Boolean,
     )
 }
+
+@JsonClass(generateAdapter = true)
+public data class NameData(
+    val first_name: String,
+    val last_name: String,
+    val middle_name: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class Attributes(
+    val ip_address: String,
+    val user_agent: String
+)
+
+@JsonClass(generateAdapter = true)
+public data class AuthenticationFactor(
+    val delivery_method: String,
+    val last_authenticated_at: String,
+    val type: String
+)
+
+@JsonClass(generateAdapter = true)
+public data class Email(
+    val email: String,
+    val email_id: String,
+    val verified: Boolean
+)
+
+@JsonClass(generateAdapter = true)
+public data class Name(
+    val first_name: String,
+    val last_name: String,
+    val middle_name: String
+)
+
+@JsonClass(generateAdapter = true)
+public data class Password(
+    val password_id: String,
+    val requires_reset: Boolean
+)
+
+@JsonClass(generateAdapter = true)
+public data class Session(
+    val attributes: Attributes,
+    val authentication_factors: List<AuthenticationFactor>,
+    val custom_claims: Any,
+    val expires_at: String,
+    val last_accessed_at: String,
+    val session_id: String,
+    val started_at: String,
+    val user_id: String
+)
+
+@JsonClass(generateAdapter = true)
+public data class User(
+    val biometric_registrations: List<Any>,
+    val created_at: String,
+    val crypto_wallets: List<Any>,
+    val emails: List<Email>,
+    val name: Name,
+    val password: Password,
+    val phone_numbers: List<Any>,
+    val providers: List<Any>,
+    val status: String,
+    val totps: List<Any>,
+    val user_id: String,
+    val webauthn_registrations: List<Any>
+)
