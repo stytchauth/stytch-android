@@ -4,8 +4,8 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.Feedback
-import com.stytch.sdk.network.responseData.Session
-import com.stytch.sdk.network.responseData.User
+import com.stytch.sdk.network.responseData.SessionData
+import com.stytch.sdk.network.responseData.UserData
 
 internal object StytchResponses {
 
@@ -26,22 +26,12 @@ internal object StytchResponses {
         class CreateResponse(
             val email_id: String,
             val request_id: String,
-            val session: Session,
+            val session: SessionData,
             val session_jwt: String,
             val session_token: String,
             val status_code: Int,
-            val user: User,
+            val user: UserData,
             val user_id: String,
-        )
-
-        @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(
-            val request_id: String,
-            val session: Session,
-            val session_jwt: String,
-            val session_token: String,
-            val status_code: Int,
-            val user: User,
         )
 
         @JsonClass(generateAdapter = true)

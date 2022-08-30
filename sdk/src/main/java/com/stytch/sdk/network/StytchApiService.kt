@@ -48,6 +48,7 @@ internal interface StytchApiService {
     ): StytchResponses.AuthenticateResponse
     //endregionOTP
 
+    //region passwords
     @POST("passwords")
     suspend fun passwords(
         @Body request: StytchRequests.OTP.SMS,
@@ -56,7 +57,7 @@ internal interface StytchApiService {
     @POST("passwords/authenticate")
     suspend fun authenticateWithPasswords(
         @Body request: StytchRequests.Passwords.AuthenticateRequest,
-    ): StytchResponses.Passwords.AuthenticateResponse
+    ): StytchResponses.AuthenticateResponse
 
     @POST("passwords/email/reset/start")
     suspend fun resetByEmailStart(
@@ -66,10 +67,11 @@ internal interface StytchApiService {
     @POST("passwords/email/reset")
     suspend fun resetByEmail(
         @Body request: StytchRequests.Passwords.RestByEmailRequest,
-    ): StytchResponses.Passwords.AuthenticateResponse
+    ): StytchResponses.AuthenticateResponse
 
     @POST("passwords/strength_check")
     suspend fun strengthCheck(
         @Body request: StytchRequests.Passwords.StrengthCheckRequest,
     ): StytchResponses.Passwords.StrengthCheckResponse
+    //endregion passwords
 }
