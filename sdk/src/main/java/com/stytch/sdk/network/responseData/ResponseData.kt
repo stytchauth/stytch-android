@@ -229,3 +229,9 @@ public data class User(
     val user_id: String,
     val webauthn_registrations: List<Any>
 )
+
+@JsonClass(generateAdapter = true)
+public data class Feedback(
+    val suggestions: List<Any>,
+    val warning: String
+)
