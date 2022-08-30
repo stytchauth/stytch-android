@@ -19,12 +19,13 @@ internal interface StytchApiService {
 
     //region Sessions
     @POST("sessions/authenticate")
-    suspend fun authenticateSessions(@Body request: StytchRequests.Sessions.AuthenticateRequest): StytchResponses.Sessions.AuthenticateResponse
+    suspend fun authenticateSessions(@Body request: StytchRequests.Sessions.AuthenticateRequest): StytchResponses.AuthenticateResponse
 
     @POST("sessions/revoke")
     suspend fun revokeSessions(@Body request: StytchRequests.Sessions.RevokeRequest): StytchResponses.Sessions.RevokeResponse
     //endregion Sessions
 
+    //region OTP
     @POST("otps/sms/login_or_create")
     suspend fun loginOrCreateUserByOTPWithSMS(
         @Body request: StytchRequests.OTP.SMS,
@@ -43,5 +44,6 @@ internal interface StytchApiService {
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
     suspend fun authenticateWithOTP(
         @Body request: StytchRequests.OTP.Authenticate,
-    ): StytchResponses.BasicResponse
+    ): StytchResponses.AuthenticateResponse
+    //endregionOTP
 }

@@ -78,6 +78,7 @@ internal object EncryptionManager {
                 val end = Calendar.getInstance()
                 end.add(Calendar.YEAR, 1)
                 val spec = KeyPairGeneratorSpec.Builder(context)
+                    .setKeySize(2048)
                     .setAlias(alias)
                     .setSubject(X500Principal("CN=stytch CN, O=Android Authority"))
                     .setSerialNumber(BigInteger.ONE)
@@ -109,10 +110,6 @@ internal object EncryptionManager {
     }
 
     fun encryptCodeChallenge(codeChallenge: String): String {
-        StytchLog.e("codeChallenge: $codeChallenge")
-        val bytes = codeChallenge.hexStringToByteArray()
-        StytchLog.e("codeChallenge toHex: ${bytes.toHexString()}")
-
         return convertToBase64UrlEncoded(getSha256(codeChallenge))
     }
 

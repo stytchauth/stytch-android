@@ -23,7 +23,6 @@ internal object StytchApi {
     private lateinit var publicToken: String
     private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
-    private var stytchSessionToken: String? = null
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
@@ -33,8 +32,7 @@ internal object StytchApi {
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,
-            publicToken,
-            stytchSessionToken
+            publicToken
         )
     }
 
@@ -139,7 +137,7 @@ internal object StytchApi {
         }
 
         suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
-                StytchResult<BasicData> =
+                StytchResult<AuthData> =
             safeApiCall {
                 apiService.authenticateWithOTP(
                     StytchRequests.OTP.Authenticate(
@@ -153,10 +151,10 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: Int? = null,
             sessionToken: String?,
             sessionJwt: String?,
-        ): StytchResult<BasicData> = safeApiCall {
+        ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
                     sessionDurationMinutes,

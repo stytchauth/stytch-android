@@ -15,9 +15,6 @@ internal object StytchResponses {
 
     object Sessions {
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
-
-        @JsonClass(generateAdapter = true)
         class RevokeResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
     }
 

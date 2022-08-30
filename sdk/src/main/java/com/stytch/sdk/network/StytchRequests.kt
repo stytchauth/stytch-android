@@ -26,7 +26,7 @@ internal object StytchRequests {
     object Sessions {
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
-            val session_duration_minutes: Int,
+            val session_duration_minutes: Int?,
             val session_token: String?,
             val session_jwt: String?,
         )

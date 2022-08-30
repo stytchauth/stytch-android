@@ -3,7 +3,7 @@ package com.stytch.sdk
 import android.content.Context
 import java.security.KeyStore
 
-private const val KEY_ALIAS = "Stytch KeyStore Alias"
+private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 internal const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
 

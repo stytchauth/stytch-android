@@ -1,5 +1,12 @@
-package com.stytch.sdk
+package com.stytch.sessions
 
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
+import com.stytch.sdk.LoginOrCreateUserByEmailResponse
+import com.stytch.sdk.Sessions
+import com.stytch.sdk.StytchClient
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -7,24 +14,27 @@ import kotlinx.coroutines.withContext
 
 internal class SessionsImpl internal constructor() : Sessions {
 
-    override suspend fun authenticate(authParams: Sessions.AuthParams): BaseResponse {
+    override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         return catchExceptions {
 //            update session storage
-            StytchClient.sessionStorage.updateSession(authParams.sessionToken, authParams.sessionJwt)
+            StytchClient.sessionStorage.updateSession(authParams.sessionToken, authParams.sessionJwt, null)
 //            call backend
-            val result: LoginOrCreateUserByEmailResponse
+            val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.Sessions.authenticate(
-                    authParams.sessionDurationMinutes.toInt(),
+                    authParams.sessionDurationMinutes?.toInt(),
                     authParams.sessionToken,
                     authParams.sessionJwt
                 )
             }
+
+            result.launchSessionUpdater()
+
             result
         }
     }
 
-    override fun authenticate(authParams: Sessions.AuthParams, callback: (BaseResponse) -> Unit) {
+    override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
 //          call endpoint in IO thread
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(authParams)
@@ -42,6 +52,7 @@ internal class SessionsImpl internal constructor() : Sessions {
                     StytchClient.sessionStorage.sessionJwt
                 )
             }
+//            remove stored session
             StytchClient.sessionStorage.revoke()
             result
         }
@@ -73,5 +84,4 @@ internal class SessionsImpl internal constructor() : Sessions {
             StytchResult.Error(1, null)
         }
     }
-
 }

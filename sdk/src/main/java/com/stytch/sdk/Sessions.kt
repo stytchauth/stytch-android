@@ -4,11 +4,11 @@ public interface Sessions {
     public data class AuthParams(
         val sessionToken: String?,
         val sessionJwt:String?,
-        val sessionDurationMinutes: UInt
+        val sessionDurationMinutes: UInt? = null
     )
 
-    public suspend fun authenticate(authParams: AuthParams): BaseResponse
-    public fun authenticate(authParams: AuthParams, callback: (BaseResponse)->Unit)
+    public suspend fun authenticate(authParams: AuthParams): AuthResponse
+    public fun authenticate(authParams: AuthParams, callback: (AuthResponse)->Unit)
 
     public suspend fun revoke(): BaseResponse
     public fun revoke(callback: (BaseResponse)->Unit)

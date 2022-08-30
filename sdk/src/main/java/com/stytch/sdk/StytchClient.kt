@@ -7,6 +7,8 @@ import android.util.Log
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sessions.SessionStorage
+import com.stytch.sessions.SessionsImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -75,12 +77,6 @@ public object StytchClient {
     public fun setDispatchers(uiDispatcher: CoroutineDispatcher, ioDispatcher: CoroutineDispatcher) {
         this.uiDispatcher = uiDispatcher
         this.ioDispatcher = ioDispatcher
-    }
-
-    //    TODO:("OTP")
-    public object OneTimePasscodes {
-//    fun loginOrCreate(parameters:completion:)
-//    fun authenticate(parameters:completion:)
     }
 
 //    TODO("OAuth")

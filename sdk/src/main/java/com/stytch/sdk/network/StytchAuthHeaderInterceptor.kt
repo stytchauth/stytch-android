@@ -4,6 +4,7 @@ import android.util.Base64
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.InfoHeaderModel
+import com.stytch.sdk.StytchClient
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -11,15 +12,13 @@ import okhttp3.Response
  * Adds auth headers to all requests
  * @param deviceInfo - deviceInfo of the device that use sdk
  * @param publicToken - public token for Authorization header
- * @param stytchSessionToken - session token for Authorization header
  */
 internal class StytchAuthHeaderInterceptor(
     var deviceInfo: DeviceInfo,
     var publicToken: String,
-    var stytchSessionToken: String?,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val authHeader = Base64.encodeToString("$publicToken:${stytchSessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
+        val authHeader = Base64.encodeToString("$publicToken:${ StytchClient.sessionStorage.sessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
         val infoHeader = Base64.encodeToString(InfoHeaderModel(
             sdk = InfoHeaderModel.Item(Constants.AUTH_HEADER_SDK_NAME, Constants.AUTH_HEADER_SDK_VERSION),
             app = InfoHeaderModel.Item(deviceInfo.applicationPackageName ?: "", deviceInfo.applicationVersion ?: ""),

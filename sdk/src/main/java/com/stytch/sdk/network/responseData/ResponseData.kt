@@ -19,16 +19,14 @@ public data class StytchErrorResponse(
 
 @JsonClass(generateAdapter = true)
 public data class AuthData(
-    val method_id: String,
+    val method_id: String?,
     val request_id: String,
     val status_code: Int,
-    val reset_sessions: Boolean,
+    val reset_sessions: Boolean?,
     val session: SessionData,
     val session_jwt: String,
     val session_token: String,
     val user: UserData,
-    val user_id: String,
-    val __user: UserData,
 )
 
 @JsonClass(generateAdapter = true)
