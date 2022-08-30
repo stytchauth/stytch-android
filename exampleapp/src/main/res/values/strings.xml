@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Example App</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
+    <string name="deep_link_title">Deep links</string>
+    <string name="host">exampleapp.com</string>
+    <string name="deeplink_received_toast">Deeplink received</string>
+    <string name="email">Email</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="please_enter_email">Please enter a valid email you wish to use</string>
+    <string name="please_enter_phone_number">Please enter a valid phone number you wish to use</string>
+</resources>

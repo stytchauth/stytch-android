@@ -55,6 +55,13 @@ public object StytchClient {
             return field
         }
 
+    public var otps: OTP = OTPImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
     public var sessions: Sessions = SessionsImpl()
         private set
         get() {

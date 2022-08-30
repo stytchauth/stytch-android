@@ -12,8 +12,7 @@ internal object StytchRequests {
                 val login_magic_link_url: String?,
                 val code_challenge: String,
                 val code_challenge_method: String,
-
-                )
+            )
         }
 
         @JsonClass(generateAdapter = true)
@@ -36,6 +35,32 @@ internal object StytchRequests {
         data class RevokeRequest(
             val session_token: String?,
             val session_jwt: String?,
+        )
+    }
+
+    object OTP {
+        @JsonClass(generateAdapter = true)
+        data class SMS(
+            val phone_number: String,
+            val expiration_minutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class WhatsApp(
+            val phone_number: String,
+            val expiration_minutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class Email(
+            val email: String,
+            val expiration_minutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class Authenticate(
+            val token: String,
+            val session_duration_minutes: Int,
         )
     }
 }
