@@ -7,6 +7,7 @@ import android.util.Log
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.SessionsImpl
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,6 +19,7 @@ import kotlinx.coroutines.withContext
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
 public typealias BaseResponse = StytchResult<BasicData>
 public typealias AuthResponse = StytchResult<AuthData>
+public typealias UserResponse = StytchResult<UserData>
 
 /**
  * The entrypoint for all Stytch-related interaction.
@@ -71,6 +73,13 @@ public object StytchClient {
             return field
         }
 
+    public var user: UserManagement = UserManagementImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
     /**
      * Set dispatchers for UI and IO tasks
      */
@@ -80,7 +89,6 @@ public object StytchClient {
     }
 
 //    TODO("OAuth")
-//    TODO("User Management")
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()

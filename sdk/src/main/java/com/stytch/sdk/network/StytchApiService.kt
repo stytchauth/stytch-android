@@ -1,7 +1,10 @@
 package com.stytch.sdk.network
 
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 internal interface StytchApiService {
 
@@ -46,4 +49,19 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.Authenticate,
     ): StytchResponses.AuthenticateResponse
     //endregionOTP
+
+    //region User Management
+    @GET("users/me")
+    suspend fun getUser(): StytchResponses.User.UserResponse
+
+    @DELETE("users/emails/{id}")
+    suspend fun deleteEmailById(@Path(value ="id") id: String): StytchResponses.BasicResponse
+
+    @DELETE("users/phone_numbers/{id}")
+    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    @DELETE("users/biometric_registrations/{id}")
+    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    //endregion User Management
 }

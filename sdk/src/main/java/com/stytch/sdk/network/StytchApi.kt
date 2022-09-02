@@ -9,6 +9,7 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.StytchErrorResponse
+import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sdk.stytchError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -177,6 +178,34 @@ internal object StytchApi {
                     )
                 )
             }
+    }
+
+    internal object UserManagement {
+
+        suspend fun getUser(): StytchResult<UserData> = safeApiCall {
+            apiService.getUser()
+        }
+
+        public suspend fun deleteEmailById(id: String): StytchResult<BasicData> {
+            return  safeApiCall {
+                apiService.deleteEmailById(id)
+            }
+        }
+
+        public suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData>{
+            return  safeApiCall {
+                apiService.deletePhoneNumberById(id)
+            }
+        }
+
+        public suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData>{
+            return  safeApiCall {
+                apiService.deleteBiometricRegistrationById(id)
+            }
+        }
+
+
+
     }
 
     private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> =
