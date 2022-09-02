@@ -22,7 +22,7 @@ internal interface StytchApiService {
     suspend fun authenticateSessions(@Body request: StytchRequests.Sessions.AuthenticateRequest): StytchResponses.AuthenticateResponse
 
     @POST("sessions/revoke")
-    suspend fun revokeSessions(@Body request: StytchRequests.Sessions.RevokeRequest): StytchResponses.Sessions.RevokeResponse
+    suspend fun revokeSessions(): StytchResponses.Sessions.RevokeResponse
     //endregion Sessions
 
     //region OTP

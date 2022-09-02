@@ -2,8 +2,6 @@ package com.stytch.sdk
 
 public interface Sessions {
     public data class AuthParams(
-        val sessionToken: String?,
-        val sessionJwt:String?,
         val sessionDurationMinutes: UInt? = null
     )
 

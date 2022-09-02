@@ -151,31 +151,19 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int? = null,
-            sessionToken: String?,
-            sessionJwt: String?,
+            sessionDurationMinutes: Int? = null
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
-                    sessionDurationMinutes,
-                    sessionToken,
-                    if (sessionToken == null) sessionJwt else null
+                    sessionDurationMinutes
                 )
             )
         }
 
-        suspend fun revoke(
-            sessionToken: String?,
-            sessionJwt: String?,
-        ):
+        suspend fun revoke():
                 StytchResult<BasicData> =
             safeApiCall {
-                apiService.revokeSessions(
-                    StytchRequests.Sessions.RevokeRequest(
-                        sessionToken,
-                        if (sessionToken == null) sessionJwt else null
-                    )
-                )
+                apiService.revokeSessions()
             }
     }
 

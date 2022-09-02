@@ -11,10 +11,11 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
+        StytchClient.sessionStorage.revoke()
         return catchExceptions {
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
-                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_CHALLENGE) ?: ""
+                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
                 result = StytchApi.MagicLinks.Email.authenticate(
                     parameters.token,
                     parameters.sessionDurationMinutes,
@@ -58,7 +59,7 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 val result: LoginOrCreateUserByEmailResponse
 
                 withContext(StytchClient.ioDispatcher) {
-                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.getHashedCodeChallenge(true)
+                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
                     result = StytchApi.MagicLinks.Email.loginOrCreate(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,

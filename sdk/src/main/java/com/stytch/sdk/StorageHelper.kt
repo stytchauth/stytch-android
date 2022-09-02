@@ -5,7 +5,7 @@ import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
-internal const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
+internal const val PREFERENCES_CODE_VERIFIER = "code_challenge"
 
 internal class StorageHelper(context: Context) {
 
@@ -41,28 +41,18 @@ internal class StorageHelper(context: Context) {
      */
     internal fun loadValue(name: String): String? {
         val encryptedString = sharedPreferences.getString(name, null)
-        val res = EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
-        return res
+        return EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
     }
 
     /**
      * @return Pair(codeChallengeMethod, codeChallenge)
-     * @throws StytchExceptions.NoCodeChallengeFound
      */
-    internal fun getHashedCodeChallenge(generateNew: Boolean = false): Pair<String, String> {
-        val codeChallenge: String?
+    internal fun generateHashedCodeChallenge(): Pair<String, String> {
+        val codeVerifier: String?
 
-        if (generateNew) {
-            codeChallenge = EncryptionManager.generateCodeChallenge()
-            saveValue(PREFERENCES_CODE_CHALLENGE, codeChallenge)
-        } else {
-            codeChallenge = loadValue(PREFERENCES_CODE_CHALLENGE)
-        }
+        codeVerifier = EncryptionManager.generateCodeChallenge()
+        saveValue(PREFERENCES_CODE_VERIFIER, codeVerifier)
 
-        if (codeChallenge == null) {
-            throw StytchExceptions.NoCodeChallengeFound
-        }
-
-        return "S256" to EncryptionManager.encryptCodeChallenge(codeChallenge)
+        return "S256" to EncryptionManager.encryptCodeChallenge(codeVerifier)
     }
 }

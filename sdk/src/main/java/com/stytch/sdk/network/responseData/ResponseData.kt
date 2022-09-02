@@ -19,10 +19,6 @@ public data class StytchErrorResponse(
 
 @JsonClass(generateAdapter = true)
 public data class AuthData(
-    val method_id: String?,
-    val request_id: String,
-    val status_code: Int,
-    val reset_sessions: Boolean?,
     val session: SessionData,
     val session_jwt: String,
     val session_token: String,
@@ -74,7 +70,7 @@ public data class EmailData(
 
 @JsonClass(generateAdapter = true)
 public data class NameData(
-    val first_name: String,
-    val last_name: String,
-    val middle_name: String,
+    val first_name: String?,
+    val last_name: String?,
+    val middle_name: String?,
 )

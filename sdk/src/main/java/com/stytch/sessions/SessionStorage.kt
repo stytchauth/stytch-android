@@ -31,15 +31,19 @@ internal class SessionStorage {
         }
 
     fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
-        this.sessionToken = sessionToken
-        this.sessionJwt = sessionJwt
-        this.session = session
+        synchronized(this){
+            this.sessionToken = sessionToken
+            this.sessionJwt = sessionJwt
+            this.session = session
+        }
     }
 
     fun revoke() {
-        sessionToken = null
-        sessionJwt = null
-        session = null
+        synchronized(this){
+            sessionToken = null
+            sessionJwt = null
+            session = null
+        }
     }
 
 }
