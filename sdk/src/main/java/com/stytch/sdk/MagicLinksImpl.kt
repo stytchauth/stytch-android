@@ -2,6 +2,7 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
+import com.stytch.sessions.saveSession
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,18 +12,25 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
-        StytchClient.sessionStorage.revoke()
         return catchExceptions {
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // remove existing session, clearing headers
+                StytchClient.sessionStorage.revoke()
+
                 val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
+                //call backend endpoint
                 result = StytchApi.MagicLinks.Email.authenticate(
                     parameters.token,
                     parameters.sessionDurationMinutes,
                     codeVerifier
-                )
+                ).apply {
+                    saveSession()
+                    launchSessionUpdater()
+                }
             }
-            result.launchSessionUpdater()
+
             result
         }
     }

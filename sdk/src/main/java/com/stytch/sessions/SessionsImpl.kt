@@ -16,16 +16,20 @@ internal class SessionsImpl internal constructor() : Sessions {
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         return catchExceptions {
-//             call backend
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // remove existing session, clearing request headers
+                StytchClient.sessionStorage.revoke()
+
+                // call backend endpoint
                 result = StytchApi.Sessions.authenticate(
                     authParams.sessionDurationMinutes?.toInt()
-                ).saveSession()
+                ).apply {
+                    saveSession()
+                    launchSessionUpdater()
+                }
             }
-
-            result.launchSessionUpdater()
-
             result
         }
     }
