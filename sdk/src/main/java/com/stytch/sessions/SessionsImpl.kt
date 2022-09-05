@@ -19,8 +19,7 @@ internal class SessionsImpl internal constructor() : Sessions {
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
 
-                // remove existing session, clearing request headers
-                StytchClient.sessionStorage.revoke()
+                // do not revoke session here since we using stored data to authenticate
 
                 // call backend endpoint
                 result = StytchApi.Sessions.authenticate(

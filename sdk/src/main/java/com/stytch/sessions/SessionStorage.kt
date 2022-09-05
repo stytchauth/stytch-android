@@ -14,7 +14,11 @@ internal class SessionStorage {
             StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
-            return StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+            val value: String?
+            synchronized(this) {
+                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+            }
+            return value
         }
 
     var sessionJwt: String?
@@ -22,7 +26,11 @@ internal class SessionStorage {
             StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
-            return StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+            val value: String?
+            synchronized(this) {
+                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+            }
+            return value ?: ""
         }
 
     var session: SessionData? = null
@@ -31,7 +39,7 @@ internal class SessionStorage {
         }
 
     fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
-        synchronized(this){
+        synchronized(this) {
             this.sessionToken = sessionToken
             this.sessionJwt = sessionJwt
             this.session = session
@@ -39,7 +47,7 @@ internal class SessionStorage {
     }
 
     fun revoke() {
-        synchronized(this){
+        synchronized(this) {
             sessionToken = null
             sessionJwt = null
             session = null
@@ -50,9 +58,9 @@ internal class SessionStorage {
 
 //    save session data
 internal fun StytchResult<AuthData>.saveSession(): StytchResult<AuthData> {
-    if (this is StytchResult.Success){
+    if (this is StytchResult.Success) {
         value.apply {
-            StytchClient.sessionStorage.updateSession(session_token, session_jwt, session)
+            StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
         }
     }
     return this
