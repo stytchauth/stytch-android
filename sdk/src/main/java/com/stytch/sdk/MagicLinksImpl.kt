@@ -67,6 +67,10 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 val result: LoginOrCreateUserByEmailResponse
 
                 withContext(StytchClient.ioDispatcher) {
+
+                    // remove existing session, clearing headers
+                    StytchClient.sessionStorage.revoke()
+
                     val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
                     result = StytchApi.MagicLinks.Email.loginOrCreate(
                         email = parameters.email,

@@ -43,6 +43,10 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // remove existing session, clearing headers
+                StytchClient.sessionStorage.revoke()
+
                 result = StytchApi.OTP.loginOrCreateByOTPWithSMS(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes
@@ -65,6 +69,10 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // remove existing session, clearing headers
+                StytchClient.sessionStorage.revoke()
+
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes
@@ -87,6 +95,10 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // remove existing session, clearing headers
+                StytchClient.sessionStorage.revoke()
+
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithEmail(
                     email = parameters.email,
                     expirationMinutes = parameters.expirationMinutes
