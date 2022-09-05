@@ -1,6 +1,5 @@
 package com.stytch.sdk.network
 
-import com.stytch.sdk.BaseResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -51,8 +50,8 @@ internal interface StytchApiService {
     //region passwords
     @POST("passwords")
     suspend fun passwords(
-        @Body request: StytchRequests.OTP.SMS,
-    ): StytchResponses.Passwords.CreateResponse
+        @Body request: StytchRequests.Passwords.CreateRequest,
+    ): StytchResponses.Passwords.PasswordsCreateResponse
 
     @POST("passwords/authenticate")
     suspend fun authenticateWithPasswords(
@@ -62,7 +61,7 @@ internal interface StytchApiService {
     @POST("passwords/email/reset/start")
     suspend fun resetByEmailStart(
         @Body request: StytchRequests.Passwords.ResetByEmailStartRequest,
-    ): BaseResponse
+    ): StytchResponses.BasicResponse
 
     @POST("passwords/email/reset")
     suspend fun resetByEmail(
@@ -72,6 +71,6 @@ internal interface StytchApiService {
     @POST("passwords/strength_check")
     suspend fun strengthCheck(
         @Body request: StytchRequests.Passwords.StrengthCheckRequest,
-    ): StytchResponses.Passwords.StrengthCheckResponse
+    ): StytchResponses.Passwords.PasswordsStrengthCheckResponse
     //endregion passwords
 }

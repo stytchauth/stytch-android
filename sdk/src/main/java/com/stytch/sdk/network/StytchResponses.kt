@@ -3,8 +3,10 @@ package com.stytch.sdk.network
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.Feedback
 import com.stytch.sdk.network.responseData.SessionData
+import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
 
 internal object StytchResponses {
@@ -22,27 +24,12 @@ internal object StytchResponses {
     }
 
     object Passwords {
-        @JsonClass(generateAdapter = true)
-        class CreateResponse(
-            val email_id: String,
-            val request_id: String,
-            val session: SessionData,
-            val session_jwt: String,
-            val session_token: String,
-            val status_code: Int,
-            val user: UserData,
-            val user_id: String,
-        )
 
         @JsonClass(generateAdapter = true)
-        public class StrengthCheckResponse(
-            val breached_password: Boolean,
-            val feedback: Feedback,
-            val request_id: String,
-            val score: Int,
-            val status_code: Int,
-            val valid_password: Boolean,
-        )
+        class PasswordsCreateResponse(data: CreateResponse) : StytchDataResponse<CreateResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse): StytchDataResponse<StrengthCheckResponse>(data)
     }
 
     @JsonClass(generateAdapter = true)

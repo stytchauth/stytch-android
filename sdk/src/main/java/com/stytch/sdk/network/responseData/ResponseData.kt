@@ -1,5 +1,6 @@
 package com.stytch.sdk.network.responseData
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -163,19 +164,60 @@ public data class UserData(
 
 @JsonClass(generateAdapter = true)
 public data class NameData(
-    val first_name: String,
-    val last_name: String,
-    val middle_name: String,
+    @Json(name = "first_name")
+    val firstName: String,
+    @Json(name = "last_name")
+    val lastName: String,
+    @Json(name = "middle_name")
+    val middleName: String,
 )
 
 @JsonClass(generateAdapter = true)
 public data class Password(
-    val password_id: String,
-    val requires_reset: Boolean
+    @Json(name = "password_id")
+    val passwordId: String,
+    @Json(name = "requires_reset")
+    val requiresReset: Boolean
 )
 
 @JsonClass(generateAdapter = true)
 public data class Feedback(
     val suggestions: List<Any>,
     val warning: String
+)
+
+@JsonClass(generateAdapter = true)
+public data class CreateResponse(
+    @Json(name = "method_id")
+    val methodId: String?,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "reset_sessions")
+    val resetSessions: Boolean?,
+    val session: SessionData,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
+    val user: UserData,
+    @Json(name = "email_id")
+    val emailId: String,
+    @Json(name = "user_id")
+    val userId: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class StrengthCheckResponse(
+    @Json(name = "breached_password")
+    val breachedPassword: Boolean,
+    val feedback: Feedback,
+    @Json(name = "request_id")
+    val requestId: String,
+    val score: Int,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "valid_password")
+    val validPassword: Boolean,
 )

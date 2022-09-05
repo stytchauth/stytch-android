@@ -8,6 +8,8 @@ import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.stytchError
 import kotlinx.coroutines.Dispatchers
@@ -146,6 +148,87 @@ internal object StytchApi {
                     )
                 )
             }
+    }
+
+    internal object Passwords {
+
+        suspend fun authenticate(
+            email: String,
+            password: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateWithPasswords(
+                StytchRequests.Passwords.AuthenticateRequest(
+                    email,
+                    password,
+                    sessionDurationMinutes
+                )
+            )
+        }
+
+        suspend fun create(
+            email: String,
+            password: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<CreateResponse> = safeApiCall {
+            apiService.passwords(
+                StytchRequests.Passwords.CreateRequest(
+                    email,
+                    password,
+                    sessionDurationMinutes
+                )
+            )
+        }
+
+        suspend fun resetByEmailStart(
+            email: String,
+            codeChallenge: String,
+            codeChallengeMethod: String,
+            loginRedirectUrl: String?,
+            loginExpirationMinutes: Int?,
+            resetPasswordRedirectUrl: String?,
+            resetPasswordExpirationMinutes: Int?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.resetByEmailStart(
+                StytchRequests.Passwords.ResetByEmailStartRequest(
+                    email,
+                    codeChallenge,
+                    codeChallengeMethod,
+                    loginRedirectUrl,
+                    loginExpirationMinutes,
+                    resetPasswordRedirectUrl,
+                    resetPasswordExpirationMinutes
+                )
+            )
+        }
+
+        suspend fun resetByEmail(
+            token: String,
+            password: String,
+            sessionDurationMinutes: Int,
+            codeVerifier: String,
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.resetByEmail(
+                StytchRequests.Passwords.RestByEmailRequest(
+                    token,
+                    password,
+                    sessionDurationMinutes,
+                    codeVerifier
+                )
+            )
+        }
+
+        suspend fun strengthCheck(
+             email: String?,
+             password: String,
+        ): StytchResult<StrengthCheckResponse> = safeApiCall {
+            apiService.strengthCheck(
+                StytchRequests.Passwords.StrengthCheckRequest(
+                    email,
+                    password
+                )
+            )
+        }
     }
 
     internal object Sessions {
