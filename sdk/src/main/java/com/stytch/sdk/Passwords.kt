@@ -16,19 +16,16 @@ public interface Passwords {
 
     public data class ResetByEmailStartParameters(
         val email: String,
-        val codeChallenge: String,
-        val codeChallengeMethod: String,
-        val loginRedirectUrl: String?,
-        val loginExpirationMinutes: Int?,
-        val resetPasswordRedirectUrl: String?,
-        val resetPasswordExpirationMinutes: Int?,
+        val loginRedirectUrl: String? = null,
+        val loginExpirationMinutes: Int? = null,
+        val resetPasswordRedirectUrl: String? = null,
+        val resetPasswordExpirationMinutes: Int? = null,
     )
 
     public data class ResetByEmailParameters(
         val token: String,
         val password: String,
         val sessionDurationMinutes: Int,
-        val codeVerifier: String,
     )
 
     public data class StrengthCheckParameters(
