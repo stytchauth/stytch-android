@@ -80,9 +80,9 @@ internal object StytchApi {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
-                        login_magic_link_url = loginMagicLinkUrl,
-                        code_challenge = codeChallenge,
-                        code_challenge_method = codeChallengeMethod
+                        loginMagicLinkUrl = loginMagicLinkUrl,
+                        codeChallenge = codeChallenge,
+                        codeChallengeMethod = codeChallengeMethod
                     )
                 )
             }
@@ -108,8 +108,8 @@ internal object StytchApi {
         ): StytchResult<BasicData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
                 StytchRequests.OTP.SMS(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes.toInt()
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
@@ -120,8 +120,8 @@ internal object StytchApi {
         ): StytchResult<BasicData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes.toInt()
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
@@ -133,7 +133,7 @@ internal object StytchApi {
             apiService.loginOrCreateUserByOTPWithEmail(
                 StytchRequests.OTP.Email(
                     email = email,
-                    expiration_minutes = expirationMinutes.toInt()
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
