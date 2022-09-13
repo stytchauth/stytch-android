@@ -13,5 +13,5 @@
     <string name="mobile_number">Mobile number</string>
     <string name="please_enter_email">Please enter a valid email you wish to use</string>
     <string name="please_enter_phone_number">Please enter a valid phone number you wish to use</string>
-    <string name="please_enter_otp_token">Please enter an OTP token wish to validate</string>
+    <string name="please_enter_otp_token">Please enter an OTP token you wish to validate</string>
 </resources>
