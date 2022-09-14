@@ -13,15 +13,11 @@ internal class PasswordsImpl internal constructor() : Passwords {
         val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
 
-            // remove existing session, clearing headers
-            StytchClient.sessionStorage.revoke()
-
             result = StytchApi.Passwords.authenticate(
                 email = parameters.email,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
             ).apply {
-                saveSession()
                 launchSessionUpdater()
             }
         }
@@ -39,9 +35,6 @@ internal class PasswordsImpl internal constructor() : Passwords {
         val result: PasswordsCreateResponse
 
         withContext(StytchClient.ioDispatcher) {
-
-            // remove existing session, clearing headers
-            StytchClient.sessionStorage.revoke()
 
             result = StytchApi.Passwords.create(
                 email = parameters.email,

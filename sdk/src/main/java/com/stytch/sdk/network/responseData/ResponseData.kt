@@ -39,7 +39,7 @@ public data class AuthData(
 public data class SessionData(
     val attributes: AttributesData,
     @Json(name = "custom_claims")
-    val customClaims: HashMap<String,String>?,
+    val customClaims: HashMap<String, String>?,
     @Json(name = "expires_at")
     val expiresAt: String,
     @Json(name = "last_accessed_at")
@@ -163,27 +163,17 @@ public data class UserData(
 }
 
 @JsonClass(generateAdapter = true)
-public data class NameData(
-    @Json(name = "first_name")
-    val firstName: String,
-    @Json(name = "last_name")
-    val lastName: String,
-    @Json(name = "middle_name")
-    val middleName: String,
-)
-
-@JsonClass(generateAdapter = true)
 public data class Password(
     @Json(name = "password_id")
     val passwordId: String,
     @Json(name = "requires_reset")
-    val requiresReset: Boolean
+    val requiresReset: Boolean,
 )
 
 @JsonClass(generateAdapter = true)
 public data class Feedback(
-    val suggestions: List<Any>,
-    val warning: String
+    val suggestions: List<String>,
+    val warning: String,
 )
 
 @JsonClass(generateAdapter = true)

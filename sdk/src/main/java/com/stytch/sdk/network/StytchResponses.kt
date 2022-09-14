@@ -4,10 +4,7 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
-import com.stytch.sdk.network.responseData.Feedback
-import com.stytch.sdk.network.responseData.SessionData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
-import com.stytch.sdk.network.responseData.UserData
 
 internal object StytchResponses {
 
