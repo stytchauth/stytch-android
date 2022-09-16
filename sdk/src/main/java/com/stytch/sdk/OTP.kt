@@ -4,7 +4,7 @@ public interface OTP {
 
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = 60u,
+        val sessionDurationMinutes: UInt = 5u,
     )
 
     public val sms: SmsOTP
@@ -24,7 +24,7 @@ public interface OTP {
 
         public data class Parameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt = 60u,
+            val expirationMinutes: UInt = 10u,
         )
 
         /**
@@ -50,7 +50,7 @@ public interface OTP {
 
         public data class Parameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt = 60u,
+            val expirationMinutes: UInt = 10u,
         )
 
         /**
@@ -76,7 +76,7 @@ public interface OTP {
 
         public data class Parameters(
             val email: String,
-            val expirationMinutes: UInt = 60u,
+            val expirationMinutes: UInt = 10u,
         )
 
         /**
