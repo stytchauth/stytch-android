@@ -39,7 +39,7 @@ public data class AuthData(
 public data class SessionData(
     val attributes: AttributesData,
     @Json(name = "custom_claims")
-    val customClaims: HashMap<String,String>?,
+    val customClaims: HashMap<String, String>?,
     @Json(name = "expires_at")
     val expiresAt: String,
     @Json(name = "last_accessed_at")
@@ -161,3 +161,53 @@ public data class UserData(
         val verified: Boolean,
     )
 }
+
+@JsonClass(generateAdapter = true)
+public data class Password(
+    @Json(name = "password_id")
+    val passwordId: String,
+    @Json(name = "requires_reset")
+    val requiresReset: Boolean,
+)
+
+@JsonClass(generateAdapter = true)
+public data class Feedback(
+    val suggestions: List<String>,
+    val warning: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class CreateResponse(
+    @Json(name = "method_id")
+    val methodId: String?,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "reset_sessions")
+    val resetSessions: Boolean?,
+    val session: SessionData,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
+    val user: UserData,
+    @Json(name = "email_id")
+    val emailId: String,
+    @Json(name = "user_id")
+    val userId: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class StrengthCheckResponse(
+    @Json(name = "breached_password")
+    val breachedPassword: Boolean,
+    val feedback: Feedback,
+    @Json(name = "request_id")
+    val requestId: String,
+    val score: Int,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "valid_password")
+    val validPassword: Boolean,
+)
