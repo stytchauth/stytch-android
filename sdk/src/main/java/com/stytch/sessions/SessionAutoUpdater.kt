@@ -19,7 +19,8 @@ private const val MINUTE = 60L * SECOND
 private const val DEFAULT_DELAY = 3 * MINUTE
 private const val MAXIMUM_DELAY = 5 * MINUTE
 
-private const val MAXIMUM_RANDOM_MILLIS = SECOND
+private const val MINIMUM_RANDOM_MILLIS = -17L
+private const val MAXIMUM_RANDOM_MILLIS = 17L
 private const val MAXIMUM_BACKOFF_DELAY = 32 * SECOND
 
 internal object SessionAutoUpdater {
@@ -56,7 +57,7 @@ internal object SessionAutoUpdater {
                     } else {
                         // set exponential delay
                         sessionUpdateDelay = minOf(
-                            (2.0.pow(n) + Random.nextLong(0, MAXIMUM_RANDOM_MILLIS)).toLong(),
+                            (2.0.pow(n) + Random.nextLong(MINIMUM_RANDOM_MILLIS, MAXIMUM_RANDOM_MILLIS)).toLong(),
                             MAXIMUM_BACKOFF_DELAY
                         )
                         n++
