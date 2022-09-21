@@ -2,7 +2,6 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import com.stytch.sessions.saveSession
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,7 +25,6 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                     parameters.sessionDurationMinutes,
                     codeVerifier
                 ).apply {
-                    saveSession()
                     launchSessionUpdater()
                 }
             }
@@ -67,10 +65,6 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 val result: LoginOrCreateUserByEmailResponse
 
                 withContext(StytchClient.ioDispatcher) {
-
-                    // remove existing session, clearing headers
-                    StytchClient.sessionStorage.revoke()
-
                     val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
                     result = StytchApi.MagicLinks.Email.loginOrCreate(
                         email = parameters.email,

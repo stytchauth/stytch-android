@@ -5,7 +5,7 @@ import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
-internal const val PREFERENCES_CODE_VERIFIER = "code_challenge"
+internal const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 
 internal class StorageHelper(context: Context) {
 

@@ -2,7 +2,6 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import com.stytch.sessions.saveSession
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

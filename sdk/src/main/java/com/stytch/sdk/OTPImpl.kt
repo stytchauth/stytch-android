@@ -2,7 +2,6 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import com.stytch.sessions.saveSession
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,16 +15,11 @@ internal class OTPImpl internal constructor() : OTP {
     override suspend fun authenticate(parameters: OTP.AuthParameters): AuthResponse {
         val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
-
-            // remove existing session, clearing headers
-            StytchClient.sessionStorage.revoke()
-
             // call backend endpoint
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
             ).apply {
-                saveSession()
                 launchSessionUpdater()
             }
         }
@@ -43,10 +37,6 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
-
-                // remove existing session, clearing headers
-                StytchClient.sessionStorage.revoke()
-
                 result = StytchApi.OTP.loginOrCreateByOTPWithSMS(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes
@@ -69,10 +59,6 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
-
-                // remove existing session, clearing headers
-                StytchClient.sessionStorage.revoke()
-
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes
@@ -95,10 +81,6 @@ internal class OTPImpl internal constructor() : OTP {
         override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(StytchClient.ioDispatcher) {
-
-                // remove existing session, clearing headers
-                StytchClient.sessionStorage.revoke()
-
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithEmail(
                     email = parameters.email,
                     expirationMinutes = parameters.expirationMinutes

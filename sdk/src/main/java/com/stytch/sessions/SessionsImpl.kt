@@ -25,7 +25,6 @@ internal class SessionsImpl internal constructor() : Sessions {
                 result = StytchApi.Sessions.authenticate(
                     authParams.sessionDurationMinutes?.toInt()
                 ).apply {
-                    saveSession()
                     launchSessionUpdater()
                 }
             }
