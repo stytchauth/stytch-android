@@ -1,228 +1,228 @@
-# Stytch Android SDK
+![Stytch Android SDK](assets/Wordmark-dark-mode.png#gh-dark-mode-only)
+![Stytch Android SDK](assets/Wordmark-light-mode.png#gh-light-mode-only)
 
-## Table of contents
-
-* [Overview](#overview)
-* [Requirements](#requirements)
-* [Dependency](#dependency)
 * [Getting Started](#getting-started)
-  * [Pre-built UI](#pre-built-ui)
-    * [Email Magic Link Authentication](#email-magic-link-authentication)
-    * [SMS Passcode Authentication](#sms-passcode-authentication)
-  * [Direct API](#direct-api)
-
-## Overview
-
-Stytch's Android SDK makes it simple to sign up new users and log in existing users to your service. Passwordless authentication provides improved security, a better user experience, and better user retention than traditional username and password authentication.
-
-With this SDK, you can use one of our elegant prebuilt UI flows (that offer extensive customization options), our use the Stytch API directly and build your own UI for maximum control.
-
-## Requirements
-
-This SDK supports Android API level 21 and above ([distribution stats](https://developer.android.com/about/dashboards/index.html))
-
-## Dependency
-
-Add the Stytch dependency to your app/build.gradle file:
-
-`implementation 'com.stytch.sdk:sdk:0.4.2'`
+    * [What is Stytch?](#what-is-stytch)
+    * [Why should I use the Stytch SDK?](#why-should-i-use-the-stytch-sdk)
+    * [What can I do with the Stytch SDK?](#what-can-i-do-with-the-stytch-sdk)
+        * [Async Options](#async-options)
+    * [How do I start using Stytch?](#how-do-i-start-using-stytch)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+    * [Configuration](#configuration)
+    * [Authenticating](#authenticating)
+* [Documentation](#documentation)
+* [FAQ](#faq)
+* [License](#license)
 
 ## Getting Started
 
+### What is Stytch?
+
+[Stytch](https://stytch.com) is an authentication platform, written by developers for developers, with a focus on
+improving security and user experience via passwordless authentication. Stytch offers direct API integrations,
+language-specific libraries, and SDKs (like this one) to make the process of setting up an authentication flow for your
+app as easy as possible.
+
+### Why should I use the Stytch SDK?
+
+Stytch's SDKs make it simple to seamlessly onboard, authenticate, and engage users. The Android SDK provides the easiest
+way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back
+to focusing on the core of your product.
+
+```kotlin
+import com.stytch.sdk.StytchClient
+
+// Initialize StytchClient
+StytchClient.configure(
+    context = application.applicationContext,
+    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
+    hostUrl = "https://${application.getString(R.string.host)}"
+)
+// Later, handle the subsequent deeplink
+viewModelScope.launch {
+    val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
+}
+```
+
+### What can I do with the Stytch SDK?
+
+There are a number of authentication products currently supported by the SDK, with additional functionality coming in
+the near future! The full list of currently supported products is as follows:
+
+- Magic links
+    - Send/authenticate magic links via Email
+- Biometrics
+    - Authenticate via fingerprint
+- OTPs
+    - Send/authenticate one-time passcodes via SMS, WhatsApp, Email
+- Passwords
+    - Create or authenticate a user
+    - Check password strength
+    - Reset a password
+- Sessions
+    - Authenticate/refresh an existing session
+    - Revoke a session (Sign out)
+
+#### Async Options
+
+The SDK provides several different mechanisms for handling the asynchronous code, so you can choose what best suits your
+needs.
+
+- `Coroutines`
+- `Callbacks`
+
+### How do I start using Stytch?
+
+If you are completely new to Stytch, prior to using the SDK you will first need to
+visit [Stytch's homepage](https://stytch.com), sign up, and create a new project in
+the [dashboard](https://stytch.com/dashboard/home). You'll then need to adjust
+your [SDK configuration](https://stytch.com/dashboard/sdk-configuration) — adding your app's bundle id
+to `Authorized environments` and enabling any `Auth methods` you wish to use.
+
+## Requirements
+
+This SDK supports Android API level 21 and
+above ([distribution stats](https://developer.android.com/about/dashboards/index.html))
+
+## Installation and setup
+
+Add the Stytch dependency to your app/build.gradle file:
+
+`implementation 'com.stytch.sdk:sdk:latest'`
+
+### Getting app secrets ready
+
 1. Go to https://stytch.com/dashboard, and sign up/log in with your email address.
 
-2. Once you are on the dashboard, click on the "API Keys" tab on the left. Scroll down to the "Public tokens" section and copy your public token.
+2. Once you are on the dashboard, click on the "API Keys" tab on the left. Scroll down to the "Public tokens" section
+   and copy your public token.
 
-3. In your android app, before you can any other part of the Stytch SDK, you must first call the `Stytch.configure` function and pass in your public token:
+3. In your android app, before you can any other part of the Stytch SDK, you must first call
+   the `StytchClient.configure` function and pass in your public token along with the host url:
 
-```
-import com.stytch.sdk.Stytch
-import com.stytch.sdk.StytchEnvironment
+```kotlin
+import com.stytch.sdk.StytchClient
 
-...
-
-Stytch.configure(
-    publicToken = public-token-test-792e8013-4a7c-4d7c-848f-9fc94fc8ba73, // Replace with your public token
-    environment = StytchEnvironment.TEST,
+StytchClient.configure(
+    context = application.applicationContext,
+    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
+    hostUrl = "https://${application.getString(R.string.host)}"
 )
 ```
 
-## Example app
+## Usage
 
-Ir order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local gradle.properties. The token can be received in your Stytch dashboard.
+#### Deeplink Handling
 
-## Email Magic Link Authentication
+This example shows a hypothetical Android files, with deeplink/universal link handling.
 
-In order to handle the deeplink from an emailed magic link, you have to add an intent filter to `StytchEmailMagicLinkActivity` to recognize the deeplink.
+#### MainActivity.kt
 
-To do so, add the following to your `AndroidManifest.xml`, nested under the `application` tag:
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
+    // omitted
+
+    if (intent.action == Intent.ACTION_VIEW) {
+        handleIntent(intent)
+    }
+}
+
+private fun handleIntent(intent: Intent) {
+    intent.data?.let { appLinkData ->
+        viewModel.handleUri(appLinkData)
+    }
+}
 ```
-<activity
-    android:name="com.stytch.sdk.StytchEmailMagicLinkActivity"
-    android:launchMode="singleTask"
-    >
 
-    <intent-filter android:autoVerify="true">
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="https"
-        android:host="example.com" />
+#### MainViewModel.kt
+
+```kotlin
+import com.stytch.sdk.network.responseData.BasicData
+
+lateinit var result: StytchResult<BasicData>
+
+fun handleUri(uri: Uri) {
+    viewModelScope.launch {
+        result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
+    }
+}
+```
+
+#### AndroidManifest.xml
+
+```xml
+
+<activity android:name="com.stytch.exampleapp.MainActivity"
+          android:exported="true">
+    <!--omitted-->
+    <intent-filter android:label="@string/deep_link_title">
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data
+            android:scheme="app"
+            android:host="@string/host"
+            android:pathPrefix="/"/>
     </intent-filter>
 </activity>
 ```
 
-Replace 'example.com' with your company's domain.
+With the above in place your app should be ready to accept deeplinks
 
-We highly recommend setting up [Android App Link auto-verification](https://developer.android.com/training/app-links#add-app-links) for the best user experience. Without auto-verification, deeplinks will still work, but your users will have to tap on a dialog to choose your app over the browser instead of automatically being sent to your app.
+### Example app
 
-Next, back in your code, you need to configure the Email Magic Link UI flow before you can launch it:
+The above code is used in practice in the Example App, which can be run and used to test out various flows of the SDK.
+Ir order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local
+gradle.properties. The token can be received in your Stytch dashboard as mentioned before in this README.
 
-```
-import com.stytch.sdk.StytchUI
+### Authenticating
 
-...
+As seen in [What can I do with the Stytch SDK?](#what-can-i-do-with-the-stytch-sdk), there are a number of different
+authentication products available. Here, we'll showcase a simple example of using the OTP product.
 
-StytchUI.EmailMagicLink.configure(
-    // deeplink for logging in an existing user
-    loginMagicLinkUrl = "https://YOUR_DOMAIN/login",
+#### One-time Passcodes
 
-    // deeplink for creating a new user
-    signupMagicLinkUrl = "https://YOUR_DOMAIN/signup",
+This example shows a hypothetical function you could use to use SMS authentication in your app, delegating much of the
+work to the StytchClient under the hood.
 
-    // if true, will create new users in a "pending" state until they actually open the magic link
-    createUserAsPending = true,
+```kotlin
+import com.stytch.sdk.StytchClient
 
-    // For security reasons, the Stytch SDK does not authenticate magic link tokens directly,
-    // and we strongly recommend that you do not authenticate tokens from your app either.
-    // Instead, we recommend that you send the token to your own backend,
-    // And call the Stytch API to authenticate it from there.
-    // This is a callback for receiving the token from the Stytch SDK.
-    authenticator = { token ->
-        // From here, send the token to your backend to authenticate.
-        // After you have successfully (or unsuccessfully) completed authentication,
-        // Call either 'StytchUI.onTokenAuthenticated()' to close the Stytch UI,
-        // Or call 'StytchUI.onTokenAuthenticationFailed()' to show an error message to the user.
+lateinit var result: StytchResult<BasicData>
+
+fun loginOrCreateSMS() {
+    if (phoneNumberIsValid) {
+        viewModelScope.launch {
+            result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters(phoneNumberTextState.text))
+        }
+    } else {
+        showPhoneError = true
     }
-)
-```
-
-Finally, launch the Stytch activity:
-
-```
-import com.stytch.sdk.StytchUI
-
-...
-
-// Inside your activity class
-val intent = StytchUI.EmailMagicLink.createIntent(this)
-startActivity(intent)
-```
-
-## SMS Passcode Authentication
-
-First, configure the SMS Passcode UI flow:
-
-```
-import com.stytch.sdk.StytchUI
-
-...
-
-StytchUI.SMSPasscode.configure(
-    // if true, will create new users in a "pending" state until the passcode is verified
-    createUserAsPending = true,
-
-    // For security reasons, the Stytch SDK does not authenticate passcodes (tokens) directly,
-    // and we strongly recommend that you do not authenticate tokens from your app either.
-    // Instead, we recommend that you send the token to your own backend,
-    // And call the Stytch API to authenticate it from there.
-    // This is a callback for receiving the token from the Stytch SDK.
-    authenticator = { methodId, token ->
-        // From here, send the token to your backend to authenticate.
-        // After you have successfully (or unsuccessfully) completed authentication,
-        // Call either 'StytchUI.onTokenAuthenticated()' to close the Stytch UI,
-        // Or call 'StytchUI.onTokenAuthenticationFailed()' to show an error message to the user.
-    }
-)
-```
-
-Then, launch the Stytch activity:
-
-```
-import com.stytch.sdk.StytchUI
-
-...
-
-// Inside your activity class
-val intent = StytchUI.SMSPasscode.createIntent(this)
-startActivity(intent)
-```
-
-## Direct API
-
-If you want to build your own UI from scratch, you can still authenticate users using either passwordless method (email magic link or SMS passcode) by using the Stytch direct API.
-
-Email Magic Link example:
-
-```
-import kotlinx.coroutines.GlobalScope
-import com.stytch.sdk.StytchApi
-
-...
-
-GlobalScope.launch {
-    val result = StytchApi.MagicLinks.Email.loginOrCreate(
-        email = "[user email]",
-        loginMagicLinkUrl = "[your url]/login",
-        signupMagicLinkUrl = "[your url]/signup",
-    )
-    // handle result here
 }
 ```
 
-Alternatively, if you do not use Kotlin coroutines in your codebase, you can instead provide an asynchronous callback by using the `StytchCallbackApi` object:
+## FAQ
 
-```
-import com.stytch.sdk.StytchCallbackApi
+Q.How does the SDK compare to the API?
 
-...
+A.The SDK, for the most part, mirrors the API directly — though it provides a more opinionated take on interacting with these methods; managing local state on your behalf and introducing some defaults (viewable in the corresponding init/function reference docs). A primary benefit of using the SDK is that you can interact with Stytch directly from the client, without relaying calls through your backend. 
 
-StytchCallbackApi.MagicLinks.Email.loginOrCreate(
-    email = "[user email]",
-    loginMagicLinkUrl = "[your url]/login",
-    signupMagicLinkUrl = "[your url]/signup",
-) { result ->
-    // handle result here
-}
-```
+Q. What are the some of the default behaviors of the SDK? 
 
-SMS Passcode example:
+A. A few things here: 1) the session token/JWT will be stored in/retrieved from the system encrypted storage, so will safely persist across app launches. 2) The session and user objects are not cached by the SDK, these must be pulled from the `authenticate` responses and stored by the application. 3) After a successful authentication call, the SDK will begin polling in the background to refresh the session and its corresponding JWT, to ensure the JWT is always valid (the JWT expires every 5 minutes, regardless of the session expiration.)
 
-```
-import kotlinx.coroutines.GlobalScope
-import com.stytch.sdk.StytchApi
+Q. Are there guides or sample apps available to see this in use?
 
-...
+A. Yes! There is a Demo App included in this repo, available [here](exampleapp).
 
-GlobalScope.launch {
-    val result = StytchApi.MagicLinks.Email.loginOrCreate(
-        phoneNumber = "[user phone number]",
-    )
-    // handle result here
-}
-```
+### Questions?
 
-Alternatively, if you do not use Kotlin coroutines in your codebase, you can instead provide an asynchronous callback by using the `StytchCallbackApi` object:
+Feel free to reach out any time at support@stytch.com or in our [Slack](https://join.slack.com/t/stytch/shared_invite/zt-nil4wo92-jApJ9Cl32cJbEd9esKkvyg)
 
-```
-import com.stytch.sdk.StytchCallbackApi
+## License
 
-...
-
-StytchCallbackApi.MagicLinks.Email.loginOrCreate(
-    phoneNumber = "[user phone number]",
-) { result ->
-    // handle result here
-}
-```
+The Stytch Android SDK is released under the MIT license. See [LICENSE](LICENSE) for details.
