@@ -15,9 +15,6 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
 
-                // remove existing session, clearing headers
-                StytchClient.sessionStorage.revoke()
-
                 val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
                 //call backend endpoint
                 result = StytchApi.MagicLinks.Email.authenticate(
