@@ -3,9 +3,9 @@ package com.stytch.sdk
 import android.content.Context
 import java.security.KeyStore
 
-private const val KEY_ALIAS = "Stytch KeyStore Alias"
+private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
-private const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
+internal const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 
 internal class StorageHelper(context: Context) {
 
@@ -14,14 +14,22 @@ internal class StorageHelper(context: Context) {
 
     init {
         keyStore.load(null)
-        EncryptionManager.createNewKeys(context, keyStore, KEY_ALIAS)
+        EncryptionManager.createNewKeys(context, KEY_ALIAS)
     }
 
     /**
      * Encrypt and save value to SharedPreferences
      */
-    internal fun saveValue(name: String, value: String) {
-        val encryptedData = EncryptionManager.encryptString(keyStore, KEY_ALIAS, value)
+    internal fun saveValue(name: String, value: String?) {
+        if (value == null) {
+            with(sharedPreferences.edit()) {
+                putString(name, value)
+                apply()
+            }
+            return
+        }
+
+        val encryptedData = EncryptionManager.encryptString(value)
         with(sharedPreferences.edit()) {
             putString(name, encryptedData)
             apply()
@@ -33,27 +41,18 @@ internal class StorageHelper(context: Context) {
      */
     internal fun loadValue(name: String): String? {
         val encryptedString = sharedPreferences.getString(name, null)
-        return EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
+        return EncryptionManager.decryptString(encryptedString)
     }
 
     /**
      * @return Pair(codeChallengeMethod, codeChallenge)
-     * @throws StytchExceptions.NoCodeChallengeFound
      */
-    internal fun getHashedCodeChallenge(generateNew: Boolean = false): Pair<String, String> {
-        val codeChallenge: String?
+    internal fun generateHashedCodeChallenge(): Pair<String, String> {
+        val codeVerifier: String?
 
-        if (generateNew) {
-            codeChallenge = EncryptionManager.generateCodeChallenge()
-            saveValue(PREFERENCES_CODE_CHALLENGE, codeChallenge)
-        } else {
-            codeChallenge = loadValue(PREFERENCES_CODE_CHALLENGE)
-        }
+        codeVerifier = EncryptionManager.generateCodeChallenge()
+        saveValue(PREFERENCES_CODE_VERIFIER, codeVerifier)
 
-        if (codeChallenge == null) {
-            throw StytchExceptions.NoCodeChallengeFound
-        }
-
-        return "S256" to EncryptionManager.encryptCodeChallenge(codeChallenge)
+        return "S256" to EncryptionManager.encryptCodeChallenge(codeVerifier)
     }
 }

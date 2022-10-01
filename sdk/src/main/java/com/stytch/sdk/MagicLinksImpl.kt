@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sessions.launchSessionUpdater
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -9,24 +10,29 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
 
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(parameters: MagicLinks.AuthParameters): BaseResponse {
+    override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
         return catchExceptions {
-            val result: BaseResponse
+            val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
-                val (_, challengeCode) = StytchClient.storageHelper.getHashedCodeChallenge(false)
+
+                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
+                //call backend endpoint
                 result = StytchApi.MagicLinks.Email.authenticate(
                     parameters.token,
                     parameters.sessionDurationMinutes,
-                    challengeCode
-                )
+                    codeVerifier
+                ).apply {
+                    launchSessionUpdater()
+                }
             }
+
             result
         }
     }
 
     override fun authenticate(
         parameters: MagicLinks.AuthParameters,
-        callback: (response: BaseResponse) -> Unit,
+        callback: (response: AuthResponse) -> Unit,
     ) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
@@ -56,8 +62,8 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 val result: LoginOrCreateUserByEmailResponse
 
                 withContext(StytchClient.ioDispatcher) {
-                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.getHashedCodeChallenge(true)
-                    result = StytchApi.MagicLinks.Email.loginOrCreateEmail(
+                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
+                    result = StytchApi.MagicLinks.Email.loginOrCreate(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         challengeCode,

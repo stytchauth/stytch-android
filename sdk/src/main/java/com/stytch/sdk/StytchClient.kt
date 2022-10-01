@@ -5,7 +5,12 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.StrengthCheckResponse
+import com.stytch.sessions.SessionStorage
+import com.stytch.sessions.SessionsImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -14,6 +19,10 @@ import kotlinx.coroutines.withContext
 
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
 public typealias BaseResponse = StytchResult<BasicData>
+public typealias AuthResponse = StytchResult<AuthData>
+public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
+public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
+
 
 /**
  * The entrypoint for all Stytch-related interaction.
@@ -26,6 +35,8 @@ public object StytchClient {
         private set
     internal var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
         private set
+
+    internal val sessionStorage = SessionStorage()
 
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
@@ -58,24 +69,26 @@ public object StytchClient {
             return field
         }
 
+    public var passwords: Passwords = PasswordsImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
+    public var sessions: Sessions = SessionsImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
     /**
      * Set dispatchers for UI and IO tasks
      */
     public fun setDispatchers(uiDispatcher: CoroutineDispatcher, ioDispatcher: CoroutineDispatcher) {
         this.uiDispatcher = uiDispatcher
         this.ioDispatcher = ioDispatcher
-    }
-
-    //    TODO:("Sessions")
-    public object Sessions {
-//    fun revoke(completion:)
-//    fun authenticate(parameters:completion:)
-    }
-
-    //    TODO:("OTP")
-    public object OneTimePasscodes {
-//    fun loginOrCreate(parameters:completion:)
-//    fun authenticate(parameters:completion:)
     }
 
 //    TODO("OAuth")
@@ -108,9 +121,9 @@ public object StytchClient {
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
      */
-    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): BaseResponse {
+    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): AuthResponse {
         assertInitialized()
-        val result: BaseResponse
+        val result: AuthResponse
         withContext(ioDispatcher) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
@@ -137,7 +150,7 @@ public object StytchClient {
         return result
     }
 
-    public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: BaseResponse) -> Unit) {
+    public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: AuthResponse) -> Unit) {
         GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)
 //              change to main thread to call callback

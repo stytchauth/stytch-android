@@ -13,11 +13,11 @@ public interface OTP {
 
     public suspend fun authenticate(
         parameters: AuthParameters,
-    ): BaseResponse
+    ): AuthResponse
 
     public fun authenticate(
         parameters: AuthParameters,
-        callback: (response: BaseResponse) -> Unit,
+        callback: (response: AuthResponse) -> Unit,
     )
 
     public interface SmsOTP {

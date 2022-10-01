@@ -6,7 +6,10 @@ import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
+import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.stytchError
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +25,6 @@ internal object StytchApi {
     private lateinit var publicToken: String
     private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
-    private var stytchSessionToken: String? = null
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
@@ -32,8 +34,7 @@ internal object StytchApi {
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,
-            publicToken,
-            stytchSessionToken
+            publicToken
         )
     }
 
@@ -70,7 +71,7 @@ internal object StytchApi {
     internal object MagicLinks {
         object Email {
             /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
-            suspend fun loginOrCreateEmail(
+            suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
@@ -79,15 +80,15 @@ internal object StytchApi {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
-                        login_magic_link_url = loginMagicLinkUrl,
-                        code_challenge = codeChallenge,
-                        code_challenge_method = codeChallengeMethod
+                        loginMagicLinkUrl = loginMagicLinkUrl,
+                        codeChallenge = codeChallenge,
+                        codeChallengeMethod = codeChallengeMethod
                     )
                 )
             }
 
             suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
-                    StytchResult<BasicData> =
+                    StytchResult<AuthData> =
                 safeApiCall {
                     apiService.authenticate(
                         StytchRequests.MagicLinks.AuthenticateRequest(
@@ -107,8 +108,8 @@ internal object StytchApi {
         ): StytchResult<BasicData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
                 StytchRequests.OTP.SMS(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes.toInt()
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
@@ -119,8 +120,8 @@ internal object StytchApi {
         ): StytchResult<BasicData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp(
-                    phone_number = phoneNumber,
-                    expiration_minutes = expirationMinutes.toInt()
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
@@ -132,13 +133,13 @@ internal object StytchApi {
             apiService.loginOrCreateUserByOTPWithEmail(
                 StytchRequests.OTP.Email(
                     email = email,
-                    expiration_minutes = expirationMinutes.toInt()
+                    expirationMinutes = expirationMinutes.toInt()
                 )
             )
         }
 
         suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
-                StytchResult<BasicData> =
+                StytchResult<AuthData> =
             safeApiCall {
                 apiService.authenticateWithOTP(
                     StytchRequests.OTP.Authenticate(
@@ -146,6 +147,106 @@ internal object StytchApi {
                         sessionDurationMinutes.toInt()
                     )
                 )
+            }
+    }
+
+    internal object Passwords {
+
+        suspend fun authenticate(
+            email: String,
+            password: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateWithPasswords(
+                StytchRequests.Passwords.AuthenticateRequest(
+                    email,
+                    password,
+                    sessionDurationMinutes
+                )
+            )
+        }
+
+        suspend fun create(
+            email: String,
+            password: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<CreateResponse> = safeApiCall {
+            apiService.passwords(
+                StytchRequests.Passwords.CreateRequest(
+                    email,
+                    password,
+                    sessionDurationMinutes
+                )
+            )
+        }
+
+        suspend fun resetByEmailStart(
+            email: String,
+            codeChallenge: String,
+            codeChallengeMethod: String,
+            loginRedirectUrl: String?,
+            loginExpirationMinutes: Int?,
+            resetPasswordRedirectUrl: String?,
+            resetPasswordExpirationMinutes: Int?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.resetByEmailStart(
+                StytchRequests.Passwords.ResetByEmailStartRequest(
+                    email,
+                    codeChallenge,
+                    codeChallengeMethod,
+                    loginRedirectUrl,
+                    loginExpirationMinutes,
+                    resetPasswordRedirectUrl,
+                    resetPasswordExpirationMinutes
+                )
+            )
+        }
+
+        suspend fun resetByEmail(
+            token: String,
+            password: String,
+            sessionDurationMinutes: Int,
+            codeVerifier: String,
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.resetByEmail(
+                StytchRequests.Passwords.RestByEmailRequest(
+                    token,
+                    password,
+                    sessionDurationMinutes,
+                    codeVerifier
+                )
+            )
+        }
+
+        suspend fun strengthCheck(
+             email: String?,
+             password: String,
+        ): StytchResult<StrengthCheckResponse> = safeApiCall {
+            apiService.strengthCheck(
+                StytchRequests.Passwords.StrengthCheckRequest(
+                    email,
+                    password
+                )
+            )
+        }
+    }
+
+    internal object Sessions {
+
+        suspend fun authenticate(
+            sessionDurationMinutes: Int? = null
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateSessions(
+                StytchRequests.Sessions.AuthenticateRequest(
+                    sessionDurationMinutes
+                )
+            )
+        }
+
+        suspend fun revoke():
+                StytchResult<BasicData> =
+            safeApiCall {
+                apiService.revokeSessions()
             }
     }
 

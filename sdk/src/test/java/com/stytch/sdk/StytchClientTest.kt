@@ -150,6 +150,96 @@ internal class StytchClientTest {
     }
 
     @Test
+    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_authenticate`() {
+        runBlocking {
+            try {
+                mockkObject(StytchApi)
+                every { StytchApi.isInitialized } returns false
+//                Call method without configuration
+                StytchClient.passwords.authenticate(Passwords.AuthParameters(email = any(), password = any(), sessionDurationMinutes = any()))
+            } catch (exception: IllegalStateException) {
+//                if exception was thrown test passed
+                return@runBlocking
+            }
+//          test failed if no exception was thrown
+            assert(false)
+        }
+    }
+
+    @Test
+    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_create`() {
+        runBlocking {
+            try {
+                mockkObject(StytchApi)
+                every { StytchApi.isInitialized } returns false
+//                Call method without configuration
+                StytchClient.passwords.create(Passwords.CreateParameters(email = any(), password = any(), sessionDurationMinutes = any()))
+            } catch (exception: IllegalStateException) {
+//                if exception was thrown test passed
+                return@runBlocking
+            }
+//          test failed if no exception was thrown
+            assert(false)
+        }
+    }
+
+    @Test
+    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_resetByEmailStart`() {
+        runBlocking {
+            try {
+                mockkObject(StytchApi)
+                every { StytchApi.isInitialized } returns false
+//                Call method without configuration
+                StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
+                    email = any(),
+                    loginRedirectUrl = any(),
+                    loginExpirationMinutes = any(),
+                    resetPasswordRedirectUrl = any(),
+                    resetPasswordExpirationMinutes = any()))
+            } catch (exception: IllegalStateException) {
+//                if exception was thrown test passed
+                return@runBlocking
+            }
+//          test failed if no exception was thrown
+            assert(false)
+        }
+    }
+
+    @Test
+    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_resetByEmail`() {
+        runBlocking {
+            try {
+                mockkObject(StytchApi)
+                every { StytchApi.isInitialized } returns false
+//                Call method without configuration
+                StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = any(), password = any(), sessionDurationMinutes = any()))
+            } catch (exception: IllegalStateException) {
+//                if exception was thrown test passed
+                return@runBlocking
+            }
+//          test failed if no exception was thrown
+            assert(false)
+        }
+    }
+
+    @Test
+    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_strengthCheck`() {
+        runBlocking {
+            try {
+                mockkObject(StytchApi)
+                every { StytchApi.isInitialized } returns false
+//                Call method without configuration
+                StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = any(), password = any()))
+            } catch (exception: IllegalStateException) {
+//                if exception was thrown test passed
+                return@runBlocking
+            }
+//          test failed if no exception was thrown
+            assert(false)
+        }
+    }
+
+    @Test
     fun `should trigger StytchApi configure when calling StytchClient configure`() {
         mockkObject(StytchApi)
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
@@ -170,7 +260,7 @@ internal class StytchClientTest {
         Dispatchers.setMain(mainThreadSurrogate)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         every { anyConstructed<StorageHelper>().loadValue(any()) } returns ""
-        every { anyConstructed<StorageHelper>().getHashedCodeChallenge(any()) } returns Pair("", "")
+        every { anyConstructed<StorageHelper>().generateHashedCodeChallenge() } returns Pair("", "")
     }
 
     @After
@@ -186,7 +276,7 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+            StytchApi.MagicLinks.Email.loginOrCreate(
                 email = magicLinkParams.email,
                 codeChallenge = "",
                 codeChallengeMethod = "",
@@ -207,7 +297,7 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
         coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreateEmail(
+            StytchApi.MagicLinks.Email.loginOrCreate(
                 email = magicLinkParams.email,
                 loginMagicLinkUrl = null,
                 codeChallenge = any(),
@@ -221,7 +311,7 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `should return result success authenticate called without callback`() {
+    fun `should return result success MagicLinks_authenticate called without callback`() {
         val stytchClientObject = spyk<StytchClient>()
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
@@ -237,7 +327,7 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `should return result success authenticate called with callback`() {
+    fun `should return result success MagicLinks_authenticate called with callback`() {
         val stytchClientObject = spyk<StytchClient>()
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.MagicLinks.Email)
@@ -363,6 +453,191 @@ internal class StytchClientTest {
 
         val result = runBlocking {
             StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u))
+        }
+        assert(result is StytchResult.Success)
+    }
+
+    @Test
+    fun `should return result success Passwords_authenticate called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
+        }.returns(StytchResult.Success(any()))
+
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10)) {
+            assert(it is StytchResult.Success)
+        }
+    }
+
+    @Test
+    fun `should return result success Passwords_authenticate called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
+        }.returns(StytchResult.Success(any()))
+        stytchClientObject.configure(mContextMock, "", "")
+
+        val result = runBlocking {
+            StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10))
+        }
+        assert(result is StytchResult.Success)
+    }
+
+    @Test
+    fun `should return result success Passwords_create called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
+        }.returns(StytchResult.Success(any()))
+
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10)) {
+            assert(it is StytchResult.Success)
+        }
+    }
+
+    @Test
+    fun `should return result success Passwords_create called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
+        }.returns(StytchResult.Success(any()))
+        stytchClientObject.configure(mContextMock, "", "")
+
+        val result = runBlocking {
+            StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10))
+        }
+        assert(result is StytchResult.Success)
+    }
+
+    @Test
+    fun `should return result success Passwords_resetByEmailStart called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.resetByEmailStart(
+                email = "",
+                codeChallenge = "",
+                codeChallengeMethod = "",
+                loginRedirectUrl = "",
+                loginExpirationMinutes = 10,
+                resetPasswordRedirectUrl = "",
+                resetPasswordExpirationMinutes = 10)
+        }.returns(StytchResult.Success(any()))
+
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
+            email = "",
+            loginRedirectUrl = "",
+            loginExpirationMinutes = 10,
+            resetPasswordRedirectUrl = "",
+            resetPasswordExpirationMinutes = 10)) {
+            assert(it is StytchResult.Success)
+        }
+    }
+
+    @Test
+    fun `should return result success Passwords_resetByEmailStart called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.resetByEmailStart(
+                email = "",
+                codeChallenge = "",
+                codeChallengeMethod = "",
+                loginRedirectUrl = "",
+                loginExpirationMinutes = 10,
+                resetPasswordRedirectUrl = "",
+                resetPasswordExpirationMinutes = 10
+            )
+        }.returns(StytchResult.Success(any()))
+        stytchClientObject.configure(mContextMock, "", "")
+
+        val result = runBlocking {
+            StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
+                email = "",
+                loginRedirectUrl = "",
+                loginExpirationMinutes = 10,
+                resetPasswordRedirectUrl = "",
+                resetPasswordExpirationMinutes = 10))
+        }
+        assert(result is StytchResult.Success)
+    }
+
+    @Test
+    fun `should return result success Passwords_resetByEmail called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.resetByEmail(token = "", password = "", sessionDurationMinutes = 10, codeVerifier = "")
+        }.returns(StytchResult.Success(any()))
+
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = "", password = "", sessionDurationMinutes = 10)) {
+            assert(it is StytchResult.Success)
+        }
+    }
+
+    @Test
+    fun `should return result success Passwords_resetByEmail called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.resetByEmail(
+                token = "", password = "", sessionDurationMinutes = 10, codeVerifier = ""
+            )
+        }.returns(StytchResult.Success(any()))
+        stytchClientObject.configure(mContextMock, "", "")
+
+        val result = runBlocking {
+            StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(
+                token = "",
+                password = "",
+                sessionDurationMinutes = 10))
+        }
+        assert(result is StytchResult.Success)
+    }
+
+    @Test
+    fun `should return result success Passwords_strengthCheck called with callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.strengthCheck(email = "", password = "")
+        }.returns(StytchResult.Success(any()))
+
+        stytchClientObject.configure(mContextMock, "", "")
+        StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = "")) {
+            assert(it is StytchResult.Success)
+        }
+    }
+
+    @Test
+    fun `should return result success Passwords_strengthCheck called without callback`() {
+        val stytchClientObject = spyk<StytchClient>()
+        stytchClientObject.setDispatchers(dispatcher, dispatcher)
+        mockkObject(StytchApi.Passwords)
+        coEvery {
+            StytchApi.Passwords.strengthCheck(email = "", password = "")
+        }.returns(StytchResult.Success(any()))
+        stytchClientObject.configure(mContextMock, "", "")
+
+        val result = runBlocking {
+            StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = ""))
         }
         assert(result is StytchResult.Success)
     }

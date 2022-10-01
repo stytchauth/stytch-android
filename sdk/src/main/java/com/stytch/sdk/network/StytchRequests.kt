@@ -1,5 +1,6 @@
 package com.stytch.sdk.network
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 internal object StytchRequests {
@@ -9,43 +10,114 @@ internal object StytchRequests {
             @JsonClass(generateAdapter = true)
             data class LoginOrCreateUserRequest(
                 val email: String,
-                val login_magic_link_url: String?,
-                val code_challenge: String,
-                val code_challenge_method: String,
+                @Json(name = "login_magic_link_url")
+                val loginMagicLinkUrl: String?,
+                @Json(name = "code_challenge")
+                val codeChallenge: String,
+                @Json(name = "code_challenge_method")
+                val codeChallengeMethod: String,
             )
         }
 
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             val token: String,
-            val code_verifier: String,
-            val session_duration_minutes: Int,
+            @Json(name = "code_verifier")
+            val codeVerifier: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
         )
+    }
+
+    object Sessions {
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int?,
+        )
+    }
+
+    object Passwords {
+        @JsonClass(generateAdapter = true)
+        data class CreateRequest(
+            val email: String,
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            val email: String,
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class ResetByEmailStartRequest(
+            val email: String,
+            @Json(name = "code_challenge")
+            val codeChallenge: String,
+            @Json(name = "code_challenge_method")
+            val codeChallengeMethod: String,
+            @Json(name = "login_redirect_url")
+            val loginRedirectUrl: String?,
+            @Json(name = "login_expiration_minutes")
+            val loginExpirationMinutes: Int?,
+            @Json(name = "reset_password_redirect_url")
+            val resetPasswordRedirectUrl: String?,
+            @Json(name = "reset_password_expiration_minutes")
+            val resetPasswordExpirationMinutes: Int?,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class RestByEmailRequest(
+            val token: String,
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "code_verifier")
+            val codeVerifier: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class StrengthCheckRequest(
+            val email: String?,
+            val password: String,
+        )
+
     }
 
     object OTP {
         @JsonClass(generateAdapter = true)
         data class SMS(
-            val phone_number: String,
-            val expiration_minutes: Int,
+            @Json(name = "phone_number")
+            val phoneNumber: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int,
         )
 
         @JsonClass(generateAdapter = true)
         data class WhatsApp(
-            val phone_number: String,
-            val expiration_minutes: Int,
+            @Json(name = "phone_number")
+            val phoneNumber: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int,
         )
 
         @JsonClass(generateAdapter = true)
         data class Email(
             val email: String,
-            val expiration_minutes: Int,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int,
         )
 
         @JsonClass(generateAdapter = true)
         data class Authenticate(
             val token: String,
-            val session_duration_minutes: Int,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
         )
     }
 }

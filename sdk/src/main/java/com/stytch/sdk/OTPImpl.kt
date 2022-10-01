@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sessions.launchSessionUpdater
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,18 +12,21 @@ internal class OTPImpl internal constructor() : OTP {
     override val whatsapp: OTP.WhatsAppOTP = WhatsAppOTPImpl()
     override val email: OTP.EmailOTP = EmailOTPImpl()
 
-    override suspend fun authenticate(parameters: OTP.AuthParameters): BaseResponse {
-        val result: BaseResponse
+    override suspend fun authenticate(parameters: OTP.AuthParameters): AuthResponse {
+        val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
+            // call backend endpoint
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
-            )
+            ).apply {
+                launchSessionUpdater()
+            }
         }
         return result
     }
 
-    override fun authenticate(parameters: OTP.AuthParameters, callback: (response: BaseResponse) -> Unit) {
+    override fun authenticate(parameters: OTP.AuthParameters, callback: (response: AuthResponse) -> Unit) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
             callback(result)
