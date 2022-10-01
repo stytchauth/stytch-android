@@ -39,7 +39,7 @@ public data class AuthData(
 public data class SessionData(
     val attributes: AttributesData,
     @Json(name = "custom_claims")
-    val customClaims: HashMap<String, String>?,
+    val customClaims: Map<String, String>?,
     @Json(name = "expires_at")
     val expiresAt: String,
     @Json(name = "last_accessed_at")

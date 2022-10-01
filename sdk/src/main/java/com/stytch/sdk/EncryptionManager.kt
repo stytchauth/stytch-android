@@ -2,94 +2,78 @@ package com.stytch.sdk
 
 import android.content.Context
 import android.os.Build
-import android.security.KeyPairGeneratorSpec
 import android.util.Base64
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.math.BigInteger
-import java.nio.charset.Charset
-import java.security.KeyPairGenerator
-import java.security.KeyStore
+import com.google.crypto.tink.Aead
+import com.google.crypto.tink.KeyTemplates
+import com.google.crypto.tink.KeysetHandle
+import com.google.crypto.tink.aead.AeadConfig
+import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import com.google.crypto.tink.shaded.protobuf.ByteString
+import java.security.GeneralSecurityException
 import java.security.MessageDigest
-import java.util.Calendar
 import javax.crypto.Cipher
-import javax.crypto.CipherInputStream
-import javax.crypto.CipherOutputStream
-import javax.security.auth.x500.X500Principal
 import kotlin.random.Random
 
 internal object EncryptionManager {
-    fun encryptString(keyStore: KeyStore, alias: String, plainText: String): String? {
+
+    private const val PREF_FILE_NAME = "stytch_secured_pref"
+    private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
+    private var aead: Aead? = null
+
+    init {
+        AeadConfig.register();
+    }
+
+    private fun getOrGenerateNewKeysetHandle(context: Context, keyAlias: String): KeysetHandle? {
+        return AndroidKeysetManager.Builder()
+            .withSharedPref(context, keyAlias, PREF_FILE_NAME)
+            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
+            .withMasterKeyUri(MASTER_KEY_URI)
+            .build()
+            .keysetHandle
+    }
+
+    fun encryptString(plainText: String): String? {
         var encodedString: String? = null
         try {
-            val privateKeyEntry = keyStore.getEntry(alias, null) as KeyStore.PrivateKeyEntry
-            val publicKey = privateKeyEntry.certificate.publicKey
-
-            // Encrypt the text
-            val input: Cipher = getCipher()
-            input.init(Cipher.ENCRYPT_MODE, publicKey)
-            val outputStream = ByteArrayOutputStream()
-            val cipherOutputStream = CipherOutputStream(
-                outputStream, input)
-            cipherOutputStream.write(plainText.toByteArray(charset("UTF-8")))
-            cipherOutputStream.close()
-            val vals: ByteArray = outputStream.toByteArray()
-            encodedString = Base64.encodeToString(vals, Base64.NO_WRAP)
-        } catch (e: java.lang.Exception) {
+            val aead = aead ?: throw Exception()
+            val plainBytes: ByteArray = plainText.toByteArray(Charsets.UTF_8)
+            // An artifical step to test whether Tink can co-exist with protobuf-lite.
+            val pStr: ByteString = ByteString.copyFrom(plainBytes)
+            val cipherText: ByteArray = aead.encrypt(pStr.toByteArray(), null)
+            encodedString = Base64.encodeToString(cipherText, Base64.NO_WRAP)
+        } catch (e: GeneralSecurityException) {
+            e.printStackTrace()
+        } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
-
         return encodedString
     }
 
-    fun decryptString(keyStore: KeyStore, alias: String, encryptedText: String?): String? {
+    fun decryptString(encryptedText: String?): String? {
 //       prevent decryption if value is null
         encryptedText ?: return null
+        val aead = aead ?: return null
 
         var decryptedText: String? = null
+
         try {
-            val privateKeyEntry = keyStore.getEntry(alias, null) as KeyStore.PrivateKeyEntry
-            val privateKey = privateKeyEntry.privateKey
-            val output = getCipher()
-            output.init(Cipher.DECRYPT_MODE, privateKey)
-            val cipherInputStream = CipherInputStream(
-                ByteArrayInputStream(Base64.decode(encryptedText, Base64.NO_WRAP)), output)
-            val values: ArrayList<Byte> = ArrayList()
-            var nextByte: Int
-            while (cipherInputStream.read().also { nextByte = it } != -1) {
-                values.add(nextByte.toByte())
-            }
-            val bytes = ByteArray(values.size)
-            for (i in bytes.indices) {
-                bytes[i] = values[i]
-            }
-            decryptedText = String(bytes, 0, bytes.size, Charset.forName("UTF-8"))
-        } catch (e: java.lang.Exception) {
+            val ciphertext: ByteArray = Base64.decode(encryptedText, Base64.NO_WRAP)
+            val plaintext: ByteArray = aead.decrypt(ciphertext, null)
+            decryptedText = String(plaintext, Charsets.UTF_8)
+        } catch (e: GeneralSecurityException) {
+            e.printStackTrace()
+        } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
+
         return decryptedText
     }
 
-    fun createNewKeys(context: Context, keyStore: KeyStore, alias: String) {
+    fun createNewKeys(context: Context, keyAlias: String) {
         try {
-            // Create new key if needed
-            if (!keyStore.containsAlias(alias)) {
-                val start = Calendar.getInstance()
-                val end = Calendar.getInstance()
-                end.add(Calendar.YEAR, 1)
-                val spec = KeyPairGeneratorSpec.Builder(context)
-                    .setKeySize(2048)
-                    .setAlias(alias)
-                    .setSubject(X500Principal("CN=stytch CN, O=Android Authority"))
-                    .setSerialNumber(BigInteger.ONE)
-                    .setStartDate(start.time)
-                    .setEndDate(end.time)
-                    .build()
-                val generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
-                generator.initialize(spec)
-                generator.generateKeyPair()
-            }
-        } catch (e: java.lang.Exception) {
+            aead = getOrGenerateNewKeysetHandle(context, keyAlias)?.getPrimitive(Aead::class.java)
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -137,4 +121,5 @@ internal object EncryptionManager {
     fun ByteArray.toHexString(): String {
         return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
+
 }

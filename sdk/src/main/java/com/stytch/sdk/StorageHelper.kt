@@ -14,7 +14,7 @@ internal class StorageHelper(context: Context) {
 
     init {
         keyStore.load(null)
-        EncryptionManager.createNewKeys(context, keyStore, KEY_ALIAS)
+        EncryptionManager.createNewKeys(context, KEY_ALIAS)
     }
 
     /**
@@ -29,7 +29,7 @@ internal class StorageHelper(context: Context) {
             return
         }
 
-        val encryptedData = EncryptionManager.encryptString(keyStore, KEY_ALIAS, value)
+        val encryptedData = EncryptionManager.encryptString(value)
         with(sharedPreferences.edit()) {
             putString(name, encryptedData)
             apply()
@@ -41,7 +41,7 @@ internal class StorageHelper(context: Context) {
      */
     internal fun loadValue(name: String): String? {
         val encryptedString = sharedPreferences.getString(name, null)
-        return EncryptionManager.decryptString(keyStore, KEY_ALIAS, encryptedString)
+        return EncryptionManager.decryptString(encryptedString)
     }
 
     /**
