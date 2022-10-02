@@ -8,12 +8,13 @@
         * [Async Options](#async-options)
     * [How do I start using Stytch?](#how-do-i-start-using-stytch)
 * [Requirements](#requirements)
-* [Installation](#installation)
+* [Installation and setup](#installation-and-setup)
 * [Usage](#usage)
-    * [Configuration](#configuration)
+    * [Deeplink Handling](#deeplink-handling)
+    * [Example app](#example-app)
     * [Authenticating](#authenticating)
-* [Documentation](#documentation)
 * [FAQ](#faq)
+* [Questions?](#questions)
 * [License](#license)
 
 ## Getting Started
