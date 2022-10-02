@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Example App</string>
+    <string name="home">Home</string>
+    <string name="strength_check_name">Strength Check</string>
     <string name="authenticate">Authenticate</string>
     <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
     <string name="test_otp_sms_flow">Test OTP SMS Flow</string>
     <string name="test_otp_whatsapp_flow">Test OTP Whatsapp Flow</string>
     <string name="test_otp_email_flow">Test OTP Email Flow</string>
     <string name="test_otp_authenticate_flow">Authenticate OTP</string>
+    <string name="check_password_strength">Check password strength</string>
     <string name="deep_link_title">Deep links</string>
     <string name="host">exampleapp.com</string>
     <string name="deeplink_received_toast">Deeplink received</string>
@@ -14,4 +17,5 @@
     <string name="please_enter_email">Please enter a valid email you wish to use</string>
     <string name="please_enter_phone_number">Please enter a valid phone number you wish to use</string>
     <string name="please_enter_otp_token">Please enter an OTP token you wish to validate</string>
+    <string name="password">Password</string>
 </resources>
