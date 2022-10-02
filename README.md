@@ -53,8 +53,6 @@ the near future! The full list of currently supported products is as follows:
 
 - Magic links
     - Send/authenticate magic links via Email
-- Biometrics
-    - Authenticate via fingerprint
 - OTPs
     - Send/authenticate one-time passcodes via SMS, WhatsApp, Email
 - Passwords
@@ -78,7 +76,7 @@ needs.
 If you are completely new to Stytch, prior to using the SDK you will first need to
 visit [Stytch's homepage](https://stytch.com), sign up, and create a new project in
 the [dashboard](https://stytch.com/dashboard/home). You'll then need to adjust
-your [SDK configuration](https://stytch.com/dashboard/sdk-configuration) — adding your app's bundle id
+your [SDK configuration](https://stytch.com/dashboard/sdk-configuration) — adding your app's applicationId
 to `Authorized environments` and enabling any `Auth methods` you wish to use.
 
 ## Requirements
@@ -176,7 +174,7 @@ With the above in place your app should be ready to accept deeplinks
 ### Example app
 
 The above code is used in practice in the Example App, which can be run and used to test out various flows of the SDK.
-Ir order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local
+In order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local
 gradle.properties. The token can be received in your Stytch dashboard as mentioned before in this README.
 
 ### Authenticating
