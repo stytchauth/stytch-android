@@ -11,10 +11,20 @@ public interface OTP {
     public val whatsapp: WhatsAppOTP
     public val email: EmailOTP
 
+    /**
+     * Wraps the OTP authenticate API endpoint which validates the OTP token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * @param parameters required to authenticate
+     * @return AuthResponse response from backend
+     */
     public suspend fun authenticate(
         parameters: AuthParameters,
     ): AuthResponse
 
+    /**
+     * Wraps the OTP authenticate API endpoint which validates the OTP token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * @param parameters required to authenticate
+     * @param callback calls callback with AuthResponse response from backend
+     */
     public fun authenticate(
         parameters: AuthParameters,
         callback: (response: AuthResponse) -> Unit,
