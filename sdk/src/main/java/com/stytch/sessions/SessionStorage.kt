@@ -15,7 +15,11 @@ internal class SessionStorage {
             StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
-            return StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+            val value: String?
+            synchronized(this) {
+                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+            }
+            return value
         }
 
     var sessionJwt: String?
@@ -23,7 +27,11 @@ internal class SessionStorage {
             StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
-            return StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+            val value: String?
+            synchronized(this) {
+                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+            }
+            return value ?: ""
         }
 
     var session: SessionData? = null
@@ -34,26 +42,31 @@ internal class SessionStorage {
     var user: UserData? = null
 
     fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
-        this.sessionToken = sessionToken
-        this.sessionJwt = sessionJwt
-        this.session = session
+        synchronized(this) {
+            this.sessionToken = sessionToken
+            this.sessionJwt = sessionJwt
+            this.session = session
+        }
     }
 
     fun revoke() {
-        sessionToken = null
-        sessionJwt = null
-        session = null
-        user = null
+        synchronized(this) {
+            sessionToken = null
+            sessionJwt = null
+            session = null
+            user = null
+        }
     }
 
 }
 
 //    save session data
 internal fun StytchResult<AuthData>.saveSession(): StytchResult<AuthData> {
-    if (this is StytchResult.Success){
+    if (this is StytchResult.Success) {
         value.apply {
 //            save session tokens
-            StytchClient.sessionStorage.updateSession(session_token, session_jwt, session)
+            StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
+
 //            save user
             StytchClient.sessionStorage.user = user
         }

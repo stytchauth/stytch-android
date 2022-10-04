@@ -15,12 +15,14 @@ internal class OTPImpl internal constructor() : OTP {
     override suspend fun authenticate(parameters: OTP.AuthParameters): AuthResponse {
         val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
+            // call backend endpoint
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
-            )
+            ).apply {
+                launchSessionUpdater()
+            }
         }
-        result.launchSessionUpdater()
         return result
     }
 

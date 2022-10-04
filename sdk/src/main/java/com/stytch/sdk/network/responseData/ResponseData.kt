@@ -1,80 +1,213 @@
 package com.stytch.sdk.network.responseData
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 public data class BasicData(
-    val request_id: String,
-    val status_code: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "status_code")
+    val statusCode: Int,
 )
 
 @JsonClass(generateAdapter = true)
 public data class StytchErrorResponse(
-    val status_code: Int,
-    val request_id: String,
-    val error_type: String,
-    val error_message: String?,
-    val error_url: String,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "error_type")
+    val errorType: String,
+    @Json(name = "error_message")
+    val errorMessage: String?,
+    @Json(name = "error_url")
+    val errorUrl: String,
 )
 
 @JsonClass(generateAdapter = true)
 public data class AuthData(
-    val method_id: String?,
-    val request_id: String,
-    val status_code: Int,
-    val reset_sessions: Boolean?,
     val session: SessionData,
-    val session_jwt: String,
-    val session_token: String,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
     val user: UserData,
 )
 
 @JsonClass(generateAdapter = true)
 public data class SessionData(
     val attributes: AttributesData,
-    val authentication_factors: List<Any>,
-    val custom_claims: Any?,
-    val expires_at: String,
-    val last_accessed_at: String,
-    val session_id: String,
-    val started_at: String,
-    val user_id: String,
-)
-
-@JsonClass(generateAdapter = true)
-public data class AttributesData(
-    val ip_address: String,
-    val user_agent: String,
-)
+    @Json(name = "custom_claims")
+    val customClaims: Map<String, String>?,
+    @Json(name = "expires_at")
+    val expiresAt: String,
+    @Json(name = "last_accessed_at")
+    val lastAccessedAt: String,
+    @Json(name = "session_id")
+    val sessionId: String,
+    @Json(name = "started_at")
+    val startedAt: String,
+    @Json(name = "user_id")
+    val userId: String,
+) {
+    @JsonClass(generateAdapter = true)
+    public data class AttributesData(
+        @Json(name = "ip_address")
+        val ipAddress: String,
+        @Json(name = "user_agent")
+        val userAgent: String,
+    )
+}
 
 @JsonClass(generateAdapter = true)
 public data class UserData(
-    val biometric_registrations: List<Any>,
-    val created_at: String,
-    val crypto_wallets: List<Any>,
+    @Json(name = "created_at")
+    val createdAt: String,
+    @Json(name = "crypto_wallets")
+    val cryptoWallets: List<CryptoWalletData>,
     val emails: List<EmailData>,
     val name: NameData,
     val password: String?,
-    val phone_numbers: List<Any>,
-    val providers: List<Any>,
-    val request_id: String?,
+    @Json(name = "phone_numbers")
+    val phoneNumbers: List<PhoneNumber>,
+    val providers: List<Provider>,
+    @Json(name = "request_id")
+    val requestId: String?,
     val status: String,
-    val status_code: Int?,
-    val totps: List<Any>,
-    val user_id: String,
-    val webauthn_registrations: List<Any>,
+    @Json(name = "status_code")
+    val statusCode: Int?,
+    val totps: List<TOTP>,
+    @Json(name = "user_id")
+    val userId: String,
+    @Json(name = "webauthn_registrations")
+    val webauthnRegistrations: List<WebAuthNRegistrations>,
+) {
+
+    @JsonClass(generateAdapter = true)
+    public data class CryptoWalletData(
+        // The id of the crypto wallet.
+        @Json(name = "crypto_wallet_id")
+        val id: String,
+
+        // The address of the cryptowallet.
+        @Json(name = "crypto_wallet_address")
+        val address: String,
+        @Json(name = "crypto_wallet_type")
+        val walletType: String,
+        // The verification status of the cryptowallet.
+        val verified: Boolean,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class EmailData(
+        public val email: String,
+        @Json(name = "email_id")
+        public val emailId: String,
+        public val verified: Boolean,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class NameData(
+        @Json(name = "first_name")
+        val firstName: String?,
+        @Json(name = "last_name")
+        val lastName: String?,
+        @Json(name = "middle_name")
+        val middleName: String?,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class WebAuthNRegistrations(
+        // The domain of the WebAuthN registration.
+        val domain: String,
+        // The user agent of the registration.
+        val userAgent: String,
+        // The verification status of the registration.
+        val verified: Boolean,
+        // The id of the registration.
+        @Json(name = "webauthn_registration_id")
+        val id: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class PhoneNumber(
+        // The phone number.
+        @Json(name = "phone_number")
+        val phoneNumber: String,
+        // The id of the phone number.
+        @Json(name = "phone_id")
+        val id: String,
+        // The verification status of the phone number.
+        val verified: Boolean,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class Provider(
+        // The subject of the provider.
+        @Json(name = "provider_subject")
+        val providerSubject: String,
+        // The type of the provider.
+        @Json(name = "provider_typeval")
+        val providerTypeval: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class TOTP(
+        /// The id of the TOTP.
+        @Json(name = "totpId")
+        var id: String,
+        /// The verification status of the TOTP.
+        val verified: Boolean,
+    )
+}
+
+@JsonClass(generateAdapter = true)
+public data class Password(
+    @Json(name = "password_id")
+    val passwordId: String,
+    @Json(name = "requires_reset")
+    val requiresReset: Boolean,
 )
 
 @JsonClass(generateAdapter = true)
-public data class EmailData(
-    val email: String,
-    val email_id: String,
-    val verified: Boolean
+public data class Feedback(
+    val suggestions: List<String>,
+    val warning: String,
 )
 
 @JsonClass(generateAdapter = true)
-public data class NameData(
-    val first_name: String,
-    val last_name: String,
-    val middle_name: String,
+public data class CreateResponse(
+    @Json(name = "method_id")
+    val methodId: String?,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "reset_sessions")
+    val resetSessions: Boolean?,
+    val session: SessionData,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
+    val user: UserData,
+    @Json(name = "email_id")
+    val emailId: String,
+    @Json(name = "user_id")
+    val userId: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class StrengthCheckResponse(
+    @Json(name = "breached_password")
+    val breachedPassword: Boolean,
+    val feedback: Feedback,
+    @Json(name = "request_id")
+    val requestId: String,
+    val score: Int,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "valid_password")
+    val validPassword: Boolean,
 )

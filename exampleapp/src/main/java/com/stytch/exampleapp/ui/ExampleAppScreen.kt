@@ -81,9 +81,40 @@ fun ExampleAppScreen(viewModel: MainViewModel = viewModel()) {
                     style = MaterialTheme.typography.caption.copy(color = Red300),
                 )
             }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.otpTokenTextState,
+                isError = viewModel.showOTPError,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.otp_token))
+                },
+                onValueChange = {
+                    viewModel.otpTokenTextState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize))
+            if (viewModel.showOTPError) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = stringResource(id = R.string.please_enter_otp_token),
+                    style = MaterialTheme.typography.caption.copy(color = Red300),
+                )
+            }
             StytchButton(modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.test_email_magic_link_flow),
                 onClick = { viewModel.loginOrCreate() })
+            StytchButton(modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.test_otp_sms_flow),
+                onClick = { viewModel.loginOrCreateSMS() })
+            StytchButton(modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.test_otp_whatsapp_flow),
+                onClick = { viewModel.loginOrCreateWhatsApp() })
+            StytchButton(modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.test_otp_email_flow),
+                onClick = { viewModel.loginOrCreateEmail() })
+            StytchButton(modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.test_otp_authenticate_flow),
+                onClick = { viewModel.authenticateOTP() })
             if (loading.value) {
                 CircularProgressIndicator()
             } else {

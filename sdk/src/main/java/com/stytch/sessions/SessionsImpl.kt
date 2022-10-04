@@ -16,20 +16,18 @@ internal class SessionsImpl internal constructor() : Sessions {
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         return catchExceptions {
-//            update session storage
-            StytchClient.sessionStorage.updateSession(authParams.sessionToken, authParams.sessionJwt, null)
-//            call backend
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
+
+                // do not revoke session here since we using stored data to authenticate
+
+                // call backend endpoint
                 result = StytchApi.Sessions.authenticate(
-                    authParams.sessionDurationMinutes?.toInt(),
-                    authParams.sessionToken,
-                    authParams.sessionJwt
-                )
+                    authParams.sessionDurationMinutes?.toInt()
+                ).apply {
+                    launchSessionUpdater()
+                }
             }
-
-            result.launchSessionUpdater()
-
             result
         }
     }
@@ -47,10 +45,7 @@ internal class SessionsImpl internal constructor() : Sessions {
         return catchExceptions {
             val result: LoginOrCreateUserByEmailResponse
             withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.Sessions.revoke(
-                    StytchClient.sessionStorage.sessionToken,
-                    StytchClient.sessionStorage.sessionJwt
-                )
+                result = StytchApi.Sessions.revoke()
             }
 //            remove stored session
             StytchClient.sessionStorage.revoke()

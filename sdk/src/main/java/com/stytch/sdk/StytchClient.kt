@@ -8,6 +8,8 @@ import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.UserData
+import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.SessionsImpl
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,6 +21,8 @@ import kotlinx.coroutines.withContext
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
 public typealias BaseResponse = StytchResult<BasicData>
 public typealias AuthResponse = StytchResult<AuthData>
+public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
+public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
 public typealias UserResponse = StytchResult<UserData>
 
 /**
@@ -52,6 +56,9 @@ public object StytchClient {
         }
     }
 
+    /**
+     * Exposes an instance of email magic links
+     */
     public var magicLinks: MagicLinks = MagicLinksImpl()
         private set
         get() {
@@ -59,6 +66,9 @@ public object StytchClient {
             return field
         }
 
+    /**
+     * Exposes an instance of otp
+     */
     public var otps: OTP = OTPImpl()
         private set
         get() {
@@ -66,6 +76,19 @@ public object StytchClient {
             return field
         }
 
+    /**
+     * Exposes an instance of passwords
+     */
+    public var passwords: Passwords = PasswordsImpl()
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
+    /**
+     * Exposes an instance of sessions
+     */
     public var sessions: Sessions = SessionsImpl()
         private set
         get() {
@@ -116,6 +139,7 @@ public object StytchClient {
      * Handle magic link
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
+     * @return AuthResponse from backend after calling any of the authentication methods
      */
     public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): AuthResponse {
         assertInitialized()
@@ -146,6 +170,12 @@ public object StytchClient {
         return result
     }
 
+    /**
+     * Handle magic link
+     * @param uri - intent.data from deep link
+     * @param sessionDurationMinutes - sessionDuration
+     * @param callback calls callback with AuthResponse response from backend
+     */
     public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: AuthResponse) -> Unit) {
         GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)

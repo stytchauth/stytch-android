@@ -11,11 +11,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.pow
+import kotlin.random.Random
+
+private const val SECOND = 1000L
+private const val MINUTE = 60L * SECOND
+
+private const val DEFAULT_DELAY = 3 * MINUTE
+private const val MAXIMUM_DELAY = 5 * MINUTE
+
+private const val MINIMUM_RANDOM_MILLIS = -17L
+private const val MAXIMUM_RANDOM_MILLIS = 17L
+private const val MAXIMUM_BACKOFF_DELAY = 32 * SECOND
 
 internal object SessionAutoUpdater {
     private var sessionUpdateJob: Job? = null
     private var n = 0
-    private var sessionUpdateDelay: Long = 3000L
+    private var sessionUpdateDelay: Long = DEFAULT_DELAY
+    private var backoffStartMillis: Long = 0
 
     fun startSessionUpdateJob() {
 //        prevent multiple update jobs running
@@ -26,17 +38,40 @@ internal object SessionAutoUpdater {
                 delay(sessionUpdateDelay)
                 // request session update from backend
                 val sessionResult = updateSession()
-                //save session data in SessionStorage if call successfull
-                if (sessionResult is StytchResult.Success){
+                //save session data in SessionStorage if call successful
+                if (sessionResult is StytchResult.Success) {
+                    // reset exponential backoff delay
+                    resetDelay()
+                    // save session
                     sessionResult.saveSession()
                 } else {
-//                    TODO: handle failed session update request
+                    // set backoff start if not set
+                    if (backoffStartMillis <= 0) {
+                        backoffStartMillis = System.currentTimeMillis()
+                    }
+                    // if delay reached max delay stop exponential backoff
+                    if (System.currentTimeMillis() - backoffStartMillis > MAXIMUM_DELAY - DEFAULT_DELAY) {
+                        resetDelay()
+                        // stop auto updater/ exit while loop
+                        break
+                    } else {
+                        // set exponential delay
+                        sessionUpdateDelay = minOf(
+                            (2.0.pow(n) + Random.nextLong(MINIMUM_RANDOM_MILLIS, MAXIMUM_RANDOM_MILLIS)).toLong(),
+                            MAXIMUM_BACKOFF_DELAY
+                        )
+                        n++
+                    }
+
                 }
-                // add exponential growth to session update delay, result delays: 3000 + 1000*2^n = 3000 -> 4000 -> 4500 -> 4750 -> ...
-                sessionUpdateDelay += (1000.0 / 2.0.pow(n)).toLong()
-                n++
             }
         }
+    }
+
+    private fun resetDelay() {
+        n = 0
+        sessionUpdateDelay = DEFAULT_DELAY
+        backoffStartMillis = 0
     }
 
     fun stopSessionUpdateJob() {
@@ -44,13 +79,11 @@ internal object SessionAutoUpdater {
         sessionUpdateJob = null
     }
 
-    private suspend fun updateSession(): StytchResult<AuthData>{
+    private suspend fun updateSession(): StytchResult<AuthData> {
         val result: StytchResult<AuthData>
         withContext(StytchClient.ioDispatcher) {
             result = StytchApi.Sessions.authenticate(
-                null,
-                StytchClient.sessionStorage.sessionToken,
-                StytchClient.sessionStorage.sessionJwt
+                null
             )
         }
         return result
@@ -60,8 +93,8 @@ internal object SessionAutoUpdater {
 /**
  * Starts session update in background
  */
-internal fun StytchResult<AuthData>.launchSessionUpdater(){
-    if(this is StytchResult.Success){
+internal fun StytchResult<AuthData>.launchSessionUpdater() {
+    if (this is StytchResult.Success) {
 //        save session data
         saveSession()
 //        start auto session update

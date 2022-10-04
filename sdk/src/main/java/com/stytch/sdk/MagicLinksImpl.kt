@@ -14,14 +14,18 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
         return catchExceptions {
             val result: AuthResponse
             withContext(StytchClient.ioDispatcher) {
-                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_CHALLENGE) ?: ""
+
+                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
+                //call backend endpoint
                 result = StytchApi.MagicLinks.Email.authenticate(
                     parameters.token,
                     parameters.sessionDurationMinutes,
                     codeVerifier
-                )
+                ).apply {
+                    launchSessionUpdater()
+                }
             }
-            result.launchSessionUpdater()
+
             result
         }
     }
@@ -58,7 +62,7 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 val result: LoginOrCreateUserByEmailResponse
 
                 withContext(StytchClient.ioDispatcher) {
-                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.getHashedCodeChallenge(true)
+                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
                     result = StytchApi.MagicLinks.Email.loginOrCreate(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,

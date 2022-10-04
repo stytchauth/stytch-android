@@ -25,7 +25,7 @@ internal interface StytchApiService {
     suspend fun authenticateSessions(@Body request: StytchRequests.Sessions.AuthenticateRequest): StytchResponses.AuthenticateResponse
 
     @POST("sessions/revoke")
-    suspend fun revokeSessions(@Body request: StytchRequests.Sessions.RevokeRequest): StytchResponses.Sessions.RevokeResponse
+    suspend fun revokeSessions(): StytchResponses.Sessions.RevokeResponse
     //endregion Sessions
 
     //region OTP
@@ -49,6 +49,33 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.Authenticate,
     ): StytchResponses.AuthenticateResponse
     //endregionOTP
+
+    //region passwords
+    @POST("passwords")
+    suspend fun passwords(
+        @Body request: StytchRequests.Passwords.CreateRequest,
+    ): StytchResponses.Passwords.PasswordsCreateResponse
+
+    @POST("passwords/authenticate")
+    suspend fun authenticateWithPasswords(
+        @Body request: StytchRequests.Passwords.AuthenticateRequest,
+    ): StytchResponses.AuthenticateResponse
+
+    @POST("passwords/email/reset/start")
+    suspend fun resetByEmailStart(
+        @Body request: StytchRequests.Passwords.ResetByEmailStartRequest,
+    ): StytchResponses.BasicResponse
+
+    @POST("passwords/email/reset")
+    suspend fun resetByEmail(
+        @Body request: StytchRequests.Passwords.RestByEmailRequest,
+    ): StytchResponses.AuthenticateResponse
+
+    @POST("passwords/strength_check")
+    suspend fun strengthCheck(
+        @Body request: StytchRequests.Passwords.StrengthCheckRequest,
+    ): StytchResponses.Passwords.PasswordsStrengthCheckResponse
+    //endregion passwords
 
     //region User Management
     @GET("users/me")
