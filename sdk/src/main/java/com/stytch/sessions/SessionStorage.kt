@@ -40,6 +40,16 @@ internal class SessionStorage {
         }
 
     var user: UserData? = null
+        set(value) {
+            synchronized(this) {
+                field = value
+            }
+        }
+        get() {
+            synchronized(this) {
+                return field
+            }
+        }
 
     fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
         synchronized(this) {
