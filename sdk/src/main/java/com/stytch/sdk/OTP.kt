@@ -2,6 +2,10 @@ package com.stytch.sdk
 
 public interface OTP {
 
+    /**
+     * @param token used for authentication
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     */
     public data class AuthParameters(
         val token: String,
         val sessionDurationMinutes: UInt = 5u,
@@ -32,6 +36,10 @@ public interface OTP {
 
     public interface SmsOTP {
 
+        /**
+         * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = 10u,
@@ -58,6 +66,10 @@ public interface OTP {
 
     public interface WhatsAppOTP {
 
+        /**
+         * @param phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = 10u,
@@ -84,6 +96,10 @@ public interface OTP {
 
     public interface EmailOTP {
 
+        /**
+         * @param email the address the OTP code would be sent to via Email
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val email: String,
             val expirationMinutes: UInt = 10u,

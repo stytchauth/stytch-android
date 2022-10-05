@@ -1,6 +1,10 @@
 package com.stytch.sdk
 
 public interface Sessions {
+
+    /**
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     */
     public data class AuthParams(
         val sessionDurationMinutes: UInt? = null,
     )
