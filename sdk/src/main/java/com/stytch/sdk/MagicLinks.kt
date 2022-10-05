@@ -4,7 +4,7 @@ public interface MagicLinks {
 
     /**
      * @param token is the unique sequence of characters used to log in
-     * @param sessionDurationMinutes is the duration after which a session needs to be renewed
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,

@@ -4,7 +4,7 @@ public interface OTP {
 
     /**
      * @param token used for authentication
-     * @param sessionDurationMinutes indicates how long the session should last
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
@@ -37,8 +37,8 @@ public interface OTP {
     public interface SmsOTP {
 
         /**
-         * @param phoneNumber required to identify the phone number the OTP code would be sent to via sms
-         * @param expirationMinutes indicates how long should the otp last before needing to request another one
+         * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
          */
         public data class Parameters(
             val phoneNumber: String,
@@ -67,8 +67,8 @@ public interface OTP {
     public interface WhatsAppOTP {
 
         /**
-         * @param phoneNumber required to identify the phone number the OTP code would be sent to via WhatsApp
-         * @param expirationMinutes indicates how long should the otp last before needing to request another one
+         * @param phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
          */
         public data class Parameters(
             val phoneNumber: String,
@@ -97,8 +97,8 @@ public interface OTP {
     public interface EmailOTP {
 
         /**
-         * @param phoneNumber required to identify the email the OTP code would be sent to
-         * @param expirationMinutes indicates how long should the otp last before needing to request another one
+         * @param email the address the OTP code would be sent to via Email
+         * @param expirationMinutes indicates how long the OTP should last before it expires
          */
         public data class Parameters(
             val email: String,
