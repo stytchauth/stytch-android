@@ -16,6 +16,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,7 +35,7 @@ import com.stytch.exampleapp.R
 
 val items = listOf(
     Screen.Main,
-    Screen.StrengthCheck,
+    Screen.Passwords,
 )
 
 @Composable
@@ -76,7 +77,7 @@ fun AppScreen() {
         content = { padding ->
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
                 composable(Screen.Main.route) { MainScreen(navController = navController) }
-                composable(Screen.StrengthCheck.route) { StrengthCheckScreen(navController = navController) }
+                composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
             }
         })
 }
@@ -97,5 +98,5 @@ fun Toolbar(toolbarText: String) {
 
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconVector: ImageVector) {
     object Main : Screen("main", R.string.home, Icons.Filled.Home)
-    object StrengthCheck : Screen("strength_check", R.string.strength_check_name, Icons.Filled.Check)
+    object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
 }

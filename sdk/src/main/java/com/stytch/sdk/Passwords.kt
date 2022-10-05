@@ -11,7 +11,7 @@ public interface Passwords {
     public data class AuthParameters(
         val email: String,
         val password: String,
-        val sessionDurationMinutes: Int,
+        val sessionDurationMinutes: UInt = 5u,
     )
 
     /**
@@ -23,7 +23,7 @@ public interface Passwords {
     public data class CreateParameters(
         val email: String,
         val password: String,
-        val sessionDurationMinutes: Int,
+        val sessionDurationMinutes: UInt = 5u,
     )
 
     /**
@@ -51,7 +51,7 @@ public interface Passwords {
     public data class ResetByEmailParameters(
         val token: String,
         val password: String,
-        val sessionDurationMinutes: Int,
+        val sessionDurationMinutes: UInt = 5u,
     )
 
     /**

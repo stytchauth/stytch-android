@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.stytch.exampleapp.R
-import com.stytch.exampleapp.StrengthCheckViewModel
+import com.stytch.exampleapp.PasswordsViewModel
 import com.stytch.exampleapp.theme.Red300
 
 @Composable
-fun StrengthCheckScreen(navController: NavController) {
-    val viewModel: StrengthCheckViewModel = viewModel()
+fun PasswordsScreen(navController: NavController) {
+    val viewModel: PasswordsViewModel = viewModel()
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
     Column(
@@ -62,9 +62,33 @@ fun StrengthCheckScreen(navController: NavController) {
             },
             shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
         )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = viewModel.tokenTextState,
+            singleLine = true,
+            label = {
+                Text(text = stringResource(id = R.string.token))
+            },
+            onValueChange = {
+                viewModel.tokenTextState = it
+            },
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+        )
         StytchButton(modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.check_password_strength),
             onClick = { viewModel.checkPassword() })
+        StytchButton(modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.authenticate),
+            onClick = { viewModel.authenticate() })
+        StytchButton(modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_create),
+            onClick = { viewModel.createAccount() })
+        StytchButton(modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_reset_by_email_start),
+            onClick = { viewModel.resetPasswordByEmailStart() })
+        StytchButton(modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_reset_by_email),
+            onClick = { viewModel.resetPasswordByEmail() })
         if (loading.value) {
             CircularProgressIndicator()
         } else {
