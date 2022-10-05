@@ -2,6 +2,10 @@ package com.stytch.sdk
 
 public interface MagicLinks {
 
+    /**
+     * @param token is the unique sequence of characters used to log in
+     * @param sessionDurationMinutes is the duration after which a session needs to be renewed
+     */
     public data class AuthParameters(
         val token: String,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
@@ -30,6 +34,13 @@ public interface MagicLinks {
 
     public interface EmailMagicLinks {
 
+        /**
+         * @param email is the account identifier for the account in the form of an Email address where you wish to receive a magic link to authenticate
+         * @param loginMagicLinkUrl is the url where you should be redirected for login
+         * @param signupMagicLinkUrl is the url where you should be redirected for signup
+         * @param loginExpirationMinutes is the duration after which the login url should expire
+         * @param signupExpirationMinutes is the duration after which the signup url should expire
+         */
         public data class Parameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
