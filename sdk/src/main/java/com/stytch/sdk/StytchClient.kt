@@ -41,11 +41,16 @@ public object StytchClient {
      * Configures the StytchClient, setting the publicToken and hostUrl.
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param hostUrl This is an https url which will be used as the domain for setting session-token cookies to be sent to your servers on subsequent requests
+     * @throws StytchExceptions.Critical - if failed to generate new encryption keys
      */
     public fun configure(context: Context, publicToken: String, hostUrl: String) {
         val deviceInfo = getDeviceInfo(context)
         StytchApi.configure(publicToken, hostUrl, deviceInfo)
-        storageHelper = StorageHelper(context)
+        try {
+            storageHelper = StorageHelper(context)
+        } catch (ex: Exception) {
+            throw  StytchExceptions.Critical(ex)
+        }
     }
 
     internal fun assertInitialized() {
@@ -140,8 +145,10 @@ public object StytchClient {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
 
-            if (token.isNullOrEmpty())
-                TODO("create a more graceful handling of bad parameters")
+            if (token.isNullOrEmpty()) {
+                result = StytchResult.Error(StytchExceptions.Input("Magic link missing token"))
+                return@withContext
+            }
 
             when (tokenType) {
                 TokenType.MAGIC_LINKS -> {
@@ -154,7 +161,8 @@ public object StytchClient {
                     TODO("Implement password reset handling")
                 }
                 TokenType.UNKNOWN -> {
-                    TODO("return Error")
+                    result = StytchResult.Error(StytchExceptions.Input("Unknown magic link type"))
+
                 }
             }
         }
