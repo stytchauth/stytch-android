@@ -1,6 +1,7 @@
 package com.stytch.sessions
 
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.SessionData
@@ -30,7 +31,7 @@ internal class SessionStorage {
             synchronized(this) {
                 value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
             }
-            return value ?: ""
+            return value
         }
 
     var session: SessionData? = null
@@ -38,6 +39,9 @@ internal class SessionStorage {
             field = value
         }
 
+    /**
+     * @throws Exception if failed to save data
+     */
     fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
         synchronized(this) {
             this.sessionToken = sessionToken
@@ -46,6 +50,9 @@ internal class SessionStorage {
         }
     }
 
+    /**
+     * @throws Exception if failed to save data
+     */
     fun revoke() {
         synchronized(this) {
             sessionToken = null
@@ -60,7 +67,11 @@ internal class SessionStorage {
 internal fun StytchResult<AuthData>.saveSession(): StytchResult<AuthData> {
     if (this is StytchResult.Success) {
         value.apply {
-            StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
+            try {
+                StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
+            } catch (ex: Exception) {
+                return StytchResult.Error(StytchExceptions.Critical(ex))
+            }
         }
     }
     return this

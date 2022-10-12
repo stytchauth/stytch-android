@@ -11,23 +11,29 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
-        return catchExceptions {
-            val result: AuthResponse
-            withContext(StytchClient.ioDispatcher) {
+        var result: AuthResponse
+        withContext(StytchClient.ioDispatcher) {
+            val codeVerifier: String
 
-                val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
-                //call backend endpoint
-                result = StytchApi.MagicLinks.Email.authenticate(
-                    parameters.token,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier
-                ).apply {
-                    launchSessionUpdater()
-                }
+            try {
+                codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER)!!
+            } catch (ex: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                return@withContext
             }
 
-            result
+            //call backend endpoint
+            result = StytchApi.MagicLinks.Email.authenticate(
+                parameters.token,
+                parameters.sessionDurationMinutes,
+                codeVerifier
+            ).apply {
+                launchSessionUpdater()
+            }
+
         }
+
+        return result
     }
 
     override fun authenticate(
@@ -41,38 +47,35 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
         }
     }
 
-    //    TODO: rethink error handling
-    private suspend fun <StytchResultType> catchExceptions(function: suspend () -> StytchResult<StytchResultType>): StytchResult<StytchResultType> {
-        return try {
-            function()
-        } catch (stytchException: StytchExceptions) {
-            when (stytchException) {
-                StytchExceptions.NoCodeChallengeFound ->
-                    StytchResult.Error(1, null)
-            }
-        } catch (otherException: Exception) {
-            StytchResult.Error(1, null)
-        }
-    }
-
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
 
         override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): LoginOrCreateUserByEmailResponse {
-            return catchExceptions {
-                val result: LoginOrCreateUserByEmailResponse
 
-                withContext(StytchClient.ioDispatcher) {
-                    val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
-                    result = StytchApi.MagicLinks.Email.loginOrCreate(
-                        email = parameters.email,
-                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                        challengeCode,
-                        challengeCodeMethod
-                    )
+            val result: LoginOrCreateUserByEmailResponse
+
+            withContext(StytchClient.ioDispatcher) {
+                val challengeCodeMethod: String
+                val challengeCode: String
+
+                try {
+                    val challengePair = StytchClient.storageHelper.generateHashedCodeChallenge()
+                    challengeCodeMethod = challengePair.first
+                    challengeCode = challengePair.second
+                } catch (ex: Exception) {
+                    result = StytchResult.Error(StytchExceptions.Critical(ex))
+                    return@withContext
                 }
 
-                result
+                result = StytchApi.MagicLinks.Email.loginOrCreate(
+                    email = parameters.email,
+                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                    challengeCode,
+                    challengeCodeMethod
+                )
             }
+
+            return result
+
         }
 
         override fun loginOrCreate(

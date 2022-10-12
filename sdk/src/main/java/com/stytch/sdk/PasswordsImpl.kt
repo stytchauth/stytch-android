@@ -53,24 +53,34 @@ internal class PasswordsImpl internal constructor() : Passwords {
     }
 
     override suspend fun resetByEmailStart(parameters: Passwords.ResetByEmailStartParameters): BaseResponse {
-        return catchExceptions {
-            val result: BaseResponse
+        val result: BaseResponse
 
-            withContext(StytchClient.ioDispatcher) {
+        withContext(StytchClient.ioDispatcher) {
 
-                val (challengeCodeMethod, challengeCode) = StytchClient.storageHelper.generateHashedCodeChallenge()
-                result = StytchApi.Passwords.resetByEmailStart(
-                    email = parameters.email,
-                    codeChallenge = challengeCode,
-                    codeChallengeMethod = challengeCodeMethod,
-                    loginRedirectUrl = parameters.loginRedirectUrl,
-                    loginExpirationMinutes = parameters.loginExpirationMinutes,
-                    resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
-                    resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
-                )
+            val challengeCodeMethod: String
+            val challengeCode: String
+
+            try {
+                val challengePair = StytchClient.storageHelper.generateHashedCodeChallenge()
+                challengeCodeMethod = challengePair.first
+                challengeCode = challengePair.second
+            } catch (ex: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                return@withContext
             }
-            result
+
+            result = StytchApi.Passwords.resetByEmailStart(
+                email = parameters.email,
+                codeChallenge = challengeCode,
+                codeChallengeMethod = challengeCodeMethod,
+                loginRedirectUrl = parameters.loginRedirectUrl,
+                loginExpirationMinutes = parameters.loginExpirationMinutes,
+                resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
+                resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
+            )
         }
+        return result
+
     }
 
     override fun resetByEmailStart(parameters: Passwords.ResetByEmailStartParameters, callback: (response: BaseResponse) -> Unit) {
@@ -81,22 +91,29 @@ internal class PasswordsImpl internal constructor() : Passwords {
     }
 
     override suspend fun resetByEmail(parameters: Passwords.ResetByEmailParameters): AuthResponse {
-        return catchExceptions {
-            val result: AuthResponse
+        val result: AuthResponse
 
-            val codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER) ?: ""
-            //call backend endpoint
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.Passwords.resetByEmail(
-                    parameters.token,
-                    parameters.password,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier
-                )
+        //call backend endpoint
+        withContext(StytchClient.ioDispatcher) {
+
+            val codeVerifier: String
+            try {
+                codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER)!!
+            } catch (ex: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                return@withContext
             }
 
-            result
+            result = StytchApi.Passwords.resetByEmail(
+                parameters.token,
+                parameters.password,
+                parameters.sessionDurationMinutes,
+                codeVerifier
+            )
         }
+
+        return result
+
     }
 
     override fun resetByEmail(parameters: Passwords.ResetByEmailParameters, callback: (response: AuthResponse) -> Unit) {
@@ -124,17 +141,4 @@ internal class PasswordsImpl internal constructor() : Passwords {
         }
     }
 
-    //    TODO: rethink error handling
-    private suspend fun <StytchResultType> catchExceptions(function: suspend () -> StytchResult<StytchResultType>): StytchResult<StytchResultType> {
-        return try {
-            function()
-        } catch (stytchException: StytchExceptions) {
-            when (stytchException) {
-                StytchExceptions.NoCodeChallengeFound ->
-                    StytchResult.Error(1, null)
-            }
-        } catch (otherException: Exception) {
-            StytchResult.Error(1, null)
-        }
-    }
 }

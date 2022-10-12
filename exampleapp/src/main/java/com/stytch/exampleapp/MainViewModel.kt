@@ -34,8 +34,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         // Initialize StytchClient
         StytchClient.configure(
             context = application.applicationContext,
-            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
-            hostUrl = "https://${application.getString(R.string.host)}"
+            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
         )
     }
 
