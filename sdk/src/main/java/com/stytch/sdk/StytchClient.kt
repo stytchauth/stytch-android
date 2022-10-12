@@ -40,12 +40,11 @@ public object StytchClient {
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
      * @param publicToken Available via the Stytch dashboard in the API keys section
-     * @param hostUrl This is an https url which will be used as the domain for setting session-token cookies to be sent to your servers on subsequent requests
      * @throws StytchExceptions.Critical - if failed to generate new encryption keys
      */
-    public fun configure(context: Context, publicToken: String, hostUrl: String) {
+    public fun configure(context: Context, publicToken: String) {
         val deviceInfo = getDeviceInfo(context)
-        StytchApi.configure(publicToken, hostUrl, deviceInfo)
+        StytchApi.configure(publicToken, deviceInfo)
         try {
             storageHelper = StorageHelper(context)
         } catch (ex: Exception) {

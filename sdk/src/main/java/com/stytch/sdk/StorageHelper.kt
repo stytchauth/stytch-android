@@ -42,8 +42,12 @@ internal class StorageHelper(context: Context) {
      * @throws Exception if failed to load data
      */
     internal fun loadValue(name: String): String? {
-        val encryptedString = sharedPreferences.getString(name, null)
-        return EncryptionManager.decryptString(encryptedString)
+        return try {
+            val encryptedString = sharedPreferences.getString(name, null)
+            EncryptionManager.decryptString(encryptedString)
+        } catch (ex: Exception) {
+            null
+        }
     }
 
     /**

@@ -38,8 +38,7 @@ import com.stytch.sdk.StytchClient
 // Initialize StytchClient
 StytchClient.configure(
     context = application.applicationContext,
-    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
-    hostUrl = "https://${application.getString(R.string.host)}"
+    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
 )
 // Later, handle the subsequent deeplink
 viewModelScope.launch {
@@ -106,8 +105,7 @@ import com.stytch.sdk.StytchClient
 
 StytchClient.configure(
     context = application.applicationContext,
-    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
-    hostUrl = "https://${application.getString(R.string.host)}"
+    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
 )
 ```
 

@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit
 internal object StytchApi {
 
     private lateinit var publicToken: String
-    private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
 
     //save reference for changing auth header
@@ -40,23 +39,21 @@ internal object StytchApi {
         )
     }
 
-    internal fun configure(publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
-        this.hostUrl = hostUrl
         this.deviceInfo = deviceInfo
     }
 
     internal val isInitialized: Boolean
         get() {
             return ::publicToken.isInitialized
-                    && ::hostUrl.isInitialized
                     && ::deviceInfo.isInitialized
         }
 
     private val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
         Retrofit.Builder()
-            .baseUrl(hostUrl)
+            .baseUrl(Constants.HOST_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
