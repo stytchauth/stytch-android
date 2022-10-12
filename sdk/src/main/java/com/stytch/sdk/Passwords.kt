@@ -3,6 +3,7 @@ package com.stytch.sdk
 public interface Passwords {
 
     /**
+     * Data class used for wrapping parameters used with Passwords authentication
      * @param email is the account identifier for the account in the form of an Email address
      * @param password is your private sequence of characters to authenticate
      * @param sessionDurationMinutes indicates how long the session should last before it expires
@@ -14,6 +15,7 @@ public interface Passwords {
     )
 
     /**
+     * Data class used for wrapping parameters used with Passwords create endpoint
      * @param email is the account identifier for the account in the form of an Email address that you wish to use for account creation
      * @param password is your private sequence of characters you wish to use when authenticating with the newly created account in the future
      * @param sessionDurationMinutes indicates how long the session should last before it expires
@@ -25,6 +27,7 @@ public interface Passwords {
     )
 
     /**
+     * Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint
      * @param email is the account identifier for the account in the form of an Email address to identify which account's password you wish to start resettting
      * @param loginRedirectUrl is the url where you should be redirected after a login
      * @param loginExpirationMinutes is the duration after which the login should expire
@@ -40,6 +43,7 @@ public interface Passwords {
     )
 
     /**
+     * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
      * @param token is the unique sequence of characters that should be received after calling the resetByEmailStart
      * @param password is the private sequence of characters you wish to use as a password
      * @param sessionDurationMinutes indicates how long the session should last before it expires
@@ -51,6 +55,7 @@ public interface Passwords {
     )
 
     /**
+     * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @param email is the account identifier for the account in the form of an Email address that you wish to use to initiate a password strength check
      * @param password is the private sequence of characters you wish to check to get advice on improving it
      */
