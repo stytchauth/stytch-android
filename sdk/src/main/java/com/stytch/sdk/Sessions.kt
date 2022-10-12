@@ -1,6 +1,21 @@
 package com.stytch.sdk
 
 public interface Sessions {
+
+    /**
+     * @throws StytchExceptions.Critical if failed to decrypt data
+     */
+    public val sessionToken: String?
+
+    /**
+     * @throws StytchExceptions.Critical if failed to decrypt data
+     */
+    public val sessionJwt: String?
+
+    /**
+     * Data class used for wrapping parameters used with Sessions authentication
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     */
     public data class AuthParams(
         val sessionDurationMinutes: UInt? = null,
     )

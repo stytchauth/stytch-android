@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
@@ -19,19 +20,19 @@ import okhttp3.OkHttpClient
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
 internal object StytchApi {
 
     private lateinit var publicToken: String
-    private lateinit var hostUrl: String
     private lateinit var deviceInfo: DeviceInfo
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
     private val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
-            stytchError("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi.")
+            throw StytchExceptions.Critical(RuntimeException("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi."))
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,
@@ -39,23 +40,21 @@ internal object StytchApi {
         )
     }
 
-    internal fun configure(publicToken: String, hostUrl: String, deviceInfo: DeviceInfo) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
-        this.hostUrl = hostUrl
         this.deviceInfo = deviceInfo
     }
 
     internal val isInitialized: Boolean
         get() {
             return ::publicToken.isInitialized
-                    && ::hostUrl.isInitialized
                     && ::deviceInfo.isInitialized
         }
 
     private val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
         Retrofit.Builder()
-            .baseUrl(hostUrl)
+            .baseUrl(Constants.HOST_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
@@ -220,8 +219,8 @@ internal object StytchApi {
         }
 
         suspend fun strengthCheck(
-             email: String?,
-             password: String,
+            email: String?,
+            password: String,
         ): StytchResult<StrengthCheckResponse> = safeApiCall {
             apiService.strengthCheck(
                 StytchRequests.Passwords.StrengthCheckRequest(
@@ -235,7 +234,7 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int? = null
+            sessionDurationMinutes: Int? = null,
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
@@ -296,12 +295,15 @@ internal object StytchApi {
                             null
                         }
                         StytchLog.w("http error code: $errorCode, errorResponse: $stytchErrorResponse")
-                        StytchResult.Error(errorCode = errorCode, errorResponse = stytchErrorResponse)
+                        StytchResult.Error(StytchExceptions.Response(stytchErrorResponse))
+                    }
+                    is StytchExceptions -> {
+                        StytchResult.Error(throwable)
                     }
                     else -> {
                         throwable.printStackTrace()
                         StytchLog.w("Network Error")
-                        StytchResult.NetworkError
+                        StytchResult.Error(StytchExceptions.Connection(throwable))
                     }
                 }
             }

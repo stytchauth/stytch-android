@@ -33,58 +33,41 @@ internal object EncryptionManager {
             .keysetHandle
     }
 
+    /**
+     * @throws Exception if failed to encrypt text
+     */
     fun encryptString(plainText: String): String? {
-        var encodedString: String? = null
-        try {
-            val aead = aead ?: throw Exception()
-            val plainBytes: ByteArray = plainText.toByteArray(Charsets.UTF_8)
-            // An artifical step to test whether Tink can co-exist with protobuf-lite.
-            val pStr: ByteString = ByteString.copyFrom(plainBytes)
-            val cipherText: ByteArray = aead.encrypt(pStr.toByteArray(), null)
-            encodedString = Base64.encodeToString(cipherText, Base64.NO_WRAP)
-        } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+        val encodedString: String?
+        val aead = aead ?: throw Exception()
+        val plainBytes: ByteArray = plainText.toByteArray(Charsets.UTF_8)
+        // An artifical step to test whether Tink can co-exist with protobuf-lite.
+        val pStr: ByteString = ByteString.copyFrom(plainBytes)
+        val cipherText: ByteArray = aead.encrypt(pStr.toByteArray(), null)
+        encodedString = Base64.encodeToString(cipherText, Base64.NO_WRAP)
         return encodedString
     }
 
+    /**
+     * @throws Exception if failed to decrypt text
+     */
     fun decryptString(encryptedText: String?): String? {
 //       prevent decryption if value is null
         encryptedText ?: return null
         val aead = aead ?: return null
 
-        var decryptedText: String? = null
-
-        try {
-            val ciphertext: ByteArray = Base64.decode(encryptedText, Base64.NO_WRAP)
-            val plaintext: ByteArray = aead.decrypt(ciphertext, null)
-            decryptedText = String(plaintext, Charsets.UTF_8)
-        } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
+        val decryptedText: String?
+        val ciphertext: ByteArray = Base64.decode(encryptedText, Base64.NO_WRAP)
+        val plaintext: ByteArray = aead.decrypt(ciphertext, null)
+        decryptedText = String(plaintext, Charsets.UTF_8)
 
         return decryptedText
     }
 
+    /**
+     * @throws Exception - if failed to generate keys
+     */
     fun createNewKeys(context: Context, keyAlias: String) {
-        try {
-            aead = getOrGenerateNewKeysetHandle(context, keyAlias)?.getPrimitive(Aead::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun getCipher(): Cipher {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // below android m
-            return Cipher.getInstance("RSA/ECB/PKCS1Padding",
-                "AndroidOpenSSL") // error in android 6: InvalidKeyException: Need RSA private or public key
-        } else { // android m and above
-            return Cipher.getInstance("RSA/ECB/PKCS1Padding") // error in android 5: NoSuchProviderException: Provider not available: AndroidKeyStoreBCWorkaround
-        }
+        aead = getOrGenerateNewKeysetHandle(context, keyAlias)?.getPrimitive(Aead::class.java)
     }
 
     fun generateCodeChallenge(): String {

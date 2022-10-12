@@ -4,16 +4,21 @@ import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 
 public sealed class StytchResult<out T> {
+    /**
+     * Data class that can hold a successful response from a Stytch endpoint
+     * @param value is the value of the response
+     */
     public data class Success<out T>(val value: T) : StytchResult<T>()
-    public object NetworkError : StytchResult<Nothing>()
-    public object SdkNotConfigured : StytchResult<Nothing>()
-    public data class Error(val errorCode: Int, val errorResponse: StytchErrorResponse?) : StytchResult<Nothing>() {
-        public val errorType: StytchErrorType? by lazy {
-            errorResponse?.errorType?.toStytchErrorType()
-        }
-    }
+    
+    /**
+     * Data class that can hold a StytchException
+     */
+    public data class Error(val exception: StytchExceptions) : StytchResult<Nothing>() {}
 }
 
+/**
+ * Converts a string to an error type supported by Stytch
+ */
 public fun String.toStytchErrorType(): StytchErrorType? {
     StytchErrorType.values().forEach {
         if (this == it.stringValue) return it

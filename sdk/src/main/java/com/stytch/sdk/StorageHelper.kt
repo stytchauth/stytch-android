@@ -19,6 +19,7 @@ internal class StorageHelper(context: Context) {
 
     /**
      * Encrypt and save value to SharedPreferences
+     * @throws Exception if failed to encrypt string
      */
     internal fun saveValue(name: String, value: String?) {
         if (value == null) {
@@ -38,14 +39,20 @@ internal class StorageHelper(context: Context) {
 
     /**
      * Load and decrypt value from SharedPreferences
+     * @throws Exception if failed to load data
      */
     internal fun loadValue(name: String): String? {
-        val encryptedString = sharedPreferences.getString(name, null)
-        return EncryptionManager.decryptString(encryptedString)
+        return try {
+            val encryptedString = sharedPreferences.getString(name, null)
+            EncryptionManager.decryptString(encryptedString)
+        } catch (ex: Exception) {
+            null
+        }
     }
 
     /**
      * @return Pair(codeChallengeMethod, codeChallenge)
+     * @throws Exception if failed to encrypt data
      */
     internal fun generateHashedCodeChallenge(): Pair<String, String> {
         val codeVerifier: String?

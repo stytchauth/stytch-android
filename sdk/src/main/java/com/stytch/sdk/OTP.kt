@@ -2,13 +2,30 @@ package com.stytch.sdk
 
 public interface OTP {
 
+    /**
+     * Data class used for wrapping parameters used with OTP authentication
+     * @param token used for authentication
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     */
     public data class AuthParameters(
         val token: String,
         val sessionDurationMinutes: UInt = 5u,
     )
 
+
+    /**
+     * Public variable that exposes an instance of SMS OTP
+     */
     public val sms: SmsOTP
+
+    /**
+     * Public variable that exposes an instance of WhatsApp OTP
+     */
     public val whatsapp: WhatsAppOTP
+
+    /**
+     * Public variable that exposes an instance of Email OTP
+     */
     public val email: EmailOTP
 
     /**
@@ -30,8 +47,16 @@ public interface OTP {
         callback: (response: AuthResponse) -> Unit,
     )
 
+    /**
+     * Provides all possible ways to call SMS OTP endpoints
+     */
     public interface SmsOTP {
 
+        /**
+         * Data class used for wrapping parameters used with SMS OTP
+         * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = 10u,
@@ -56,8 +81,15 @@ public interface OTP {
 
     }
 
+    /**
+     * Provides all possible ways to call WhatsApp OTP endpoints
+     */
     public interface WhatsAppOTP {
 
+        /**
+         * @param phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = 10u,
@@ -82,8 +114,15 @@ public interface OTP {
 
     }
 
+    /**
+     * Provides all possible ways to call Email OTP endpoints
+     */
     public interface EmailOTP {
 
+        /**
+         * @param email the address the OTP code would be sent to via Email
+         * @param expirationMinutes indicates how long the OTP should last before it expires
+         */
         public data class Parameters(
             val email: String,
             val expirationMinutes: UInt = 10u,

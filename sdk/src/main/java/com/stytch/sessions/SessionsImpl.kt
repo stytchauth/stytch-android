@@ -13,23 +13,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class SessionsImpl internal constructor() : Sessions {
+    override val sessionToken: String?
+        get() {
+            try {
+                return StytchClient.sessionStorage.sessionToken
+            } catch (ex: Exception) {
+                throw StytchExceptions.Critical(ex)
+            }
+        }
+
+    override val sessionJwt: String?
+        get() {
+            try {
+                return StytchClient.sessionStorage.sessionJwt
+            } catch (ex: Exception) {
+                throw StytchExceptions.Critical(ex)
+            }
+        }
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
-        return catchExceptions {
-            val result: AuthResponse
-            withContext(StytchClient.ioDispatcher) {
+        val result: AuthResponse
+        withContext(StytchClient.ioDispatcher) {
 
-                // do not revoke session here since we using stored data to authenticate
+            // do not revoke session here since we using stored data to authenticate
 
-                // call backend endpoint
-                result = StytchApi.Sessions.authenticate(
-                    authParams.sessionDurationMinutes?.toInt()
-                ).apply {
-                    launchSessionUpdater()
-                }
+            // call backend endpoint
+            result = StytchApi.Sessions.authenticate(
+                authParams.sessionDurationMinutes?.toInt()
+            ).apply {
+                launchSessionUpdater()
             }
-            result
         }
+        return result
+
     }
 
     override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
@@ -42,15 +58,17 @@ internal class SessionsImpl internal constructor() : Sessions {
     }
 
     override suspend fun revoke(): BaseResponse {
-        return catchExceptions {
-            val result: LoginOrCreateUserByEmailResponse
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.Sessions.revoke()
-            }
-//            remove stored session
-            StytchClient.sessionStorage.revoke()
-            result
+        var result: LoginOrCreateUserByEmailResponse
+        withContext(StytchClient.ioDispatcher) {
+            result = StytchApi.Sessions.revoke()
         }
+//            remove stored session
+        try {
+            StytchClient.sessionStorage.revoke()
+        } catch (ex: Exception) {
+            result = StytchResult.Error(StytchExceptions.Critical(ex))
+        }
+        return result
     }
 
     override fun revoke(callback: (BaseResponse) -> Unit) {
@@ -62,21 +80,14 @@ internal class SessionsImpl internal constructor() : Sessions {
         }
     }
 
+    /**
+     * @throws StytchExceptions.Critical if failed to save data
+     */
     override fun updateSession(sessionToken: String?, sessionJwt: String?) {
-        StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt)
-    }
-
-    //    TODO: rethink error handling
-    private suspend fun <StytchResultType> catchExceptions(function: suspend () -> StytchResult<StytchResultType>): StytchResult<StytchResultType> {
-        return try {
-            function()
-        } catch (stytchException: StytchExceptions) {
-            when (stytchException) {
-                StytchExceptions.NoCodeChallengeFound ->
-                    StytchResult.Error(1, null)
-            }
-        } catch (otherException: Exception) {
-            StytchResult.Error(1, null)
+        try {
+            StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt)
+        } catch (ex: Exception) {
+            throw StytchExceptions.Critical(ex)
         }
     }
 }
