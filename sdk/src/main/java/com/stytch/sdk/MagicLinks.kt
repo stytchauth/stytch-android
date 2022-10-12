@@ -3,6 +3,7 @@ package com.stytch.sdk
 public interface MagicLinks {
 
     /**
+     * Data class used for wrapping parameters used with MagicLinks authentication
      * @param token is the unique sequence of characters used to log in
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
@@ -11,6 +12,9 @@ public interface MagicLinks {
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )
 
+    /**
+     * Public variable that exposes an instance of EmailMagicLinks
+     */
     public val email: EmailMagicLinks
 
     /**
@@ -32,6 +36,9 @@ public interface MagicLinks {
         callback: (response: AuthResponse) -> Unit,
     )
 
+    /**
+     * Provides all possible ways to call EmailMagicLinks endpoints
+     */
     public interface EmailMagicLinks {
 
         /**
