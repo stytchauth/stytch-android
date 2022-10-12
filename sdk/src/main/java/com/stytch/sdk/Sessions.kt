@@ -3,6 +3,7 @@ package com.stytch.sdk
 public interface Sessions {
 
     /**
+     * Data class used for wrapping parameters used with Sessions authentication
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParams(
