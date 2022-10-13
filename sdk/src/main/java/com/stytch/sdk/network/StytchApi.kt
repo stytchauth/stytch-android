@@ -2,6 +2,7 @@ package com.stytch.sdk.network
 
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
+import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
@@ -137,7 +138,7 @@ internal object StytchApi {
             )
         }
 
-        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
+        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES):
                 StytchResult<AuthData> =
             safeApiCall {
                 apiService.authenticateWithOTP(
@@ -154,13 +155,13 @@ internal object StytchApi {
         suspend fun authenticate(
             email: String,
             password: String,
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: UInt,
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateWithPasswords(
                 StytchRequests.Passwords.AuthenticateRequest(
                     email,
                     password,
-                    sessionDurationMinutes
+                    sessionDurationMinutes.toInt()
                 )
             )
         }
@@ -168,13 +169,13 @@ internal object StytchApi {
         suspend fun create(
             email: String,
             password: String,
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: UInt,
         ): StytchResult<CreateResponse> = safeApiCall {
             apiService.passwords(
                 StytchRequests.Passwords.CreateRequest(
                     email,
                     password,
-                    sessionDurationMinutes
+                    sessionDurationMinutes.toInt()
                 )
             )
         }
@@ -204,14 +205,14 @@ internal object StytchApi {
         suspend fun resetByEmail(
             token: String,
             password: String,
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: UInt,
             codeVerifier: String,
         ): StytchResult<AuthData> = safeApiCall {
             apiService.resetByEmail(
                 StytchRequests.Passwords.RestByEmailRequest(
                     token,
                     password,
-                    sessionDurationMinutes,
+                    sessionDurationMinutes.toInt(),
                     codeVerifier
                 )
             )

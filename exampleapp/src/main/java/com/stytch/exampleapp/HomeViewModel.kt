@@ -28,7 +28,7 @@ private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
 
 private val PHONE_NUMBER_PATTERN = Pattern.compile("^\\+[1-9]\\d{1,14}\$")
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         // Initialize StytchClient
@@ -41,16 +41,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
+
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
+
     var emailTextState by mutableStateOf(TextFieldValue(""))
     var phoneNumberTextState by mutableStateOf(TextFieldValue(""))
     var otpTokenTextState by mutableStateOf(TextFieldValue(""))
+
     val emailIsValid
         get() = isValidEmail(emailTextState.text)
+
     val phoneNumberIsValid
         get() = isPhoneNumberValid(phoneNumberTextState.text)
+
     var showEmailError by mutableStateOf(false)
     var showPhoneError by mutableStateOf(false)
     var showOTPError by mutableStateOf(false)
