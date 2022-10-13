@@ -2,6 +2,7 @@ package com.stytch.sdk.network
 
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
+import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
@@ -137,7 +138,7 @@ internal object StytchApi {
             )
         }
 
-        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
+        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES):
                 StytchResult<AuthData> =
             safeApiCall {
                 apiService.authenticateWithOTP(

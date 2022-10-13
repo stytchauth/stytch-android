@@ -190,12 +190,15 @@ internal class StytchClientTest {
                 mockkObject(StytchApi)
                 every { StytchApi.isInitialized } returns false
 //                Call method without configuration
-                StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-                    email = any(),
-                    loginRedirectUrl = any(),
-                    loginExpirationMinutes = any(),
-                    resetPasswordRedirectUrl = any(),
-                    resetPasswordExpirationMinutes = any()))
+                StytchClient.passwords.resetByEmailStart(
+                    Passwords.ResetByEmailStartParameters(
+                        email = any(),
+                        loginRedirectUrl = any(),
+                        loginExpirationMinutes = any(),
+                        resetPasswordRedirectUrl = any(),
+                        resetPasswordExpirationMinutes = any()
+                    )
+                )
             } catch (exception: IllegalStateException) {
 //                if exception was thrown test passed
                 return@runBlocking
@@ -246,8 +249,8 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         val deviceInfo = DeviceInfo()
         every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
-        stytchClientObject.configure(mContextMock, "", "")
-        verify { StytchApi.configure("", "", deviceInfo) }
+        stytchClientObject.configure(mContextMock, "")
+        verify { StytchApi.configure("", deviceInfo) }
     }
 
     @Before
@@ -255,7 +258,7 @@ internal class StytchClientTest {
         mockkConstructor(StorageHelper::class)
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         mContextMock = mockk<Context>(relaxed = true)
         Dispatchers.setMain(mainThreadSurrogate)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
@@ -283,7 +286,7 @@ internal class StytchClientTest {
                 loginMagicLinkUrl = null
             )
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.magicLinks.email.loginOrCreate(magicLinkParams)
@@ -301,10 +304,11 @@ internal class StytchClientTest {
                 email = magicLinkParams.email,
                 loginMagicLinkUrl = null,
                 codeChallenge = any(),
-                codeChallengeMethod = any())
+                codeChallengeMethod = any()
+            )
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.magicLinks.email.loginOrCreate(magicLinkParams) {
             assert(it is StytchResult.Success)
         }
@@ -318,7 +322,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.MagicLinks.Email.authenticate(any(), codeVerifier = any(), sessionDurationMinutes = any())
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token"))
@@ -335,7 +339,7 @@ internal class StytchClientTest {
             StytchApi.MagicLinks.Email.authenticate("token", sessionDurationMinutes = 60u, codeVerifier = "")
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token")) {
             assert(it is StytchResult.Success)
         }
@@ -349,7 +353,7 @@ internal class StytchClientTest {
             StytchApi.OTP.authenticateWithOTP("token", 60u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u)) {
             assert(it is StytchResult.Success)
         }
@@ -362,7 +366,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.OTP.authenticateWithOTP("token", 60u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u))
@@ -378,7 +382,7 @@ internal class StytchClientTest {
             StytchApi.OTP.loginOrCreateByOTPWithSMS("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u)) {
             assert(it is StytchResult.Success)
         }
@@ -391,7 +395,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.OTP.loginOrCreateByOTPWithSMS("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u))
@@ -407,7 +411,7 @@ internal class StytchClientTest {
             StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u)) {
             assert(it is StytchResult.Success)
         }
@@ -420,7 +424,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u))
@@ -436,7 +440,7 @@ internal class StytchClientTest {
             StytchApi.OTP.loginOrCreateUserByOTPWithEmail("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u)) {
             assert(it is StytchResult.Success)
         }
@@ -449,7 +453,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.OTP.loginOrCreateUserByOTPWithEmail("+12000000", 60u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u))
@@ -463,11 +467,11 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.Passwords)
         coEvery {
-            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
+            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10)) {
+        stytchClientObject.configure(mContextMock, "")
+        StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10u)) {
             assert(it is StytchResult.Success)
         }
     }
@@ -478,12 +482,12 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.Passwords)
         coEvery {
-            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
+            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
-            StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10))
+            StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10u))
         }
         assert(result is StytchResult.Success)
     }
@@ -494,11 +498,11 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.Passwords)
         coEvery {
-            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
+            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10u)
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10)) {
+        stytchClientObject.configure(mContextMock, "")
+        StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10u)) {
             assert(it is StytchResult.Success)
         }
     }
@@ -509,12 +513,12 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.Passwords)
         coEvery {
-            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
+            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10u)
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
-            StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10))
+            StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10u))
         }
         assert(result is StytchResult.Success)
     }
@@ -532,16 +536,20 @@ internal class StytchClientTest {
                 loginRedirectUrl = "",
                 loginExpirationMinutes = 10,
                 resetPasswordRedirectUrl = "",
-                resetPasswordExpirationMinutes = 10)
+                resetPasswordExpirationMinutes = 10
+            )
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-            email = "",
-            loginRedirectUrl = "",
-            loginExpirationMinutes = 10,
-            resetPasswordRedirectUrl = "",
-            resetPasswordExpirationMinutes = 10)) {
+        stytchClientObject.configure(mContextMock, "")
+        StytchClient.passwords.resetByEmailStart(
+            Passwords.ResetByEmailStartParameters(
+                email = "",
+                loginRedirectUrl = "",
+                loginExpirationMinutes = 10,
+                resetPasswordRedirectUrl = "",
+                resetPasswordExpirationMinutes = 10
+            )
+        ) {
             assert(it is StytchResult.Success)
         }
     }
@@ -562,15 +570,18 @@ internal class StytchClientTest {
                 resetPasswordExpirationMinutes = 10
             )
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
-            StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-                email = "",
-                loginRedirectUrl = "",
-                loginExpirationMinutes = 10,
-                resetPasswordRedirectUrl = "",
-                resetPasswordExpirationMinutes = 10))
+            StytchClient.passwords.resetByEmailStart(
+                Passwords.ResetByEmailStartParameters(
+                    email = "",
+                    loginRedirectUrl = "",
+                    loginExpirationMinutes = 10,
+                    resetPasswordRedirectUrl = "",
+                    resetPasswordExpirationMinutes = 10
+                )
+            )
         }
         assert(result is StytchResult.Success)
     }
@@ -581,11 +592,11 @@ internal class StytchClientTest {
         stytchClientObject.setDispatchers(dispatcher, dispatcher)
         mockkObject(StytchApi.Passwords)
         coEvery {
-            StytchApi.Passwords.resetByEmail(token = "", password = "", sessionDurationMinutes = 10, codeVerifier = "")
+            StytchApi.Passwords.resetByEmail(token = "", password = "", sessionDurationMinutes = 10u, codeVerifier = "")
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = "", password = "", sessionDurationMinutes = 10)) {
+        stytchClientObject.configure(mContextMock, "")
+        StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = "", password = "", sessionDurationMinutes = 10u)) {
             assert(it is StytchResult.Success)
         }
     }
@@ -597,16 +608,19 @@ internal class StytchClientTest {
         mockkObject(StytchApi.Passwords)
         coEvery {
             StytchApi.Passwords.resetByEmail(
-                token = "", password = "", sessionDurationMinutes = 10, codeVerifier = ""
+                token = "", password = "", sessionDurationMinutes = 10u, codeVerifier = ""
             )
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
-            StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(
-                token = "",
-                password = "",
-                sessionDurationMinutes = 10))
+            StytchClient.passwords.resetByEmail(
+                Passwords.ResetByEmailParameters(
+                    token = "",
+                    password = "",
+                    sessionDurationMinutes = 10u
+                )
+            )
         }
         assert(result is StytchResult.Success)
     }
@@ -620,7 +634,7 @@ internal class StytchClientTest {
             StytchApi.Passwords.strengthCheck(email = "", password = "")
         }.returns(StytchResult.Success(any()))
 
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
         StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = "")) {
             assert(it is StytchResult.Success)
         }
@@ -634,7 +648,7 @@ internal class StytchClientTest {
         coEvery {
             StytchApi.Passwords.strengthCheck(email = "", password = "")
         }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+        stytchClientObject.configure(mContextMock, "")
 
         val result = runBlocking {
             StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = ""))

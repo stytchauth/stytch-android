@@ -1,5 +1,8 @@
 package com.stytch.sdk
 
+import com.stytch.sdk.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
+import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
+
 public interface OTP {
 
     /**
@@ -9,9 +12,8 @@ public interface OTP {
      */
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = 5u,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
-
 
     /**
      * Public variable that exposes an instance of SMS OTP
@@ -59,7 +61,7 @@ public interface OTP {
          */
         public data class Parameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt = 10u,
+            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
         )
 
         /**
@@ -92,7 +94,7 @@ public interface OTP {
          */
         public data class Parameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt = 10u,
+            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
         )
 
         /**
@@ -125,7 +127,7 @@ public interface OTP {
          */
         public data class Parameters(
             val email: String,
-            val expirationMinutes: UInt = 10u,
+            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
         )
 
         /**

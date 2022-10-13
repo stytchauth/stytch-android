@@ -1,5 +1,7 @@
 package com.stytch.sdk
 
+import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
+
 public interface Passwords {
 
     /**
@@ -11,7 +13,7 @@ public interface Passwords {
     public data class AuthParameters(
         val email: String,
         val password: String,
-        val sessionDurationMinutes: UInt = 5u,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -23,7 +25,7 @@ public interface Passwords {
     public data class CreateParameters(
         val email: String,
         val password: String,
-        val sessionDurationMinutes: UInt = 5u,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -51,7 +53,7 @@ public interface Passwords {
     public data class ResetByEmailParameters(
         val token: String,
         val password: String,
-        val sessionDurationMinutes: UInt = 5u,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
