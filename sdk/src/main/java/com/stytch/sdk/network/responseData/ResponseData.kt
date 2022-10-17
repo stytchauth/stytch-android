@@ -5,10 +5,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 public data class BasicData(
-    @Json(name = "request_id")
-    val requestId: String,
     @Json(name = "status_code")
     val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
 )
 
 @JsonClass(generateAdapter = true)
@@ -27,6 +27,10 @@ public data class StytchErrorResponse(
 
 @JsonClass(generateAdapter = true)
 public data class AuthData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
     val session: SessionData,
     @Json(name = "session_jwt")
     val sessionJwt: String,
