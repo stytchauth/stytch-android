@@ -139,12 +139,13 @@ internal object StytchApi {
             )
         }
 
-        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES):
+        suspend fun authenticateWithOTP(token: String, methodId: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES):
                 StytchResult<AuthData> =
             safeApiCall {
                 apiService.authenticateWithOTP(
                     StytchRequests.OTP.Authenticate(
                         token,
+                        methodId,
                         sessionDurationMinutes.toInt()
                     )
                 )

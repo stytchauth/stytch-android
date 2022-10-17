@@ -8,10 +8,12 @@ public interface OTP {
     /**
      * Data class used for wrapping parameters used with OTP authentication
      * @param token used for authentication
+     * @param methodId corresponds to the method_id value returned from the corresponding loginOrCreate method
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
+        val methodId: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 

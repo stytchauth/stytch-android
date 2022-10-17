@@ -18,6 +18,7 @@ internal class OTPImpl internal constructor() : OTP {
             // call backend endpoint
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
+                methodId = parameters.methodId,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
             ).apply {
                 launchSessionUpdater()

@@ -116,6 +116,8 @@ internal object StytchRequests {
         @JsonClass(generateAdapter = true)
         data class Authenticate(
             val token: String,
+            @Json(name = "method_id")
+            val methodId: String,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
         )
