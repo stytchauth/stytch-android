@@ -29,17 +29,17 @@ internal interface StytchApiService {
     @POST("otps/sms/login_or_create")
     suspend fun loginOrCreateUserByOTPWithSMS(
         @Body request: StytchRequests.OTP.SMS,
-    ): StytchResponses.BasicResponse
+    ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/whatsapp/login_or_create")
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
         @Body request: StytchRequests.OTP.WhatsApp,
-    ): StytchResponses.BasicResponse
+    ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/email/login_or_create")
     suspend fun loginOrCreateUserByOTPWithEmail(
         @Body request: StytchRequests.OTP.Email,
-    ): StytchResponses.BasicResponse
+    ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
     suspend fun authenticateWithOTP(

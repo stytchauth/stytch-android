@@ -11,6 +11,7 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.stytchError
@@ -105,7 +106,7 @@ internal object StytchApi {
         suspend fun loginOrCreateByOTPWithSMS(
             phoneNumber: String,
             expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
                 StytchRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
@@ -117,7 +118,7 @@ internal object StytchApi {
         suspend fun loginOrCreateUserByOTPWithWhatsApp(
             phoneNumber: String,
             expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
@@ -129,7 +130,7 @@ internal object StytchApi {
         suspend fun loginOrCreateUserByOTPWithEmail(
             email: String,
             expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
                 StytchRequests.OTP.Email(
                     email = email,
