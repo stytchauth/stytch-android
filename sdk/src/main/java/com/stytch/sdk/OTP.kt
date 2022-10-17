@@ -7,8 +7,8 @@ public interface OTP {
 
     /**
      * Data class used for wrapping parameters used with OTP authentication
-     * @param token used for authentication
-     * @param methodId corresponds to the method_id value returned from the corresponding loginOrCreate method
+     * @param token the value sent to the user via the otp delivery method
+     * @param methodId the identifier returned from the corresponding loginOrCreate method
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
