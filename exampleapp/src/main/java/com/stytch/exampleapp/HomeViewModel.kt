@@ -80,7 +80,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text, "", ""))
+                val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text))
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
