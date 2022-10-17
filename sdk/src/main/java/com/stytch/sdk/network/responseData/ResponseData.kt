@@ -162,8 +162,8 @@ public data class UserData(
         @Json(name = "provider_subject")
         val providerSubject: String,
         // The type of the provider.
-        @Json(name = "provider_typeval")
-        val providerTypeval: String,
+        @Json(name = "provider_type")
+        val providerType: String,
     )
 
     @JsonClass(generateAdapter = true)
