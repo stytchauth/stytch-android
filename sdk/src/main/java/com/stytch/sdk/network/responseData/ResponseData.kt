@@ -36,6 +36,16 @@ public data class AuthData(
 )
 
 @JsonClass(generateAdapter = true)
+public data class LoginOrCreateOTPData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+)
+
+@JsonClass(generateAdapter = true)
 public data class SessionData(
     val attributes: AttributesData,
     @Json(name = "custom_claims")
