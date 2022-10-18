@@ -46,6 +46,9 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    lintOptions {
+        disable 'OldTargetApi'
+    }
 }
 
 tasks.named("dokkaHtml").configure {
@@ -61,7 +64,7 @@ tasks.named("dokkaHtml").configure {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.squareup.moshi:moshi:$moshi_version"
