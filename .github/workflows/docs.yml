@@ -22,6 +22,8 @@ jobs:
         path: docs
 
     - name: Generate docs
+      env:
+        STYTCH_PUBLIC_TOKEN: 'abc123'
       working-directory: main
       run: ./gradlew sdk:dokkaHtml
 
