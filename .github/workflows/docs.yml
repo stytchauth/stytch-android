@@ -37,7 +37,7 @@ jobs:
       working-directory: main
       run: |
         current_sha="$(git rev-parse @)"
-        rsync -a sdk/build/dokka/html/ ../docs/
+        rsync -a sdk/build/dokka/html/ ../docs/docs/
         cd ../docs
         git add --all
         git commit -m "$current_sha"
