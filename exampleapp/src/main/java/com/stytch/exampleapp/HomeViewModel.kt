@@ -8,9 +8,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.MagicLinks
 import com.stytch.sdk.OTP
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -60,6 +62,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     var showPhoneError by mutableStateOf(false)
     var showOTPError by mutableStateOf(false)
 
+    private var otpMethodId = ""
+
     fun handleUri(uri: Uri) {
         viewModelScope.launch {
             _loadingState.value = true
@@ -76,7 +80,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text, "", ""))
+                val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text))
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -93,6 +97,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters(phoneNumberTextState.text))
+                handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -109,6 +114,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text))
+                handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -125,6 +131,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters(emailTextState.text))
+                handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -141,7 +148,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showOTPError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.otps.authenticate(OTP.AuthParameters(otpTokenTextState.text))
+                val result = StytchClient.otps.authenticate(OTP.AuthParameters(otpTokenTextState.text, otpMethodId))
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -155,6 +162,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun isPhoneNumberValid(str: String): Boolean {
         return PHONE_NUMBER_PATTERN.matcher(str).matches()
+    }
+
+    private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) {
+        when(response) {
+            is StytchResult.Success -> otpMethodId = response.value.methodId
+            is StytchResult.Error -> TODO("Better handle error")
+        }
     }
 
 }

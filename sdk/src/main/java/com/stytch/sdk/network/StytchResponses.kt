@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 
 internal object StytchResponses {
@@ -34,6 +35,9 @@ internal object StytchResponses {
 
     @JsonClass(generateAdapter = true)
     class AuthenticateResponse(data: AuthData) : StytchDataResponse<AuthData>(data)
+
+    @JsonClass(generateAdapter = true)
+    class LoginOrCreateOTPResponse(data: LoginOrCreateOTPData) : StytchDataResponse<LoginOrCreateOTPData>(data)
 
     open class StytchDataResponse<T>(
         val data: T,

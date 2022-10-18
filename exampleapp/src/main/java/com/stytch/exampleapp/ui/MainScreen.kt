@@ -56,7 +56,7 @@ fun MainScreen(navController: NavController) {
             isError = viewModel.showPhoneError,
             singleLine = true,
             label = {
-                Text(text = stringResource(id = R.string.phone_number))
+                Text(text = stringResource(id = R.string.mobile_number))
             },
             onValueChange = {
                 viewModel.phoneNumberTextState = it

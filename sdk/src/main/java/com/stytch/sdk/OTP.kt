@@ -7,11 +7,13 @@ public interface OTP {
 
     /**
      * Data class used for wrapping parameters used with OTP authentication
-     * @param token used for authentication
+     * @param token the value sent to the user via the otp delivery method
+     * @param methodId the identifier returned from the corresponding loginOrCreate method
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
+        val methodId: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
@@ -69,7 +71,7 @@ public interface OTP {
          * @param parameters required to receive a SMS OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s SMS OTP login_or_create endpoint. Requests a SMS OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -78,7 +80,7 @@ public interface OTP {
          */
         public fun loginOrCreate(
             parameters: Parameters,
-            callback: (response: BaseResponse) -> Unit,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
 
     }
@@ -102,7 +104,7 @@ public interface OTP {
          * @param parameters required to receive a WhatsApp OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -111,7 +113,7 @@ public interface OTP {
          */
         public fun loginOrCreate(
             parameters: Parameters,
-            callback: (response: BaseResponse) -> Unit,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
 
     }
@@ -135,7 +137,7 @@ public interface OTP {
          * @param parameters required to receive an Email OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s Email OTP login_or_create endpoint. Requests an Email OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -144,7 +146,7 @@ public interface OTP {
          */
         public fun loginOrCreate(
             parameters: Parameters,
-            callback: (response: BaseResponse) -> Unit,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
 
     }

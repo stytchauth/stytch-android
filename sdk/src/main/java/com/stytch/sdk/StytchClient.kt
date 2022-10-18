@@ -8,6 +8,7 @@ import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.SessionsImpl
@@ -20,6 +21,7 @@ import kotlinx.coroutines.withContext
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
 public typealias BaseResponse = StytchResult<BasicData>
 public typealias AuthResponse = StytchResult<AuthData>
+public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
 public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
 

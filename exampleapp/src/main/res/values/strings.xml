@@ -18,9 +18,10 @@
     <string name="deeplink_received_toast">Deeplink received</string>
     <string name="email">Email</string>
     <string name="mobile_number">Mobile number</string>
-    <string name="token">Token</string>
+    <string name="otp_token">OTP Token</string>
     <string name="please_enter_email">Please enter a valid email you wish to use</string>
     <string name="please_enter_phone_number">Please enter a valid phone number you wish to use</string>
     <string name="please_enter_otp_token">Please enter an OTP token you wish to validate</string>
     <string name="password">Password</string>
+    <string name="token">Token</string>
 </resources>

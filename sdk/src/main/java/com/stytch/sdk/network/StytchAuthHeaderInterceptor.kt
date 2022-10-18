@@ -1,6 +1,6 @@
 package com.stytch.sdk.network
 
-import android.util.Base64
+import com.google.crypto.tink.subtle.Base64
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.InfoHeaderModel

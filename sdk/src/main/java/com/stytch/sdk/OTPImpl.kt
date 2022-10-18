@@ -18,6 +18,7 @@ internal class OTPImpl internal constructor() : OTP {
             // call backend endpoint
             result = StytchApi.OTP.authenticateWithOTP(
                 token = parameters.token,
+                methodId = parameters.methodId,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
             ).apply {
                 launchSessionUpdater()
@@ -34,8 +35,8 @@ internal class OTPImpl internal constructor() : OTP {
     }
 
     private inner class SmsOTPImpl : OTP.SmsOTP {
-        override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): BaseResponse {
-            val result: BaseResponse
+        override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
+            val result: LoginOrCreateOTPResponse
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateByOTPWithSMS(
                     phoneNumber = parameters.phoneNumber,
@@ -46,7 +47,7 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.SmsOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun loginOrCreate(parameters: OTP.SmsOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
@@ -56,8 +57,8 @@ internal class OTPImpl internal constructor() : OTP {
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
-        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse {
-            val result: BaseResponse
+        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): LoginOrCreateOTPResponse {
+            val result: LoginOrCreateOTPResponse
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp(
                     phoneNumber = parameters.phoneNumber,
@@ -68,7 +69,7 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
@@ -78,8 +79,8 @@ internal class OTPImpl internal constructor() : OTP {
     }
 
     private inner class EmailOTPImpl : OTP.EmailOTP {
-        override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): BaseResponse {
-            val result: BaseResponse
+        override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): LoginOrCreateOTPResponse {
+            val result: LoginOrCreateOTPResponse
             withContext(StytchClient.ioDispatcher) {
                 result = StytchApi.OTP.loginOrCreateUserByOTPWithEmail(
                     email = parameters.email,
@@ -90,7 +91,7 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.EmailOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun loginOrCreate(parameters: OTP.EmailOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
