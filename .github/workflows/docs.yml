@@ -1,0 +1,36 @@
+name: Docs
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/main' || github.run_number }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull') }}
+
+jobs:
+  docs:
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        path: main
+
+    - uses: actions/checkout@v3
+      with:
+        ref: docs
+        path: docs
+
+    - name: Generate docs
+      working-directory: main
+      run: ./gradlew sdk:dokkaHtml
+
+    - name: Publish docs
+      working-directory: main
+      run: |
+        current_sha="$(git rev-parse @)"
+        rsync -a sdk/build/dokka/html/ ../docs/
+        cd ../docs
+        git add --all
+        git commit --author="CI <ci@stytch.com>" -m "$current_sha"
+        git push
