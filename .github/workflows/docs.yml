@@ -26,6 +26,12 @@ jobs:
         STYTCH_PUBLIC_TOKEN: 'abc123'
       working-directory: main
       run: ./gradlew sdk:dokkaHtml
+      
+    - name: Update git config
+      working-directory: docs
+      run: |
+        git config --local user.name "CI"
+        git config --local user.email "ci@stytch.com"
 
     - name: Publish docs
       working-directory: main
@@ -34,5 +40,5 @@ jobs:
         rsync -a sdk/build/dokka/html/ ../docs/
         cd ../docs
         git add --all
-        git commit --author="CI <ci@stytch.com>" -m "$current_sha"
+        git commit -m "$current_sha"
         git push
