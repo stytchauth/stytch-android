@@ -23,7 +23,7 @@ android {
 
     buildTypes {
         all {
-            String publicToken = "$System.env.STYTCH_PUBLIC_TOKEN"
+            String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN")
                 if (!publicToken) {
                     publicToken = STYTCH_PUBLIC_TOKEN
                 }
