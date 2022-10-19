@@ -4,6 +4,7 @@ buildscript {
         kotlin_version = '1.7.10'
         dokka_version = '1.7.10'
         retrofit_version = '2.9.0'
+        okhttp_version = '4.10.0'
         compose_version = '1.2.0'
         moshi_version = '1.13.0'
         magellan_version = '1.1.0'
