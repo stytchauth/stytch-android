@@ -29,10 +29,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
         debug {
             minifyEnabled false
             buildConfigField "Boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
     }
     compileOptions {
