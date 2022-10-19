@@ -163,7 +163,6 @@ public object StytchClient {
                 }
                 TokenType.UNKNOWN -> {
                     result = StytchResult.Error(StytchExceptions.Input("Unknown magic link type"))
-
                 }
             }
         }
