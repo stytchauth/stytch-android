@@ -87,7 +87,7 @@ internal object StytchApi {
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
+            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
                     StytchResult<AuthData> =
                 safeApiCall {
                     apiService.authenticate(
