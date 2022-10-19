@@ -18,11 +18,34 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Type alias for StytchResult<BasicData> used for loginOrCreateUserByEmail responses
+ */
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
+
+/**
+ * Type alias for StytchResult<BasicData> used for basic responses
+ */
 public typealias BaseResponse = StytchResult<BasicData>
+
+/**
+ * Type alias for StytchResult<AuthData> used for authentication responses
+ */
 public typealias AuthResponse = StytchResult<AuthData>
+
+/**
+ * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
+ */
 public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
+
+/**
+ * Type alias for StytchResult<CreateResponse> used for PasswordsCreate responses
+ */
 public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
+
+/**
+ * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
+ */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
 
 /**

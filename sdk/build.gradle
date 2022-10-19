@@ -53,12 +53,14 @@ android {
 
 tasks.named("dokkaHtml").configure {
     moduleName.set("Stytch Kotlin")
+    suppressInheritedMembers.set(true)
     dokkaSourceSets {
         configureEach {
             perPackageOption {
                 matchingRegex.set(".*\\.network.*")
                 suppress.set(true)
             }
+            reportUndocumented.set(true)
         }
     }
 }

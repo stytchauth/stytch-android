@@ -1,5 +1,8 @@
 package com.stytch.sdk
 
+/**
+ * MagicLinks interface that encompasses authentication functions as well as other related functionality
+ */
 public interface MagicLinks {
 
     /**
