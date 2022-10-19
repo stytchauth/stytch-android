@@ -62,6 +62,7 @@ internal object StytchApi {
                     .writeTimeout(120L, TimeUnit.SECONDS)
                     .connectTimeout(120L, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
+                    .addInterceptor(UnauthorizedResponseInterceptor())
                     .build()
             )
             .build()
