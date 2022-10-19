@@ -3,6 +3,9 @@ package com.stytch.sdk
 import com.stytch.sdk.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 
+/**
+ * OTP interface that encompasses authentication functions as well as other related functionality
+ */
 public interface OTP {
 
     /**

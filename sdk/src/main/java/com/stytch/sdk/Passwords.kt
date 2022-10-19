@@ -2,6 +2,9 @@ package com.stytch.sdk
 
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 
+/**
+ * Passwords interface that encompasses authentication functions as well as other related functionality
+ */
 public interface Passwords {
 
     /**
