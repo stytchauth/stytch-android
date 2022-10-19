@@ -82,7 +82,7 @@ public data class UserData(
     val cryptoWallets: List<CryptoWalletData>,
     val emails: List<EmailData>,
     val name: NameData,
-    val password: String?,
+    val password: Password?,
     @Json(name = "phone_numbers")
     val phoneNumbers: List<PhoneNumber>,
     val providers: List<Provider>,
