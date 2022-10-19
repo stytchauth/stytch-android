@@ -164,11 +164,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return PHONE_NUMBER_PATTERN.matcher(str).matches()
     }
 
-    private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) {
-        when(response) {
-            is StytchResult.Success -> otpMethodId = response.value.methodId
-            is StytchResult.Error -> TODO("Better handle error")
-        }
+    private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) = when(response) {
+        is StytchResult.Success -> otpMethodId = response.value.methodId
+        is StytchResult.Error -> {}
     }
 
 }
