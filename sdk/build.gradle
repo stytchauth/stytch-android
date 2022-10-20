@@ -29,10 +29,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
         debug {
             minifyEnabled false
             buildConfigField "Boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
     }
     compileOptions {
@@ -70,6 +72,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"

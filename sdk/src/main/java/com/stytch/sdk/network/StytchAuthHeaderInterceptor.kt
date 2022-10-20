@@ -1,6 +1,7 @@
 package com.stytch.sdk.network
 
 import com.google.crypto.tink.subtle.Base64
+import com.stytch.sdk.BuildConfig
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.InfoHeaderModel
@@ -20,7 +21,7 @@ internal class StytchAuthHeaderInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val authHeader = Base64.encodeToString("$publicToken:${ StytchClient.sessionStorage.sessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
         val infoHeader = Base64.encodeToString(InfoHeaderModel(
-            sdk = InfoHeaderModel.Item(Constants.AUTH_HEADER_SDK_NAME, Constants.AUTH_HEADER_SDK_VERSION),
+            sdk = InfoHeaderModel.Item(Constants.AUTH_HEADER_SDK_NAME, BuildConfig.STYTCH_SDK_VERSION),
             app = InfoHeaderModel.Item(deviceInfo.applicationPackageName ?: "", deviceInfo.applicationVersion ?: ""),
             os = InfoHeaderModel.Item(deviceInfo.osName ?: "", deviceInfo.osVersion ?: ""),
             device = InfoHeaderModel.Item(deviceInfo.deviceName ?: "", deviceInfo.screenSize ?: "", "model", "screen_size")

@@ -4,6 +4,7 @@ import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
+import com.stytch.sdk.network.responseData.IAuthData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -93,7 +94,7 @@ internal object SessionAutoUpdater {
 /**
  * Starts session update in background
  */
-internal fun StytchResult<AuthData>.launchSessionUpdater() {
+internal fun <T: IAuthData> StytchResult<T>.launchSessionUpdater() {
     if (this is StytchResult.Success) {
 //        save session data
         saveSession()

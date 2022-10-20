@@ -16,6 +16,7 @@ import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.HttpException
 import retrofit2.Retrofit
@@ -62,6 +63,14 @@ internal object StytchApi {
                     .writeTimeout(120L, TimeUnit.SECONDS)
                     .connectTimeout(120L, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
+                    .addInterceptor(Interceptor { chain ->
+                        val request = chain.request()
+                        val response = chain.proceed(request)
+                        if (response.code == 401) {
+                            StytchClient.sessionStorage.revoke()
+                        }
+                        return@Interceptor response
+                    })
                     .build()
             )
             .build()
@@ -87,7 +96,7 @@ internal object StytchApi {
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
+            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
                     StytchResult<AuthData> =
                 safeApiCall {
                     apiService.authenticate(

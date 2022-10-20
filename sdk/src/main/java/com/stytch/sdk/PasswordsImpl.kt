@@ -34,12 +34,13 @@ internal class PasswordsImpl internal constructor() : Passwords {
         val result: PasswordsCreateResponse
 
         withContext(StytchClient.ioDispatcher) {
-
             result = StytchApi.Passwords.create(
                 email = parameters.email,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
-            )
+            ).apply {
+                launchSessionUpdater()
+            }
         }
 
         return result
@@ -109,7 +110,9 @@ internal class PasswordsImpl internal constructor() : Passwords {
                 parameters.password,
                 parameters.sessionDurationMinutes,
                 codeVerifier
-            )
+            ).apply {
+                launchSessionUpdater()
+            }
         }
 
         return result
