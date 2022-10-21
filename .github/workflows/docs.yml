@@ -39,6 +39,7 @@ jobs:
         current_sha="$(git rev-parse @)"
         rsync -a sdk/build/dokka/html/ ../docs/docs/
         cd ../docs
+        if [[ -z $(git status --porcelain) ]]; then exit 0; fi
         git add --all
         git commit -m "$current_sha"
         git push
