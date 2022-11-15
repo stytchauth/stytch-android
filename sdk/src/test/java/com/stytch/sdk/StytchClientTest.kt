@@ -27,6 +27,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 
+@Suppress("SwallowedException", "MaxLineLength")
 internal class StytchClientTest {
 
     var mContextMock = mockk<Context>(relaxed = true)

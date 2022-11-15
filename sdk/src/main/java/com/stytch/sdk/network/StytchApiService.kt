@@ -3,6 +3,7 @@ package com.stytch.sdk.network
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+@Suppress("TooManyFunctions")
 internal interface StytchApiService {
 
     //region Magic Links

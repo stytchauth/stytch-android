@@ -24,6 +24,9 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+private const val ONE_HUNDRED_TWENTY = 120L
+private const val HTTP_UNAUTHORIZED = 401
+
 internal object StytchApi {
 
     private lateinit var publicToken: String
@@ -31,6 +34,7 @@ internal object StytchApi {
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
+    @Suppress("MaxLineLength")
     private val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
             throw StytchExceptions.Critical(
@@ -63,15 +67,15 @@ internal object StytchApi {
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
-                    .readTimeout(120L, TimeUnit.SECONDS)
-                    .writeTimeout(120L, TimeUnit.SECONDS)
-                    .connectTimeout(120L, TimeUnit.SECONDS)
+                    .readTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
+                    .writeTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
+                    .connectTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
                     .addInterceptor(
                         Interceptor { chain ->
                             val request = chain.request()
                             val response = chain.proceed(request)
-                            if (response.code == 401) {
+                            if (response.code == HTTP_UNAUTHORIZED) {
                                 StytchClient.sessionStorage.revoke()
                             }
                             return@Interceptor response
@@ -204,6 +208,7 @@ internal object StytchApi {
             )
         }
 
+        @Suppress("LongParameterList")
         suspend fun resetByEmailStart(
             email: String,
             codeChallenge: String,

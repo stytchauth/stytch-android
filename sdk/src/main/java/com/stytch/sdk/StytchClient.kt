@@ -77,9 +77,12 @@ public object StytchClient {
         }
     }
 
+    @Suppress("MaxLineLength")
     internal fun assertInitialized() {
         if (!StytchApi.isInitialized) {
-            stytchError("StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient.") // ktlint-disable max-line-length
+            stytchError(
+                "StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient." // ktlint-disable max-line-length
+            )
         }
     }
 

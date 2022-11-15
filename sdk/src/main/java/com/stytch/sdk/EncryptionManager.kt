@@ -11,6 +11,8 @@ import com.google.crypto.tink.shaded.protobuf.ByteString
 import java.security.MessageDigest
 import kotlin.random.Random
 
+private const val HEX_RADIX = 16
+
 internal object EncryptionManager {
 
     private const val PREF_FILE_NAME = "stytch_secured_pref"
@@ -47,6 +49,7 @@ internal object EncryptionManager {
     /**
      * @throws Exception if failed to decrypt text
      */
+    @Suppress("ReturnCount")
     fun decryptString(encryptedText: String?): String? {
 //       prevent decryption if value is null
         encryptedText ?: return null
@@ -95,7 +98,7 @@ internal object EncryptionManager {
     }
 
     fun String.hexStringToByteArray(): ByteArray {
-        return chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+        return chunked(2).map { it.toInt(HEX_RADIX).toByte() }.toByteArray()
     }
 
     fun ByteArray.toHexString(): String {
