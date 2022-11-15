@@ -1,13 +1,7 @@
-package com.stytch.sessions
+package com.stytch.sdk
 
-import com.stytch.sdk.AuthResponse
-import com.stytch.sdk.BaseResponse
-import com.stytch.sdk.LoginOrCreateUserByEmailResponse
-import com.stytch.sdk.Sessions
-import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sessions.launchSessionUpdater
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,9 +28,7 @@ internal class SessionsImpl internal constructor() : Sessions {
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
-
             // do not revoke session here since we using stored data to authenticate
-
             // call backend endpoint
             result = StytchApi.Sessions.authenticate(
                 authParams.sessionDurationMinutes?.toInt()
@@ -48,10 +40,10 @@ internal class SessionsImpl internal constructor() : Sessions {
     }
 
     override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
-//          call endpoint in IO thread
+        // call endpoint in IO thread
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(authParams)
-//          change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }
@@ -61,7 +53,7 @@ internal class SessionsImpl internal constructor() : Sessions {
         withContext(StytchClient.ioDispatcher) {
             result = StytchApi.Sessions.revoke()
         }
-//            remove stored session
+        // remove stored session
         try {
             StytchClient.sessionStorage.revoke()
         } catch (ex: Exception) {
@@ -71,10 +63,10 @@ internal class SessionsImpl internal constructor() : Sessions {
     }
 
     override fun revoke(callback: (BaseResponse) -> Unit) {
-//          call endpoint in IO thread
+        // call endpoint in IO thread
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = revoke()
-//          change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }
