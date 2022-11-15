@@ -12,6 +12,7 @@ import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -61,6 +62,8 @@ public object StytchClient {
 
     internal val sessionStorage = SessionStorage()
 
+    internal val externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
      * @param publicToken Available via the Stytch dashboard in the API keys section
@@ -88,7 +91,7 @@ public object StytchClient {
     /**
      * Exposes an instance of email magic links
      */
-    public val magicLinks: MagicLinks = MagicLinksImpl()
+    public val magicLinks: MagicLinks = MagicLinksImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -97,7 +100,7 @@ public object StytchClient {
     /**
      * Exposes an instance of otp
      */
-    public val otps: OTP = OTPImpl()
+    public val otps: OTP = OTPImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -106,7 +109,7 @@ public object StytchClient {
     /**
      * Exposes an instance of passwords
      */
-    public val passwords: Passwords = PasswordsImpl()
+    public val passwords: Passwords = PasswordsImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -115,7 +118,7 @@ public object StytchClient {
     /**
      * Exposes an instance of sessions
      */
-    public val sessions: Sessions = SessionsImpl()
+    public val sessions: Sessions = SessionsImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -205,7 +208,7 @@ public object StytchClient {
         sessionDurationMinutes: UInt,
         callback: (response: AuthResponse) -> Unit
     ) {
-        GlobalScope.launch(uiDispatcher) {
+        externalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)
             // change to main thread to call callback
             callback(result)

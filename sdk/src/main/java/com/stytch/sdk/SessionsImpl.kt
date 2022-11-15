@@ -2,11 +2,13 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class SessionsImpl internal constructor() : Sessions {
+internal class SessionsImpl internal constructor(
+    private val externalScope: CoroutineScope
+) : Sessions {
     override val sessionToken: String?
         get() {
             try {
@@ -41,7 +43,7 @@ internal class SessionsImpl internal constructor() : Sessions {
 
     override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
         // call endpoint in IO thread
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(authParams)
             // change to main thread to call callback
             callback(result)
@@ -64,7 +66,7 @@ internal class SessionsImpl internal constructor() : Sessions {
 
     override fun revoke(callback: (BaseResponse) -> Unit) {
         // call endpoint in IO thread
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = revoke()
             // change to main thread to call callback
             callback(result)

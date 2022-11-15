@@ -2,11 +2,13 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class MagicLinksImpl internal constructor() : MagicLinks {
+internal class MagicLinksImpl internal constructor(
+    private val externalScope: CoroutineScope
+) : MagicLinks {
 
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
@@ -39,9 +41,9 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
         parameters: MagicLinks.AuthParameters,
         callback: (response: AuthResponse) -> Unit,
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
-//              change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }
@@ -82,10 +84,10 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
             parameters: MagicLinks.EmailMagicLinks.Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
-//          call endpoint in IO thread
-            GlobalScope.launch(StytchClient.uiDispatcher) {
+            // call endpoint in IO thread
+            externalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
-//              change to main thread to call callback
+                // change to main thread to call callback
                 callback(result)
             }
         }

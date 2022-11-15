@@ -2,16 +2,17 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class PasswordsImpl internal constructor() : Passwords {
+internal class PasswordsImpl internal constructor(
+    private val externalScope: CoroutineScope
+) : Passwords {
 
     override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
         val result: AuthResponse
         withContext(StytchClient.ioDispatcher) {
-
             result = StytchApi.Passwords.authenticate(
                 email = parameters.email,
                 password = parameters.password,
@@ -27,7 +28,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
         parameters: Passwords.AuthParameters,
         callback: (response: AuthResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
             callback(result)
         }
@@ -53,7 +54,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
         parameters: Passwords.CreateParameters,
         callback: (response: PasswordsCreateResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = create(parameters)
             callback(result)
         }
@@ -93,7 +94,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
         parameters: Passwords.ResetByEmailStartParameters,
         callback: (response: BaseResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = resetByEmailStart(parameters)
             callback(result)
         }
@@ -130,7 +131,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
         parameters: Passwords.ResetByEmailParameters,
         callback: (response: AuthResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = resetByEmail(parameters)
             callback(result)
         }
@@ -151,7 +152,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
         parameters: Passwords.StrengthCheckParameters,
         callback: (response: PasswordsStrengthCheckResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = strengthCheck(parameters)
             callback(result)
         }
