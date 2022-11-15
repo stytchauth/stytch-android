@@ -22,7 +22,7 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
                 return@withContext
             }
 
-            //call backend endpoint
+            // call backend endpoint
             result = StytchApi.MagicLinks.Email.authenticate(
                 parameters.token,
                 parameters.sessionDurationMinutes,
@@ -30,7 +30,6 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
             ).apply {
                 launchSessionUpdater()
             }
-
         }
 
         return result
@@ -49,7 +48,9 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
 
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
 
-        override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): LoginOrCreateUserByEmailResponse {
+        override suspend fun loginOrCreate(
+            parameters: MagicLinks.EmailMagicLinks.Parameters
+        ): LoginOrCreateUserByEmailResponse {
 
             val result: LoginOrCreateUserByEmailResponse
 
@@ -75,7 +76,6 @@ internal class MagicLinksImpl internal constructor() : MagicLinks {
             }
 
             return result
-
         }
 
         override fun loginOrCreate(

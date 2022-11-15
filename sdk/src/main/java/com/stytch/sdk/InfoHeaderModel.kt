@@ -15,7 +15,7 @@ internal data class InfoHeaderModel(
              "os": ${os.json},
              "device": ${device.json}
            }
- """.trimIndent()
+            """.trimIndent()
         }
 
     internal data class Item(

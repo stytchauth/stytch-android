@@ -14,7 +14,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
@@ -44,7 +43,8 @@ fun AppScreen() {
     Scaffold(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(), contentColor = MaterialTheme.colors.onBackground,
+            .fillMaxWidth(),
+        contentColor = MaterialTheme.colors.onBackground,
         topBar = { Toolbar(toolbarText = stringResource(id = R.string.app_name)) },
         bottomBar = {
             BottomNavigation {
@@ -79,7 +79,8 @@ fun AppScreen() {
                 composable(Screen.Main.route) { MainScreen(navController = navController) }
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
             }
-        })
+        }
+    )
 }
 
 @Composable
@@ -87,7 +88,8 @@ fun Toolbar(toolbarText: String) {
     TopAppBar(
         title = {
             Text(
-                text = toolbarText, textAlign = TextAlign.Center, modifier = Modifier
+                text = toolbarText, textAlign = TextAlign.Center,
+                modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
             )

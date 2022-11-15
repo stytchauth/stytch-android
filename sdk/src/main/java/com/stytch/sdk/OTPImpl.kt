@@ -27,7 +27,10 @@ internal class OTPImpl internal constructor() : OTP {
         return result
     }
 
-    override fun authenticate(parameters: OTP.AuthParameters, callback: (response: AuthResponse) -> Unit) {
+    override fun authenticate(
+        parameters: OTP.AuthParameters,
+        callback: (response: AuthResponse) -> Unit
+    ) {
         GlobalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
             callback(result)
@@ -47,13 +50,15 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.SmsOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
+        override fun loginOrCreate(
+            parameters: OTP.SmsOTP.Parameters,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit
+        ) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }
         }
-
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
@@ -69,13 +74,15 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
+        override fun loginOrCreate(
+            parameters: OTP.WhatsAppOTP.Parameters,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit
+        ) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }
         }
-
     }
 
     private inner class EmailOTPImpl : OTP.EmailOTP {
@@ -91,12 +98,14 @@ internal class OTPImpl internal constructor() : OTP {
             return result
         }
 
-        override fun loginOrCreate(parameters: OTP.EmailOTP.Parameters, callback: (response: LoginOrCreateOTPResponse) -> Unit) {
+        override fun loginOrCreate(
+            parameters: OTP.EmailOTP.Parameters,
+            callback: (response: LoginOrCreateOTPResponse) -> Unit
+        ) {
             GlobalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }
         }
-
     }
 }

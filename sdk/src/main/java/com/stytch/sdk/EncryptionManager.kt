@@ -1,7 +1,6 @@
 package com.stytch.sdk
 
 import android.content.Context
-import android.os.Build
 import android.util.Base64
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
@@ -9,9 +8,7 @@ import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
-import java.security.GeneralSecurityException
 import java.security.MessageDigest
-import javax.crypto.Cipher
 import kotlin.random.Random
 
 internal object EncryptionManager {
@@ -21,7 +18,7 @@ internal object EncryptionManager {
     private var aead: Aead? = null
 
     init {
-        AeadConfig.register();
+        AeadConfig.register()
     }
 
     private fun getOrGenerateNewKeysetHandle(context: Context, keyAlias: String): KeysetHandle? {
@@ -104,5 +101,4 @@ internal object EncryptionManager {
     fun ByteArray.toHexString(): String {
         return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
-
 }

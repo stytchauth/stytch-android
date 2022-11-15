@@ -175,10 +175,10 @@ public data class UserData(
 
     @JsonClass(generateAdapter = true)
     public data class TOTP(
-        /// The id of the TOTP.
+        // / The id of the TOTP.
         @Json(name = "totpId")
         var id: String,
-        /// The verification status of the TOTP.
+        // / The verification status of the TOTP.
         val verified: Boolean,
     )
 }
