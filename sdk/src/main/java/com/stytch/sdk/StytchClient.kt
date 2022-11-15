@@ -88,8 +88,7 @@ public object StytchClient {
     /**
      * Exposes an instance of email magic links
      */
-    public var magicLinks: MagicLinks = MagicLinksImpl()
-        private set
+    public val magicLinks: MagicLinks = MagicLinksImpl()
         get() {
             assertInitialized()
             return field
@@ -98,8 +97,7 @@ public object StytchClient {
     /**
      * Exposes an instance of otp
      */
-    public var otps: OTP = OTPImpl()
-        private set
+    public val otps: OTP = OTPImpl()
         get() {
             assertInitialized()
             return field
@@ -108,8 +106,7 @@ public object StytchClient {
     /**
      * Exposes an instance of passwords
      */
-    public var passwords: Passwords = PasswordsImpl()
-        private set
+    public val passwords: Passwords = PasswordsImpl()
         get() {
             assertInitialized()
             return field
@@ -118,8 +115,7 @@ public object StytchClient {
     /**
      * Exposes an instance of sessions
      */
-    public var sessions: Sessions = SessionsImpl()
-        private set
+    public val sessions: Sessions = SessionsImpl()
         get() {
             assertInitialized()
             return field
@@ -133,8 +129,8 @@ public object StytchClient {
         this.ioDispatcher = ioDispatcher
     }
 
-//    TODO("OAuth")
-//    TODO("User Management")
+    // TODO("OAuth")
+    // TODO("User Management")
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()
@@ -144,7 +140,7 @@ public object StytchClient {
         deviceInfo.osName = Build.VERSION.CODENAME
 
         try {
-//          throw exceptions if packageName not found
+            // throw exceptions if packageName not found
             deviceInfo.applicationVersion = context
                 .applicationContext
                 .packageManager
@@ -211,7 +207,7 @@ public object StytchClient {
     ) {
         GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)
-//              change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }
