@@ -1,5 +1,6 @@
 package com.stytch.sessions
 
+import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.StytchDispatchers
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchResult
@@ -25,7 +26,8 @@ private const val MAXIMUM_RANDOM_MILLIS = 17L
 private const val MAXIMUM_BACKOFF_DELAY = 32 * SECOND
 
 internal object SessionAutoUpdater {
-    private var sessionUpdateJob: Job? = null
+    @VisibleForTesting
+    internal var sessionUpdateJob: Job? = null
     private var n = 0
     private var sessionUpdateDelay: Long = DEFAULT_DELAY
     private var backoffStartMillis: Long = 0

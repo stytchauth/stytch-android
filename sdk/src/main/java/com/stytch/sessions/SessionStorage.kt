@@ -1,10 +1,14 @@
 package com.stytch.sessions
 
+import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
 
-private const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
-private const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
+
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
 
 internal class SessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?
