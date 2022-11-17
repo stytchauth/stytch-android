@@ -1,5 +1,6 @@
 package com.stytch.sdk.network
 
+import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
@@ -35,7 +36,8 @@ internal object StytchApi {
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
     @Suppress("MaxLineLength")
-    private val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
+    @VisibleForTesting
+    internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
             throw StytchExceptions.Critical(
                 RuntimeException(
@@ -110,17 +112,15 @@ internal object StytchApi {
                 token: String,
                 sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String
-            ):
-                StytchResult<AuthData> =
-                safeApiCall {
-                    apiService.authenticate(
-                        StytchRequests.MagicLinks.AuthenticateRequest(
-                            token,
-                            codeVerifier,
-                            sessionDurationMinutes.toInt()
-                        )
+            ): StytchResult<AuthData> = safeApiCall {
+                apiService.authenticate(
+                    StytchRequests.MagicLinks.AuthenticateRequest(
+                        token,
+                        codeVerifier,
+                        sessionDurationMinutes.toInt()
                     )
-                }
+                )
+            }
         }
     }
 
@@ -165,17 +165,15 @@ internal object StytchApi {
             token: String,
             methodId: String,
             sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES
-        ):
-            StytchResult<AuthData> =
-            safeApiCall {
-                apiService.authenticateWithOTP(
-                    StytchRequests.OTP.Authenticate(
-                        token,
-                        methodId,
-                        sessionDurationMinutes.toInt()
-                    )
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateWithOTP(
+                StytchRequests.OTP.Authenticate(
+                    token,
+                    methodId,
+                    sessionDurationMinutes.toInt()
                 )
-            }
+            )
+        }
     }
 
     internal object Passwords {
@@ -272,14 +270,13 @@ internal object StytchApi {
             )
         }
 
-        suspend fun revoke():
-            StytchResult<BasicData> =
-            safeApiCall {
-                apiService.revokeSessions()
-            }
+        suspend fun revoke(): StytchResult<BasicData> = safeApiCall {
+            apiService.revokeSessions()
+        }
     }
 
-    private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(
+    @VisibleForTesting
+    internal suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(
         apiCall: suspend () -> T
     ): StytchResult<T1> =
         withContext(Dispatchers.IO) {
