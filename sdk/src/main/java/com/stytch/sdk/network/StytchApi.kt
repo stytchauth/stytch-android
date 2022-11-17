@@ -62,7 +62,8 @@ internal object StytchApi {
                 ::deviceInfo.isInitialized
         }
 
-    private val apiService: StytchApiService by lazy {
+    @VisibleForTesting
+    internal val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
         Retrofit.Builder()
             .baseUrl(Constants.HOST_URL)

@@ -2,16 +2,20 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
+import com.stytch.sessions.SessionAutoUpdater
 import com.stytch.sessions.SessionStorage
+import com.stytch.sessions.launchSessionUpdater
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -37,7 +41,7 @@ internal class MagicLinksImplTest {
 
     private lateinit var impl: MagicLinksImpl
     private val dispatcher = Dispatchers.Unconfined
-    private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk())
+    private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
     private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
     private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
@@ -50,6 +54,8 @@ internal class MagicLinksImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
+        mockkObject(SessionAutoUpdater)
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
         impl = MagicLinksImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),
@@ -79,6 +85,7 @@ internal class MagicLinksImplTest {
         val response = impl.authenticate(authParameters)
         assert(response is StytchResult.Success)
         coVerify { mockApi.authenticate(any(), any(), any()) }
+        verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
     }
 
     @Test

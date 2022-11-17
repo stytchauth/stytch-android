@@ -69,7 +69,6 @@ internal class PasswordsImpl internal constructor(
         val result: BaseResponse
 
         withContext(dispatchers.io) {
-
             val challengeCodeMethod: String
             val challengeCode: String
 
@@ -110,7 +109,6 @@ internal class PasswordsImpl internal constructor(
 
         // call backend endpoint
         withContext(dispatchers.io) {
-
             val codeVerifier: String
             try {
                 codeVerifier = storageHelper.loadValue(PREFERENCES_CODE_VERIFIER)!!
