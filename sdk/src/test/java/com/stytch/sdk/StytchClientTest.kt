@@ -26,7 +26,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-@Suppress("SwallowedException", "MaxLineLength")
 internal class StytchClientTest {
     var mContextMock = mockk<Context>(relaxed = true)
     val dispatcher = Dispatchers.Unconfined
@@ -41,7 +40,7 @@ internal class StytchClientTest {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        mContextMock = mockk<Context>(relaxed = true)
+        mContextMock = mockk(relaxed = true)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         every { StorageHelper.initialize(any()) } just runs
