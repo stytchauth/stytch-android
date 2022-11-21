@@ -28,6 +28,7 @@ internal object StytchApi {
 
     private lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    internal var hostUrl: String = Constants.HOST_URL
 
     //save reference for changing auth header
     //make sure api is configured before accessing this variable
@@ -54,8 +55,12 @@ internal object StytchApi {
 
     private val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
-        Retrofit.Builder()
-            .baseUrl(Constants.HOST_URL)
+        createApiService(hostUrl)
+    }
+
+    private fun createApiService(hostUrl: String): StytchApiService {
+        return Retrofit.Builder()
+            .baseUrl(hostUrl)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
