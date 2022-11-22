@@ -1,6 +1,7 @@
 package com.stytch.sessions
 
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
@@ -31,7 +32,7 @@ internal object SessionAutoUpdater {
     private var backoffStartMillis: Long = 0
 
     fun startSessionUpdateJob() {
-//        prevent multiple update jobs running
+        // prevent multiple update jobs running
         stopSessionUpdateJob()
         sessionUpdateJob = GlobalScope.launch(Dispatchers.IO) {
             while (true) {
@@ -90,14 +91,28 @@ internal object SessionAutoUpdater {
     }
 }
 
+// save session data
+internal fun <T : IAuthData> StytchResult<T>.saveSession(): StytchResult<T> {
+    if (this is StytchResult.Success) {
+        value.apply {
+            try {
+                StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
+            } catch (ex: Exception) {
+                return StytchResult.Error(StytchExceptions.Critical(ex))
+            }
+        }
+    }
+    return this
+}
+
 /**
  * Starts session update in background
  */
 internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater() {
     if (this is StytchResult.Success) {
-//        save session data
+        // save session data
         saveSession()
-//        start auto session update
+        // start auto session update
         SessionAutoUpdater.startSessionUpdateJob()
     }
 }

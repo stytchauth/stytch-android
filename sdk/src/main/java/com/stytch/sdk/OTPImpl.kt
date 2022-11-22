@@ -2,11 +2,13 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sessions.launchSessionUpdater
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class OTPImpl internal constructor() : OTP {
+internal class OTPImpl internal constructor(
+    private val externalScope: CoroutineScope
+) : OTP {
 
     override val sms: OTP.SmsOTP = SmsOTPImpl()
     override val whatsapp: OTP.WhatsAppOTP = WhatsAppOTPImpl()
@@ -31,7 +33,7 @@ internal class OTPImpl internal constructor() : OTP {
         parameters: OTP.AuthParameters,
         callback: (response: AuthResponse) -> Unit
     ) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(StytchClient.uiDispatcher) {
             val result = authenticate(parameters)
             callback(result)
         }
@@ -54,7 +56,7 @@ internal class OTPImpl internal constructor() : OTP {
             parameters: OTP.SmsOTP.Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
-            GlobalScope.launch(StytchClient.uiDispatcher) {
+            externalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }
@@ -78,7 +80,7 @@ internal class OTPImpl internal constructor() : OTP {
             parameters: OTP.WhatsAppOTP.Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
-            GlobalScope.launch(StytchClient.uiDispatcher) {
+            externalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }
@@ -102,7 +104,7 @@ internal class OTPImpl internal constructor() : OTP {
             parameters: OTP.EmailOTP.Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
-            GlobalScope.launch(StytchClient.uiDispatcher) {
+            externalScope.launch(StytchClient.uiDispatcher) {
                 val result = loginOrCreate(parameters)
                 callback(result)
             }

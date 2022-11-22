@@ -11,8 +11,8 @@ import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sessions.SessionStorage
-import com.stytch.sessions.SessionsImpl
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -62,6 +62,8 @@ public object StytchClient {
 
     internal val sessionStorage = SessionStorage()
 
+    internal val externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
      * @param publicToken Available via the Stytch dashboard in the API keys section
@@ -89,8 +91,7 @@ public object StytchClient {
     /**
      * Exposes an instance of email magic links
      */
-    public var magicLinks: MagicLinks = MagicLinksImpl()
-        private set
+    public val magicLinks: MagicLinks = MagicLinksImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -99,8 +100,7 @@ public object StytchClient {
     /**
      * Exposes an instance of otp
      */
-    public var otps: OTP = OTPImpl()
-        private set
+    public val otps: OTP = OTPImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -109,8 +109,7 @@ public object StytchClient {
     /**
      * Exposes an instance of passwords
      */
-    public var passwords: Passwords = PasswordsImpl()
-        private set
+    public val passwords: Passwords = PasswordsImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -119,8 +118,7 @@ public object StytchClient {
     /**
      * Exposes an instance of sessions
      */
-    public var sessions: Sessions = SessionsImpl()
-        private set
+    public val sessions: Sessions = SessionsImpl(externalScope)
         get() {
             assertInitialized()
             return field
@@ -134,8 +132,8 @@ public object StytchClient {
         this.ioDispatcher = ioDispatcher
     }
 
-//    TODO("OAuth")
-//    TODO("User Management")
+    // TODO("OAuth")
+    // TODO("User Management")
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()
@@ -145,7 +143,7 @@ public object StytchClient {
         deviceInfo.osName = Build.VERSION.CODENAME
 
         try {
-//          throw exceptions if packageName not found
+            // throw exceptions if packageName not found
             deviceInfo.applicationVersion = context
                 .applicationContext
                 .packageManager
@@ -210,9 +208,9 @@ public object StytchClient {
         sessionDurationMinutes: UInt,
         callback: (response: AuthResponse) -> Unit
     ) {
-        GlobalScope.launch(uiDispatcher) {
+        externalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)
-//              change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }
