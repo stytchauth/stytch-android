@@ -108,7 +108,6 @@ $dokka.location:com.stytch.sdk/StytchClient/magicLinks/#/PointingToDeclaration/
 $dokka.location:com.stytch.sdk/StytchClient/otps/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/otps.html
 $dokka.location:com.stytch.sdk/StytchClient/passwords/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/passwords.html
 $dokka.location:com.stytch.sdk/StytchClient/sessions/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/sessions.html
-$dokka.location:com.stytch.sdk/StytchClient/setDispatchers/#kotlinx.coroutines.CoroutineDispatcher#kotlinx.coroutines.CoroutineDispatcher/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/set-dispatchers.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/index.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection/Connection/#kotlin.Throwable/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/-connection.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection/reason/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/reason.html
