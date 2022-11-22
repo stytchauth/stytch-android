@@ -27,7 +27,8 @@ internal object StytchResponses {
         class PasswordsCreateResponse(data: CreateResponse) : StytchDataResponse<CreateResponse>(data)
 
         @JsonClass(generateAdapter = true)
-        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse): StytchDataResponse<StrengthCheckResponse>(data)
+        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
+            StytchDataResponse<StrengthCheckResponse>(data)
     }
 
     @JsonClass(generateAdapter = true)

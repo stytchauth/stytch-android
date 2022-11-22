@@ -3,7 +3,6 @@ package com.stytch.sessions
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchResult
-import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.IAuthData
 import com.stytch.sdk.network.responseData.SessionData
 
@@ -61,7 +60,6 @@ internal class SessionStorage {
             session = null
         }
     }
-
 }
 
 //    save session data

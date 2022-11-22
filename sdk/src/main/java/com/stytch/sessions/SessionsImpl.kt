@@ -45,7 +45,6 @@ internal class SessionsImpl internal constructor() : Sessions {
             }
         }
         return result
-
     }
 
     override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {

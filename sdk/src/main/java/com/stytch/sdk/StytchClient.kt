@@ -73,13 +73,16 @@ public object StytchClient {
         try {
             storageHelper = StorageHelper(context)
         } catch (ex: Exception) {
-            throw  StytchExceptions.Critical(ex)
+            throw StytchExceptions.Critical(ex)
         }
     }
 
+    @Suppress("MaxLineLength")
     internal fun assertInitialized() {
         if (!StytchApi.isInitialized) {
-            stytchError("StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient.")
+            stytchError(
+                "StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient." // ktlint-disable max-line-length
+            )
         }
     }
 
@@ -143,8 +146,11 @@ public object StytchClient {
 
         try {
 //          throw exceptions if packageName not found
-            deviceInfo.applicationVersion =
-                context.applicationContext.packageManager.getPackageInfo(deviceInfo.applicationPackageName!!, 0).versionName
+            deviceInfo.applicationVersion = context
+                .applicationContext
+                .packageManager
+                .getPackageInfo(deviceInfo.applicationPackageName!!, 0)
+                .versionName
         } catch (ex: Exception) {
             deviceInfo.applicationVersion = ""
         }
@@ -199,7 +205,11 @@ public object StytchClient {
      * @param sessionDurationMinutes - sessionDuration
      * @param callback calls callback with AuthResponse response from backend
      */
-    public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: AuthResponse) -> Unit) {
+    public fun handle(
+        uri: Uri,
+        sessionDurationMinutes: UInt,
+        callback: (response: AuthResponse) -> Unit
+    ) {
         GlobalScope.launch(uiDispatcher) {
             val result = handle(uri, sessionDurationMinutes)
 //              change to main thread to call callback

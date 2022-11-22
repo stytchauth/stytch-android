@@ -5,14 +5,14 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.IAuthData
+import kotlin.math.pow
+import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.pow
-import kotlin.random.Random
 
 private const val SECOND = 1000L
 private const val MINUTE = 60L * SECOND
@@ -39,7 +39,7 @@ internal object SessionAutoUpdater {
                 delay(sessionUpdateDelay)
                 // request session update from backend
                 val sessionResult = updateSession()
-                //save session data in SessionStorage if call successful
+                // save session data in SessionStorage if call successful
                 if (sessionResult is StytchResult.Success) {
                     // reset exponential backoff delay
                     resetDelay()
@@ -63,7 +63,6 @@ internal object SessionAutoUpdater {
                         )
                         n++
                     }
-
                 }
             }
         }
@@ -94,7 +93,7 @@ internal object SessionAutoUpdater {
 /**
  * Starts session update in background
  */
-internal fun <T: IAuthData> StytchResult<T>.launchSessionUpdater() {
+internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater() {
     if (this is StytchResult.Success) {
 //        save session data
         saveSession()

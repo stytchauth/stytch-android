@@ -86,7 +86,6 @@ internal object StytchRequests {
             val email: String?,
             val password: String,
         )
-
     }
 
     object OTP {
