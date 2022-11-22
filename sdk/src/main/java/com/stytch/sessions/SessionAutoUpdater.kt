@@ -1,6 +1,7 @@
 package com.stytch.sessions
 
-import com.stytch.sdk.StytchClient
+import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.StytchDispatchers
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
@@ -8,7 +9,6 @@ import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.IAuthData
 import kotlin.math.pow
 import kotlin.random.Random
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,26 +26,27 @@ private const val MAXIMUM_RANDOM_MILLIS = 17L
 private const val MAXIMUM_BACKOFF_DELAY = 32 * SECOND
 
 internal object SessionAutoUpdater {
-    private var sessionUpdateJob: Job? = null
+    @VisibleForTesting
+    internal var sessionUpdateJob: Job? = null
     private var n = 0
     private var sessionUpdateDelay: Long = DEFAULT_DELAY
     private var backoffStartMillis: Long = 0
 
-    fun startSessionUpdateJob() {
+    fun startSessionUpdateJob(dispatchers: StytchDispatchers, sessionStorage: SessionStorage) {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
-        sessionUpdateJob = GlobalScope.launch(Dispatchers.IO) {
+        sessionUpdateJob = GlobalScope.launch(dispatchers.io) {
             while (true) {
                 // wait before another update request
                 delay(sessionUpdateDelay)
                 // request session update from backend
-                val sessionResult = updateSession()
+                val sessionResult = updateSession(dispatchers)
                 // save session data in SessionStorage if call successful
                 if (sessionResult is StytchResult.Success) {
                     // reset exponential backoff delay
                     resetDelay()
                     // save session
-                    sessionResult.saveSession()
+                    sessionResult.saveSession(sessionStorage)
                 } else {
                     // set backoff start if not set
                     if (backoffStartMillis <= 0) {
@@ -80,9 +81,9 @@ internal object SessionAutoUpdater {
         sessionUpdateJob = null
     }
 
-    private suspend fun updateSession(): StytchResult<AuthData> {
+    private suspend fun updateSession(dispatchers: StytchDispatchers): StytchResult<AuthData> {
         val result: StytchResult<AuthData>
-        withContext(StytchClient.ioDispatcher) {
+        withContext(dispatchers.io) {
             result = StytchApi.Sessions.authenticate(
                 null
             )
@@ -92,11 +93,11 @@ internal object SessionAutoUpdater {
 }
 
 // save session data
-internal fun <T : IAuthData> StytchResult<T>.saveSession(): StytchResult<T> {
+internal fun <T : IAuthData> StytchResult<T>.saveSession(sessionStorage: SessionStorage): StytchResult<T> {
     if (this is StytchResult.Success) {
         value.apply {
             try {
-                StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
+                sessionStorage.updateSession(sessionToken, sessionJwt, session)
             } catch (ex: Exception) {
                 return StytchResult.Error(StytchExceptions.Critical(ex))
             }
@@ -108,11 +109,14 @@ internal fun <T : IAuthData> StytchResult<T>.saveSession(): StytchResult<T> {
 /**
  * Starts session update in background
  */
-internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater() {
+internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater(
+    dispatchers: StytchDispatchers,
+    sessionStorage: SessionStorage
+) {
     if (this is StytchResult.Success) {
         // save session data
-        saveSession()
+        saveSession(sessionStorage)
         // start auto session update
-        SessionAutoUpdater.startSessionUpdateJob()
+        SessionAutoUpdater.startSessionUpdateJob(dispatchers, sessionStorage)
     }
 }

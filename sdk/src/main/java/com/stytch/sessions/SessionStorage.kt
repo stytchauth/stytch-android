@@ -1,32 +1,36 @@
 package com.stytch.sessions
 
-import com.stytch.sdk.StytchClient
+import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
 
-private const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
-private const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
 
-internal class SessionStorage {
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
+
+internal class SessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?
         private set(value) {
-            StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
             }
             return value
         }
 
     var sessionJwt: String?
         private set(value) {
-            StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
             }
             return value
         }
