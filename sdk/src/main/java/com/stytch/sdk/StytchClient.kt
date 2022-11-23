@@ -140,6 +140,17 @@ public object StytchClient {
         }
         internal set
 
+    /**
+     * Exposes a Map of all cookies saved in memory at the time of calling
+     */
+    public var cookies: Map<String?, String?>? = sessionStorage.cookies
+        private set
+        get() {
+            assertInitialized()
+            return field
+        }
+
+
     // TODO("OAuth")
     // TODO("User Management")
 

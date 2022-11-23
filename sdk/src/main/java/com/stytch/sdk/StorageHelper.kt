@@ -53,6 +53,23 @@ internal object StorageHelper {
     }
 
     /**
+     * Load and return a Map of all cookies in memory
+     * @param Map<String, String> of cookie and preference names
+     * @return Map<String?, String?> of names and values of cookies saved in memory or null if there are none
+     * @throws Exception if failed to return data
+     */
+    internal fun getAllCookies(cookiePrefMap: Map<String, String>): Map<String?, String?>? {
+        return try {
+            cookiePrefMap.mapValues {
+                val cookieValue = sharedPreferences.getString(it.value, "")
+                EncryptionManager.decryptString(cookieValue)
+            }
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
+    /**
      * @return Pair(codeChallengeMethod, codeChallenge)
      * @throws Exception if failed to encrypt data
      */

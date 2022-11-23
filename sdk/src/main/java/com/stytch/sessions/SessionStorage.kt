@@ -10,6 +10,9 @@ internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
 @VisibleForTesting
 internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
 
+private const val COOKIE_NAME_SESSION_JWT = "stytch_session_jwt"
+private const val COOKIE_NAME_SESSION_TOKEN = "stytch_session"
+
 internal class SessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?
         private set(value) {
@@ -38,6 +41,16 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
     var session: SessionData? = null
         private set(value) {
             field = value
+        }
+
+    val cookies: Map<String?, String?>?
+        get() {
+            return storageHelper.getAllCookies(
+                mapOf(
+                    COOKIE_NAME_SESSION_JWT to PREFERENCES_NAME_SESSION_JWT,
+                    COOKIE_NAME_SESSION_TOKEN to PREFERENCES_NAME_SESSION_TOKEN
+                )
+            )
         }
 
     /**
