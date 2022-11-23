@@ -232,3 +232,42 @@ public data class StrengthCheckResponse(
     @Json(name = "valid_password")
     val validPassword: Boolean,
 )
+
+@JsonClass(generateAdapter = true)
+public data class BiometricsRegisterStartResponse(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "biometric_registration_id")
+    val biometricRegistrationId: String,
+    val challenge: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class BiometricsAuthenticateStartResponse(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "biometric_registration_id")
+    val biometricRegistrationId: String,
+    val challenge: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class BiometricsAuthData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+    @Json(name = "biometric_registration_id")
+    val biometricRegistrationId: String,
+) : IAuthData
+

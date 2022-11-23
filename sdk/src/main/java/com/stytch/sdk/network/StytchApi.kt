@@ -11,6 +11,9 @@ import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.BiometricsAuthData
+import com.stytch.sdk.network.responseData.BiometricsAuthenticateStartResponse
+import com.stytch.sdk.network.responseData.BiometricsRegisterStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
@@ -273,6 +276,56 @@ internal object StytchApi {
 
         suspend fun revoke(): StytchResult<BasicData> = safeApiCall {
             apiService.revokeSessions()
+        }
+    }
+
+    internal object Biometrics {
+        suspend fun registerStart(
+            publicKey: String,
+        ): StytchResult<BiometricsRegisterStartResponse> = safeApiCall {
+            apiService.biometricsRegisterStart(
+                StytchRequests.Biometrics.RegisterStartRequest(
+                    publicKey = publicKey,
+                )
+            )
+        }
+
+        suspend fun register(
+            signature: String,
+            biometricRegistrationId: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<BiometricsAuthData> = safeApiCall {
+            apiService.biometricsRegister(
+                StytchRequests.Biometrics.RegisterRequest(
+                    signature = signature,
+                    biometricRegistrationId = biometricRegistrationId,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
+        }
+
+        suspend fun authenticateStart(
+            publicKey: String,
+        ): StytchResult<BiometricsAuthenticateStartResponse> = safeApiCall {
+            apiService.biometricsAuthenticateStart(
+                StytchRequests.Biometrics.AuthenticateStartRequest(
+                    publicKey = publicKey,
+                )
+            )
+        }
+
+        suspend fun authenticate(
+            signature: String,
+            biometricRegistrationId: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<BiometricsAuthData> = safeApiCall {
+            apiService.biometricsAuthenticate(
+                StytchRequests.Biometrics.AuthenticateRequest(
+                    signature = signature,
+                    biometricRegistrationId = biometricRegistrationId,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
         }
     }
 

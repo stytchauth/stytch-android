@@ -121,4 +121,36 @@ internal object StytchRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object Biometrics {
+        @JsonClass(generateAdapter = true)
+        data class RegisterStartRequest(
+            @Json(name = "public_key")
+            val publicKey: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class RegisterRequest(
+            val signature: String,
+            @Json(name = "biometric_registration_id")
+            val biometricRegistrationId: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateStartRequest(
+            @Json(name = "public_key")
+            val publicKey: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            val signature: String,
+            @Json(name = "biometric_registration_id")
+            val biometricRegistrationId: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+    }
 }

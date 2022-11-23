@@ -76,4 +76,26 @@ internal interface StytchApiService {
         @Body request: StytchRequests.Passwords.StrengthCheckRequest
     ): StytchResponses.Passwords.PasswordsStrengthCheckResponse
     //endregion passwords
+
+    // region biometrics
+    @POST("biometrics/register/start")
+    suspend fun biometricsRegisterStart(
+        @Body request: StytchRequests.Biometrics.RegisterStartRequest
+    ): StytchResponses.Biometrics.RegisterStartResponse
+
+    @POST("biometrics/register")
+    suspend fun biometricsRegister(
+        @Body request: StytchRequests.Biometrics.RegisterRequest
+    ): StytchResponses.Biometrics.RegisterResponse
+
+    @POST("biometrics/authenticate/start")
+    suspend fun biometricsAuthenticateStart(
+        @Body request: StytchRequests.Biometrics.AuthenticateStartRequest
+    ): StytchResponses.Biometrics.AuthenticateStartResponse
+
+    @POST("biometrics/authenticate")
+    suspend fun biometricsAuthenticate(
+        @Body request: StytchRequests.Biometrics.AuthenticateRequest
+    ): StytchResponses.Biometrics.AuthenticateResponse
+    // endregion biometrics
 }

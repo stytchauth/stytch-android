@@ -3,6 +3,9 @@ package com.stytch.sdk.network
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.BiometricsAuthData
+import com.stytch.sdk.network.responseData.BiometricsAuthenticateStartResponse
+import com.stytch.sdk.network.responseData.BiometricsRegisterStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
@@ -29,6 +32,24 @@ internal object StytchResponses {
         @JsonClass(generateAdapter = true)
         class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
             StytchDataResponse<StrengthCheckResponse>(data)
+    }
+
+    object Biometrics {
+        @JsonClass(generateAdapter = true)
+        class RegisterStartResponse(data: BiometricsRegisterStartResponse) :
+            StytchDataResponse<BiometricsRegisterStartResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RegisterResponse(data: BiometricsAuthData) :
+            StytchDataResponse<BiometricsAuthData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateStartResponse(data: BiometricsAuthenticateStartResponse) :
+            StytchDataResponse<BiometricsAuthenticateStartResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(data: BiometricsAuthData) :
+            StytchDataResponse<BiometricsAuthData>(data)
     }
 
     @JsonClass(generateAdapter = true)
