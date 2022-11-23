@@ -87,6 +87,16 @@ internal object StytchApi {
                             return@Interceptor response
                         }
                     )
+                    .addNetworkInterceptor {
+                        // OkHttp is adding a charset to the content-type which is rejected by the API
+                        // see: https://github.com/square/okhttp/issues/3081
+                        it.proceed(
+                            it.request()
+                                .newBuilder()
+                                .header("Content-Type", "application/json")
+                                .build()
+                        )
+                    }
                     .build()
             )
             .build()
