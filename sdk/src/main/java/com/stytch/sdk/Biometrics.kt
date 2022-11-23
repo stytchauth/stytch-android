@@ -65,8 +65,9 @@ public interface Biometrics {
     public fun removeRegistration()
 
     /**
-     * Wraps the biometrics register API endpoint which validates the signature passed in. If this method succeeds,
-     * the user will be logged in and granted an active session
+     * When a valid/active session exists, this method will add a biometric registration for the current user.
+     * The user will later be able to start a new session with biometrics or use biometrics as an additional
+     * authentication factor.
      * @param parameters required to register a biometrics key
      */
     public suspend fun register(
@@ -74,8 +75,9 @@ public interface Biometrics {
     ): BiometricsAuthResponse
 
     /**
-     * Wraps the biometrics register API endpoint which validates the signature passed in. If this method succeeds,
-     * the user will be logged in and granted an active session
+     * When a valid/active session exists, this method will add a biometric registration for the current user.
+     * The user will later be able to start a new session with biometrics or use biometrics as an additional
+     * authentication factor.
      * @param parameters required to register a biometrics key
      * @param callback calls callback with BiometricsRegisterResponse response from backend
      */
@@ -85,8 +87,9 @@ public interface Biometrics {
     )
 
     /**
-     * Wraps the biometrics authenticate API endpoint which validates the signature passed in. If this method succeeds,
-     * the user will be logged in and granted an active session
+     * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
+     * biometric reader and returns an updated session object by either starting a new session or adding the biometric
+     * factor to an existing session.
      * @param parameters required to register a biometrics key
      */
     public suspend fun authenticate(
@@ -94,8 +97,9 @@ public interface Biometrics {
     ): BiometricsAuthResponse
 
     /**
-     * Wraps the biometrics authenticate API endpoint which validates the signature passed in. If this method succeeds,
-     * the user will be logged in and granted an active session
+     * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
+     * biometric reader and returns an updated session object by either starting a new session or adding the biometric
+     * factor to an existing session.
      * @param parameters required to register a biometrics key
      * @param callback calls callback with BiometricsRegisterResponse response from backend
      */

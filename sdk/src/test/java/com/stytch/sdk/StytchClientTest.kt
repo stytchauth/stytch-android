@@ -39,7 +39,7 @@ internal class StytchClientTest {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any(), any(), any()) } returns Unit
         mContextMock = mockk(relaxed = true)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)

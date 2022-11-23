@@ -13,13 +13,14 @@ import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.proto.Ed25519PublicKey
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import com.google.crypto.tink.signature.SignatureConfig
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import kotlin.random.Random
+import org.json.JSONObject
 
 private const val HEX_RADIX = 16
 
+@Suppress("TooManyFunctions")
 internal object EncryptionManager {
 
     private const val PREF_FILE_NAME = "stytch_secured_pref"
@@ -97,7 +98,7 @@ internal object EncryptionManager {
         return convertToBase64UrlEncoded(getSha256(codeChallenge))
     }
 
-    fun getSha256(hexString: String): String {
+    private fun getSha256(hexString: String): String {
         // convert hexString to bytes
         val bytes = hexString.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
@@ -106,7 +107,7 @@ internal object EncryptionManager {
         return sha256
     }
 
-    fun convertToBase64UrlEncoded(value: String): String {
+    private fun convertToBase64UrlEncoded(value: String): String {
         val base64String = Base64.encodeToString(value.hexStringToByteArray(), Base64.NO_WRAP)
         return base64String
             .replace("+", "-")
@@ -114,11 +115,11 @@ internal object EncryptionManager {
             .replace("=", "")
     }
 
-    fun String.hexStringToByteArray(): ByteArray {
+    private fun String.hexStringToByteArray(): ByteArray {
         return chunked(2).map { it.toInt(HEX_RADIX).toByte() }.toByteArray()
     }
 
-    fun ByteArray.toHexString(): String {
+    private fun ByteArray.toHexString(): String {
         return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
 

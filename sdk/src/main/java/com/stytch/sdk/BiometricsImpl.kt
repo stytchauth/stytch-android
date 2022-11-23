@@ -8,6 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+internal const val ERROR_SIGNING_CHALLENGE = "Failed to sign challenge"
+
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
@@ -48,7 +50,7 @@ public class BiometricsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: StytchResult.Error(StytchExceptions.Input("Failed to sign challenge"))
+            } ?: StytchResult.Error(StytchExceptions.Input(ERROR_SIGNING_CHALLENGE))
         }
         return result
     }
@@ -87,7 +89,7 @@ public class BiometricsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: StytchResult.Error(StytchExceptions.Input("Failed to sign challenge"))
+            } ?: StytchResult.Error(StytchExceptions.Input(ERROR_SIGNING_CHALLENGE))
         }
         return result
     }
