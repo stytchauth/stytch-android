@@ -224,7 +224,7 @@ internal object StytchApi {
             codeVerifier: String,
         ): StytchResult<AuthData> = safeApiCall {
             apiService.resetByEmail(
-                StytchRequests.Passwords.RestByEmailRequest(
+                StytchRequests.Passwords.ResetByEmailRequest(
                     token,
                     password,
                     sessionDurationMinutes.toInt(),

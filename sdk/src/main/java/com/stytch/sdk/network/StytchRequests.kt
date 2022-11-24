@@ -72,7 +72,7 @@ internal object StytchRequests {
         )
 
         @JsonClass(generateAdapter = true)
-        data class RestByEmailRequest(
+        data class ResetByEmailRequest(
             val token: String,
             val password: String,
             @Json(name = "session_duration_minutes")

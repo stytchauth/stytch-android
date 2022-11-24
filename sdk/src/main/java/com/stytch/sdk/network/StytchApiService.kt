@@ -65,7 +65,7 @@ internal interface StytchApiService {
 
     @POST("passwords/email/reset")
     suspend fun resetByEmail(
-        @Body request: StytchRequests.Passwords.RestByEmailRequest,
+        @Body request: StytchRequests.Passwords.ResetByEmailRequest,
     ): StytchResponses.AuthenticateResponse
 
     @POST("passwords/strength_check")
