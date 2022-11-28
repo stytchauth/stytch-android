@@ -13,11 +13,16 @@ internal object StorageHelper {
 
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var encryptedSharedPreferences: SharedPreferences
 
     fun initialize(context: Context) {
         keyStore.load(null)
         sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
-        EncryptionManager.createNewKeys(context, KEY_ALIAS, ED25519_KEY_ALIAS)
+        EncryptionManager.createNewKeys(context, KEY_ALIAS)
+        encryptedSharedPreferences = context.getSharedPreferences(
+            EncryptionManager.PREF_FILE_NAME,
+            Context.MODE_PRIVATE
+        )
     }
 
     /**
@@ -67,21 +72,47 @@ internal object StorageHelper {
     }
 
     /**
-     * @return publicKey?
+     * Get or create a new ED25519 key
+     * @return Base64 encoded publicKey or null on exception
      */
-    internal fun getEd25519PublicKey(): String? = try {
-        EncryptionManager.getOrGenerateEd25519PublicKey()
+    internal fun getEd25519PublicKey(context: Context): String? = try {
+        EncryptionManager.getOrGenerateEd25519PublicKey(context, ED25519_KEY_ALIAS)
     } catch (ex: Exception) {
         StytchLog.e(ex.message ?: "Failed to get ED25519 public key")
         null
     }
 
-    internal fun signEd25519CodeChallenge(challenge: String): String? = try {
-        EncryptionManager.signEd25519CodeChallenge(challenge)
+    /**
+     * Sign the provided challenge
+     * @return Base64 encoded signedChallenge or null on exception
+     */
+    internal fun signEd25519CodeChallenge(context: Context, challenge: String): String? = try {
+        EncryptionManager.signEd25519CodeChallenge(context, ED25519_KEY_ALIAS, challenge)
     } catch (ex: Exception) {
         StytchLog.e(ex.message ?: "Failed to sign challenge")
         null
     }
 
-    internal fun deleteEd25519Key(): Unit = EncryptionManager.deleteEd25519Key()
+    /**
+     * Delete the existing ED25519 key from shared preferences
+     */
+    internal fun deleteEd25519Key(): Boolean = try {
+        with(encryptedSharedPreferences.edit()) {
+            remove(ED25519_KEY_ALIAS)
+            apply()
+            true
+        }
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Check if the ED25519 key exists in shared preferences
+     * @return Boolean
+     */
+    internal fun ed25519KeyExists(): Boolean = try {
+        encryptedSharedPreferences.contains(ED25519_KEY_ALIAS)
+    } catch (e: Exception) {
+        false
+    }
 }

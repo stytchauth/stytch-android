@@ -8,8 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal const val ERROR_SIGNING_CHALLENGE = "Failed to sign challenge"
-
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
@@ -18,29 +16,32 @@ public class BiometricsImpl internal constructor(
     private val api: StytchApi.Biometrics,
 ) : Biometrics {
     override val registrationAvailable: Boolean
-        get() = TODO("Not yet implemented")
+        get() = storageHelper.ed25519KeyExists()
 
-    override fun removeRegistration(): Unit = storageHelper.deleteEd25519Key()
+    override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key()
 
     override suspend fun register(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
             if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
+                removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
                 return@withContext
             }
-            val publicKey = storageHelper.getEd25519PublicKey()
-            if (publicKey == null) {
+            val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
+                removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext
             }
             val startResponse = api.registerStart(publicKey = publicKey)
             if (startResponse is StytchResult.Error) {
+                removeRegistration()
                 result = startResponse
                 return@withContext
             }
             require(startResponse is StytchResult.Success)
             result = storageHelper.signEd25519CodeChallenge(
+                context = parameters.context,
                 challenge = startResponse.value.challenge
             )?.let { signature ->
                 api.register(
@@ -50,7 +51,10 @@ public class BiometricsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: StytchResult.Error(StytchExceptions.Input(ERROR_SIGNING_CHALLENGE))
+            } ?: run {
+                removeRegistration()
+                StytchResult.Error(StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message))
+            }
         }
         return result
     }
@@ -68,8 +72,7 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
-            val publicKey = storageHelper.getEd25519PublicKey()
-            if (publicKey == null) {
+            val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext
             }
@@ -80,6 +83,7 @@ public class BiometricsImpl internal constructor(
             }
             require(startResponse is StytchResult.Success)
             result = storageHelper.signEd25519CodeChallenge(
+                context = parameters.context,
                 challenge = startResponse.value.challenge
             )?.let { signature ->
                 api.authenticate(
@@ -89,7 +93,7 @@ public class BiometricsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: StytchResult.Error(StytchExceptions.Input(ERROR_SIGNING_CHALLENGE))
+            } ?: StytchResult.Error(StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message))
         }
         return result
     }

@@ -1,14 +1,18 @@
 package com.stytch.sdk
 
+import android.content.Context
+
 /**
  * Biometrics interface that encompasses registration and authentication functions
  */
 public interface Biometrics {
     /**
      * Data class used for wrapping parameters used with Biometrics registration and authenticate start flow
+     * @param context is the Android context
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class StartParameters(
+        val context: Context,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )
 
@@ -62,7 +66,7 @@ public interface Biometrics {
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
      */
-    public fun removeRegistration()
+    public fun removeRegistration(): Boolean
 
     /**
      * When a valid/active session exists, this method will add a biometric registration for the current user.

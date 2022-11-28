@@ -160,6 +160,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun revokeSession() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchClient.sessions.revoke()
+            _currentResponse.value = result.toString()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
     private fun isValidEmail(str: String): Boolean {
         return EMAIL_ADDRESS_PATTERN.matcher(str).matches()
     }

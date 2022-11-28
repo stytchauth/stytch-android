@@ -25,6 +25,10 @@ public enum class StytchErrorType(
     ),
     KEY_GENERATION_FAILED(
         stringValue = "key_generation_failed",
-        message = "Key generation failed"
+        message = "Failed to generate or retrieve the Ed25519 public key."
     ),
+    ERROR_SIGNING_CHALLENGE(
+        stringValue = "error_signing_challenge",
+        message = "Failed to sign challenge with the Ed25519 key"
+    )
 }

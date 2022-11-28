@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import com.stytch.exampleapp.R
 val items = listOf(
     Screen.Main,
     Screen.Passwords,
+    Screen.Biometrics,
 )
 
 @Composable
@@ -78,6 +80,7 @@ fun AppScreen() {
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
                 composable(Screen.Main.route) { MainScreen(navController = navController) }
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
+                composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
             }
         }
     )
@@ -88,17 +91,20 @@ fun Toolbar(toolbarText: String) {
     TopAppBar(
         title = {
             Text(
-                text = toolbarText, textAlign = TextAlign.Center,
+                text = toolbarText,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
             )
         },
-        backgroundColor = MaterialTheme.colors.surface, elevation = 2.dp
+        backgroundColor = MaterialTheme.colors.surface,
+        elevation = 2.dp
     )
 }
 
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconVector: ImageVector) {
     object Main : Screen("main", R.string.home, Icons.Filled.Home)
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
+    object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
 }

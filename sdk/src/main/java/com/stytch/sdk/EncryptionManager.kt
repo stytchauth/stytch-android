@@ -23,10 +23,9 @@ private const val HEX_RADIX = 16
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
 
-    private const val PREF_FILE_NAME = "stytch_secured_pref"
+    internal const val PREF_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
     private var aead: Aead? = null
-    private var ed25519Manager: AndroidKeysetManager? = null
 
     init {
         AeadConfig.register()
@@ -42,11 +41,12 @@ internal object EncryptionManager {
             .keysetHandle
     }
 
-    private fun getOrGenerateNewEd25519KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
+    private fun getOrGenerateNewEd25519KeysetManager(context: Context, keyAlias: String): KeysetHandle {
         return AndroidKeysetManager.Builder()
             .withSharedPref(context, keyAlias, PREF_FILE_NAME)
             .withKeyTemplate(KeyTemplates.get("ED25519WithRawOutput"))
             .build()
+            .keysetHandle
     }
 
     /**
@@ -83,9 +83,8 @@ internal object EncryptionManager {
     /**
      * @throws Exception - if failed to generate keys
      */
-    fun createNewKeys(context: Context, rsaKeyAlias: String, ed25519KeyAlias: String) {
+    fun createNewKeys(context: Context, rsaKeyAlias: String) {
         aead = getOrGenerateNewAES256KeysetHandle(context, rsaKeyAlias)?.getPrimitive(Aead::class.java)
-        ed25519Manager = getOrGenerateNewEd25519KeysetManager(context, ed25519KeyAlias)
     }
 
     fun generateCodeChallenge(): String {
@@ -123,8 +122,8 @@ internal object EncryptionManager {
         return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
 
-    fun getOrGenerateEd25519PublicKey(): String? {
-        val keysetHandle = ed25519Manager?.keysetHandle ?: return null
+    fun getOrGenerateEd25519PublicKey(context: Context, keyAlias: String): String {
+        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias)
         val publicKeysetHandle = keysetHandle.publicKeysetHandle
         val publicKeyStream = ByteArrayOutputStream()
         CleartextKeysetHandle.write(publicKeysetHandle, JsonKeysetWriter.withOutputStream(publicKeyStream))
@@ -134,23 +133,16 @@ internal object EncryptionManager {
             .getJSONObject(0)
             .getJSONObject("keyData")
             .getString("value")
-        val publicKeyJsonBytes = Base64.decode(publicKeyString, Base64.DEFAULT)
+        val publicKeyJsonBytes = Base64.decode(publicKeyString, Base64.NO_WRAP)
         val publicKey = Ed25519PublicKey.parseFrom(ByteString.copyFrom(publicKeyJsonBytes))
-        return Base64.encodeToString(publicKey.keyValue.toByteArray(), Base64.DEFAULT)
+        return Base64.encodeToString(publicKey.keyValue.toByteArray(), Base64.NO_WRAP)
     }
 
-    fun signEd25519CodeChallenge(challengeString: String): String? {
-        val keysetHandle = ed25519Manager?.keysetHandle ?: return null
-        val challenge = Base64.decode(challengeString, Base64.DEFAULT)
-        val publicKeysetHandle = keysetHandle.publicKeysetHandle
-        val signer = publicKeysetHandle.getPrimitive(PublicKeySign::class.java)
+    fun signEd25519CodeChallenge(context: Context, keyAlias: String, challengeString: String): String {
+        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias)
+        val challenge = Base64.decode(challengeString, Base64.NO_WRAP)
+        val signer = keysetHandle.getPrimitive(PublicKeySign::class.java)
         val signature = signer.sign(challenge)
-        return Base64.encodeToString(signature, Base64.DEFAULT)
-    }
-
-    fun deleteEd25519Key() {
-        val keysetManager = ed25519Manager ?: return
-        val keysetHandle = keysetManager.keysetHandle
-        keysetManager.delete(keysetHandle.primary.id)
+        return Base64.encodeToString(signature, Base64.NO_WRAP)
     }
 }
