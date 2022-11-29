@@ -1,21 +1,16 @@
-package com.stytch.sdk
+package com.stytch.sdk.network
 
-import com.stytch.sdk.network.StytchApiService
-import com.stytch.sdk.network.StytchRequests
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 private const val EMAIL = "email@email.com"
 private const val LOGIN_MAGIC_LINK = "loginMagicLink://"
 
-internal class RequestsUnitTest {
+internal class StytchApiServiceTests {
 
     private lateinit var mockWebServer: MockWebServer
     private lateinit var apiService: StytchApiService
@@ -25,19 +20,7 @@ internal class RequestsUnitTest {
         mockWebServer = MockWebServer()
         mockWebServer.start(12345)
 
-        apiService = createApiService(mockWebServer.url("/").toString())
-    }
-
-    private fun createApiService(hostUrl: String): StytchApiService {
-        return Retrofit.Builder()
-            .baseUrl(hostUrl)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(
-                OkHttpClient.Builder()
-                    .build()
-            )
-            .build()
-            .create(StytchApiService::class.java)
+        apiService = StytchApiService.createApiService(mockWebServer.url("/").toString(), null)
     }
 
     @After
@@ -45,7 +28,7 @@ internal class RequestsUnitTest {
         mockWebServer.shutdown()
     }
 
-    //region MagicLinks
+    // region MagicLinks
 
     @Test
     fun `check magic links email loginOrCreate request`() {
@@ -96,9 +79,9 @@ internal class RequestsUnitTest {
         }
     }
 
-    //endregion MagicLinks
+    // endregion MagicLinks
 
-    //region OTP
+    // region OTP
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
@@ -189,9 +172,9 @@ internal class RequestsUnitTest {
         }
     }
 
-    //endregion OTP
+    // endregion OTP
 
-    //region Passwords
+    // region Passwords
 
     @Test
     fun `check Passwords create request`() {
@@ -321,9 +304,9 @@ internal class RequestsUnitTest {
         }
     }
 
-    //endregion Passwords
+    // endregion Passwords
 
-    //region Sessions
+    // region Sessions
 
     @Test
     fun `check Sessions authenticate request`() {
@@ -359,5 +342,5 @@ internal class RequestsUnitTest {
         }
     }
 
-    //endregion Sessions
+    // endregion Sessions
 }
