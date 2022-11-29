@@ -13,19 +13,19 @@ import com.stytch.sdk.MagicLinks
 import com.stytch.sdk.OTP
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
+import java.util.regex.Pattern
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
     "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-            "\\@" +
-            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-            "(" +
-            "\\." +
-            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-            ")+"
+        "\\@" +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+        "(" +
+        "\\." +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+        ")+"
 )
 
 private val PHONE_NUMBER_PATTERN = Pattern.compile("^\\+[1-9]\\d{1,14}\$")
@@ -80,7 +80,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.magicLinks.email.loginOrCreate(MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text))
+                val result = StytchClient.magicLinks.email.loginOrCreate(
+                    MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text)
+                )
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
                 _loadingState.value = false
@@ -113,7 +115,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showPhoneError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text))
+                val result = StytchClient.otps.whatsapp.loginOrCreate(
+                    OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text)
+                )
                 handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toString()
             }.invokeOnCompletion {
@@ -164,9 +168,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return PHONE_NUMBER_PATTERN.matcher(str).matches()
     }
 
-    private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) = when(response) {
+    private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) = when (response) {
         is StytchResult.Success -> otpMethodId = response.value.methodId
         is StytchResult.Error -> {}
     }
-
 }

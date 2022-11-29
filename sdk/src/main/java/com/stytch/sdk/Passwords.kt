@@ -163,5 +163,4 @@ public interface Passwords {
         parameters: StrengthCheckParameters,
         callback: (response: PasswordsStrengthCheckResponse) -> Unit,
     )
-
 }

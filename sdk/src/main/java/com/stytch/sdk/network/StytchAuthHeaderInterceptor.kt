@@ -19,13 +19,33 @@ internal class StytchAuthHeaderInterceptor(
     var publicToken: String,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val authHeader = Base64.encodeToString("$publicToken:${ StytchClient.sessionStorage.sessionToken ?: publicToken}".toByteArray(), Base64.NO_WRAP)
-        val infoHeader = Base64.encodeToString(InfoHeaderModel(
-            sdk = InfoHeaderModel.Item(Constants.AUTH_HEADER_SDK_NAME, BuildConfig.STYTCH_SDK_VERSION),
-            app = InfoHeaderModel.Item(deviceInfo.applicationPackageName ?: "", deviceInfo.applicationVersion ?: ""),
-            os = InfoHeaderModel.Item(deviceInfo.osName ?: "", deviceInfo.osVersion ?: ""),
-            device = InfoHeaderModel.Item(deviceInfo.deviceName ?: "", deviceInfo.screenSize ?: "", "model", "screen_size")
-        ).json.toByteArray(), Base64.NO_WRAP)
+        val authHeader = Base64.encodeToString(
+            "$publicToken:${ StytchClient.sessionStorage.sessionToken ?: publicToken}".toByteArray(),
+            Base64.NO_WRAP
+        )
+        val infoHeader = Base64.encodeToString(
+            InfoHeaderModel(
+                sdk = InfoHeaderModel.Item(
+                    Constants.AUTH_HEADER_SDK_NAME,
+                    BuildConfig.STYTCH_SDK_VERSION
+                ),
+                app = InfoHeaderModel.Item(
+                    deviceInfo.applicationPackageName ?: "",
+                    deviceInfo.applicationVersion ?: ""
+                ),
+                os = InfoHeaderModel.Item(
+                    deviceInfo.osName ?: "",
+                    deviceInfo.osVersion ?: ""
+                ),
+                device = InfoHeaderModel.Item(
+                    deviceInfo.deviceName ?: "",
+                    deviceInfo.screenSize ?: "",
+                    "model",
+                    "screen_size"
+                )
+            ).json.toByteArray(),
+            Base64.NO_WRAP
+        )
 
         return chain.proceed(
             chain.request()

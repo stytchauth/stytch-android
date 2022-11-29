@@ -90,21 +90,31 @@ fun MainScreen(navController: NavController) {
                 style = MaterialTheme.typography.caption.copy(color = Red300),
             )
         }
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_email_magic_link_flow),
-            onClick = { viewModel.loginOrCreate() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.loginOrCreate() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_sms_flow),
-            onClick = { viewModel.loginOrCreateSMS() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.loginOrCreateSMS() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_whatsapp_flow),
-            onClick = { viewModel.loginOrCreateWhatsApp() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.loginOrCreateWhatsApp() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_email_flow),
-            onClick = { viewModel.loginOrCreateEmail() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.loginOrCreateEmail() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_authenticate_flow),
-            onClick = { viewModel.authenticateOTP() })
+            onClick = { viewModel.authenticateOTP() }
+        )
         if (loading.value) {
             CircularProgressIndicator()
         } else {

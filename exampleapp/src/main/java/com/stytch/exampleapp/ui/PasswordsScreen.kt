@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.stytch.exampleapp.R
 import com.stytch.exampleapp.PasswordsViewModel
+import com.stytch.exampleapp.R
 import com.stytch.exampleapp.theme.Red300
 
 @Composable
@@ -74,21 +74,31 @@ fun PasswordsScreen(navController: NavController) {
             },
             shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
         )
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.check_password_strength),
-            onClick = { viewModel.checkPassword() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.checkPassword() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.authenticate),
-            onClick = { viewModel.authenticate() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.authenticate() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_create),
-            onClick = { viewModel.createAccount() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.createAccount() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_email_start),
-            onClick = { viewModel.resetPasswordByEmailStart() })
-        StytchButton(modifier = Modifier.fillMaxWidth(),
+            onClick = { viewModel.resetPasswordByEmailStart() }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_email),
-            onClick = { viewModel.resetPasswordByEmail() })
+            onClick = { viewModel.resetPasswordByEmail() }
+        )
         if (loading.value) {
             CircularProgressIndicator()
         } else {

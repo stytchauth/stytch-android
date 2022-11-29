@@ -85,7 +85,6 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
-
     }
 
     /**
@@ -118,7 +117,6 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
-
     }
 
     /**
@@ -151,7 +149,5 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
-
     }
-
 }
