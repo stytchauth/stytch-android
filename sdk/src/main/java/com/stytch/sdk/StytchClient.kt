@@ -142,8 +142,13 @@ public object StytchClient {
         }
         internal set
 
-    public var user: UserManagement = UserManagementImpl()
-        private set
+    public var user: UserManagement = UserManagementImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.UserManagement
+    )
+        internal set
         get() {
             assertInitialized()
             return field

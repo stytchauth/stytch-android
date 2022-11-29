@@ -2,49 +2,45 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.UserData
-import kotlinx.coroutines.GlobalScope
+import com.stytch.sessions.SessionStorage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class UserManagementImpl : UserManagement {
+internal class UserManagementImpl(
+    private val externalScope: CoroutineScope,
+    private val dispatchers: StytchDispatchers,
+    private val sessionStorage: SessionStorage,
+    private val api: StytchApi.UserManagement,
+) : UserManagement {
     override suspend fun getUser(): UserResponse {
         return catchExceptions {
-            val result: UserResponse
-
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.UserManagement.getUser()
+            withContext(dispatchers.io) {
+                api.getUser()
             }
-
-            result
         }
 
     }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(dispatchers.ui) {
             val result = getUser()
             callback(result)
         }
     }
 
-    override fun getSyncUser(): UserData? {
-        return StytchClient.sessionStorage.user
-    }
+    override fun getSyncUser(): UserData? = sessionStorage.user
 
     override suspend fun deleteEmailById(id: String): BaseResponse {
         return catchExceptions {
-            val result: BaseResponse
-
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.UserManagement.deleteEmailById(id)
+            withContext(dispatchers.io) {
+                api.deleteEmailById(id)
             }
-
-            result
         }
     }
 
     override fun deleteEmailById(id: String, callback: (BaseResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(dispatchers.ui) {
             val result = deleteEmailById(id)
             callback(result)
         }
@@ -52,18 +48,14 @@ internal class UserManagementImpl : UserManagement {
 
     override suspend fun deletePhoneNumberById(id: String): BaseResponse {
         return catchExceptions {
-            val result: BaseResponse
-
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.UserManagement.deletePhoneNumberById(id)
+            withContext(dispatchers.io) {
+                api.deletePhoneNumberById(id)
             }
-
-            result
         }
     }
 
     override fun deletePhoneNumberById(id: String, callback: (BaseResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(dispatchers.ui) {
             val result = deletePhoneNumberById(id)
             callback(result)
         }
@@ -71,33 +63,24 @@ internal class UserManagementImpl : UserManagement {
 
     override suspend fun deleteBiometricRegistrationById(id: String): BaseResponse {
         return catchExceptions {
-            val result: BaseResponse
-
-            withContext(StytchClient.ioDispatcher) {
-                result = StytchApi.UserManagement.deleteBiometricRegistrationById(id)
+            withContext(dispatchers.io) {
+                api.deleteBiometricRegistrationById(id)
             }
-
-            result
         }
     }
 
     override fun deleteBiometricRegistrationById(id: String, callback: (BaseResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+        externalScope.launch(dispatchers.ui) {
             val result = deleteBiometricRegistrationById(id)
             callback(result)
         }
     }
 
-    private suspend fun <StytchResultType> catchExceptions(function: suspend () -> StytchResult<StytchResultType>): StytchResult<StytchResultType> {
-        return try {
-            function()
-        } catch (stytchException: StytchExceptions) {
-            when (stytchException) {
-                StytchExceptions.NoCodeChallengeFound ->
-                    StytchResult.Error(1, null)
-            }
-        } catch (otherException: Exception) {
-            StytchResult.Error(1, null)
-        }
+    private suspend fun <T> catchExceptions(block: suspend () -> StytchResult<T>): StytchResult<T> = try {
+        block()
+    } catch (stytchException: StytchExceptions) {
+        StytchResult.Error(stytchException)
+    } catch (otherException: Exception) {
+        StytchResult.Error(StytchExceptions.Critical(otherException))
     }
 }
