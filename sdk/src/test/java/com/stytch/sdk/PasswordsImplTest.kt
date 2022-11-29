@@ -2,6 +2,7 @@ package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
+import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sessions.SessionAutoUpdater
 import com.stytch.sessions.SessionStorage
@@ -126,10 +127,11 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmailStart with callback calls callback method`() {
-        coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
-        val mockCallback = spyk<(PasswordsCreateResponse) -> Unit>()
-        impl.create(createParameters, mockCallback)
-        verify { mockCallback.invoke(eq(successfulCreateResponse)) }
+        val mockResponse: StytchResult<BasicData> = mockk()
+        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockResponse
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.resetByEmailStart(resetByEmailStartParameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 
     @Test

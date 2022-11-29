@@ -37,9 +37,7 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
         }
 
     var session: SessionData? = null
-        private set(value) {
-            field = value
-        }
+        private set
 
     var user: UserData? = null
         set(value) {

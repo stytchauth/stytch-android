@@ -19,7 +19,6 @@ internal class UserManagementImpl(
                 api.getUser()
             }
         }
-
     }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
