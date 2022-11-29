@@ -52,12 +52,15 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
         runBlocking {
             try {
-                apiService.loginOrCreateUserByEmail(StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(EMAIL,
-                    LOGIN_MAGIC_LINK,
-                    "123",
-                    "method2")).data
+                apiService.loginOrCreateUserByEmail(
+                    StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+                        EMAIL,
+                        LOGIN_MAGIC_LINK,
+                        "123",
+                        "method2"
+                    )
+                ).data
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -75,11 +78,14 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.authenticate(StytchRequests.MagicLinks.AuthenticateRequest("token",
-                    "123",
-                    60))
+                apiService.authenticate(
+                    StytchRequests.MagicLinks.AuthenticateRequest(
+                        "token",
+                        "123",
+                        60
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -98,10 +104,13 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.loginOrCreateUserByOTPWithEmail(StytchRequests.OTP.Email(EMAIL,
-                    60))
+                apiService.loginOrCreateUserByOTPWithEmail(
+                    StytchRequests.OTP.Email(
+                        EMAIL,
+                        60
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -117,10 +126,13 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.loginOrCreateUserByOTPWithSMS(StytchRequests.OTP.SMS("000",
-                    24))
+                apiService.loginOrCreateUserByOTPWithSMS(
+                    StytchRequests.OTP.SMS(
+                        "000",
+                        24
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -136,10 +148,13 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.loginOrCreateUserByOTPWithWhatsApp(StytchRequests.OTP.WhatsApp("000",
-                    60))
+                apiService.loginOrCreateUserByOTPWithWhatsApp(
+                    StytchRequests.OTP.WhatsApp(
+                        "000",
+                        60
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -155,11 +170,14 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.authenticateWithOTP(StytchRequests.OTP.Authenticate("token",
-                    "methodId",
-                    60))
+                apiService.authenticateWithOTP(
+                    StytchRequests.OTP.Authenticate(
+                        "token",
+                        "methodId",
+                        60
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -180,11 +198,14 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.passwords(StytchRequests.Passwords.CreateRequest(EMAIL,
-                    "123asd",
-                    60))
+                apiService.passwords(
+                    StytchRequests.Passwords.CreateRequest(
+                        EMAIL,
+                        "123asd",
+                        60
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -193,7 +214,6 @@ internal class RequestsUnitTest {
             assert(body.contains("email\":\"${EMAIL}\""))
             assert(body.contains("password\":\"123asd\""))
             assert(body.contains("session_duration_minutes\":60"))
-
         }
     }
 
@@ -202,10 +222,13 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.strengthCheck(StytchRequests.Passwords.StrengthCheckRequest(EMAIL,
-                    "123asd"))
+                apiService.strengthCheck(
+                    StytchRequests.Passwords.StrengthCheckRequest(
+                        EMAIL,
+                        "123asd"
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -213,7 +236,6 @@ internal class RequestsUnitTest {
             assert(request.path == "/passwords/strength_check")
             assert(body.contains("email\":\"${EMAIL}\""))
             assert(body.contains("password\":\"123asd\""))
-
         }
     }
 
@@ -222,11 +244,15 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.resetByEmail(StytchRequests.Passwords.ResetByEmailRequest("token",
-                    "123asd",
-                    60, "ver1"))
+                apiService.resetByEmail(
+                    StytchRequests.Passwords.ResetByEmailRequest(
+                        "token",
+                        "123asd",
+                        60,
+                        "ver1"
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -236,7 +262,6 @@ internal class RequestsUnitTest {
             assert(body.contains("password\":\"123asd\""))
             assert(body.contains("session_duration_minutes\":60"))
             assert(body.contains("code_verifier\":\"ver1\""))
-
         }
     }
 
@@ -245,11 +270,18 @@ internal class RequestsUnitTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
             try {
-                apiService.resetByEmailStart(StytchRequests.Passwords.ResetByEmailStartRequest(EMAIL,
-                    "123",
-                    "method2", "loginRedirect", 24, "resetPasswordUrl",23))
+                apiService.resetByEmailStart(
+                    StytchRequests.Passwords.ResetByEmailStartRequest(
+                        EMAIL,
+                        "123",
+                        "method2",
+                        "loginRedirect",
+                        24,
+                        "resetPasswordUrl",
+                        23
+                    )
+                )
             } catch (_: Exception) {
-
             }
             val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
@@ -269,15 +301,17 @@ internal class RequestsUnitTest {
     fun `check Passwords authenticate request`() {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-
             try {
-                apiService.authenticateWithPasswords(StytchRequests.Passwords.AuthenticateRequest(EMAIL,
-                    "123asd",
-                    46))
+                apiService.authenticateWithPasswords(
+                    StytchRequests.Passwords.AuthenticateRequest(
+                        EMAIL,
+                        "123asd",
+                        46
+                    )
+                )
             } catch (_: Exception) {
-
             }
-            val request =  mockWebServer.takeRequest()
+            val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
             val body = request.body.readUtf8()
             assert(request.path == "/passwords/authenticate")
@@ -295,19 +329,19 @@ internal class RequestsUnitTest {
     fun `check Sessions authenticate request`() {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-
             try {
-                apiService.authenticateSessions(StytchRequests.Sessions.AuthenticateRequest(
-                    24))
+                apiService.authenticateSessions(
+                    StytchRequests.Sessions.AuthenticateRequest(
+                        24
+                    )
+                )
             } catch (_: Exception) {
-
             }
-            val request =  mockWebServer.takeRequest()
+            val request = mockWebServer.takeRequest()
             val body = request.body.readUtf8()
             assert(request.method == "POST")
             assert(request.path == "/sessions/authenticate")
             assert(body.contains("session_duration_minutes\":24"))
-
         }
     }
 
@@ -318,14 +352,12 @@ internal class RequestsUnitTest {
             try {
                 apiService.revokeSessions()
             } catch (_: Exception) {
-
             }
-            val request =  mockWebServer.takeRequest()
+            val request = mockWebServer.takeRequest()
             assert(request.method == "POST")
             assert(request.path == "/sessions/revoke")
         }
     }
 
     //endregion Sessions
-
 }
