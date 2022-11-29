@@ -16,7 +16,6 @@ import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.network.responseData.UserData
-import com.stytch.sdk.stytchError
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers

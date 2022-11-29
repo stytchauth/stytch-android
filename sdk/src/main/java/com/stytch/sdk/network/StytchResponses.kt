@@ -32,7 +32,7 @@ internal object StytchResponses {
             StytchDataResponse<StrengthCheckResponse>(data)
     }
 
-    object User{
+    object User {
         @JsonClass(generateAdapter = true)
         class UserResponse(data: UserData) : StytchDataResponse<UserData>(data)
     }
