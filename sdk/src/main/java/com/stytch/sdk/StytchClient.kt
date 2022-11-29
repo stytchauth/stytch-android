@@ -150,7 +150,6 @@ public object StytchClient {
             return field
         }
 
-
     // TODO("OAuth")
     // TODO("User Management")
 
