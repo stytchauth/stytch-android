@@ -270,4 +270,3 @@ public data class BiometricsAuthData(
     @Json(name = "biometric_registration_id")
     val biometricRegistrationId: String,
 ) : IAuthData
-
