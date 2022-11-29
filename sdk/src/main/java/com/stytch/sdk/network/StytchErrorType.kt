@@ -30,5 +30,9 @@ public enum class StytchErrorType(
     ERROR_SIGNING_CHALLENGE(
         stringValue = "error_signing_challenge",
         message = "Failed to sign challenge with the Ed25519 key"
-    )
+    ),
+    NOT_USING_KEYSTORE(
+        stringValue = "not_using_keystore",
+        message = "Biometric keys will be stored in cleartext on this device, but allowFallbackToCleartext was not enabled. Please read documentation around the impact of this usage" // ktlint-disable maximum-line-length
+    ),
 }

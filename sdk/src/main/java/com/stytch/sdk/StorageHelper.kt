@@ -115,4 +115,14 @@ internal object StorageHelper {
     } catch (e: Exception) {
         false
     }
+
+    /**
+     * Check if the keyset is using the Android KeyStore
+     * @return Boolean
+     */
+    internal fun checkIfKeysetIsUsingKeystore(context: Context): Boolean = try {
+        EncryptionManager.isKeysetUsingKeystore(context, ED25519_KEY_ALIAS)
+    } catch (e: Exception) {
+        false
+    }
 }

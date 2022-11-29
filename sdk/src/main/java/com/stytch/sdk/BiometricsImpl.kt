@@ -1,5 +1,6 @@
 package com.stytch.sdk
 
+import android.content.Context
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
@@ -20,9 +21,16 @@ public class BiometricsImpl internal constructor(
 
     override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key()
 
+    override fun isUsingKeystore(context: Context): Boolean = storageHelper.checkIfKeysetIsUsingKeystore(context)
+
     override suspend fun register(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
+            if (!isUsingKeystore(parameters.context) && !parameters.allowFallbackToCleartext) {
+                removeRegistration()
+                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message))
+                return@withContext
+            }
             if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
                 removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
@@ -72,6 +80,10 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
+            if (!isUsingKeystore(parameters.context) && !parameters.allowFallbackToCleartext) {
+                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message))
+                return@withContext
+            }
             val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext

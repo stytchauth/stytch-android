@@ -68,46 +68,38 @@ fun BiometricsScreen(navController: NavController) {
         .setSubtitle("Log in using your biometric credential")
         .setNegativeButtonText("Use account password")
         .build()
-    val biometricsRegistrationPrompt = BiometricPrompt(
-        context,
-        executor,
-        object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                viewModel.showBiometricsError("Authentication error: $errString")
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                viewModel.registerBiometrics(context)
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                viewModel.showBiometricsError("Authentication failed")
-            }
+    val registerCallback = object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            super.onAuthenticationError(errorCode, errString)
+            viewModel.showBiometricsError("Authentication error: $errString")
         }
-    )
-    val biometricsAuthenticatePrompt = BiometricPrompt(
-        context,
-        executor,
-        object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                viewModel.showBiometricsError("Authentication error: $errString")
-            }
 
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                viewModel.authenticateBiometrics(context)
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                viewModel.showBiometricsError("Authentication failed")
-            }
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            viewModel.registerBiometrics(context)
         }
-    )
+
+        override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            viewModel.showBiometricsError("Authentication failed")
+        }
+    }
+    val authenticateCallback = object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            super.onAuthenticationError(errorCode, errString)
+            viewModel.showBiometricsError("Authentication error: $errString")
+        }
+
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            super.onAuthenticationSucceeded(result)
+            viewModel.authenticateBiometrics(context)
+        }
+
+        override fun onAuthenticationFailed() {
+            super.onAuthenticationFailed()
+            viewModel.showBiometricsError("Authentication failed")
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -122,12 +114,12 @@ fun BiometricsScreen(navController: NavController) {
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.biometrics_register),
-            onClick = { biometricsRegistrationPrompt.authenticate(promptInfo) }
+            onClick = { BiometricPrompt(context, executor, registerCallback).authenticate(promptInfo) }
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.biometrics_authenticate),
-            onClick = { biometricsAuthenticatePrompt.authenticate(promptInfo) }
+            onClick = { BiometricPrompt(context, executor, authenticateCallback).authenticate(promptInfo) }
         )
         if (loading.value) {
             CircularProgressIndicator()

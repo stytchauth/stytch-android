@@ -41,12 +41,12 @@ internal object EncryptionManager {
             .keysetHandle
     }
 
-    private fun getOrGenerateNewEd25519KeysetManager(context: Context, keyAlias: String): KeysetHandle {
+    private fun getOrGenerateNewEd25519KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
         return AndroidKeysetManager.Builder()
             .withSharedPref(context, keyAlias, PREF_FILE_NAME)
             .withKeyTemplate(KeyTemplates.get("ED25519WithRawOutput"))
+            .withMasterKeyUri(MASTER_KEY_URI)
             .build()
-            .keysetHandle
     }
 
     /**
@@ -123,7 +123,7 @@ internal object EncryptionManager {
     }
 
     fun getOrGenerateEd25519PublicKey(context: Context, keyAlias: String): String {
-        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias)
+        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias).keysetHandle
         val publicKeysetHandle = keysetHandle.publicKeysetHandle
         val publicKeyStream = ByteArrayOutputStream()
         CleartextKeysetHandle.write(publicKeysetHandle, JsonKeysetWriter.withOutputStream(publicKeyStream))
@@ -139,10 +139,13 @@ internal object EncryptionManager {
     }
 
     fun signEd25519CodeChallenge(context: Context, keyAlias: String, challengeString: String): String {
-        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias)
+        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias).keysetHandle
         val challenge = Base64.decode(challengeString, Base64.NO_WRAP)
         val signer = keysetHandle.getPrimitive(PublicKeySign::class.java)
         val signature = signer.sign(challenge)
         return Base64.encodeToString(signature, Base64.NO_WRAP)
     }
+
+    fun isKeysetUsingKeystore(context: Context, keyAlias: String): Boolean =
+        getOrGenerateNewEd25519KeysetManager(context, keyAlias).isUsingKeystore
 }

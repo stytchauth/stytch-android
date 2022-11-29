@@ -12,6 +12,7 @@ internal class BiometricsTest {
         val expected = Biometrics.StartParameters(
             context = mockContext,
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            allowFallbackToCleartext = false,
         )
         assert(params == expected)
     }

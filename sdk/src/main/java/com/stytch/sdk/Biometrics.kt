@@ -14,6 +14,7 @@ public interface Biometrics {
     public data class StartParameters(
         val context: Context,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val allowFallbackToCleartext: Boolean = false,
     )
 
     /**
@@ -67,6 +68,11 @@ public interface Biometrics {
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
      */
     public fun removeRegistration(): Boolean
+
+    /**
+     * Indicates if the device is using the Android KeyStore
+     */
+    public fun isUsingKeystore(context: Context): Boolean
 
     /**
      * When a valid/active session exists, this method will add a biometric registration for the current user.
