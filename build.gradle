@@ -4,6 +4,7 @@ buildscript {
         kotlin_version = '1.7.10'
         dokka_version = '1.7.10'
         retrofit_version = '2.9.0'
+        okhttp_version = '4.10.0'
         compose_version = '1.2.0'
         moshi_version = '1.13.0'
         magellan_version = '1.1.0'
@@ -26,12 +27,20 @@ buildscript {
 
 plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id "org.jlleitschuh.gradle.ktlint" version "11.0.0"
+    id "io.gitlab.arturbosch.detekt" version "1.22.0-RC3"
 }
 
 apply from: "${rootDir}/scripts/publish-root.gradle"
 
 subprojects {
     tasks.withType(Javadoc).all { enabled = false }
+    apply plugin: "org.jlleitschuh.gradle.ktlint" // Version should be inherited from parent
+    apply plugin: "io.gitlab.arturbosch.detekt"
+    // Optionally configure plugin
+    ktlint {
+        android = true
+    }
 }
 
 allprojects {
@@ -46,7 +55,7 @@ task clean(type: Delete) {
 }
 
 tasks.register("runOnGitHub") {
-    dependsOn(":sdk:lint", ":sdk:testDebugUnitTest")
+    dependsOn(":sdk:lint", ":sdk:ktlintCheck", ":sdk:testDebugUnitTest")
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"
 }

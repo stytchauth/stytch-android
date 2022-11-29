@@ -1,0 +1,7 @@
+[*.{kt,kts}]
+max_line_length=120
+
+[{**/test/**.kt}]
+disabled_rules=max-line-length
+max_line_length=off
+

@@ -1,36 +1,37 @@
 package com.stytch.sessions
 
-import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
-import com.stytch.sdk.network.responseData.AuthData
+import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
 import com.stytch.sdk.network.responseData.UserData
 
-private const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
-private const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
 
-internal class SessionStorage {
+@VisibleForTesting
+internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
+
+internal class SessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?
         private set(value) {
-            StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
             }
             return value
         }
 
     var sessionJwt: String?
         private set(value) {
-            StytchClient.storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = StytchClient.storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
             }
             return value
         }
@@ -74,20 +75,4 @@ internal class SessionStorage {
             user = null
         }
     }
-
-}
-
-//    save session data
-internal fun StytchResult<AuthData>.saveSession(): StytchResult<AuthData> {
-    if (this is StytchResult.Success) {
-        value.apply {
-            try {
-                StytchClient.sessionStorage.updateSession(sessionToken, sessionJwt, session)
-                StytchClient.sessionStorage.user = user
-            } catch (ex: Exception) {
-                return StytchResult.Error(StytchExceptions.Critical(ex))
-            }
-        }
-    }
-    return this
 }

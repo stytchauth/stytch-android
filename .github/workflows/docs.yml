@@ -1,0 +1,45 @@
+name: Docs
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/main' || github.run_number }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull') }}
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+
+    - uses: actions/checkout@v3
+      with:
+        ref: docs
+        path: docs
+
+    - name: Generate docs
+      env:
+        STYTCH_PUBLIC_TOKEN: 'abc123'
+      working-directory: main
+      run: ./gradlew sdk:dokkaHtml
+      
+    - name: Update git config
+      working-directory: docs
+      run: |
+        git config --local user.name "CI"
+        git config --local user.email "ci@stytch.com"
+
+    - name: Publish docs
+      working-directory: main
+      run: |
+        current_sha="$(git rev-parse @)"
+        rsync -a sdk/build/dokka/html/ ../docs/docs/
+        cd ../docs
+        if [[ -z $(git status --porcelain) ]]; then exit 0; fi
+        git add --all
+        git commit -m "$current_sha"
+        git push

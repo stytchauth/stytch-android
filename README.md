@@ -13,6 +13,7 @@
     * [Deeplink Handling](#deeplink-handling)
     * [Example app](#example-app)
     * [Authenticating](#authenticating)
+* [Documentation](#documentation)
 * [FAQ](#faq)
 * [Questions?](#questions)
 * [License](#license)
@@ -201,6 +202,10 @@ fun loginOrCreateSMS() {
     }
 }
 ```
+
+## Documentation
+
+Full reference documentation is available [here](https://stytchauth.github.io/stytch-kotlin/).
 
 ## FAQ
 

@@ -5,10 +5,10 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 public data class BasicData(
-    @Json(name = "request_id")
-    val requestId: String,
     @Json(name = "status_code")
     val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
 )
 
 @JsonClass(generateAdapter = true)
@@ -25,14 +25,35 @@ public data class StytchErrorResponse(
     val errorUrl: String,
 )
 
+public interface IAuthData {
+    public val session: SessionData
+    public val sessionJwt: String
+    public val sessionToken: String
+    public val user: UserData
+}
+
 @JsonClass(generateAdapter = true)
 public data class AuthData(
-    val session: SessionData,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    override val session: SessionData,
     @Json(name = "session_jwt")
-    val sessionJwt: String,
+    override val sessionJwt: String,
     @Json(name = "session_token")
-    val sessionToken: String,
-    val user: UserData,
+    override val sessionToken: String,
+    override val user: UserData,
+) : IAuthData
+
+@JsonClass(generateAdapter = true)
+public data class LoginOrCreateOTPData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "method_id")
+    val methodId: String,
 )
 
 @JsonClass(generateAdapter = true)
@@ -68,7 +89,7 @@ public data class UserData(
     val cryptoWallets: List<CryptoWalletData>,
     val emails: List<EmailData>,
     val name: NameData,
-    val password: String?,
+    val password: Password?,
     @Json(name = "phone_numbers")
     val phoneNumbers: List<PhoneNumber>,
     val providers: List<Provider>,
@@ -148,16 +169,16 @@ public data class UserData(
         @Json(name = "provider_subject")
         val providerSubject: String,
         // The type of the provider.
-        @Json(name = "provider_typeval")
-        val providerTypeval: String,
+        @Json(name = "provider_type")
+        val providerType: String,
     )
 
     @JsonClass(generateAdapter = true)
     public data class TOTP(
-        /// The id of the TOTP.
+        // The id of the TOTP.
         @Json(name = "totpId")
         var id: String,
-        /// The verification status of the TOTP.
+        // The verification status of the TOTP.
         val verified: Boolean,
     )
 }
@@ -186,17 +207,17 @@ public data class CreateResponse(
     val statusCode: Int,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean?,
-    val session: SessionData,
+    override val session: SessionData,
     @Json(name = "session_jwt")
-    val sessionJwt: String,
+    override val sessionJwt: String,
     @Json(name = "session_token")
-    val sessionToken: String,
-    val user: UserData,
+    override val sessionToken: String,
+    override val user: UserData,
     @Json(name = "email_id")
     val emailId: String,
     @Json(name = "user_id")
     val userId: String,
-)
+) : IAuthData
 
 @JsonClass(generateAdapter = true)
 public data class StrengthCheckResponse(

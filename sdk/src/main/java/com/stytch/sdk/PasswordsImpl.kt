@@ -1,30 +1,39 @@
 package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.launchSessionUpdater
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class PasswordsImpl internal constructor() : Passwords {
+internal class PasswordsImpl internal constructor(
+    private val externalScope: CoroutineScope,
+    private val dispatchers: StytchDispatchers,
+    private val sessionStorage: SessionStorage,
+    private val storageHelper: StorageHelper,
+    private val api: StytchApi.Passwords,
+) : Passwords {
 
     override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
         val result: AuthResponse
-        withContext(StytchClient.ioDispatcher) {
-
-            result = StytchApi.Passwords.authenticate(
+        withContext(dispatchers.io) {
+            result = api.authenticate(
                 email = parameters.email,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
             ).apply {
-                launchSessionUpdater()
+                launchSessionUpdater(dispatchers, sessionStorage)
             }
         }
         return result
     }
 
-    override fun authenticate(parameters: Passwords.AuthParameters, callback: (response: AuthResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+    override fun authenticate(
+        parameters: Passwords.AuthParameters,
+        callback: (response: AuthResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
             callback(result)
         }
@@ -33,20 +42,24 @@ internal class PasswordsImpl internal constructor() : Passwords {
     override suspend fun create(parameters: Passwords.CreateParameters): PasswordsCreateResponse {
         val result: PasswordsCreateResponse
 
-        withContext(StytchClient.ioDispatcher) {
-
-            result = StytchApi.Passwords.create(
+        withContext(dispatchers.io) {
+            result = api.create(
                 email = parameters.email,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes
-            )
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
         }
 
         return result
     }
 
-    override fun create(parameters: Passwords.CreateParameters, callback: (response: PasswordsCreateResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+    override fun create(
+        parameters: Passwords.CreateParameters,
+        callback: (response: PasswordsCreateResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = create(parameters)
             callback(result)
         }
@@ -55,13 +68,12 @@ internal class PasswordsImpl internal constructor() : Passwords {
     override suspend fun resetByEmailStart(parameters: Passwords.ResetByEmailStartParameters): BaseResponse {
         val result: BaseResponse
 
-        withContext(StytchClient.ioDispatcher) {
-
+        withContext(dispatchers.io) {
             val challengeCodeMethod: String
             val challengeCode: String
 
             try {
-                val challengePair = StytchClient.storageHelper.generateHashedCodeChallenge()
+                val challengePair = storageHelper.generateHashedCodeChallenge()
                 challengeCodeMethod = challengePair.first
                 challengeCode = challengePair.second
             } catch (ex: Exception) {
@@ -69,7 +81,7 @@ internal class PasswordsImpl internal constructor() : Passwords {
                 return@withContext
             }
 
-            result = StytchApi.Passwords.resetByEmailStart(
+            result = api.resetByEmailStart(
                 email = parameters.email,
                 codeChallenge = challengeCode,
                 codeChallengeMethod = challengeCodeMethod,
@@ -80,11 +92,13 @@ internal class PasswordsImpl internal constructor() : Passwords {
             )
         }
         return result
-
     }
 
-    override fun resetByEmailStart(parameters: Passwords.ResetByEmailStartParameters, callback: (response: BaseResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+    override fun resetByEmailStart(
+        parameters: Passwords.ResetByEmailStartParameters,
+        callback: (response: BaseResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = resetByEmailStart(parameters)
             callback(result)
         }
@@ -93,31 +107,34 @@ internal class PasswordsImpl internal constructor() : Passwords {
     override suspend fun resetByEmail(parameters: Passwords.ResetByEmailParameters): AuthResponse {
         val result: AuthResponse
 
-        //call backend endpoint
-        withContext(StytchClient.ioDispatcher) {
-
+        // call backend endpoint
+        withContext(dispatchers.io) {
             val codeVerifier: String
             try {
-                codeVerifier = StytchClient.storageHelper.loadValue(PREFERENCES_CODE_VERIFIER)!!
+                codeVerifier = storageHelper.loadValue(PREFERENCES_CODE_VERIFIER)!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchExceptions.Critical(ex))
                 return@withContext
             }
 
-            result = StytchApi.Passwords.resetByEmail(
+            result = api.resetByEmail(
                 parameters.token,
                 parameters.password,
                 parameters.sessionDurationMinutes,
                 codeVerifier
-            )
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
         }
 
         return result
-
     }
 
-    override fun resetByEmail(parameters: Passwords.ResetByEmailParameters, callback: (response: AuthResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+    override fun resetByEmail(
+        parameters: Passwords.ResetByEmailParameters,
+        callback: (response: AuthResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = resetByEmail(parameters)
             callback(result)
         }
@@ -125,8 +142,8 @@ internal class PasswordsImpl internal constructor() : Passwords {
 
     override suspend fun strengthCheck(parameters: Passwords.StrengthCheckParameters): PasswordsStrengthCheckResponse {
         val result: PasswordsStrengthCheckResponse
-        withContext(StytchClient.ioDispatcher) {
-            result = StytchApi.Passwords.strengthCheck(
+        withContext(dispatchers.io) {
+            result = api.strengthCheck(
                 parameters.email,
                 parameters.password
             )
@@ -134,11 +151,13 @@ internal class PasswordsImpl internal constructor() : Passwords {
         return result
     }
 
-    override fun strengthCheck(parameters: Passwords.StrengthCheckParameters, callback: (response: PasswordsStrengthCheckResponse) -> Unit) {
-        GlobalScope.launch(StytchClient.uiDispatcher) {
+    override fun strengthCheck(
+        parameters: Passwords.StrengthCheckParameters,
+        callback: (response: PasswordsStrengthCheckResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = strengthCheck(parameters)
             callback(result)
         }
     }
-
 }

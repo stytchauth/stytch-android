@@ -1,17 +1,23 @@
 package com.stytch.sdk
 
 import android.content.Context
+import android.net.Uri
 import com.stytch.sdk.network.StytchApi
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import java.security.KeyStore
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
@@ -19,250 +25,30 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
-import java.security.KeyStore
 
 internal class StytchClientTest {
-
     var mContextMock = mockk<Context>(relaxed = true)
-    val mainThreadSurrogate = newSingleThreadContext("UI thread")
     val dispatcher = Dispatchers.Unconfined
 
-    val magicLinkParams = MagicLinks.EmailMagicLinks.Parameters(
-        email = "email@email.com"
-    )
+    @OptIn(DelicateCoroutinesApi::class)
+    val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
-    val otpWhatsAppParams = OTP.WhatsAppOTP.Parameters(
-        phoneNumber = "+1200000000",
-        expirationMinutes = 60u
-    )
-
-    val otpSmsParams = OTP.SmsOTP.Parameters(
-        phoneNumber = "+1200000000",
-        expirationMinutes = 60u
-    )
-
-    val otpEmailParams = OTP.EmailOTP.Parameters(
-        email = "email@email.com",
-        expirationMinutes = 60u
-    )
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling EmailMagicLinks_loginOrCreate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.magicLinks.email.loginOrCreate(magicLinkParams)
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling SmsOTP_loginOrCreate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.otps.sms.loginOrCreate(otpSmsParams)
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling WhatsAppOTP_loginOrCreate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.otps.whatsapp.loginOrCreate(otpWhatsAppParams)
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling EmailOTP_loginOrCreateUser`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.otps.email.loginOrCreate(otpEmailParams)
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling EmailMagicLinks_authenticate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token"))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling OTP_authenticate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.otps.authenticate(OTP.AuthParameters(token = "token"))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_authenticate`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.passwords.authenticate(Passwords.AuthParameters(email = any(), password = any(), sessionDurationMinutes = any()))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_create`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.passwords.create(Passwords.CreateParameters(email = any(), password = any(), sessionDurationMinutes = any()))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_resetByEmailStart`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-                    email = any(),
-                    loginRedirectUrl = any(),
-                    loginExpirationMinutes = any(),
-                    resetPasswordRedirectUrl = any(),
-                    resetPasswordExpirationMinutes = any()))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_resetByEmail`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = any(), password = any(), sessionDurationMinutes = any()))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `throw IllegalStateException exception if Sdk was not configured while calling Passwords_strengthCheck`() {
-        runBlocking {
-            try {
-                mockkObject(StytchApi)
-                every { StytchApi.isInitialized } returns false
-//                Call method without configuration
-                StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = any(), password = any()))
-            } catch (exception: IllegalStateException) {
-//                if exception was thrown test passed
-                return@runBlocking
-            }
-//          test failed if no exception was thrown
-            assert(false)
-        }
-    }
-
-    @Test
-    fun `should trigger StytchApi configure when calling StytchClient configure`() {
-        mockkObject(StytchApi)
-        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
-        stytchClientObject.configure(mContextMock, "", "")
-        verify { StytchApi.configure("", "", deviceInfo) }
-    }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun before() {
-        mockkConstructor(StorageHelper::class)
+        Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any(), any()) } returns Unit
-        mContextMock = mockk<Context>(relaxed = true)
-        Dispatchers.setMain(mainThreadSurrogate)
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        mContextMock = mockk(relaxed = true)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        every { anyConstructed<StorageHelper>().loadValue(any()) } returns ""
-        every { anyConstructed<StorageHelper>().generateHashedCodeChallenge() } returns Pair("", "")
+        mockkObject(StorageHelper)
+        every { StorageHelper.initialize(any()) } just runs
+        every { StorageHelper.loadValue(any()) } returns ""
+        every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun after() {
         Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
@@ -270,375 +56,182 @@ internal class StytchClientTest {
         unmockkAll()
     }
 
-    @Test
-    fun `should return result success loginOrCreate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.MagicLinks.Email)
-        coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreate(
-                email = magicLinkParams.email,
-                codeChallenge = "",
-                codeChallengeMethod = "",
-                loginMagicLinkUrl = null
-            )
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.magicLinks.email.loginOrCreate(magicLinkParams)
-        }
-        assert(result is StytchResult.Success)
+    @Test(expected = IllegalStateException::class)
+    fun `assertInitialized throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.assertInitialized()
     }
 
     @Test
-    fun `should return result success loginOrCreate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.MagicLinks.Email)
-        coEvery {
-            StytchApi.MagicLinks.Email.loginOrCreate(
-                email = magicLinkParams.email,
-                loginMagicLinkUrl = null,
-                codeChallenge = any(),
-                codeChallengeMethod = any())
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.magicLinks.email.loginOrCreate(magicLinkParams) {
-            assert(it is StytchResult.Success)
-        }
+    fun `assertInitialized does not throw IllegalStateException when properly configured`() {
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        val deviceInfo = DeviceInfo()
+        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        stytchClientObject.configure(mContextMock, "")
+        stytchClientObject.assertInitialized()
     }
 
     @Test
-    fun `should return result success MagicLinks_authenticate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.MagicLinks.Email)
-        coEvery {
-            StytchApi.MagicLinks.Email.authenticate(any(), codeVerifier = any(), sessionDurationMinutes = any())
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token"))
-        }
-        assert(result is StytchResult.Success)
+    fun `should trigger StytchApi configure when calling StytchClient configure`() {
+        mockkObject(StytchApi)
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        val deviceInfo = DeviceInfo()
+        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        stytchClientObject.configure(mContextMock, "")
+        verify { StytchApi.configure("", deviceInfo) }
     }
 
     @Test
-    fun `should return result success MagicLinks_authenticate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.MagicLinks.Email)
-        coEvery {
-            StytchApi.MagicLinks.Email.authenticate("token", sessionDurationMinutes = 60u, codeVerifier = "")
-        }.returns(StytchResult.Success(any()))
+    fun `should trigger StorageHelper initialize when calling StytchClient configure`() {
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        val deviceInfo = DeviceInfo()
+        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        stytchClientObject.configure(mContextMock, "")
+        verify { StorageHelper.initialize(mContextMock) }
+    }
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.magicLinks.authenticate(MagicLinks.AuthParameters("token")) {
-            assert(it is StytchResult.Success)
-        }
+    @Test(expected = StytchExceptions.Critical::class)
+    fun `an exception in StytchClient configure throws a Critical exception`() {
+        every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        stytchClientObject.configure(mContextMock, "")
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient magicLinks throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.magicLinks
     }
 
     @Test
-    fun `should return result success OTP_authenticate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.authenticateWithOTP("token", 60u)
-        }.returns(StytchResult.Success(any()))
+    fun `accessing StytchClient magicLinks returns instance of MagicLinks when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        StytchClient.magicLinks
+    }
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u)) {
-            assert(it is StytchResult.Success)
-        }
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient otps throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.otps
     }
 
     @Test
-    fun `should return result success OTP_authenticate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.authenticateWithOTP("token", 60u)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
+    fun `accessing StytchClient otps returns instance of OTP when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        StytchClient.otps
+    }
 
-        val result = runBlocking {
-            StytchClient.otps.authenticate(OTP.AuthParameters("token", 60u))
-        }
-        assert(result is StytchResult.Success)
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient passwords throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.passwords
     }
 
     @Test
-    fun `should return result success SmsOTP_loginOrCreateUser called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateByOTPWithSMS("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
+    fun `accessing StytchClient passwords returns instance of Password when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        StytchClient.passwords
+    }
 
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u)) {
-            assert(it is StytchResult.Success)
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient sessions throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.sessions
+    }
+
+    @Test
+    fun `accessing StytchClient sessions returns instance of Session when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        StytchClient.sessions
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `handle with coroutines throws IllegalStateException when not configured`() {
+        runBlocking {
+            mockkObject(StytchApi)
+            every { StytchApi.isInitialized } returns false
+            StytchClient.handle(mockk(), 30U)
         }
     }
 
     @Test
-    fun `should return result success SmsOTP_loginOrCreate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateByOTPWithSMS("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters("+12000000", 60u))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success WhatsAppOTP_loginOrCreate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u)) {
-            assert(it is StytchResult.Success)
+    fun `handle with coroutines returns AuthResponse with correct error when token is missing`() {
+        runBlocking {
+            mockkObject(StytchApi)
+            every { StytchApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns null
+            }
+            val response = StytchClient.handle(mockUri, 30U)
+            require(response is StytchResult.Error)
+            require(response.exception is StytchExceptions.Input)
+            assert(response.exception.reason == "Magic link missing token")
         }
     }
 
     @Test
-    fun `should return result success WhatsAppOTP_loginOrCreate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.otps.whatsapp.loginOrCreate(OTP.WhatsAppOTP.Parameters("+12000000", 60u))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success EmailOTP_loginOrCreate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u)) {
-            assert(it is StytchResult.Success)
+    fun `handle with coroutines returns AuthResponse with correct error when token is unknown`() {
+        runBlocking {
+            mockkObject(StytchApi)
+            every { StytchApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns "something unexpected"
+            }
+            val response = StytchClient.handle(mockUri, 30U)
+            require(response is StytchResult.Error)
+            require(response.exception is StytchExceptions.Input)
+            assert(response.exception.reason == "Unknown magic link type")
         }
     }
 
     @Test
-    fun `should return result success EmailOTP_loginOrCreate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        mockkObject(StytchApi.OTP)
-        coEvery {
-            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("+12000000", 60u)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters("email@email.com", 60u))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success Passwords_authenticate called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10)) {
-            assert(it is StytchResult.Success)
+    fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
+        runBlocking {
+            mockkObject(StytchApi)
+            every { StytchApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns "MAGIC_LINKS"
+            }
+            val mockAuthResponse = mockk<AuthResponse>()
+            val mockMagicLinks = mockk<MagicLinks> {
+                coEvery { authenticate(any()) } returns mockAuthResponse
+            }
+            StytchClient.magicLinks = mockMagicLinks
+            val response = StytchClient.handle(mockUri, 30U)
+            coVerify { mockMagicLinks.authenticate(any()) }
+            assert(response == mockAuthResponse)
         }
     }
 
     @Test
-    fun `should return result success Passwords_authenticate called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.authenticate(email = "", password = "", sessionDurationMinutes = 10)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.passwords.authenticate(Passwords.AuthParameters(email = "", password = "", sessionDurationMinutes = 10))
+    fun `handle with callback returns value in callback method when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        val mockUri = mockk<Uri> {
+            every { getQueryParameter(any()) } returns null
         }
-        assert(result is StytchResult.Success)
+        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        runBlocking {
+            StytchClient.externalScope = this
+            StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+            StytchClient.handle(mockUri, 30u, mockCallback)
+        }
+        verify { mockCallback.invoke(any()) }
     }
 
-    @Test
-    fun `should return result success Passwords_create called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10)) {
-            assert(it is StytchResult.Success)
-        }
-    }
-
-    @Test
-    fun `should return result success Passwords_create called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.create(email = "", password = "", sessionDurationMinutes = 10)
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.passwords.create(Passwords.CreateParameters(email = "", password = "", sessionDurationMinutes = 10))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success Passwords_resetByEmailStart called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.resetByEmailStart(
-                email = "",
-                codeChallenge = "",
-                codeChallengeMethod = "",
-                loginRedirectUrl = "",
-                loginExpirationMinutes = 10,
-                resetPasswordRedirectUrl = "",
-                resetPasswordExpirationMinutes = 10)
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-            email = "",
-            loginRedirectUrl = "",
-            loginExpirationMinutes = 10,
-            resetPasswordRedirectUrl = "",
-            resetPasswordExpirationMinutes = 10)) {
-            assert(it is StytchResult.Success)
-        }
-    }
-
-    @Test
-    fun `should return result success Passwords_resetByEmailStart called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.resetByEmailStart(
-                email = "",
-                codeChallenge = "",
-                codeChallengeMethod = "",
-                loginRedirectUrl = "",
-                loginExpirationMinutes = 10,
-                resetPasswordRedirectUrl = "",
-                resetPasswordExpirationMinutes = 10
-            )
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.passwords.resetByEmailStart(Passwords.ResetByEmailStartParameters(
-                email = "",
-                loginRedirectUrl = "",
-                loginExpirationMinutes = 10,
-                resetPasswordRedirectUrl = "",
-                resetPasswordExpirationMinutes = 10))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success Passwords_resetByEmail called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.resetByEmail(token = "", password = "", sessionDurationMinutes = 10, codeVerifier = "")
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(token = "", password = "", sessionDurationMinutes = 10)) {
-            assert(it is StytchResult.Success)
-        }
-    }
-
-    @Test
-    fun `should return result success Passwords_resetByEmail called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.resetByEmail(
-                token = "", password = "", sessionDurationMinutes = 10, codeVerifier = ""
-            )
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.passwords.resetByEmail(Passwords.ResetByEmailParameters(
-                token = "",
-                password = "",
-                sessionDurationMinutes = 10))
-        }
-        assert(result is StytchResult.Success)
-    }
-
-    @Test
-    fun `should return result success Passwords_strengthCheck called with callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.strengthCheck(email = "", password = "")
-        }.returns(StytchResult.Success(any()))
-
-        stytchClientObject.configure(mContextMock, "", "")
-        StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = "")) {
-            assert(it is StytchResult.Success)
-        }
-    }
-
-    @Test
-    fun `should return result success Passwords_strengthCheck called without callback`() {
-        val stytchClientObject = spyk<StytchClient>()
-        stytchClientObject.setDispatchers(dispatcher, dispatcher)
-        mockkObject(StytchApi.Passwords)
-        coEvery {
-            StytchApi.Passwords.strengthCheck(email = "", password = "")
-        }.returns(StytchResult.Success(any()))
-        stytchClientObject.configure(mContextMock, "", "")
-
-        val result = runBlocking {
-            StytchClient.passwords.strengthCheck(Passwords.StrengthCheckParameters(email = "", password = ""))
-        }
-        assert(result is StytchResult.Success)
+    @Test(expected = IllegalStateException::class)
+    fun `stytchError throws IllegalStateException`() {
+        stytchError("Test")
     }
 }

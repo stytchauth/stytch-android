@@ -1,19 +1,21 @@
 package com.stytch.sdk
 
 import android.content.Context
+import android.content.SharedPreferences
 import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 internal const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 
-internal class StorageHelper(context: Context) {
+internal object StorageHelper {
 
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
-    private val sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+    private lateinit var sharedPreferences: SharedPreferences
 
-    init {
+    fun initialize(context: Context) {
         keyStore.load(null)
+        sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
         EncryptionManager.createNewKeys(context, KEY_ALIAS)
     }
 

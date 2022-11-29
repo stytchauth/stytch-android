@@ -7,21 +7,44 @@ import android.util.Log
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
-import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
+import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionStorage
-import com.stytch.sessions.SessionsImpl
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Type alias for StytchResult<BasicData> used for loginOrCreateUserByEmail responses
+ */
 public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
+
+/**
+ * Type alias for StytchResult<BasicData> used for basic responses
+ */
 public typealias BaseResponse = StytchResult<BasicData>
+
+/**
+ * Type alias for StytchResult<AuthData> used for authentication responses
+ */
 public typealias AuthResponse = StytchResult<AuthData>
+
+/**
+ * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
+ */
+public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
+
+/**
+ * Type alias for StytchResult<CreateResponse> used for PasswordsCreate responses
+ */
 public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
+
+/**
+ * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
+ */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
 public typealias UserResponse = StytchResult<UserData>
 
@@ -29,15 +52,9 @@ public typealias UserResponse = StytchResult<UserData>
  * The entrypoint for all Stytch-related interaction.
  */
 public object StytchClient {
-
-    internal lateinit var storageHelper: StorageHelper
-
-    internal var ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-        private set
-    internal var uiDispatcher: CoroutineDispatcher = Dispatchers.Main
-        private set
-
-    internal val sessionStorage = SessionStorage()
+    internal var dispatchers: StytchDispatchers = StytchDispatchers()
+    internal val sessionStorage = SessionStorage(StorageHelper)
+    internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**
      * Configures the StytchClient, setting the publicToken and hostUrl.
@@ -45,60 +62,85 @@ public object StytchClient {
      * @throws StytchExceptions.Critical - if failed to generate new encryption keys
      */
     public fun configure(context: Context, publicToken: String) {
-        val deviceInfo = getDeviceInfo(context)
-        StytchApi.configure(publicToken, deviceInfo)
         try {
-            storageHelper = StorageHelper(context)
+            val deviceInfo = getDeviceInfo(context)
+            StytchApi.configure(publicToken, deviceInfo)
+            StorageHelper.initialize(context)
         } catch (ex: Exception) {
-            throw  StytchExceptions.Critical(ex)
+            throw StytchExceptions.Critical(ex)
         }
     }
 
+    @Suppress("MaxLineLength")
     internal fun assertInitialized() {
         if (!StytchApi.isInitialized) {
-            stytchError("StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient.")
+            stytchError(
+                "StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient." // ktlint-disable max-line-length
+            )
         }
     }
 
     /**
      * Exposes an instance of email magic links
      */
-    public var magicLinks: MagicLinks = MagicLinksImpl()
-        private set
+    public var magicLinks: MagicLinks = MagicLinksImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchApi.MagicLinks.Email
+    )
         get() {
             assertInitialized()
             return field
         }
+        internal set
 
     /**
      * Exposes an instance of otp
      */
-    public var otps: OTP = OTPImpl()
-        private set
+    public var otps: OTP = OTPImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.OTP
+    )
         get() {
             assertInitialized()
             return field
         }
+        internal set
 
     /**
      * Exposes an instance of passwords
      */
-    public var passwords: Passwords = PasswordsImpl()
-        private set
+    public var passwords: Passwords = PasswordsImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchApi.Passwords
+    )
         get() {
             assertInitialized()
             return field
         }
+        internal set
 
     /**
      * Exposes an instance of sessions
      */
-    public var sessions: Sessions = SessionsImpl()
-        private set
+    public var sessions: Sessions = SessionsImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.Sessions
+    )
         get() {
             assertInitialized()
             return field
         }
+        internal set
 
     public var user: UserManagement = UserManagementImpl()
         private set
@@ -107,15 +149,7 @@ public object StytchClient {
             return field
         }
 
-    /**
-     * Set dispatchers for UI and IO tasks
-     */
-    public fun setDispatchers(uiDispatcher: CoroutineDispatcher, ioDispatcher: CoroutineDispatcher) {
-        this.uiDispatcher = uiDispatcher
-        this.ioDispatcher = ioDispatcher
-    }
-
-//    TODO("OAuth")
+    // TODO("OAuth")
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()
@@ -125,9 +159,12 @@ public object StytchClient {
         deviceInfo.osName = Build.VERSION.CODENAME
 
         try {
-//          throw exceptions if packageName not found
-            deviceInfo.applicationVersion =
-                context.applicationContext.packageManager.getPackageInfo(deviceInfo.applicationPackageName!!, 0).versionName
+            // throw exceptions if packageName not found
+            deviceInfo.applicationVersion = context
+                .applicationContext
+                .packageManager
+                .getPackageInfo(deviceInfo.applicationPackageName!!, 0)
+                .versionName
         } catch (ex: Exception) {
             deviceInfo.applicationVersion = ""
         }
@@ -148,18 +185,15 @@ public object StytchClient {
     public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): AuthResponse {
         assertInitialized()
         val result: AuthResponse
-        withContext(ioDispatcher) {
+        withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
-            val tokenType = TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))
-
             if (token.isNullOrEmpty()) {
                 result = StytchResult.Error(StytchExceptions.Input("Magic link missing token"))
                 return@withContext
             }
-
-            when (tokenType) {
+            result = when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 TokenType.MAGIC_LINKS -> {
-                    result = magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
+                    magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
                 }
                 TokenType.OAUTH -> {
                     TODO("Implement oauth handling")
@@ -168,8 +202,7 @@ public object StytchClient {
                     TODO("Implement password reset handling")
                 }
                 TokenType.UNKNOWN -> {
-                    result = StytchResult.Error(StytchExceptions.Input("Unknown magic link type"))
-
+                    StytchResult.Error(StytchExceptions.Input("Unknown magic link type"))
                 }
             }
         }
@@ -183,10 +216,14 @@ public object StytchClient {
      * @param sessionDurationMinutes - sessionDuration
      * @param callback calls callback with AuthResponse response from backend
      */
-    public fun handle(uri: Uri, sessionDurationMinutes: UInt, callback: (response: AuthResponse) -> Unit) {
-        GlobalScope.launch(uiDispatcher) {
+    public fun handle(
+        uri: Uri,
+        sessionDurationMinutes: UInt,
+        callback: (response: AuthResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
             val result = handle(uri, sessionDurationMinutes)
-//              change to main thread to call callback
+            // change to main thread to call callback
             callback(result)
         }
     }

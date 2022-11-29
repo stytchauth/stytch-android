@@ -6,9 +6,9 @@ plugins {
 }
 
 ext {
-    PUBLISH_GROUP_ID = 'com.stytch.sdk'
-    PUBLISH_VERSION = '0.4.2'
-    PUBLISH_ARTIFACT_ID = 'sdk'
+  PUBLISH_GROUP_ID = 'com.stytch.sdk'
+  PUBLISH_VERSION = '0.6.0'
+  PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
@@ -29,10 +29,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
         debug {
             minifyEnabled false
             buildConfigField "Boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
         }
     }
     compileOptions {
@@ -46,24 +48,31 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    lintOptions {
+        disable 'OldTargetApi'
+    }
 }
 
 tasks.named("dokkaHtml").configure {
+    moduleName.set("Stytch Kotlin")
+    suppressInheritedMembers.set(true)
     dokkaSourceSets {
         configureEach {
             perPackageOption {
                 matchingRegex.set(".*\\.network.*")
                 suppress.set(true)
             }
+            reportUndocumented.set(true)
         }
     }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"

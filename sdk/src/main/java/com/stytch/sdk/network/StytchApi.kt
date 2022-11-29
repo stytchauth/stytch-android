@@ -1,7 +1,9 @@
 package com.stytch.sdk.network
 
+import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
+import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
@@ -10,29 +12,40 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
 import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sdk.stytchError
+import java.lang.RuntimeException
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.lang.RuntimeException
-import java.util.concurrent.TimeUnit
+
+private const val ONE_HUNDRED_TWENTY = 120L
+private const val HTTP_UNAUTHORIZED = 401
 
 internal object StytchApi {
 
     private lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
 
-    //save reference for changing auth header
-    //make sure api is configured before accessing this variable
-    private val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
+    // save reference for changing auth header
+    // make sure api is configured before accessing this variable
+    @Suppress("MaxLineLength")
+    @VisibleForTesting
+    internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
-            throw StytchExceptions.Critical(RuntimeException("StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi."))
+            throw StytchExceptions.Critical(
+                RuntimeException(
+                    "StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi." // ktlint-disable max-line-length
+                )
+            )
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,
@@ -47,21 +60,42 @@ internal object StytchApi {
 
     internal val isInitialized: Boolean
         get() {
-            return ::publicToken.isInitialized
-                    && ::deviceInfo.isInitialized
+            return ::publicToken.isInitialized &&
+                ::deviceInfo.isInitialized
         }
 
-    private val apiService: StytchApiService by lazy {
+    @VisibleForTesting
+    internal val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
         Retrofit.Builder()
             .baseUrl(Constants.HOST_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(
                 OkHttpClient.Builder()
-                    .readTimeout(120L, TimeUnit.SECONDS)
-                    .writeTimeout(120L, TimeUnit.SECONDS)
-                    .connectTimeout(120L, TimeUnit.SECONDS)
+                    .readTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
+                    .writeTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
+                    .connectTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
                     .addInterceptor(authHeaderInterceptor)
+                    .addInterceptor(
+                        Interceptor { chain ->
+                            val request = chain.request()
+                            val response = chain.proceed(request)
+                            if (response.code == HTTP_UNAUTHORIZED) {
+                                StytchClient.sessionStorage.revoke()
+                            }
+                            return@Interceptor response
+                        }
+                    )
+                    .addNetworkInterceptor {
+                        // OkHttp is adding a charset to the content-type which is rejected by the API
+                        // see: https://github.com/square/okhttp/issues/3081
+                        it.proceed(
+                            it.request()
+                                .newBuilder()
+                                .header("Content-Type", "application/json")
+                                .build()
+                        )
+                    }
                     .build()
             )
             .build()
@@ -75,7 +109,7 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String,
+                codeChallengeMethod: String
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
@@ -87,25 +121,27 @@ internal object StytchApi {
                 )
             }
 
-            suspend fun authenticate(token: String, sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES, codeVerifier: String):
-                    StytchResult<AuthData> =
-                safeApiCall {
-                    apiService.authenticate(
-                        StytchRequests.MagicLinks.AuthenticateRequest(
-                            token,
-                            codeVerifier,
-                            sessionDurationMinutes.toInt()
-                        )
+            suspend fun authenticate(
+                token: String,
+                sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+                codeVerifier: String
+            ): StytchResult<AuthData> = safeApiCall {
+                apiService.authenticate(
+                    StytchRequests.MagicLinks.AuthenticateRequest(
+                        token,
+                        codeVerifier,
+                        sessionDurationMinutes.toInt()
                     )
-                }
+                )
+            }
         }
     }
 
     internal object OTP {
         suspend fun loginOrCreateByOTPWithSMS(
             phoneNumber: String,
-            expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+            expirationMinutes: UInt
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
                 StytchRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
@@ -116,8 +152,8 @@ internal object StytchApi {
 
         suspend fun loginOrCreateUserByOTPWithWhatsApp(
             phoneNumber: String,
-            expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+            expirationMinutes: UInt
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
@@ -128,8 +164,8 @@ internal object StytchApi {
 
         suspend fun loginOrCreateUserByOTPWithEmail(
             email: String,
-            expirationMinutes: UInt,
-        ): StytchResult<BasicData> = safeApiCall {
+            expirationMinutes: UInt
+        ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
                 StytchRequests.OTP.Email(
                     email = email,
@@ -138,16 +174,19 @@ internal object StytchApi {
             )
         }
 
-        suspend fun authenticateWithOTP(token: String, sessionDurationMinutes: UInt = 60u):
-                StytchResult<AuthData> =
-            safeApiCall {
-                apiService.authenticateWithOTP(
-                    StytchRequests.OTP.Authenticate(
-                        token,
-                        sessionDurationMinutes.toInt()
-                    )
+        suspend fun authenticateWithOTP(
+            token: String,
+            methodId: String,
+            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateWithOTP(
+                StytchRequests.OTP.Authenticate(
+                    token,
+                    methodId,
+                    sessionDurationMinutes.toInt()
                 )
-            }
+            )
+        }
     }
 
     internal object Passwords {
@@ -155,13 +194,13 @@ internal object StytchApi {
         suspend fun authenticate(
             email: String,
             password: String,
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: UInt
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateWithPasswords(
                 StytchRequests.Passwords.AuthenticateRequest(
                     email,
                     password,
-                    sessionDurationMinutes
+                    sessionDurationMinutes.toInt()
                 )
             )
         }
@@ -169,17 +208,18 @@ internal object StytchApi {
         suspend fun create(
             email: String,
             password: String,
-            sessionDurationMinutes: Int,
+            sessionDurationMinutes: UInt
         ): StytchResult<CreateResponse> = safeApiCall {
             apiService.passwords(
                 StytchRequests.Passwords.CreateRequest(
                     email,
                     password,
-                    sessionDurationMinutes
+                    sessionDurationMinutes.toInt()
                 )
             )
         }
 
+        @Suppress("LongParameterList")
         suspend fun resetByEmailStart(
             email: String,
             codeChallenge: String,
@@ -187,7 +227,7 @@ internal object StytchApi {
             loginRedirectUrl: String?,
             loginExpirationMinutes: Int?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: Int?,
+            resetPasswordExpirationMinutes: Int?
         ): StytchResult<BasicData> = safeApiCall {
             apiService.resetByEmailStart(
                 StytchRequests.Passwords.ResetByEmailStartRequest(
@@ -205,14 +245,14 @@ internal object StytchApi {
         suspend fun resetByEmail(
             token: String,
             password: String,
-            sessionDurationMinutes: Int,
-            codeVerifier: String,
+            sessionDurationMinutes: UInt,
+            codeVerifier: String
         ): StytchResult<AuthData> = safeApiCall {
             apiService.resetByEmail(
                 StytchRequests.Passwords.RestByEmailRequest(
                     token,
                     password,
-                    sessionDurationMinutes,
+                    sessionDurationMinutes.toInt(),
                     codeVerifier
                 )
             )
@@ -220,7 +260,7 @@ internal object StytchApi {
 
         suspend fun strengthCheck(
             email: String?,
-            password: String,
+            password: String
         ): StytchResult<StrengthCheckResponse> = safeApiCall {
             apiService.strengthCheck(
                 StytchRequests.Passwords.StrengthCheckRequest(
@@ -234,7 +274,7 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int? = null,
+            sessionDurationMinutes: Int? = null
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
@@ -243,11 +283,9 @@ internal object StytchApi {
             )
         }
 
-        suspend fun revoke():
-                StytchResult<BasicData> =
-            safeApiCall {
-                apiService.revokeSessions()
-            }
+        suspend fun revoke(): StytchResult<BasicData> = safeApiCall {
+            apiService.revokeSessions()
+        }
     }
 
     internal object UserManagement {
@@ -256,29 +294,23 @@ internal object StytchApi {
             apiService.getUser()
         }
 
-        public suspend fun deleteEmailById(id: String): StytchResult<BasicData> {
-            return  safeApiCall {
-                apiService.deleteEmailById(id)
-            }
+        suspend fun deleteEmailById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteEmailById(id)
         }
 
-        public suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData>{
-            return  safeApiCall {
-                apiService.deletePhoneNumberById(id)
-            }
+        suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deletePhoneNumberById(id)
         }
 
-        public suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData>{
-            return  safeApiCall {
-                apiService.deleteBiometricRegistrationById(id)
-            }
+        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteBiometricRegistrationById(id)
         }
-
-
-
     }
 
-    private suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(apiCall: suspend () -> T): StytchResult<T1> =
+    @VisibleForTesting
+    internal suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(
+        apiCall: suspend () -> T
+    ): StytchResult<T1> =
         withContext(Dispatchers.IO) {
             StytchClient.assertInitialized()
             try {
