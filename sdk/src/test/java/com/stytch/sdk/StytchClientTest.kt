@@ -157,6 +157,20 @@ internal class StytchClientTest {
     }
 
     @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient biometrics throws IllegalStateException when not configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns false
+        StytchClient.biometrics
+    }
+
+    @Test
+    fun `accessing StytchClient biometrics returns instance of Biometrics when configured`() {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        StytchClient.biometrics
+    }
+
+    @Test(expected = IllegalStateException::class)
     fun `handle with coroutines throws IllegalStateException when not configured`() {
         runBlocking {
             mockkObject(StytchApi)
