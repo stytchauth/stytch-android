@@ -18,48 +18,6 @@ public interface Biometrics {
     )
 
     /**
-     * Data class used for wrapping parameters used with Biometrics registration start flow
-     * @param publicKey Base64 encoded public key retrieved from SharedPreferences
-     */
-    public data class RegisterStartParameters(
-        val publicKey: String,
-    )
-
-    /**
-     * Data class used for wrapping parameters used with Biometrics registration flow
-     * @param signature Base64 encoded signed challenge
-     * @param biometricRegistrationId an identifier returned from the API to identify this request
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
-     */
-    public data class RegisterParameters(
-        val signature: String,
-        val biometricRegistrationId: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
-    )
-
-    /**
-     * Data class used for wrapping parameters used with Biometrics authentication start flow
-     * @param publicKey Base64 encoded public key retrieved from SharedPreferences
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
-     */
-    public data class AuthenticateStartParameters(
-        val publicKey: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
-    )
-
-    /**
-     * Data class used for wrapping parameters used with Biometrics authentication flow
-     * @param signature Base64 encoded signed challenge
-     * @param biometricRegistrationId an identifier returned from the API to identify this request
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
-     */
-    public data class AuthenticateParameters(
-        val signature: String,
-        val biometricRegistrationId: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
-    )
-
-    /**
      * Indicates if there is an existing biometric registration on device.
      */
     public val registrationAvailable: Boolean
