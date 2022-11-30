@@ -15,6 +15,7 @@ import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
+import com.stytch.sdk.network.responseData.UserData
 import java.lang.RuntimeException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -244,6 +245,25 @@ internal object StytchApi {
 
         suspend fun revoke(): StytchResult<BasicData> = safeApiCall {
             apiService.revokeSessions()
+        }
+    }
+
+    internal object UserManagement {
+
+        suspend fun getUser(): StytchResult<UserData> = safeApiCall {
+            apiService.getUser()
+        }
+
+        suspend fun deleteEmailById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteEmailById(id)
+        }
+
+        suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deletePhoneNumberById(id)
+        }
+
+        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteBiometricRegistrationById(id)
         }
     }
 

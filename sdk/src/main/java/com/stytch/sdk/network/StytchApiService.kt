@@ -7,7 +7,10 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 private const val ONE_HUNDRED_TWENTY = 120L
 private const val HTTP_UNAUTHORIZED = 401
@@ -86,6 +89,21 @@ internal interface StytchApiService {
     ): StytchResponses.Passwords.PasswordsStrengthCheckResponse
     //endregion passwords
 
+    //region User Management
+    @GET("users/me")
+    suspend fun getUser(): StytchResponses.User.UserResponse
+
+    @DELETE("users/emails/{id}")
+    suspend fun deleteEmailById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    @DELETE("users/phone_numbers/{id}")
+    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    @DELETE("users/biometric_registrations/{id}")
+    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    //endregion User Management
+
     companion object {
         private fun clientBuilder(authHeaderInterceptor: StytchAuthHeaderInterceptor?): OkHttpClient {
             val builder = OkHttpClient.Builder()
@@ -116,6 +134,7 @@ internal interface StytchApiService {
                 }
             return builder.build()
         }
+
         fun createApiService(hostUrl: String, authHeaderInterceptor: StytchAuthHeaderInterceptor?): StytchApiService {
             return Retrofit.Builder()
                 .baseUrl(hostUrl)

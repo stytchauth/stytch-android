@@ -6,6 +6,7 @@ import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
+import com.stytch.sdk.network.responseData.UserData
 
 internal object StytchResponses {
 
@@ -29,6 +30,11 @@ internal object StytchResponses {
         @JsonClass(generateAdapter = true)
         class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
             StytchDataResponse<StrengthCheckResponse>(data)
+    }
+
+    object User {
+        @JsonClass(generateAdapter = true)
+        class UserResponse(data: UserData) : StytchDataResponse<UserData>(data)
     }
 
     @JsonClass(generateAdapter = true)

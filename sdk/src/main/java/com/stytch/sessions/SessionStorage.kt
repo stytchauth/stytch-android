@@ -3,6 +3,7 @@ package com.stytch.sessions
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
+import com.stytch.sdk.network.responseData.UserData
 
 @VisibleForTesting
 internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
@@ -36,8 +37,18 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
         }
 
     var session: SessionData? = null
-        private set(value) {
-            field = value
+        private set
+
+    var user: UserData? = null
+        set(value) {
+            synchronized(this) {
+                field = value
+            }
+        }
+        get() {
+            synchronized(this) {
+                return field
+            }
         }
 
     /**
@@ -59,6 +70,7 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
             sessionToken = null
             sessionJwt = null
             session = null
+            user = null
         }
     }
 }
