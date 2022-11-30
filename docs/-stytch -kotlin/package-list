@@ -108,6 +108,7 @@ $dokka.location:com.stytch.sdk/StytchClient/magicLinks/#/PointingToDeclaration/
 $dokka.location:com.stytch.sdk/StytchClient/otps/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/otps.html
 $dokka.location:com.stytch.sdk/StytchClient/passwords/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/passwords.html
 $dokka.location:com.stytch.sdk/StytchClient/sessions/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/sessions.html
+$dokka.location:com.stytch.sdk/StytchClient/user/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/user.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/index.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection/Connection/#kotlin.Throwable/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/-connection.html
 $dokka.location:com.stytch.sdk/StytchExceptions.Connection/reason/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-exceptions/-connection/reason.html
@@ -129,5 +130,15 @@ $dokka.location:com.stytch.sdk/StytchResult.Success///PointingToDeclaration/-st
 $dokka.location:com.stytch.sdk/StytchResult.Success/Success/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/-success/-success.html
 $dokka.location:com.stytch.sdk/StytchResult.Success/value/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/-success/value.html
 $dokka.location:com.stytch.sdk/StytchResult///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/index.html
+$dokka.location:com.stytch.sdk/UserManagement///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/index.html
+$dokka.location:com.stytch.sdk/UserManagement/deleteBiometricRegistrationById/#kotlin.String#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.BasicData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-biometric-registration-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/deleteBiometricRegistrationById/#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-biometric-registration-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/deleteEmailById/#kotlin.String#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.BasicData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-email-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/deleteEmailById/#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-email-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/deletePhoneNumberById/#kotlin.String#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.BasicData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-phone-number-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/deletePhoneNumberById/#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/delete-phone-number-by-id.html
+$dokka.location:com.stytch.sdk/UserManagement/getSyncUser/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/get-sync-user.html
+$dokka.location:com.stytch.sdk/UserManagement/getUser/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/get-user.html
+$dokka.location:com.stytch.sdk/UserManagement/getUser/#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.UserData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-user-management/get-user.html
 com.stytch.sdk
 
