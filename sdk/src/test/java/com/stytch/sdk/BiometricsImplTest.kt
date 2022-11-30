@@ -174,16 +174,6 @@ internal class BiometricsImplTest {
     }
 
     @Test
-    fun `authenticate returns correct error if insecure keystore and allowFallbackToCleartext is false`() = runTest {
-        every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns false
-        every { mockStorageHelper.deleteEd25519Key() } returns true
-        val result = impl.authenticate(mockk(relaxed = true))
-        require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.NOT_USING_KEYSTORE.message)
-        verify { mockStorageHelper.deleteEd25519Key() }
-    }
-
-    @Test
     fun `authenticate returns correct error if no public key is found`() = runTest {
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
         every { mockStorageHelper.getEd25519PublicKey(any()) } returns null
@@ -245,8 +235,7 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate with callback calls callback method`() {
         // short circuit on the first internal check, since we just care that the callback method is called
-        every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns false
-        every { mockStorageHelper.deleteEd25519Key() } returns true
+        every { mockStorageHelper.getEd25519PublicKey(any()) } returns null
         val mockCallback = spyk<(BiometricsAuthResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

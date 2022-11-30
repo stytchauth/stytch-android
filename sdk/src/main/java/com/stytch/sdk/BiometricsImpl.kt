@@ -80,10 +80,6 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
-            if (!isUsingKeystore(parameters.context) && !parameters.allowFallbackToCleartext) {
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message))
-                return@withContext
-            }
             val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext
