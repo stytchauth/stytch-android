@@ -71,25 +71,8 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl getUser returns correct exception for StytchException`() = runTest {
-        val exception = StytchExceptions.Connection(RuntimeException())
-        coEvery { mockApi.getUser() } throws exception
-        val response = impl.getUser()
-        require(response is StytchResult.Error)
-        assert(response.exception == exception)
-    }
-
-    @Test
-    fun `UserManagementImpl getUser returns correct exception for other exception`() = runTest {
-        val exception = IllegalStateException()
-        coEvery { mockApi.getUser() } throws exception
-        val response = impl.getUser()
-        require(response is StytchResult.Error)
-        assert(response.exception is StytchExceptions.Critical)
-    }
-
-    @Test
     fun `UserManagementImpl getUser with callback calls callback method`() {
+        coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(UserResponse) -> Unit>()
         impl.getUser(mockCallback)
         verify { mockCallback.invoke(any()) }
@@ -114,25 +97,8 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl deleteEmailById returns correct exception for StytchException`() = runTest {
-        val exception = StytchExceptions.Connection(RuntimeException())
-        coEvery { mockApi.deleteEmailById(any()) } throws exception
-        val response = impl.deleteEmailById("emailAddressId")
-        require(response is StytchResult.Error)
-        assert(response.exception == exception)
-    }
-
-    @Test
-    fun `UserManagementImpl deleteEmailById returns correct exception for other exception`() = runTest {
-        val exception = IllegalStateException()
-        coEvery { mockApi.deleteEmailById(any()) } throws exception
-        val response = impl.deleteEmailById("emailAddressId")
-        require(response is StytchResult.Error)
-        assert(response.exception is StytchExceptions.Critical)
-    }
-
-    @Test
     fun `UserManagementImpl deleteEmailById with callback calls callback method`() {
+        coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.deleteEmailById("emailAddressId", mockCallback)
         verify { mockCallback.invoke(any()) }
@@ -147,25 +113,8 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl deletePhoneNumberById returns correct exception for StytchException`() = runTest {
-        val exception = StytchExceptions.Connection(RuntimeException())
-        coEvery { mockApi.deletePhoneNumberById(any()) } throws exception
-        val response = impl.deletePhoneNumberById("phoneNumberId")
-        require(response is StytchResult.Error)
-        assert(response.exception == exception)
-    }
-
-    @Test
-    fun `UserManagementImpl deletePhoneNumberById returns correct exception for other exception`() = runTest {
-        val exception = IllegalStateException()
-        coEvery { mockApi.deletePhoneNumberById(any()) } throws exception
-        val response = impl.deletePhoneNumberById("phoneNumberId")
-        require(response is StytchResult.Error)
-        assert(response.exception is StytchExceptions.Critical)
-    }
-
-    @Test
     fun `UserManagementImpl deletePhoneNumberById with callback calls callback method`() {
+        coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.deletePhoneNumberById("phoneNumberId", mockCallback)
         verify { mockCallback.invoke(any()) }
@@ -180,25 +129,8 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl deleteBiometricRegistrationById returns correct exception for StytchException`() = runTest {
-        val exception = StytchExceptions.Connection(RuntimeException())
-        coEvery { mockApi.deleteBiometricRegistrationById(any()) } throws exception
-        val response = impl.deleteBiometricRegistrationById("biometricsRegistrationId")
-        require(response is StytchResult.Error)
-        assert(response.exception == exception)
-    }
-
-    @Test
-    fun `UserManagementImpl deleteBiometricRegistrationById returns correct exception for other exception`() = runTest {
-        val exception = IllegalStateException()
-        coEvery { mockApi.deleteBiometricRegistrationById(any()) } throws exception
-        val response = impl.deleteBiometricRegistrationById("biometricsRegistrationId")
-        require(response is StytchResult.Error)
-        assert(response.exception is StytchExceptions.Critical)
-    }
-
-    @Test
     fun `UserManagementImpl deleteBiometricRegistrationById with callback calls callback method`() {
+        coEvery { mockApi.deleteBiometricRegistrationById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.deleteBiometricRegistrationById("biometricsRegistrationId", mockCallback)
         verify { mockCallback.invoke(any()) }

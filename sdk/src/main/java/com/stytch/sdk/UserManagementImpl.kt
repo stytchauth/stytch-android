@@ -13,12 +13,8 @@ internal class UserManagementImpl(
     private val sessionStorage: SessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    override suspend fun getUser(): UserResponse {
-        return catchExceptions {
-            withContext(dispatchers.io) {
-                api.getUser()
-            }
-        }
+    override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {
+        api.getUser()
     }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
@@ -30,12 +26,8 @@ internal class UserManagementImpl(
 
     override fun getSyncUser(): UserData? = sessionStorage.user
 
-    override suspend fun deleteEmailById(id: String): BaseResponse {
-        return catchExceptions {
-            withContext(dispatchers.io) {
-                api.deleteEmailById(id)
-            }
-        }
+    override suspend fun deleteEmailById(id: String): BaseResponse = withContext(dispatchers.io) {
+        api.deleteEmailById(id)
     }
 
     override fun deleteEmailById(id: String, callback: (BaseResponse) -> Unit) {
@@ -45,12 +37,8 @@ internal class UserManagementImpl(
         }
     }
 
-    override suspend fun deletePhoneNumberById(id: String): BaseResponse {
-        return catchExceptions {
-            withContext(dispatchers.io) {
-                api.deletePhoneNumberById(id)
-            }
-        }
+    override suspend fun deletePhoneNumberById(id: String): BaseResponse = withContext(dispatchers.io) {
+        api.deletePhoneNumberById(id)
     }
 
     override fun deletePhoneNumberById(id: String, callback: (BaseResponse) -> Unit) {
@@ -60,12 +48,8 @@ internal class UserManagementImpl(
         }
     }
 
-    override suspend fun deleteBiometricRegistrationById(id: String): BaseResponse {
-        return catchExceptions {
-            withContext(dispatchers.io) {
-                api.deleteBiometricRegistrationById(id)
-            }
-        }
+    override suspend fun deleteBiometricRegistrationById(id: String): BaseResponse = withContext(dispatchers.io) {
+        api.deleteBiometricRegistrationById(id)
     }
 
     override fun deleteBiometricRegistrationById(id: String, callback: (BaseResponse) -> Unit) {
@@ -73,13 +57,5 @@ internal class UserManagementImpl(
             val result = deleteBiometricRegistrationById(id)
             callback(result)
         }
-    }
-
-    private suspend fun <T> catchExceptions(block: suspend () -> StytchResult<T>): StytchResult<T> = try {
-        block()
-    } catch (stytchException: StytchExceptions) {
-        StytchResult.Error(stytchException)
-    } catch (otherException: Exception) {
-        StytchResult.Error(StytchExceptions.Critical(otherException))
     }
 }
