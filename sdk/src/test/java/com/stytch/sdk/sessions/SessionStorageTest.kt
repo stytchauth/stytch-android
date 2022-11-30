@@ -88,5 +88,6 @@ internal class SessionStorageTest {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         storage.revoke()
         assert(storage.session == null)
+        assert(storage.user == null)
     }
 }

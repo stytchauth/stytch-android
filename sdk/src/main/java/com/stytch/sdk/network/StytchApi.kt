@@ -18,23 +18,17 @@ import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
+import com.stytch.sdk.network.responseData.UserData
 import java.lang.RuntimeException
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
 import retrofit2.HttpException
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-
-private const val ONE_HUNDRED_TWENTY = 120L
-private const val HTTP_UNAUTHORIZED = 401
 
 internal object StytchApi {
 
     private lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    internal var hostUrl: String = Constants.HOST_URL
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -68,39 +62,7 @@ internal object StytchApi {
     @VisibleForTesting
     internal val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
-        Retrofit.Builder()
-            .baseUrl(Constants.HOST_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(
-                OkHttpClient.Builder()
-                    .readTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-                    .writeTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-                    .connectTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-                    .addInterceptor(authHeaderInterceptor)
-                    .addInterceptor(
-                        Interceptor { chain ->
-                            val request = chain.request()
-                            val response = chain.proceed(request)
-                            if (response.code == HTTP_UNAUTHORIZED) {
-                                StytchClient.sessionStorage.revoke()
-                            }
-                            return@Interceptor response
-                        }
-                    )
-                    .addNetworkInterceptor {
-                        // OkHttp is adding a charset to the content-type which is rejected by the API
-                        // see: https://github.com/square/okhttp/issues/3081
-                        it.proceed(
-                            it.request()
-                                .newBuilder()
-                                .header("Content-Type", "application/json")
-                                .build()
-                        )
-                    }
-                    .build()
-            )
-            .build()
-            .create(StytchApiService::class.java)
+        StytchApiService.createApiService(hostUrl, authHeaderInterceptor)
     }
 
     internal object MagicLinks {
@@ -250,7 +212,7 @@ internal object StytchApi {
             codeVerifier: String
         ): StytchResult<AuthData> = safeApiCall {
             apiService.resetByEmail(
-                StytchRequests.Passwords.RestByEmailRequest(
+                StytchRequests.Passwords.ResetByEmailRequest(
                     token,
                     password,
                     sessionDurationMinutes.toInt(),
@@ -336,6 +298,24 @@ internal object StytchApi {
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
                 )
             )
+        }
+    }
+
+    internal object UserManagement {
+        suspend fun getUser(): StytchResult<UserData> = safeApiCall {
+            apiService.getUser()
+        }
+
+        suspend fun deleteEmailById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteEmailById(id)
+        }
+
+        suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deletePhoneNumberById(id)
+        }
+
+        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteBiometricRegistrationById(id)
         }
     }
 

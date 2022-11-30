@@ -98,6 +98,7 @@ internal fun <T : IAuthData> StytchResult<T>.saveSession(sessionStorage: Session
         value.apply {
             try {
                 sessionStorage.updateSession(sessionToken, sessionJwt, session)
+                sessionStorage.user = user
             } catch (ex: Exception) {
                 return StytchResult.Error(StytchExceptions.Critical(ex))
             }

@@ -216,6 +216,44 @@ internal class StytchApiTest {
         coVerify { StytchApi.apiService.biometricsAuthenticate(any()) }
     }
 
+    @Test
+    fun `StytchApi User getUser calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.getUser() } returns mockk(relaxed = true)
+        StytchApi.UserManagement.getUser()
+        coVerify { StytchApi.apiService.getUser() }
+    }
+
+    @Test
+    fun `StytchApi User deleteEmailById calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.deleteEmailById("emailAddressId") } returns mockk(relaxed = true)
+        StytchApi.UserManagement.deleteEmailById("emailAddressId")
+        coVerify { StytchApi.apiService.deleteEmailById("emailAddressId") }
+    }
+
+    @Test
+    fun `StytchApi User deletePhoneNumberById calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.deletePhoneNumberById("phoneNumberId") } returns mockk(relaxed = true)
+        StytchApi.UserManagement.deletePhoneNumberById("phoneNumberId")
+        coVerify { StytchApi.apiService.deletePhoneNumberById("phoneNumberId") }
+    }
+
+    @Test
+    fun `StytchApi User deleteBiometricRegistrationById calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery {
+            StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId")
+        } returns mockk(relaxed = true)
+        StytchApi.UserManagement.deleteBiometricRegistrationById("biometricsRegistrationId")
+        coVerify { StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId") }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         mockkObject(StytchApi)

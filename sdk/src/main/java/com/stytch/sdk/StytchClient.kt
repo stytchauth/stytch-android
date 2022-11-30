@@ -11,6 +11,7 @@ import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
+import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -46,6 +47,7 @@ public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
  * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
  */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
+public typealias UserResponse = StytchResult<UserData>
 
 /**
  * Type alias for StytchResult<BiometricsAuthData> used for Biometrics authentication responses
@@ -162,8 +164,22 @@ public object StytchClient {
         }
         internal set
 
+    /**
+     * Exposes an instance of UserManagement
+     */
+    public var user: UserManagement = UserManagementImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.UserManagement
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
     // TODO("OAuth")
-    // TODO("User Management")
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()
