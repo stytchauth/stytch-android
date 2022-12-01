@@ -26,7 +26,6 @@ import androidx.navigation.NavController
 import com.stytch.exampleapp.BiometricsViewModel
 import com.stytch.exampleapp.R
 import com.stytch.sdk.StytchClient
-import timber.log.Timber
 
 @Composable
 fun BiometricsScreen(navController: NavController) {
@@ -36,13 +35,12 @@ fun BiometricsScreen(navController: NavController) {
     val context = LocalContext.current as FragmentActivity
     val executor = ContextCompat.getMainExecutor(context)
     val biometricManager = BiometricManager.from(context)
-    when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
-        BiometricManager.BIOMETRIC_SUCCESS ->
-            Timber.d("App can authenticate using biometrics.")
+    val (canShowBiometrics, biometricsErrorMessage) = when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
+        BiometricManager.BIOMETRIC_SUCCESS -> Pair(true, "")
         BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-            Timber.e("No biometric features available on this device.")
+            Pair(false, "No biometric features available on this device.")
         BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-            Timber.e("Biometric features are currently unavailable.")
+            Pair(false, "Biometric features are currently unavailable.")
         BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
             // Prompts the user to create credentials that your app accepts.
             val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
@@ -52,16 +50,15 @@ fun BiometricsScreen(navController: NavController) {
                 )
             }
             context.startActivityForResult(enrollIntent, 12345)
+            Pair(false, "No biometrics currently enrolled on device. Starting biometrics enrollment flow.")
         }
-        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
-            TODO()
-        }
-        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
-            TODO()
-        }
-        BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
-            TODO()
-        }
+        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
+            Pair(false, "A security vulnerability has been discovered with one or more hardware sensors.")
+        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
+            Pair(false, "The requested biometrics options are incompatible with the current Android version.")
+        BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
+            Pair(false, "Unable to determine whether the user can authenticate.")
+        else -> Pair(false, "Unknown")
     }
     val promptInfo = BiometricPrompt.PromptInfo.Builder()
         .setTitle("Biometric login")
@@ -111,16 +108,23 @@ fun BiometricsScreen(navController: NavController) {
                 StytchClient.biometrics.registrationAvailable,
             )
         )
-        StytchButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.biometrics_register),
-            onClick = { BiometricPrompt(context, executor, registerCallback).authenticate(promptInfo) }
-        )
-        StytchButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.biometrics_authenticate),
-            onClick = { BiometricPrompt(context, executor, authenticateCallback).authenticate(promptInfo) }
-        )
+        if (canShowBiometrics) {
+            if (!StytchClient.biometrics.registrationAvailable) {
+                StytchButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.biometrics_register),
+                    onClick = { BiometricPrompt(context, executor, registerCallback).authenticate(promptInfo) }
+                )
+            } else {
+                StytchButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.biometrics_authenticate),
+                    onClick = { BiometricPrompt(context, executor, authenticateCallback).authenticate(promptInfo) }
+                )
+            }
+        } else {
+            Text(text = stringResource(id = R.string.biometrics_unavailable, biometricsErrorMessage))
+        }
         if (loading.value) {
             CircularProgressIndicator()
         } else {

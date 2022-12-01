@@ -26,6 +26,7 @@
     <string name="password">Password</string>
     <string name="token">Token</string>
     <string name="biometrics_name">Biometrics</string>
+    <string name="biometrics_unavailable">Biometrics are unavailable on this device: %s</string>
     <string name="biometrics_registration_exists">Biometrics Registration Exists: %b</string>
     <string name="biometrics_register">Register Biometrics</string>
     <string name="biometrics_authenticate">Authenticate with Biometrics</string>

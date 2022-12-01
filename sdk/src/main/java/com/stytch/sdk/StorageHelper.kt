@@ -121,7 +121,10 @@ internal object StorageHelper {
      * @return Boolean
      */
     internal fun checkIfKeysetIsUsingKeystore(context: Context): Boolean = try {
-        EncryptionManager.isKeysetUsingKeystore(context, ED25519_KEY_ALIAS)
+        val isUsingKeystore = EncryptionManager.isKeysetUsingKeystore(context, ED25519_KEY_ALIAS)
+        // clean up after checking to avoid false positives when checking if key exists
+        deleteEd25519Key()
+        isUsingKeystore
     } catch (e: Exception) {
         false
     }
