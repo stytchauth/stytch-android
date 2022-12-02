@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val BIOMETRICS_REGISTRATION_KEY = "stytch_biometrics_registration_key"
+internal const val BIOMETRICS_REGISTRATION_KEY = "stytch_biometrics_registration_key"
 
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
