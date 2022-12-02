@@ -1,5 +1,6 @@
 package com.stytch.sdk
 
+import android.content.Context
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.BiometricsAuthData
@@ -247,5 +248,27 @@ internal class BiometricsImplTest {
         val mockCallback = spyk<(BiometricsAuthResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `registrationAvailable delegates to storageHelper`() {
+        every { mockStorageHelper.ed25519KeyExists(any()) } returns true
+        assert(impl.registrationAvailable)
+        verify { mockStorageHelper.ed25519KeyExists(BIOMETRICS_REGISTRATION_KEY) }
+    }
+
+    @Test
+    fun `removeRegistration delegates to storageHelper`() {
+        every { mockStorageHelper.deleteEd25519Key(any()) } returns true
+        assert(impl.removeRegistration())
+        verify { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
+    }
+
+    @Test
+    fun `isUsingKeystore delegates to storageHelper`() {
+        val mockContext = mockk<Context>()
+        every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
+        assert(impl.isUsingKeystore(mockContext))
+        verify { mockStorageHelper.checkIfKeysetIsUsingKeystore(mockContext) }
     }
 }
