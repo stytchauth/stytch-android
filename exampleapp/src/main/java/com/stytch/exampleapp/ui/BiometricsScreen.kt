@@ -57,6 +57,7 @@ fun BiometricsScreen(navController: NavController) {
         BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
             Pair(false, "The requested biometrics options are incompatible with the current Android version.")
         BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
+            // technically, we could still _try_ to authenticate, but there's no guarantee it would work
             Pair(false, "Unable to determine whether the user can authenticate.")
         else -> Pair(false, "Unknown")
     }
@@ -123,7 +124,10 @@ fun BiometricsScreen(navController: NavController) {
                 )
             }
         } else {
-            Text(text = stringResource(id = R.string.biometrics_unavailable, biometricsErrorMessage))
+            Text(
+                text = stringResource(id = R.string.biometrics_unavailable, biometricsErrorMessage),
+                modifier = Modifier.padding(8.dp)
+            )
         }
         if (loading.value) {
             CircularProgressIndicator()

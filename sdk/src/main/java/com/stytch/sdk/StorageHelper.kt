@@ -75,8 +75,8 @@ internal object StorageHelper {
      * Get or create a new ED25519 key
      * @return Base64 encoded publicKey or null on exception
      */
-    internal fun getEd25519PublicKey(context: Context): String? = try {
-        EncryptionManager.getOrGenerateEd25519PublicKey(context, ED25519_KEY_ALIAS)
+    internal fun getEd25519PublicKey(context: Context, keyAlias: String): String? = try {
+        EncryptionManager.getOrGenerateEd25519PublicKey(context, keyAlias)
     } catch (ex: Exception) {
         StytchLog.e(ex.message ?: "Failed to get ED25519 public key")
         null
@@ -86,19 +86,19 @@ internal object StorageHelper {
      * Sign the provided challenge
      * @return Base64 encoded signedChallenge or null on exception
      */
-    internal fun signEd25519CodeChallenge(context: Context, challenge: String): String? = try {
-        EncryptionManager.signEd25519CodeChallenge(context, ED25519_KEY_ALIAS, challenge)
+    internal fun signEd25519CodeChallenge(context: Context, keyAlias: String, challenge: String): String? = try {
+        EncryptionManager.signEd25519CodeChallenge(context, keyAlias, challenge)
     } catch (ex: Exception) {
         StytchLog.e(ex.message ?: "Failed to sign challenge")
         null
     }
 
     /**
-     * Delete the existing ED25519 key from shared preferences
+     * Delete an existing ED25519 key from shared preferences
      */
-    internal fun deleteEd25519Key(): Boolean = try {
+    internal fun deleteEd25519Key(keyAlias: String): Boolean = try {
         with(encryptedSharedPreferences.edit()) {
-            remove(ED25519_KEY_ALIAS)
+            remove(keyAlias)
             apply()
             true
         }
@@ -110,8 +110,8 @@ internal object StorageHelper {
      * Check if the ED25519 key exists in shared preferences
      * @return Boolean
      */
-    internal fun ed25519KeyExists(): Boolean = try {
-        encryptedSharedPreferences.contains(ED25519_KEY_ALIAS)
+    internal fun ed25519KeyExists(keyAlias: String): Boolean = try {
+        encryptedSharedPreferences.contains(keyAlias)
     } catch (e: Exception) {
         false
     }
@@ -123,7 +123,7 @@ internal object StorageHelper {
     internal fun checkIfKeysetIsUsingKeystore(context: Context): Boolean = try {
         val isUsingKeystore = EncryptionManager.isKeysetUsingKeystore(context, ED25519_KEY_ALIAS)
         // clean up after checking to avoid false positives when checking if key exists
-        deleteEd25519Key()
+        deleteEd25519Key(ED25519_KEY_ALIAS)
         isUsingKeystore
     } catch (e: Exception) {
         false

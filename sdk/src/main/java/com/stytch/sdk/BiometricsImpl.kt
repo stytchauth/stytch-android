@@ -9,6 +9,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val BIOMETRICS_REGISTRATION_KEY = "stytch_biometrics_registration_key"
+
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
@@ -17,9 +19,9 @@ public class BiometricsImpl internal constructor(
     private val api: StytchApi.Biometrics,
 ) : Biometrics {
     override val registrationAvailable: Boolean
-        get() = storageHelper.ed25519KeyExists()
+        get() = storageHelper.ed25519KeyExists(keyAlias = BIOMETRICS_REGISTRATION_KEY)
 
-    override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key()
+    override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key(keyAlias = BIOMETRICS_REGISTRATION_KEY)
 
     override fun isUsingKeystore(context: Context): Boolean = storageHelper.checkIfKeysetIsUsingKeystore(context)
 
@@ -36,7 +38,10 @@ public class BiometricsImpl internal constructor(
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
                 return@withContext
             }
-            val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
+            val publicKey = storageHelper.getEd25519PublicKey(
+                context = parameters.context,
+                keyAlias = BIOMETRICS_REGISTRATION_KEY,
+            ) ?: run {
                 removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext
@@ -50,7 +55,8 @@ public class BiometricsImpl internal constructor(
             require(startResponse is StytchResult.Success)
             result = storageHelper.signEd25519CodeChallenge(
                 context = parameters.context,
-                challenge = startResponse.value.challenge
+                challenge = startResponse.value.challenge,
+                keyAlias = BIOMETRICS_REGISTRATION_KEY,
             )?.let { signature ->
                 api.register(
                     signature = signature,
@@ -80,7 +86,10 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
-            val publicKey = storageHelper.getEd25519PublicKey(context = parameters.context) ?: run {
+            val publicKey = storageHelper.getEd25519PublicKey(
+                context = parameters.context,
+                keyAlias = BIOMETRICS_REGISTRATION_KEY,
+            ) ?: run {
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
                 return@withContext
             }
@@ -92,7 +101,8 @@ public class BiometricsImpl internal constructor(
             require(startResponse is StytchResult.Success)
             result = storageHelper.signEd25519CodeChallenge(
                 context = parameters.context,
-                challenge = startResponse.value.challenge
+                challenge = startResponse.value.challenge,
+                keyAlias = BIOMETRICS_REGISTRATION_KEY,
             )?.let { signature ->
                 api.authenticate(
                     signature = signature,
