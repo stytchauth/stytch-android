@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
@@ -17,9 +18,13 @@ public class BiometricsImpl internal constructor(
     private val sessionStorage: SessionStorage,
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
+    private val biometricsProvider: BiometricsProvider,
 ) : Biometrics {
     override val registrationAvailable: Boolean
         get() = storageHelper.ed25519KeyExists(keyAlias = BIOMETRICS_REGISTRATION_KEY)
+
+    override fun areBiometricsAvailable(context: FragmentActivity): Pair<Boolean, String> =
+        biometricsProvider.areBiometricsAvailable(context)
 
     override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key(keyAlias = BIOMETRICS_REGISTRATION_KEY)
 
@@ -36,6 +41,17 @@ public class BiometricsImpl internal constructor(
             if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
                 removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
+                return@withContext
+            }
+            try {
+                withContext(dispatchers.ui) {
+                    biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
+                }
+            } catch (e: StytchExceptions) {
+                result = StytchResult.Error(e)
+                return@withContext
+            } catch (e: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(e))
                 return@withContext
             }
             val publicKey = storageHelper.getEd25519PublicKey(
@@ -86,6 +102,17 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
+            try {
+                withContext(dispatchers.ui) {
+                    biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
+                }
+            } catch (e: StytchExceptions) {
+                result = StytchResult.Error(e)
+                return@withContext
+            } catch (e: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(e))
+                return@withContext
+            }
             val publicKey = storageHelper.getEd25519PublicKey(
                 context = parameters.context,
                 keyAlias = BIOMETRICS_REGISTRATION_KEY,

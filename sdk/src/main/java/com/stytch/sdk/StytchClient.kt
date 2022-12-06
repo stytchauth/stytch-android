@@ -156,7 +156,8 @@ public object StytchClient {
         dispatchers,
         sessionStorage,
         StorageHelper,
-        StytchApi.Biometrics
+        StytchApi.Biometrics,
+        BiometricsProviderImpl()
     )
         get() {
             assertInitialized()

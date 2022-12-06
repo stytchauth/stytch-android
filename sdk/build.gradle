@@ -69,6 +69,7 @@ tasks.named("dokkaHtml").configure {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"

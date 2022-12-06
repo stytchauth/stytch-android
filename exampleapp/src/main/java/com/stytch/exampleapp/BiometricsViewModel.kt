@@ -2,6 +2,8 @@ package com.stytch.exampleapp
 
 import android.app.Application
 import android.content.Context
+import androidx.biometric.BiometricPrompt.PromptInfo
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.Biometrics
@@ -24,11 +26,11 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
         _currentResponse.value = error
     }
 
-    fun registerBiometrics(context: Context) {
+    fun registerBiometrics(context: FragmentActivity, promptInfo: PromptInfo? = null) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.biometrics.register(
-                Biometrics.StartParameters(context = context)
+                Biometrics.StartParameters(context = context, promptInfo = promptInfo)
             )
             _currentResponse.value = when (result) {
                 is StytchResult.Success<*> -> result.toString()
@@ -39,11 +41,11 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun authenticateBiometrics(context: Context) {
+    fun authenticateBiometrics(context: FragmentActivity, promptInfo: PromptInfo? = null) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.biometrics.authenticate(
-                Biometrics.StartParameters(context = context)
+                Biometrics.StartParameters(context = context, promptInfo = promptInfo)
             )
             _currentResponse.value = when (result) {
                 is StytchResult.Success<*> -> result.toString()

@@ -1,6 +1,8 @@
 package com.stytch.sdk
 
 import android.content.Context
+import androidx.biometric.BiometricPrompt.PromptInfo
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Biometrics interface that encompasses registration and authentication functions
@@ -8,19 +10,27 @@ import android.content.Context
 public interface Biometrics {
     /**
      * Data class used for wrapping parameters used with Biometrics registration and authenticate start flow
-     * @param context is the Android context
+     * @param context is the calling FragmentActivity
      * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
+     * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
      */
     public data class StartParameters(
-        val context: Context,
+        val context: FragmentActivity,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
+        val promptInfo: PromptInfo? = null,
     )
 
     /**
      * Indicates if there is an existing biometric registration on device.
      */
     public val registrationAvailable: Boolean
+
+    /**
+     * Indicates if the biometric sensor is available, and provides a reasoning if not
+     */
+    public fun areBiometricsAvailable(context: FragmentActivity): Pair<Boolean, String>
 
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.

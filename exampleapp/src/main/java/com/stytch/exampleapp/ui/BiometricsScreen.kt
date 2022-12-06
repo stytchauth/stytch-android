@@ -1,11 +1,5 @@
 package com.stytch.exampleapp.ui
 
-import android.content.Intent
-import android.provider.Settings
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -33,71 +25,7 @@ fun BiometricsScreen(navController: NavController) {
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
     val context = LocalContext.current as FragmentActivity
-    val executor = ContextCompat.getMainExecutor(context)
-    val biometricManager = BiometricManager.from(context)
-    val (canShowBiometrics, biometricsErrorMessage) = when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
-        BiometricManager.BIOMETRIC_SUCCESS -> Pair(true, "")
-        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-            Pair(false, "No biometric features available on this device.")
-        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-            Pair(false, "Biometric features are currently unavailable.")
-        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-            // Prompts the user to create credentials that your app accepts.
-            val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                putExtra(
-                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                    BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                )
-            }
-            context.startActivityForResult(enrollIntent, 12345)
-            Pair(false, "No biometrics currently enrolled on device. Starting biometrics enrollment flow.")
-        }
-        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
-            Pair(false, "A security vulnerability has been discovered with one or more hardware sensors.")
-        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
-            Pair(false, "The requested biometrics options are incompatible with the current Android version.")
-        BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
-            // technically, we could still _try_ to authenticate, but there's no guarantee it would work
-            Pair(false, "Unable to determine whether the user can authenticate.")
-        else -> Pair(false, "Unknown")
-    }
-    val promptInfo = BiometricPrompt.PromptInfo.Builder()
-        .setTitle("Biometric login")
-        .setSubtitle("Log in using your biometric credential")
-        .setNegativeButtonText("Use account password")
-        .build()
-    val registerCallback = object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            super.onAuthenticationError(errorCode, errString)
-            viewModel.showBiometricsError("Authentication error: $errString")
-        }
-
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            viewModel.registerBiometrics(context)
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            viewModel.showBiometricsError("Authentication failed")
-        }
-    }
-    val authenticateCallback = object : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            super.onAuthenticationError(errorCode, errString)
-            viewModel.showBiometricsError("Authentication error: $errString")
-        }
-
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            super.onAuthenticationSucceeded(result)
-            viewModel.authenticateBiometrics(context)
-        }
-
-        override fun onAuthenticationFailed() {
-            super.onAuthenticationFailed()
-            viewModel.showBiometricsError("Authentication failed")
-        }
-    }
+    val (canShowBiometrics, biometricsMessage) = StytchClient.biometrics.areBiometricsAvailable(context)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -114,18 +42,18 @@ fun BiometricsScreen(navController: NavController) {
                 StytchButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.biometrics_register),
-                    onClick = { BiometricPrompt(context, executor, registerCallback).authenticate(promptInfo) }
+                    onClick = { viewModel.registerBiometrics(context) }
                 )
             } else {
                 StytchButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.biometrics_authenticate),
-                    onClick = { BiometricPrompt(context, executor, authenticateCallback).authenticate(promptInfo) }
+                    onClick = { viewModel.authenticateBiometrics(context) }
                 )
             }
         } else {
             Text(
-                text = stringResource(id = R.string.biometrics_unavailable, biometricsErrorMessage),
+                text = stringResource(id = R.string.biometrics_unavailable, biometricsMessage),
                 modifier = Modifier.padding(8.dp)
             )
         }
