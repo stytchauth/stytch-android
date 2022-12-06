@@ -106,10 +106,6 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
-            if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
-                return@withContext
-            }
             if (!registrationAvailable) {
                 result = StytchResult.Error(
                     StytchExceptions.Input(

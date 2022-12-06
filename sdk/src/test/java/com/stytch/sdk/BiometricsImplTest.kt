@@ -216,19 +216,7 @@ internal class BiometricsImplTest {
     }
 
     @Test
-    fun `authenticate returns correct error if no session is found, but registration is not removed`() = runTest {
-        every { mockSessionStorage.sessionToken } returns null
-        every { mockSessionStorage.sessionJwt } returns null
-        val result = impl.authenticate(mockk(relaxed = true))
-        require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
-        verify(exactly = 0) { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
-    }
-
-    @Test
     fun `authenticate returns correct error if biometrics are not available`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns true
         coEvery {
             mockBiometricsProvider.showBiometricPrompt(any(), any())
@@ -240,8 +228,6 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if no registration exists`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
@@ -251,8 +237,6 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if no public key is found`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns true
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
@@ -264,8 +248,6 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if authenticateStart fails`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns true
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
@@ -281,8 +263,6 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if challenge signing fails`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns true
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
@@ -304,8 +284,6 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns success if everything succeeds`() = runTest {
-        every { mockSessionStorage.sessionToken } returns "sessionToken"
-        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
         every { mockStorageHelper.ed25519KeyExists(any()) } returns true
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
@@ -331,8 +309,7 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate with callback calls callback method`() {
         // short circuit on the first internal check, since we just care that the callback method is called
-        every { mockSessionStorage.sessionToken } returns null
-        every { mockSessionStorage.sessionJwt } returns null
+        every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         val mockCallback = spyk<(BiometricsAuthResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
