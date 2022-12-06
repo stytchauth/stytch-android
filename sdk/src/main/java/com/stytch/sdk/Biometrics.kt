@@ -15,10 +15,22 @@ public interface Biometrics {
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
      */
-    public data class StartParameters(
+    public data class RegisterParameters(
         val context: FragmentActivity,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
+        val promptInfo: PromptInfo? = null,
+    )
+
+    /**
+     * Data class used for wrapping parameters used with Biometrics registration and authenticate start flow
+     * @param context is the calling FragmentActivity
+     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
+     */
+    public data class AuthenticateParameters(
+        val context: FragmentActivity,
+        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val promptInfo: PromptInfo? = null,
     )
 
@@ -49,7 +61,7 @@ public interface Biometrics {
      * @param parameters required to register a biometrics key
      */
     public suspend fun register(
-        parameters: StartParameters
+        parameters: RegisterParameters
     ): BiometricsAuthResponse
 
     /**
@@ -60,7 +72,7 @@ public interface Biometrics {
      * @param callback calls callback with BiometricsRegisterResponse response from backend
      */
     public fun register(
-        parameters: StartParameters,
+        parameters: RegisterParameters,
         callback: (response: BiometricsAuthResponse) -> Unit
     )
 
@@ -71,7 +83,7 @@ public interface Biometrics {
      * @param parameters required to register a biometrics key
      */
     public suspend fun authenticate(
-        parameters: StartParameters
+        parameters: AuthenticateParameters
     ): BiometricsAuthResponse
 
     /**
@@ -82,7 +94,7 @@ public interface Biometrics {
      * @param callback calls callback with BiometricsRegisterResponse response from backend
      */
     public fun authenticate(
-        parameters: StartParameters,
+        parameters: AuthenticateParameters,
         callback: (response: BiometricsAuthResponse) -> Unit
     )
 }

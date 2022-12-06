@@ -199,7 +199,7 @@ internal class BiometricsImplTest {
         val mockResponse = mockk<StytchResult.Success<BiometricsAuthData>>(relaxed = true)
         coEvery { mockApi.register("signature", "biometricRegistrationId", 30U) } returns mockResponse
         every { mockResponse.launchSessionUpdater(any(), any()) } just runs
-        val result = impl.register(Biometrics.StartParameters(mockk(), 30U))
+        val result = impl.register(Biometrics.RegisterParameters(mockk(), 30U))
         assert(result is StytchResult.Success)
         coVerify { mockApi.register("signature", "biometricRegistrationId", 30U) }
         verify { mockResponse.launchSessionUpdater(any(), any()) }
@@ -300,7 +300,7 @@ internal class BiometricsImplTest {
         val mockResponse = mockk<StytchResult.Success<BiometricsAuthData>>(relaxed = true)
         coEvery { mockApi.authenticate("signature", "biometricRegistrationId", 30U) } returns mockResponse
         every { mockResponse.launchSessionUpdater(any(), any()) } just runs
-        val result = impl.authenticate(Biometrics.StartParameters(mockk(), 30U))
+        val result = impl.authenticate(Biometrics.AuthenticateParameters(mockk(), 30U))
         assert(result is StytchResult.Success)
         coVerify { mockApi.authenticate("signature", "biometricRegistrationId", 30U) }
         verify { mockResponse.launchSessionUpdater(any(), any()) }

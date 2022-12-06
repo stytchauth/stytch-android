@@ -30,7 +30,7 @@ public class BiometricsImpl internal constructor(
 
     override fun isUsingKeystore(context: Context): Boolean = storageHelper.checkIfKeysetIsUsingKeystore(context)
 
-    override suspend fun register(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
+    override suspend fun register(parameters: Biometrics.RegisterParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
             if (!isUsingKeystore(parameters.context) && !parameters.allowFallbackToCleartext) {
@@ -94,7 +94,7 @@ public class BiometricsImpl internal constructor(
     }
 
     override fun register(
-        parameters: Biometrics.StartParameters,
+        parameters: Biometrics.RegisterParameters,
         callback: (response: BiometricsAuthResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
@@ -103,7 +103,7 @@ public class BiometricsImpl internal constructor(
         }
     }
 
-    override suspend fun authenticate(parameters: Biometrics.StartParameters): BiometricsAuthResponse {
+    override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse {
         val result: BiometricsAuthResponse
         withContext(dispatchers.io) {
             if (!registrationAvailable) {
@@ -156,7 +156,7 @@ public class BiometricsImpl internal constructor(
     }
 
     override fun authenticate(
-        parameters: Biometrics.StartParameters,
+        parameters: Biometrics.AuthenticateParameters,
         callback: (response: BiometricsAuthResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
