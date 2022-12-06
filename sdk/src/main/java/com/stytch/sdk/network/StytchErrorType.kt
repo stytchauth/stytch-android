@@ -19,6 +19,10 @@ public enum class StytchErrorType(
         stringValue = "no_current_session",
         message = "There is no session currently available. Must authenticate prior to calling this method."
     ),
+    BIOMETRICS_ALREADY_EXISTS(
+        stringValue = "biometrics_registration_exists",
+        message = "There is already a biometric registration saved for this device. Did you mean to authenticate?"
+    ),
     NO_BIOMETRICS_REGISTRATIONS_AVAILABLE(
         stringValue = "no_biometric_registrations",
         message = "There are no biometric registrations available. Must authenticate with other methods and add a new biometric registration before calling this method." // ktlint-disable maximum-line-length

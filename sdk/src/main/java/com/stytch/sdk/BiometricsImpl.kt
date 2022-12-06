@@ -38,6 +38,10 @@ public class BiometricsImpl internal constructor(
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message))
                 return@withContext
             }
+            if (registrationAvailable) {
+                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.BIOMETRICS_ALREADY_EXISTS.message))
+                return@withContext
+            }
             if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
                 removeRegistration()
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
@@ -104,6 +108,14 @@ public class BiometricsImpl internal constructor(
         withContext(dispatchers.io) {
             if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
                 result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
+                return@withContext
+            }
+            if (!registrationAvailable) {
+                result = StytchResult.Error(
+                    StytchExceptions.Input(
+                        StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message
+                    )
+                )
                 return@withContext
             }
             try {
