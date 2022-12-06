@@ -200,6 +200,16 @@ internal class BiometricsImplTest {
     }
 
     @Test
+    fun `authenticate returns correct error if no session is found, but registration is not removed`() = runTest {
+        every { mockSessionStorage.sessionToken } returns null
+        every { mockSessionStorage.sessionJwt } returns null
+        val result = impl.authenticate(mockk(relaxed = true))
+        require(result is StytchResult.Error)
+        assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
+        verify(exactly = 0) { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
+    }
+
+    @Test
     fun `authenticate returns correct error if biometrics are not available`() = runTest {
         coEvery {
             mockBiometricsProvider.showBiometricPrompt(any(), any())
