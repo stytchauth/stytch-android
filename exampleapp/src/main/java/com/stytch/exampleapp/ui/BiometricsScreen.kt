@@ -25,7 +25,7 @@ fun BiometricsScreen(navController: NavController) {
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
     val context = LocalContext.current as FragmentActivity
-    val (canShowBiometrics, biometricsMessage) = StytchClient.biometrics.areBiometricsAvailable(context)
+    val biometricAvailability = StytchClient.biometrics.areBiometricsAvailable(context)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -37,7 +37,7 @@ fun BiometricsScreen(navController: NavController) {
                 StytchClient.biometrics.registrationAvailable,
             )
         )
-        if (canShowBiometrics) {
+        if (biometricAvailability.available) {
             if (!StytchClient.biometrics.registrationAvailable) {
                 StytchButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -53,7 +53,7 @@ fun BiometricsScreen(navController: NavController) {
             }
         } else {
             Text(
-                text = stringResource(id = R.string.biometrics_unavailable, biometricsMessage),
+                text = stringResource(id = R.string.biometrics_unavailable, biometricAvailability.message),
                 modifier = Modifier.padding(8.dp)
             )
         }

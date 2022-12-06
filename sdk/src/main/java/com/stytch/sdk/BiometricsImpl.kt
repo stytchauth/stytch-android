@@ -23,75 +23,72 @@ public class BiometricsImpl internal constructor(
     override val registrationAvailable: Boolean
         get() = storageHelper.ed25519KeyExists(keyAlias = BIOMETRICS_REGISTRATION_KEY)
 
-    override fun areBiometricsAvailable(context: FragmentActivity): Pair<Boolean, String> =
+    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
         biometricsProvider.areBiometricsAvailable(context)
 
     override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key(keyAlias = BIOMETRICS_REGISTRATION_KEY)
 
     override fun isUsingKeystore(context: Context): Boolean = storageHelper.checkIfKeysetIsUsingKeystore(context)
 
-    override suspend fun register(parameters: Biometrics.RegisterParameters): BiometricsAuthResponse {
-        val result: BiometricsAuthResponse
+    private fun ensureKeystoreIsSecureOrFallbackIsAllowedOrThrow(context: Context, allowFallbackToCleartext: Boolean) {
+        if (!isUsingKeystore(context) && !allowFallbackToCleartext) {
+            throw StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message)
+        }
+    }
+
+    private fun ensureSessionIsValidOrThrow() {
+        if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
+            throw StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
+        }
+    }
+
+    private fun getPublicKeyOrThrow(context: Context) =
+        storageHelper.getEd25519PublicKey(context = context, keyAlias = BIOMETRICS_REGISTRATION_KEY)
+            ?: throw StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
+
+    private fun signChallengeOrThrow(context: Context, challenge: String) =
+        storageHelper.signEd25519CodeChallenge(
+            context = context,
+            challenge = challenge,
+            keyAlias = BIOMETRICS_REGISTRATION_KEY,
+        ) ?: throw StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+
+    override suspend fun register(parameters: Biometrics.RegisterParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
-            if (!isUsingKeystore(parameters.context) && !parameters.allowFallbackToCleartext) {
-                removeRegistration()
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message))
-                return@withContext
-            }
-            if (registrationAvailable) {
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.BIOMETRICS_ALREADY_EXISTS.message))
-                return@withContext
-            }
-            if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
-                removeRegistration()
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message))
-                return@withContext
-            }
             try {
+                ensureKeystoreIsSecureOrFallbackIsAllowedOrThrow(
+                    context = parameters.context,
+                    allowFallbackToCleartext = parameters.allowFallbackToCleartext
+                )
+                // TODO: discussion on how to handle existing registrations
+                if (registrationAvailable) {
+                    removeRegistration()
+                }
+                ensureSessionIsValidOrThrow()
                 withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
                 }
-            } catch (e: StytchExceptions) {
-                result = StytchResult.Error(e)
-                return@withContext
-            } catch (e: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(e))
-                return@withContext
-            }
-            val publicKey = storageHelper.getEd25519PublicKey(
-                context = parameters.context,
-                keyAlias = BIOMETRICS_REGISTRATION_KEY,
-            ) ?: run {
-                removeRegistration()
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
-                return@withContext
-            }
-            val startResponse = api.registerStart(publicKey = publicKey)
-            if (startResponse is StytchResult.Error) {
-                removeRegistration()
-                result = startResponse
-                return@withContext
-            }
-            require(startResponse is StytchResult.Success)
-            result = storageHelper.signEd25519CodeChallenge(
-                context = parameters.context,
-                challenge = startResponse.value.challenge,
-                keyAlias = BIOMETRICS_REGISTRATION_KEY,
-            )?.let { signature ->
+                val publicKey = getPublicKeyOrThrow(parameters.context)
+                val startResponse = api.registerStart(publicKey = publicKey).getValueOrThrow()
+                val signature = signChallengeOrThrow(
+                    context = parameters.context,
+                    challenge = startResponse.challenge
+                )
                 api.register(
                     signature = signature,
-                    biometricRegistrationId = startResponse.value.biometricRegistrationId,
+                    biometricRegistrationId = startResponse.biometricRegistrationId,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: run {
+            } catch (e: StytchExceptions) {
                 removeRegistration()
-                StytchResult.Error(StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message))
+                StytchResult.Error(e)
+            } catch (e: Exception) {
+                removeRegistration()
+                StytchResult.Error(StytchExceptions.Critical(e))
             }
         }
-        return result
-    }
 
     override fun register(
         parameters: Biometrics.RegisterParameters,
@@ -103,57 +100,34 @@ public class BiometricsImpl internal constructor(
         }
     }
 
-    override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse {
-        val result: BiometricsAuthResponse
+    override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
-            if (!registrationAvailable) {
-                result = StytchResult.Error(
-                    StytchExceptions.Input(
-                        StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message
-                    )
-                )
-                return@withContext
-            }
             try {
+                if (!registrationAvailable) {
+                    throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
+                }
                 withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
                 }
-            } catch (e: StytchExceptions) {
-                result = StytchResult.Error(e)
-                return@withContext
-            } catch (e: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(e))
-                return@withContext
-            }
-            val publicKey = storageHelper.getEd25519PublicKey(
-                context = parameters.context,
-                keyAlias = BIOMETRICS_REGISTRATION_KEY,
-            ) ?: run {
-                result = StytchResult.Error(StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message))
-                return@withContext
-            }
-            val startResponse = api.authenticateStart(publicKey = publicKey)
-            if (startResponse is StytchResult.Error) {
-                result = startResponse
-                return@withContext
-            }
-            require(startResponse is StytchResult.Success)
-            result = storageHelper.signEd25519CodeChallenge(
-                context = parameters.context,
-                challenge = startResponse.value.challenge,
-                keyAlias = BIOMETRICS_REGISTRATION_KEY,
-            )?.let { signature ->
+                val publicKey = getPublicKeyOrThrow(parameters.context)
+                val startResponse = api.authenticateStart(publicKey = publicKey).getValueOrThrow()
+                val signature = signChallengeOrThrow(
+                    context = parameters.context,
+                    challenge = startResponse.challenge
+                )
                 api.authenticate(
                     signature = signature,
-                    biometricRegistrationId = startResponse.value.biometricRegistrationId,
+                    biometricRegistrationId = startResponse.biometricRegistrationId,
                     sessionDurationMinutes = parameters.sessionDurationMinutes
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } ?: StytchResult.Error(StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message))
+            } catch (e: StytchExceptions) {
+                StytchResult.Error(e)
+            } catch (e: Exception) {
+                StytchResult.Error(StytchExceptions.Critical(e))
+            }
         }
-        return result
-    }
 
     override fun authenticate(
         parameters: Biometrics.AuthenticateParameters,

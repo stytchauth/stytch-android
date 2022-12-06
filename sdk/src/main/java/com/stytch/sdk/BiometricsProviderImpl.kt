@@ -44,14 +44,14 @@ public class BiometricsProviderImpl : BiometricsProvider {
         BiometricPrompt(context, executor, callback).authenticate(prompt)
     }
 
-    override fun areBiometricsAvailable(context: FragmentActivity): Pair<Boolean, String> {
+    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
         val biometricManager = BiometricManager.from(context)
         return when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> Pair(true, "Biometrics are ready to be used.")
+            BiometricManager.BIOMETRIC_SUCCESS -> BiometricAvailability(true, "Biometrics are ready to be used.")
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-                Pair(false, "No biometric features available on this device.")
+                BiometricAvailability(false, "No biometric features available on this device.")
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                Pair(false, "Biometric features are currently unavailable.")
+                BiometricAvailability(false, "Biometric features are currently unavailable.")
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     // Prompts the user to create credentials that your app accepts.
@@ -63,16 +63,28 @@ public class BiometricsProviderImpl : BiometricsProvider {
                     }
                     context.startActivityForResult(enrollIntent, BIOMETRICS_ENROLLMENT_ID)
                 }
-                Pair(false, "No biometrics currently enrolled on device. Starting biometrics enrollment flow.")
+                BiometricAvailability(
+                    false,
+                    "No biometrics currently enrolled on device. Starting biometrics enrollment flow."
+                )
             }
             BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
-                Pair(false, "A security vulnerability has been discovered with one or more hardware sensors.")
+                BiometricAvailability(
+                    false,
+                    "A security vulnerability has been discovered with one or more hardware sensors."
+                )
             BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
-                Pair(false, "The requested biometrics options are incompatible with the current Android version.")
+                BiometricAvailability(
+                    false,
+                    "The requested biometrics options are incompatible with the current Android version."
+                )
             BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
                 // technically, we could still _try_ to authenticate, but there's no guarantee it would work
-                Pair(false, "Unable to determine whether the user can authenticate.")
-            else -> Pair(false, "Unknown")
+                BiometricAvailability(
+                    false,
+                    "Unable to determine whether the user can authenticate."
+                )
+            else -> BiometricAvailability(false, "Unknown")
         }
     }
 }

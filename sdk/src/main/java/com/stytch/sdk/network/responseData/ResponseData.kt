@@ -234,18 +234,7 @@ public data class StrengthCheckResponse(
 )
 
 @JsonClass(generateAdapter = true)
-public data class BiometricsRegisterStartResponse(
-    @Json(name = "status_code")
-    val statusCode: Int,
-    @Json(name = "request_id")
-    val requestId: String,
-    @Json(name = "biometric_registration_id")
-    val biometricRegistrationId: String,
-    val challenge: String,
-)
-
-@JsonClass(generateAdapter = true)
-public data class BiometricsAuthenticateStartResponse(
+public data class BiometricsStartResponse(
     @Json(name = "status_code")
     val statusCode: Int,
     @Json(name = "request_id")

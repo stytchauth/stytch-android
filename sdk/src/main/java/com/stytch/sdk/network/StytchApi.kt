@@ -12,8 +12,7 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
-import com.stytch.sdk.network.responseData.BiometricsAuthenticateStartResponse
-import com.stytch.sdk.network.responseData.BiometricsRegisterStartResponse
+import com.stytch.sdk.network.responseData.BiometricsStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
@@ -254,7 +253,7 @@ internal object StytchApi {
     internal object Biometrics {
         suspend fun registerStart(
             publicKey: String,
-        ): StytchResult<BiometricsRegisterStartResponse> = safeApiCall {
+        ): StytchResult<BiometricsStartResponse> = safeApiCall {
             apiService.biometricsRegisterStart(
                 StytchRequests.Biometrics.RegisterStartRequest(
                     publicKey = publicKey,
@@ -278,7 +277,7 @@ internal object StytchApi {
 
         suspend fun authenticateStart(
             publicKey: String,
-        ): StytchResult<BiometricsAuthenticateStartResponse> = safeApiCall {
+        ): StytchResult<BiometricsStartResponse> = safeApiCall {
             apiService.biometricsAuthenticateStart(
                 StytchRequests.Biometrics.AuthenticateStartRequest(
                     publicKey = publicKey,

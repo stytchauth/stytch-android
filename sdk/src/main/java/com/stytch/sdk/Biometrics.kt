@@ -42,7 +42,7 @@ public interface Biometrics {
     /**
      * Indicates if the biometric sensor is available, and provides a reasoning if not
      */
-    public fun areBiometricsAvailable(context: FragmentActivity): Pair<Boolean, String>
+    public fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
 
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
