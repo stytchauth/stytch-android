@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal const val BIOMETRICS_REGISTRATION_KEY = "stytch_biometrics_registration_key"
+internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
 
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -19,6 +20,7 @@ public class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
+    private val userManagerApi: StytchApi.UserManagement,
 ) : Biometrics {
     override val registrationAvailable: Boolean
         get() = storageHelper.ed25519KeyExists(keyAlias = BIOMETRICS_REGISTRATION_KEY)
@@ -26,7 +28,20 @@ public class BiometricsImpl internal constructor(
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
         biometricsProvider.areBiometricsAvailable(context)
 
-    override fun removeRegistration(): Boolean = storageHelper.deleteEd25519Key(keyAlias = BIOMETRICS_REGISTRATION_KEY)
+    override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
+        val biometricRegistrationId = storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)
+            ?: return@withContext false
+        userManagerApi.deleteBiometricRegistrationById(biometricRegistrationId)
+        storageHelper.saveValue(LAST_USED_BIOMETRIC_REGISTRATION_ID, null)
+        storageHelper.deleteEd25519Key(keyAlias = BIOMETRICS_REGISTRATION_KEY)
+    }
+
+    override fun removeRegistration(callback: (Boolean) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = removeRegistration()
+            callback(result)
+        }
+    }
 
     override fun isUsingKeystore(context: Context): Boolean = storageHelper.checkIfKeysetIsUsingKeystore(context)
 
@@ -64,17 +79,11 @@ public class BiometricsImpl internal constructor(
                     allowFallbackToCleartext = parameters.allowFallbackToCleartext
                 )
                 if (registrationAvailable) {
-                    if (parameters.failOnExistingRegistration) {
-                        throw StytchExceptions.Input(StytchErrorType.BIOMETRICS_ALREADY_EXISTS.message)
-                    } else {
-                        removeRegistration()
-                    }
+                    removeRegistration()
                 }
                 ensureSessionIsValidOrThrow()
-                if (parameters.showBiometricPrompt) {
-                    withContext(dispatchers.ui) {
-                        biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
-                    }
+                withContext(dispatchers.ui) {
+                    biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
                 }
                 val publicKey = getPublicKeyOrThrow(parameters.context)
                 val startResponse = api.registerStart(publicKey = publicKey).getValueOrThrow()
@@ -87,6 +96,7 @@ public class BiometricsImpl internal constructor(
                     biometricRegistrationId = startResponse.biometricRegistrationId,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
+                    storageHelper.saveValue(LAST_USED_BIOMETRIC_REGISTRATION_ID, startResponse.biometricRegistrationId)
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
             } catch (e: StytchExceptions) {

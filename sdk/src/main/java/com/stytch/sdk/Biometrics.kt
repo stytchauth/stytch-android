@@ -15,15 +15,12 @@ public interface Biometrics {
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
      * @param showBiometricPrompt enables or disables showing the biometric prompt for registration. Defaults to true
-     * @param failOnExistingRegistration determines whether or not to allow or block registrations if one already exists
      */
     public data class RegisterParameters(
         val context: FragmentActivity,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
         val promptInfo: PromptInfo? = null,
-        val showBiometricPrompt: Boolean = true,
-        val failOnExistingRegistration: Boolean = false,
     )
 
     /**
@@ -51,7 +48,12 @@ public interface Biometrics {
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
      */
-    public fun removeRegistration(): Boolean
+    public suspend fun removeRegistration(): Boolean
+
+    /**
+     * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
+     */
+    public fun removeRegistration(callback: (Boolean) -> Unit)
 
     /**
      * Indicates if the device is using the Android KeyStore

@@ -14,8 +14,6 @@ internal class BiometricsTest {
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
             allowFallbackToCleartext = false,
             promptInfo = null,
-            showBiometricPrompt = true,
-            failOnExistingRegistration = false,
         )
         assert(params == expected)
     }

@@ -33,8 +33,6 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
                     context = context,
                     promptInfo = promptInfo,
                     allowFallbackToCleartext = false,
-                    showBiometricPrompt = false,
-                    failOnExistingRegistration = true
                 )
             )
             _currentResponse.value = when (result) {
@@ -62,6 +60,9 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun removeRegistration() {
-        _currentResponse.value = "Registration removed: ${StytchClient.biometrics.removeRegistration()}"
+        viewModelScope.launch {
+            val deleted = StytchClient.biometrics.removeRegistration()
+            _currentResponse.value = "Registration removed: $deleted"
+        }
     }
 }
