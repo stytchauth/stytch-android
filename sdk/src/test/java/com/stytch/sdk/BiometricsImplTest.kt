@@ -112,11 +112,30 @@ internal class BiometricsImplTest {
     }
 
     @Test
+    fun `register returns correct error if no session is expired and removes pending registration`() = runTest {
+        every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
+        every { mockStorageHelper.ed25519KeyExists(any()) } returns false
+        every { mockSessionStorage.sessionToken } returns "sessionToken"
+        every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns true
+        }
+        every { mockStorageHelper.deleteEd25519Key(any()) } returns true
+        val result = impl.register(mockk(relaxed = true))
+        require(result is StytchResult.Error)
+        assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
+        verify { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
+    }
+
+    @Test
     fun `register returns correct error if biometrics are not available`() = runTest {
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
         every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns false
+        }
         coEvery {
             mockBiometricsProvider.showBiometricPrompt(any(), any())
         } throws StytchExceptions.Input("Authentication failed")
@@ -135,6 +154,9 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
         every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns false
+        }
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.getEd25519PublicKey(any(), BIOMETRICS_REGISTRATION_KEY) } returns null
         every { mockStorageHelper.deleteEd25519Key(any()) } returns true
@@ -150,6 +172,9 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
         every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns false
+        }
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.getEd25519PublicKey(any(), BIOMETRICS_REGISTRATION_KEY) } returns "publicKey"
         every { mockStorageHelper.deleteEd25519Key(any()) } returns true
@@ -169,6 +194,9 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
         every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns false
+        }
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.getEd25519PublicKey(any(), BIOMETRICS_REGISTRATION_KEY) } returns "publicKey"
         every { mockStorageHelper.deleteEd25519Key(any()) } returns true
@@ -194,6 +222,9 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
         every { mockSessionStorage.sessionJwt } returns "sessionJwt"
+        every { mockSessionStorage.session } returns mockk(relaxed = true) {
+            every { isExpired() } returns false
+        }
         coEvery { mockBiometricsProvider.showBiometricPrompt(any(), any()) } just runs
         every { mockStorageHelper.getEd25519PublicKey(any(), BIOMETRICS_REGISTRATION_KEY) } returns "publicKey"
         coEvery { mockApi.registerStart("publicKey") } returns StytchResult.Success(

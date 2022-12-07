@@ -37,7 +37,10 @@ public class BiometricsImpl internal constructor(
     }
 
     private fun ensureSessionIsValidOrThrow() {
-        if (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) {
+        if (
+            (sessionStorage.sessionToken == null && sessionStorage.sessionJwt == null) ||
+            sessionStorage.session?.isExpired() == true
+        ) {
             throw StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
         }
     }
