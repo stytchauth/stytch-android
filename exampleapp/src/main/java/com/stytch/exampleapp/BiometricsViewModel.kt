@@ -54,4 +54,8 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
             _loadingState.value = false
         }
     }
+
+    fun removeRegistration() {
+        _currentResponse.value = "Registration removed: ${StytchClient.biometrics.removeRegistration()}"
+    }
 }

@@ -48,6 +48,11 @@ fun BiometricsScreen(navController: NavController) {
                 text = stringResource(id = R.string.biometrics_authenticate),
                 onClick = { viewModel.authenticateBiometrics(context) }
             )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.biometrics_remove),
+                onClick = { viewModel.removeRegistration() }
+            )
         } else {
             Text(
                 text = stringResource(id = R.string.biometrics_unavailable, biometricAvailability.message),

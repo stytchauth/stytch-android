@@ -30,4 +30,5 @@
     <string name="biometrics_registration_exists">Biometrics Registration Exists: %b</string>
     <string name="biometrics_register">Register Biometrics</string>
     <string name="biometrics_authenticate">Authenticate with Biometrics</string>
+    <string name="biometrics_remove">Remove Biometrics Registration</string>
 </resources>
