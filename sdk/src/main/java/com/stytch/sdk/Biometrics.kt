@@ -15,6 +15,7 @@ public interface Biometrics {
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
      * @param showBiometricPrompt enables or disables showing the biometric prompt for registration. Defaults to true
+     * @param failOnExistingRegistration determines whether or not to allow or block registrations if one already exists
      */
     public data class RegisterParameters(
         val context: FragmentActivity,
@@ -22,6 +23,7 @@ public interface Biometrics {
         val allowFallbackToCleartext: Boolean = false,
         val promptInfo: PromptInfo? = null,
         val showBiometricPrompt: Boolean = true,
+        val failOnExistingRegistration: Boolean = false,
     )
 
     /**

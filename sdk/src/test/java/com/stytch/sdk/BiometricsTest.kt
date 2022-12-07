@@ -15,6 +15,7 @@ internal class BiometricsTest {
             allowFallbackToCleartext = false,
             promptInfo = null,
             showBiometricPrompt = true,
+            failOnExistingRegistration = false,
         )
         assert(params == expected)
     }

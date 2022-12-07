@@ -38,19 +38,16 @@ fun BiometricsScreen(navController: NavController) {
             )
         )
         if (biometricAvailability.available) {
-            if (!StytchClient.biometrics.registrationAvailable) {
-                StytchButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.biometrics_register),
-                    onClick = { viewModel.registerBiometrics(context) }
-                )
-            } else {
-                StytchButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.biometrics_authenticate),
-                    onClick = { viewModel.authenticateBiometrics(context) }
-                )
-            }
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.biometrics_register),
+                onClick = { viewModel.registerBiometrics(context) }
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.biometrics_authenticate),
+                onClick = { viewModel.authenticateBiometrics(context) }
+            )
         } else {
             Text(
                 text = stringResource(id = R.string.biometrics_unavailable, biometricAvailability.message),

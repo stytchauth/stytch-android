@@ -60,9 +60,12 @@ public class BiometricsImpl internal constructor(
                     context = parameters.context,
                     allowFallbackToCleartext = parameters.allowFallbackToCleartext
                 )
-                // TODO: discussion on how to handle existing registrations
                 if (registrationAvailable) {
-                    removeRegistration()
+                    if (parameters.failOnExistingRegistration) {
+                        throw StytchExceptions.Input(StytchErrorType.BIOMETRICS_ALREADY_EXISTS.message)
+                    } else {
+                        removeRegistration()
+                    }
                 }
                 ensureSessionIsValidOrThrow()
                 if (parameters.showBiometricPrompt) {
