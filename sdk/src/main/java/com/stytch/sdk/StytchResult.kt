@@ -29,7 +29,7 @@ public fun String.toStytchErrorType(): StytchErrorType? {
     return null
 }
 
-internal fun<T> StytchResult<T>.getValueOrThrow(): T = when (this) {
+internal fun <T> StytchResult<T>.getValueOrThrow(): T = when (this) {
     is StytchResult.Success -> value
     is StytchResult.Error -> throw exception
 }
