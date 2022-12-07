@@ -73,7 +73,7 @@ public interface Biometrics {
      * The user will later be able to start a new session with biometrics or use biometrics as an additional
      * authentication factor.
      * @param parameters required to register a biometrics key
-     * @param callback calls callback with BiometricsRegisterResponse response from backend
+     * @param callback calls callback with BiometricsAuthResponse response from backend
      */
     public fun register(
         parameters: RegisterParameters,
@@ -84,7 +84,7 @@ public interface Biometrics {
      * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
      * biometric reader and returns an updated session object by either starting a new session or adding the biometric
      * factor to an existing session.
-     * @param parameters required to register a biometrics key
+     * @param parameters required to authenticate a biometrics key
      */
     public suspend fun authenticate(
         parameters: AuthenticateParameters
@@ -94,8 +94,8 @@ public interface Biometrics {
      * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
      * biometric reader and returns an updated session object by either starting a new session or adding the biometric
      * factor to an existing session.
-     * @param parameters required to register a biometrics key
-     * @param callback calls callback with BiometricsRegisterResponse response from backend
+     * @param parameters required to authenticate a biometrics key
+     * @param callback calls callback with BiometricsAuthResponse response from backend
      */
     public fun authenticate(
         parameters: AuthenticateParameters,
