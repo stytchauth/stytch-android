@@ -14,12 +14,14 @@ public interface Biometrics {
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
+     * @param showBiometricPrompt enables or disables showing the biometric prompt for registration. Defaults to true
      */
     public data class RegisterParameters(
         val context: FragmentActivity,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
         val promptInfo: PromptInfo? = null,
+        val showBiometricPrompt: Boolean = true,
     )
 
     /**

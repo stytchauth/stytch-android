@@ -65,8 +65,10 @@ public class BiometricsImpl internal constructor(
                     removeRegistration()
                 }
                 ensureSessionIsValidOrThrow()
-                withContext(dispatchers.ui) {
-                    biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
+                if (parameters.showBiometricPrompt) {
+                    withContext(dispatchers.ui) {
+                        biometricsProvider.showBiometricPrompt(parameters.context, parameters.promptInfo)
+                    }
                 }
                 val publicKey = getPublicKeyOrThrow(parameters.context)
                 val startResponse = api.registerStart(publicKey = publicKey).getValueOrThrow()
