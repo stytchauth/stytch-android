@@ -29,7 +29,13 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.biometrics.register(
-                Biometrics.RegisterParameters(context = context, promptInfo = promptInfo)
+                Biometrics.RegisterParameters(
+                    context = context,
+                    promptInfo = promptInfo,
+                    allowFallbackToCleartext = false,
+                    showBiometricPrompt = false,
+                    failOnExistingRegistration = true
+                )
             )
             _currentResponse.value = when (result) {
                 is StytchResult.Success<*> -> result.toString()

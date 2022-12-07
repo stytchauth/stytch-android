@@ -90,7 +90,12 @@ public class BiometricsImpl internal constructor(
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
             } catch (e: StytchExceptions) {
-                removeRegistration()
+                // don't remove the existing registration in case of missing/expired session or existing registration
+                when ((e as? StytchExceptions.Input)?.reason) {
+                    StytchErrorType.BIOMETRICS_ALREADY_EXISTS.message,
+                    StytchErrorType.NO_CURRENT_SESSION.message -> {} // no-op
+                    else -> removeRegistration()
+                }
                 StytchResult.Error(e)
             } catch (e: Exception) {
                 removeRegistration()

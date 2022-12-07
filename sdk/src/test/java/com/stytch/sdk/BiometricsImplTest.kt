@@ -99,7 +99,7 @@ internal class BiometricsImplTest {
         }
 
     @Test
-    fun `register returns correct error if no session is found and removes pending registration`() = runTest {
+    fun `register returns correct error if no session is found and does not remove pending registration`() = runTest {
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns null
@@ -108,11 +108,11 @@ internal class BiometricsImplTest {
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
         assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
-        verify { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
+        verify(exactly = 0) { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
     }
 
     @Test
-    fun `register returns correct error if no session is expired and removes pending registration`() = runTest {
+    fun `register returns correct error if session is expired and does not remove pending registration`() = runTest {
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore(any()) } returns true
         every { mockStorageHelper.ed25519KeyExists(any()) } returns false
         every { mockSessionStorage.sessionToken } returns "sessionToken"
@@ -124,7 +124,7 @@ internal class BiometricsImplTest {
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
         assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
-        verify { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
+        verify(exactly = 0) { mockStorageHelper.deleteEd25519Key(BIOMETRICS_REGISTRATION_KEY) }
     }
 
     @Test
