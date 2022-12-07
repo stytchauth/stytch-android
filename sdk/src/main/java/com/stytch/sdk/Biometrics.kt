@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity
  */
 public interface Biometrics {
     /**
-     * Data class used for wrapping parameters used with Biometrics registration and authenticate start flow
+     * Data class used for wrapping parameters used with Biometrics registration flow
      * @param context is the calling FragmentActivity
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
@@ -27,7 +27,7 @@ public interface Biometrics {
     )
 
     /**
-     * Data class used for wrapping parameters used with Biometrics registration and authenticate start flow
+     * Data class used for wrapping parameters used with Biometrics authentication flow
      * @param context is the calling FragmentActivity
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
