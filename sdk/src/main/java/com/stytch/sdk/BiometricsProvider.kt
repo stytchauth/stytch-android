@@ -1,6 +1,7 @@
 package com.stytch.sdk
 
 import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.fragment.app.FragmentActivity
 
 public data class BiometricAvailability(
@@ -11,7 +12,9 @@ public data class BiometricAvailability(
 public interface BiometricsProvider {
     public suspend fun showBiometricPrompt(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo? = null
-    )
+        promptInfo: BiometricPrompt.PromptInfo? = null,
+        cryptoObject: CryptoObject,
+    ): CryptoObject?
+
     public fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
 }

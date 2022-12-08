@@ -58,7 +58,7 @@ public interface Biometrics {
     /**
      * Indicates if the device is using the Android KeyStore
      */
-    public fun isUsingKeystore(context: Context): Boolean
+    public fun isUsingKeystore(): Boolean
 
     /**
      * When a valid/active session exists, this method will add a biometric registration for the current user.

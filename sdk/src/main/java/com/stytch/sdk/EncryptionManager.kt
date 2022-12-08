@@ -3,28 +3,22 @@ package com.stytch.sdk
 import android.content.Context
 import android.util.Base64
 import com.google.crypto.tink.Aead
-import com.google.crypto.tink.CleartextKeysetHandle
-import com.google.crypto.tink.JsonKeysetWriter
 import com.google.crypto.tink.KeyTemplates
-import com.google.crypto.tink.KeysetHandle
-import com.google.crypto.tink.PublicKeySign
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
-import com.google.crypto.tink.proto.Ed25519PublicKey
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import com.google.crypto.tink.signature.SignatureConfig
-import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import kotlin.random.Random
-import org.json.JSONObject
 
 private const val HEX_RADIX = 16
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
 
-    internal const val PREF_FILE_NAME = "stytch_secured_pref"
+    private const val PREF_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
+    private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
 
     init {
@@ -32,19 +26,10 @@ internal object EncryptionManager {
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetHandle(context: Context, keyAlias: String): KeysetHandle? {
+    private fun getOrGenerateNewAES256KeysetHandle(context: Context, keyAlias: String): AndroidKeysetManager {
         return AndroidKeysetManager.Builder()
             .withSharedPref(context, keyAlias, PREF_FILE_NAME)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri(MASTER_KEY_URI)
-            .build()
-            .keysetHandle
-    }
-
-    private fun getOrGenerateNewEd25519KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
-        return AndroidKeysetManager.Builder()
-            .withSharedPref(context, keyAlias, PREF_FILE_NAME)
-            .withKeyTemplate(KeyTemplates.get("ED25519WithRawOutput"))
             .withMasterKeyUri(MASTER_KEY_URI)
             .build()
     }
@@ -84,7 +69,9 @@ internal object EncryptionManager {
      * @throws Exception - if failed to generate keys
      */
     fun createNewKeys(context: Context, rsaKeyAlias: String) {
-        aead = getOrGenerateNewAES256KeysetHandle(context, rsaKeyAlias)?.getPrimitive(Aead::class.java)
+        val ksm = getOrGenerateNewAES256KeysetHandle(context, rsaKeyAlias)
+        keysetManager = ksm
+        aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
 
     fun generateCodeChallenge(): String {
@@ -122,30 +109,5 @@ internal object EncryptionManager {
         return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
 
-    fun getOrGenerateEd25519PublicKey(context: Context, keyAlias: String): String {
-        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias).keysetHandle
-        val publicKeysetHandle = keysetHandle.publicKeysetHandle
-        val publicKeyStream = ByteArrayOutputStream()
-        CleartextKeysetHandle.write(publicKeysetHandle, JsonKeysetWriter.withOutputStream(publicKeyStream))
-        val publicKeyJson = JSONObject(publicKeyStream.toString())
-        val publicKeyString = publicKeyJson
-            .getJSONArray("key")
-            .getJSONObject(0)
-            .getJSONObject("keyData")
-            .getString("value")
-        val publicKeyJsonBytes = Base64.decode(publicKeyString, Base64.NO_WRAP)
-        val publicKey = Ed25519PublicKey.parseFrom(ByteString.copyFrom(publicKeyJsonBytes))
-        return Base64.encodeToString(publicKey.keyValue.toByteArray(), Base64.NO_WRAP)
-    }
-
-    fun signEd25519CodeChallenge(context: Context, keyAlias: String, challengeString: String): String {
-        val keysetHandle = getOrGenerateNewEd25519KeysetManager(context, keyAlias).keysetHandle
-        val challenge = Base64.decode(challengeString, Base64.NO_WRAP)
-        val signer = keysetHandle.getPrimitive(PublicKeySign::class.java)
-        val signature = signer.sign(challenge)
-        return Base64.encodeToString(signature, Base64.NO_WRAP)
-    }
-
-    fun isKeysetUsingKeystore(context: Context, keyAlias: String): Boolean =
-        getOrGenerateNewEd25519KeysetManager(context, keyAlias).isUsingKeystore
+    fun isKeysetUsingKeystore(): Boolean = keysetManager?.isUsingKeystore == true
 }

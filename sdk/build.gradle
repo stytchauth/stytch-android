@@ -79,6 +79,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation 'com.google.crypto.tink:tink-android:1.7.0'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.72'
+
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:4.6.1"
