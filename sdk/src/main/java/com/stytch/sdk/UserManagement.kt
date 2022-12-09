@@ -26,35 +26,11 @@ public interface UserManagement {
      * Wraps the deleteEmailById API endpoint which deletes email from current user
      * @return BaseResponse response from backend
      */
-    public suspend fun deleteEmailById(id: String): BaseResponse
+    public suspend fun deleteFactor(factor: UserAuthenticationFactor): BaseResponse
 
     /**
      * Wraps the deleteEmailById API endpoint which deletes email from current user
      * @return BaseResponse response from backend
      */
-    public fun deleteEmailById(id: String, callback: (BaseResponse) -> Unit)
-
-    /**
-     * Wraps the deletePhoneNumberById API endpoint which deletes phone number from current user
-     * @return BaseResponse response from backend
-     */
-    public suspend fun deletePhoneNumberById(id: String): BaseResponse
-
-    /**
-     * Wraps the deletePhoneNumberById API endpoint which deletes phone number from current user
-     * @return BaseResponse response from backend
-     */
-    public fun deletePhoneNumberById(id: String, callback: (BaseResponse) -> Unit)
-
-    /**
-     * Wraps the deleteBiometricRegistrationById API endpoint which deletes biometric registration from current user
-     * @return BaseResponse response from backend
-     */
-    public suspend fun deleteBiometricRegistrationById(id: String): BaseResponse
-
-    /**
-     * Wraps the deleteBiometricRegistrationById API endpoint which deletes biometric registration from current user
-     * @return BaseResponse response from backend
-     */
-    public fun deleteBiometricRegistrationById(id: String, callback: (BaseResponse) -> Unit)
+    public fun deleteFactor(factor: UserAuthenticationFactor, callback: (BaseResponse) -> Unit)
 }

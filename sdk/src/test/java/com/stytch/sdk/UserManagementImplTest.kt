@@ -89,50 +89,31 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl deleteEmailById delegates to api`() = runTest {
+    fun `UserManagementImpl deleteFactor with callback calls callback method`() {
         coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.deleteEmailById("emailAddressId")
-        assert(response is StytchResult.Success)
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.deleteFactor(UserAuthenticationFactor.Email("emailAddressId"), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `UserManagementImpl deleteFactor delegates to api for all supported factors`() = runTest {
+        coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deleteBiometricRegistrationById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        listOf(
+            UserAuthenticationFactor.Email("emailAddressId"),
+            UserAuthenticationFactor.PhoneNumber("phoneNumberId"),
+            UserAuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
+            UserAuthenticationFactor.CryptoWallet("cryptoWalletId"),
+            UserAuthenticationFactor.WebAuthn("webAuthnId"),
+        ).forEach { impl.deleteFactor(it) }
         coVerify { mockApi.deleteEmailById("emailAddressId") }
-    }
-
-    @Test
-    fun `UserManagementImpl deleteEmailById with callback calls callback method`() {
-        coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.deleteEmailById("emailAddressId", mockCallback)
-        verify { mockCallback.invoke(any()) }
-    }
-
-    @Test
-    fun `UserManagementImpl deletePhoneNumberById delegates to api`() = runTest {
-        coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.deletePhoneNumberById("phoneNumberId")
-        assert(response is StytchResult.Success)
         coVerify { mockApi.deletePhoneNumberById("phoneNumberId") }
-    }
-
-    @Test
-    fun `UserManagementImpl deletePhoneNumberById with callback calls callback method`() {
-        coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.deletePhoneNumberById("phoneNumberId", mockCallback)
-        verify { mockCallback.invoke(any()) }
-    }
-
-    @Test
-    fun `UserManagementImpl deleteBiometricRegistrationById delegates to api`() = runTest {
-        coEvery { mockApi.deleteBiometricRegistrationById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.deleteBiometricRegistrationById("biometricsRegistrationId")
-        assert(response is StytchResult.Success)
         coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
-    }
-
-    @Test
-    fun `UserManagementImpl deleteBiometricRegistrationById with callback calls callback method`() {
-        coEvery { mockApi.deleteBiometricRegistrationById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.deleteBiometricRegistrationById("biometricsRegistrationId", mockCallback)
-        verify { mockCallback.invoke(any()) }
+        coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
+        coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
     }
 }
