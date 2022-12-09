@@ -1,17 +1,18 @@
 package com.stytch.sdk
 
 import android.content.Context
-import android.util.Base64
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import com.google.crypto.tink.signature.SignatureConfig
+import com.stytch.sdk.extensions.hexStringToByteArray
+import com.stytch.sdk.extensions.toBase64DecodedByteArray
+import com.stytch.sdk.extensions.toBase64EncodedString
+import com.stytch.sdk.extensions.toHexString
 import java.security.MessageDigest
 import kotlin.random.Random
-
-private const val HEX_RADIX = 16
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
@@ -44,7 +45,7 @@ internal object EncryptionManager {
         // An artifical step to test whether Tink can co-exist with protobuf-lite.
         val pStr: ByteString = ByteString.copyFrom(plainBytes)
         val cipherText: ByteArray = aead.encrypt(pStr.toByteArray(), null)
-        encodedString = Base64.encodeToString(cipherText, Base64.NO_WRAP)
+        encodedString = cipherText.toBase64EncodedString()
         return encodedString
     }
 
@@ -58,7 +59,7 @@ internal object EncryptionManager {
         val aead = aead ?: return null
 
         val decryptedText: String?
-        val ciphertext: ByteArray = Base64.decode(encryptedText, Base64.NO_WRAP)
+        val ciphertext: ByteArray = encryptedText.toBase64DecodedByteArray()
         val plaintext: ByteArray = aead.decrypt(ciphertext, null)
         decryptedText = String(plaintext, Charsets.UTF_8)
 
@@ -94,19 +95,11 @@ internal object EncryptionManager {
     }
 
     private fun convertToBase64UrlEncoded(value: String): String {
-        val base64String = Base64.encodeToString(value.hexStringToByteArray(), Base64.NO_WRAP)
+        val base64String = value.hexStringToByteArray().toBase64EncodedString()
         return base64String
             .replace("+", "-")
             .replace("/", "_")
             .replace("=", "")
-    }
-
-    private fun String.hexStringToByteArray(): ByteArray {
-        return chunked(2).map { it.toInt(HEX_RADIX).toByte() }.toByteArray()
-    }
-
-    private fun ByteArray.toHexString(): String {
-        return joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
 
     fun isKeysetUsingKeystore(): Boolean = keysetManager?.isUsingKeystore == true

@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
-private const val ED25519_KEY_ALIAS = "Stytch Ed25519"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 internal const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 

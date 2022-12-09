@@ -2,9 +2,6 @@ package com.stytch.sdk.network.responseData
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @JsonClass(generateAdapter = true)
 public data class BasicData(
@@ -82,11 +79,6 @@ public data class SessionData(
         @Json(name = "user_agent")
         val userAgent: String,
     )
-
-    public fun isExpired(): Boolean {
-        val expiresTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).parse(expiresAt)?.time ?: 0
-        return expiresTime < Date().time
-    }
 }
 
 @JsonClass(generateAdapter = true)

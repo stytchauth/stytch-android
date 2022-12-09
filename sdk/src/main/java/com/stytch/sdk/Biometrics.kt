@@ -1,6 +1,5 @@
 package com.stytch.sdk
 
-import android.content.Context
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.fragment.app.FragmentActivity
 
@@ -14,7 +13,6 @@ public interface Biometrics {
      * @param sessionDurationMinutes indicates how long the session should last before it expires
      * @param allowFallbackToCleartext opts-in to potentially unsafe behavior
      * @param promptInfo is an optional biometric prompt configuration. If one is not provided a default will be created
-     * @param showBiometricPrompt enables or disables showing the biometric prompt for registration. Defaults to true
      */
     public data class RegisterParameters(
         val context: FragmentActivity,
@@ -66,9 +64,7 @@ public interface Biometrics {
      * authentication factor.
      * @param parameters required to register a biometrics key
      */
-    public suspend fun register(
-        parameters: RegisterParameters
-    ): BiometricsAuthResponse
+    public suspend fun register(parameters: RegisterParameters): BiometricsAuthResponse
 
     /**
      * When a valid/active session exists, this method will add a biometric registration for the current user.
@@ -79,7 +75,7 @@ public interface Biometrics {
      */
     public fun register(
         parameters: RegisterParameters,
-        callback: (response: BiometricsAuthResponse) -> Unit
+        callback: (response: BiometricsAuthResponse) -> Unit,
     )
 
     /**
@@ -88,9 +84,7 @@ public interface Biometrics {
      * factor to an existing session.
      * @param parameters required to authenticate a biometrics key
      */
-    public suspend fun authenticate(
-        parameters: AuthenticateParameters
-    ): BiometricsAuthResponse
+    public suspend fun authenticate(parameters: AuthenticateParameters): BiometricsAuthResponse
 
     /**
      * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
@@ -101,6 +95,6 @@ public interface Biometrics {
      */
     public fun authenticate(
         parameters: AuthenticateParameters,
-        callback: (response: BiometricsAuthResponse) -> Unit
+        callback: (response: BiometricsAuthResponse) -> Unit,
     )
 }

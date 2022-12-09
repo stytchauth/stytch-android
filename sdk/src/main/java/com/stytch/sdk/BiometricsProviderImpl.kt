@@ -21,13 +21,51 @@ import kotlin.coroutines.suspendCoroutine
 
 private const val BIOMETRICS_ENROLLMENT_ID = 555
 internal const val AUTHENTICATION_FAILED = "Authentication Failed"
+internal const val BIOMETRIC_KEY_GENERATION_FAILED = "Biometric key generation failed"
+private const val BIOMETRIC_KEY_NAME = "stytch_biometric_key"
 
-public class BiometricsProviderImpl : BiometricsProvider {
-    override suspend fun showBiometricPrompt(
+internal class BiometricsProviderImpl : BiometricsProvider {
+    private var secretKey: SecretKey? = null
+    init {
+        try {
+            val keyStore = KeyStore.getInstance("AndroidKeyStore")
+            // Before the keystore can be accessed, it must be loaded.
+            keyStore.load(null)
+            if (!keyStore.containsAlias(BIOMETRIC_KEY_NAME)) {
+                val keyGenerator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES,
+                    "AndroidKeyStore"
+                )
+                val keyGenParameterSpec = KeyGenParameterSpec.Builder(
+                    BIOMETRIC_KEY_NAME,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                )
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                    .setUserAuthenticationRequired(true)
+                    .build()
+                keyGenerator.init(keyGenParameterSpec)
+                keyGenerator.generateKey()
+            }
+            secretKey = keyStore.getKey(BIOMETRIC_KEY_NAME, null) as SecretKey
+        } catch (e: Exception) {
+            StytchLog.e(e.message ?: BIOMETRIC_KEY_GENERATION_FAILED)
+        }
+    }
+
+    private fun getCipher(): Cipher {
+        return Cipher.getInstance(
+            KeyProperties.KEY_ALGORITHM_AES + "/" +
+                KeyProperties.BLOCK_MODE_CBC + "/" +
+                KeyProperties.ENCRYPTION_PADDING_PKCS7
+        )
+    }
+
+    private suspend fun showBiometricPrompt(
         context: FragmentActivity,
         promptInfo: BiometricPrompt.PromptInfo?,
-        cryptoObject: CryptoObject,
-    ): CryptoObject? = suspendCoroutine { continuation ->
+        cipher: Cipher,
+    ): Cipher = suspendCoroutine { continuation ->
         val executor = Executors.newSingleThreadExecutor()
         val callback = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -37,7 +75,9 @@ public class BiometricsProviderImpl : BiometricsProvider {
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                continuation.resume(result.cryptoObject)
+                result.cryptoObject?.cipher
+                    ?.let { continuation.resume(it) }
+                    ?: continuation.resumeWithException(StytchExceptions.Input(AUTHENTICATION_FAILED))
             }
 
             override fun onAuthenticationFailed() {
@@ -50,13 +90,34 @@ public class BiometricsProviderImpl : BiometricsProvider {
             .setSubtitle("Log in using your biometric credential")
             .setNegativeButtonText("Cancel")
             .build()
-        BiometricPrompt(context, executor, callback).authenticate(prompt, cryptoObject)
+        BiometricPrompt(context, executor, callback).authenticate(prompt, CryptoObject(cipher))
+    }
+
+    override suspend fun showBiometricPromptForRegistration(
+        context: FragmentActivity,
+        promptInfo: BiometricPrompt.PromptInfo?,
+    ): Cipher {
+        val cipher = getCipher()
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+        return showBiometricPrompt(context, promptInfo, cipher)
+    }
+
+    override suspend fun showBiometricPromptForAuthentication(
+        context: FragmentActivity,
+        promptInfo: BiometricPrompt.PromptInfo?,
+        iv: ByteArray,
+    ): Cipher {
+        val cipher = getCipher()
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
+        return showBiometricPrompt(context, promptInfo, cipher)
     }
 
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
+        if (secretKey == null) return BiometricAvailability(false, BIOMETRIC_KEY_GENERATION_FAILED)
         val biometricManager = BiometricManager.from(context)
         return when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> BiometricAvailability(true, "Biometrics are ready to be used.")
+            BiometricManager.BIOMETRIC_SUCCESS ->
+                BiometricAvailability(true, "Biometrics are ready to be used.")
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
                 BiometricAvailability(false, "No biometric features available on this device.")
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
