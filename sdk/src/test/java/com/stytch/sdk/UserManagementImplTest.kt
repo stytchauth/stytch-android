@@ -92,7 +92,7 @@ internal class UserManagementImplTest {
     fun `UserManagementImpl deleteFactor with callback calls callback method`() {
         coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.deleteFactor(UserAuthenticationFactor.Email("emailAddressId"), mockCallback)
+        impl.deleteFactor(AuthenticationFactor.Email("emailAddressId"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
@@ -104,11 +104,11 @@ internal class UserManagementImplTest {
         coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
         listOf(
-            UserAuthenticationFactor.Email("emailAddressId"),
-            UserAuthenticationFactor.PhoneNumber("phoneNumberId"),
-            UserAuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
-            UserAuthenticationFactor.CryptoWallet("cryptoWalletId"),
-            UserAuthenticationFactor.WebAuthn("webAuthnId"),
+            AuthenticationFactor.Email("emailAddressId"),
+            AuthenticationFactor.PhoneNumber("phoneNumberId"),
+            AuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
+            AuthenticationFactor.CryptoWallet("cryptoWalletId"),
+            AuthenticationFactor.WebAuthn("webAuthnId"),
         ).forEach { impl.deleteFactor(it) }
         coVerify { mockApi.deleteEmailById("emailAddressId") }
         coVerify { mockApi.deletePhoneNumberById("phoneNumberId") }

@@ -26,17 +26,17 @@ internal class UserManagementImpl(
 
     override fun getSyncUser(): UserData? = sessionStorage.user
 
-    override suspend fun deleteFactor(factor: UserAuthenticationFactor): BaseResponse = withContext(dispatchers.io) {
+    override suspend fun deleteFactor(factor: AuthenticationFactor): BaseResponse = withContext(dispatchers.io) {
         when (factor) {
-            is UserAuthenticationFactor.Email -> api.deleteEmailById(factor.id)
-            is UserAuthenticationFactor.PhoneNumber -> api.deletePhoneNumberById(factor.id)
-            is UserAuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
-            is UserAuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
-            is UserAuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
+            is AuthenticationFactor.Email -> api.deleteEmailById(factor.id)
+            is AuthenticationFactor.PhoneNumber -> api.deletePhoneNumberById(factor.id)
+            is AuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
+            is AuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
+            is AuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
         }
     }
 
-    override fun deleteFactor(factor: UserAuthenticationFactor, callback: (BaseResponse) -> Unit) {
+    override fun deleteFactor(factor: AuthenticationFactor, callback: (BaseResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
             val result = deleteFactor(factor)
             callback(result)
