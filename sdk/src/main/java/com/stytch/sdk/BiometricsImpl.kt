@@ -29,7 +29,7 @@ private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
     CIPHER_IV_KEY,
 )
 
-@Suppress("TooGenericExceptionCaught", "LongParameterList")
+@Suppress("LongParameterList")
 public class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
@@ -148,17 +148,12 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
-                if (!registrationAvailable) {
-                    throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
-                }
-                val publicKey: String
-                val encryptedPrivateKey: String
-                val iv: String
+                val publicKey = storageHelper.loadValue(PUBLIC_KEY_KEY)
+                val encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)
+                val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
-                    publicKey = storageHelper.loadValue(PUBLIC_KEY_KEY)!!
-                    encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)!!
-                    iv = storageHelper.loadValue(CIPHER_IV_KEY)!!
-                } catch (e: NullPointerException) {
+                    require(registrationAvailable && publicKey != null && encryptedPrivateKey != null && iv != null)
+                } catch (e: IllegalStateException) {
                     StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                     throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                 }
