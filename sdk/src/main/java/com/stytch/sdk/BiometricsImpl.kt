@@ -116,10 +116,15 @@ public class BiometricsImpl internal constructor(
                     biometricRegistrationId = startResponse.biometricRegistrationId,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
-                    storageHelper.saveValue(LAST_USED_BIOMETRIC_REGISTRATION_ID, startResponse.biometricRegistrationId)
-                    storageHelper.saveValue(PUBLIC_KEY_KEY, publicKey)
-                    storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
-                    storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
+                    if (this is StytchResult.Success) {
+                        storageHelper.saveValue(
+                            LAST_USED_BIOMETRIC_REGISTRATION_ID,
+                            startResponse.biometricRegistrationId
+                        )
+                        storageHelper.saveValue(PUBLIC_KEY_KEY, publicKey)
+                        storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
+                        storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
+                    }
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
             } catch (e: StytchExceptions) {
