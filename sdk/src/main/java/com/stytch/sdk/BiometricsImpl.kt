@@ -7,7 +7,6 @@ import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.launchSessionUpdater
-import java.security.SecureRandom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,14 +16,13 @@ import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
+import java.security.SecureRandom
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
-internal const val PUBLIC_KEY_KEY = "biometrics_public_key"
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
 internal const val CIPHER_IV_KEY = "cipher_iv"
 private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
     LAST_USED_BIOMETRIC_REGISTRATION_ID,
-    PUBLIC_KEY_KEY,
     PRIVATE_KEY_KEY,
     CIPHER_IV_KEY,
 )
@@ -121,7 +119,6 @@ public class BiometricsImpl internal constructor(
                             LAST_USED_BIOMETRIC_REGISTRATION_ID,
                             startResponse.biometricRegistrationId
                         )
-                        storageHelper.saveValue(PUBLIC_KEY_KEY, publicKey)
                         storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
                         storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
                     }
@@ -145,14 +142,19 @@ public class BiometricsImpl internal constructor(
         }
     }
 
+    private fun derivePublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String {
+        val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
+        val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
+        return publicKeyRebuild.encoded.toBase64EncodedString()
+    }
+
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
-                val publicKey = storageHelper.loadValue(PUBLIC_KEY_KEY)
                 val encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)
                 val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
-                    require(registrationAvailable && publicKey != null && encryptedPrivateKey != null && iv != null)
+                    require(registrationAvailable && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalStateException) {
                     StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                     throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
@@ -167,7 +169,8 @@ public class BiometricsImpl internal constructor(
                 val encryptedPrivateKeyBytes = encryptedPrivateKey.toBase64DecodedByteArray()
                 val decryptedPrivateKey = cipher.doFinal(encryptedPrivateKeyBytes)
                 val privateKeyString = decryptedPrivateKey.toBase64EncodedString()
-                val startResponse = api.authenticateStart(publicKey = publicKey).getValueOrThrow()
+                val publicKeyString = derivePublicKeyFromPrivateKeyBytes(decryptedPrivateKey)
+                val startResponse = api.authenticateStart(publicKey = publicKeyString).getValueOrThrow()
                 val signature = signChallenge(
                     challengeString = startResponse.challenge,
                     privateKeyString = privateKeyString
