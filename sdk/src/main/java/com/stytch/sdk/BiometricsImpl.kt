@@ -37,9 +37,9 @@ public class BiometricsImpl internal constructor(
         biometricsProvider.areBiometricsAvailable(context)
 
     override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
-        val biometricRegistrationId = storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)
-            ?: return@withContext false
-        userManagerApi.deleteBiometricRegistrationById(biometricRegistrationId)
+        storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
+            userManagerApi.deleteBiometricRegistrationById(it)
+        }
         KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
         true
     }
@@ -117,7 +117,7 @@ public class BiometricsImpl internal constructor(
                 val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
                     require(registrationAvailable && encryptedPrivateKey != null && iv != null)
-                } catch (e: IllegalStateException) {
+                } catch (e: IllegalArgumentException) {
                     StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                     throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                 }
