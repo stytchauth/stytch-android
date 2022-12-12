@@ -102,6 +102,11 @@ internal interface StytchApiService {
     @DELETE("users/biometric_registrations/{id}")
     suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String): StytchResponses.BasicResponse
 
+    @DELETE("users/crypto_wallets/{id}")
+    suspend fun deleteCryptoWalletById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+
+    @DELETE("users/webauthn_registrations/{id}")
+    suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.BasicResponse
     //endregion User Management
 
     companion object {
