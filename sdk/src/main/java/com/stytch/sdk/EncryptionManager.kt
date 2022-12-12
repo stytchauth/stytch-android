@@ -11,8 +11,16 @@ import com.stytch.sdk.extensions.hexStringToByteArray
 import com.stytch.sdk.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.extensions.toBase64EncodedString
 import com.stytch.sdk.extensions.toHexString
+import com.stytch.sdk.network.StytchErrorType
 import java.security.MessageDigest
+import java.security.SecureRandom
 import kotlin.random.Random
+import org.bouncycastle.crypto.Signer
+import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
+import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
+import org.bouncycastle.crypto.signers.Ed25519Signer
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
@@ -103,4 +111,35 @@ internal object EncryptionManager {
     }
 
     fun isKeysetUsingKeystore(): Boolean = keysetManager?.isUsingKeystore == true
+
+    fun generateEd25519KeyPair(): Pair<String, String> = try {
+        val gen = Ed25519KeyPairGenerator()
+        gen.init(Ed25519KeyGenerationParameters(SecureRandom()))
+        val keyPair = gen.generateKeyPair()
+        val publicKey = keyPair.public as Ed25519PublicKeyParameters
+        val privateKey = keyPair.private as Ed25519PrivateKeyParameters
+        Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
+    }
+
+    fun signEd25519Challenge(challengeString: String, privateKeyString: String): String = try {
+        val signer: Signer = Ed25519Signer()
+        val challenge = challengeString.toBase64DecodedByteArray()
+        val privateKey = Ed25519PrivateKeyParameters(privateKeyString.toBase64DecodedByteArray())
+        signer.init(true, privateKey)
+        signer.update(challenge, 0, challenge.size)
+        val signature: ByteArray = signer.generateSignature()
+        signature.toBase64EncodedString()
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+    }
+
+    fun deriveEd25519PublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String = try {
+        val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
+        val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
+        publicKeyRebuild.encoded.toBase64EncodedString()
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.ERROR_DERIVING_PUBLIC_KEY.message)
+    }
 }

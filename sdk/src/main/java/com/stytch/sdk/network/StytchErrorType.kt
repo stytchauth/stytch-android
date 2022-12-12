@@ -39,4 +39,8 @@ public enum class StytchErrorType(
         stringValue = "not_using_keystore",
         message = "Biometric keys will be stored in cleartext on this device, but allowFallbackToCleartext was not enabled. Please read documentation around the impact of this usage" // ktlint-disable maximum-line-length
     ),
+    ERROR_DERIVING_PUBLIC_KEY(
+        stringValue = "error_deriving_public_key",
+        message = "There was an error deriving the public key. Try re-registering a new biometric authentication."
+    )
 }

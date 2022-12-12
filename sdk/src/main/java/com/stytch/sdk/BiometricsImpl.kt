@@ -7,20 +7,13 @@ import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.launchSessionUpdater
-import java.security.SecureRandom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.bouncycastle.crypto.Signer
-import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
-import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
-import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
-import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
-import org.bouncycastle.crypto.signers.Ed25519Signer
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
-internal const val CIPHER_IV_KEY = "cipher_iv"
+internal const val CIPHER_IV_KEY = "biometrics_cipher_iv"
 private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
     LAST_USED_BIOMETRIC_REGISTRATION_ID,
     PRIVATE_KEY_KEY,
@@ -60,31 +53,6 @@ public class BiometricsImpl internal constructor(
 
     override fun isUsingKeystore(): Boolean = storageHelper.checkIfKeysetIsUsingKeystore()
 
-    private fun generateKeyPair(): Pair<String, String> = try {
-        val gen = Ed25519KeyPairGenerator()
-        gen.init(Ed25519KeyGenerationParameters(SecureRandom()))
-        val keyPair = gen.generateKeyPair()
-        val publicKey = keyPair.public as Ed25519PublicKeyParameters
-        val privateKey = keyPair.private as Ed25519PrivateKeyParameters
-        Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
-    } catch (e: Exception) {
-        StytchLog.e(e.message ?: StytchErrorType.KEY_GENERATION_FAILED.message)
-        throw StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
-    }
-
-    private fun signChallenge(challengeString: String, privateKeyString: String): String = try {
-        val signer: Signer = Ed25519Signer()
-        val challenge = challengeString.toBase64DecodedByteArray()
-        val privateKey = Ed25519PrivateKeyParameters(privateKeyString.toBase64DecodedByteArray())
-        signer.init(true, privateKey)
-        signer.update(challenge, 0, challenge.size)
-        val signature: ByteArray = signer.generateSignature()
-        signature.toBase64EncodedString()
-    } catch (e: Exception) {
-        StytchLog.e(e.message ?: StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
-        throw StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
-    }
-
     override suspend fun register(parameters: Biometrics.RegisterParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
@@ -101,11 +69,11 @@ public class BiometricsImpl internal constructor(
                         promptInfo = parameters.promptInfo
                     )
                 }
-                val (publicKey, privateKey) = generateKeyPair()
+                val (publicKey, privateKey) = EncryptionManager.generateEd25519KeyPair()
                 val encryptedPrivateKeyBytes = cipher.doFinal(privateKey.toBase64DecodedByteArray())
                 val encryptedPrivateKeyString = encryptedPrivateKeyBytes.toBase64EncodedString()
                 val startResponse = api.registerStart(publicKey = publicKey).getValueOrThrow()
-                val signature = signChallenge(
+                val signature = EncryptionManager.signEd25519Challenge(
                     challengeString = startResponse.challenge,
                     privateKeyString = privateKey
                 )
@@ -142,12 +110,6 @@ public class BiometricsImpl internal constructor(
         }
     }
 
-    private fun derivePublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String {
-        val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
-        val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
-        return publicKeyRebuild.encoded.toBase64EncodedString()
-    }
-
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
@@ -169,9 +131,9 @@ public class BiometricsImpl internal constructor(
                 val encryptedPrivateKeyBytes = encryptedPrivateKey.toBase64DecodedByteArray()
                 val decryptedPrivateKey = cipher.doFinal(encryptedPrivateKeyBytes)
                 val privateKeyString = decryptedPrivateKey.toBase64EncodedString()
-                val publicKeyString = derivePublicKeyFromPrivateKeyBytes(decryptedPrivateKey)
+                val publicKeyString = EncryptionManager.deriveEd25519PublicKeyFromPrivateKeyBytes(decryptedPrivateKey)
                 val startResponse = api.authenticateStart(publicKey = publicKeyString).getValueOrThrow()
-                val signature = signChallenge(
+                val signature = EncryptionManager.signEd25519Challenge(
                     challengeString = startResponse.challenge,
                     privateKeyString = privateKeyString
                 )
