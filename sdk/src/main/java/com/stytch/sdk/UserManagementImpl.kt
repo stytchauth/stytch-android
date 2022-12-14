@@ -15,9 +15,9 @@ internal class UserManagementImpl(
 ) : UserManagement {
     override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {
         val user = api.getUser()
-        when (user) {
-            is StytchResult.Success -> sessionStorage.user = user.value
-            is StytchResult.Error -> StytchLog.e(user.exception.reason?.toString() ?: "Error updating cached user")
+        sessionStorage.user = when (user) {
+            is StytchResult.Success -> user.value
+            is StytchResult.Error -> null
         }
         user
     }
