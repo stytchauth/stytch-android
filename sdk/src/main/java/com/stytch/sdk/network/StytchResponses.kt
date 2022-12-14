@@ -1,6 +1,5 @@
 package com.stytch.sdk.network
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
