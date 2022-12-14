@@ -36,12 +36,17 @@ public class BiometricsImpl internal constructor(
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
         biometricsProvider.areBiometricsAvailable(context)
 
-    override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
-        storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-            userManagerApi.deleteBiometricRegistrationById(it)
+    override suspend fun removeRegistration(): Boolean = try {
+        withContext(dispatchers.io) {
+            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
+                userManagerApi.deleteBiometricRegistrationById(it)
+                sessionStorage.user = userManagerApi.getUser().getValueOrThrow()
+            }
+            KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
+            true
         }
-        KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
-        true
+    } catch (e: Exception) {
+        false
     }
 
     override fun removeRegistration(callback: (Boolean) -> Unit) {

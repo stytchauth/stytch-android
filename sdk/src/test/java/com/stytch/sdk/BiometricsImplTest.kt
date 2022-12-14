@@ -5,6 +5,7 @@ import com.stytch.sdk.extensions.toBase64EncodedString
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.BiometricsAuthData
+import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionAutoUpdater
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.launchSessionUpdater
@@ -71,6 +72,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)
+        coEvery { mockUserManagerApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         every { any<String>().toBase64DecodedByteArray() } returns base64DecodedByteArray
         every { any<ByteArray>().toBase64EncodedString() } returns base64EncodedString
         impl = BiometricsImpl(
@@ -402,6 +404,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.loadValue(any()) } returns "lastUsedRegistrationId"
         every { mockStorageHelper.deletePreference(any()) } returns true
         coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)
+        every { mockSessionStorage.user = any() } just runs
         assert(impl.removeRegistration())
         verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
