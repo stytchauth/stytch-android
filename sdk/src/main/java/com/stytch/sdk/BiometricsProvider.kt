@@ -16,7 +16,6 @@ public enum class BiometricAvailability(public val message: String) {
     ),
     BIOMETRIC_ERROR_UNSUPPORTED("The requested biometrics options are incompatible with the current Android version."),
     BIOMETRIC_STATUS_UNKNOWN("Unable to determine whether the user can authenticate."),
-
 }
 
 internal interface BiometricsProvider {
