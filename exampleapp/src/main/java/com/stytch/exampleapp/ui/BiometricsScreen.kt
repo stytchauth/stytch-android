@@ -1,5 +1,9 @@
 package com.stytch.exampleapp.ui
 
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
+import androidx.biometric.BiometricManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.stytch.exampleapp.BiometricsViewModel
 import com.stytch.exampleapp.R
+import com.stytch.sdk.BiometricAvailability
 import com.stytch.sdk.StytchClient
 
 @Composable
@@ -26,6 +31,7 @@ fun BiometricsScreen(navController: NavController) {
     val responseState = viewModel.currentResponse.collectAsState()
     val context = LocalContext.current as FragmentActivity
     val biometricAvailability = StytchClient.biometrics.areBiometricsAvailable(context)
+    val biometricsAreAvailable = biometricAvailability == BiometricAvailability.BIOMETRIC_SUCCESS
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -37,7 +43,7 @@ fun BiometricsScreen(navController: NavController) {
                 StytchClient.biometrics.registrationAvailable,
             )
         )
-        if (biometricAvailability.available) {
+        if (biometricsAreAvailable) {
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.biometrics_register),
@@ -58,6 +64,24 @@ fun BiometricsScreen(navController: NavController) {
                 text = stringResource(id = R.string.biometrics_unavailable, biometricAvailability.message),
                 modifier = Modifier.padding(8.dp)
             )
+            if (
+                (biometricAvailability == BiometricAvailability.BIOMETRIC_ERROR_NONE_ENROLLED) &&
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            ) {
+                StytchButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.biometrics_enroll),
+                    onClick = {
+                        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                            putExtra(
+                                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                BiometricManager.Authenticators.BIOMETRIC_STRONG
+                            )
+                        }
+                        context.startActivityForResult(enrollIntent, 12345)
+                    }
+                )
+            }
         }
         if (loading.value) {
             CircularProgressIndicator()

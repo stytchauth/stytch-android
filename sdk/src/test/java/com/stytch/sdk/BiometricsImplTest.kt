@@ -427,10 +427,9 @@ internal class BiometricsImplTest {
 
     @Test
     fun `areBiometricsAvailable delegates to BiometricsProvider`() {
-        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability(true, "Yep")
-        val (canShow, message) = impl.areBiometricsAvailable(mockk())
-        assert(canShow)
-        assert(message == "Yep")
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
+        val available = impl.areBiometricsAvailable(mockk())
+        assert(available == BiometricAvailability.BIOMETRIC_SUCCESS)
         verify { mockBiometricsProvider.areBiometricsAvailable(any()) }
     }
 }

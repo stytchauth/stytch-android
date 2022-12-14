@@ -31,4 +31,5 @@
     <string name="biometrics_register">Register Biometrics</string>
     <string name="biometrics_authenticate">Authenticate with Biometrics</string>
     <string name="biometrics_remove">Remove Biometrics Registration</string>
+    <string name="biometrics_enroll">Enroll in Biometrics</string>
 </resources>
