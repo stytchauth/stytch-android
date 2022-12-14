@@ -35,7 +35,7 @@ internal object EncryptionManager {
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetHandle(context: Context, keyAlias: String): AndroidKeysetManager {
+    private fun getOrGenerateNewAES256KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
         return AndroidKeysetManager.Builder()
             .withSharedPref(context, keyAlias, PREF_FILE_NAME)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
@@ -78,7 +78,7 @@ internal object EncryptionManager {
      * @throws Exception - if failed to generate keys
      */
     fun createNewKeys(context: Context, rsaKeyAlias: String) {
-        val ksm = getOrGenerateNewAES256KeysetHandle(context, rsaKeyAlias)
+        val ksm = getOrGenerateNewAES256KeysetManager(context, rsaKeyAlias)
         keysetManager = ksm
         aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
