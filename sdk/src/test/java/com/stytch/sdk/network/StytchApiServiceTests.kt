@@ -482,5 +482,33 @@ internal class StytchApiServiceTests {
             assert(request.path == "/users/biometric_registrations/biometrics_registration_id")
         }
     }
+
+    @Test
+    fun `check deleteCryptoWalletById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteCryptoWalletById("crypto_wallet_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/crypto_wallets/crypto_wallet_id")
+        }
+    }
+
+    @Test
+    fun `check deleteWebAuthnById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteWebAuthnById("webauthn_registration_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/webauthn_registrations/webauthn_registration_id")
+        }
+    }
     // endregion UserManagement
 }
