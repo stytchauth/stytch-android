@@ -56,6 +56,7 @@ internal class BiometricsImplTest {
     private val mockCipher: Cipher = mockk(relaxed = true) {
         every { doFinal(any()) } returns base64DecodedByteArray
     }
+    private val deleteBiometricsSpy = spyk<suspend (String) -> Unit>()
 
     @Before
     fun before() {
@@ -70,8 +71,6 @@ internal class BiometricsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.saveValue(any(), any()) } just runs
-        coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)
-        coEvery { mockUserManagerApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         every { any<String>().toBase64DecodedByteArray() } returns base64DecodedByteArray
         every { any<ByteArray>().toBase64EncodedString() } returns base64EncodedString
         impl = BiometricsImpl(
@@ -81,7 +80,7 @@ internal class BiometricsImplTest {
             storageHelper = mockStorageHelper,
             api = mockApi,
             biometricsProvider = mockBiometricsProvider,
-            userManagerApi = mockUserManagerApi,
+            deleteBiometricRegistraton = deleteBiometricsSpy,
         )
     }
 
@@ -403,12 +402,12 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.loadValue(any()) } returns "lastUsedRegistrationId"
         every { mockStorageHelper.deletePreference(any()) } returns true
         coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)
-        every { mockSessionStorage.user = any() } just runs
+        coEvery { deleteBiometricsSpy.invoke(any()) } just runs
         assert(impl.removeRegistration())
         verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
         verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
-        coVerify { mockUserManagerApi.deleteBiometricRegistrationById("lastUsedRegistrationId") }
+        coVerify { deleteBiometricsSpy.invoke(any()) }
     }
 
     @Test

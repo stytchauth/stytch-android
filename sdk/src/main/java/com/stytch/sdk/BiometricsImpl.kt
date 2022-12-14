@@ -28,7 +28,7 @@ public class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
-    private val userManagerApi: StytchApi.UserManagement,
+    private val deleteBiometricRegistraton: suspend (String) -> Unit,
 ) : Biometrics {
     override val registrationAvailable: Boolean
         get() = KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) }
@@ -36,17 +36,12 @@ public class BiometricsImpl internal constructor(
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
         biometricsProvider.areBiometricsAvailable(context)
 
-    override suspend fun removeRegistration(): Boolean = try {
-        withContext(dispatchers.io) {
-            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-                userManagerApi.deleteBiometricRegistrationById(it)
-                sessionStorage.user = userManagerApi.getUser().getValueOrThrow()
-            }
-            KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
-            true
+    override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
+        storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
+            deleteBiometricRegistraton(it)
         }
-    } catch (e: Exception) {
-        false
+        KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
+        true
     }
 
     override fun removeRegistration(callback: (Boolean) -> Unit) {
