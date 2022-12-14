@@ -9,6 +9,7 @@ import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
@@ -47,7 +48,16 @@ public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
  * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
  */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
+
+/**
+ * Type alias for StytchResult<UserData> used for GetUser responses
+ */
 public typealias UserResponse = StytchResult<UserData>
+
+/**
+ * Type alias for StytchResult<DeleteAuthenticationFactorData> used for deleting authentication factors from a user
+ */
+public typealias DeleteFactorResponse = StytchResult<DeleteAuthenticationFactorData>
 
 /**
  * Type alias for StytchResult<BiometricsAuthData> used for Biometrics authentication responses

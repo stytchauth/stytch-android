@@ -116,19 +116,20 @@ internal interface StytchApiService {
     suspend fun getUser(): StytchResponses.User.UserResponse
 
     @DELETE("users/emails/{id}")
-    suspend fun deleteEmailById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteEmailById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/phone_numbers/{id}")
-    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/biometric_registrations/{id}")
-    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String):
+        StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/crypto_wallets/{id}")
-    suspend fun deleteCryptoWalletById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteCryptoWalletById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/webauthn_registrations/{id}")
-    suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
     //endregion User Management
 
     companion object {

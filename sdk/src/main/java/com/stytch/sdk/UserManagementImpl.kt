@@ -14,12 +14,7 @@ internal class UserManagementImpl(
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
     override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {
-        val user = api.getUser()
-        sessionStorage.user = when (user) {
-            is StytchResult.Success -> user.value
-            is StytchResult.Error -> null
-        }
-        user
+        api.getUser()
     }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
@@ -31,21 +26,22 @@ internal class UserManagementImpl(
 
     override fun getSyncUser(): UserData? = sessionStorage.user
 
-    override suspend fun deleteFactor(factor: AuthenticationFactor): BaseResponse {
-        val result = withContext(dispatchers.io) {
+    override suspend fun deleteFactor(factor: AuthenticationFactor): DeleteFactorResponse =
+        withContext(dispatchers.io) {
             when (factor) {
                 is AuthenticationFactor.Email -> api.deleteEmailById(factor.id)
                 is AuthenticationFactor.PhoneNumber -> api.deletePhoneNumberById(factor.id)
                 is AuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
                 is AuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
                 is AuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
+            }.apply {
+                if (this is StytchResult.Success) {
+                    sessionStorage.user = this.value.user
+                }
             }
         }
-        getUser()
-        return result
-    }
 
-    override fun deleteFactor(factor: AuthenticationFactor, callback: (BaseResponse) -> Unit) {
+    override fun deleteFactor(factor: AuthenticationFactor, callback: (DeleteFactorResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
             val result = deleteFactor(factor)
             callback(result)

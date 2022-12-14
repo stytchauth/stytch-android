@@ -259,3 +259,12 @@ public data class BiometricsAuthData(
     @Json(name = "biometric_registration_id")
     val biometricRegistrationId: String,
 ) : IAuthData
+
+@JsonClass(generateAdapter = true)
+public data class DeleteAuthenticationFactorData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val user: UserData
+)

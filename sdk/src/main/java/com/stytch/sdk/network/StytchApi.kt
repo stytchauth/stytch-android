@@ -14,6 +14,7 @@ import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.BiometricsStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
@@ -305,23 +306,24 @@ internal object StytchApi {
             apiService.getUser()
         }
 
-        suspend fun deleteEmailById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteEmailById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteEmailById(id)
         }
 
-        suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deletePhoneNumberById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deletePhoneNumberById(id)
         }
 
-        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
-            apiService.deleteBiometricRegistrationById(id)
-        }
+        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<DeleteAuthenticationFactorData> =
+            safeApiCall {
+                apiService.deleteBiometricRegistrationById(id)
+            }
 
-        suspend fun deleteCryptoWalletById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteCryptoWalletById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteCryptoWalletById(id)
         }
 
-        suspend fun deleteWebAuthnById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteWebAuthnById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteWebAuthnById(id)
         }
     }

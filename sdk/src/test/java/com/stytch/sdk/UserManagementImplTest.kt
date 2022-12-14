@@ -93,7 +93,7 @@ internal class UserManagementImplTest {
     @Test
     fun `UserManagementImpl deleteFactor with callback calls callback method`() {
         coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        val mockCallback = spyk<(DeleteFactorResponse) -> Unit>()
         impl.deleteFactor(AuthenticationFactor.Email("emailAddressId"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
