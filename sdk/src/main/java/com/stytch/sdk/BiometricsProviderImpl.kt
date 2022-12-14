@@ -86,9 +86,9 @@ internal class BiometricsProviderImpl : BiometricsProvider {
             }
         }
         val prompt = promptInfo ?: BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric login")
-            .setSubtitle("Log in using your biometric credential")
-            .setNegativeButtonText("Cancel")
+            .setTitle(context.getString(R.string.stytch_biometric_prompt_title))
+            .setSubtitle(context.getString(R.string.stytch_biometric_prompt_subtitle))
+            .setNegativeButtonText(context.getString(R.string.stytch_biometric_prompt_negative))
             .build()
         BiometricPrompt(context, executor, callback).authenticate(prompt, CryptoObject(cipher))
     }
