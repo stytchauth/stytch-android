@@ -26,35 +26,19 @@ internal class UserManagementImpl(
 
     override fun getSyncUser(): UserData? = sessionStorage.user
 
-    override suspend fun deleteEmailById(id: String): BaseResponse = withContext(dispatchers.io) {
-        api.deleteEmailById(id)
-    }
-
-    override fun deleteEmailById(id: String, callback: (BaseResponse) -> Unit) {
-        externalScope.launch(dispatchers.ui) {
-            val result = deleteEmailById(id)
-            callback(result)
+    override suspend fun deleteFactor(factor: AuthenticationFactor): BaseResponse = withContext(dispatchers.io) {
+        when (factor) {
+            is AuthenticationFactor.Email -> api.deleteEmailById(factor.id)
+            is AuthenticationFactor.PhoneNumber -> api.deletePhoneNumberById(factor.id)
+            is AuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
+            is AuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
+            is AuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
         }
     }
 
-    override suspend fun deletePhoneNumberById(id: String): BaseResponse = withContext(dispatchers.io) {
-        api.deletePhoneNumberById(id)
-    }
-
-    override fun deletePhoneNumberById(id: String, callback: (BaseResponse) -> Unit) {
+    override fun deleteFactor(factor: AuthenticationFactor, callback: (BaseResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
-            val result = deletePhoneNumberById(id)
-            callback(result)
-        }
-    }
-
-    override suspend fun deleteBiometricRegistrationById(id: String): BaseResponse = withContext(dispatchers.io) {
-        api.deleteBiometricRegistrationById(id)
-    }
-
-    override fun deleteBiometricRegistrationById(id: String, callback: (BaseResponse) -> Unit) {
-        externalScope.launch(dispatchers.ui) {
-            val result = deleteBiometricRegistrationById(id)
+            val result = deleteFactor(factor)
             callback(result)
         }
     }

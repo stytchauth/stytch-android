@@ -316,6 +316,14 @@ internal object StytchApi {
         suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
             apiService.deleteBiometricRegistrationById(id)
         }
+
+        suspend fun deleteCryptoWalletById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteCryptoWalletById(id)
+        }
+
+        suspend fun deleteWebAuthnById(id: String): StytchResult<BasicData> = safeApiCall {
+            apiService.deleteWebAuthnById(id)
+        }
     }
 
     @VisibleForTesting

@@ -5,7 +5,6 @@ import com.stytch.sdk.extensions.toBase64EncodedString
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.BiometricsAuthData
-import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionAutoUpdater
 import com.stytch.sessions.SessionStorage
 import com.stytch.sessions.launchSessionUpdater
