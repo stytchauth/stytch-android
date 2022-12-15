@@ -181,6 +181,42 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi Biometrics registerStart calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.biometricsRegisterStart(any()) } returns mockk(relaxed = true)
+        StytchApi.Biometrics.registerStart("")
+        coVerify { StytchApi.apiService.biometricsRegisterStart(any()) }
+    }
+
+    @Test
+    fun `StytchApi Biometrics register calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.biometricsRegister(any()) } returns mockk(relaxed = true)
+        StytchApi.Biometrics.register("", "", 30U)
+        coVerify { StytchApi.apiService.biometricsRegister(any()) }
+    }
+
+    @Test
+    fun `StytchApi Biometrics authenticateStart calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.biometricsAuthenticateStart(any()) } returns mockk(relaxed = true)
+        StytchApi.Biometrics.authenticateStart("")
+        coVerify { StytchApi.apiService.biometricsAuthenticateStart(any()) }
+    }
+
+    @Test
+    fun `StytchApi Biometrics authenticate calls appropriate apiService method`() = runTest {
+        mockkObject(StytchApi)
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.biometricsAuthenticate(any()) } returns mockk(relaxed = true)
+        StytchApi.Biometrics.authenticate("", "", 30U)
+        coVerify { StytchApi.apiService.biometricsAuthenticate(any()) }
+    }
+
+    @Test
     fun `StytchApi User getUser calls appropriate apiService method`() = runTest {
         mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true

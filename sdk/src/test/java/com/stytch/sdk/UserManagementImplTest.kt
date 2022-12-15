@@ -48,6 +48,8 @@ internal class UserManagementImplTest {
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
+        every { mockSessionStorage.user = any() } just runs
         impl = UserManagementImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),
@@ -91,7 +93,7 @@ internal class UserManagementImplTest {
     @Test
     fun `UserManagementImpl deleteFactor with callback calls callback method`() {
         coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        val mockCallback = spyk<(DeleteFactorResponse) -> Unit>()
         impl.deleteFactor(AuthenticationFactor.Email("emailAddressId"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }

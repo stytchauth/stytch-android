@@ -41,7 +41,7 @@ internal object StorageHelper {
 
     /**
      * Load and decrypt value from SharedPreferences
-     * @throws Exception if failed to load data
+     * @return null if failed to load data
      */
     internal fun loadValue(name: String): String? {
         return try {
@@ -63,5 +63,38 @@ internal object StorageHelper {
         saveValue(PREFERENCES_CODE_VERIFIER, codeVerifier)
 
         return "S256" to EncryptionManager.encryptCodeChallenge(codeVerifier)
+    }
+
+    /**
+     * Delete an existing ED25519 key from shared preferences
+     */
+    internal fun deletePreference(keyAlias: String): Boolean = try {
+        with(sharedPreferences.edit()) {
+            remove(keyAlias)
+            apply()
+            true
+        }
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Check if the ED25519 key exists in shared preferences
+     * @return Boolean
+     */
+    internal fun preferenceExists(keyAlias: String): Boolean = try {
+        sharedPreferences.contains(keyAlias)
+    } catch (e: Exception) {
+        false
+    }
+
+    /**
+     * Check if the keyset is using the Android KeyStore
+     * @return Boolean
+     */
+    internal fun checkIfKeysetIsUsingKeystore(): Boolean = try {
+        EncryptionManager.isKeysetUsingKeystore()
+    } catch (e: Exception) {
+        false
     }
 }

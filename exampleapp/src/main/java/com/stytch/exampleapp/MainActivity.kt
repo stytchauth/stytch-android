@@ -11,8 +11,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
@@ -21,7 +21,7 @@ import com.stytch.exampleapp.ui.AppScreen
 
 private const val SMS_CONSENT_REQUEST = 2
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
 
     private val viewModel: HomeViewModel by viewModels()
 

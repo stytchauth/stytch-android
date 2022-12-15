@@ -89,24 +89,47 @@ internal interface StytchApiService {
     ): StytchResponses.Passwords.PasswordsStrengthCheckResponse
     //endregion passwords
 
+    // region biometrics
+    @POST("biometrics/register/start")
+    suspend fun biometricsRegisterStart(
+        @Body request: StytchRequests.Biometrics.RegisterStartRequest
+    ): StytchResponses.Biometrics.RegisterStartResponse
+
+    @POST("biometrics/register")
+    suspend fun biometricsRegister(
+        @Body request: StytchRequests.Biometrics.RegisterRequest
+    ): StytchResponses.Biometrics.RegisterResponse
+
+    @POST("biometrics/authenticate/start")
+    suspend fun biometricsAuthenticateStart(
+        @Body request: StytchRequests.Biometrics.AuthenticateStartRequest
+    ): StytchResponses.Biometrics.AuthenticateStartResponse
+
+    @POST("biometrics/authenticate")
+    suspend fun biometricsAuthenticate(
+        @Body request: StytchRequests.Biometrics.AuthenticateRequest
+    ): StytchResponses.Biometrics.AuthenticateResponse
+    // endregion biometrics
+
     //region User Management
     @GET("users/me")
     suspend fun getUser(): StytchResponses.User.UserResponse
 
     @DELETE("users/emails/{id}")
-    suspend fun deleteEmailById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteEmailById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/phone_numbers/{id}")
-    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deletePhoneNumberById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/biometric_registrations/{id}")
-    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteBiometricRegistrationById(@Path(value = "id") id: String):
+        StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/crypto_wallets/{id}")
-    suspend fun deleteCryptoWalletById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteCryptoWalletById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
 
     @DELETE("users/webauthn_registrations/{id}")
-    suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.BasicResponse
+    suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
     //endregion User Management
 
     companion object {

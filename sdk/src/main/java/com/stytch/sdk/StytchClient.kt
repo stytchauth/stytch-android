@@ -7,7 +7,9 @@ import android.util.Log
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
@@ -46,7 +48,21 @@ public typealias PasswordsCreateResponse = StytchResult<CreateResponse>
  * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
  */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
+
+/**
+ * Type alias for StytchResult<UserData> used for GetUser responses
+ */
 public typealias UserResponse = StytchResult<UserData>
+
+/**
+ * Type alias for StytchResult<DeleteAuthenticationFactorData> used for deleting authentication factors from a user
+ */
+public typealias DeleteFactorResponse = StytchResult<DeleteAuthenticationFactorData>
+
+/**
+ * Type alias for StytchResult<BiometricsAuthData> used for Biometrics authentication responses
+ */
+public typealias BiometricsAuthResponse = StytchResult<BiometricsAuthData>
 
 /**
  * The entrypoint for all Stytch-related interaction.
@@ -142,17 +158,39 @@ public object StytchClient {
         }
         internal set
 
+    /**
+     * Exposes an instance of Biometrics
+     */
+    public var biometrics: Biometrics = BiometricsImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchApi.Biometrics,
+        BiometricsProviderImpl(),
+    ) { biometricRegistrationId ->
+        user.deleteFactor(AuthenticationFactor.BiometricRegistration(biometricRegistrationId))
+    }
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of UserManagement
+     */
     public var user: UserManagement = UserManagementImpl(
         externalScope,
         dispatchers,
         sessionStorage,
         StytchApi.UserManagement
     )
-        internal set
         get() {
             assertInitialized()
             return field
         }
+        internal set
 
     // TODO("OAuth")
 

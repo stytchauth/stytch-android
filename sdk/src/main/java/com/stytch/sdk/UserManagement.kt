@@ -26,11 +26,11 @@ public interface UserManagement {
      * Wraps the deleteEmailById API endpoint which deletes email from current user
      * @return BaseResponse response from backend
      */
-    public suspend fun deleteFactor(factor: AuthenticationFactor): BaseResponse
+    public suspend fun deleteFactor(factor: AuthenticationFactor): DeleteFactorResponse
 
     /**
      * Wraps the deleteEmailById API endpoint which deletes email from current user
      * @return BaseResponse response from backend
      */
-    public fun deleteFactor(factor: AuthenticationFactor, callback: (BaseResponse) -> Unit)
+    public fun deleteFactor(factor: AuthenticationFactor, callback: (DeleteFactorResponse) -> Unit)
 }

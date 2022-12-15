@@ -343,4 +343,172 @@ internal class StytchApiServiceTests {
     }
 
     // endregion Sessions
+
+    // region Biometrics
+    @Test
+    fun `check biometricsRegisterStart request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.biometricsRegisterStart(
+                    StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
+                )
+            } catch (_: Exception) {}
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/biometrics/register/start")
+            assert(body.contains("public_key\":\"publicKey\""))
+        }
+    }
+
+    @Test
+    fun `check biometricsRegister request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.biometricsRegister(
+                    StytchRequests.Biometrics.RegisterRequest(
+                        signature = "signature",
+                        biometricRegistrationId = "biometricRegistrationId",
+                        sessionDurationMinutes = 30
+                    )
+                )
+            } catch (_: Exception) {}
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/biometrics/register")
+            assert(body.contains("signature\":\"signature\""))
+            assert(body.contains("biometric_registration_id\":\"biometricRegistrationId\""))
+            assert(body.contains("session_duration_minutes\":30"))
+        }
+    }
+
+    @Test
+    fun `check biometricsAuthenticateStart request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.biometricsAuthenticateStart(
+                    StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
+                )
+            } catch (_: Exception) {}
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/biometrics/authenticate/start")
+            assert(body.contains("public_key\":\"publicKey\""))
+        }
+    }
+
+    @Test
+    fun `check biometricsAuthenticate request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.biometricsAuthenticate(
+                    StytchRequests.Biometrics.AuthenticateRequest(
+                        signature = "signature",
+                        biometricRegistrationId = "biometricRegistrationId",
+                        sessionDurationMinutes = 30
+                    )
+                )
+            } catch (_: Exception) {}
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/biometrics/authenticate")
+            assert(body.contains("signature\":\"signature\""))
+            assert(body.contains("biometric_registration_id\":\"biometricRegistrationId\""))
+            assert(body.contains("session_duration_minutes\":30"))
+        }
+    }
+    // endregion Biometrics
+
+    // region UserManagement
+    @Test
+    fun `check getUser request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.getUser()
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "GET")
+            assert(request.path == "/users/me")
+        }
+    }
+
+    @Test
+    fun `check deleteEmailById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteEmailById("email_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/emails/email_id")
+        }
+    }
+
+    @Test
+    fun `check deletePhoneNumberById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deletePhoneNumberById("phone_number_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/phone_numbers/phone_number_id")
+        }
+    }
+
+    @Test
+    fun `check deleteBiometricRegistrationById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteBiometricRegistrationById("biometrics_registration_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/biometric_registrations/biometrics_registration_id")
+        }
+    }
+
+    @Test
+    fun `check deleteCryptoWalletById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteCryptoWalletById("crypto_wallet_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/crypto_wallets/crypto_wallet_id")
+        }
+    }
+
+    @Test
+    fun `check deleteWebAuthnById request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.deleteWebAuthnById("webauthn_registration_id")
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            assert(request.method == "DELETE")
+            assert(request.path == "/users/webauthn_registrations/webauthn_registration_id")
+        }
+    }
+    // endregion UserManagement
 }

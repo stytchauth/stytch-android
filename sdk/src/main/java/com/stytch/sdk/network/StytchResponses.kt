@@ -3,7 +3,10 @@ package com.stytch.sdk.network
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.BiometricsAuthData
+import com.stytch.sdk.network.responseData.BiometricsStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
@@ -32,9 +35,31 @@ internal object StytchResponses {
             StytchDataResponse<StrengthCheckResponse>(data)
     }
 
+    object Biometrics {
+        @JsonClass(generateAdapter = true)
+        class RegisterStartResponse(data: BiometricsStartResponse) :
+            StytchDataResponse<BiometricsStartResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RegisterResponse(data: BiometricsAuthData) :
+            StytchDataResponse<BiometricsAuthData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateStartResponse(data: BiometricsStartResponse) :
+            StytchDataResponse<BiometricsStartResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(data: BiometricsAuthData) :
+            StytchDataResponse<BiometricsAuthData>(data)
+    }
+
     object User {
         @JsonClass(generateAdapter = true)
         class UserResponse(data: UserData) : StytchDataResponse<UserData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DeleteFactorResponse(data: DeleteAuthenticationFactorData) :
+            StytchDataResponse<DeleteAuthenticationFactorData>(data)
     }
 
     @JsonClass(generateAdapter = true)

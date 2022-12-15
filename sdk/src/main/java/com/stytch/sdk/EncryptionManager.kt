@@ -1,35 +1,46 @@
 package com.stytch.sdk
 
 import android.content.Context
-import android.util.Base64
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
-import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
+import com.google.crypto.tink.signature.SignatureConfig
+import com.stytch.sdk.extensions.hexStringToByteArray
+import com.stytch.sdk.extensions.toBase64DecodedByteArray
+import com.stytch.sdk.extensions.toBase64EncodedString
+import com.stytch.sdk.extensions.toHexString
+import com.stytch.sdk.network.StytchErrorType
 import java.security.MessageDigest
+import java.security.SecureRandom
 import kotlin.random.Random
+import org.bouncycastle.crypto.Signer
+import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
+import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
+import org.bouncycastle.crypto.signers.Ed25519Signer
 
-private const val HEX_RADIX = 16
-
+@Suppress("TooManyFunctions")
 internal object EncryptionManager {
 
     private const val PREF_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
+    private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
 
     init {
         AeadConfig.register()
+        SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewKeysetHandle(context: Context, keyAlias: String): KeysetHandle? {
+    private fun getOrGenerateNewAES256KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
         return AndroidKeysetManager.Builder()
             .withSharedPref(context, keyAlias, PREF_FILE_NAME)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
             .withMasterKeyUri(MASTER_KEY_URI)
             .build()
-            .keysetHandle
     }
 
     /**
@@ -42,7 +53,7 @@ internal object EncryptionManager {
         // An artifical step to test whether Tink can co-exist with protobuf-lite.
         val pStr: ByteString = ByteString.copyFrom(plainBytes)
         val cipherText: ByteArray = aead.encrypt(pStr.toByteArray(), null)
-        encodedString = Base64.encodeToString(cipherText, Base64.NO_WRAP)
+        encodedString = cipherText.toBase64EncodedString()
         return encodedString
     }
 
@@ -51,12 +62,12 @@ internal object EncryptionManager {
      */
     @Suppress("ReturnCount")
     fun decryptString(encryptedText: String?): String? {
-//       prevent decryption if value is null
+        // prevent decryption if value is null
         encryptedText ?: return null
         val aead = aead ?: return null
 
         val decryptedText: String?
-        val ciphertext: ByteArray = Base64.decode(encryptedText, Base64.NO_WRAP)
+        val ciphertext: ByteArray = encryptedText.toBase64DecodedByteArray()
         val plaintext: ByteArray = aead.decrypt(ciphertext, null)
         decryptedText = String(plaintext, Charsets.UTF_8)
 
@@ -66,8 +77,10 @@ internal object EncryptionManager {
     /**
      * @throws Exception - if failed to generate keys
      */
-    fun createNewKeys(context: Context, keyAlias: String) {
-        aead = getOrGenerateNewKeysetHandle(context, keyAlias)?.getPrimitive(Aead::class.java)
+    fun createNewKeys(context: Context, rsaKeyAlias: String) {
+        val ksm = getOrGenerateNewAES256KeysetManager(context, rsaKeyAlias)
+        keysetManager = ksm
+        aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
 
     fun generateCodeChallenge(): String {
@@ -80,8 +93,8 @@ internal object EncryptionManager {
         return convertToBase64UrlEncoded(getSha256(codeChallenge))
     }
 
-    fun getSha256(hexString: String): String {
-//        convert hexString to bytes
+    private fun getSha256(hexString: String): String {
+        // convert hexString to bytes
         val bytes = hexString.toByteArray()
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
@@ -89,19 +102,44 @@ internal object EncryptionManager {
         return sha256
     }
 
-    fun convertToBase64UrlEncoded(value: String): String {
-        val base64String = Base64.encodeToString(value.hexStringToByteArray(), Base64.NO_WRAP)
+    private fun convertToBase64UrlEncoded(value: String): String {
+        val base64String = value.hexStringToByteArray().toBase64EncodedString()
         return base64String
             .replace("+", "-")
             .replace("/", "_")
             .replace("=", "")
     }
 
-    fun String.hexStringToByteArray(): ByteArray {
-        return chunked(2).map { it.toInt(HEX_RADIX).toByte() }.toByteArray()
+    fun isKeysetUsingKeystore(): Boolean = keysetManager?.isUsingKeystore == true
+
+    fun generateEd25519KeyPair(): Pair<String, String> = try {
+        val gen = Ed25519KeyPairGenerator()
+        gen.init(Ed25519KeyGenerationParameters(SecureRandom()))
+        val keyPair = gen.generateKeyPair()
+        val publicKey = keyPair.public as Ed25519PublicKeyParameters
+        val privateKey = keyPair.private as Ed25519PrivateKeyParameters
+        Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
     }
 
-    fun ByteArray.toHexString(): String {
-        return joinToString(separator = "") { byte -> "%02x".format(byte) }
+    fun signEd25519Challenge(challengeString: String, privateKeyString: String): String = try {
+        val signer: Signer = Ed25519Signer()
+        val challenge = challengeString.toBase64DecodedByteArray()
+        val privateKey = Ed25519PrivateKeyParameters(privateKeyString.toBase64DecodedByteArray())
+        signer.init(true, privateKey)
+        signer.update(challenge, 0, challenge.size)
+        val signature: ByteArray = signer.generateSignature()
+        signature.toBase64EncodedString()
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+    }
+
+    fun deriveEd25519PublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String = try {
+        val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
+        val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
+        publicKeyRebuild.encoded.toBase64EncodedString()
+    } catch (e: Exception) {
+        throw StytchExceptions.Input(StytchErrorType.ERROR_DERIVING_PUBLIC_KEY.message)
     }
 }

@@ -2,6 +2,8 @@ package com.stytch.sessions
 
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.SessionData
 import com.stytch.sdk.network.responseData.UserData
 
@@ -71,6 +73,12 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
             sessionJwt = null
             session = null
             user = null
+        }
+    }
+
+    fun ensureSessionIsValidOrThrow() {
+        if (sessionToken == null && sessionJwt == null) {
+            throw StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
         }
     }
 }

@@ -11,7 +11,10 @@ import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.network.responseData.BiometricsAuthData
+import com.stytch.sdk.network.responseData.BiometricsStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
+import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.StytchErrorResponse
@@ -248,29 +251,79 @@ internal object StytchApi {
         }
     }
 
-    internal object UserManagement {
+    internal object Biometrics {
+        suspend fun registerStart(
+            publicKey: String,
+        ): StytchResult<BiometricsStartResponse> = safeApiCall {
+            apiService.biometricsRegisterStart(
+                StytchRequests.Biometrics.RegisterStartRequest(
+                    publicKey = publicKey,
+                )
+            )
+        }
 
+        suspend fun register(
+            signature: String,
+            biometricRegistrationId: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<BiometricsAuthData> = safeApiCall {
+            apiService.biometricsRegister(
+                StytchRequests.Biometrics.RegisterRequest(
+                    signature = signature,
+                    biometricRegistrationId = biometricRegistrationId,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
+        }
+
+        suspend fun authenticateStart(
+            publicKey: String,
+        ): StytchResult<BiometricsStartResponse> = safeApiCall {
+            apiService.biometricsAuthenticateStart(
+                StytchRequests.Biometrics.AuthenticateStartRequest(
+                    publicKey = publicKey,
+                )
+            )
+        }
+
+        suspend fun authenticate(
+            signature: String,
+            biometricRegistrationId: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<BiometricsAuthData> = safeApiCall {
+            apiService.biometricsAuthenticate(
+                StytchRequests.Biometrics.AuthenticateRequest(
+                    signature = signature,
+                    biometricRegistrationId = biometricRegistrationId,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
+        }
+    }
+
+    internal object UserManagement {
         suspend fun getUser(): StytchResult<UserData> = safeApiCall {
             apiService.getUser()
         }
 
-        suspend fun deleteEmailById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteEmailById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteEmailById(id)
         }
 
-        suspend fun deletePhoneNumberById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deletePhoneNumberById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deletePhoneNumberById(id)
         }
 
-        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<BasicData> = safeApiCall {
-            apiService.deleteBiometricRegistrationById(id)
-        }
+        suspend fun deleteBiometricRegistrationById(id: String): StytchResult<DeleteAuthenticationFactorData> =
+            safeApiCall {
+                apiService.deleteBiometricRegistrationById(id)
+            }
 
-        suspend fun deleteCryptoWalletById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteCryptoWalletById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteCryptoWalletById(id)
         }
 
-        suspend fun deleteWebAuthnById(id: String): StytchResult<BasicData> = safeApiCall {
+        suspend fun deleteWebAuthnById(id: String): StytchResult<DeleteAuthenticationFactorData> = safeApiCall {
             apiService.deleteWebAuthnById(id)
         }
     }
