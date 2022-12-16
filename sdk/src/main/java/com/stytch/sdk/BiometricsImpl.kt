@@ -1,5 +1,6 @@
 package com.stytch.sdk
 
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.extensions.toBase64EncodedString
@@ -33,14 +34,27 @@ public class BiometricsImpl internal constructor(
     override val registrationAvailable: Boolean
         get() = KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) }
 
-    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
-        biometricsProvider.areBiometricsAvailable(context)
+    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
+        try {
+            biometricsProvider.ensureSecretKeyIsAvailable()
+        } catch (_: KeyPermanentlyInvalidatedException) {
+            externalScope.launch(dispatchers.ui) {
+                removeRegistration()
+            }
+            return BiometricAvailability.BIOMETRICS_REVOKED
+        } catch (_: IllegalStateException) {
+            // Secret key is null/couldn't be created (likely because of missing biometric factor). Do nothing and fall
+            // back to regular areBiometricsAvailable check for full information
+        }
+        return biometricsProvider.areBiometricsAvailable(context)
+    }
 
     override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
         storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
             deleteBiometricRegistraton(it)
         }
         KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
+        biometricsProvider.deleteSecretKey()
         true
     }
 

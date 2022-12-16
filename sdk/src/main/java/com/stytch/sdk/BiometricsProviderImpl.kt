@@ -20,12 +20,9 @@ internal const val AUTHENTICATION_FAILED = "Authentication Failed"
 private const val BIOMETRIC_KEY_NAME = "stytch_biometric_key"
 
 internal class BiometricsProviderImpl : BiometricsProvider {
-    private var secretKey: SecretKey? = null
-    init {
-        try {
-            val keyStore = KeyStore.getInstance("AndroidKeyStore")
-            // Before the keystore can be accessed, it must be loaded.
-            keyStore.load(null)
+    private val keyStore = KeyStore.getInstance("AndroidKeyStore")
+    private val secretKey: SecretKey?
+        get() = try {
             if (!keyStore.containsAlias(BIOMETRIC_KEY_NAME)) {
                 val keyGenerator = KeyGenerator.getInstance(
                     KeyProperties.KEY_ALGORITHM_AES,
@@ -42,10 +39,13 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                 keyGenerator.init(keyGenParameterSpec)
                 keyGenerator.generateKey()
             }
-            secretKey = keyStore.getKey(BIOMETRIC_KEY_NAME, null) as SecretKey
-        } catch (e: Exception) {
-            StytchLog.e(e.message ?: BiometricAvailability.BIOMETRIC_KEY_GENERATION_FAILED.message)
+            keyStore.getKey(BIOMETRIC_KEY_NAME, null) as SecretKey
+        } catch (_: Exception) {
+            null
         }
+
+    init {
+        keyStore.load(null)
     }
 
     private fun getCipher(): Cipher {
@@ -108,7 +108,6 @@ internal class BiometricsProviderImpl : BiometricsProvider {
     }
 
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
-        if (secretKey == null) return BiometricAvailability.BIOMETRIC_KEY_GENERATION_FAILED
         val biometricManager = BiometricManager.from(context)
         return when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
             BiometricManager.BIOMETRIC_SUCCESS -> BiometricAvailability.BIOMETRIC_SUCCESS
@@ -121,5 +120,16 @@ internal class BiometricsProviderImpl : BiometricsProvider {
             BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> BiometricAvailability.BIOMETRIC_STATUS_UNKNOWN
             else -> BiometricAvailability.BIOMETRIC_STATUS_UNKNOWN
         }
+    }
+
+    override fun deleteSecretKey() {
+        keyStore.deleteEntry(BIOMETRIC_KEY_NAME)
+    }
+
+    override fun ensureSecretKeyIsAvailable() {
+        if (secretKey == null) error("SecertKey cannot be null")
+        // initialize a cipher (that we won't use) with the secretkey to ensure it hasn't been invalidated
+        val cipher = getCipher()
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
     }
 }
