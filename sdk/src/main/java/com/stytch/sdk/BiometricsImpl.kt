@@ -31,14 +31,16 @@ public class BiometricsImpl internal constructor(
     private val biometricsProvider: BiometricsProvider,
     private val deleteBiometricRegistraton: suspend (String) -> Unit,
 ) : Biometrics {
-    override val registrationAvailable: Boolean
-        get() = KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) }
+    override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
+        return KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) } &&
+            areBiometricsAvailable(context) != BiometricAvailability.BIOMETRICS_REVOKED
+    }
 
     override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
         try {
             biometricsProvider.ensureSecretKeyIsAvailable()
         } catch (_: KeyPermanentlyInvalidatedException) {
-            externalScope.launch(dispatchers.ui) {
+            externalScope.launch(dispatchers.io) {
                 removeRegistration()
             }
             return BiometricAvailability.BIOMETRICS_REVOKED
@@ -73,7 +75,7 @@ public class BiometricsImpl internal constructor(
                 if (!isUsingKeystore() && !parameters.allowFallbackToCleartext) {
                     throw StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message)
                 }
-                if (registrationAvailable) {
+                if (isRegistrationAvailable(parameters.context)) {
                     removeRegistration()
                 }
                 sessionStorage.ensureSessionIsValidOrThrow()
@@ -130,7 +132,7 @@ public class BiometricsImpl internal constructor(
                 val encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)
                 val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
-                    require(registrationAvailable && encryptedPrivateKey != null && iv != null)
+                    require(isRegistrationAvailable(parameters.context) && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalArgumentException) {
                     StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                     throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)

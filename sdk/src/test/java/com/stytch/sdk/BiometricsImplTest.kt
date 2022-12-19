@@ -118,6 +118,8 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
         every { mockStorageHelper.loadValue(any()) } returns null
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.deletePreference(any()) } returns true
         every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
         coEvery {
@@ -287,6 +289,8 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate returns correct error if biometrics fails`() = runTest {
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any())
@@ -299,6 +303,8 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate returns correct error if public key cannot be derived from private key`() = runTest {
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any())
@@ -314,6 +320,8 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate returns correct error if authenticateStart fails`() = runTest {
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any())
@@ -333,6 +341,8 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate returns correct error if challenge signing fails`() = runTest {
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any())
@@ -358,6 +368,8 @@ internal class BiometricsImplTest {
     @Test
     fun `authenticate returns success if everything succeeds`() = runTest {
         every { mockStorageHelper.preferenceExists(any()) } returns true
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any())
@@ -393,7 +405,9 @@ internal class BiometricsImplTest {
     @Test
     fun `registrationAvailable delegates to storageHelper`() {
         every { mockStorageHelper.preferenceExists(any()) } returns true
-        assert(impl.registrationAvailable)
+        every { mockBiometricsProvider.ensureSecretKeyIsAvailable() } just runs
+        every { mockBiometricsProvider.areBiometricsAvailable(any()) } returns BiometricAvailability.BIOMETRIC_SUCCESS
+        assert(impl.isRegistrationAvailable(mockk(relaxed = true)))
         verify { mockStorageHelper.preferenceExists(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         verify { mockStorageHelper.preferenceExists(PRIVATE_KEY_KEY) }
         verify { mockStorageHelper.preferenceExists(CIPHER_IV_KEY) }

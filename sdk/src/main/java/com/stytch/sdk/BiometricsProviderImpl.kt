@@ -127,7 +127,7 @@ internal class BiometricsProviderImpl : BiometricsProvider {
     }
 
     override fun ensureSecretKeyIsAvailable() {
-        if (secretKey == null) error("SecertKey cannot be null")
+        if (secretKey == null) error("SecretKey cannot be null")
         // initialize a cipher (that we won't use) with the secretkey to ensure it hasn't been invalidated
         val cipher = getCipher()
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
