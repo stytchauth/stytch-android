@@ -2,7 +2,6 @@ package com.stytch.sdk
 
 import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.stytch.sdk.network.StytchApi
@@ -21,27 +20,23 @@ internal class OAuthImpl(
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: SessionStorage,
     private val api: StytchApi.OAuth,
+    private val googleOAuthProvider: GoogleOAuthProvider,
 ) : OAuth {
     override val google: OAuth.Google = GoogleOAuthImpl()
 
     private inner class GoogleOAuthImpl : OAuth.Google {
         private lateinit var oneTapClient: SignInClient
         private lateinit var signInRequest: BeginSignInRequest
-        private var nonce: String = ""
+        private lateinit var nonce: String
+
         override suspend fun start(parameters: OAuth.Google.StartParameters): Boolean {
             nonce = EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge())
-            oneTapClient = Identity.getSignInClient(parameters.context)
-            signInRequest = BeginSignInRequest.builder().apply {
-                setGoogleIdTokenRequestOptions(
-                    BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                        .setSupported(true)
-                        .setServerClientId(parameters.clientId)
-                        .setFilterByAuthorizedAccounts(false)
-                        .setNonce(nonce)
-                        .build()
-                )
-                setAutoSelectEnabled(parameters.autoSelectEnabled)
-            }.build()
+            oneTapClient = googleOAuthProvider.getSignInClient(context = parameters.context)
+            signInRequest = googleOAuthProvider.getSignInRequest(
+                clientId = parameters.clientId,
+                nonce = nonce,
+                autoSelectEnabled = parameters.autoSelectEnabled
+            )
             return try {
                 suspendCancellableCoroutine { continuation ->
                     oneTapClient

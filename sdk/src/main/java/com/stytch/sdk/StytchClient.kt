@@ -200,6 +200,7 @@ public object StytchClient {
         dispatchers,
         sessionStorage,
         StytchApi.OAuth,
+        GoogleOAuthProviderImpl()
     )
         get() {
             assertInitialized()

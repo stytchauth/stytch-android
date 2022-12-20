@@ -31,6 +31,7 @@ internal class StytchApiTest {
     fun before() {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
+        mockkObject(StytchApi)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
@@ -50,7 +51,6 @@ internal class StytchApiTest {
 
     @Test(expected = IllegalStateException::class)
     fun `StytchApi apiService throws exception when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchApi.apiService
     }
@@ -65,7 +65,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi MagicLinks Email loginOrCreate calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
         StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "")
@@ -74,7 +73,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi MagicLinks Email authenticate calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticate(any()) } returns mockk(relaxed = true)
         StytchApi.MagicLinks.Email.authenticate("", 30U, "")
@@ -83,7 +81,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi OTP loginOrCreateByOTPWithSMS calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithSMS(any()) } returns mockk(relaxed = true)
         StytchApi.OTP.loginOrCreateByOTPWithSMS("", 30U)
@@ -92,7 +89,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi OTP loginOrCreateUserByOTPWithWhatsApp calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithWhatsApp(any()) } returns mockk(relaxed = true)
         StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("", 30U)
@@ -101,7 +97,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi OTP loginOrCreateUserByOTPWithEmail calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
         StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U)
@@ -110,7 +105,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi OTP authenticateWithOTP calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateWithOTP(any()) } returns mockk(relaxed = true)
         StytchApi.OTP.authenticateWithOTP("", "")
@@ -119,7 +113,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Passwords authenticate calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateWithPasswords(any()) } returns mockk(relaxed = true)
         StytchApi.Passwords.authenticate("", "", 30U)
@@ -128,7 +121,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Passwords create calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.passwords(any()) } returns mockk(relaxed = true)
         StytchApi.Passwords.create("", "", 30U)
@@ -137,7 +129,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Passwords resetByEmailStart calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
         StytchApi.Passwords.resetByEmailStart("", "", "", "", 30, "", 30)
@@ -146,7 +137,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Passwords resetByEmail calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.resetByEmail(any()) } returns mockk(relaxed = true)
         StytchApi.Passwords.resetByEmail("", "", 30U, "")
@@ -155,7 +145,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Passwords strengthCheck calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.strengthCheck(any()) } returns mockk(relaxed = true)
         StytchApi.Passwords.strengthCheck("", "")
@@ -164,7 +153,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Sessions authenticate calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
         StytchApi.Sessions.authenticate(30)
@@ -173,7 +161,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Sessions revoke calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.revokeSessions() } returns mockk(relaxed = true)
         StytchApi.Sessions.revoke()
@@ -182,7 +169,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Biometrics registerStart calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.biometricsRegisterStart(any()) } returns mockk(relaxed = true)
         StytchApi.Biometrics.registerStart("")
@@ -191,7 +177,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Biometrics register calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.biometricsRegister(any()) } returns mockk(relaxed = true)
         StytchApi.Biometrics.register("", "", 30U)
@@ -200,7 +185,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Biometrics authenticateStart calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.biometricsAuthenticateStart(any()) } returns mockk(relaxed = true)
         StytchApi.Biometrics.authenticateStart("")
@@ -209,7 +193,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi Biometrics authenticate calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.biometricsAuthenticate(any()) } returns mockk(relaxed = true)
         StytchApi.Biometrics.authenticate("", "", 30U)
@@ -218,7 +201,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi User getUser calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.getUser() } returns mockk(relaxed = true)
         StytchApi.UserManagement.getUser()
@@ -227,7 +209,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi User deleteEmailById calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.deleteEmailById("emailAddressId") } returns mockk(relaxed = true)
         StytchApi.UserManagement.deleteEmailById("emailAddressId")
@@ -236,7 +217,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi User deletePhoneNumberById calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.deletePhoneNumberById("phoneNumberId") } returns mockk(relaxed = true)
         StytchApi.UserManagement.deletePhoneNumberById("phoneNumberId")
@@ -245,7 +225,6 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi User deleteBiometricRegistrationById calls appropriate apiService method`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         coEvery {
             StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId")
@@ -254,9 +233,28 @@ internal class StytchApiTest {
         coVerify { StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId") }
     }
 
+    @Test
+    fun `StytchApi OAuth authenticateWithGoogleIdToken calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.authenticateWithGoogleIdToken(any()) } returns mockk(relaxed = true)
+        StytchApi.OAuth.authenticateWithGoogleIdToken(
+            idToken = "id_token",
+            nonce = "nonce",
+            sessionDurationMinutes = 30U
+        )
+        coVerify {
+            StytchApi.apiService.authenticateWithGoogleIdToken(
+                StytchRequests.OAuth.Google.AuthenticateRequest(
+                    idToken = "id_token",
+                    nonce = "nonce",
+                    sessionDurationMinutes = 30
+                )
+            )
+        }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         val mockApiCall: suspend () -> StytchResponses.StytchDataResponse<Boolean> = mockk()
         StytchApi.safeApiCall { mockApiCall() }
@@ -264,7 +262,6 @@ internal class StytchApiTest {
 
     @Test
     fun `safeApiCall returns success when call succeeds`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
             return StytchResponses.StytchDataResponse(true)
@@ -275,7 +272,6 @@ internal class StytchApiTest {
 
     @Test
     fun `safeApiCall returns correct error for HttpException`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
             throw HttpException(mockk(relaxed = true))
@@ -286,7 +282,6 @@ internal class StytchApiTest {
 
     @Test
     fun `safeApiCall returns correct error for StytchExceptions`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
             throw StytchExceptions.Critical(RuntimeException("Test"))
@@ -297,7 +292,6 @@ internal class StytchApiTest {
 
     @Test
     fun `safeApiCall returns correct error for other exceptions`() = runTest {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
             error("Test")

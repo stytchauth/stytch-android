@@ -511,4 +511,30 @@ internal class StytchApiServiceTests {
         }
     }
     // endregion UserManagement
+
+    // region OAuth
+    @Test
+    fun `check authenticateWithGoogleIdToken request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.authenticateWithGoogleIdToken(
+                    StytchRequests.OAuth.Google.AuthenticateRequest(
+                        idToken = "id_token",
+                        nonce = "nonce",
+                        sessionDurationMinutes = 30
+                    )
+                )
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/oauth/google/id_token/authenticate")
+            assert(body.contains("id_token\":\"id_token\""))
+            assert(body.contains("nonce\":\"nonce\""))
+            assert(body.contains("session_duration_minutes\":30"))
+        }
+    }
+    // endregion OAuth
 }
