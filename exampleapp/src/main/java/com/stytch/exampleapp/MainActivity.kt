@@ -18,14 +18,13 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
 import com.stytch.exampleapp.theme.AppTheme
 import com.stytch.exampleapp.ui.AppScreen
-import com.stytch.sdk.OAuth
-import com.stytch.sdk.StytchClient
 
 private const val SMS_CONSENT_REQUEST = 2
 const val GOOGLE_OAUTH_REQUEST = 3
 class MainActivity : FragmentActivity() {
 
     private val viewModel: HomeViewModel by viewModels()
+    private val oauthViewModel: OAuthViewModel by viewModels()
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -87,7 +86,7 @@ class MainActivity : FragmentActivity() {
                 } else {
                     // Consent denied. User can type OTC manually.
                 }
-            GOOGLE_OAUTH_REQUEST -> data?.let { viewModel.authenticateGoogleLogin(it) }
+            GOOGLE_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateGoogleLogin(it) }
         }
     }
 }
