@@ -1,6 +1,8 @@
 package com.stytch.exampleapp
 
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.MagicLinks
+import com.stytch.sdk.OAuth
 import com.stytch.sdk.OTP
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
@@ -157,6 +160,31 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
+        }
+    }
+
+    fun loginWithGoogle(context: Activity) {
+        viewModelScope.launch {
+            StytchClient.oauth.google.start(
+                OAuth.Google.StartParameters(
+                    context = context,
+                    clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                    oAuthRequestIdentifier = GOOGLE_OAUTH_REQUEST
+                )
+            )
+        }
+    }
+
+    fun authenticateGoogleLogin(data: Intent) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchClient.oauth.google.authenticate(OAuth.Google.AuthenticateParameters(data))
+            _currentResponse.value = when (result) {
+                is StytchResult.Success<*> -> result.toString()
+                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
+            }
+        }.invokeOnCompletion {
+            _loadingState.value = false
         }
     }
 

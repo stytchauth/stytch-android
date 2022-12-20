@@ -192,7 +192,20 @@ public object StytchClient {
         }
         internal set
 
-    // TODO("OAuth")
+    /**
+     * Exposes an instance of OAuth
+     */
+    public var oauth: OAuth = OAuthImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.OAuth,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
 
     private fun getDeviceInfo(context: Context): DeviceInfo {
         val deviceInfo = DeviceInfo()

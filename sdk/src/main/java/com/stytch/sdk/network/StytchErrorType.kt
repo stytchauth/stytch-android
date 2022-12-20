@@ -42,5 +42,9 @@ public enum class StytchErrorType(
     ERROR_DERIVING_PUBLIC_KEY(
         stringValue = "error_deriving_public_key",
         message = "There was an error deriving the public key. Try re-registering a new biometric authentication."
+    ),
+    GOOGLE_ONETAP_MISSING_ID_TOKEN(
+        stringValue = "google_onetap_missing_id_token",
+        message = "The Google OneTap authorization credential was missing an id_token."
     )
 }
