@@ -40,7 +40,7 @@ fun BiometricsScreen(navController: NavController) {
         Text(
             text = stringResource(
                 R.string.biometrics_registration_exists,
-                StytchClient.biometrics.registrationAvailable,
+                StytchClient.biometrics.isRegistrationAvailable(context),
             )
         )
         if (biometricsAreAvailable) {

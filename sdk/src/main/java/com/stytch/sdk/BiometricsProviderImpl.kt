@@ -74,11 +74,6 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                     ?.let { continuation.resume(it) }
                     ?: continuation.resumeWithException(StytchExceptions.Input(AUTHENTICATION_FAILED))
             }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                continuation.resumeWithException(StytchExceptions.Input(AUTHENTICATION_FAILED))
-            }
         }
         val prompt = promptInfo ?: BiometricPrompt.PromptInfo.Builder()
             .setTitle(context.getString(R.string.stytch_biometric_prompt_title))
