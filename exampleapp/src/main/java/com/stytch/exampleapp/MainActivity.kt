@@ -56,7 +56,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen()
+                AppScreen(oauthViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {

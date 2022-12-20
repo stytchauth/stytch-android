@@ -19,8 +19,7 @@ import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
 
 @Composable
-fun OAuthScreen(navController: NavController) {
-    val viewModel: OAuthViewModel = viewModel()
+fun OAuthScreen(viewModel: OAuthViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     val context = LocalContext.current as FragmentActivity

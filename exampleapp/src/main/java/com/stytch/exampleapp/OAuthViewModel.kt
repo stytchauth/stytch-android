@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.OAuth
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
