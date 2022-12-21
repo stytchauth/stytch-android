@@ -16,6 +16,7 @@ public enum class BiometricAvailability(public val message: String) {
     ),
     BIOMETRIC_ERROR_UNSUPPORTED("The requested biometrics options are incompatible with the current Android version."),
     BIOMETRIC_STATUS_UNKNOWN("Unable to determine whether the user can authenticate."),
+    BIOMETRICS_REVOKED("Biometric key was revoked. Must re-register a biometric authentication.")
 }
 
 internal interface BiometricsProvider {
@@ -31,4 +32,8 @@ internal interface BiometricsProvider {
     ): Cipher
 
     fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
+
+    fun deleteSecretKey()
+
+    fun ensureSecretKeyIsAvailable()
 }

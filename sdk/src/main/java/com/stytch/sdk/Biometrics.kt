@@ -36,7 +36,7 @@ public interface Biometrics {
     /**
      * Indicates if there is an existing biometric registration on device.
      */
-    public val registrationAvailable: Boolean
+    public fun isRegistrationAvailable(context: FragmentActivity): Boolean
 
     /**
      * Indicates if the biometric sensor is available, and provides a reasoning if not

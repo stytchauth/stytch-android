@@ -1,5 +1,6 @@
 package com.stytch.sdk
 
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.extensions.toBase64EncodedString
@@ -30,17 +31,32 @@ public class BiometricsImpl internal constructor(
     private val biometricsProvider: BiometricsProvider,
     private val deleteBiometricRegistraton: suspend (String) -> Unit,
 ) : Biometrics {
-    override val registrationAvailable: Boolean
-        get() = KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) }
+    override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
+        return KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) } &&
+            areBiometricsAvailable(context) != BiometricAvailability.BIOMETRICS_REVOKED
+    }
 
-    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability =
-        biometricsProvider.areBiometricsAvailable(context)
+    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
+        try {
+            biometricsProvider.ensureSecretKeyIsAvailable()
+        } catch (_: KeyPermanentlyInvalidatedException) {
+            externalScope.launch(dispatchers.io) {
+                removeRegistration()
+            }
+            return BiometricAvailability.BIOMETRICS_REVOKED
+        } catch (_: IllegalStateException) {
+            // Secret key is null/couldn't be created (likely because of missing biometric factor). Do nothing and fall
+            // back to regular areBiometricsAvailable check for full information
+        }
+        return biometricsProvider.areBiometricsAvailable(context)
+    }
 
     override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
         storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
             deleteBiometricRegistraton(it)
         }
         KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
+        biometricsProvider.deleteSecretKey()
         true
     }
 
@@ -59,7 +75,7 @@ public class BiometricsImpl internal constructor(
                 if (!isUsingKeystore() && !parameters.allowFallbackToCleartext) {
                     throw StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message)
                 }
-                if (registrationAvailable) {
+                if (isRegistrationAvailable(parameters.context)) {
                     removeRegistration()
                 }
                 sessionStorage.ensureSessionIsValidOrThrow()
@@ -116,7 +132,7 @@ public class BiometricsImpl internal constructor(
                 val encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)
                 val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
-                    require(registrationAvailable && encryptedPrivateKey != null && iv != null)
+                    require(isRegistrationAvailable(parameters.context) && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalArgumentException) {
                     StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
                     throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
