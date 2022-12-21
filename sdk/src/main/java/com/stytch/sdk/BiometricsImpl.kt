@@ -21,7 +21,7 @@ private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
 )
 
 @Suppress("LongParameterList")
-public class BiometricsImpl internal constructor(
+internal class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: SessionStorage,
