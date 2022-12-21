@@ -27,3 +27,4 @@ jobs:
           arguments: runOnGitHub
         env:
           STYTCH_PUBLIC_TOKEN: 'abc123'
+          GOOGLE_OAUTH_CLIENT_ID: 'abc123'
