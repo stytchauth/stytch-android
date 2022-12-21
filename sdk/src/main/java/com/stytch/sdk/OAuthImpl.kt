@@ -1,8 +1,6 @@
 package com.stytch.sdk
 
 import android.content.IntentSender
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
@@ -25,19 +23,15 @@ internal class OAuthImpl(
     override val google: OAuth.Google = GoogleOAuthImpl()
 
     private inner class GoogleOAuthImpl : OAuth.Google {
-        private lateinit var oneTapClient: SignInClient
-        private lateinit var signInRequest: BeginSignInRequest
-        private lateinit var nonce: String
-
         override suspend fun start(parameters: OAuth.Google.StartParameters): Boolean {
-            nonce = EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge())
-            oneTapClient = googleOAuthProvider.getSignInClient(context = parameters.context)
-            signInRequest = googleOAuthProvider.getSignInRequest(
-                clientId = parameters.clientId,
-                nonce = nonce,
-                autoSelectEnabled = parameters.autoSelectEnabled
-            )
             return try {
+                val nonce = googleOAuthProvider.createNonce()
+                val oneTapClient = googleOAuthProvider.createSignInClient(context = parameters.context)
+                val signInRequest = googleOAuthProvider.getSignInRequest(
+                    clientId = parameters.clientId,
+                    nonce = nonce,
+                    autoSelectEnabled = parameters.autoSelectEnabled
+                )
                 suspendCancellableCoroutine { continuation ->
                     oneTapClient
                         .beginSignIn(signInRequest)
@@ -80,7 +74,8 @@ internal class OAuthImpl(
         override suspend fun authenticate(parameters: OAuth.Google.AuthenticateParameters): AuthResponse {
             return withContext(dispatchers.io) {
                 try {
-                    val credential = oneTapClient.getSignInCredentialFromIntent(parameters.data)
+                    val nonce = googleOAuthProvider.nonce!!
+                    val credential = googleOAuthProvider.oneTapClient!!.getSignInCredentialFromIntent(parameters.data)
                     val idToken = credential.googleIdToken
                         ?: return@withContext StytchResult.Error(
                             StytchExceptions.Input(StytchErrorType.GOOGLE_ONETAP_MISSING_ID_TOKEN.message)
@@ -94,6 +89,8 @@ internal class OAuthImpl(
                     }
                 } catch (e: ApiException) {
                     StytchResult.Error(StytchExceptions.Critical(e))
+                } catch (e: NullPointerException) {
+                    StytchResult.Error(StytchExceptions.Critical(e))
                 }
             }
         }
@@ -106,9 +103,7 @@ internal class OAuthImpl(
         }
 
         override fun signOut() {
-            if (::oneTapClient.isInitialized) {
-                oneTapClient.signOut()
-            }
+            googleOAuthProvider.oneTapClient?.signOut()
         }
     }
 }

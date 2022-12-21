@@ -7,15 +7,36 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 
 internal interface GoogleOAuthProvider {
-    fun getSignInClient(context: Context): SignInClient
-    fun getSignInClient(context: Activity): SignInClient
+    var nonce: String?
+    var oneTapClient: SignInClient?
+    fun createNonce(): String
+    fun createSignInClient(context: Context): SignInClient
+    fun createSignInClient(context: Activity): SignInClient
     fun getSignInRequest(clientId: String, nonce: String, autoSelectEnabled: Boolean): BeginSignInRequest
 }
 
 internal class GoogleOAuthProviderImpl : GoogleOAuthProvider {
-    override fun getSignInClient(context: Context): SignInClient = Identity.getSignInClient(context)
+    override var nonce: String? = null
 
-    override fun getSignInClient(context: Activity): SignInClient = Identity.getSignInClient(context)
+    override var oneTapClient: SignInClient? = null
+
+    override fun createNonce(): String {
+        return EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge()).also {
+            nonce = it
+        }
+    }
+
+    override fun createSignInClient(context: Context): SignInClient {
+        return Identity.getSignInClient(context).also {
+            oneTapClient = it
+        }
+    }
+
+    override fun createSignInClient(context: Activity): SignInClient {
+        return Identity.getSignInClient(context).also {
+            oneTapClient = it
+        }
+    }
 
     override fun getSignInRequest(clientId: String, nonce: String, autoSelectEnabled: Boolean): BeginSignInRequest =
         BeginSignInRequest.builder().apply {
@@ -29,5 +50,4 @@ internal class GoogleOAuthProviderImpl : GoogleOAuthProvider {
             )
             setAutoSelectEnabled(autoSelectEnabled)
         }.build()
-
 }
