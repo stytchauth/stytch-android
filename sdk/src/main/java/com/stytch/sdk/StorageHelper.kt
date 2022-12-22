@@ -39,6 +39,15 @@ internal object StorageHelper {
         }
     }
 
+    internal fun saveBoolean(name: String, value: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean(name, value)
+            apply()
+        }
+    }
+
+    internal fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
+
     /**
      * Load and decrypt value from SharedPreferences
      * @return null if failed to load data

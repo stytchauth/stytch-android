@@ -19,6 +19,7 @@ public interface Biometrics {
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
         val promptInfo: PromptInfo? = null,
+        val allowDeviceCredentials: Boolean = false,
     )
 
     /**
@@ -41,7 +42,10 @@ public interface Biometrics {
     /**
      * Indicates if the biometric sensor is available, and provides a reasoning if not
      */
-    public fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
+    public fun areBiometricsAvailable(
+        context: FragmentActivity,
+        allowDeviceCredentials: Boolean = false,
+    ): BiometricAvailability
 
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.

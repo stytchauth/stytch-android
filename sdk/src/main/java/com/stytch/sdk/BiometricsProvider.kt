@@ -23,17 +23,19 @@ internal interface BiometricsProvider {
     suspend fun showBiometricPromptForRegistration(
         context: FragmentActivity,
         promptInfo: BiometricPrompt.PromptInfo? = null,
+        allowedAuthenticators: Int,
     ): Cipher
 
     suspend fun showBiometricPromptForAuthentication(
         context: FragmentActivity,
         promptInfo: BiometricPrompt.PromptInfo? = null,
         iv: ByteArray,
+        allowedAuthenticators: Int,
     ): Cipher
 
-    fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
+    fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): BiometricAvailability
 
     fun deleteSecretKey()
 
-    fun ensureSecretKeyIsAvailable()
+    fun ensureSecretKeyIsAvailable(allowedAuthenticators: Int)
 }

@@ -21,10 +21,6 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun showBiometricsError(error: String) {
-        _currentResponse.value = error
-    }
-
     fun registerBiometrics(context: FragmentActivity, promptInfo: PromptInfo? = null) {
         viewModelScope.launch {
             _loadingState.value = true
@@ -33,6 +29,7 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
                     context = context,
                     promptInfo = promptInfo,
                     allowFallbackToCleartext = false,
+                    allowDeviceCredentials = true,
                 )
             )
             _currentResponse.value = when (result) {
