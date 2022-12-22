@@ -7,9 +7,9 @@ public interface OAuth {
     /**
      * The interface for authenticating a user with Google.
      */
-    public val google: Google
+    public val googleOneTap: GoogleOneTap
 
-    public interface Google {
+    public interface GoogleOneTap {
         /**
          * Data class used for wrapping parameters to start a Google OneTap flow
          * @param context is the calling Activity

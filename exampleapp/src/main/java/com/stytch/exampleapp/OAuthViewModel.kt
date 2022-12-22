@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.OAuth
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,8 +23,8 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loginWithGoogle(context: Activity) {
         viewModelScope.launch {
-            val didStart = StytchClient.oauth.google.start(
-                OAuth.Google.StartParameters(
+            val didStart = StytchClient.oauth.googleOneTap.start(
+                OAuth.GoogleOneTap.StartParameters(
                     context = context,
                     clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
                     oAuthRequestIdentifier = GOOGLE_OAUTH_REQUEST
@@ -40,7 +39,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     fun authenticateGoogleLogin(data: Intent) {
         viewModelScope.launch {
             _currentResponse.value = "Authenticating Google OneTap login"
-            val result = StytchClient.oauth.google.authenticate(OAuth.Google.AuthenticateParameters(data))
+            val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
             _currentResponse.value = when (result) {
                 is StytchResult.Success<*> -> result.toString()
                 is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"

@@ -9,12 +9,12 @@ internal class OAuthTest {
     @Test
     fun `OAuth Google StartParameters has correct defaults`() {
         val mockActivity: Activity = mockk()
-        val params = OAuth.Google.StartParameters(
+        val params = OAuth.GoogleOneTap.StartParameters(
             context = mockActivity,
             clientId = "clientId",
             oAuthRequestIdentifier = 1,
         )
-        val expected = OAuth.Google.StartParameters(
+        val expected = OAuth.GoogleOneTap.StartParameters(
             context = mockActivity,
             clientId = "clientId",
             oAuthRequestIdentifier = 1,
@@ -26,10 +26,10 @@ internal class OAuthTest {
     @Test
     fun `OAuth Google AuthenticateParameters has correct defaults`() {
         val mockIntent: Intent = mockk()
-        val params = OAuth.Google.AuthenticateParameters(
+        val params = OAuth.GoogleOneTap.AuthenticateParameters(
             data = mockIntent,
         )
-        val expected = OAuth.Google.AuthenticateParameters(
+        val expected = OAuth.GoogleOneTap.AuthenticateParameters(
             data = mockIntent,
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES
         )
