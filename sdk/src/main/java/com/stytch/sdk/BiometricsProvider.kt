@@ -1,6 +1,5 @@
 package com.stytch.sdk
 
-import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import javax.crypto.Cipher
 
