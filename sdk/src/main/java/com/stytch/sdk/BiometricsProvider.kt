@@ -22,13 +22,13 @@ public enum class BiometricAvailability(public val message: String) {
 internal interface BiometricsProvider {
     suspend fun showBiometricPromptForRegistration(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo? = null,
+        promptData: Biometrics.PromptData? = null,
         allowedAuthenticators: Int,
     ): Cipher
 
     suspend fun showBiometricPromptForAuthentication(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo? = null,
+        promptData: Biometrics.PromptData? = null,
         iv: ByteArray,
         allowedAuthenticators: Int,
     ): Cipher

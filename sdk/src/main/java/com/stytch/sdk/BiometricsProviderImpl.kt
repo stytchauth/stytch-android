@@ -48,7 +48,6 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                         }
                     setUserAuthenticationParameters(0, authenticationParameters)
                 }
-                build()
             }.build()
             keyGenerator.init(keyGenParameterSpec)
             keyGenerator.generateKey()
@@ -72,7 +71,7 @@ internal class BiometricsProviderImpl : BiometricsProvider {
 
     private suspend fun showBiometricPrompt(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo?,
+        promptData: Biometrics.PromptData?,
         cipher: Cipher,
         allowedAuthenticators: Int,
     ): Cipher = suspendCoroutine { continuation ->
@@ -90,13 +89,15 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                     ?: continuation.resumeWithException(StytchExceptions.Input(AUTHENTICATION_FAILED))
             }
         }
-        val prompt = promptInfo ?: BiometricPrompt.PromptInfo.Builder().apply {
-            setTitle(context.getString(R.string.stytch_biometric_prompt_title))
-            setSubtitle(context.getString(R.string.stytch_biometric_prompt_subtitle))
+        val prompt = BiometricPrompt.PromptInfo.Builder().apply {
+            setTitle(promptData?.title ?: context.getString(R.string.stytch_biometric_prompt_title))
+            setSubtitle(promptData?.subTitle ?: context.getString(R.string.stytch_biometric_prompt_subtitle))
             setAllowedAuthenticators(allowedAuthenticators)
             if (!allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
                 // can only show negative button if device credentials are not allowed
-                setNegativeButtonText(context.getString(R.string.stytch_biometric_prompt_negative))
+                setNegativeButtonText(
+                    promptData?.negativeButtonText ?: context.getString(R.string.stytch_biometric_prompt_negative)
+                )
             }
         }.build()
         BiometricPrompt(context, executor, callback).authenticate(prompt, CryptoObject(cipher))
@@ -104,23 +105,23 @@ internal class BiometricsProviderImpl : BiometricsProvider {
 
     override suspend fun showBiometricPromptForRegistration(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo?,
+        promptData: Biometrics.PromptData?,
         allowedAuthenticators: Int,
     ): Cipher {
         val cipher = getCipher()
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(allowedAuthenticators))
-        return showBiometricPrompt(context, promptInfo, cipher, allowedAuthenticators)
+        return showBiometricPrompt(context, promptData, cipher, allowedAuthenticators)
     }
 
     override suspend fun showBiometricPromptForAuthentication(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo?,
+        promptData: Biometrics.PromptData?,
         iv: ByteArray,
         allowedAuthenticators: Int,
     ): Cipher {
         val cipher = getCipher()
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(allowedAuthenticators), IvParameterSpec(iv))
-        return showBiometricPrompt(context, promptInfo, cipher, allowedAuthenticators)
+        return showBiometricPrompt(context, promptData, cipher, allowedAuthenticators)
     }
 
     override fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): BiometricAvailability {

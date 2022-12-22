@@ -98,7 +98,7 @@ public class BiometricsImpl internal constructor(
                 val cipher = withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPromptForRegistration(
                         context = parameters.context,
-                        promptInfo = parameters.promptInfo,
+                        promptData = parameters.promptData,
                         allowedAuthenticators = allowedAuthenticators,
                     )
                 }
@@ -160,7 +160,7 @@ public class BiometricsImpl internal constructor(
                 val cipher = withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPromptForAuthentication(
                         context = parameters.context,
-                        promptInfo = parameters.promptInfo,
+                        promptData = parameters.promptData,
                         iv = iv.toBase64DecodedByteArray(),
                         allowedAuthenticators = allowedAuthenticators,
                     )
