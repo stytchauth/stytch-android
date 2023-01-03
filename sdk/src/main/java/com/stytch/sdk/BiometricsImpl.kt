@@ -1,6 +1,9 @@
 package com.stytch.sdk
 
+import android.os.Build
 import android.security.keystore.KeyPermanentlyInvalidatedException
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.extensions.toBase64EncodedString
@@ -15,10 +18,12 @@ import kotlinx.coroutines.withContext
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
 internal const val CIPHER_IV_KEY = "biometrics_cipher_iv"
+internal const val ALLOW_DEVICE_CREDENTIALS_KEY = "biometric_allow_device_credentials"
 private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
     LAST_USED_BIOMETRIC_REGISTRATION_ID,
     PRIVATE_KEY_KEY,
     CIPHER_IV_KEY,
+    ALLOW_DEVICE_CREDENTIALS_KEY
 )
 
 @Suppress("LongParameterList")
@@ -29,16 +34,26 @@ public class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
-    private val deleteBiometricRegistraton: suspend (String) -> Unit,
+    private val deleteBiometricRegistration: suspend (String) -> Unit,
 ) : Biometrics {
+    private fun getAllowedAuthenticators(allowDeviceCredentials: Boolean) =
+        if (allowDeviceCredentials && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+        } else {
+            BIOMETRIC_STRONG
+        }
     override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
         return KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) } &&
             areBiometricsAvailable(context) != BiometricAvailability.BIOMETRICS_REVOKED
     }
 
-    override fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability {
+    override fun areBiometricsAvailable(
+        context: FragmentActivity,
+        allowDeviceCredentials: Boolean,
+    ): BiometricAvailability {
+        val allowedAuthenticators = getAllowedAuthenticators(allowDeviceCredentials)
         try {
-            biometricsProvider.ensureSecretKeyIsAvailable()
+            biometricsProvider.ensureSecretKeyIsAvailable(allowedAuthenticators)
         } catch (_: KeyPermanentlyInvalidatedException) {
             externalScope.launch(dispatchers.io) {
                 removeRegistration()
@@ -48,12 +63,12 @@ public class BiometricsImpl internal constructor(
             // Secret key is null/couldn't be created (likely because of missing biometric factor). Do nothing and fall
             // back to regular areBiometricsAvailable check for full information
         }
-        return biometricsProvider.areBiometricsAvailable(context)
+        return biometricsProvider.areBiometricsAvailable(context, allowedAuthenticators)
     }
 
     override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
         storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-            deleteBiometricRegistraton(it)
+            deleteBiometricRegistration(it)
         }
         KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
         biometricsProvider.deleteSecretKey()
@@ -79,10 +94,12 @@ public class BiometricsImpl internal constructor(
                     removeRegistration()
                 }
                 sessionStorage.ensureSessionIsValidOrThrow()
+                val allowedAuthenticators = getAllowedAuthenticators(parameters.allowDeviceCredentials)
                 val cipher = withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPromptForRegistration(
                         context = parameters.context,
-                        promptInfo = parameters.promptInfo
+                        promptData = parameters.promptData,
+                        allowedAuthenticators = allowedAuthenticators,
                     )
                 }
                 val (publicKey, privateKey) = EncryptionManager.generateEd25519KeyPair()
@@ -105,6 +122,7 @@ public class BiometricsImpl internal constructor(
                         )
                         storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
                         storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
+                        storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
                     }
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
@@ -129,6 +147,8 @@ public class BiometricsImpl internal constructor(
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
+                val allowDeviceCredentials = storageHelper.getBoolean(ALLOW_DEVICE_CREDENTIALS_KEY)
+                val allowedAuthenticators = getAllowedAuthenticators(allowDeviceCredentials)
                 val encryptedPrivateKey = storageHelper.loadValue(PRIVATE_KEY_KEY)
                 val iv = storageHelper.loadValue(CIPHER_IV_KEY)
                 try {
@@ -140,8 +160,9 @@ public class BiometricsImpl internal constructor(
                 val cipher = withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPromptForAuthentication(
                         context = parameters.context,
-                        promptInfo = parameters.promptInfo,
+                        promptData = parameters.promptData,
                         iv = iv.toBase64DecodedByteArray(),
+                        allowedAuthenticators = allowedAuthenticators,
                     )
                 }
                 val encryptedPrivateKeyBytes = encryptedPrivateKey.toBase64DecodedByteArray()
