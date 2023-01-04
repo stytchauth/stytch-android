@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.OAuth
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -55,8 +54,8 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     fun loginWithThirdPartyOAuth(context: Context, provider: OAuthProvider) {
         val startParameters = OAuth.ThirdParty.StartParameters(
             context = context,
-            loginRedirectUrl = "app://exampleapp.com/login",
-            signupRedirectUrl = "app://exampleapp.com/signup",
+            loginRedirectUrl = "app://exampleapp.com/oauth",
+            signupRedirectUrl = "app://exampleapp.com/oauth",
         )
         when (provider) {
             OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(startParameters)
