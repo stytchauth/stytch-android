@@ -253,6 +253,26 @@ internal class StytchApiTest {
         }
     }
 
+    @Test
+    fun `StytchApi OAuth authenticateWithThirdPartyToken calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.authenticateWithThirdPartyToken(any()) } returns mockk(relaxed = true)
+        StytchApi.OAuth.authenticateWithThirdPartyToken(
+            token = "id_token",
+            sessionDurationMinutes = 30U,
+            codeVerifier = "code_challenge"
+        )
+        coVerify {
+            StytchApi.apiService.authenticateWithThirdPartyToken(
+                StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                    token = "id_token",
+                    sessionDurationMinutes = 30,
+                    codeVerifier = "code_challenge"
+                )
+            )
+        }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         every { StytchApi.isInitialized } returns false

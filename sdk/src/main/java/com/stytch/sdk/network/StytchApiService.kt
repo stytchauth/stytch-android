@@ -12,8 +12,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-internal const val ONE_HUNDRED_TWENTY = 120L
-internal const val HTTP_UNAUTHORIZED = 401
+private const val ONE_HUNDRED_TWENTY = 120L
+private const val HTTP_UNAUTHORIZED = 401
 
 @Suppress("TooManyFunctions")
 internal interface StytchApiService {

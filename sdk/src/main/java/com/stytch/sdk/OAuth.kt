@@ -130,6 +130,8 @@ public interface OAuth {
     }
 
     public interface ThirdParty {
+        public val providerName: String
+
         /**
          * Data class used for wrapping parameters to start a thirdparty oAuth flow
          * @param context the context of the caller for launching the browser

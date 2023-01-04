@@ -4,9 +4,9 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import com.stytch.sdk.network.StytchApi
 
-internal class ThirdPartyOauthImpl(
+internal class ThirdPartyOAuthImpl(
     private val storageHelper: StorageHelper,
-    private val providerName: String,
+    override val providerName: String,
 ) : OAuth.ThirdParty {
     override fun start(parameters: OAuth.ThirdParty.StartParameters) {
         val pkce = storageHelper.generateHashedCodeChallenge().second

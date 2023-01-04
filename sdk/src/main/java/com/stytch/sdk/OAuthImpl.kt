@@ -22,51 +22,51 @@ internal class OAuthImpl(
         api,
         GoogleOneTapProviderImpl()
     )
-    override val amazon: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "amazon"
     )
-    override val bitbucket: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "bitbucket"
     )
-    override val coinbase: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "coinbase"
     )
-    override val discord: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "discord"
     )
-    override val facebook: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "facebook"
     )
-    override val github: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "github"
     )
-    override val gitlab: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "gitlab"
     )
-    override val google: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "google"
     )
-    override val linkedin: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "linkedin"
     )
-    override val microsoft: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "microsoft"
     )
-    override val slack: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "slack"
     )
-    override val twitch: OAuth.ThirdParty = ThirdPartyOauthImpl(
+    override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(
         storageHelper,
         "twitch"
     )

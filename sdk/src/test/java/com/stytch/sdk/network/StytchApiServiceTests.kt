@@ -536,5 +536,29 @@ internal class StytchApiServiceTests {
             assert(body.contains("session_duration_minutes\":30"))
         }
     }
+
+    @Test
+    fun `check authenticateWithThirdPartyToken request`() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        runBlocking {
+            try {
+                apiService.authenticateWithThirdPartyToken(
+                    StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                        token = "id_token",
+                        sessionDurationMinutes = 30,
+                        codeVerifier = "code_challenge"
+                    )
+                )
+            } catch (_: Exception) {
+            }
+            val request = mockWebServer.takeRequest()
+            val body = request.body.readUtf8()
+            assert(request.method == "POST")
+            assert(request.path == "/oauth/authenticate")
+            assert(body.contains("token\":\"id_token\""))
+            assert(body.contains("session_duration_minutes\":30"))
+            assert(body.contains("code_verifier\":\"code_challenge\""))
+        }
+    }
     // endregion OAuth
 }

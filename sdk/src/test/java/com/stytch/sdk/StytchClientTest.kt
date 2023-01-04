@@ -238,17 +238,31 @@ internal class StytchClientTest {
     }
 
     @Test
+    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
+        runBlocking {
+            every { StytchApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns "OAUTH"
+            }
+            val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
+            val mockOAuth = mockk<OAuth> {
+                coEvery { authenticate(any()) } returns mockAuthResponse
+            }
+            StytchClient.oauth = mockOAuth
+            val response = StytchClient.handle(mockUri, 30U)
+            coVerify { mockOAuth.authenticate(any()) }
+            assert(response == mockAuthResponse)
+        }
+    }
+
+    @Test
     fun `handle with callback returns value in callback method when configured`() {
         every { StytchApi.isInitialized } returns true
         val mockUri = mockk<Uri> {
             every { getQueryParameter(any()) } returns null
         }
         val mockCallback = spyk<(AuthResponse) -> Unit>()
-        runBlocking {
-            StytchClient.externalScope = this
-            StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
-            StytchClient.handle(mockUri, 30u, mockCallback)
-        }
+        StytchClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
