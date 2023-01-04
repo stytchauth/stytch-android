@@ -35,10 +35,7 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
                     allowFallbackToCleartext = false,
                 )
             )
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -50,10 +47,7 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
             val result = StytchClient.biometrics.authenticate(
                 Biometrics.AuthenticateParameters(context = context, promptInfo = promptInfo)
             )
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

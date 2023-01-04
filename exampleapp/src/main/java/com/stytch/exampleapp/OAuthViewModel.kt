@@ -46,10 +46,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _currentResponse.value = "Authenticating Google OneTap login"
             val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

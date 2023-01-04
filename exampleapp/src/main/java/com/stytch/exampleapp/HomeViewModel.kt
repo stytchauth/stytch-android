@@ -68,10 +68,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -86,7 +83,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 val result = StytchClient.magicLinks.email.loginOrCreate(
                     MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text)
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -103,7 +100,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 _loadingState.value = true
                 val result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters(phoneNumberTextState.text))
                 handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -122,7 +119,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text)
                 )
                 handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -139,7 +136,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 _loadingState.value = true
                 val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters(emailTextState.text))
                 handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -156,7 +153,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.otps.authenticate(OTP.AuthParameters(otpTokenTextState.text, otpMethodId))
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -167,7 +164,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.sessions.revoke()
-            _currentResponse.value = result.toString()
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
