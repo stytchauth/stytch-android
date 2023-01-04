@@ -1,13 +1,75 @@
 package com.stytch.sdk
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 
+@Suppress("MaxLineLength")
 public interface OAuth {
     /**
-     * The interface for authenticating a user with Google.
+     * The interface for authenticating a user with Google OneTap
      */
     public val googleOneTap: GoogleOneTap
+
+    /**
+     * The interface for authenticating a user with Amazon
+     */
+    public val amazon: ThirdParty
+
+    /**
+     * The interface for authenticating a user with BitBucket
+     */
+    public val bitbucket: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Coinbase
+     */
+    public val coinbase: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Discord
+     */
+    public val discord: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Facebook
+     */
+    public val facebook: ThirdParty
+
+    /**
+     * The interface for authenticating a user with GitHub
+     */
+    public val github: ThirdParty
+
+    /**
+     * The interface for authenticating a user with GitLab
+     */
+    public val gitlab: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Google
+     */
+    public val google: ThirdParty
+
+    /**
+     * The interface for authenticating a user with LinkedIn
+     */
+    public val linkedin: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Microsoft
+     */
+    public val microsoft: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Slack
+     */
+    public val slack: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Twitch
+     */
+    public val twitch: ThirdParty
 
     public interface GoogleOneTap {
         /**
@@ -66,4 +128,54 @@ public interface OAuth {
          */
         public fun signOut()
     }
+
+    public interface ThirdParty {
+        /**
+         * Data class used for wrapping parameters to start a thirdparty oAuth flow
+         * @param context the context of the caller for launching the browser
+         * @param loginRedirectUrl The url an existing user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL, an error is returned.
+         * @param signupRedirectUrl The url a new user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default sign-up redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an error is returned.
+         * @param customScopes Any additional scopes to be requested from the identity provider.
+         */
+        public data class StartParameters(
+            val context: Context,
+            val loginRedirectUrl: String? = null,
+            val signupRedirectUrl: String? = null,
+            val customScopes: List<String>? = null
+        )
+
+        /**
+         * Data class used for wrapping parameters to authenticate a thirdparty oAuth flow
+         * @param token is the token returned from the provider
+         * @param sessionDurationMinutes indicates how long the session should last before it expires
+         */
+        public data class AuthenticateParameters(
+            val token: String,
+            val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        )
+
+        /**
+         * Begin a ThirdParty OAuth flow
+         * @param parameters required to start the OAuth flow
+         */
+        public fun start(
+            parameters: StartParameters,
+        )
+    }
+
+    /**
+     * Authenticate a ThirdParty OAuth flow
+     * @param parameters required to authenticate the OAuth flow
+     */
+    public suspend fun authenticate(parameters: ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse
+
+    /**
+     * Authenticate a ThirdParty OAuth flow
+     * @param parameters required to authenticate the ThirdParty OAuth flow
+     * @param callback a callback that receives the result of authenticating the ThirdParty OAuth login
+     */
+    public fun authenticate(
+        parameters: ThirdParty.AuthenticateParameters,
+        callback: (OAuthAuthenticatedResponse) -> Unit
+    )
 }

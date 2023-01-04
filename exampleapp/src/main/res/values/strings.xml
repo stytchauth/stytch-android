@@ -33,5 +33,7 @@
     <string name="biometrics_remove">Remove Biometrics Registration</string>
     <string name="biometrics_enroll">Enroll in Biometrics</string>
     <string name="oauth_name">OAuth</string>
-    <string name="oauth_google">Login with Google</string>
+    <string name="oauth_google_onetap">Login with Google OneTap</string>
+    <string name="oauth_google_thirdparty">Login with Google (Legacy)</string>
+    <string name="oauth_github">Login with Github</string>
 </resources>

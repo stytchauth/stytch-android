@@ -13,8 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.stytch.exampleapp.OAuthProvider
 import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
 
@@ -29,8 +28,18 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
     ) {
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.oauth_google),
-            onClick = { viewModel.loginWithGoogle(context) }
+            text = stringResource(id = R.string.oauth_google_onetap),
+            onClick = { viewModel.loginWithGoogleOneTap(context) }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.oauth_google_thirdparty),
+            onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GOOGLE) }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.oauth_github),
+            onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITHUB) }
         )
         if (loading.value) {
             CircularProgressIndicator()

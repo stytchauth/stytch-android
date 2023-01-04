@@ -2,6 +2,7 @@ package com.stytch.exampleapp
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+enum class OAuthProvider {
+    GOOGLE,
+    GITHUB,
+}
+
 class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
@@ -21,7 +27,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun loginWithGoogle(context: Activity) {
+    fun loginWithGoogleOneTap(context: Activity) {
         viewModelScope.launch {
             val didStart = StytchClient.oauth.googleOneTap.start(
                 OAuth.GoogleOneTap.StartParameters(
@@ -36,7 +42,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun authenticateGoogleLogin(data: Intent) {
+    fun authenticateGoogleOneTapLogin(data: Intent) {
         viewModelScope.launch {
             _currentResponse.value = "Authenticating Google OneTap login"
             val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
@@ -46,6 +52,18 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             }
         }.invokeOnCompletion {
             _loadingState.value = false
+        }
+    }
+
+    fun loginWithThirdPartyOAuth(context: Context, provider: OAuthProvider) {
+        val startParameters = OAuth.ThirdParty.StartParameters(
+            context = context,
+            loginRedirectUrl = "app://exampleapp.com/login",
+            signupRedirectUrl = "app://exampleapp.com/signup",
+        )
+        when (provider) {
+            OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(startParameters)
+            OAuthProvider.GITHUB -> StytchClient.oauth.github.start(startParameters)
         }
     }
 }

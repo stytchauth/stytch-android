@@ -65,6 +65,8 @@ internal object StorageHelper {
         return "S256" to EncryptionManager.encryptCodeChallenge(codeVerifier)
     }
 
+    internal fun retrieveHashedCodeChallenge(): String? = loadValue(PREFERENCES_CODE_VERIFIER)
+
     /**
      * Delete an existing ED25519 key from shared preferences
      */

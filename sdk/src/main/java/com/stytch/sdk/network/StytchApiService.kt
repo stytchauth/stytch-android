@@ -12,8 +12,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-private const val ONE_HUNDRED_TWENTY = 120L
-private const val HTTP_UNAUTHORIZED = 401
+internal const val ONE_HUNDRED_TWENTY = 120L
+internal const val HTTP_UNAUTHORIZED = 401
 
 @Suppress("TooManyFunctions")
 internal interface StytchApiService {
@@ -137,6 +137,11 @@ internal interface StytchApiService {
     suspend fun authenticateWithGoogleIdToken(
         @Body request: StytchRequests.OAuth.Google.AuthenticateRequest
     ): StytchResponses.AuthenticateResponse
+
+    @POST("oauth/authenticate")
+    suspend fun authenticateWithThirdPartyToken(
+        @Body request: StytchRequests.OAuth.ThirdParty.AuthenticateRequest
+    ): StytchResponses.OAuth.OAuthAuthenticateResponse
     //endregion OAuth
 
     companion object {
@@ -170,7 +175,10 @@ internal interface StytchApiService {
             return builder.build()
         }
 
-        fun createApiService(hostUrl: String, authHeaderInterceptor: StytchAuthHeaderInterceptor?): StytchApiService {
+        fun createApiService(
+            hostUrl: String,
+            authHeaderInterceptor: StytchAuthHeaderInterceptor?,
+        ): StytchApiService {
             return Retrofit.Builder()
                 .baseUrl(hostUrl)
                 .addConverterFactory(MoshiConverterFactory.create())

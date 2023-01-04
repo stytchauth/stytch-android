@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import com.stytch.sdk.Constants
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.DeviceInfo
+import com.stytch.sdk.OAuthAuthenticatedResponse
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
@@ -26,9 +27,8 @@ import retrofit2.HttpException
 
 internal object StytchApi {
 
-    private lateinit var publicToken: String
+    internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
-    internal var hostUrl: String = Constants.HOST_URL
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -59,10 +59,15 @@ internal object StytchApi {
                 ::deviceInfo.isInitialized
         }
 
+    internal val isTestToken: Boolean
+        get() {
+            return ::publicToken.isInitialized && publicToken.contains("public-token-test")
+        }
+
     @VisibleForTesting
     internal val apiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
-        StytchApiService.createApiService(hostUrl, authHeaderInterceptor)
+        StytchApiService.createApiService(Constants.WEB_URL, authHeaderInterceptor)
     }
 
     internal object MagicLinks {
@@ -339,6 +344,20 @@ internal object StytchApi {
                     idToken = idToken,
                     nonce = nonce,
                     sessionDurationMinutes = sessionDurationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun authenticateWithThirdPartyToken(
+            token: String,
+            sessionDurationMinutes: UInt,
+            codeVerifier: String,
+        ): OAuthAuthenticatedResponse = safeApiCall {
+            apiService.authenticateWithThirdPartyToken(
+                StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                    token = token,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    codeVerifier = codeVerifier
                 )
             )
         }

@@ -68,7 +68,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
-            _currentResponse.value = result.toString()
+            _currentResponse.value = when (result) {
+                is StytchResult.Success<*> -> result.toString()
+                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
+            }
         }.invokeOnCompletion {
             _loadingState.value = false
         }

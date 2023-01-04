@@ -165,5 +165,21 @@ internal object StytchRequests {
                 val sessionDurationMinutes: Int,
             )
         }
+        object ThirdParty {
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                val token: String,
+                @Json(name = "session_duration_minutes")
+                val sessionDurationMinutes: Int,
+                @Json(name = "session_custom_claims")
+                val sessionCustomClaims: Map<String, Any>? = null,
+                @Json(name = "session_jwt")
+                val sessionJwt: String? = null,
+                @Json(name = "session_token")
+                val sessionToken: String? = null,
+                @Json(name = "code_verifier")
+                val codeVerifier: String
+            )
+        }
     }
 }

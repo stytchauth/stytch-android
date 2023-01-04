@@ -103,6 +103,8 @@ public data class UserData(
     val userId: String,
     @Json(name = "webauthn_registrations")
     val webauthnRegistrations: List<WebAuthNRegistrations>,
+    @Json(name = "biometric_registrations")
+    val biometricRegistrations: List<BiometricRegistrations>
 ) {
 
     @JsonClass(generateAdapter = true)
@@ -179,6 +181,15 @@ public data class UserData(
         @Json(name = "totpId")
         var id: String,
         // The verification status of the TOTP.
+        val verified: Boolean,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class BiometricRegistrations(
+        // The id of the biometric registration
+        @Json(name = "biometric_registration_id")
+        val id: String,
+        // The verification status of the biometric registration.
         val verified: Boolean,
     )
 }
@@ -268,3 +279,36 @@ public data class DeleteAuthenticationFactorData(
     val requestId: String,
     val user: UserData
 )
+
+@JsonClass(generateAdapter = true)
+public data class OAuthData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+    @Json(name = "oauth_user_registration_id")
+    val oauthUserRegistrationId: String,
+    @Json(name = "provider_subject")
+    val providerSubject: String,
+    @Json(name = "provider_type")
+    val providerType: String,
+    @Json(name = "provider_values")
+    val providerValues: OAuthProviderValues
+) : IAuthData {
+    @JsonClass(generateAdapter = true)
+    public data class OAuthProviderValues(
+        @Json(name = "access_token")
+        val accessToken: String,
+        @Json(name = "refresh_token")
+        val refreshToken: String,
+        @Json(name = "id_token")
+        val idToken: String,
+        val scopes: List<String>,
+    )
+}
