@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.stytch.exampleapp.HomeViewModel
 import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
 
@@ -43,7 +44,10 @@ val items = listOf(
 )
 
 @Composable
-fun AppScreen(oAuthViewModel: OAuthViewModel) {
+fun AppScreen(
+    homeViewModel: HomeViewModel,
+    oAuthViewModel: OAuthViewModel,
+) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier
@@ -81,7 +85,7 @@ fun AppScreen(oAuthViewModel: OAuthViewModel) {
         },
         content = { padding ->
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
-                composable(Screen.Main.route) { MainScreen(navController = navController) }
+                composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
                 composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                 composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }

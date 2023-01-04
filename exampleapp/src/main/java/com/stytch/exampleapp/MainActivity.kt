@@ -23,7 +23,7 @@ private const val SMS_CONSENT_REQUEST = 2
 const val GOOGLE_OAUTH_REQUEST = 3
 class MainActivity : FragmentActivity() {
 
-    private val viewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
     private val oauthViewModel: OAuthViewModel by viewModels()
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
@@ -56,7 +56,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(oauthViewModel)
+                AppScreen(homeViewModel, oauthViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {
@@ -72,7 +72,7 @@ class MainActivity : FragmentActivity() {
     private fun handleIntent(intent: Intent) {
         intent.data?.let { appLinkData ->
             Toast.makeText(this, getString(R.string.deeplink_received_toast), Toast.LENGTH_LONG).show()
-            viewModel.handleUri(appLinkData)
+            homeViewModel.handleUri(appLinkData)
         }
     }
 
@@ -82,7 +82,7 @@ class MainActivity : FragmentActivity() {
             SMS_CONSENT_REQUEST ->
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
-                    viewModel.otpTokenTextState = TextFieldValue(message?.substringAfterLast(" ") ?: "")
+                    homeViewModel.otpTokenTextState = TextFieldValue(message?.substringAfterLast(" ") ?: "")
                 } else {
                     // Consent denied. User can type OTC manually.
                 }
