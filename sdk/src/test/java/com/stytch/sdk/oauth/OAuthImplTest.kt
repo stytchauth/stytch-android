@@ -1,5 +1,11 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
+import com.stytch.sdk.EncryptionManager
+import com.stytch.sdk.OAuthAuthenticatedResponse
+import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionAutoUpdater
@@ -48,7 +54,6 @@ internal class OAuthImplTest {
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs

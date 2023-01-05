@@ -1,9 +1,15 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
 import android.content.IntentSender
 import androidx.annotation.VisibleForTesting
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.EncryptionManager
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchLog
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage

@@ -1,8 +1,9 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.stytch.sdk.Constants
 import io.mockk.mockk
 import org.junit.Test
 
@@ -61,6 +62,4 @@ internal class OAuthTest {
         )
         assert(params == expected)
     }
-
-    // TODO authenticate tests
 }

@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
 import android.app.Activity
 import android.content.IntentSender
@@ -9,6 +9,11 @@ import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.EncryptionManager
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.AuthData

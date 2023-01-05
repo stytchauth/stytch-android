@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.OAuth
+import com.stytch.sdk.oauth.OAuth
 import com.stytch.sdk.StytchClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

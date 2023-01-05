@@ -1,5 +1,10 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
+import com.stytch.sdk.OAuthAuthenticatedResponse
+import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
@@ -22,54 +27,18 @@ internal class OAuthImpl(
         api,
         GoogleOneTapProviderImpl()
     )
-    override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "amazon"
-    )
-    override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "bitbucket"
-    )
-    override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "coinbase"
-    )
-    override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "discord"
-    )
-    override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "facebook"
-    )
-    override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "github"
-    )
-    override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "gitlab"
-    )
-    override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "google"
-    )
-    override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "linkedin"
-    )
-    override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "microsoft"
-    )
-    override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "slack"
-    )
-    override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(
-        storageHelper,
-        "twitch"
-    )
+    override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "amazon")
+    override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "bitbucket")
+    override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "coinbase")
+    override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "discord")
+    override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "facebook")
+    override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "github")
+    override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "gitlab")
+    override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "google")
+    override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "linkedin")
+    override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "microsoft")
+    override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "slack")
+    override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitch")
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {

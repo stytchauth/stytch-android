@@ -1,7 +1,9 @@
-package com.stytch.sdk
+package com.stytch.sdk.oauth
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import com.stytch.sdk.Constants
+import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.StytchApi
 
 internal class ThirdPartyOAuthImpl(
