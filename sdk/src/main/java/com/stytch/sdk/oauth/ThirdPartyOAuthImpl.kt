@@ -1,17 +1,17 @@
 package com.stytch.sdk.oauth
 
 import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import com.stytch.sdk.Constants
 import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sdk.oauth.OAuthManagerActivity.Companion.URI_KEY
 
 internal class ThirdPartyOAuthImpl(
     private val storageHelper: StorageHelper,
     override val providerName: String,
 ) : OAuth.ThirdParty {
-    private fun buildUri(host: String, parameters: Map<String, String?>, pkce: String, token: String): Uri {
-        return Uri.parse("${host}public/oauth/$providerName/start")
+    private fun buildUri(host: String, parameters: Map<String, String?>, pkce: String, token: String): Uri =
+        Uri.parse("${host}public/oauth/$providerName/start")
             .buildUpon()
             .apply {
                 appendQueryParameter("code_challenge", pkce)
@@ -23,7 +23,6 @@ internal class ThirdPartyOAuthImpl(
                 }
             }
             .build()
-    }
 
     override fun start(parameters: OAuth.ThirdParty.StartParameters) {
         val pkce = storageHelper.generateHashedCodeChallenge().second
@@ -35,7 +34,8 @@ internal class ThirdPartyOAuthImpl(
             "custom_scopes" to parameters.customScopes?.joinToString(" ")
         )
         val requestUri = buildUri(host, potentialParameters, pkce, token)
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(parameters.context, requestUri)
+        val intent = OAuthManagerActivity.createBaseIntent(parameters.context)
+        intent.putExtra(URI_KEY, requestUri.toString())
+        parameters.context.startActivityForResult(intent, parameters.oAuthRequestIdentifier)
     }
 }

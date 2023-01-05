@@ -143,7 +143,8 @@ public interface OAuth {
          * @param customScopes Any additional scopes to be requested from the identity provider.
          */
         public data class StartParameters(
-            val context: Context,
+            val context: Activity,
+            val oAuthRequestIdentifier: Int,
             val loginRedirectUrl: String? = null,
             val signupRedirectUrl: String? = null,
             val customScopes: List<String>? = null

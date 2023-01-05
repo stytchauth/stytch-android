@@ -1,6 +1,8 @@
 package com.stytch.exampleapp
 
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -51,15 +53,30 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun loginWithThirdPartyOAuth(context: Context, provider: OAuthProvider) {
+    fun loginWithThirdPartyOAuth(context: Activity, provider: OAuthProvider) {
         val startParameters = OAuth.ThirdParty.StartParameters(
             context = context,
-            loginRedirectUrl = "app://exampleapp.com/oauth",
-            signupRedirectUrl = "app://exampleapp.com/oauth",
+            oAuthRequestIdentifier = THIRD_PARTY_OAUTH_REQUEST,
+            loginRedirectUrl = "app://oauth",
+            signupRedirectUrl = "app://oauth",
         )
         when (provider) {
             OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(startParameters)
             OAuthProvider.GITHUB -> StytchClient.oauth.github.start(startParameters)
+        }
+    }
+
+    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            if (resultCode == RESULT_OK) {
+                intent.data?.let {
+                    val result = StytchClient.handle(it, 60U)
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }
+            }
+        }.invokeOnCompletion {
+            _loadingState.value = false
         }
     }
 }

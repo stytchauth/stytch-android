@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.stytch.sdk"
-    >
-
+    package="com.stytch.sdk">
     <application
         android:allowBackup="true"
-        android:supportsRtl="true"
-        >
+        android:supportsRtl="true">
+        <activity
+            android:name=".oauth.OAuthManagerActivity"
+            android:exported="false"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:launchMode="singleTask" />
+        <activity
+            android:exported="true"
+            android:name=".oauth.OAuthReceiverActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="${stytchOAuthRedirectScheme}"
+                    android:host="${stytchOAuthRedirectHost}" />
+            </intent-filter>
+        </activity>
     </application>
-
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 </manifest>

@@ -21,6 +21,7 @@ import com.stytch.exampleapp.ui.AppScreen
 
 private const val SMS_CONSENT_REQUEST = 2
 const val GOOGLE_OAUTH_REQUEST = 3
+const val THIRD_PARTY_OAUTH_REQUEST = 4
 class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -87,6 +88,7 @@ class MainActivity : FragmentActivity() {
                     // Consent denied. User can type OTC manually.
                 }
             GOOGLE_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateGoogleOneTapLogin(it) }
+            THIRD_PARTY_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateThirdPartyOAuth(resultCode, it) }
         }
     }
 }
