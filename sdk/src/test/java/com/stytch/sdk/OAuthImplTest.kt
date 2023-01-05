@@ -1,10 +1,13 @@
 package com.stytch.sdk
 
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionAutoUpdater
 import com.stytch.sessions.SessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
@@ -12,11 +15,14 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
+import io.mockk.spyk
 import io.mockk.unmockkAll
+import io.mockk.verify
 import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -83,6 +89,42 @@ internal class OAuthImplTest {
         }
     }
 
-    // TODO: oauthimpl.authenticate()
-    // TODO: oauthimpl.authenticate(callback)
+    @Test
+    fun `authenticate returns correct error if PKCE is missing`() = runTest {
+        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns null
+        val result = impl.authenticate(mockk(relaxed = true))
+        require(result is StytchResult.Error)
+        assert(result.exception.reason == StytchErrorType.OAUTH_MISSING_PKCE.message)
+    }
+
+    @Test
+    fun `authenticate returns correct error if api call fails`() = runTest {
+        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns "code-challenge"
+        coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Error(
+            StytchExceptions.Response(mockk(relaxed = true))
+        )
+        val result = impl.authenticate(mockk(relaxed = true))
+        require(result is StytchResult.Error)
+        assert(result.exception is StytchExceptions.Response)
+        coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+    }
+
+    @Test
+    fun `authenticate returns success if api call succeeds`() = runTest {
+        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns "code-challenge"
+        coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Success(
+            mockk(relaxed = true)
+        )
+        val result = impl.authenticate(mockk(relaxed = true))
+        require(result is StytchResult.Success)
+        coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+    }
+
+    @Test
+    fun `authenticate with callback calls callback method`() {
+        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns null
+        val spy = spyk<(OAuthAuthenticatedResponse) -> Unit>()
+        impl.authenticate(mockk(relaxed = true), spy)
+        verify { spy.invoke(any()) }
+    }
 }
