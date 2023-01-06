@@ -100,7 +100,9 @@ public interface OAuth {
         )
 
         /**
-         * Begin a Google OneTap login flow. Returns true if the flow was successfully initiated, false if not
+         * Begin a Google OneTap login flow. Returns true if the flow was successfully initiated, false if not.
+         * If this returns false, it means the Google OneTap flow is not available (no play services on device
+         * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
          * @param parameters required to begin the OneTap flow
          */
         public suspend fun start(parameters: StartParameters): Boolean
