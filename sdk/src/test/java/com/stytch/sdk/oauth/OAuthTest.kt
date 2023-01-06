@@ -1,7 +1,6 @@
 package com.stytch.sdk.oauth
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import com.stytch.sdk.Constants
 import io.mockk.mockk
@@ -40,12 +39,14 @@ internal class OAuthTest {
 
     @Test
     fun `OAuth ThirdParty StartParameters has correct defaults`() {
-        val mockContext: Context = mockk()
+        val mockContext: Activity = mockk()
         val params = OAuth.ThirdParty.StartParameters(
-            context = mockContext
+            context = mockContext,
+            oAuthRequestIdentifier = 1234,
         )
         val expected = OAuth.ThirdParty.StartParameters(
             context = mockContext,
+            oAuthRequestIdentifier = 1234,
             loginRedirectUrl = null,
             signupRedirectUrl = null,
             customScopes = null

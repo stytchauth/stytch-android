@@ -10,7 +10,7 @@ internal class ThirdPartyOAuthImpl(
     private val storageHelper: StorageHelper,
     override val providerName: String,
 ) : OAuth.ThirdParty {
-    private fun buildUri(host: String, parameters: Map<String, String?>, pkce: String, token: String): Uri =
+    internal fun buildUri(host: String, parameters: Map<String, String?>, pkce: String, token: String): Uri =
         Uri.parse("${host}public/oauth/$providerName/start")
             .buildUpon()
             .apply {
