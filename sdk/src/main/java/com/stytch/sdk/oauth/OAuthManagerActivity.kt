@@ -8,16 +8,23 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 
-internal class OAuthManagerActivity : Activity() {
+public enum class OAuthError(public val message: String) {
+    NO_BROWSER_FOUND("No supported browser was found on this device"),
+    NO_URI_FOUND("No OAuth URI could be found in the bundle"),
+    USER_CANCELED("The user canceled the OAuth flow"),
+    OAUTH_ERROR_STATE("The returned OAuth URI is invalid"),
+}
+
+public class OAuthManagerActivity : Activity() {
     private var authorizationStarted = false
     private lateinit var desiredUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            setDesiredUriFromBundle(intent.extras)
+            hydrateState(intent.extras)
         } else {
-            setDesiredUriFromBundle(savedInstanceState)
+            hydrateState(savedInstanceState)
         }
     }
 
@@ -29,7 +36,10 @@ internal class OAuthManagerActivity : Activity() {
                 val authorizationIntent = generateIntentForUri(desiredUri)
                 startActivity(authorizationIntent)
                 authorizationStarted = true
-            } catch (e: ActivityNotFoundException) {
+            } catch (_: UninitializedPropertyAccessException) {
+                noUriFound()
+                finish()
+            } catch (_: ActivityNotFoundException) {
                 noBrowserFound()
                 finish()
             }
@@ -45,9 +55,15 @@ internal class OAuthManagerActivity : Activity() {
         setIntent(intent)
     }
 
-    private fun setDesiredUriFromBundle(bundle: Bundle?) {
-        if (bundle == null) return finish()
-        bundle.getString(URI_KEY)?.let {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_AUTHORIZATION_STARTED, authorizationStarted)
+    }
+
+    private fun hydrateState(state: Bundle?) {
+        if (state == null) return finish()
+        authorizationStarted = state.getBoolean(KEY_AUTHORIZATION_STARTED, false)
+        state.getString(URI_KEY)?.let {
             desiredUri = Uri.parse(it)
         }
     }
@@ -61,26 +77,29 @@ internal class OAuthManagerActivity : Activity() {
     }
 
     private fun authorizationComplete(uri: Uri) {
-        // TODO: parse URI and make sure it is not a failure response
-        val response = Intent().apply {
-            data = uri
-        }
+        val response = Intent().apply { data = uri }
         setResult(RESULT_OK, response)
     }
 
     private fun authorizationCanceled() {
-        // TODO: add info as to why it was canceled
         val response = Intent()
+        intent.putExtra(OAUTH_ERROR, OAuthError.USER_CANCELED.message)
         setResult(RESULT_CANCELED, response)
     }
 
     private fun noBrowserFound() {
-        // TODO: add info as to why it was canceled
         val response = Intent()
+        intent.putExtra(OAUTH_ERROR, OAuthError.NO_BROWSER_FOUND.message)
         setResult(RESULT_CANCELED, response)
     }
 
-    companion object {
+    private fun noUriFound() {
+        val response = Intent()
+        intent.putExtra(OAUTH_ERROR, OAuthError.NO_URI_FOUND.message)
+        setResult(RESULT_CANCELED, response)
+    }
+
+    public companion object {
         internal fun createResponseHandlingIntent(context: Context, responseUri: Uri?): Intent {
             val intent = createBaseIntent(context)
             intent.data = responseUri
@@ -92,5 +111,8 @@ internal class OAuthManagerActivity : Activity() {
             return Intent(context, OAuthManagerActivity::class.java)
         }
         internal const val URI_KEY = "uri"
+        public const val OAUTH_ERROR: String = "StytchOAuthError"
+        public const val OAUTH_RESPONSE: String = "StytchOAuthResponse"
+        private const val KEY_AUTHORIZATION_STARTED = "authStarted"
     }
 }

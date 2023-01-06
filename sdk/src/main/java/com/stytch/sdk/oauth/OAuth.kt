@@ -1,7 +1,6 @@
 package com.stytch.sdk.oauth
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.Constants
@@ -139,7 +138,8 @@ public interface OAuth {
 
         /**
          * Data class used for wrapping parameters to start a thirdparty oAuth flow
-         * @param context the context of the caller for launching the browser
+         * @param context the calling Activity for launching the browser
+         * @param oAuthRequestIdentifier is an ID for the return intent from the OAuth flow
          * @param loginRedirectUrl The url an existing user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL, an error is returned.
          * @param signupRedirectUrl The url a new user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default sign-up redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an error is returned.
          * @param customScopes Any additional scopes to be requested from the identity provider.
