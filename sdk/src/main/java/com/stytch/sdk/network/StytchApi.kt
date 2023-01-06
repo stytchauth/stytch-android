@@ -328,6 +328,22 @@ internal object StytchApi {
         }
     }
 
+    internal object OAuth {
+        suspend fun authenticateWithGoogleIdToken(
+            idToken: String,
+            nonce: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<AuthData> = safeApiCall {
+            apiService.authenticateWithGoogleIdToken(
+                StytchRequests.OAuth.Google.AuthenticateRequest(
+                    idToken = idToken,
+                    nonce = nonce,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
+                )
+            )
+        }
+    }
+
     @VisibleForTesting
     internal suspend fun <T1, T : StytchResponses.StytchDataResponse<T1>> safeApiCall(
         apiCall: suspend () -> T

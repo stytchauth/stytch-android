@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StytchTheme"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:enableOnBackInvokedCallback="true"
         >
 
         <activity android:name="com.stytch.exampleapp.MainActivity"

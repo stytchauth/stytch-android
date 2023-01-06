@@ -153,4 +153,17 @@ internal object StytchRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object OAuth {
+        object Google {
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                @Json(name = "id_token")
+                val idToken: String,
+                val nonce: String,
+                @Json(name = "session_duration_minutes")
+                val sessionDurationMinutes: Int,
+            )
+        }
+    }
 }

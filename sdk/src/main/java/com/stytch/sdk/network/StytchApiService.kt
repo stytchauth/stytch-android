@@ -132,6 +132,13 @@ internal interface StytchApiService {
     suspend fun deleteWebAuthnById(@Path(value = "id") id: String): StytchResponses.User.DeleteFactorResponse
     //endregion User Management
 
+    //region OAuth
+    @POST("oauth/google/id_token/authenticate")
+    suspend fun authenticateWithGoogleIdToken(
+        @Body request: StytchRequests.OAuth.Google.AuthenticateRequest
+    ): StytchResponses.AuthenticateResponse
+    //endregion OAuth
+
     companion object {
         private fun clientBuilder(authHeaderInterceptor: StytchAuthHeaderInterceptor?): OkHttpClient {
             val builder = OkHttpClient.Builder()

@@ -42,5 +42,13 @@ public enum class StytchErrorType(
     ERROR_DERIVING_PUBLIC_KEY(
         stringValue = "error_deriving_public_key",
         message = "There was an error deriving the public key. Try re-registering a new biometric authentication."
-    )
+    ),
+    GOOGLE_ONETAP_MISSING_ID_TOKEN(
+        stringValue = "google_onetap_missing_id_token",
+        message = "The Google OneTap authorization credential was missing an id_token."
+    ),
+    GOOGLE_ONETAP_MISSING_MEMBER(
+        stringValue = " google_onetap_missing_member",
+        message = "Missing a nonce or onetap client. Make sure you are calling StytchClient.oauth.googleOneTap.start() before StytchClient.oauth.googleOneTap.authenticate()", // ktlint-disable maximum-line-length
+    ),
 }

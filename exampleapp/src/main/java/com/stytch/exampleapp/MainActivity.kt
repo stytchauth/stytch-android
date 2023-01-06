@@ -20,10 +20,11 @@ import com.stytch.exampleapp.theme.AppTheme
 import com.stytch.exampleapp.ui.AppScreen
 
 private const val SMS_CONSENT_REQUEST = 2
-
+const val GOOGLE_OAUTH_REQUEST = 3
 class MainActivity : FragmentActivity() {
 
     private val viewModel: HomeViewModel by viewModels()
+    private val oauthViewModel: OAuthViewModel by viewModels()
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -55,7 +56,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen()
+                AppScreen(oauthViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {
@@ -85,6 +86,7 @@ class MainActivity : FragmentActivity() {
                 } else {
                     // Consent denied. User can type OTC manually.
                 }
+            GOOGLE_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateGoogleLogin(it) }
         }
     }
 }

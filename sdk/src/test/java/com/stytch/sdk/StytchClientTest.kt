@@ -43,6 +43,7 @@ internal class StytchClientTest {
         mContextMock = mockk(relaxed = true)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
+        mockkObject(StytchApi)
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns ""
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
@@ -58,7 +59,6 @@ internal class StytchClientTest {
 
     @Test(expected = IllegalStateException::class)
     fun `assertInitialized throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.assertInitialized()
     }
@@ -74,7 +74,6 @@ internal class StytchClientTest {
 
     @Test
     fun `should trigger StytchApi configure when calling StytchClient configure`() {
-        mockkObject(StytchApi)
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
@@ -102,92 +101,91 @@ internal class StytchClientTest {
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient magicLinks throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.magicLinks
     }
 
     @Test
     fun `accessing StytchClient magicLinks returns instance of MagicLinks when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.magicLinks
     }
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient otps throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.otps
     }
 
     @Test
     fun `accessing StytchClient otps returns instance of OTP when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.otps
     }
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient passwords throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.passwords
     }
 
     @Test
     fun `accessing StytchClient passwords returns instance of Password when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.passwords
     }
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient sessions throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.sessions
     }
 
     @Test
     fun `accessing StytchClient sessions returns instance of Session when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.sessions
     }
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient biometrics throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.biometrics
     }
 
     @Test
     fun `accessing StytchClient biometrics returns instance of Biometrics when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.biometrics
     }
 
     @Test(expected = IllegalStateException::class)
     fun `accessing StytchClient user throws IllegalStateException when not configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns false
         StytchClient.user
     }
 
     @Test
     fun `accessing StytchClient user returns instance of UserManagement when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.user
     }
 
     @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient oauth throws IllegalStateException when not configured`() {
+        every { StytchApi.isInitialized } returns false
+        StytchClient.oauth
+    }
+
+    @Test
+    fun `accessing StytchClient oauth returns instance of OAuth when configured`() {
+        every { StytchApi.isInitialized } returns true
+        StytchClient.oauth
+    }
+
+    @Test(expected = IllegalStateException::class)
     fun `handle with coroutines throws IllegalStateException when not configured`() {
         runBlocking {
-            mockkObject(StytchApi)
             every { StytchApi.isInitialized } returns false
             StytchClient.handle(mockk(), 30U)
         }
@@ -196,7 +194,6 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines returns AuthResponse with correct error when token is missing`() {
         runBlocking {
-            mockkObject(StytchApi)
             every { StytchApi.isInitialized } returns true
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns null
@@ -211,7 +208,6 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines returns AuthResponse with correct error when token is unknown`() {
         runBlocking {
-            mockkObject(StytchApi)
             every { StytchApi.isInitialized } returns true
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "something unexpected"
@@ -226,7 +222,6 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
         runBlocking {
-            mockkObject(StytchApi)
             every { StytchApi.isInitialized } returns true
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "MAGIC_LINKS"
@@ -244,7 +239,6 @@ internal class StytchClientTest {
 
     @Test
     fun `handle with callback returns value in callback method when configured`() {
-        mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         val mockUri = mockk<Uri> {
             every { getQueryParameter(any()) } returns null

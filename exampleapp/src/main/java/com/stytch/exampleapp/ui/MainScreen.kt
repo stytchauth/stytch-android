@@ -115,7 +115,6 @@ fun MainScreen(navController: NavController) {
             text = stringResource(id = R.string.test_otp_authenticate_flow),
             onClick = { viewModel.authenticateOTP() }
         )
-
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.revoke_session),

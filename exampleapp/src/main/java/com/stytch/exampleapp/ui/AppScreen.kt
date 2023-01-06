@@ -16,6 +16,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,16 +32,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
 
 val items = listOf(
     Screen.Main,
     Screen.Passwords,
     Screen.Biometrics,
+    Screen.OAuth
 )
 
 @Composable
-fun AppScreen() {
+fun AppScreen(oAuthViewModel: OAuthViewModel) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier
@@ -81,6 +84,7 @@ fun AppScreen() {
                 composable(Screen.Main.route) { MainScreen(navController = navController) }
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
                 composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
+                composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
             }
         }
     )
@@ -107,4 +111,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconV
     object Main : Screen("main", R.string.home, Icons.Filled.Home)
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
     object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
+    object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
 }
