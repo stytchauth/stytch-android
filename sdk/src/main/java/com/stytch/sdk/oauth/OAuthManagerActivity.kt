@@ -7,11 +7,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
+import com.stytch.sdk.oauth.OAuthError.Companion.OAUTH_EXCEPTION
 
-public enum class OAuthError(public val message: String) {
-    NO_BROWSER_FOUND("No supported browser was found on this device"),
-    NO_URI_FOUND("No OAuth URI could be found in the bundle"),
-    USER_CANCELED("The user canceled the OAuth flow"),
+public sealed class OAuthError(override val message: String) : Exception(message) {
+    public object NoBrowserFound : OAuthError("No supported browser was found on this device")
+    public object NoURIFound : OAuthError("No OAuth URI could be found in the bundle")
+    public object UserCanceled : OAuthError("The user canceled the OAuth flow")
+
+    public companion object {
+        public const val OAUTH_EXCEPTION: String = "com.stytch.sdk.oauth.OAuthError"
+    }
 }
 
 /**
@@ -47,7 +52,7 @@ public enum class OAuthError(public val message: String) {
  * RESULT_OK status for the original intent and pass along the returned URI, then finish itself (S2). The calling
  * activity will listen for this result and use the returned URI to make the authorization call to the Stytch API.
  */
-public class OAuthManagerActivity : Activity() {
+internal class OAuthManagerActivity : Activity() {
     private var authorizationStarted = false
     private lateinit var desiredUri: Uri
 
@@ -117,23 +122,23 @@ public class OAuthManagerActivity : Activity() {
 
     private fun authorizationCanceled() {
         val response = Intent()
-        intent.putExtra(OAUTH_ERROR, OAuthError.USER_CANCELED.message)
+        response.putExtra(OAUTH_EXCEPTION, OAuthError.UserCanceled)
         setResult(RESULT_CANCELED, response)
     }
 
     private fun noBrowserFound() {
         val response = Intent()
-        intent.putExtra(OAUTH_ERROR, OAuthError.NO_BROWSER_FOUND.message)
+        response.putExtra(OAUTH_EXCEPTION, OAuthError.NoBrowserFound)
         setResult(RESULT_CANCELED, response)
     }
 
     private fun noUriFound() {
         val response = Intent()
-        intent.putExtra(OAUTH_ERROR, OAuthError.NO_URI_FOUND.message)
+        response.putExtra(OAUTH_EXCEPTION, OAuthError.NoURIFound)
         setResult(RESULT_CANCELED, response)
     }
 
-    public companion object {
+    internal companion object {
         internal fun createResponseHandlingIntent(context: Context, responseUri: Uri?): Intent {
             val intent = createBaseIntent(context)
             intent.data = responseUri
@@ -145,8 +150,6 @@ public class OAuthManagerActivity : Activity() {
             return Intent(context, OAuthManagerActivity::class.java)
         }
         internal const val URI_KEY = "uri"
-        public const val OAUTH_ERROR: String = "StytchOAuthError"
-        public const val OAUTH_RESPONSE: String = "StytchOAuthResponse"
         private const val KEY_AUTHORIZATION_STARTED = "authStarted"
     }
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.oauth.OAuth
-import com.stytch.sdk.oauth.OAuthManagerActivity
+import com.stytch.sdk.oauth.OAuthError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -94,8 +94,12 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
                     _currentResponse.value = result.toFriendlyDisplay()
                 }
             } else {
-                intent.getStringExtra(OAuthManagerActivity.OAUTH_ERROR)?.let {
-                    _currentResponse.value = it
+                intent.extras?.getSerializable(OAuthError.OAUTH_EXCEPTION)?.let {
+                    when (it as OAuthError) {
+                        is OAuthError.UserCanceled -> {} // do nothing
+                        is OAuthError.NoBrowserFound,
+                        is OAuthError.NoURIFound -> _currentResponse.value = it.message
+                    }
                 }
             }
         }.invokeOnCompletion {
