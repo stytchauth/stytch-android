@@ -53,6 +53,7 @@ internal class ThirdPartyOAuthImplTest {
         assert(uri.toString() == expected)
     }
 
+    @Ignore("Issues with Robolectric on GitHub")
     @Test
     fun `start starts activity for result`() {
         val mockActivity: Activity = mockk(relaxed = true) {
