@@ -55,13 +55,13 @@ internal object StytchApi {
 
     internal val isInitialized: Boolean
         get() {
-            return ::publicToken.isInitialized &&
-                ::deviceInfo.isInitialized
+            return ::publicToken.isInitialized && ::deviceInfo.isInitialized
         }
 
     internal val isTestToken: Boolean
         get() {
-            return ::publicToken.isInitialized && publicToken.contains("public-token-test")
+            StytchClient.assertInitialized()
+            return publicToken.contains("public-token-test")
         }
 
     @VisibleForTesting
