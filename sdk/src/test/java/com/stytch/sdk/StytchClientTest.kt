@@ -58,6 +58,8 @@ internal class StytchClientTest {
         every { StorageHelper.loadValue(any()) } returns ""
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         MockKAnnotations.init(this, true, true)
+        StytchClient.oauth = mockOAuth
+        StytchClient.magicLinks = mockMagicLinks
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -240,7 +242,6 @@ internal class StytchClientTest {
             }
             val mockAuthResponse = mockk<AuthResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
-            StytchClient.magicLinks = mockMagicLinks
             val response = StytchClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }
             assert(response == mockAuthResponse)
@@ -256,7 +257,6 @@ internal class StytchClientTest {
             }
             val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
             coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
-            StytchClient.oauth = mockOAuth
             val response = StytchClient.handle(mockUri, 30U)
             coVerify { mockOAuth.authenticate(any()) }
             assert(response == mockAuthResponse)
