@@ -4,9 +4,12 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.oauth.OAuth
+import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -31,6 +34,12 @@ internal class StytchClientTest {
     var mContextMock = mockk<Context>(relaxed = true)
     val dispatcher = Dispatchers.Unconfined
 
+    @MockK
+    private lateinit var mockMagicLinks: MagicLinks
+
+    @MockK
+    private lateinit var mockOAuth: OAuth
+
     @OptIn(DelicateCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
@@ -48,6 +57,7 @@ internal class StytchClientTest {
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns ""
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+        MockKAnnotations.init(this, true, true)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,6 +66,7 @@ internal class StytchClientTest {
         Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
         mainThreadSurrogate.close()
         unmockkAll()
+        clearAllMocks()
     }
 
     @Test(expected = IllegalStateException::class)
@@ -228,12 +239,26 @@ internal class StytchClientTest {
                 every { getQueryParameter(any()) } returns "MAGIC_LINKS"
             }
             val mockAuthResponse = mockk<AuthResponse>()
-            val mockMagicLinks = mockk<MagicLinks> {
-                coEvery { authenticate(any()) } returns mockAuthResponse
-            }
+            coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             StytchClient.magicLinks = mockMagicLinks
             val response = StytchClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }
+            assert(response == mockAuthResponse)
+        }
+    }
+
+    @Test
+    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
+        runBlocking {
+            every { StytchApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns "OAUTH"
+            }
+            val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
+            coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
+            StytchClient.oauth = mockOAuth
+            val response = StytchClient.handle(mockUri, 30U)
+            coVerify { mockOAuth.authenticate(any()) }
             assert(response == mockAuthResponse)
         }
     }
@@ -247,24 +272,6 @@ internal class StytchClientTest {
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         StytchClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }
-    }
-
-    @Test
-    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
-        runBlocking {
-            every { StytchApi.isInitialized } returns true
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "OAUTH"
-            }
-            val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
-            val mockOAuth = mockk<OAuth> {
-                coEvery { authenticate(any()) } returns mockAuthResponse
-            }
-            StytchClient.oauth = mockOAuth
-            val response = StytchClient.handle(mockUri, 30U)
-            coVerify { mockOAuth.authenticate(any()) }
-            assert(response == mockAuthResponse)
-        }
     }
 
     @Test(expected = IllegalStateException::class)
