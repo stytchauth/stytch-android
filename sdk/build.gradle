@@ -49,10 +49,6 @@ android {
         unitTests {
             returnDefaultValues = true
             includeAndroidResources = true
-            all {
-                it.systemProperty("robolectric.dependency.repo.id'", "mavenCentral")
-                it.systemProperty("robolectric.dependency.repo.url", "https://repo1.maven.org/maven2")
-            }
         }
     }
     lintOptions {
@@ -60,8 +56,8 @@ android {
     }
     testVariants.all {
         it.mergedFlavor.manifestPlaceholders = [
-                'stytchOAuthRedirectScheme': 'test://',
-                'stytchOAuthRedirectHost': 'oauth'
+            'stytchOAuthRedirectScheme': 'test://',
+            'stytchOAuthRedirectHost': 'oauth'
         ]
     }
     unitTestVariants.all {
@@ -106,6 +102,5 @@ dependencies {
     testImplementation "org.mockito:mockito-core:4.6.1"
     testImplementation "io.mockk:mockk:1.12.5"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    testImplementation 'org.robolectric:robolectric:4.9.2'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.7.2")
 }
