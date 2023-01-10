@@ -24,7 +24,7 @@ jobs:
       # => https://github.com/marketplace/actions/gradle-command
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: runOnGitHub --info
+          arguments: runOnGitHub
         env:
           STYTCH_PUBLIC_TOKEN: 'abc123'
           GOOGLE_OAUTH_CLIENT_ID: 'abc123'
