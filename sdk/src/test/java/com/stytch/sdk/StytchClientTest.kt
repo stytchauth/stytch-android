@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -31,8 +32,8 @@ import org.junit.Before
 import org.junit.Test
 
 internal class StytchClientTest {
-    var mContextMock = mockk<Context>(relaxed = true)
-    val dispatcher = Dispatchers.Unconfined
+    private var mContextMock = mockk<Context>(relaxed = true)
+    private val dispatcher = Dispatchers.Unconfined
 
     @MockK
     private lateinit var mockMagicLinks: MagicLinks
@@ -60,6 +61,8 @@ internal class StytchClientTest {
         MockKAnnotations.init(this, true, true)
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks
+        StytchClient.externalScope = TestScope()
+        StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
