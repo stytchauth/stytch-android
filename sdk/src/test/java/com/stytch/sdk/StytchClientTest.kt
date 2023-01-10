@@ -267,11 +267,8 @@ internal class StytchClientTest {
     fun `handle with callback returns value in callback method when configured`() {
         every { StytchApi.isInitialized } returns true
         val mockUri = mockk<Uri> {
-            every { getQueryParameter(any()) } returns "MAGIC_LINKS"
+            every { getQueryParameter(any()) } returns null
         }
-        val mockAuthResponse = mockk<AuthResponse>()
-        coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
-        StytchClient.magicLinks = mockMagicLinks
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         StytchClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }
