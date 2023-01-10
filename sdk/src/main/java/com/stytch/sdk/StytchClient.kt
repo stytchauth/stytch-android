@@ -248,12 +248,18 @@ public object StytchClient {
      * @return AuthResponse from backend after calling any of the authentication methods
      */
     public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): AuthResponse {
+        println("JORDAN > 2")
         assertInitialized()
+        println("JORDAN > 3")
         val result: AuthResponse
         withContext(dispatchers.io) {
+            println("JORDAN > 4")
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+            println("JORDAN > 5 : $token")
             if (token.isNullOrEmpty()) {
+                println("JORDAN > 6")
                 result = StytchResult.Error(StytchExceptions.Input("Magic link missing token"))
+                println("JORDAN > 7")
                 return@withContext
             }
             result = when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
@@ -271,7 +277,7 @@ public object StytchClient {
                 }
             }
         }
-
+        println("JORDAN > 8")
         return result
     }
 
@@ -287,8 +293,10 @@ public object StytchClient {
         callback: (response: AuthResponse) -> Unit
     ) {
         externalScope.launch(dispatchers.ui) {
+            println("JORDAN > 1")
             val result = handle(uri, sessionDurationMinutes)
             // change to main thread to call callback
+            println("JORDAN > 9")
             callback(result)
         }
     }
