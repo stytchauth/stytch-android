@@ -240,7 +240,6 @@ internal class StytchClientTest {
     }
 
     @Test
-    @Ignore
     fun `handle with coroutines delegates to oauth when token is OAUTH`() {
         runBlocking {
             every { StytchApi.isInitialized } returns true
