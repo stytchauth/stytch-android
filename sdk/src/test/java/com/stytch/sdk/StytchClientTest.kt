@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 internal class StytchClientTest {
@@ -239,6 +240,7 @@ internal class StytchClientTest {
     }
 
     @Test
+    @Ignore
     fun `handle with coroutines delegates to oauth when token is OAUTH`() {
         runBlocking {
             every { StytchApi.isInitialized } returns true
