@@ -1,5 +1,9 @@
-package com.stytch.sdk
+package com.stytch.sdk.userManagement
 
+import com.stytch.sdk.DeleteFactorResponse
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchResult
+import com.stytch.sdk.UserResponse
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sessions.SessionStorage

@@ -25,6 +25,9 @@ import com.stytch.sdk.otp.OTP
 import com.stytch.sdk.otp.OTPImpl
 import com.stytch.sdk.passwords.Passwords
 import com.stytch.sdk.passwords.PasswordsImpl
+import com.stytch.sdk.userManagement.AuthenticationFactor
+import com.stytch.sdk.userManagement.UserManagement
+import com.stytch.sdk.userManagement.UserManagementImpl
 import com.stytch.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope

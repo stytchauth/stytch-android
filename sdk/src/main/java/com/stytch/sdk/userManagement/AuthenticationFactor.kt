@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.userManagement
 
 public sealed class AuthenticationFactor(public open val id: String) {
     public data class Email(override val id: String) : AuthenticationFactor(id)

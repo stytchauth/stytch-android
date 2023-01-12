@@ -1,5 +1,7 @@
-package com.stytch.sdk
+package com.stytch.sdk.userManagement
 
+import com.stytch.sdk.DeleteFactorResponse
+import com.stytch.sdk.UserResponse
 import com.stytch.sdk.network.responseData.UserData
 
 public interface UserManagement {
