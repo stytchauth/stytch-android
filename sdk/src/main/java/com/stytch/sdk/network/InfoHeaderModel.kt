@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.network
 
 internal data class InfoHeaderModel(
     val sdk: Item,
