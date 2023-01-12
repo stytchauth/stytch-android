@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.biometrics
 
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity

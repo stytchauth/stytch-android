@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.biometrics
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -6,6 +6,9 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.fragment.app.FragmentActivity
+import com.stytch.sdk.R
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchLog
 import java.security.KeyStore
 import java.util.concurrent.Executors
 import javax.crypto.Cipher

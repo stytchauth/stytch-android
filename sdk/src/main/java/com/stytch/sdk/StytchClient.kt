@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import com.stytch.sdk.biometrics.Biometrics
+import com.stytch.sdk.biometrics.BiometricsImpl
+import com.stytch.sdk.biometrics.BiometricsProviderImpl
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData

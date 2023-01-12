@@ -1,7 +1,9 @@
-package com.stytch.sdk
+package com.stytch.sdk.biometrics
 
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.fragment.app.FragmentActivity
+import com.stytch.sdk.BiometricsAuthResponse
+import com.stytch.sdk.Constants
 
 /**
  * Biometrics interface that encompasses registration and authentication functions

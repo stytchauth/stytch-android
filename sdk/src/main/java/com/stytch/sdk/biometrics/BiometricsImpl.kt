@@ -1,8 +1,16 @@
-package com.stytch.sdk
+package com.stytch.sdk.biometrics
 
 import androidx.fragment.app.FragmentActivity
+import com.stytch.sdk.BiometricsAuthResponse
+import com.stytch.sdk.EncryptionManager
+import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.StytchLog
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.extensions.toBase64EncodedString
+import com.stytch.sdk.getValueOrThrow
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sessions.SessionStorage
