@@ -6,7 +6,7 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.UserResponse
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.UserData
-import com.stytch.sessions.SessionStorage
+import com.stytch.sdk.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

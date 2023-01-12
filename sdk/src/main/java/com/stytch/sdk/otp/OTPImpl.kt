@@ -4,8 +4,8 @@ import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.StytchDispatchers
 import com.stytch.sdk.network.StytchApi
-import com.stytch.sessions.SessionStorage
-import com.stytch.sessions.launchSessionUpdater
+import com.stytch.sdk.sessions.SessionStorage
+import com.stytch.sdk.sessions.launchSessionUpdater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

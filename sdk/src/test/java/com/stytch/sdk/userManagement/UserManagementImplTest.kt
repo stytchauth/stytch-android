@@ -8,8 +8,8 @@ import com.stytch.sdk.StytchResult
 import com.stytch.sdk.UserResponse
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.UserData
-import com.stytch.sessions.SessionAutoUpdater
-import com.stytch.sessions.SessionStorage
+import com.stytch.sdk.sessions.SessionAutoUpdater
+import com.stytch.sdk.sessions.SessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.sessions
 
 import org.junit.Test
 

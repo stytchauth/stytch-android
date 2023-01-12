@@ -1,4 +1,4 @@
-package com.stytch.sessions
+package com.stytch.sdk.sessions
 
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.StorageHelper

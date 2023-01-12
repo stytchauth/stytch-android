@@ -1,4 +1,7 @@
-package com.stytch.sdk
+package com.stytch.sdk.sessions
+
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 
 /**
  * Sessions interface that encompasses authentication functions as well as other related functionality
