@@ -1,5 +1,11 @@
-package com.stytch.sdk
+package com.stytch.sdk.magicLinks
 
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.EncryptionManager
+import com.stytch.sdk.LoginOrCreateUserByEmailResponse
+import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sessions.SessionAutoUpdater

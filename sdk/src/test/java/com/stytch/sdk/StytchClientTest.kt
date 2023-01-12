@@ -2,6 +2,7 @@ package com.stytch.sdk
 
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.magicLinks.MagicLinks
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.oauth.OAuth
 import io.mockk.MockKAnnotations
