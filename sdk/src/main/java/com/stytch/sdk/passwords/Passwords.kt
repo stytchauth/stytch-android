@@ -1,6 +1,10 @@
-package com.stytch.sdk
+package com.stytch.sdk.passwords
 
+import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.PasswordsCreateResponse
+import com.stytch.sdk.PasswordsStrengthCheckResponse
 
 /**
  * Passwords interface that encompasses authentication functions as well as other related functionality
