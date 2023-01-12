@@ -10,7 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.magicLinks.MagicLinks
-import com.stytch.sdk.OTP
+import com.stytch.sdk.otp.OTP
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchResult
 import java.util.regex.Pattern

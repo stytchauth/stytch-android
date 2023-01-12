@@ -21,6 +21,8 @@ import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
 import com.stytch.sdk.oauth.OAuth
 import com.stytch.sdk.oauth.OAuthImpl
+import com.stytch.sdk.otp.OTP
+import com.stytch.sdk.otp.OTPImpl
 import com.stytch.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
