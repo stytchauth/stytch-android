@@ -2,9 +2,6 @@ package com.stytch.sdk.sessions
 
 import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
-import com.stytch.sessions.PREFERENCES_NAME_SESSION_JWT
-import com.stytch.sessions.PREFERENCES_NAME_SESSION_TOKEN
-import com.stytch.sessions.SessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.every

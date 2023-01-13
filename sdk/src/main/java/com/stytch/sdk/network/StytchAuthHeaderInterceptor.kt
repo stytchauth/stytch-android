@@ -4,7 +4,6 @@ import com.google.crypto.tink.subtle.Base64
 import com.stytch.sdk.BuildConfig
 import com.stytch.sdk.Constants
 import com.stytch.sdk.DeviceInfo
-import com.stytch.sdk.InfoHeaderModel
 import com.stytch.sdk.StytchClient
 import okhttp3.Interceptor
 import okhttp3.Response
