@@ -1,6 +1,5 @@
 package com.stytch.sdk.biometrics
 
-import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.FragmentActivity
 import javax.crypto.Cipher
 
@@ -16,19 +15,26 @@ public enum class BiometricAvailability(public val message: String) {
     ),
     BIOMETRIC_ERROR_UNSUPPORTED("The requested biometrics options are incompatible with the current Android version."),
     BIOMETRIC_STATUS_UNKNOWN("Unable to determine whether the user can authenticate."),
+    BIOMETRICS_REVOKED("Biometric key was revoked. Must re-register a biometric authentication.")
 }
 
 internal interface BiometricsProvider {
     suspend fun showBiometricPromptForRegistration(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo? = null,
+        promptData: Biometrics.PromptData? = null,
+        allowedAuthenticators: Int,
     ): Cipher
 
     suspend fun showBiometricPromptForAuthentication(
         context: FragmentActivity,
-        promptInfo: BiometricPrompt.PromptInfo? = null,
+        promptData: Biometrics.PromptData? = null,
         iv: ByteArray,
+        allowedAuthenticators: Int,
     ): Cipher
 
-    fun areBiometricsAvailable(context: FragmentActivity): BiometricAvailability
+    fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): BiometricAvailability
+
+    fun deleteSecretKey()
+
+    fun ensureSecretKeyIsAvailable(allowedAuthenticators: Int)
 }

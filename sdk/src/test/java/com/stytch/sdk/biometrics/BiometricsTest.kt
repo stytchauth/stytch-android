@@ -14,7 +14,7 @@ internal class BiometricsTest {
             context = mockContext,
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
             allowFallbackToCleartext = false,
-            promptInfo = null,
+            promptData = null,
         )
         assert(params == expected)
     }

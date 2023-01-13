@@ -1,7 +1,6 @@
 package com.stytch.exampleapp
 
 import android.app.Application
-import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,18 +19,15 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun showBiometricsError(error: String) {
-        _currentResponse.value = error
-    }
-
-    fun registerBiometrics(context: FragmentActivity, promptInfo: PromptInfo? = null) {
+    fun registerBiometrics(context: FragmentActivity, promptData: Biometrics.PromptData? = null) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.biometrics.register(
                 Biometrics.RegisterParameters(
                     context = context,
-                    promptInfo = promptInfo,
+                    promptData = promptData,
                     allowFallbackToCleartext = false,
+                    allowDeviceCredentials = true,
                 )
             )
             _currentResponse.value = result.toFriendlyDisplay()
@@ -40,11 +36,11 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun authenticateBiometrics(context: FragmentActivity, promptInfo: PromptInfo? = null) {
+    fun authenticateBiometrics(context: FragmentActivity, promptData: Biometrics.PromptData? = null) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.biometrics.authenticate(
-                Biometrics.AuthenticateParameters(context = context, promptInfo = promptInfo)
+                Biometrics.AuthenticateParameters(context = context, promptData = promptData)
             )
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {

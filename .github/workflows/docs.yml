@@ -24,6 +24,7 @@ jobs:
     - name: Generate docs
       env:
         STYTCH_PUBLIC_TOKEN: 'abc123'
+        GOOGLE_OAUTH_CLIENT_ID: 'abc123'
       working-directory: main
       run: ./gradlew sdk:dokkaHtml
       
