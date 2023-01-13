@@ -51,4 +51,12 @@ public enum class StytchErrorType(
         stringValue = " google_onetap_missing_member",
         message = "Missing a nonce or onetap client. Make sure you are calling StytchClient.oauth.googleOneTap.start() before StytchClient.oauth.googleOneTap.authenticate()", // ktlint-disable maximum-line-length
     ),
+    OAUTH_INVALID_START_URL(
+        stringValue = "oauth_generic_invalid_start_url",
+        message = "The start url was invalid or improperly formatted."
+    ),
+    OAUTH_MISSING_PKCE(
+        stringValue = "oauth_missing_pkce",
+        message = "Unable to retrieve the PKCE challenge. This flow must be completed on the same device on which it was started", // ktlint-disable maximum-line-length
+    )
 }

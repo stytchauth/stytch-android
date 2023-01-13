@@ -1,16 +1,32 @@
 package com.stytch.exampleapp
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.OAuth
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.oauth.OAuth
+import com.stytch.sdk.oauth.OAuthError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+enum class OAuthProvider {
+    AMAZON,
+    BITBUCKET,
+    COINBASE,
+    DISCORD,
+    FACEBOOK,
+    GOOGLE,
+    GITHUB,
+    GITLAB,
+    LINKEDIN,
+    MICROSOFT,
+    SLACK,
+    TWITCH,
+}
 
 class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
@@ -21,7 +37,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun loginWithGoogle(context: Activity) {
+    fun loginWithGoogleOneTap(context: Activity) {
         viewModelScope.launch {
             val didStart = StytchClient.oauth.googleOneTap.start(
                 OAuth.GoogleOneTap.StartParameters(
@@ -36,13 +52,55 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun authenticateGoogleLogin(data: Intent) {
+    fun authenticateGoogleOneTapLogin(data: Intent) {
         viewModelScope.launch {
             _currentResponse.value = "Authenticating Google OneTap login"
             val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
+            _currentResponse.value = result.toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun loginWithThirdPartyOAuth(context: Activity, provider: OAuthProvider) {
+        val startParameters = OAuth.ThirdParty.StartParameters(
+            context = context,
+            oAuthRequestIdentifier = THIRD_PARTY_OAUTH_REQUEST,
+            loginRedirectUrl = "app://oauth",
+            signupRedirectUrl = "app://oauth",
+        )
+        when (provider) {
+            OAuthProvider.AMAZON -> StytchClient.oauth.amazon.start(startParameters)
+            OAuthProvider.BITBUCKET -> StytchClient.oauth.bitbucket.start(startParameters)
+            OAuthProvider.COINBASE -> StytchClient.oauth.coinbase.start(startParameters)
+            OAuthProvider.DISCORD -> StytchClient.oauth.discord.start(startParameters)
+            OAuthProvider.FACEBOOK -> StytchClient.oauth.facebook.start(startParameters)
+            OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(startParameters)
+            OAuthProvider.GITHUB -> StytchClient.oauth.github.start(startParameters)
+            OAuthProvider.GITLAB -> StytchClient.oauth.gitlab.start(startParameters)
+            OAuthProvider.LINKEDIN -> StytchClient.oauth.linkedin.start(startParameters)
+            OAuthProvider.MICROSOFT -> StytchClient.oauth.microsoft.start(startParameters)
+            OAuthProvider.SLACK -> StytchClient.oauth.slack.start(startParameters)
+            OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(startParameters)
+        }
+    }
+
+    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            if (resultCode == RESULT_OK) {
+                intent.data?.let {
+                    val result = StytchClient.handle(it, 60U)
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }
+            } else {
+                intent.extras?.getSerializable(OAuthError.OAUTH_EXCEPTION)?.let {
+                    when (it as OAuthError) {
+                        is OAuthError.UserCanceled -> {} // do nothing
+                        is OAuthError.NoBrowserFound,
+                        is OAuthError.NoURIFound -> _currentResponse.value = it.message
+                    }
+                }
             }
         }.invokeOnCompletion {
             _loadingState.value = false

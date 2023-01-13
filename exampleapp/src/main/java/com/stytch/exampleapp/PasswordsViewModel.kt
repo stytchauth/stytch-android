@@ -43,7 +43,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                         passwordTextState.text
                     )
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -62,7 +62,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                         passwordTextState.text
                     )
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -81,7 +81,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                         passwordTextState.text
                     )
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -99,7 +99,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                         emailTextState.text
                     )
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -118,7 +118,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                         passwordTextState.text
                     )
                 )
-                _currentResponse.value = result.toString()
+                _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }

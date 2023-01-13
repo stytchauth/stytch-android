@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.Biometrics
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,10 +30,7 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
                     allowDeviceCredentials = true,
                 )
             )
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -46,10 +42,7 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
             val result = StytchClient.biometrics.authenticate(
                 Biometrics.AuthenticateParameters(context = context, promptData = promptData)
             )
-            _currentResponse.value = when (result) {
-                is StytchResult.Success<*> -> result.toString()
-                is StytchResult.Error -> result.exception.reason?.toString() ?: "Unknown exception"
-            }
+            _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

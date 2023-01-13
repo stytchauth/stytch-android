@@ -1,5 +1,6 @@
 package com.stytch.exampleapp
 
+import com.stytch.sdk.StytchResult
 import java.util.regex.Pattern
 
 private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -20,4 +21,9 @@ fun isValidEmail(str: String): Boolean {
 
 fun isPhoneNumberValid(str: String): Boolean {
     return PHONE_NUMBER_PATTERN.matcher(str).matches()
+}
+
+fun <T : Any> StytchResult<T>.toFriendlyDisplay() = when (this) {
+    is StytchResult.Success<*> -> this.toString()
+    is StytchResult.Error -> this.exception.reason?.toString() ?: "Unknown exception"
 }

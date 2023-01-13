@@ -1,7 +1,9 @@
 package com.stytch.sdk
 
 internal object Constants {
-    const val HOST_URL: String = "https://web.stytch.com/sdk/v1/"
+    const val WEB_URL: String = "https://web.stytch.com/sdk/v1/"
+    const val TEST_API_URL: String = "https://test.stytch.com/v1/"
+    const val LIVE_API_URL: String = "https://api.stytch.com/v1/"
 
     //  Auth headers
     const val AUTH_HEADER_SDK_NAME = "stytch-kotlin"

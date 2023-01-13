@@ -137,6 +137,11 @@ internal interface StytchApiService {
     suspend fun authenticateWithGoogleIdToken(
         @Body request: StytchRequests.OAuth.Google.AuthenticateRequest
     ): StytchResponses.AuthenticateResponse
+
+    @POST("oauth/authenticate")
+    suspend fun authenticateWithThirdPartyToken(
+        @Body request: StytchRequests.OAuth.ThirdParty.AuthenticateRequest
+    ): StytchResponses.OAuth.OAuthAuthenticateResponse
     //endregion OAuth
 
     companion object {
@@ -170,7 +175,10 @@ internal interface StytchApiService {
             return builder.build()
         }
 
-        fun createApiService(hostUrl: String, authHeaderInterceptor: StytchAuthHeaderInterceptor?): StytchApiService {
+        fun createApiService(
+            hostUrl: String,
+            authHeaderInterceptor: StytchAuthHeaderInterceptor?,
+        ): StytchApiService {
             return Retrofit.Builder()
                 .baseUrl(hostUrl)
                 .addConverterFactory(MoshiConverterFactory.create())

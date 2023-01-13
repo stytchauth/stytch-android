@@ -5,14 +5,17 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import com.stytch.sdk.network.StytchApi
-import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
+import com.stytch.sdk.network.responseData.IAuthData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
+import com.stytch.sdk.network.responseData.OAuthData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
+import com.stytch.sdk.oauth.OAuth
+import com.stytch.sdk.oauth.OAuthImpl
 import com.stytch.sessions.SessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +35,7 @@ public typealias BaseResponse = StytchResult<BasicData>
 /**
  * Type alias for StytchResult<AuthData> used for authentication responses
  */
-public typealias AuthResponse = StytchResult<AuthData>
+public typealias AuthResponse = StytchResult<IAuthData>
 
 /**
  * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
@@ -63,6 +66,11 @@ public typealias DeleteFactorResponse = StytchResult<DeleteAuthenticationFactorD
  * Type alias for StytchResult<BiometricsAuthData> used for Biometrics authentication responses
  */
 public typealias BiometricsAuthResponse = StytchResult<BiometricsAuthData>
+
+/**
+ * Type alias for StytchResult<OAuthData> used for Third Party OAuth authentication responses
+ */
+public typealias OAuthAuthenticatedResponse = StytchResult<OAuthData>
 
 /**
  * The entrypoint for all Stytch-related interaction.
@@ -199,6 +207,7 @@ public object StytchClient {
         externalScope,
         dispatchers,
         sessionStorage,
+        StorageHelper,
         StytchApi.OAuth
     )
         get() {
@@ -252,7 +261,7 @@ public object StytchClient {
                     magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
                 }
                 TokenType.OAUTH -> {
-                    TODO("Implement oauth handling")
+                    oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
                 }
                 TokenType.PASSWORD_RESET -> {
                     TODO("Implement password reset handling")

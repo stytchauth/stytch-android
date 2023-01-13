@@ -8,6 +8,7 @@ import com.stytch.sdk.network.responseData.BiometricsStartResponse
 import com.stytch.sdk.network.responseData.CreateResponse
 import com.stytch.sdk.network.responseData.DeleteAuthenticationFactorData
 import com.stytch.sdk.network.responseData.LoginOrCreateOTPData
+import com.stytch.sdk.network.responseData.OAuthData
 import com.stytch.sdk.network.responseData.StrengthCheckResponse
 import com.stytch.sdk.network.responseData.UserData
 
@@ -60,6 +61,11 @@ internal object StytchResponses {
         @JsonClass(generateAdapter = true)
         class DeleteFactorResponse(data: DeleteAuthenticationFactorData) :
             StytchDataResponse<DeleteAuthenticationFactorData>(data)
+    }
+
+    object OAuth {
+        @JsonClass(generateAdapter = true)
+        class OAuthAuthenticateResponse(data: OAuthData) : StytchDataResponse<OAuthData>(data)
     }
 
     @JsonClass(generateAdapter = true)
