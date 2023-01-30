@@ -58,5 +58,13 @@ public enum class StytchErrorType(
     OAUTH_MISSING_PKCE(
         stringValue = "oauth_missing_pkce",
         message = "Unable to retrieve the PKCE challenge. This flow must be completed on the same device on which it was started", // ktlint-disable maximum-line-length
+    ),
+    DEEPLINK_MISSING_TOKEN(
+        stringValue = "deeplink_missing_token",
+        message = "Magic link missing token"
+    ),
+    DEEPLINK_UNKNOWN_TOKEN(
+        stringValue = "deeplink_unknown_token",
+        message = "Unknown magic link type"
     )
 }
