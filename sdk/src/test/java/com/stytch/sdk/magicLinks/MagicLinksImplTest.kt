@@ -111,9 +111,11 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email loginOrCreate delegates to api`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        coEvery { mockApi.loginOrCreate(any(), any(), any(), any()) } returns successfulLoginOrCreateResponse
+        coEvery {
+            mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
+        } returns successfulLoginOrCreateResponse
         impl.email.loginOrCreate(emailMagicLinkParameters)
-        coVerify { mockApi.loginOrCreate(any(), any(), any(), any()) }
+        coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test

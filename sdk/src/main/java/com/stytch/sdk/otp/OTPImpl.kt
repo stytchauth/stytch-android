@@ -100,7 +100,9 @@ internal class OTPImpl internal constructor(
             withContext(dispatchers.io) {
                 result = api.loginOrCreateUserByOTPWithEmail(
                     email = parameters.email,
-                    expirationMinutes = parameters.expirationMinutes
+                    expirationMinutes = parameters.expirationMinutes,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
                 )
             }
 

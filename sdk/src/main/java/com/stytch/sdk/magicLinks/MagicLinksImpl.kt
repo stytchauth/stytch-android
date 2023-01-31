@@ -82,8 +82,10 @@ internal class MagicLinksImpl internal constructor(
                 result = api.loginOrCreate(
                     email = parameters.email,
                     loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                    challengeCode,
-                    challengeCodeMethod
+                    codeChallenge = challengeCode,
+                    codeChallengeMethod = challengeCodeMethod,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
                 )
             }
 

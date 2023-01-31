@@ -67,7 +67,7 @@ internal class StytchApiTest {
     fun `StytchApi MagicLinks Email loginOrCreate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-        StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "")
+        StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "")
         coVerify { StytchApi.apiService.loginOrCreateUserByEmail(any()) }
     }
 
@@ -99,7 +99,7 @@ internal class StytchApiTest {
     fun `StytchApi OTP loginOrCreateUserByOTPWithEmail calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
-        StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U)
+        StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U, "", "")
         coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) }
     }
 

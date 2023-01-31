@@ -54,6 +54,8 @@ public interface MagicLinks {
          * @param signupMagicLinkUrl is the url where you should be redirected for signup
          * @param loginExpirationMinutes is the duration after which the login url should expire
          * @param signupExpirationMinutes is the duration after which the signup url should expire
+         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
+         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
@@ -61,6 +63,8 @@ public interface MagicLinks {
             val signupMagicLinkUrl: String? = null,
             val loginExpirationMinutes: UInt? = null,
             val signupExpirationMinutes: UInt? = null,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
         )
 
         /**

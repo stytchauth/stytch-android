@@ -16,6 +16,10 @@ internal object StytchRequests {
                 val codeChallenge: String,
                 @Json(name = "code_challenge_method")
                 val codeChallengeMethod: String,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String? = null,
+                @Json(name = "signup_template_id")
+                val signupTemplateId: String? = null,
             )
         }
 
@@ -110,6 +114,10 @@ internal object StytchRequests {
             val email: String,
             @Json(name = "expiration_minutes")
             val expirationMinutes: Int,
+            @Json(name = "login_template_id")
+            val loginTemplateId: String? = null,
+            @Json(name = "signup_template_id")
+            val signupTemplateId: String? = null,
         )
 
         @JsonClass(generateAdapter = true)

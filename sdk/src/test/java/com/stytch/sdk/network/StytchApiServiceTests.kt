@@ -42,7 +42,9 @@ internal class StytchApiServiceTests {
                 email = EMAIL,
                 loginMagicLinkUrl = LOGIN_MAGIC_LINK,
                 codeChallenge = "123",
-                codeChallengeMethod = "method2"
+                codeChallengeMethod = "method2",
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByEmail(parameters)
@@ -52,7 +54,9 @@ internal class StytchApiServiceTests {
                     "email" to parameters.email,
                     "login_magic_link_url" to parameters.loginMagicLinkUrl,
                     "code_challenge" to parameters.codeChallenge,
-                    "code_challenge_method" to parameters.codeChallengeMethod
+                    "code_challenge_method" to parameters.codeChallengeMethod,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
                 )
             )
         }
@@ -87,7 +91,9 @@ internal class StytchApiServiceTests {
         runBlocking {
             val parameters = StytchRequests.OTP.Email(
                 email = EMAIL,
-                expirationMinutes = 60
+                expirationMinutes = 60,
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithEmail(parameters)
@@ -95,7 +101,9 @@ internal class StytchApiServiceTests {
                 expectedPath = "/otps/email/login_or_create",
                 expectedBody = mapOf(
                     "email" to parameters.email,
-                    "expiration_minutes" to parameters.expirationMinutes
+                    "expiration_minutes" to parameters.expirationMinutes,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
                 )
             )
         }

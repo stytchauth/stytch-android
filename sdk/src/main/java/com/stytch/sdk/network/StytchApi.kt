@@ -77,14 +77,18 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String
+                codeChallengeMethod: String,
+                loginTemplateId: String?,
+                signupTemplateId: String?,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.loginOrCreateUserByEmail(
                     StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         codeChallenge = codeChallenge,
-                        codeChallengeMethod = codeChallengeMethod
+                        codeChallengeMethod = codeChallengeMethod,
+                        loginTemplateId = loginTemplateId,
+                        signupTemplateId = signupTemplateId,
                     )
                 )
             }
@@ -132,12 +136,16 @@ internal object StytchApi {
 
         suspend fun loginOrCreateUserByOTPWithEmail(
             email: String,
-            expirationMinutes: UInt
+            expirationMinutes: UInt,
+            loginTemplateId: String?,
+            signupTemplateId: String?,
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
                 StytchRequests.OTP.Email(
                     email = email,
-                    expirationMinutes = expirationMinutes.toInt()
+                    expirationMinutes = expirationMinutes.toInt(),
+                    loginTemplateId = loginTemplateId,
+                    signupTemplateId = signupTemplateId,
                 )
             )
         }

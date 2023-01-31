@@ -129,10 +129,14 @@ public interface OTP {
         /**
          * @param email the address the OTP code would be sent to via Email
          * @param expirationMinutes indicates how long the OTP should last before it expires
+         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
+         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
         )
 
         /**
