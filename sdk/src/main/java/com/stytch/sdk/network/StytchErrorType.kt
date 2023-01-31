@@ -61,10 +61,10 @@ public enum class StytchErrorType(
     ),
     DEEPLINK_MISSING_TOKEN(
         stringValue = "deeplink_missing_token",
-        message = "Magic link missing token"
+        message = "Deeplink missing token"
     ),
     DEEPLINK_UNKNOWN_TOKEN(
         stringValue = "deeplink_unknown_token",
-        message = "Unknown magic link type"
+        message = "Unknown deeplink type"
     )
 }

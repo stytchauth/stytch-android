@@ -260,7 +260,7 @@ public object StytchClient {
      * Handle magic link
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
-     * @return AuthResponse from backend after calling any of the authentication methods
+     * @return DeeplinkHandledStatus from backend after calling any of the authentication methods
      */
     public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): DeeplinkHandledStatus {
         assertInitialized()
@@ -294,7 +294,7 @@ public object StytchClient {
      * Handle magic link
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback calls callback with DeeplinkHandledStatus response from backend
      */
     public fun handle(
         uri: Uri,
