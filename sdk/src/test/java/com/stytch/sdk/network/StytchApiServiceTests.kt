@@ -39,10 +39,10 @@ internal class StytchApiServiceTests {
     fun `check magic links email loginOrCreate request`() {
         runBlocking {
             val parameters = StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
-                EMAIL,
-                LOGIN_MAGIC_LINK,
-                "123",
-                "method2"
+                email = EMAIL,
+                loginMagicLinkUrl = LOGIN_MAGIC_LINK,
+                codeChallenge = "123",
+                codeChallengeMethod = "method2"
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByEmail(parameters)
@@ -62,9 +62,9 @@ internal class StytchApiServiceTests {
     fun `check magic links authenticate request`() {
         runBlocking {
             val parameters = StytchRequests.MagicLinks.AuthenticateRequest(
-                "token",
-                "123",
-                60
+                token = "token",
+                codeVerifier = "123",
+                sessionDurationMinutes = 60
             )
             requestIgnoringResponseException {
                 apiService.authenticate(parameters)
@@ -86,8 +86,8 @@ internal class StytchApiServiceTests {
     fun `check OTP email loginOrCreate with default expiration request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.Email(
-                EMAIL,
-                60
+                email = EMAIL,
+                expirationMinutes = 60
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithEmail(parameters)
@@ -105,8 +105,8 @@ internal class StytchApiServiceTests {
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.SMS(
-                "000",
-                24
+                phoneNumber = "000",
+                expirationMinutes = 24
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithSMS(parameters)
@@ -124,8 +124,8 @@ internal class StytchApiServiceTests {
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.WhatsApp(
-                "000",
-                60
+                phoneNumber = "000",
+                expirationMinutes = 60
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithWhatsApp(parameters)
@@ -143,9 +143,9 @@ internal class StytchApiServiceTests {
     fun `check OTP authenticate request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.Authenticate(
-                "token",
-                "methodId",
-                60
+                token = "token",
+                methodId = "methodId",
+                sessionDurationMinutes = 60
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithOTP(parameters)
@@ -168,9 +168,9 @@ internal class StytchApiServiceTests {
     fun `check Passwords create request`() {
         runBlocking {
             val parameters = StytchRequests.Passwords.CreateRequest(
-                EMAIL,
-                "123asd",
-                60
+                email = EMAIL,
+                password = "123asd",
+                sessionDurationMinutes = 60
             )
             requestIgnoringResponseException {
                 apiService.passwords(parameters)
@@ -189,8 +189,8 @@ internal class StytchApiServiceTests {
     fun `check Passwords strenghtCheck request`() {
         runBlocking {
             val parameters = StytchRequests.Passwords.StrengthCheckRequest(
-                EMAIL,
-                "123asd"
+                email = EMAIL,
+                password = "123asd"
             )
             requestIgnoringResponseException {
                 apiService.strengthCheck(parameters)
@@ -208,10 +208,10 @@ internal class StytchApiServiceTests {
     fun `check Passwords resetbyEmail request`() {
         runBlocking {
             val parameters = StytchRequests.Passwords.ResetByEmailRequest(
-                "token",
-                "123asd",
-                60,
-                "ver1"
+                token = "token",
+                password = "123asd",
+                sessionDurationMinutes = 60,
+                codeVerifier = "ver1"
             )
             requestIgnoringResponseException {
                 apiService.resetByEmail(parameters)
@@ -231,13 +231,13 @@ internal class StytchApiServiceTests {
     fun `check Passwords resetbyEmailStart request`() {
         runBlocking {
             val parameters = StytchRequests.Passwords.ResetByEmailStartRequest(
-                EMAIL,
-                "123",
-                "method2",
-                "loginRedirect",
-                24,
-                "resetPasswordUrl",
-                23
+                email = EMAIL,
+                codeChallenge = "123",
+                codeChallengeMethod = "method2",
+                loginRedirectUrl = "loginRedirect",
+                loginExpirationMinutes = 24,
+                resetPasswordRedirectUrl = "resetPasswordUrl",
+                resetPasswordExpirationMinutes = 23
             )
             requestIgnoringResponseException {
                 apiService.resetByEmailStart(parameters)
@@ -260,9 +260,9 @@ internal class StytchApiServiceTests {
     fun `check Passwords authenticate request`() {
         runBlocking {
             val parameters = StytchRequests.Passwords.AuthenticateRequest(
-                EMAIL,
-                "123asd",
-                46
+                email = EMAIL,
+                password = "123asd",
+                sessionDurationMinutes = 46
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithPasswords(parameters)
@@ -284,7 +284,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Sessions authenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.Sessions.AuthenticateRequest(24)
+            val parameters = StytchRequests.Sessions.AuthenticateRequest(sessionDurationMinutes = 24)
             requestIgnoringResponseException {
                 apiService.authenticateSessions(parameters)
             }.verifyPost(
@@ -389,7 +389,7 @@ internal class StytchApiServiceTests {
     fun `check deleteEmailById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deleteEmailById("email_id")
+                apiService.deleteEmailById(id = "email_id")
             }.verifyDelete("/users/emails/email_id")
         }
     }
@@ -398,7 +398,7 @@ internal class StytchApiServiceTests {
     fun `check deletePhoneNumberById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deletePhoneNumberById("phone_number_id")
+                apiService.deletePhoneNumberById(id = "phone_number_id")
             }.verifyDelete("/users/phone_numbers/phone_number_id")
         }
     }
@@ -407,7 +407,7 @@ internal class StytchApiServiceTests {
     fun `check deleteBiometricRegistrationById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deleteBiometricRegistrationById("biometrics_registration_id")
+                apiService.deleteBiometricRegistrationById(id = "biometrics_registration_id")
             }.verifyDelete("/users/biometric_registrations/biometrics_registration_id")
         }
     }
@@ -416,7 +416,7 @@ internal class StytchApiServiceTests {
     fun `check deleteCryptoWalletById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deleteCryptoWalletById("crypto_wallet_id")
+                apiService.deleteCryptoWalletById(id = "crypto_wallet_id")
             }.verifyDelete("/users/crypto_wallets/crypto_wallet_id")
         }
     }
@@ -425,7 +425,7 @@ internal class StytchApiServiceTests {
     fun `check deleteWebAuthnById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deleteWebAuthnById("webauthn_registration_id")
+                apiService.deleteWebAuthnById(id = "webauthn_registration_id")
             }.verifyDelete("/users/webauthn_registrations/webauthn_registration_id")
         }
     }
