@@ -7,7 +7,7 @@ import org.junit.Assert.fail
 private fun RecordedRequest.verify(
     expectedMethod: String,
     expectedPath: String,
-    expectedBody: Map<String, Any>,
+    expectedBody: Map<String, Any?>,
 ) {
     assert(method == expectedMethod)
     assert(path == expectedPath)
@@ -31,7 +31,7 @@ private fun RecordedRequest.verify(
 
 internal fun RecordedRequest.verifyPost(
     expectedPath: String,
-    expectedBody: Map<String, Any> = emptyMap()
+    expectedBody: Map<String, Any?> = emptyMap()
 ) = verify("POST", expectedPath, expectedBody)
 
 internal fun RecordedRequest.verifyGet(

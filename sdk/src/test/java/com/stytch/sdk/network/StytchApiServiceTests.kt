@@ -36,24 +36,23 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links email loginOrCreate request`() {
         runBlocking {
+            val request = StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+                EMAIL,
+                LOGIN_MAGIC_LINK,
+                "123",
+                "method2"
+            )
             try {
-                apiService.loginOrCreateUserByEmail(
-                    StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
-                        EMAIL,
-                        LOGIN_MAGIC_LINK,
-                        "123",
-                        "method2"
-                    )
-                )
+                apiService.loginOrCreateUserByEmail(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/magic_links/email/login_or_create",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "login_magic_link_url" to LOGIN_MAGIC_LINK,
-                    "code_challenge" to "123",
-                    "code_challenge_method" to "method2"
+                    "email" to request.email,
+                    "login_magic_link_url" to request.loginMagicLinkUrl,
+                    "code_challenge" to request.codeChallenge,
+                    "code_challenge_method" to request.codeChallengeMethod
                 )
             )
         }
@@ -62,21 +61,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links authenticate request`() {
         runBlocking {
+            val request = StytchRequests.MagicLinks.AuthenticateRequest(
+                "token",
+                "123",
+                60
+            )
             try {
-                apiService.authenticate(
-                    StytchRequests.MagicLinks.AuthenticateRequest(
-                        "token",
-                        "123",
-                        60
-                    )
-                )
+                apiService.authenticate(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/magic_links/authenticate",
                 expectedBody = mapOf(
-                    "token" to "token",
-                    "session_duration_minutes" to 60
+                    "token" to request.token,
+                    "session_duration_minutes" to request.sessionDurationMinutes,
+                    "code_verifier" to request.codeVerifier,
                 )
             )
         }
@@ -88,20 +87,19 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
         runBlocking {
+            val request = StytchRequests.OTP.Email(
+                EMAIL,
+                60
+            )
             try {
-                apiService.loginOrCreateUserByOTPWithEmail(
-                    StytchRequests.OTP.Email(
-                        EMAIL,
-                        60
-                    )
-                )
+                apiService.loginOrCreateUserByOTPWithEmail(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/otps/email/login_or_create",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "expiration_minutes" to 60
+                    "email" to request.email,
+                    "expiration_minutes" to request.expirationMinutes
                 )
             )
         }
@@ -110,20 +108,19 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
+            val request = StytchRequests.OTP.SMS(
+                "000",
+                24
+            )
             try {
-                apiService.loginOrCreateUserByOTPWithSMS(
-                    StytchRequests.OTP.SMS(
-                        "000",
-                        24
-                    )
-                )
+                apiService.loginOrCreateUserByOTPWithSMS(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/otps/sms/login_or_create",
                 expectedBody = mapOf(
-                    "phone_number" to "000",
-                    "expiration_minutes" to 24
+                    "phone_number" to request.phoneNumber,
+                    "expiration_minutes" to request.expirationMinutes
                 )
             )
         }
@@ -132,20 +129,19 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
+            val request = StytchRequests.OTP.WhatsApp(
+                "000",
+                60
+            )
             try {
-                apiService.loginOrCreateUserByOTPWithWhatsApp(
-                    StytchRequests.OTP.WhatsApp(
-                        "000",
-                        60
-                    )
-                )
+                apiService.loginOrCreateUserByOTPWithWhatsApp(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/otps/whatsapp/login_or_create",
                 expectedBody = mapOf(
-                    "phone_number" to "000",
-                    "expiration_minutes" to 60
+                    "phone_number" to request.phoneNumber,
+                    "expiration_minutes" to request.expirationMinutes
                 )
             )
         }
@@ -154,22 +150,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP authenticate request`() {
         runBlocking {
+            val request = StytchRequests.OTP.Authenticate(
+                "token",
+                "methodId",
+                60
+            )
             try {
-                apiService.authenticateWithOTP(
-                    StytchRequests.OTP.Authenticate(
-                        "token",
-                        "methodId",
-                        60
-                    )
-                )
+                apiService.authenticateWithOTP(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/otps/authenticate",
                 expectedBody = mapOf(
-                    "token" to "token",
-                    "method_id" to "methodId",
-                    "session_duration_minutes" to 60
+                    "token" to request.token,
+                    "method_id" to request.methodId,
+                    "session_duration_minutes" to request.sessionDurationMinutes,
                 )
             )
         }
@@ -182,22 +177,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords create request`() {
         runBlocking {
+            val request = StytchRequests.Passwords.CreateRequest(
+                EMAIL,
+                "123asd",
+                60
+            )
             try {
-                apiService.passwords(
-                    StytchRequests.Passwords.CreateRequest(
-                        EMAIL,
-                        "123asd",
-                        60
-                    )
-                )
+                apiService.passwords(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/passwords",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "password" to "123asd",
-                    "session_duration_minutes" to 60
+                    "email" to request.email,
+                    "password" to request.password,
+                    "session_duration_minutes" to request.sessionDurationMinutes
                 )
             )
         }
@@ -206,20 +200,19 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords strenghtCheck request`() {
         runBlocking {
+            val request = StytchRequests.Passwords.StrengthCheckRequest(
+                EMAIL,
+                "123asd"
+            )
             try {
-                apiService.strengthCheck(
-                    StytchRequests.Passwords.StrengthCheckRequest(
-                        EMAIL,
-                        "123asd"
-                    )
-                )
+                apiService.strengthCheck(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/passwords/strength_check",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "password" to "123asd"
+                    "email" to request.email,
+                    "password" to request.password
                 )
             )
         }
@@ -228,24 +221,23 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords resetbyEmail request`() {
         runBlocking {
+            val request = StytchRequests.Passwords.ResetByEmailRequest(
+                "token",
+                "123asd",
+                60,
+                "ver1"
+            )
             try {
-                apiService.resetByEmail(
-                    StytchRequests.Passwords.ResetByEmailRequest(
-                        "token",
-                        "123asd",
-                        60,
-                        "ver1"
-                    )
-                )
+                apiService.resetByEmail(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/passwords/email/reset",
                 expectedBody = mapOf(
-                    "token" to "token",
-                    "password" to "123asd",
-                    "session_duration_minutes" to 60,
-                    "code_verifier" to "ver1"
+                    "token" to request.token,
+                    "password" to request.password,
+                    "session_duration_minutes" to request.sessionDurationMinutes,
+                    "code_verifier" to request.codeVerifier
                 )
             )
         }
@@ -254,30 +246,29 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords resetbyEmailStart request`() {
         runBlocking {
+            val request = StytchRequests.Passwords.ResetByEmailStartRequest(
+                EMAIL,
+                "123",
+                "method2",
+                "loginRedirect",
+                24,
+                "resetPasswordUrl",
+                23
+            )
             try {
-                apiService.resetByEmailStart(
-                    StytchRequests.Passwords.ResetByEmailStartRequest(
-                        EMAIL,
-                        "123",
-                        "method2",
-                        "loginRedirect",
-                        24,
-                        "resetPasswordUrl",
-                        23
-                    )
-                )
+                apiService.resetByEmailStart(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/passwords/email/reset/start",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "code_challenge" to "123",
-                    "code_challenge_method" to "method2",
-                    "login_redirect_url" to "loginRedirect",
-                    "reset_password_redirect_url" to "resetPasswordUrl",
-                    "login_expiration_minutes" to 24,
-                    "reset_password_expiration_minutes" to 23
+                    "email" to request.email,
+                    "code_challenge" to request.codeChallenge,
+                    "code_challenge_method" to request.codeChallengeMethod,
+                    "login_redirect_url" to request.loginRedirectUrl,
+                    "reset_password_redirect_url" to request.resetPasswordRedirectUrl,
+                    "login_expiration_minutes" to request.loginExpirationMinutes,
+                    "reset_password_expiration_minutes" to request.resetPasswordExpirationMinutes
                 )
             )
         }
@@ -286,22 +277,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords authenticate request`() {
         runBlocking {
+            val request = StytchRequests.Passwords.AuthenticateRequest(
+                EMAIL,
+                "123asd",
+                46
+            )
             try {
-                apiService.authenticateWithPasswords(
-                    StytchRequests.Passwords.AuthenticateRequest(
-                        EMAIL,
-                        "123asd",
-                        46
-                    )
-                )
+                apiService.authenticateWithPasswords(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/passwords/authenticate",
                 expectedBody = mapOf(
-                    "email" to EMAIL,
-                    "password" to "123asd",
-                    "session_duration_minutes" to 46
+                    "email" to request.email,
+                    "password" to request.password,
+                    "session_duration_minutes" to request.sessionDurationMinutes
                 )
             )
         }
@@ -314,19 +304,14 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Sessions authenticate request`() {
         runBlocking {
+            val request = StytchRequests.Sessions.AuthenticateRequest(24)
             try {
-                apiService.authenticateSessions(
-                    StytchRequests.Sessions.AuthenticateRequest(
-                        24
-                    )
-                )
+                apiService.authenticateSessions(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/sessions/authenticate",
-                expectedBody = mapOf(
-                    "session_duration_minutes" to 24
-                )
+                expectedBody = mapOf("session_duration_minutes" to request.sessionDurationMinutes)
             )
         }
     }
@@ -338,9 +323,7 @@ internal class StytchApiServiceTests {
                 apiService.revokeSessions()
             } catch (_: Exception) {
             }
-            mockWebServer.takeRequest().verifyPost(
-                expectedPath = "/sessions/revoke"
-            )
+            mockWebServer.takeRequest().verifyPost(expectedPath = "/sessions/revoke")
         }
     }
 
@@ -350,16 +333,13 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsRegisterStart request`() {
         runBlocking {
+            val request = StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
             try {
-                apiService.biometricsRegisterStart(
-                    StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
-                )
+                apiService.biometricsRegisterStart(request)
             } catch (_: Exception) {}
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/biometrics/register/start",
-                expectedBody = mapOf(
-                    "public_key" to "publicKey"
-                )
+                expectedBody = mapOf("public_key" to request.publicKey)
             )
         }
     }
@@ -367,21 +347,20 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsRegister request`() {
         runBlocking {
+            val request = StytchRequests.Biometrics.RegisterRequest(
+                signature = "signature",
+                biometricRegistrationId = "biometricRegistrationId",
+                sessionDurationMinutes = 30
+            )
             try {
-                apiService.biometricsRegister(
-                    StytchRequests.Biometrics.RegisterRequest(
-                        signature = "signature",
-                        biometricRegistrationId = "biometricRegistrationId",
-                        sessionDurationMinutes = 30
-                    )
-                )
+                apiService.biometricsRegister(request)
             } catch (_: Exception) {}
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/biometrics/register",
                 expectedBody = mapOf(
-                    "signature" to "signature",
-                    "biometric_registration_id" to "biometricRegistrationId",
-                    "session_duration_minutes" to 30
+                    "signature" to request.signature,
+                    "biometric_registration_id" to request.biometricRegistrationId,
+                    "session_duration_minutes" to request.sessionDurationMinutes
                 )
             )
         }
@@ -390,16 +369,13 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsAuthenticateStart request`() {
         runBlocking {
+            val request = StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
             try {
-                apiService.biometricsAuthenticateStart(
-                    StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
-                )
+                apiService.biometricsAuthenticateStart(request)
             } catch (_: Exception) {}
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/biometrics/authenticate/start",
-                expectedBody = mapOf(
-                    "public_key" to "publicKey"
-                )
+                expectedBody = mapOf("public_key" to request.publicKey)
             )
         }
     }
@@ -407,21 +383,20 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsAuthenticate request`() {
         runBlocking {
+            val request = StytchRequests.Biometrics.AuthenticateRequest(
+                signature = "signature",
+                biometricRegistrationId = "biometricRegistrationId",
+                sessionDurationMinutes = 30
+            )
             try {
-                apiService.biometricsAuthenticate(
-                    StytchRequests.Biometrics.AuthenticateRequest(
-                        signature = "signature",
-                        biometricRegistrationId = "biometricRegistrationId",
-                        sessionDurationMinutes = 30
-                    )
-                )
+                apiService.biometricsAuthenticate(request)
             } catch (_: Exception) {}
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/biometrics/authenticate",
                 expectedBody = mapOf(
-                    "signature" to "signature",
-                    "biometric_registration_id" to "biometricRegistrationId",
-                    "session_duration_minutes" to 30
+                    "signature" to request.signature,
+                    "biometric_registration_id" to request.biometricRegistrationId,
+                    "session_duration_minutes" to request.sessionDurationMinutes
                 )
             )
         }
@@ -500,22 +475,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check authenticateWithGoogleIdToken request`() {
         runBlocking {
+            val request = StytchRequests.OAuth.Google.AuthenticateRequest(
+                idToken = "id_token",
+                nonce = "nonce",
+                sessionDurationMinutes = 30
+            )
             try {
-                apiService.authenticateWithGoogleIdToken(
-                    StytchRequests.OAuth.Google.AuthenticateRequest(
-                        idToken = "id_token",
-                        nonce = "nonce",
-                        sessionDurationMinutes = 30
-                    )
-                )
+                apiService.authenticateWithGoogleIdToken(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/oauth/google/id_token/authenticate",
                 expectedBody = mapOf(
-                    "id_token" to "id_token",
-                    "nonce" to "nonce",
-                    "session_duration_minutes" to 30
+                    "id_token" to request.idToken,
+                    "nonce" to request.nonce,
+                    "session_duration_minutes" to request.sessionDurationMinutes
                 )
             )
         }
@@ -524,22 +498,21 @@ internal class StytchApiServiceTests {
     @Test
     fun `check authenticateWithThirdPartyToken request`() {
         runBlocking {
+            val request = StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                token = "id_token",
+                sessionDurationMinutes = 30,
+                codeVerifier = "code_challenge"
+            )
             try {
-                apiService.authenticateWithThirdPartyToken(
-                    StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
-                        token = "id_token",
-                        sessionDurationMinutes = 30,
-                        codeVerifier = "code_challenge"
-                    )
-                )
+                apiService.authenticateWithThirdPartyToken(request)
             } catch (_: Exception) {
             }
             mockWebServer.takeRequest().verifyPost(
                 expectedPath = "/oauth/authenticate",
                 expectedBody = mapOf(
-                    "token" to "id_token",
-                    "session_duration_minutes" to 30,
-                    "code_verifier" to "code_challenge"
+                    "token" to request.token,
+                    "session_duration_minutes" to request.sessionDurationMinutes,
+                    "code_verifier" to request.codeVerifier
                 )
             )
         }
