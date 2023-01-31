@@ -6,6 +6,7 @@ import com.stytch.sdk.utils.verifyPost
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
 import org.junit.After
 import org.junit.Before
@@ -45,8 +46,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByEmail(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/magic_links/email/login_or_create",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -68,8 +68,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.authenticate(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/magic_links/authenticate",
                 expectedBody = mapOf(
                     "token" to parameters.token,
@@ -92,8 +91,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithEmail(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/otps/email/login_or_create",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -112,8 +110,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithSMS(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/otps/sms/login_or_create",
                 expectedBody = mapOf(
                     "phone_number" to parameters.phoneNumber,
@@ -132,8 +129,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithWhatsApp(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/otps/whatsapp/login_or_create",
                 expectedBody = mapOf(
                     "phone_number" to parameters.phoneNumber,
@@ -153,8 +149,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithOTP(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/otps/authenticate",
                 expectedBody = mapOf(
                     "token" to parameters.token,
@@ -179,8 +174,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.passwords(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/passwords",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -200,8 +194,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.strengthCheck(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/passwords/strength_check",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -222,8 +215,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.resetByEmail(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/passwords/email/reset",
                 expectedBody = mapOf(
                     "token" to parameters.token,
@@ -249,8 +241,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.resetByEmailStart(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/passwords/email/reset/start",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -275,8 +266,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithPasswords(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/passwords/authenticate",
                 expectedBody = mapOf(
                     "email" to parameters.email,
@@ -297,8 +287,7 @@ internal class StytchApiServiceTests {
             val parameters = StytchRequests.Sessions.AuthenticateRequest(24)
             requestIgnoringResponseException {
                 apiService.authenticateSessions(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/sessions/authenticate",
                 expectedBody = mapOf("session_duration_minutes" to parameters.sessionDurationMinutes)
             )
@@ -310,8 +299,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.revokeSessions()
-            }
-            mockWebServer.takeRequest().verifyPost(expectedPath = "/sessions/revoke")
+            }.verifyPost(expectedPath = "/sessions/revoke")
         }
     }
 
@@ -324,8 +312,7 @@ internal class StytchApiServiceTests {
             val parameters = StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
             requestIgnoringResponseException {
                 apiService.biometricsRegisterStart(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/biometrics/register/start",
                 expectedBody = mapOf("public_key" to parameters.publicKey)
             )
@@ -342,8 +329,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.biometricsRegister(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/biometrics/register",
                 expectedBody = mapOf(
                     "signature" to parameters.signature,
@@ -360,8 +346,7 @@ internal class StytchApiServiceTests {
             val parameters = StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
             requestIgnoringResponseException {
                 apiService.biometricsAuthenticateStart(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/biometrics/authenticate/start",
                 expectedBody = mapOf("public_key" to parameters.publicKey)
             )
@@ -378,8 +363,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.biometricsAuthenticate(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/biometrics/authenticate",
                 expectedBody = mapOf(
                     "signature" to parameters.signature,
@@ -397,8 +381,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.getUser()
-            }
-            mockWebServer.takeRequest().verifyGet("/users/me")
+            }.verifyGet("/users/me")
         }
     }
 
@@ -407,8 +390,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteEmailById("email_id")
-            }
-            mockWebServer.takeRequest().verifyDelete("/users/emails/email_id")
+            }.verifyDelete("/users/emails/email_id")
         }
     }
 
@@ -417,8 +399,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deletePhoneNumberById("phone_number_id")
-            }
-            mockWebServer.takeRequest().verifyDelete("/users/phone_numbers/phone_number_id")
+            }.verifyDelete("/users/phone_numbers/phone_number_id")
         }
     }
 
@@ -427,8 +408,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteBiometricRegistrationById("biometrics_registration_id")
-            }
-            mockWebServer.takeRequest().verifyDelete("/users/biometric_registrations/biometrics_registration_id")
+            }.verifyDelete("/users/biometric_registrations/biometrics_registration_id")
         }
     }
 
@@ -437,8 +417,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteCryptoWalletById("crypto_wallet_id")
-            }
-            mockWebServer.takeRequest().verifyDelete("/users/crypto_wallets/crypto_wallet_id")
+            }.verifyDelete("/users/crypto_wallets/crypto_wallet_id")
         }
     }
 
@@ -447,8 +426,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteWebAuthnById("webauthn_registration_id")
-            }
-            mockWebServer.takeRequest().verifyDelete("/users/webauthn_registrations/webauthn_registration_id")
+            }.verifyDelete("/users/webauthn_registrations/webauthn_registration_id")
         }
     }
     // endregion UserManagement
@@ -464,8 +442,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithGoogleIdToken(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/oauth/google/id_token/authenticate",
                 expectedBody = mapOf(
                     "id_token" to parameters.idToken,
@@ -486,8 +463,7 @@ internal class StytchApiServiceTests {
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithThirdPartyToken(parameters)
-            }
-            mockWebServer.takeRequest().verifyPost(
+            }.verifyPost(
                 expectedPath = "/oauth/authenticate",
                 expectedBody = mapOf(
                     "token" to parameters.token,
@@ -499,9 +475,12 @@ internal class StytchApiServiceTests {
     }
     // endregion OAuth
 
-    private suspend fun requestIgnoringResponseException(block: suspend () -> Unit) = try {
-        block()
-    } catch (_: EOFException) {
-        // OkHTTP throws EOFException because it expects a response body, but we're intentionally not creating them
+    private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
+        try {
+            block()
+        } catch (_: EOFException) {
+            // OkHTTP throws EOFException because it expects a response body, but we're intentionally not creating them
+        }
+        return mockWebServer.takeRequest()
     }
 }
