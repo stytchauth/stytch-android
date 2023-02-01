@@ -73,6 +73,7 @@ internal object StytchApi {
     internal object MagicLinks {
         object Email {
             /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
+            @Suppress("LongParameterList")
             suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String?,
@@ -106,6 +107,41 @@ internal object StytchApi {
                     )
                 )
             }
+
+            @Suppress("LongParameterList")
+            suspend fun send(
+                email: String,
+                loginMagicLinkUrl: String?,
+                signupMagicLinkUrl: String?,
+                loginExpirationMinutes: Int?,
+                signupExpirationMinutes: Int?,
+                loginTemplateId: String?,
+                signupTemplateId: String?,
+                locale: String?,
+                attributes: StytchRequests.Attributes?,
+                codeChallenge: String?,
+                userId: String?,
+                sessionToken: String?,
+                sessionJwt: String?,
+            ): StytchResult<BasicData> = safeApiCall {
+                apiService.sendEmailMagicLink(
+                    StytchRequests.MagicLinks.SendRequest(
+                        email = email,
+                        loginMagicLinkUrl = loginMagicLinkUrl,
+                        signupMagicLinkUrl = signupMagicLinkUrl,
+                        loginExpirationMinutes = loginExpirationMinutes,
+                        signupExpirationMinutes = signupExpirationMinutes,
+                        loginTemplateId = loginTemplateId,
+                        signupTemplateId = signupTemplateId,
+                        locale = locale,
+                        attributes = attributes,
+                        codeChallenge = codeChallenge,
+                        userId = userId,
+                        sessionToken = sessionToken,
+                        sessionJwt = sessionJwt,
+                    )
+                )
+            }
         }
     }
 
@@ -122,6 +158,29 @@ internal object StytchApi {
             )
         }
 
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithSMS(
+            phoneNumber: String,
+            expirationMinutes: Int?,
+            locale: String?,
+            attributes: StytchRequests.Attributes?,
+            userId: String?,
+            sessionToken: String?,
+            sessionJwt: String?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithSMS(
+                StytchRequests.OTP.SMS.SendRequest(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes,
+                    locale = locale,
+                    attributes = attributes,
+                    userId = userId,
+                    sessionToken = sessionToken,
+                    sessionJwt = sessionJwt,
+                )
+            )
+        }
+
         suspend fun loginOrCreateUserByOTPWithWhatsApp(
             phoneNumber: String,
             expirationMinutes: UInt
@@ -130,6 +189,29 @@ internal object StytchApi {
                 StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithWhatsApp(
+            phoneNumber: String,
+            expirationMinutes: Int?,
+            locale: String?,
+            attributes: StytchRequests.Attributes?,
+            userId: String?,
+            sessionToken: String?,
+            sessionJwt: String?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithWhatsApp(
+                StytchRequests.OTP.WhatsApp.SendRequest(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes,
+                    locale = locale,
+                    attributes = attributes,
+                    userId = userId,
+                    sessionToken = sessionToken,
+                    sessionJwt = sessionJwt,
                 )
             )
         }
@@ -146,6 +228,33 @@ internal object StytchApi {
                     expirationMinutes = expirationMinutes.toInt(),
                     loginTemplateId = loginTemplateId,
                     signupTemplateId = signupTemplateId,
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithEmail(
+            email: String,
+            expirationMinutes: Int?,
+            loginTemplateId: String?,
+            signupTemplateId: String?,
+            locale: String?,
+            attributes: StytchRequests.Attributes?,
+            userId: String?,
+            sessionToken: String?,
+            sessionJwt: String?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithEmail(
+                StytchRequests.OTP.Email.SendRequest(
+                    email = email,
+                    expirationMinutes = expirationMinutes,
+                    loginTemplateId = loginTemplateId,
+                    signupTemplateId = signupTemplateId,
+                    locale = locale,
+                    attributes = attributes,
+                    userId = userId,
+                    sessionToken = sessionToken,
+                    sessionJwt = sessionJwt,
                 )
             )
         }
