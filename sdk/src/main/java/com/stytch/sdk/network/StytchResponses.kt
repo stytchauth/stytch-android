@@ -77,6 +77,9 @@ internal object StytchResponses {
     @JsonClass(generateAdapter = true)
     class LoginOrCreateOTPResponse(data: LoginOrCreateOTPData) : StytchDataResponse<LoginOrCreateOTPData>(data)
 
+    @JsonClass(generateAdapter = true)
+    class SendResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
+
     open class StytchDataResponse<T>(
         val data: T,
     )

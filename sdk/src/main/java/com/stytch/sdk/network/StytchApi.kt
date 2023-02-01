@@ -115,7 +115,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
-                StytchRequests.OTP.SMS(
+                StytchRequests.OTP.SMS.LoginOrCreateRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -127,7 +127,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
-                StytchRequests.OTP.WhatsApp(
+                StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -141,7 +141,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
-                StytchRequests.OTP.Email(
+                StytchRequests.OTP.Email.LoginOrCreateRequest(
                     email = email,
                     expirationMinutes = expirationMinutes.toInt(),
                     loginTemplateId = loginTemplateId,

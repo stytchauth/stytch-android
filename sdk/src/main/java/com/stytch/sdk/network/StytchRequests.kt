@@ -5,6 +5,29 @@ import com.squareup.moshi.JsonClass
 
 internal object StytchRequests {
 
+    @JsonClass(generateAdapter = true)
+    data class Attributes(
+        @Json(name = "ip_address")
+        val ipAddress: String?,
+        @Json(name = "user_agent")
+        val userAgent: String?
+    )
+
+    @JsonClass(generateAdapter = true)
+    interface SendParameters {
+        val locale: String?
+        val attributes: Attributes?
+
+        @Json(name = "user_id")
+        val userId: String?
+
+        @Json(name = "session_token")
+        val sessionToken: String?
+
+        @Json(name = "session_jwt")
+        val sessionJwt: String?
+    }
+
     object MagicLinks {
         object Email {
             @JsonClass(generateAdapter = true)
@@ -31,6 +54,33 @@ internal object StytchRequests {
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class SendRequest(
+            val email: String,
+            @Json(name = "login_magic_link_url")
+            val loginMagicLinkUrl: String?,
+            @Json(name = "signup_magic_link_url")
+            val signupMagicLinkUrl: String?,
+            @Json(name = "login_expiration_minutes")
+            val loginExpirationMinutes: Int?,
+            @Json(name = "signup_expiration_minutes")
+            val signupExpirationMinutes: Int?,
+            @Json(name = "login_template_id")
+            val loginTemplateId: String?,
+            @Json(name = "signup_template_id")
+            val signupTemplateId: String?,
+            override val locale: String?,
+            override val attributes: Attributes?,
+            @Json(name = "code_challenge")
+            val codeChallenge: String?,
+            @Json(name = "user_id")
+            override val userId: String?,
+            @Json(name = "session_token")
+            override val sessionToken: String?,
+            @Json(name = "session_jwt")
+            override val sessionJwt: String?,
+        ) : SendParameters
     }
 
     object Sessions {
@@ -93,32 +143,89 @@ internal object StytchRequests {
     }
 
     object OTP {
-        @JsonClass(generateAdapter = true)
-        data class SMS(
-            @Json(name = "phone_number")
-            val phoneNumber: String,
-            @Json(name = "expiration_minutes")
-            val expirationMinutes: Int,
-        )
+        object SMS {
+            @JsonClass(generateAdapter = true)
+            data class LoginOrCreateRequest(
+                @Json(name = "phone_number")
+                val phoneNumber: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int,
+            )
 
-        @JsonClass(generateAdapter = true)
-        data class WhatsApp(
-            @Json(name = "phone_number")
-            val phoneNumber: String,
-            @Json(name = "expiration_minutes")
-            val expirationMinutes: Int,
-        )
+            @JsonClass(generateAdapter = true)
+            data class SendRequest(
+                @Json(name = "phone_number")
+                val phoneNumber: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int?,
+                override val locale: String?,
+                override val attributes: Attributes?,
+                @Json(name = "user_id")
+                override val userId: String?,
+                @Json(name = "session_token")
+                override val sessionToken: String?,
+                @Json(name = "session_jwt")
+                override val sessionJwt: String?,
+            ) : SendParameters
+        }
 
-        @JsonClass(generateAdapter = true)
-        data class Email(
-            val email: String,
-            @Json(name = "expiration_minutes")
-            val expirationMinutes: Int,
-            @Json(name = "login_template_id")
-            val loginTemplateId: String? = null,
-            @Json(name = "signup_template_id")
-            val signupTemplateId: String? = null,
-        )
+        object WhatsApp {
+            @JsonClass(generateAdapter = true)
+            data class LoginOrCreateRequest(
+                @Json(name = "phone_number")
+                val phoneNumber: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int,
+            )
+
+            @JsonClass(generateAdapter = true)
+            data class SendRequest(
+                @Json(name = "phone_number")
+                val phoneNumber: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int?,
+                override val locale: String?,
+                override val attributes: Attributes?,
+                @Json(name = "user_id")
+                override val userId: String?,
+                @Json(name = "session_token")
+                override val sessionToken: String?,
+                @Json(name = "session_jwt")
+                override val sessionJwt: String?,
+            ) : SendParameters
+        }
+
+        object Email {
+            @JsonClass(generateAdapter = true)
+            data class LoginOrCreateRequest(
+                val email: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String? = null,
+                @Json(name = "signup_template_id")
+                val signupTemplateId: String? = null,
+            )
+
+            @JsonClass(generateAdapter = true)
+            data class SendRequest(
+                val email: String,
+                @Json(name = "expiration_minutes")
+                val expirationMinutes: Int?,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String?,
+                @Json(name = "signup_template_id")
+                val signupTemplateId: String?,
+                override val locale: String?,
+                override val attributes: Attributes?,
+                @Json(name = "user_id")
+                override val userId: String?,
+                @Json(name = "session_token")
+                override val sessionToken: String?,
+                @Json(name = "session_jwt")
+                override val sessionJwt: String?,
+            ) : SendParameters
+        }
 
         @JsonClass(generateAdapter = true)
         data class Authenticate(

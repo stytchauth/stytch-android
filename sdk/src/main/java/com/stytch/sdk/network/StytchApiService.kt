@@ -24,6 +24,11 @@ internal interface StytchApiService {
         @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest
     ): StytchResponses.MagicLinks.Email.LoginOrCreateUserResponse
 
+    @POST("magic_links/email/send")
+    suspend fun sendEmailMagicLink(
+        @Body request: StytchRequests.MagicLinks.SendRequest
+    ): StytchResponses.SendResponse
+
     @POST("magic_links/authenticate")
     suspend fun authenticate(
         @Body request: StytchRequests.MagicLinks.AuthenticateRequest
@@ -43,18 +48,33 @@ internal interface StytchApiService {
     //region OTP
     @POST("otps/sms/login_or_create")
     suspend fun loginOrCreateUserByOTPWithSMS(
-        @Body request: StytchRequests.OTP.SMS
+        @Body request: StytchRequests.OTP.SMS.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
+
+    @POST("otps/sms/send")
+    suspend fun sendOTPWithSMS(
+        @Body request: StytchRequests.OTP.SMS.SendRequest
+    ): StytchResponses.SendResponse
 
     @POST("otps/whatsapp/login_or_create")
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
-        @Body request: StytchRequests.OTP.WhatsApp
+        @Body request: StytchRequests.OTP.WhatsApp.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
+
+    @POST("otps/whatsapp/send")
+    suspend fun sendOTPWithWhatsApp(
+        @Body request: StytchRequests.OTP.WhatsApp.SendRequest
+    ): StytchResponses.SendResponse
 
     @POST("otps/email/login_or_create")
     suspend fun loginOrCreateUserByOTPWithEmail(
-        @Body request: StytchRequests.OTP.Email
+        @Body request: StytchRequests.OTP.Email.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
+
+    @POST("otps/email/send")
+    suspend fun sendOTPWithEmail(
+        @Body request: StytchRequests.OTP.Email.SendRequest
+    ): StytchResponses.SendResponse
 
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
     suspend fun authenticateWithOTP(

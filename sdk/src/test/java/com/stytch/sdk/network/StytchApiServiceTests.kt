@@ -89,7 +89,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email(
+            val parameters = StytchRequests.OTP.Email.LoginOrCreateRequest(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -112,7 +112,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS(
+            val parameters = StytchRequests.OTP.SMS.LoginOrCreateRequest(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -131,7 +131,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp(
+            val parameters = StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
