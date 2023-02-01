@@ -1,6 +1,7 @@
 package com.stytch.sdk.otp
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.StytchDispatchers
 import com.stytch.sdk.network.StytchApi
@@ -68,10 +69,32 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override suspend fun send(parameters: OTP.SmsOTP.SendParameters): BaseResponse =
+            withContext(dispatchers.io) {
+                api.sendOTPWithSMS(
+                    phoneNumber = parameters.phoneNumber,
+                    expirationMinutes = parameters.expirationMinutes,
+                    locale = parameters.locale,
+                    attributes = parameters.attributes,
+                    userId = parameters.userId,
+                    sessionToken = parameters.sessionToken,
+                    sessionJwt = parameters.sessionJwt,
+                )
+            }
+
+        override fun send(parameters: OTP.SmsOTP.SendParameters, callback: (response: BaseResponse) -> Unit) {
+            externalScope.launch(dispatchers.ui) {
+                val result = send(parameters)
+                callback(result)
+            }
+        }
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
-        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.LoginOrCreateParameters): LoginOrCreateOTPResponse {
+        override suspend fun loginOrCreate(
+            parameters: OTP.WhatsAppOTP.LoginOrCreateParameters
+        ): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
                 result = api.loginOrCreateUserByOTPWithWhatsApp(
@@ -89,6 +112,26 @@ internal class OTPImpl internal constructor(
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
+                callback(result)
+            }
+        }
+
+        override suspend fun send(parameters: OTP.WhatsAppOTP.SendParameters): BaseResponse =
+            withContext(dispatchers.io) {
+                api.sendOTPWithWhatsApp(
+                    phoneNumber = parameters.phoneNumber,
+                    expirationMinutes = parameters.expirationMinutes,
+                    locale = parameters.locale,
+                    attributes = parameters.attributes,
+                    userId = parameters.userId,
+                    sessionToken = parameters.sessionToken,
+                    sessionJwt = parameters.sessionJwt,
+                )
+            }
+
+        override fun send(parameters: OTP.WhatsAppOTP.SendParameters, callback: (response: BaseResponse) -> Unit) {
+            externalScope.launch(dispatchers.ui) {
+                val result = send(parameters)
                 callback(result)
             }
         }
@@ -115,6 +158,27 @@ internal class OTPImpl internal constructor(
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
+                callback(result)
+            }
+        }
+
+        override suspend fun send(parameters: OTP.EmailOTP.SendParameters): BaseResponse = withContext(dispatchers.io) {
+            api.sendOTPWithEmail(
+                email = parameters.email,
+                expirationMinutes = parameters.expirationMinutes,
+                loginTemplateId = parameters.loginTemplateId,
+                signupTemplateId = parameters.signupTemplateId,
+                locale = parameters.locale,
+                attributes = parameters.attributes,
+                userId = parameters.userId,
+                sessionToken = parameters.sessionToken,
+                sessionJwt = parameters.sessionJwt,
+            )
+        }
+
+        override fun send(parameters: OTP.EmailOTP.SendParameters, callback: (response: BaseResponse) -> Unit) {
+            externalScope.launch(dispatchers.ui) {
+                val result = send(parameters)
                 callback(result)
             }
         }

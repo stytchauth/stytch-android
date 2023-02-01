@@ -1,6 +1,7 @@
 package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.PREFERENCES_CODE_VERIFIER
 import com.stytch.sdk.StorageHelper
@@ -100,6 +101,35 @@ internal class MagicLinksImpl internal constructor(
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
                 // change to main thread to call callback
+                callback(result)
+            }
+        }
+
+        override suspend fun send(parameters: MagicLinks.EmailMagicLinks.SendParameters): BaseResponse =
+            withContext(dispatchers.io) {
+                api.send(
+                    email = parameters.email,
+                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                    signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                    loginExpirationMinutes = parameters.loginExpirationMinutes,
+                    signupExpirationMinutes = parameters.signupExpirationMinutes,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
+                    locale = parameters.locale,
+                    attributes = parameters.attributes,
+                    codeChallenge = parameters.codeChallenge,
+                    userId = parameters.userId,
+                    sessionToken = parameters.sessionToken,
+                    sessionJwt = parameters.sessionJwt,
+                )
+            }
+
+        override fun send(
+            parameters: MagicLinks.EmailMagicLinks.SendParameters,
+            callback: (response: BaseResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                val result = send(parameters)
                 callback(result)
             }
         }

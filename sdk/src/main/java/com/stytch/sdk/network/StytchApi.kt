@@ -10,6 +10,7 @@ import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
+import com.stytch.sdk.UserAttributes
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
@@ -118,7 +119,7 @@ internal object StytchApi {
                 loginTemplateId: String?,
                 signupTemplateId: String?,
                 locale: String?,
-                attributes: StytchRequests.Attributes?,
+                attributes: UserAttributes?,
                 codeChallenge: String?,
                 userId: String?,
                 sessionToken: String?,
@@ -134,7 +135,7 @@ internal object StytchApi {
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
                         locale = locale,
-                        attributes = attributes,
+                        attributes = attributes?.toApiAttributes(),
                         codeChallenge = codeChallenge,
                         userId = userId,
                         sessionToken = sessionToken,
@@ -163,7 +164,7 @@ internal object StytchApi {
             phoneNumber: String,
             expirationMinutes: Int?,
             locale: String?,
-            attributes: StytchRequests.Attributes?,
+            attributes: UserAttributes?,
             userId: String?,
             sessionToken: String?,
             sessionJwt: String?,
@@ -173,7 +174,7 @@ internal object StytchApi {
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes,
                     locale = locale,
-                    attributes = attributes,
+                    attributes = attributes?.toApiAttributes(),
                     userId = userId,
                     sessionToken = sessionToken,
                     sessionJwt = sessionJwt,
@@ -198,7 +199,7 @@ internal object StytchApi {
             phoneNumber: String,
             expirationMinutes: Int?,
             locale: String?,
-            attributes: StytchRequests.Attributes?,
+            attributes: UserAttributes?,
             userId: String?,
             sessionToken: String?,
             sessionJwt: String?,
@@ -208,7 +209,7 @@ internal object StytchApi {
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes,
                     locale = locale,
-                    attributes = attributes,
+                    attributes = attributes?.toApiAttributes(),
                     userId = userId,
                     sessionToken = sessionToken,
                     sessionJwt = sessionJwt,
@@ -239,7 +240,7 @@ internal object StytchApi {
             loginTemplateId: String?,
             signupTemplateId: String?,
             locale: String?,
-            attributes: StytchRequests.Attributes?,
+            attributes: UserAttributes?,
             userId: String?,
             sessionToken: String?,
             sessionJwt: String?,
@@ -251,7 +252,7 @@ internal object StytchApi {
                     loginTemplateId = loginTemplateId,
                     signupTemplateId = signupTemplateId,
                     locale = locale,
-                    attributes = attributes,
+                    attributes = attributes?.toApiAttributes(),
                     userId = userId,
                     sessionToken = sessionToken,
                     sessionJwt = sessionJwt,
