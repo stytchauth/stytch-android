@@ -5,8 +5,8 @@ import org.junit.Test
 internal class MagicLinksTest {
     @Test
     fun `MagicLinks EmailMagicLinks Parameters have correct default values`() {
-        val params = MagicLinks.EmailMagicLinks.Parameters("emailaddress")
-        val expected = MagicLinks.EmailMagicLinks.Parameters(
+        val params = MagicLinks.EmailMagicLinks.LoginOrCreateParameters("emailaddress")
+        val expected = MagicLinks.EmailMagicLinks.LoginOrCreateParameters(
             email = "emailaddress",
             loginMagicLinkUrl = null,
             signupMagicLinkUrl = null,

@@ -49,7 +49,7 @@ internal class MagicLinksImplTest {
     private val dispatcher = Dispatchers.Unconfined
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
-    private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
+    private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.LoginOrCreateParameters>(relaxed = true)
     private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
 
     @Before

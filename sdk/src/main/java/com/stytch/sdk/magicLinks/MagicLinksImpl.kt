@@ -63,7 +63,7 @@ internal class MagicLinksImpl internal constructor(
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
 
         override suspend fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.Parameters
+            parameters: MagicLinks.EmailMagicLinks.LoginOrCreateParameters
         ): LoginOrCreateUserByEmailResponse {
             val result: LoginOrCreateUserByEmailResponse
             withContext(dispatchers.io) {
@@ -93,7 +93,7 @@ internal class MagicLinksImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.Parameters,
+            parameters: MagicLinks.EmailMagicLinks.LoginOrCreateParameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
             // call endpoint in IO thread

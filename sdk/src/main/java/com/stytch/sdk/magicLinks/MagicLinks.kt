@@ -1,8 +1,10 @@
 package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
+import com.stytch.sdk.UserAttributes
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
@@ -57,7 +59,7 @@ public interface MagicLinks {
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
-        public data class Parameters(
+        public data class LoginOrCreateParameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
@@ -72,7 +74,7 @@ public interface MagicLinks {
          * @param parameters required to receive magic link
          * @return LoginOrCreateUserByEmailResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateUserByEmailResponse
+        public suspend fun loginOrCreate(parameters: LoginOrCreateParameters): LoginOrCreateUserByEmailResponse
 
         /**
          * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
@@ -80,8 +82,28 @@ public interface MagicLinks {
          * @param callback calls callback with LoginOrCreateUserByEmailResponse response from backend
          */
         public fun loginOrCreate(
-            parameters: Parameters,
+            parameters: LoginOrCreateParameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         )
+
+        public data class SendParameters(
+            val email: String,
+            val loginMagicLinkUrl: String?,
+            val signupMagicLinkUrl: String?,
+            val loginExpirationMinutes: Int?,
+            val signupExpirationMinutes: Int?,
+            val loginTemplateId: String?,
+            val signupTemplateId: String?,
+            val locale: String?,
+            val attributes: UserAttributes?,
+            val codeChallenge: String?,
+            val userId: String?,
+            val sessionToken: String?,
+            val sessionJwt: String?,
+        )
+
+        public suspend fun send(parameters: SendParameters): BaseResponse
+
+        public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
     }
 }

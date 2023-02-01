@@ -1,9 +1,11 @@
 package com.stytch.sdk.otp
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.LoginOrCreateOTPResponse
+import com.stytch.sdk.UserAttributes
 
 /**
  * OTP interface that encompasses authentication functions as well as other related functionality
@@ -66,7 +68,7 @@ public interface OTP {
          * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @param expirationMinutes indicates how long the OTP should last before it expires
          */
-        public data class Parameters(
+        public data class LoginOrCreateParameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
         )
@@ -76,7 +78,7 @@ public interface OTP {
          * @param parameters required to receive a SMS OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
+        public suspend fun loginOrCreate(parameters: LoginOrCreateParameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s SMS OTP login_or_create endpoint. Requests a SMS OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -84,9 +86,23 @@ public interface OTP {
          * @param callback calls callback with BaseResponse response from backend
          */
         public fun loginOrCreate(
-            parameters: Parameters,
+            parameters: LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        public data class SendParameters(
+            val phoneNumber: String,
+            val expirationMinutes: Int?,
+            val locale: String?,
+            val attributes: UserAttributes,
+            val userId: String?,
+            val sessionToken: String?,
+            val sessionJwt: String?,
+        )
+
+        public suspend fun send(parameters: SendParameters): BaseResponse
+
+        public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
     }
 
     /**
@@ -98,7 +114,7 @@ public interface OTP {
          * @param phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format (i.e. +1XXXXXXXXXX)
          * @param expirationMinutes indicates how long the OTP should last before it expires
          */
-        public data class Parameters(
+        public data class LoginOrCreateParameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
         )
@@ -108,7 +124,7 @@ public interface OTP {
          * @param parameters required to receive a WhatsApp OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
+        public suspend fun loginOrCreate(parameters: LoginOrCreateParameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -116,9 +132,23 @@ public interface OTP {
          * @param callback calls callback with BaseResponse response from backend
          */
         public fun loginOrCreate(
-            parameters: Parameters,
+            parameters: LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        public data class SendParameters(
+            val phoneNumber: String,
+            val expirationMinutes: Int?,
+            val locale: String?,
+            val attributes: UserAttributes,
+            val userId: String?,
+            val sessionToken: String?,
+            val sessionJwt: String?,
+        )
+
+        public suspend fun send(parameters: SendParameters): BaseResponse
+
+        public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
     }
 
     /**
@@ -132,7 +162,7 @@ public interface OTP {
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
-        public data class Parameters(
+        public data class LoginOrCreateParameters(
             val email: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             val loginTemplateId: String? = null,
@@ -144,7 +174,7 @@ public interface OTP {
          * @param parameters required to receive an Email OTP
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
+        public suspend fun loginOrCreate(parameters: LoginOrCreateParameters): LoginOrCreateOTPResponse
 
         /**
          * Wraps Stytch’s Email OTP login_or_create endpoint. Requests an Email OTP for a user to log in or create an account depending on the presence and/or status current account.
@@ -152,8 +182,24 @@ public interface OTP {
          * @param callback calls callback with BaseResponse response from backend
          */
         public fun loginOrCreate(
-            parameters: Parameters,
+            parameters: LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        public data class SendParameters(
+            val email: String,
+            val expirationMinutes: Int?,
+            val loginTemplateId: String?,
+            val signupTemplateId: String?,
+            val locale: String?,
+            val attributes: UserAttributes,
+            val userId: String?,
+            val sessionToken: String?,
+            val sessionJwt: String?,
+        )
+
+        public suspend fun send(parameters: SendParameters): BaseResponse
+
+        public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
     }
 }

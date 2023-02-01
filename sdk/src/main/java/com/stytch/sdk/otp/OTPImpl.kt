@@ -47,7 +47,7 @@ internal class OTPImpl internal constructor(
     }
 
     private inner class SmsOTPImpl : OTP.SmsOTP {
-        override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
+        override suspend fun loginOrCreate(parameters: OTP.SmsOTP.LoginOrCreateParameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
                 result = api.loginOrCreateByOTPWithSMS(
@@ -60,7 +60,7 @@ internal class OTPImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: OTP.SmsOTP.Parameters,
+            parameters: OTP.SmsOTP.LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
             externalScope.launch(dispatchers.ui) {
@@ -71,7 +71,7 @@ internal class OTPImpl internal constructor(
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
-        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): LoginOrCreateOTPResponse {
+        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.LoginOrCreateParameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
                 result = api.loginOrCreateUserByOTPWithWhatsApp(
@@ -84,7 +84,7 @@ internal class OTPImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: OTP.WhatsAppOTP.Parameters,
+            parameters: OTP.WhatsAppOTP.LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
             externalScope.launch(dispatchers.ui) {
@@ -95,7 +95,7 @@ internal class OTPImpl internal constructor(
     }
 
     private inner class EmailOTPImpl : OTP.EmailOTP {
-        override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): LoginOrCreateOTPResponse {
+        override suspend fun loginOrCreate(parameters: OTP.EmailOTP.LoginOrCreateParameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
                 result = api.loginOrCreateUserByOTPWithEmail(
@@ -110,7 +110,7 @@ internal class OTPImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: OTP.EmailOTP.Parameters,
+            parameters: OTP.EmailOTP.LoginOrCreateParameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit
         ) {
             externalScope.launch(dispatchers.ui) {
