@@ -10,6 +10,7 @@ import com.stytch.sdk.biometrics.BiometricsProviderImpl
 import com.stytch.sdk.magicLinks.MagicLinks
 import com.stytch.sdk.magicLinks.MagicLinksImpl
 import com.stytch.sdk.network.StytchApi
+import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
 import com.stytch.sdk.network.responseData.CreateResponse
@@ -259,46 +260,46 @@ public object StytchClient {
      * Handle magic link
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
-     * @return AuthResponse from backend after calling any of the authentication methods
+     * @return DeeplinkHandledStatus from backend after calling any of the authentication methods
      */
-    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): AuthResponse {
+    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): DeeplinkHandledStatus {
         assertInitialized()
-        val result: AuthResponse
-        withContext(dispatchers.io) {
+        return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                result = StytchResult.Error(StytchExceptions.Input("Magic link missing token"))
-                return@withContext
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
             }
-            result = when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 TokenType.MAGIC_LINKS -> {
-                    magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
+                    DeeplinkHandledStatus.Handled(
+                        magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
+                    )
                 }
                 TokenType.OAUTH -> {
-                    oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
+                    DeeplinkHandledStatus.Handled(
+                        oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
+                    )
                 }
                 TokenType.PASSWORD_RESET -> {
-                    TODO("Implement password reset handling")
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = TokenType.PASSWORD_RESET, token = token)
                 }
                 TokenType.UNKNOWN -> {
-                    StytchResult.Error(StytchExceptions.Input("Unknown magic link type"))
+                    DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
                 }
             }
         }
-
-        return result
     }
 
     /**
      * Handle magic link
      * @param uri - intent.data from deep link
      * @param sessionDurationMinutes - sessionDuration
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback calls callback with DeeplinkHandledStatus response from backend
      */
     public fun handle(
         uri: Uri,
         sessionDurationMinutes: UInt,
-        callback: (response: AuthResponse) -> Unit
+        callback: (response: DeeplinkHandledStatus) -> Unit
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = handle(uri, sessionDurationMinutes)

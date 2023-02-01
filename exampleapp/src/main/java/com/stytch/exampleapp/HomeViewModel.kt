@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.DeeplinkHandledStatus
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.magicLinks.MagicLinks
 import com.stytch.sdk.otp.OTP
@@ -67,8 +68,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun handleUri(uri: Uri) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
-            _currentResponse.value = result.toFriendlyDisplay()
+            _currentResponse.value = when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
+                is DeeplinkHandledStatus.NotHandled -> result.reason
+                is DeeplinkHandledStatus.Handled -> result.response.toFriendlyDisplay()
+                // This only happens for password reset deeplinks
+                is DeeplinkHandledStatus.ManualHandlingRequired ->
+                    "Password reset token retrieved, initiate password reset flow"
+            }
         }.invokeOnCompletion {
             _loadingState.value = false
         }
