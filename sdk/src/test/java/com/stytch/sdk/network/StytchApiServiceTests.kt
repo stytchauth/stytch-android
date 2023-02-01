@@ -459,7 +459,11 @@ internal class StytchApiServiceTests {
             val parameters = StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
                 token = "id_token",
                 sessionDurationMinutes = 30,
-                codeVerifier = "code_challenge"
+                codeVerifier = "code_challenge",
+                sessionCustomClaims = mapOf(
+                    "custom_claim_1" to "custom_claim_1_value",
+                    "custom_claim_2" to "custom_claim_2_value",
+                )
             )
             requestIgnoringResponseException {
                 apiService.authenticateWithThirdPartyToken(parameters)
@@ -468,7 +472,8 @@ internal class StytchApiServiceTests {
                 expectedBody = mapOf(
                     "token" to parameters.token,
                     "session_duration_minutes" to parameters.sessionDurationMinutes,
-                    "code_verifier" to parameters.codeVerifier
+                    "code_verifier" to parameters.codeVerifier,
+                    "session_custom_claims" to parameters.sessionCustomClaims
                 )
             )
         }
