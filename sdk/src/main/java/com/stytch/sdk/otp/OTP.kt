@@ -92,12 +92,12 @@ public interface OTP {
 
         public data class SendParameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt?,
-            val locale: String?,
-            val attributes: UserAttributes?,
-            val userId: String?,
-            val sessionToken: String?,
-            val sessionJwt: String?,
+            val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val locale: String? = null,
+            val attributes: UserAttributes? = null,
+            val userId: String? = null,
+            val sessionToken: String? = null,
+            val sessionJwt: String? = null,
         )
 
         public suspend fun send(parameters: SendParameters): BaseResponse
@@ -138,12 +138,12 @@ public interface OTP {
 
         public data class SendParameters(
             val phoneNumber: String,
-            val expirationMinutes: UInt?,
-            val locale: String?,
-            val attributes: UserAttributes?,
-            val userId: String?,
-            val sessionToken: String?,
-            val sessionJwt: String?,
+            val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val locale: String? = null,
+            val attributes: UserAttributes? = null,
+            val userId: String? = null,
+            val sessionToken: String? = null,
+            val sessionJwt: String? = null,
         )
 
         public suspend fun send(parameters: SendParameters): BaseResponse
@@ -188,14 +188,14 @@ public interface OTP {
 
         public data class SendParameters(
             val email: String,
-            val expirationMinutes: UInt?,
-            val loginTemplateId: String?,
-            val signupTemplateId: String?,
-            val locale: String?,
-            val attributes: UserAttributes?,
-            val userId: String?,
-            val sessionToken: String?,
-            val sessionJwt: String?,
+            val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
+            val locale: String? = null,
+            val attributes: UserAttributes? = null,
+            val userId: String? = null,
+            val sessionToken: String? = null,
+            val sessionJwt: String? = null,
         )
 
         public suspend fun send(parameters: SendParameters): BaseResponse

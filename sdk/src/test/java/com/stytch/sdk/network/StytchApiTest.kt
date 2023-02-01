@@ -163,7 +163,7 @@ internal class StytchApiTest {
     fun `StytchApi Passwords resetByEmailStart calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
-        StytchApi.Passwords.resetByEmailStart("", "", "", "", 30U, "", 30U)
+        StytchApi.Passwords.resetByEmailStart("", "", "", "", 30, "", 30)
         coVerify { StytchApi.apiService.resetByEmailStart(any()) }
     }
 
@@ -187,7 +187,7 @@ internal class StytchApiTest {
     fun `StytchApi Sessions authenticate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-        StytchApi.Sessions.authenticate(30U)
+        StytchApi.Sessions.authenticate(30)
         coVerify { StytchApi.apiService.authenticateSessions(any()) }
     }
 

@@ -114,8 +114,8 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 signupMagicLinkUrl: String?,
-                loginExpirationMinutes: UInt?,
-                signupExpirationMinutes: UInt?,
+                loginExpirationMinutes: Int?,
+                signupExpirationMinutes: Int?,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
                 locale: String?,
@@ -130,8 +130,8 @@ internal object StytchApi {
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         signupMagicLinkUrl = signupMagicLinkUrl,
-                        loginExpirationMinutes = loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = signupExpirationMinutes?.toInt(),
+                        loginExpirationMinutes = loginExpirationMinutes,
+                        signupExpirationMinutes = signupExpirationMinutes,
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
                         locale = locale,
@@ -311,9 +311,9 @@ internal object StytchApi {
             codeChallenge: String,
             codeChallengeMethod: String,
             loginRedirectUrl: String?,
-            loginExpirationMinutes: UInt?,
+            loginExpirationMinutes: Int?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: UInt?
+            resetPasswordExpirationMinutes: Int?
         ): StytchResult<BasicData> = safeApiCall {
             apiService.resetByEmailStart(
                 StytchRequests.Passwords.ResetByEmailStartRequest(
@@ -360,7 +360,7 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: UInt? = null
+            sessionDurationMinutes: Int? = null
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(

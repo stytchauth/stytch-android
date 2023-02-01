@@ -63,8 +63,8 @@ public interface MagicLinks {
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: UInt? = null,
-            val signupExpirationMinutes: UInt? = null,
+            val loginExpirationMinutes: Int? = null,
+            val signupExpirationMinutes: Int? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
         )
@@ -88,18 +88,18 @@ public interface MagicLinks {
 
         public data class SendParameters(
             val email: String,
-            val loginMagicLinkUrl: String?,
-            val signupMagicLinkUrl: String?,
-            val loginExpirationMinutes: UInt?,
-            val signupExpirationMinutes: UInt?,
-            val loginTemplateId: String?,
-            val signupTemplateId: String?,
-            val locale: String?,
-            val attributes: UserAttributes?,
-            val codeChallenge: String?,
-            val userId: String?,
-            val sessionToken: String?,
-            val sessionJwt: String?,
+            val loginMagicLinkUrl: String? = null,
+            val signupMagicLinkUrl: String? = null,
+            val loginExpirationMinutes: Int? = null,
+            val signupExpirationMinutes: Int? = null,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
+            val locale: String? = null,
+            val attributes: UserAttributes? = null,
+            val codeChallenge: String? = null,
+            val userId: String? = null,
+            val sessionToken: String? = null,
+            val sessionJwt: String? = null,
         )
 
         public suspend fun send(parameters: SendParameters): BaseResponse

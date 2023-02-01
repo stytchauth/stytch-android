@@ -13,7 +13,6 @@ internal object StytchRequests {
         val userAgent: String?
     )
 
-    @JsonClass(generateAdapter = true)
     interface SendParameters {
         val locale: String?
         val attributes: Attributes?
