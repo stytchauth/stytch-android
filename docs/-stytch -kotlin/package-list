@@ -221,10 +221,21 @@ $dokka.location:com.stytch.sdk.userManagement/UserManagement/getUser/#/PointingT
 $dokka.location:com.stytch.sdk.userManagement/UserManagement/getUser/#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.UserData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.userManagement/-user-management/get-user.html
 $dokka.location:com.stytch.sdk////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/index.html
 $dokka.location:com.stytch.sdk//toStytchErrorType/kotlin.String#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/to-stytch-error-type.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.Handled///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-handled/index.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.Handled/Handled/#com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.IAuthData]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-handled/-handled.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.Handled/response/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-handled/response.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.ManualHandlingRequired///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-manual-handling-required/index.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.ManualHandlingRequired/ManualHandlingRequired/#com.stytch.sdk.TokenType#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-manual-handling-required/-manual-handling-required.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.ManualHandlingRequired/token/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-manual-handling-required/token.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.ManualHandlingRequired/type/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-manual-handling-required/type.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.NotHandled///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-not-handled/index.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.NotHandled/NotHandled/#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-not-handled/-not-handled.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus.NotHandled/reason/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/-not-handled/reason.html
+$dokka.location:com.stytch.sdk/DeeplinkHandledStatus///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-deeplink-handled-status/index.html
 $dokka.location:com.stytch.sdk/StytchClient///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/index.html
 $dokka.location:com.stytch.sdk/StytchClient/biometrics/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/biometrics.html
 $dokka.location:com.stytch.sdk/StytchClient/configure/#android.content.Context#kotlin.String/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/configure.html
-$dokka.location:com.stytch.sdk/StytchClient/handle/#android.net.Uri#kotlin.UInt#kotlin.Function1[com.stytch.sdk.StytchResult[com.stytch.sdk.network.responseData.IAuthData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/handle.html
+$dokka.location:com.stytch.sdk/StytchClient/handle/#android.net.Uri#kotlin.UInt#kotlin.Function1[com.stytch.sdk.DeeplinkHandledStatus,kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/handle.html
 $dokka.location:com.stytch.sdk/StytchClient/handle/#android.net.Uri#kotlin.UInt/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/handle.html
 $dokka.location:com.stytch.sdk/StytchClient/magicLinks/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/magic-links.html
 $dokka.location:com.stytch.sdk/StytchClient/oauth/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-client/oauth.html
@@ -253,6 +264,11 @@ $dokka.location:com.stytch.sdk/StytchResult.Success///PointingToDeclaration/-st
 $dokka.location:com.stytch.sdk/StytchResult.Success/Success/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/-success/-success.html
 $dokka.location:com.stytch.sdk/StytchResult.Success/value/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/-success/value.html
 $dokka.location:com.stytch.sdk/StytchResult///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-stytch-result/index.html
+$dokka.location:com.stytch.sdk/TokenType.MAGIC_LINKS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk/-token-type/-m-a-g-i-c_-l-i-n-k-s/index.html
+$dokka.location:com.stytch.sdk/TokenType.OAUTH///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk/-token-type/-o-a-u-t-h/index.html
+$dokka.location:com.stytch.sdk/TokenType.PASSWORD_RESET///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk/-token-type/-p-a-s-s-w-o-r-d_-r-e-s-e-t/index.html
+$dokka.location:com.stytch.sdk/TokenType.UNKNOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk/-token-type/-u-n-k-n-o-w-n/index.html
+$dokka.location:com.stytch.sdk/TokenType///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk/-token-type/index.html
 com.stytch.sdk
 com.stytch.sdk.biometrics
 com.stytch.sdk.magicLinks
