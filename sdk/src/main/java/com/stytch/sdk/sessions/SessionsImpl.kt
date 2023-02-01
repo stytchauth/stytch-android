@@ -41,7 +41,7 @@ internal class SessionsImpl internal constructor(
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
             result = api.authenticate(
-                authParams.sessionDurationMinutes?.toInt()
+                authParams.sessionDurationMinutes
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }

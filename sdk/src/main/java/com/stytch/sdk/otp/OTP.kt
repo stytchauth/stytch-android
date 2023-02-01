@@ -92,7 +92,7 @@ public interface OTP {
 
         public data class SendParameters(
             val phoneNumber: String,
-            val expirationMinutes: Int?,
+            val expirationMinutes: UInt?,
             val locale: String?,
             val attributes: UserAttributes?,
             val userId: String?,
@@ -138,7 +138,7 @@ public interface OTP {
 
         public data class SendParameters(
             val phoneNumber: String,
-            val expirationMinutes: Int?,
+            val expirationMinutes: UInt?,
             val locale: String?,
             val attributes: UserAttributes?,
             val userId: String?,
@@ -188,7 +188,7 @@ public interface OTP {
 
         public data class SendParameters(
             val email: String,
-            val expirationMinutes: Int?,
+            val expirationMinutes: UInt?,
             val loginTemplateId: String?,
             val signupTemplateId: String?,
             val locale: String?,

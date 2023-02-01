@@ -114,8 +114,8 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 signupMagicLinkUrl: String?,
-                loginExpirationMinutes: Int?,
-                signupExpirationMinutes: Int?,
+                loginExpirationMinutes: UInt?,
+                signupExpirationMinutes: UInt?,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
                 locale: String?,
@@ -130,8 +130,8 @@ internal object StytchApi {
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         signupMagicLinkUrl = signupMagicLinkUrl,
-                        loginExpirationMinutes = loginExpirationMinutes,
-                        signupExpirationMinutes = signupExpirationMinutes,
+                        loginExpirationMinutes = loginExpirationMinutes?.toInt(),
+                        signupExpirationMinutes = signupExpirationMinutes?.toInt(),
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
                         locale = locale,
@@ -162,7 +162,7 @@ internal object StytchApi {
         @Suppress("LongParameterList")
         suspend fun sendOTPWithSMS(
             phoneNumber: String,
-            expirationMinutes: Int?,
+            expirationMinutes: UInt?,
             locale: String?,
             attributes: UserAttributes?,
             userId: String?,
@@ -172,7 +172,7 @@ internal object StytchApi {
             apiService.sendOTPWithSMS(
                 StytchRequests.OTP.SMS.SendRequest(
                     phoneNumber = phoneNumber,
-                    expirationMinutes = expirationMinutes,
+                    expirationMinutes = expirationMinutes?.toInt(),
                     locale = locale,
                     attributes = attributes?.toApiAttributes(),
                     userId = userId,
@@ -197,7 +197,7 @@ internal object StytchApi {
         @Suppress("LongParameterList")
         suspend fun sendOTPWithWhatsApp(
             phoneNumber: String,
-            expirationMinutes: Int?,
+            expirationMinutes: UInt?,
             locale: String?,
             attributes: UserAttributes?,
             userId: String?,
@@ -207,7 +207,7 @@ internal object StytchApi {
             apiService.sendOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp.SendRequest(
                     phoneNumber = phoneNumber,
-                    expirationMinutes = expirationMinutes,
+                    expirationMinutes = expirationMinutes?.toInt(),
                     locale = locale,
                     attributes = attributes?.toApiAttributes(),
                     userId = userId,
@@ -236,7 +236,7 @@ internal object StytchApi {
         @Suppress("LongParameterList")
         suspend fun sendOTPWithEmail(
             email: String,
-            expirationMinutes: Int?,
+            expirationMinutes: UInt?,
             loginTemplateId: String?,
             signupTemplateId: String?,
             locale: String?,
@@ -248,7 +248,7 @@ internal object StytchApi {
             apiService.sendOTPWithEmail(
                 StytchRequests.OTP.Email.SendRequest(
                     email = email,
-                    expirationMinutes = expirationMinutes,
+                    expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
                     signupTemplateId = signupTemplateId,
                     locale = locale,
@@ -311,9 +311,9 @@ internal object StytchApi {
             codeChallenge: String,
             codeChallengeMethod: String,
             loginRedirectUrl: String?,
-            loginExpirationMinutes: Int?,
+            loginExpirationMinutes: UInt?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: Int?
+            resetPasswordExpirationMinutes: UInt?
         ): StytchResult<BasicData> = safeApiCall {
             apiService.resetByEmailStart(
                 StytchRequests.Passwords.ResetByEmailStartRequest(
@@ -321,9 +321,9 @@ internal object StytchApi {
                     codeChallenge,
                     codeChallengeMethod,
                     loginRedirectUrl,
-                    loginExpirationMinutes,
+                    loginExpirationMinutes?.toInt(),
                     resetPasswordRedirectUrl,
-                    resetPasswordExpirationMinutes
+                    resetPasswordExpirationMinutes?.toInt()
                 )
             )
         }
@@ -360,11 +360,11 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int? = null
+            sessionDurationMinutes: UInt? = null
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
-                    sessionDurationMinutes
+                    sessionDurationMinutes?.toInt()
                 )
             )
         }
