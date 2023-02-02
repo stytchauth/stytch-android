@@ -1,6 +1,5 @@
 package com.stytch.sdk.magicLinks
 
-import com.stytch.sdk.UserAttributes
 import org.junit.Test
 
 internal class MagicLinksTest {

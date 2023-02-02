@@ -1,7 +1,6 @@
 package com.stytch.sdk.otp
 
 import com.stytch.sdk.Constants
-import com.stytch.sdk.UserAttributes
 import org.junit.Test
 
 internal class OTPTest {

@@ -86,6 +86,22 @@ public interface MagicLinks {
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         )
 
+        /**
+         * Data class wrapping the parameters for the Email Magic Link send endpoint
+         * @param email is the account identifier for the account in the form of an Email address where you wish to receive a magic link to authenticate
+         * @param loginMagicLinkUrl is the url where you should be redirected for login
+         * @param signupMagicLinkUrl is the url where you should be redirected for signup
+         * @param loginExpirationMinutes is the duration after which the login url should expire
+         * @param signupExpirationMinutes is the duration after which the signup url should expire
+         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
+         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
+         * @param locale Used to determine which language to use when sending the user this delivery method. Parameter is a IETF BCP 47 language tag, e.g. "en".
+         * @param attributes Provided attributes help with fraud detection. When authenticating a user's magic link token, you can require the IP address and/or the user agent to match that user's attributes when they originated the initial authentication request.
+         * @param codeChallenge A base64url encoded SHA256 hash of a one time secret used to validate that the request starts and ends on the same device.
+         * @param userId The user_id of the user to associate the email with. This parameter allows you to associate a new email address with an existing Stytch User.
+         * @param sessionToken The session_token belonging to the user that you wish to associate the email with.
+         * @param sessionJwt The session_jwt belonging to the user that you wish to associate the email with.
+         */
         public data class SendParameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
@@ -102,8 +118,18 @@ public interface MagicLinks {
             val sessionJwt: String? = null,
         )
 
+        /**
+         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * @param parameters required to receive magic link
+         * @return BaseResponse response from backend
+         */
         public suspend fun send(parameters: SendParameters): BaseResponse
 
+        /**
+         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * @param parameters required to receive magic link
+         * @param callback calls callback with BaseResponse response from backend
+         */
         public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
     }
 }
