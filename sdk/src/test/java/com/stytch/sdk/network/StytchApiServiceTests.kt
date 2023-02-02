@@ -1,8 +1,13 @@
 package com.stytch.sdk.network
 
+import com.stytch.sdk.utils.verifyDelete
+import com.stytch.sdk.utils.verifyGet
+import com.stytch.sdk.utils.verifyPost
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
+import okio.EOFException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +24,7 @@ internal class StytchApiServiceTests {
     fun setup() {
         mockWebServer = MockWebServer()
         mockWebServer.start(12345)
-
+        mockWebServer.enqueue(MockResponse().setResponseCode(200))
         apiService = StytchApiService.createApiService(mockWebServer.url("/").toString(), null)
     }
 
@@ -32,50 +37,45 @@ internal class StytchApiServiceTests {
 
     @Test
     fun `check magic links email loginOrCreate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(200))
         runBlocking {
-            try {
-                apiService.loginOrCreateUserByEmail(
-                    StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
-                        EMAIL,
-                        LOGIN_MAGIC_LINK,
-                        "123",
-                        "method2"
-                    )
-                ).data
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/magic_links/email/login_or_create")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("login_magic_link_url\":\"${LOGIN_MAGIC_LINK}\""))
-            assert(body.contains("code_challenge\":\"123\""))
-            assert(body.contains("code_challenge_method\":\"method2\""))
+            val parameters = StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+                email = EMAIL,
+                loginMagicLinkUrl = LOGIN_MAGIC_LINK,
+                codeChallenge = "123",
+                codeChallengeMethod = "method2"
+            )
+            requestIgnoringResponseException {
+                apiService.loginOrCreateUserByEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/magic_links/email/login_or_create",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "login_magic_link_url" to parameters.loginMagicLinkUrl,
+                    "code_challenge" to parameters.codeChallenge,
+                    "code_challenge_method" to parameters.codeChallengeMethod
+                )
+            )
         }
     }
 
     @Test
     fun `check magic links authenticate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticate(
-                    StytchRequests.MagicLinks.AuthenticateRequest(
-                        "token",
-                        "123",
-                        60
-                    )
+            val parameters = StytchRequests.MagicLinks.AuthenticateRequest(
+                token = "token",
+                codeVerifier = "123",
+                sessionDurationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.authenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/magic_links/authenticate",
+                expectedBody = mapOf(
+                    "token" to parameters.token,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "code_verifier" to parameters.codeVerifier,
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/magic_links/authenticate")
-            assert(body.contains("token\":\"token\""))
-            assert(body.contains("session_duration_minutes\":60"))
+            )
         }
     }
 
@@ -84,91 +84,79 @@ internal class StytchApiServiceTests {
     // region OTP
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.loginOrCreateUserByOTPWithEmail(
-                    StytchRequests.OTP.Email(
-                        EMAIL,
-                        60
-                    )
+            val parameters = StytchRequests.OTP.Email(
+                email = EMAIL,
+                expirationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.loginOrCreateUserByOTPWithEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/email/login_or_create",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "expiration_minutes" to parameters.expirationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/otps/email/login_or_create")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("expiration_minutes\":60"))
+            )
         }
     }
 
     @Test
     fun `check OTP sms loginOrCreate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.loginOrCreateUserByOTPWithSMS(
-                    StytchRequests.OTP.SMS(
-                        "000",
-                        24
-                    )
+            val parameters = StytchRequests.OTP.SMS(
+                phoneNumber = "000",
+                expirationMinutes = 24
+            )
+            requestIgnoringResponseException {
+                apiService.loginOrCreateUserByOTPWithSMS(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/sms/login_or_create",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/otps/sms/login_or_create")
-            assert(body.contains("phone_number\":\"000\""))
-            assert(body.contains("expiration_minutes\":24"))
+            )
         }
     }
 
     @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.loginOrCreateUserByOTPWithWhatsApp(
-                    StytchRequests.OTP.WhatsApp(
-                        "000",
-                        60
-                    )
+            val parameters = StytchRequests.OTP.WhatsApp(
+                phoneNumber = "000",
+                expirationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.loginOrCreateUserByOTPWithWhatsApp(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/whatsapp/login_or_create",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/otps/whatsapp/login_or_create")
-            assert(body.contains("phone_number\":\"000\""))
-            assert(body.contains("expiration_minutes\":60"))
+            )
         }
     }
 
     @Test
     fun `check OTP authenticate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticateWithOTP(
-                    StytchRequests.OTP.Authenticate(
-                        "token",
-                        "methodId",
-                        60
-                    )
+            val parameters = StytchRequests.OTP.Authenticate(
+                token = "token",
+                methodId = "methodId",
+                sessionDurationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.authenticateWithOTP(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/authenticate",
+                expectedBody = mapOf(
+                    "token" to parameters.token,
+                    "method_id" to parameters.methodId,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/otps/authenticate")
-            assert(body.contains("token\":\"token\""))
-            assert(body.contains("method_id\":\"methodId\""))
-            assert(body.contains("session_duration_minutes\":60"))
+            )
         }
     }
 
@@ -178,129 +166,114 @@ internal class StytchApiServiceTests {
 
     @Test
     fun `check Passwords create request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.passwords(
-                    StytchRequests.Passwords.CreateRequest(
-                        EMAIL,
-                        "123asd",
-                        60
-                    )
+            val parameters = StytchRequests.Passwords.CreateRequest(
+                email = EMAIL,
+                password = "123asd",
+                sessionDurationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.passwords(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/passwords")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("password\":\"123asd\""))
-            assert(body.contains("session_duration_minutes\":60"))
+            )
         }
     }
 
     @Test
     fun `check Passwords strenghtCheck request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.strengthCheck(
-                    StytchRequests.Passwords.StrengthCheckRequest(
-                        EMAIL,
-                        "123asd"
-                    )
+            val parameters = StytchRequests.Passwords.StrengthCheckRequest(
+                email = EMAIL,
+                password = "123asd"
+            )
+            requestIgnoringResponseException {
+                apiService.strengthCheck(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/strength_check",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "password" to parameters.password
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/passwords/strength_check")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("password\":\"123asd\""))
+            )
         }
     }
 
     @Test
     fun `check Passwords resetbyEmail request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.resetByEmail(
-                    StytchRequests.Passwords.ResetByEmailRequest(
-                        "token",
-                        "123asd",
-                        60,
-                        "ver1"
-                    )
+            val parameters = StytchRequests.Passwords.ResetByEmailRequest(
+                token = "token",
+                password = "123asd",
+                sessionDurationMinutes = 60,
+                codeVerifier = "ver1"
+            )
+            requestIgnoringResponseException {
+                apiService.resetByEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/email/reset",
+                expectedBody = mapOf(
+                    "token" to parameters.token,
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "code_verifier" to parameters.codeVerifier
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/passwords/email/reset")
-            assert(body.contains("token\":\"token\""))
-            assert(body.contains("password\":\"123asd\""))
-            assert(body.contains("session_duration_minutes\":60"))
-            assert(body.contains("code_verifier\":\"ver1\""))
+            )
         }
     }
 
     @Test
     fun `check Passwords resetbyEmailStart request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.resetByEmailStart(
-                    StytchRequests.Passwords.ResetByEmailStartRequest(
-                        EMAIL,
-                        "123",
-                        "method2",
-                        "loginRedirect",
-                        24,
-                        "resetPasswordUrl",
-                        23
-                    )
+            val parameters = StytchRequests.Passwords.ResetByEmailStartRequest(
+                email = EMAIL,
+                codeChallenge = "123",
+                codeChallengeMethod = "method2",
+                loginRedirectUrl = "loginRedirect",
+                loginExpirationMinutes = 24,
+                resetPasswordRedirectUrl = "resetPasswordUrl",
+                resetPasswordExpirationMinutes = 23
+            )
+            requestIgnoringResponseException {
+                apiService.resetByEmailStart(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/email/reset/start",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "code_challenge" to parameters.codeChallenge,
+                    "code_challenge_method" to parameters.codeChallengeMethod,
+                    "login_redirect_url" to parameters.loginRedirectUrl,
+                    "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
+                    "login_expiration_minutes" to parameters.loginExpirationMinutes,
+                    "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/passwords/email/reset/start")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("code_challenge\":\"123\""))
-            assert(body.contains("code_challenge_method\":\"method2\""))
-            assert(body.contains("login_redirect_url\":\"loginRedirect\""))
-            assert(body.contains("reset_password_redirect_url\":\"resetPasswordUrl\""))
-            assert(body.contains("login_expiration_minutes\":24"))
-            assert(body.contains("reset_password_expiration_minutes\":23"))
+            )
         }
     }
 
     @Test
     fun `check Passwords authenticate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticateWithPasswords(
-                    StytchRequests.Passwords.AuthenticateRequest(
-                        EMAIL,
-                        "123asd",
-                        46
-                    )
+            val parameters = StytchRequests.Passwords.AuthenticateRequest(
+                email = EMAIL,
+                password = "123asd",
+                sessionDurationMinutes = 46
+            )
+            requestIgnoringResponseException {
+                apiService.authenticateWithPasswords(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/authenticate",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            val body = request.body.readUtf8()
-            assert(request.path == "/passwords/authenticate")
-            assert(body.contains("email\":\"${EMAIL}\""))
-            assert(body.contains("password\":\"123asd\""))
-            assert(body.contains("session_duration_minutes\":46"))
+            )
         }
     }
 
@@ -310,35 +283,23 @@ internal class StytchApiServiceTests {
 
     @Test
     fun `check Sessions authenticate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticateSessions(
-                    StytchRequests.Sessions.AuthenticateRequest(
-                        24
-                    )
-                )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/sessions/authenticate")
-            assert(body.contains("session_duration_minutes\":24"))
+            val parameters = StytchRequests.Sessions.AuthenticateRequest(sessionDurationMinutes = 24)
+            requestIgnoringResponseException {
+                apiService.authenticateSessions(parameters)
+            }.verifyPost(
+                expectedPath = "/sessions/authenticate",
+                expectedBody = mapOf("session_duration_minutes" to parameters.sessionDurationMinutes)
+            )
         }
     }
 
     @Test
     fun `check Sessions revoke request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
+            requestIgnoringResponseException {
                 apiService.revokeSessions()
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "POST")
-            assert(request.path == "/sessions/revoke")
+            }.verifyPost(expectedPath = "/sessions/revoke")
         }
     }
 
@@ -347,81 +308,69 @@ internal class StytchApiServiceTests {
     // region Biometrics
     @Test
     fun `check biometricsRegisterStart request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.biometricsRegisterStart(
-                    StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
-                )
-            } catch (_: Exception) {}
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/biometrics/register/start")
-            assert(body.contains("public_key\":\"publicKey\""))
+            val parameters = StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
+            requestIgnoringResponseException {
+                apiService.biometricsRegisterStart(parameters)
+            }.verifyPost(
+                expectedPath = "/biometrics/register/start",
+                expectedBody = mapOf("public_key" to parameters.publicKey)
+            )
         }
     }
 
     @Test
     fun `check biometricsRegister request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.biometricsRegister(
-                    StytchRequests.Biometrics.RegisterRequest(
-                        signature = "signature",
-                        biometricRegistrationId = "biometricRegistrationId",
-                        sessionDurationMinutes = 30
-                    )
+            val parameters = StytchRequests.Biometrics.RegisterRequest(
+                signature = "signature",
+                biometricRegistrationId = "biometricRegistrationId",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.biometricsRegister(parameters)
+            }.verifyPost(
+                expectedPath = "/biometrics/register",
+                expectedBody = mapOf(
+                    "signature" to parameters.signature,
+                    "biometric_registration_id" to parameters.biometricRegistrationId,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
                 )
-            } catch (_: Exception) {}
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/biometrics/register")
-            assert(body.contains("signature\":\"signature\""))
-            assert(body.contains("biometric_registration_id\":\"biometricRegistrationId\""))
-            assert(body.contains("session_duration_minutes\":30"))
+            )
         }
     }
 
     @Test
     fun `check biometricsAuthenticateStart request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.biometricsAuthenticateStart(
-                    StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
-                )
-            } catch (_: Exception) {}
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/biometrics/authenticate/start")
-            assert(body.contains("public_key\":\"publicKey\""))
+            val parameters = StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
+            requestIgnoringResponseException {
+                apiService.biometricsAuthenticateStart(parameters)
+            }.verifyPost(
+                expectedPath = "/biometrics/authenticate/start",
+                expectedBody = mapOf("public_key" to parameters.publicKey)
+            )
         }
     }
 
     @Test
     fun `check biometricsAuthenticate request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.biometricsAuthenticate(
-                    StytchRequests.Biometrics.AuthenticateRequest(
-                        signature = "signature",
-                        biometricRegistrationId = "biometricRegistrationId",
-                        sessionDurationMinutes = 30
-                    )
+            val parameters = StytchRequests.Biometrics.AuthenticateRequest(
+                signature = "signature",
+                biometricRegistrationId = "biometricRegistrationId",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.biometricsAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/biometrics/authenticate",
+                expectedBody = mapOf(
+                    "signature" to parameters.signature,
+                    "biometric_registration_id" to parameters.biometricRegistrationId,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
                 )
-            } catch (_: Exception) {}
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/biometrics/authenticate")
-            assert(body.contains("signature\":\"signature\""))
-            assert(body.contains("biometric_registration_id\":\"biometricRegistrationId\""))
-            assert(body.contains("session_duration_minutes\":30"))
+            )
         }
     }
     // endregion Biometrics
@@ -429,85 +378,55 @@ internal class StytchApiServiceTests {
     // region UserManagement
     @Test
     fun `check getUser request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
+            requestIgnoringResponseException {
                 apiService.getUser()
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "GET")
-            assert(request.path == "/users/me")
+            }.verifyGet("/users/me")
         }
     }
 
     @Test
     fun `check deleteEmailById request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.deleteEmailById("email_id")
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "DELETE")
-            assert(request.path == "/users/emails/email_id")
+            requestIgnoringResponseException {
+                apiService.deleteEmailById(id = "email_id")
+            }.verifyDelete("/users/emails/email_id")
         }
     }
 
     @Test
     fun `check deletePhoneNumberById request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.deletePhoneNumberById("phone_number_id")
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "DELETE")
-            assert(request.path == "/users/phone_numbers/phone_number_id")
+            requestIgnoringResponseException {
+                apiService.deletePhoneNumberById(id = "phone_number_id")
+            }.verifyDelete("/users/phone_numbers/phone_number_id")
         }
     }
 
     @Test
     fun `check deleteBiometricRegistrationById request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.deleteBiometricRegistrationById("biometrics_registration_id")
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "DELETE")
-            assert(request.path == "/users/biometric_registrations/biometrics_registration_id")
+            requestIgnoringResponseException {
+                apiService.deleteBiometricRegistrationById(id = "biometrics_registration_id")
+            }.verifyDelete("/users/biometric_registrations/biometrics_registration_id")
         }
     }
 
     @Test
     fun `check deleteCryptoWalletById request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.deleteCryptoWalletById("crypto_wallet_id")
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "DELETE")
-            assert(request.path == "/users/crypto_wallets/crypto_wallet_id")
+            requestIgnoringResponseException {
+                apiService.deleteCryptoWalletById(id = "crypto_wallet_id")
+            }.verifyDelete("/users/crypto_wallets/crypto_wallet_id")
         }
     }
 
     @Test
     fun `check deleteWebAuthnById request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.deleteWebAuthnById("webauthn_registration_id")
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            assert(request.method == "DELETE")
-            assert(request.path == "/users/webauthn_registrations/webauthn_registration_id")
+            requestIgnoringResponseException {
+                apiService.deleteWebAuthnById(id = "webauthn_registration_id")
+            }.verifyDelete("/users/webauthn_registrations/webauthn_registration_id")
         }
     }
     // endregion UserManagement
@@ -515,50 +434,58 @@ internal class StytchApiServiceTests {
     // region OAuth
     @Test
     fun `check authenticateWithGoogleIdToken request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticateWithGoogleIdToken(
-                    StytchRequests.OAuth.Google.AuthenticateRequest(
-                        idToken = "id_token",
-                        nonce = "nonce",
-                        sessionDurationMinutes = 30
-                    )
+            val parameters = StytchRequests.OAuth.Google.AuthenticateRequest(
+                idToken = "id_token",
+                nonce = "nonce",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.authenticateWithGoogleIdToken(parameters)
+            }.verifyPost(
+                expectedPath = "/oauth/google/id_token/authenticate",
+                expectedBody = mapOf(
+                    "id_token" to parameters.idToken,
+                    "nonce" to parameters.nonce,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/oauth/google/id_token/authenticate")
-            assert(body.contains("id_token\":\"id_token\""))
-            assert(body.contains("nonce\":\"nonce\""))
-            assert(body.contains("session_duration_minutes\":30"))
+            )
         }
     }
 
     @Test
     fun `check authenticateWithThirdPartyToken request`() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(404))
         runBlocking {
-            try {
-                apiService.authenticateWithThirdPartyToken(
-                    StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
-                        token = "id_token",
-                        sessionDurationMinutes = 30,
-                        codeVerifier = "code_challenge"
-                    )
+            val parameters = StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                token = "id_token",
+                sessionDurationMinutes = 30,
+                codeVerifier = "code_challenge",
+                sessionCustomClaims = mapOf(
+                    "custom_claim_1" to "custom_claim_1_value",
+                    "custom_claim_2" to "custom_claim_2_value",
                 )
-            } catch (_: Exception) {
-            }
-            val request = mockWebServer.takeRequest()
-            val body = request.body.readUtf8()
-            assert(request.method == "POST")
-            assert(request.path == "/oauth/authenticate")
-            assert(body.contains("token\":\"id_token\""))
-            assert(body.contains("session_duration_minutes\":30"))
-            assert(body.contains("code_verifier\":\"code_challenge\""))
+            )
+            requestIgnoringResponseException {
+                apiService.authenticateWithThirdPartyToken(parameters)
+            }.verifyPost(
+                expectedPath = "/oauth/authenticate",
+                expectedBody = mapOf(
+                    "token" to parameters.token,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "code_verifier" to parameters.codeVerifier,
+                    "session_custom_claims" to parameters.sessionCustomClaims
+                )
+            )
         }
     }
     // endregion OAuth
+
+    private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
+        try {
+            block()
+        } catch (_: EOFException) {
+            // OkHTTP throws EOFException because it expects a response body, but we're intentionally not creating them
+        }
+        return mockWebServer.takeRequest()
+    }
 }
