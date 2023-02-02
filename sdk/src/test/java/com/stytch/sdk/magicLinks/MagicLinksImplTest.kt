@@ -54,7 +54,6 @@ internal class MagicLinksImplTest {
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
     private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.LoginOrCreateParameters>(relaxed = true)
     private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
-    private val emailMagicLinkSendParameters = mockk<MagicLinks.EmailMagicLinks.SendParameters>(relaxed = true)
 
     @Before
     fun before() {
@@ -132,22 +131,25 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email send delegates to api`() = runTest {
         coEvery {
-            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse
-        val response = impl.email.send(emailMagicLinkSendParameters)
+        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+        val response = impl.email.send(
+            MagicLinks.EmailMagicLinks.SendParameters(email = "emailAddress")
+        )
         assert(response is StytchResult.Success)
         coVerify {
-            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any())
         }
     }
 
     @Test
     fun `MagicLinksImpl email send with callback calls callback method`() {
         coEvery {
-            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            mockApi.send(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.email.send(emailMagicLinkSendParameters, mockCallback)
+        impl.email.send(MagicLinks.EmailMagicLinks.SendParameters(email = "emailAddress"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

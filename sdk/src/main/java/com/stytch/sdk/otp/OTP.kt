@@ -5,7 +5,6 @@ import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.LoginOrCreateOTPResponse
-import com.stytch.sdk.UserAttributes
 
 /**
  * OTP interface that encompasses authentication functions as well as other related functionality
@@ -94,20 +93,10 @@ public interface OTP {
          * Data class used for wrapping parameters used with SMS OTP send method
          * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @param expirationMinutes indicates how long the OTP should last before it expires
-         * @param locale Used to determine which language to use when sending the user this delivery method. Parameter is a IETF BCP 47 language tag, e.g. "en".
-         * @param attributes Provided attributes help with fraud detection. When authenticating a user's magic link token, you can require the IP address and/or the user agent to match that user's attributes when they originated the initial authentication request.
-         * @param userId The user_id of the user to associate the email with. This parameter allows you to associate a new email address with an existing Stytch User.
-         * @param sessionToken The session_token belonging to the user that you wish to associate the email with.
-         * @param sessionJwt The session_jwt belonging to the user that you wish to associate the email with.
          */
         public data class SendParameters(
             val phoneNumber: String,
             val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            val locale: String? = null,
-            val attributes: UserAttributes? = null,
-            val userId: String? = null,
-            val sessionToken: String? = null,
-            val sessionJwt: String? = null,
         )
 
         /**
@@ -160,20 +149,10 @@ public interface OTP {
          * Data class used for wrapping parameters used with WhatsApp OTP send method
          * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @param expirationMinutes indicates how long the OTP should last before it expires
-         * @param locale Used to determine which language to use when sending the user this delivery method. Parameter is a IETF BCP 47 language tag, e.g. "en".
-         * @param attributes Provided attributes help with fraud detection. When authenticating a user's magic link token, you can require the IP address and/or the user agent to match that user's attributes when they originated the initial authentication request.
-         * @param userId The user_id of the user to associate the email with. This parameter allows you to associate a new email address with an existing Stytch User.
-         * @param sessionToken The session_token belonging to the user that you wish to associate the email with.
-         * @param sessionJwt The session_jwt belonging to the user that you wish to associate the email with.
          */
         public data class SendParameters(
             val phoneNumber: String,
             val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            val locale: String? = null,
-            val attributes: UserAttributes? = null,
-            val userId: String? = null,
-            val sessionToken: String? = null,
-            val sessionJwt: String? = null,
         )
 
         /**
@@ -232,22 +211,12 @@ public interface OTP {
          * @param expirationMinutes indicates how long the OTP should last before it expires
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
-         * @param locale Used to determine which language to use when sending the user this delivery method. Parameter is a IETF BCP 47 language tag, e.g. "en".
-         * @param attributes Provided attributes help with fraud detection. When authenticating a user's magic link token, you can require the IP address and/or the user agent to match that user's attributes when they originated the initial authentication request.
-         * @param userId The user_id of the user to associate the email with. This parameter allows you to associate a new email address with an existing Stytch User.
-         * @param sessionToken The session_token belonging to the user that you wish to associate the email with.
-         * @param sessionJwt The session_jwt belonging to the user that you wish to associate the email with.
          */
         public data class SendParameters(
             val email: String,
             val expirationMinutes: UInt? = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
-            val locale: String? = null,
-            val attributes: UserAttributes? = null,
-            val userId: String? = null,
-            val sessionToken: String? = null,
-            val sessionJwt: String? = null,
         )
 
         /**

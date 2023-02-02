@@ -20,11 +20,6 @@ internal class OTPTest {
         val expected = OTP.SmsOTP.SendParameters(
             phoneNumber = "phonenumber",
             expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            locale = null,
-            attributes = null,
-            userId = null,
-            sessionToken = null,
-            sessionJwt = null,
         )
         assert(params == expected)
     }
@@ -45,11 +40,6 @@ internal class OTPTest {
         val expected = OTP.WhatsAppOTP.SendParameters(
             phoneNumber = "phonenumber",
             expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            locale = null,
-            attributes = null,
-            userId = null,
-            sessionToken = null,
-            sessionJwt = null,
         )
         assert(params == expected)
     }
@@ -74,11 +64,6 @@ internal class OTPTest {
             expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             loginTemplateId = null,
             signupTemplateId = null,
-            locale = null,
-            attributes = null,
-            userId = null,
-            sessionToken = null,
-            sessionJwt = null,
         )
         assert(params == expected)
     }

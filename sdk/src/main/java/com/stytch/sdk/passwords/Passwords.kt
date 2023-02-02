@@ -46,9 +46,9 @@ public interface Passwords {
     public data class ResetByEmailStartParameters(
         val email: String,
         val loginRedirectUrl: String? = null,
-        val loginExpirationMinutes: Int? = null,
+        val loginExpirationMinutes: UInt? = null,
         val resetPasswordRedirectUrl: String? = null,
-        val resetPasswordExpirationMinutes: Int? = null,
+        val resetPasswordExpirationMinutes: UInt? = null,
     )
 
     /**

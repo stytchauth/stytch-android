@@ -5,28 +5,6 @@ import com.squareup.moshi.JsonClass
 
 internal object StytchRequests {
 
-    @JsonClass(generateAdapter = true)
-    data class Attributes(
-        @Json(name = "ip_address")
-        val ipAddress: String?,
-        @Json(name = "user_agent")
-        val userAgent: String?
-    )
-
-    interface SendParameters {
-        val locale: String?
-        val attributes: Attributes?
-
-        @Json(name = "user_id")
-        val userId: String?
-
-        @Json(name = "session_token")
-        val sessionToken: String?
-
-        @Json(name = "session_jwt")
-        val sessionJwt: String?
-    }
-
     object MagicLinks {
         object Email {
             @JsonClass(generateAdapter = true)
@@ -69,17 +47,9 @@ internal object StytchRequests {
             val loginTemplateId: String?,
             @Json(name = "signup_template_id")
             val signupTemplateId: String?,
-            override val locale: String?,
-            override val attributes: Attributes?,
             @Json(name = "code_challenge")
             val codeChallenge: String?,
-            @Json(name = "user_id")
-            override val userId: String?,
-            @Json(name = "session_token")
-            override val sessionToken: String?,
-            @Json(name = "session_jwt")
-            override val sessionJwt: String?,
-        ) : SendParameters
+        )
     }
 
     object Sessions {
@@ -157,15 +127,7 @@ internal object StytchRequests {
                 val phoneNumber: String,
                 @Json(name = "expiration_minutes")
                 val expirationMinutes: Int?,
-                override val locale: String?,
-                override val attributes: Attributes?,
-                @Json(name = "user_id")
-                override val userId: String?,
-                @Json(name = "session_token")
-                override val sessionToken: String?,
-                @Json(name = "session_jwt")
-                override val sessionJwt: String?,
-            ) : SendParameters
+            )
         }
 
         object WhatsApp {
@@ -183,15 +145,7 @@ internal object StytchRequests {
                 val phoneNumber: String,
                 @Json(name = "expiration_minutes")
                 val expirationMinutes: Int?,
-                override val locale: String?,
-                override val attributes: Attributes?,
-                @Json(name = "user_id")
-                override val userId: String?,
-                @Json(name = "session_token")
-                override val sessionToken: String?,
-                @Json(name = "session_jwt")
-                override val sessionJwt: String?,
-            ) : SendParameters
+            )
         }
 
         object Email {
@@ -215,15 +169,7 @@ internal object StytchRequests {
                 val loginTemplateId: String?,
                 @Json(name = "signup_template_id")
                 val signupTemplateId: String?,
-                override val locale: String?,
-                override val attributes: Attributes?,
-                @Json(name = "user_id")
-                override val userId: String?,
-                @Json(name = "session_token")
-                override val sessionToken: String?,
-                @Json(name = "session_jwt")
-                override val sessionJwt: String?,
-            ) : SendParameters
+            )
         }
 
         @JsonClass(generateAdapter = true)

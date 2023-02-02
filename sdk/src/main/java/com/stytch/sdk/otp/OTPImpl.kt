@@ -75,11 +75,6 @@ internal class OTPImpl internal constructor(
                 api.sendOTPWithSMS(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes,
-                    locale = parameters.locale,
-                    attributes = parameters.attributes,
-                    userId = parameters.userId,
-                    sessionToken = parameters.sessionToken,
-                    sessionJwt = parameters.sessionJwt,
                 )
             }
 
@@ -121,11 +116,6 @@ internal class OTPImpl internal constructor(
                 api.sendOTPWithWhatsApp(
                     phoneNumber = parameters.phoneNumber,
                     expirationMinutes = parameters.expirationMinutes,
-                    locale = parameters.locale,
-                    attributes = parameters.attributes,
-                    userId = parameters.userId,
-                    sessionToken = parameters.sessionToken,
-                    sessionJwt = parameters.sessionJwt,
                 )
             }
 
@@ -168,11 +158,6 @@ internal class OTPImpl internal constructor(
                 expirationMinutes = parameters.expirationMinutes,
                 loginTemplateId = parameters.loginTemplateId,
                 signupTemplateId = parameters.signupTemplateId,
-                locale = parameters.locale,
-                attributes = parameters.attributes,
-                userId = parameters.userId,
-                sessionToken = parameters.sessionToken,
-                sessionJwt = parameters.sessionJwt,
             )
         }
 

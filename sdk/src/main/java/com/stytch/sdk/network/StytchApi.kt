@@ -10,7 +10,6 @@ import com.stytch.sdk.StytchClient
 import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
 import com.stytch.sdk.StytchResult
-import com.stytch.sdk.UserAttributes
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData
@@ -118,12 +117,7 @@ internal object StytchApi {
                 signupExpirationMinutes: Int?,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
-                locale: String?,
-                attributes: UserAttributes?,
                 codeChallenge: String?,
-                userId: String?,
-                sessionToken: String?,
-                sessionJwt: String?,
             ): StytchResult<BasicData> = safeApiCall {
                 apiService.sendEmailMagicLink(
                     StytchRequests.MagicLinks.SendRequest(
@@ -134,12 +128,7 @@ internal object StytchApi {
                         signupExpirationMinutes = signupExpirationMinutes,
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
-                        locale = locale,
-                        attributes = attributes?.toApiAttributes(),
                         codeChallenge = codeChallenge,
-                        userId = userId,
-                        sessionToken = sessionToken,
-                        sessionJwt = sessionJwt,
                     )
                 )
             }
@@ -163,21 +152,11 @@ internal object StytchApi {
         suspend fun sendOTPWithSMS(
             phoneNumber: String,
             expirationMinutes: UInt?,
-            locale: String?,
-            attributes: UserAttributes?,
-            userId: String?,
-            sessionToken: String?,
-            sessionJwt: String?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithSMS(
                 StytchRequests.OTP.SMS.SendRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
-                    locale = locale,
-                    attributes = attributes?.toApiAttributes(),
-                    userId = userId,
-                    sessionToken = sessionToken,
-                    sessionJwt = sessionJwt,
                 )
             )
         }
@@ -198,21 +177,11 @@ internal object StytchApi {
         suspend fun sendOTPWithWhatsApp(
             phoneNumber: String,
             expirationMinutes: UInt?,
-            locale: String?,
-            attributes: UserAttributes?,
-            userId: String?,
-            sessionToken: String?,
-            sessionJwt: String?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithWhatsApp(
                 StytchRequests.OTP.WhatsApp.SendRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
-                    locale = locale,
-                    attributes = attributes?.toApiAttributes(),
-                    userId = userId,
-                    sessionToken = sessionToken,
-                    sessionJwt = sessionJwt,
                 )
             )
         }
@@ -239,11 +208,6 @@ internal object StytchApi {
             expirationMinutes: UInt?,
             loginTemplateId: String?,
             signupTemplateId: String?,
-            locale: String?,
-            attributes: UserAttributes?,
-            userId: String?,
-            sessionToken: String?,
-            sessionJwt: String?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithEmail(
                 StytchRequests.OTP.Email.SendRequest(
@@ -251,11 +215,6 @@ internal object StytchApi {
                     expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
                     signupTemplateId = signupTemplateId,
-                    locale = locale,
-                    attributes = attributes?.toApiAttributes(),
-                    userId = userId,
-                    sessionToken = sessionToken,
-                    sessionJwt = sessionJwt,
                 )
             )
         }
@@ -360,11 +319,11 @@ internal object StytchApi {
     internal object Sessions {
 
         suspend fun authenticate(
-            sessionDurationMinutes: Int? = null
+            sessionDurationMinutes: UInt? = null
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
-                    sessionDurationMinutes
+                    sessionDurationMinutes?.toInt()
                 )
             )
         }

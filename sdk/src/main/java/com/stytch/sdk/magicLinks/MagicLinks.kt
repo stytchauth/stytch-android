@@ -4,7 +4,6 @@ import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
-import com.stytch.sdk.UserAttributes
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
@@ -63,8 +62,8 @@ public interface MagicLinks {
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: Int? = null,
-            val signupExpirationMinutes: Int? = null,
+            val loginExpirationMinutes: UInt? = null,
+            val signupExpirationMinutes: UInt? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
         )
@@ -95,27 +94,15 @@ public interface MagicLinks {
          * @param signupExpirationMinutes is the duration after which the signup url should expire
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
-         * @param locale Used to determine which language to use when sending the user this delivery method. Parameter is a IETF BCP 47 language tag, e.g. "en".
-         * @param attributes Provided attributes help with fraud detection. When authenticating a user's magic link token, you can require the IP address and/or the user agent to match that user's attributes when they originated the initial authentication request.
-         * @param codeChallenge A base64url encoded SHA256 hash of a one time secret used to validate that the request starts and ends on the same device.
-         * @param userId The user_id of the user to associate the email with. This parameter allows you to associate a new email address with an existing Stytch User.
-         * @param sessionToken The session_token belonging to the user that you wish to associate the email with.
-         * @param sessionJwt The session_jwt belonging to the user that you wish to associate the email with.
          */
         public data class SendParameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: Int? = null,
-            val signupExpirationMinutes: Int? = null,
+            val loginExpirationMinutes: UInt? = null,
+            val signupExpirationMinutes: UInt? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
-            val locale: String? = null,
-            val attributes: UserAttributes? = null,
-            val codeChallenge: String? = null,
-            val userId: String? = null,
-            val sessionToken: String? = null,
-            val sessionJwt: String? = null,
         )
 
         /**

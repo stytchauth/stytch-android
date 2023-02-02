@@ -95,9 +95,9 @@ internal class PasswordsImpl internal constructor(
                 codeChallenge = challengeCode,
                 codeChallengeMethod = challengeCodeMethod,
                 loginRedirectUrl = parameters.loginRedirectUrl,
-                loginExpirationMinutes = parameters.loginExpirationMinutes,
+                loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
                 resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
-                resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
+                resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes?.toInt(),
             )
         }
         return result

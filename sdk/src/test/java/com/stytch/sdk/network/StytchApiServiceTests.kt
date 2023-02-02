@@ -14,6 +14,7 @@ import org.junit.Test
 
 private const val EMAIL = "email@email.com"
 private const val LOGIN_MAGIC_LINK = "loginMagicLink://"
+private const val SIGNUP_MAGIC_LINK = "signupMagicLink://"
 
 internal class StytchApiServiceTests {
 
@@ -57,6 +58,37 @@ internal class StytchApiServiceTests {
                     "code_challenge_method" to parameters.codeChallengeMethod,
                     "login_template_id" to parameters.loginTemplateId,
                     "signup_template_id" to parameters.signupTemplateId,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check magic links email send request`() {
+        runBlocking {
+            val parameters = StytchRequests.MagicLinks.SendRequest(
+                email = EMAIL,
+                loginMagicLinkUrl = LOGIN_MAGIC_LINK,
+                codeChallenge = "123",
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
+                loginExpirationMinutes = 30,
+                signupExpirationMinutes = 30,
+                signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
+            )
+            requestIgnoringResponseException {
+                apiService.sendEmailMagicLink(parameters)
+            }.verifyPost(
+                expectedPath = "/magic_links/email/send",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "login_magic_link_url" to parameters.loginMagicLinkUrl,
+                    "code_challenge" to parameters.codeChallenge,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
+                    "login_expiration_minutes" to parameters.loginExpirationMinutes,
+                    "signup_expiration_minutes" to parameters.loginExpirationMinutes,
+                    "signup_magic_link_url" to parameters.signupMagicLinkUrl,
                 )
             )
         }
@@ -110,6 +142,29 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check OTP email send with default expiration request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.Email.SendRequest(
+                email = EMAIL,
+                expirationMinutes = 60,
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/email/send",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "expiration_minutes" to parameters.expirationMinutes,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
+                )
+            )
+        }
+    }
+
+    @Test
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.SMS.LoginOrCreateRequest(
@@ -129,6 +184,25 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check OTP sms send request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.SMS.SendRequest(
+                phoneNumber = "000",
+                expirationMinutes = 24
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithSMS(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/sms/send",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
+                )
+            )
+        }
+    }
+
+    @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
@@ -139,6 +213,25 @@ internal class StytchApiServiceTests {
                 apiService.loginOrCreateUserByOTPWithWhatsApp(parameters)
             }.verifyPost(
                 expectedPath = "/otps/whatsapp/login_or_create",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP whatsapp send with default expiration request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.WhatsApp.SendRequest(
+                phoneNumber = "000",
+                expirationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithWhatsApp(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/whatsapp/send",
                 expectedBody = mapOf(
                     "phone_number" to parameters.phoneNumber,
                     "expiration_minutes" to parameters.expirationMinutes

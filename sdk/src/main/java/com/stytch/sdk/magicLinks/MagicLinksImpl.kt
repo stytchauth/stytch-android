@@ -107,20 +107,22 @@ internal class MagicLinksImpl internal constructor(
 
         override suspend fun send(parameters: MagicLinks.EmailMagicLinks.SendParameters): BaseResponse =
             withContext(dispatchers.io) {
+                val challengeCode: String
+                try {
+                    val challengePair = storageHelper.generateHashedCodeChallenge()
+                    challengeCode = challengePair.second
+                } catch (ex: Exception) {
+                    return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
+                }
                 api.send(
                     email = parameters.email,
                     loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                     signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                    loginExpirationMinutes = parameters.loginExpirationMinutes,
-                    signupExpirationMinutes = parameters.signupExpirationMinutes,
+                    loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                    signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
                     loginTemplateId = parameters.loginTemplateId,
                     signupTemplateId = parameters.signupTemplateId,
-                    locale = parameters.locale,
-                    attributes = parameters.attributes,
-                    codeChallenge = parameters.codeChallenge,
-                    userId = parameters.userId,
-                    sessionToken = parameters.sessionToken,
-                    sessionJwt = parameters.sessionJwt,
+                    codeChallenge = challengeCode,
                 )
             }
 

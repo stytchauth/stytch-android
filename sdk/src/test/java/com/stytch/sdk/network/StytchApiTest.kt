@@ -75,7 +75,7 @@ internal class StytchApiTest {
     fun `StytchApi MagicLinks Email send calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.sendEmailMagicLink(any()) } returns mockk(relaxed = true)
-        StytchApi.MagicLinks.Email.send("", null, null, null, null, null, null, null, null, null, null, null, null)
+        StytchApi.MagicLinks.Email.send("", null, null, null, null, null, null, null)
         coVerify { StytchApi.apiService.sendEmailMagicLink(any()) }
     }
 
@@ -99,7 +99,7 @@ internal class StytchApiTest {
     fun `StytchApi OTP sendOTPWithSMS calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.sendOTPWithSMS(any()) } returns mockk(relaxed = true)
-        StytchApi.OTP.sendOTPWithSMS("", 30U, null, null, null, null, null)
+        StytchApi.OTP.sendOTPWithSMS("", 30U)
         coVerify { StytchApi.apiService.sendOTPWithSMS(any()) }
     }
 
@@ -115,7 +115,7 @@ internal class StytchApiTest {
     fun `StytchApi OTP sendByOTPWithWhatsApp calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.sendOTPWithWhatsApp(any()) } returns mockk(relaxed = true)
-        StytchApi.OTP.sendOTPWithWhatsApp("", 30U, null, null, null, null, null)
+        StytchApi.OTP.sendOTPWithWhatsApp("", 30U)
         coVerify { StytchApi.apiService.sendOTPWithWhatsApp(any()) }
     }
 
@@ -131,7 +131,7 @@ internal class StytchApiTest {
     fun `StytchApi OTP sendOTPWithEmail calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.sendOTPWithEmail(any()) } returns mockk(relaxed = true)
-        StytchApi.OTP.sendOTPWithEmail("", 30U, null, null, null, null, null, null, null)
+        StytchApi.OTP.sendOTPWithEmail("", 30U, null, null)
         coVerify { StytchApi.apiService.sendOTPWithEmail(any()) }
     }
 
@@ -187,7 +187,7 @@ internal class StytchApiTest {
     fun `StytchApi Sessions authenticate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-        StytchApi.Sessions.authenticate(30)
+        StytchApi.Sessions.authenticate(30U)
         coVerify { StytchApi.apiService.authenticateSessions(any()) }
     }
 
