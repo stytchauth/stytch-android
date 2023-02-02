@@ -321,9 +321,9 @@ internal object StytchApi {
                     codeChallenge,
                     codeChallengeMethod,
                     loginRedirectUrl,
-                    loginExpirationMinutes?.toInt(),
+                    loginExpirationMinutes,
                     resetPasswordRedirectUrl,
-                    resetPasswordExpirationMinutes?.toInt()
+                    resetPasswordExpirationMinutes
                 )
             )
         }
@@ -364,7 +364,7 @@ internal object StytchApi {
         ): StytchResult<AuthData> = safeApiCall {
             apiService.authenticateSessions(
                 StytchRequests.Sessions.AuthenticateRequest(
-                    sessionDurationMinutes?.toInt()
+                    sessionDurationMinutes
                 )
             )
         }
