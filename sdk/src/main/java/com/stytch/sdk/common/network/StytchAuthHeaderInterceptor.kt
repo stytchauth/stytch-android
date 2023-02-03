@@ -2,7 +2,6 @@ package com.stytch.sdk.common.network
 
 import com.google.crypto.tink.subtle.Base64
 import com.stytch.sdk.BuildConfig
-import com.stytch.sdk.StytchClient
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import okhttp3.Interceptor
@@ -16,10 +15,11 @@ import okhttp3.Response
 internal class StytchAuthHeaderInterceptor(
     var deviceInfo: DeviceInfo,
     var publicToken: String,
+    val getSessionToken: () -> String?
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val authHeader = Base64.encodeToString(
-            "$publicToken:${ StytchClient.sessionStorage.sessionToken ?: publicToken}".toByteArray(),
+            "$publicToken:${ getSessionToken() ?: publicToken}".toByteArray(),
             Base64.NO_WRAP
         )
         val infoHeader = Base64.encodeToString(

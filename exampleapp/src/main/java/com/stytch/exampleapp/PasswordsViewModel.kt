@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.passwords.Passwords
-import com.stytch.sdk.StytchClient
+import com.stytch.sdk.consumer.passwords.Passwords
+import com.stytch.sdk.consumer.StytchClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

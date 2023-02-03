@@ -6,10 +6,10 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.DeeplinkHandledStatus
-import com.stytch.sdk.StytchClient
-import com.stytch.sdk.oauth.OAuth
-import com.stytch.sdk.oauth.OAuthError
+import com.stytch.sdk.common.oauth.OAuthError
+import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.oauth.OAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

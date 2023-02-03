@@ -21,8 +21,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.stytch.exampleapp.BiometricsViewModel
 import com.stytch.exampleapp.R
-import com.stytch.sdk.biometrics.BiometricAvailability
-import com.stytch.sdk.StytchClient
+import com.stytch.sdk.consumer.biometrics.BiometricAvailability
+import com.stytch.sdk.consumer.StytchClient
 
 @Composable
 fun BiometricsScreen(navController: NavController) {

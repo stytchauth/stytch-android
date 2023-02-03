@@ -1,6 +1,6 @@
 package com.stytch.sdk.common
 
-import com.stytch.sdk.network.responseData.StytchErrorResponse
+import com.stytch.sdk.consumer.network.StytchErrorResponse
 
 /**
  * Exception wrapper meant for use with Stytch-specific exceptions and provides a straightforward way to encompass any possible errors that come from the SDK.

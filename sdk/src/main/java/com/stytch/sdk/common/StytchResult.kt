@@ -1,6 +1,6 @@
 package com.stytch.sdk.common
 
-import com.stytch.sdk.network.StytchErrorType
+import com.stytch.sdk.common.network.StytchErrorType
 
 /**
  * Provides a wrapper for responses from Stytch API responses

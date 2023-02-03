@@ -11,7 +11,7 @@ import com.stytch.sdk.common.extensions.hexStringToByteArray
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.extensions.toHexString
-import com.stytch.sdk.network.StytchErrorType
+import com.stytch.sdk.common.network.StytchErrorType
 import java.security.MessageDigest
 import java.security.SecureRandom
 import kotlin.random.Random
