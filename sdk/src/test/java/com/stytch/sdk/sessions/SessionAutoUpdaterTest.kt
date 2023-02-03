@@ -1,6 +1,6 @@
 package com.stytch.sdk.sessions
 
-import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.common.StytchDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.MockK

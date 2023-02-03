@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
 
 internal data class DeviceInfo(
     var applicationPackageName: String? = null,

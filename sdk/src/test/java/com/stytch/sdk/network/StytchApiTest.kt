@@ -1,12 +1,12 @@
 package com.stytch.sdk.network
 
 import android.content.Context
-import com.stytch.sdk.DeviceInfo
-import com.stytch.sdk.EncryptionManager
-import com.stytch.sdk.StorageHelper
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

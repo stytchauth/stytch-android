@@ -1,8 +1,8 @@
 package com.stytch.sdk.sessions
 
 import androidx.annotation.VisibleForTesting
-import com.stytch.sdk.StorageHelper
-import com.stytch.sdk.StytchExceptions
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.network.responseData.SessionData
 import com.stytch.sdk.network.responseData.UserData

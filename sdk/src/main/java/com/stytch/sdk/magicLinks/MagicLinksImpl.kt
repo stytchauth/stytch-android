@@ -3,11 +3,11 @@ package com.stytch.sdk.magicLinks
 import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
-import com.stytch.sdk.PREFERENCES_CODE_VERIFIER
-import com.stytch.sdk.StorageHelper
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.PREFERENCES_CODE_VERIFIER
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.sessions.SessionStorage
 import com.stytch.sdk.sessions.launchSessionUpdater

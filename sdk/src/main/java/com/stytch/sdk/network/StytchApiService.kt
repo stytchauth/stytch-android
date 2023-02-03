@@ -1,6 +1,7 @@
 package com.stytch.sdk.network
 
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

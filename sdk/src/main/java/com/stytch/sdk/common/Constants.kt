@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
 
 internal object Constants {
     const val WEB_URL: String = "https://web.stytch.com/sdk/v1/"

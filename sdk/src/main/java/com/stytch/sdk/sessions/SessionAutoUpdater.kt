@@ -1,9 +1,8 @@
 package com.stytch.sdk.sessions
 
 import androidx.annotation.VisibleForTesting
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.IAuthData
@@ -100,7 +99,7 @@ internal fun <T : IAuthData> StytchResult<T>.saveSession(sessionStorage: Session
                 sessionStorage.updateSession(sessionToken, sessionJwt, session)
                 sessionStorage.user = user
             } catch (ex: Exception) {
-                return StytchResult.Error(StytchExceptions.Critical(ex))
+                return StytchResult.Error(com.stytch.sdk.common.StytchExceptions.Critical(ex))
             }
         }
     }

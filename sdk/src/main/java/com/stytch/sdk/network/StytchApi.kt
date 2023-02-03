@@ -2,14 +2,15 @@ package com.stytch.sdk.network
 
 import androidx.annotation.VisibleForTesting
 import com.squareup.moshi.Moshi
-import com.stytch.sdk.Constants
-import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
-import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.OAuthAuthenticatedResponse
 import com.stytch.sdk.StytchClient
-import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.network.responseData.BiometricsAuthData

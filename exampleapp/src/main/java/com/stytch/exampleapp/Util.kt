@@ -1,6 +1,6 @@
 package com.stytch.exampleapp
 
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.StytchResult
 import java.util.regex.Pattern
 
 private val EMAIL_ADDRESS_PATTERN = Pattern.compile(

@@ -1,8 +1,8 @@
 package com.stytch.sdk.oauth
 
 import android.net.Uri
-import com.stytch.sdk.Constants
-import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.oauth.OAuthManagerActivity.Companion.URI_KEY
 

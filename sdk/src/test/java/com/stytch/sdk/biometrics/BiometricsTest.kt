@@ -1,7 +1,7 @@
 package com.stytch.sdk.biometrics
 
 import androidx.fragment.app.FragmentActivity
-import com.stytch.sdk.Constants
+import com.stytch.sdk.common.Constants
 import io.mockk.mockk
 import org.junit.Test
 

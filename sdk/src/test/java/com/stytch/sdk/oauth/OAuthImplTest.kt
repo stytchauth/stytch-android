@@ -1,11 +1,11 @@
 package com.stytch.sdk.oauth
 
-import com.stytch.sdk.EncryptionManager
 import com.stytch.sdk.OAuthAuthenticatedResponse
-import com.stytch.sdk.StorageHelper
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.sessions.SessionAutoUpdater
@@ -50,7 +50,7 @@ internal class OAuthImplTest {
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
-        mockkStatic("com.stytch.sdk.extensions.StringExtKt", "com.stytch.sdk.extensions.ByteArrayExtKt")
+        mockkStatic("com.stytch.sdk.common.extensions.StringExtKt", "com.stytch.sdk.common.extensions.ByteArrayExtKt")
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)

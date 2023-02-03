@@ -1,4 +1,6 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
+
+import com.stytch.sdk.AuthResponse
 
 public sealed interface DeeplinkHandledStatus {
     public data class Handled(val response: AuthResponse) : DeeplinkHandledStatus

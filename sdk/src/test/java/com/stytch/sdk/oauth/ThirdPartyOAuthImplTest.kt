@@ -1,7 +1,7 @@
 package com.stytch.sdk.oauth
 
 import android.app.Activity
-import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.network.StytchApi
 import io.mockk.MockKAnnotations
 import io.mockk.every

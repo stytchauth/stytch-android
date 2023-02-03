@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
 
 import android.content.Context
 import com.google.crypto.tink.Aead
@@ -7,10 +7,10 @@ import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import com.google.crypto.tink.signature.SignatureConfig
-import com.stytch.sdk.extensions.hexStringToByteArray
-import com.stytch.sdk.extensions.toBase64DecodedByteArray
-import com.stytch.sdk.extensions.toBase64EncodedString
-import com.stytch.sdk.extensions.toHexString
+import com.stytch.sdk.common.extensions.hexStringToByteArray
+import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
+import com.stytch.sdk.common.extensions.toBase64EncodedString
+import com.stytch.sdk.common.extensions.toHexString
 import com.stytch.sdk.network.StytchErrorType
 import java.security.MessageDigest
 import java.security.SecureRandom

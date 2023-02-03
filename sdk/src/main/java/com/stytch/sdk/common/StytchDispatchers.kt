@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

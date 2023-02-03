@@ -1,6 +1,6 @@
 package com.stytch.sdk.sessions
 
-import com.stytch.sdk.StorageHelper
+import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.network.responseData.SessionData
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks

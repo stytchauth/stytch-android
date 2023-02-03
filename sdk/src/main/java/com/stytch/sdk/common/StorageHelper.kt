@@ -1,4 +1,4 @@
-package com.stytch.sdk
+package com.stytch.sdk.common
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -2,11 +2,11 @@ package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.BaseResponse
-import com.stytch.sdk.EncryptionManager
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
-import com.stytch.sdk.StorageHelper
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
 import com.stytch.sdk.network.responseData.BasicData

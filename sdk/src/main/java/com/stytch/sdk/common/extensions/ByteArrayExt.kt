@@ -1,4 +1,4 @@
-package com.stytch.sdk.extensions
+package com.stytch.sdk.common.extensions
 
 import android.util.Base64
 

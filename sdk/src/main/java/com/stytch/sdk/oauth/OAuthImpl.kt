@@ -1,10 +1,10 @@
 package com.stytch.sdk.oauth
 
 import com.stytch.sdk.OAuthAuthenticatedResponse
-import com.stytch.sdk.StorageHelper
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.sessions.SessionStorage

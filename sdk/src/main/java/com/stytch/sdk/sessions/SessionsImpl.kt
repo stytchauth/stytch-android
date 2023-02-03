@@ -3,9 +3,9 @@ package com.stytch.sdk.sessions
 import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

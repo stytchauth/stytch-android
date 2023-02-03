@@ -5,11 +5,11 @@ import androidx.annotation.VisibleForTesting
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.stytch.sdk.AuthResponse
-import com.stytch.sdk.EncryptionManager
-import com.stytch.sdk.StytchDispatchers
-import com.stytch.sdk.StytchExceptions
 import com.stytch.sdk.StytchLog
-import com.stytch.sdk.StytchResult
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.StytchErrorType
 import com.stytch.sdk.sessions.SessionStorage

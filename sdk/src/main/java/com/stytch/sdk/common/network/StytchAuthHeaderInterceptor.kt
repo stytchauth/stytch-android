@@ -1,10 +1,10 @@
-package com.stytch.sdk.network
+package com.stytch.sdk.common.network
 
 import com.google.crypto.tink.subtle.Base64
 import com.stytch.sdk.BuildConfig
-import com.stytch.sdk.Constants
-import com.stytch.sdk.DeviceInfo
 import com.stytch.sdk.StytchClient
+import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DeviceInfo
 import okhttp3.Interceptor
 import okhttp3.Response
 

@@ -1,6 +1,6 @@
 package com.stytch.sdk.passwords
 
-import com.stytch.sdk.Constants
+import com.stytch.sdk.common.Constants
 import org.junit.Test
 
 internal class PasswordsTest {

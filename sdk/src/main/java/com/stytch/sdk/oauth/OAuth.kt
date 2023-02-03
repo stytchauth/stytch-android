@@ -3,8 +3,8 @@ package com.stytch.sdk.oauth
 import android.app.Activity
 import android.content.Intent
 import com.stytch.sdk.AuthResponse
-import com.stytch.sdk.Constants
 import com.stytch.sdk.OAuthAuthenticatedResponse
+import com.stytch.sdk.common.Constants
 
 @Suppress("MaxLineLength")
 public interface OAuth {

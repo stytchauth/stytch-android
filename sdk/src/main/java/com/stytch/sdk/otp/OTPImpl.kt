@@ -3,7 +3,7 @@ package com.stytch.sdk.otp
 import com.stytch.sdk.AuthResponse
 import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateOTPResponse
-import com.stytch.sdk.StytchDispatchers
+import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.sessions.SessionStorage
 import com.stytch.sdk.sessions.launchSessionUpdater
