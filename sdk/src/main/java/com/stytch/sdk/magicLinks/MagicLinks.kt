@@ -58,7 +58,7 @@ public interface MagicLinks {
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
-        public data class LoginOrCreateParameters(
+        public data class Parameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
             val signupMagicLinkUrl: String? = null,
@@ -73,7 +73,7 @@ public interface MagicLinks {
          * @param parameters required to receive magic link
          * @return LoginOrCreateUserByEmailResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: LoginOrCreateParameters): LoginOrCreateUserByEmailResponse
+        public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateUserByEmailResponse
 
         /**
          * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
@@ -81,28 +81,8 @@ public interface MagicLinks {
          * @param callback calls callback with LoginOrCreateUserByEmailResponse response from backend
          */
         public fun loginOrCreate(
-            parameters: LoginOrCreateParameters,
+            parameters: Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
-        )
-
-        /**
-         * Data class wrapping the parameters for the Email Magic Link send endpoint
-         * @param email is the account identifier for the account in the form of an Email address where you wish to receive a magic link to authenticate
-         * @param loginMagicLinkUrl is the url where you should be redirected for login
-         * @param signupMagicLinkUrl is the url where you should be redirected for signup
-         * @param loginExpirationMinutes is the duration after which the login url should expire
-         * @param signupExpirationMinutes is the duration after which the signup url should expire
-         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
-         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
-         */
-        public data class SendParameters(
-            val email: String,
-            val loginMagicLinkUrl: String? = null,
-            val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: UInt? = null,
-            val signupExpirationMinutes: UInt? = null,
-            val loginTemplateId: String? = null,
-            val signupTemplateId: String? = null,
         )
 
         /**
@@ -110,13 +90,13 @@ public interface MagicLinks {
          * @param parameters required to receive magic link
          * @return BaseResponse response from backend
          */
-        public suspend fun send(parameters: SendParameters): BaseResponse
+        public suspend fun send(parameters: Parameters): BaseResponse
 
         /**
          * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
          * @param parameters required to receive magic link
          * @param callback calls callback with BaseResponse response from backend
          */
-        public fun send(parameters: SendParameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 }

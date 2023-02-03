@@ -107,9 +107,9 @@ internal class OTPImplTest {
     fun `OTPImpl sms send delegates to api`() = runTest {
         coEvery { mockApi.sendOTPWithSMS(any(), any()) } returns mockk(relaxed = true)
         impl.sms.send(
-            OTP.SmsOTP.SendParameters(
+            OTP.SmsOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
             )
         )
         coVerify { mockApi.sendOTPWithSMS(any(), any()) }
@@ -120,9 +120,9 @@ internal class OTPImplTest {
         coEvery { mockApi.sendOTPWithSMS(any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.sms.send(
-            OTP.SmsOTP.SendParameters(
+            OTP.SmsOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
             ),
             mockCallback
         )
@@ -148,9 +148,9 @@ internal class OTPImplTest {
     fun `OTPImpl whatsapp send delegates to api`() = runTest {
         coEvery { mockApi.sendOTPWithWhatsApp(any(), any()) } returns mockk(relaxed = true)
         impl.whatsapp.send(
-            OTP.WhatsAppOTP.SendParameters(
+            OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
             )
         )
         coVerify { mockApi.sendOTPWithWhatsApp(any(), any()) }
@@ -161,9 +161,9 @@ internal class OTPImplTest {
         coEvery { mockApi.sendOTPWithWhatsApp(any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.whatsapp.send(
-            OTP.WhatsAppOTP.SendParameters(
+            OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
             ),
             mockCallback
         )
@@ -189,9 +189,9 @@ internal class OTPImplTest {
     fun `OTPImpl email send delegates to api`() = runTest {
         coEvery { mockApi.sendOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
         impl.email.send(
-            OTP.EmailOTP.SendParameters(
+            OTP.EmailOTP.Parameters(
                 email = "emailAddress",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
                 loginTemplateId = null,
                 signupTemplateId = null
             )
@@ -204,9 +204,9 @@ internal class OTPImplTest {
         coEvery { mockApi.sendOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.email.send(
-            OTP.EmailOTP.SendParameters(
+            OTP.EmailOTP.Parameters(
                 email = "emailAddress",
-                expirationMinutes = null,
+                expirationMinutes = 10U,
                 loginTemplateId = null,
                 signupTemplateId = null
             ),

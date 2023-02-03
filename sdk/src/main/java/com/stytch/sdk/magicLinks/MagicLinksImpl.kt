@@ -64,7 +64,7 @@ internal class MagicLinksImpl internal constructor(
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
 
         override suspend fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.LoginOrCreateParameters
+            parameters: MagicLinks.EmailMagicLinks.Parameters
         ): LoginOrCreateUserByEmailResponse {
             val result: LoginOrCreateUserByEmailResponse
             withContext(dispatchers.io) {
@@ -94,7 +94,7 @@ internal class MagicLinksImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.LoginOrCreateParameters,
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         ) {
             // call endpoint in IO thread
@@ -105,7 +105,7 @@ internal class MagicLinksImpl internal constructor(
             }
         }
 
-        override suspend fun send(parameters: MagicLinks.EmailMagicLinks.SendParameters): BaseResponse =
+        override suspend fun send(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse =
             withContext(dispatchers.io) {
                 val challengeCode: String
                 try {
@@ -127,7 +127,7 @@ internal class MagicLinksImpl internal constructor(
             }
 
         override fun send(
-            parameters: MagicLinks.EmailMagicLinks.SendParameters,
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
             callback: (response: BaseResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {

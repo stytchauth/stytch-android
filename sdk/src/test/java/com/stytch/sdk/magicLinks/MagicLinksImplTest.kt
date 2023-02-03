@@ -52,7 +52,7 @@ internal class MagicLinksImplTest {
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
     private val successfulBaseResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
-    private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.LoginOrCreateParameters>(relaxed = true)
+    private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
     private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
 
     @Before
@@ -135,7 +135,7 @@ internal class MagicLinksImplTest {
         } returns successfulBaseResponse
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         val response = impl.email.send(
-            MagicLinks.EmailMagicLinks.SendParameters(email = "emailAddress")
+            MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress")
         )
         assert(response is StytchResult.Success)
         coVerify {
@@ -149,7 +149,7 @@ internal class MagicLinksImplTest {
             mockApi.send(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.email.send(MagicLinks.EmailMagicLinks.SendParameters(email = "emailAddress"), mockCallback)
+        impl.email.send(MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

@@ -81,7 +81,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.magicLinks.email.loginOrCreate(
-                    MagicLinks.EmailMagicLinks.LoginOrCreateParameters(email = emailTextState.text)
+                    MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text)
                 )
                 _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
@@ -98,7 +98,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showPhoneError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.LoginOrCreateParameters(phoneNumberTextState.text))
+                val result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters(phoneNumberTextState.text))
                 handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
@@ -116,7 +116,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.otps.whatsapp.loginOrCreate(
-                    OTP.WhatsAppOTP.LoginOrCreateParameters(phoneNumberTextState.text)
+                    OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text)
                 )
                 handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toFriendlyDisplay()
@@ -134,7 +134,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.LoginOrCreateParameters(emailTextState.text))
+                val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters(emailTextState.text))
                 handleLoginOrCreateOtp(result)
                 _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {
