@@ -114,16 +114,29 @@ internal class MagicLinksImpl internal constructor(
                 } catch (ex: Exception) {
                     return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
                 }
-                api.send(
-                    email = parameters.email,
-                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                    signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                    loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                    signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                    codeChallenge = challengeCode,
-                )
+                if (sessionStorage.activeSessionExists) {
+                    api.sendSecondary(
+                        email = parameters.email,
+                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                        codeChallenge = challengeCode,
+                    )
+                } else {
+                    api.sendPrimary(
+                        email = parameters.email,
+                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                        codeChallenge = challengeCode,
+                    )
+                }
             }
 
         override fun send(

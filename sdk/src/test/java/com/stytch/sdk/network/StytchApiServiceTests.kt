@@ -64,7 +64,7 @@ internal class StytchApiServiceTests {
     }
 
     @Test
-    fun `check magic links email send request`() {
+    fun `check magic links email send primary request`() {
         runBlocking {
             val parameters = StytchRequests.MagicLinks.SendRequest(
                 email = EMAIL,
@@ -77,9 +77,40 @@ internal class StytchApiServiceTests {
                 signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
             )
             requestIgnoringResponseException {
-                apiService.sendEmailMagicLink(parameters)
+                apiService.sendEmailMagicLinkPrimary(parameters)
             }.verifyPost(
-                expectedPath = "/magic_links/email/send",
+                expectedPath = "/magic_links/email/send/primary",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "login_magic_link_url" to parameters.loginMagicLinkUrl,
+                    "code_challenge" to parameters.codeChallenge,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
+                    "login_expiration_minutes" to parameters.loginExpirationMinutes,
+                    "signup_expiration_minutes" to parameters.loginExpirationMinutes,
+                    "signup_magic_link_url" to parameters.signupMagicLinkUrl,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check magic links email send secondary request`() {
+        runBlocking {
+            val parameters = StytchRequests.MagicLinks.SendRequest(
+                email = EMAIL,
+                loginMagicLinkUrl = LOGIN_MAGIC_LINK,
+                codeChallenge = "123",
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
+                loginExpirationMinutes = 30,
+                signupExpirationMinutes = 30,
+                signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
+            )
+            requestIgnoringResponseException {
+                apiService.sendEmailMagicLinkSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/magic_links/email/send/secondary",
                 expectedBody = mapOf(
                     "email" to parameters.email,
                     "login_magic_link_url" to parameters.loginMagicLinkUrl,
@@ -142,7 +173,7 @@ internal class StytchApiServiceTests {
     }
 
     @Test
-    fun `check OTP email send with default expiration request`() {
+    fun `check OTP email send primary with default expiration request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.Email.SendRequest(
                 email = EMAIL,
@@ -151,9 +182,32 @@ internal class StytchApiServiceTests {
                 signupTemplateId = "signUpTemplateId",
             )
             requestIgnoringResponseException {
-                apiService.sendOTPWithEmail(parameters)
+                apiService.sendOTPWithEmailPrimary(parameters)
             }.verifyPost(
-                expectedPath = "/otps/email/send",
+                expectedPath = "/otps/email/send/primary",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "expiration_minutes" to parameters.expirationMinutes,
+                    "login_template_id" to parameters.loginTemplateId,
+                    "signup_template_id" to parameters.signupTemplateId,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP email send secondary with default expiration request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.Email.SendRequest(
+                email = EMAIL,
+                expirationMinutes = 60,
+                loginTemplateId = "loginTemplateId",
+                signupTemplateId = "signUpTemplateId",
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithEmailSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/email/send/secondary",
                 expectedBody = mapOf(
                     "email" to parameters.email,
                     "expiration_minutes" to parameters.expirationMinutes,
@@ -184,16 +238,35 @@ internal class StytchApiServiceTests {
     }
 
     @Test
-    fun `check OTP sms send request`() {
+    fun `check OTP sms send primary request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.SMS.SendRequest(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
             requestIgnoringResponseException {
-                apiService.sendOTPWithSMS(parameters)
+                apiService.sendOTPWithSMSPrimary(parameters)
             }.verifyPost(
-                expectedPath = "/otps/sms/send",
+                expectedPath = "/otps/sms/send/primary",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP sms send secondary request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.SMS.SendRequest(
+                phoneNumber = "000",
+                expirationMinutes = 24
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithSMSSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/sms/send/secondary",
                 expectedBody = mapOf(
                     "phone_number" to parameters.phoneNumber,
                     "expiration_minutes" to parameters.expirationMinutes
@@ -222,16 +295,35 @@ internal class StytchApiServiceTests {
     }
 
     @Test
-    fun `check OTP whatsapp send with default expiration request`() {
+    fun `check OTP whatsapp send primary with default expiration request`() {
         runBlocking {
             val parameters = StytchRequests.OTP.WhatsApp.SendRequest(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
             requestIgnoringResponseException {
-                apiService.sendOTPWithWhatsApp(parameters)
+                apiService.sendOTPWithWhatsAppPrimary(parameters)
             }.verifyPost(
-                expectedPath = "/otps/whatsapp/send",
+                expectedPath = "/otps/whatsapp/send/primary",
+                expectedBody = mapOf(
+                    "phone_number" to parameters.phoneNumber,
+                    "expiration_minutes" to parameters.expirationMinutes
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP whatsapp send secondary with default expiration request`() {
+        runBlocking {
+            val parameters = StytchRequests.OTP.WhatsApp.SendRequest(
+                phoneNumber = "000",
+                expirationMinutes = 60
+            )
+            requestIgnoringResponseException {
+                apiService.sendOTPWithWhatsAppSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/otps/whatsapp/send/secondary",
                 expectedBody = mapOf(
                     "phone_number" to parameters.phoneNumber,
                     "expiration_minutes" to parameters.expirationMinutes

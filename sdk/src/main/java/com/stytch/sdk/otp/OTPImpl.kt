@@ -72,10 +72,17 @@ internal class OTPImpl internal constructor(
 
         override suspend fun send(parameters: OTP.SmsOTP.Parameters): BaseResponse =
             withContext(dispatchers.io) {
-                api.sendOTPWithSMS(
-                    phoneNumber = parameters.phoneNumber,
-                    expirationMinutes = parameters.expirationMinutes,
-                )
+                if (sessionStorage.activeSessionExists) {
+                    api.sendOTPWithSMSSecondary(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
+                } else {
+                    api.sendOTPWithSMSPrimary(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
+                }
             }
 
         override fun send(parameters: OTP.SmsOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
@@ -113,10 +120,17 @@ internal class OTPImpl internal constructor(
 
         override suspend fun send(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse =
             withContext(dispatchers.io) {
-                api.sendOTPWithWhatsApp(
-                    phoneNumber = parameters.phoneNumber,
-                    expirationMinutes = parameters.expirationMinutes,
-                )
+                if (sessionStorage.activeSessionExists) {
+                    api.sendOTPWithWhatsAppSecondary(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
+                } else {
+                    api.sendOTPWithWhatsAppPrimary(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
+                }
             }
 
         override fun send(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
@@ -153,12 +167,21 @@ internal class OTPImpl internal constructor(
         }
 
         override suspend fun send(parameters: OTP.EmailOTP.Parameters): BaseResponse = withContext(dispatchers.io) {
-            api.sendOTPWithEmail(
-                email = parameters.email,
-                expirationMinutes = parameters.expirationMinutes,
-                loginTemplateId = parameters.loginTemplateId,
-                signupTemplateId = parameters.signupTemplateId,
-            )
+            if (sessionStorage.activeSessionExists) {
+                api.sendOTPWithEmailSecondary(
+                    email = parameters.email,
+                    expirationMinutes = parameters.expirationMinutes,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
+                )
+            } else {
+                api.sendOTPWithEmailPrimary(
+                    email = parameters.email,
+                    expirationMinutes = parameters.expirationMinutes,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
+                )
+            }
         }
 
         override fun send(parameters: OTP.EmailOTP.Parameters, callback: (response: BaseResponse) -> Unit) {

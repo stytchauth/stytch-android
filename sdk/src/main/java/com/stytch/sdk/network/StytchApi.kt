@@ -109,7 +109,7 @@ internal object StytchApi {
             }
 
             @Suppress("LongParameterList")
-            suspend fun send(
+            suspend fun sendPrimary(
                 email: String,
                 loginMagicLinkUrl: String?,
                 signupMagicLinkUrl: String?,
@@ -119,7 +119,32 @@ internal object StytchApi {
                 signupTemplateId: String?,
                 codeChallenge: String?,
             ): StytchResult<BasicData> = safeApiCall {
-                apiService.sendEmailMagicLink(
+                apiService.sendEmailMagicLinkPrimary(
+                    StytchRequests.MagicLinks.SendRequest(
+                        email = email,
+                        loginMagicLinkUrl = loginMagicLinkUrl,
+                        signupMagicLinkUrl = signupMagicLinkUrl,
+                        loginExpirationMinutes = loginExpirationMinutes,
+                        signupExpirationMinutes = signupExpirationMinutes,
+                        loginTemplateId = loginTemplateId,
+                        signupTemplateId = signupTemplateId,
+                        codeChallenge = codeChallenge,
+                    )
+                )
+            }
+
+            @Suppress("LongParameterList")
+            suspend fun sendSecondary(
+                email: String,
+                loginMagicLinkUrl: String?,
+                signupMagicLinkUrl: String?,
+                loginExpirationMinutes: Int?,
+                signupExpirationMinutes: Int?,
+                loginTemplateId: String?,
+                signupTemplateId: String?,
+                codeChallenge: String?,
+            ): StytchResult<BasicData> = safeApiCall {
+                apiService.sendEmailMagicLinkSecondary(
                     StytchRequests.MagicLinks.SendRequest(
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
@@ -149,11 +174,24 @@ internal object StytchApi {
         }
 
         @Suppress("LongParameterList")
-        suspend fun sendOTPWithSMS(
+        suspend fun sendOTPWithSMSPrimary(
             phoneNumber: String,
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
-            apiService.sendOTPWithSMS(
+            apiService.sendOTPWithSMSPrimary(
+                StytchRequests.OTP.SMS.SendRequest(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes?.toInt(),
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithSMSSecondary(
+            phoneNumber: String,
+            expirationMinutes: UInt?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithSMSSecondary(
                 StytchRequests.OTP.SMS.SendRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
@@ -174,11 +212,24 @@ internal object StytchApi {
         }
 
         @Suppress("LongParameterList")
-        suspend fun sendOTPWithWhatsApp(
+        suspend fun sendOTPWithWhatsAppPrimary(
             phoneNumber: String,
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
-            apiService.sendOTPWithWhatsApp(
+            apiService.sendOTPWithWhatsAppPrimary(
+                StytchRequests.OTP.WhatsApp.SendRequest(
+                    phoneNumber = phoneNumber,
+                    expirationMinutes = expirationMinutes?.toInt(),
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithWhatsAppSecondary(
+            phoneNumber: String,
+            expirationMinutes: UInt?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithWhatsAppSecondary(
                 StytchRequests.OTP.WhatsApp.SendRequest(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
@@ -203,13 +254,30 @@ internal object StytchApi {
         }
 
         @Suppress("LongParameterList")
-        suspend fun sendOTPWithEmail(
+        suspend fun sendOTPWithEmailPrimary(
             email: String,
             expirationMinutes: UInt?,
             loginTemplateId: String?,
             signupTemplateId: String?,
         ): StytchResult<BasicData> = safeApiCall {
-            apiService.sendOTPWithEmail(
+            apiService.sendOTPWithEmailPrimary(
+                StytchRequests.OTP.Email.SendRequest(
+                    email = email,
+                    expirationMinutes = expirationMinutes?.toInt(),
+                    loginTemplateId = loginTemplateId,
+                    signupTemplateId = signupTemplateId,
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun sendOTPWithEmailSecondary(
+            email: String,
+            expirationMinutes: UInt?,
+            loginTemplateId: String?,
+            signupTemplateId: String?,
+        ): StytchResult<BasicData> = safeApiCall {
+            apiService.sendOTPWithEmailSecondary(
                 StytchRequests.OTP.Email.SendRequest(
                     email = email,
                     expirationMinutes = expirationMinutes?.toInt(),

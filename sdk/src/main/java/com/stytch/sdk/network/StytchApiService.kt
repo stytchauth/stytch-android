@@ -24,8 +24,13 @@ internal interface StytchApiService {
         @Body request: StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest
     ): StytchResponses.MagicLinks.Email.LoginOrCreateUserResponse
 
-    @POST("magic_links/email/send")
-    suspend fun sendEmailMagicLink(
+    @POST("magic_links/email/send/primary")
+    suspend fun sendEmailMagicLinkPrimary(
+        @Body request: StytchRequests.MagicLinks.SendRequest
+    ): StytchResponses.SendResponse
+
+    @POST("magic_links/email/send/secondary")
+    suspend fun sendEmailMagicLinkSecondary(
         @Body request: StytchRequests.MagicLinks.SendRequest
     ): StytchResponses.SendResponse
 
@@ -51,8 +56,13 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.SMS.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
 
-    @POST("otps/sms/send")
-    suspend fun sendOTPWithSMS(
+    @POST("otps/sms/send/primary")
+    suspend fun sendOTPWithSMSPrimary(
+        @Body request: StytchRequests.OTP.SMS.SendRequest
+    ): StytchResponses.SendResponse
+
+    @POST("otps/sms/send/secondary")
+    suspend fun sendOTPWithSMSSecondary(
         @Body request: StytchRequests.OTP.SMS.SendRequest
     ): StytchResponses.SendResponse
 
@@ -61,8 +71,13 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.WhatsApp.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
 
-    @POST("otps/whatsapp/send")
-    suspend fun sendOTPWithWhatsApp(
+    @POST("otps/whatsapp/send/primary")
+    suspend fun sendOTPWithWhatsAppPrimary(
+        @Body request: StytchRequests.OTP.WhatsApp.SendRequest
+    ): StytchResponses.SendResponse
+
+    @POST("otps/whatsapp/send/secondary")
+    suspend fun sendOTPWithWhatsAppSecondary(
         @Body request: StytchRequests.OTP.WhatsApp.SendRequest
     ): StytchResponses.SendResponse
 
@@ -71,8 +86,13 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OTP.Email.LoginOrCreateRequest
     ): StytchResponses.LoginOrCreateOTPResponse
 
-    @POST("otps/email/send")
-    suspend fun sendOTPWithEmail(
+    @POST("otps/email/send/primary")
+    suspend fun sendOTPWithEmailPrimary(
+        @Body request: StytchRequests.OTP.Email.SendRequest
+    ): StytchResponses.SendResponse
+
+    @POST("otps/email/send/secondary")
+    suspend fun sendOTPWithEmailSecondary(
         @Body request: StytchRequests.OTP.Email.SendRequest
     ): StytchResponses.SendResponse
 

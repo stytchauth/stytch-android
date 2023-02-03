@@ -53,6 +53,9 @@ internal class SessionStorage(private val storageHelper: StorageHelper) {
             }
         }
 
+    val activeSessionExists: Boolean
+        get() = sessionToken != null && sessionJwt != null
+
     /**
      * @throws Exception if failed to save data
      */
