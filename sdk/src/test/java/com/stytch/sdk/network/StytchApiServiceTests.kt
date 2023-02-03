@@ -152,7 +152,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email.LoginOrCreateRequest(
+            val parameters = StytchRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -175,7 +175,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email send primary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email.SendRequest(
+            val parameters = StytchRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -198,7 +198,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email send secondary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email.SendRequest(
+            val parameters = StytchRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -221,7 +221,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS.LoginOrCreateRequest(
+            val parameters = StytchRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -240,7 +240,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms send primary request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS.SendRequest(
+            val parameters = StytchRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -259,7 +259,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms send secondary request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS.SendRequest(
+            val parameters = StytchRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -278,7 +278,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
+            val parameters = StytchRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
@@ -297,7 +297,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp send primary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp.SendRequest(
+            val parameters = StytchRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
@@ -316,7 +316,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp send secondary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp.SendRequest(
+            val parameters = StytchRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )

@@ -112,65 +112,32 @@ internal object StytchRequests {
     }
 
     object OTP {
-        object SMS {
-            @JsonClass(generateAdapter = true)
-            data class LoginOrCreateRequest(
-                @Json(name = "phone_number")
-                val phoneNumber: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int,
-            )
+        @JsonClass(generateAdapter = true)
+        data class SMS(
+            @Json(name = "phone_number")
+            val phoneNumber: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int?,
+        )
 
-            @JsonClass(generateAdapter = true)
-            data class SendRequest(
-                @Json(name = "phone_number")
-                val phoneNumber: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int?,
-            )
-        }
+        @JsonClass(generateAdapter = true)
+        data class WhatsApp(
+            @Json(name = "phone_number")
+            val phoneNumber: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int?,
+        )
 
-        object WhatsApp {
-            @JsonClass(generateAdapter = true)
-            data class LoginOrCreateRequest(
-                @Json(name = "phone_number")
-                val phoneNumber: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int,
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class SendRequest(
-                @Json(name = "phone_number")
-                val phoneNumber: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int?,
-            )
-        }
-
-        object Email {
-            @JsonClass(generateAdapter = true)
-            data class LoginOrCreateRequest(
-                val email: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int,
-                @Json(name = "login_template_id")
-                val loginTemplateId: String? = null,
-                @Json(name = "signup_template_id")
-                val signupTemplateId: String? = null,
-            )
-
-            @JsonClass(generateAdapter = true)
-            data class SendRequest(
-                val email: String,
-                @Json(name = "expiration_minutes")
-                val expirationMinutes: Int?,
-                @Json(name = "login_template_id")
-                val loginTemplateId: String?,
-                @Json(name = "signup_template_id")
-                val signupTemplateId: String?,
-            )
-        }
+        @JsonClass(generateAdapter = true)
+        data class Email(
+            val email: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int?,
+            @Json(name = "login_template_id")
+            val loginTemplateId: String?,
+            @Json(name = "signup_template_id")
+            val signupTemplateId: String?,
+        )
 
         @JsonClass(generateAdapter = true)
         data class Authenticate(

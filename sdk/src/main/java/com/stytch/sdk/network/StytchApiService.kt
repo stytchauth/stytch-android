@@ -53,47 +53,47 @@ internal interface StytchApiService {
     //region OTP
     @POST("otps/sms/login_or_create")
     suspend fun loginOrCreateUserByOTPWithSMS(
-        @Body request: StytchRequests.OTP.SMS.LoginOrCreateRequest
+        @Body request: StytchRequests.OTP.SMS
     ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/sms/send/primary")
     suspend fun sendOTPWithSMSPrimary(
-        @Body request: StytchRequests.OTP.SMS.SendRequest
+        @Body request: StytchRequests.OTP.SMS
     ): StytchResponses.SendResponse
 
     @POST("otps/sms/send/secondary")
     suspend fun sendOTPWithSMSSecondary(
-        @Body request: StytchRequests.OTP.SMS.SendRequest
+        @Body request: StytchRequests.OTP.SMS
     ): StytchResponses.SendResponse
 
     @POST("otps/whatsapp/login_or_create")
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
-        @Body request: StytchRequests.OTP.WhatsApp.LoginOrCreateRequest
+        @Body request: StytchRequests.OTP.WhatsApp
     ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/whatsapp/send/primary")
     suspend fun sendOTPWithWhatsAppPrimary(
-        @Body request: StytchRequests.OTP.WhatsApp.SendRequest
+        @Body request: StytchRequests.OTP.WhatsApp
     ): StytchResponses.SendResponse
 
     @POST("otps/whatsapp/send/secondary")
     suspend fun sendOTPWithWhatsAppSecondary(
-        @Body request: StytchRequests.OTP.WhatsApp.SendRequest
+        @Body request: StytchRequests.OTP.WhatsApp
     ): StytchResponses.SendResponse
 
     @POST("otps/email/login_or_create")
     suspend fun loginOrCreateUserByOTPWithEmail(
-        @Body request: StytchRequests.OTP.Email.LoginOrCreateRequest
+        @Body request: StytchRequests.OTP.Email
     ): StytchResponses.LoginOrCreateOTPResponse
 
     @POST("otps/email/send/primary")
     suspend fun sendOTPWithEmailPrimary(
-        @Body request: StytchRequests.OTP.Email.SendRequest
+        @Body request: StytchRequests.OTP.Email
     ): StytchResponses.SendResponse
 
     @POST("otps/email/send/secondary")
     suspend fun sendOTPWithEmailSecondary(
-        @Body request: StytchRequests.OTP.Email.SendRequest
+        @Body request: StytchRequests.OTP.Email
     ): StytchResponses.SendResponse
 
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate

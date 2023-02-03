@@ -166,7 +166,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
-                StytchRequests.OTP.SMS.LoginOrCreateRequest(
+                StytchRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -179,7 +179,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithSMSPrimary(
-                StytchRequests.OTP.SMS.SendRequest(
+                StytchRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -192,7 +192,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithSMSSecondary(
-                StytchRequests.OTP.SMS.SendRequest(
+                StytchRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -204,7 +204,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
-                StytchRequests.OTP.WhatsApp.LoginOrCreateRequest(
+                StytchRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -217,7 +217,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithWhatsAppPrimary(
-                StytchRequests.OTP.WhatsApp.SendRequest(
+                StytchRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -230,7 +230,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithWhatsAppSecondary(
-                StytchRequests.OTP.WhatsApp.SendRequest(
+                StytchRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -244,7 +244,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<LoginOrCreateOTPData> = safeApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
-                StytchRequests.OTP.Email.LoginOrCreateRequest(
+                StytchRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes.toInt(),
                     loginTemplateId = loginTemplateId,
@@ -261,7 +261,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithEmailPrimary(
-                StytchRequests.OTP.Email.SendRequest(
+                StytchRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
@@ -278,7 +278,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<BasicData> = safeApiCall {
             apiService.sendOTPWithEmailSecondary(
-                StytchRequests.OTP.Email.SendRequest(
+                StytchRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
