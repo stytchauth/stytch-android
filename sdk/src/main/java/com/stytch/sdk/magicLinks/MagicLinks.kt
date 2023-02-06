@@ -1,6 +1,7 @@
 package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
 
@@ -54,6 +55,8 @@ public interface MagicLinks {
          * @param signupMagicLinkUrl is the url where you should be redirected for signup
          * @param loginExpirationMinutes is the duration after which the login url should expire
          * @param signupExpirationMinutes is the duration after which the signup url should expire
+         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
+         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
@@ -61,6 +64,8 @@ public interface MagicLinks {
             val signupMagicLinkUrl: String? = null,
             val loginExpirationMinutes: UInt? = null,
             val signupExpirationMinutes: UInt? = null,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
         )
 
         /**
@@ -79,5 +84,19 @@ public interface MagicLinks {
             parameters: Parameters,
             callback: (response: LoginOrCreateUserByEmailResponse) -> Unit,
         )
+
+        /**
+         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * @param parameters required to receive magic link
+         * @return BaseResponse response from backend
+         */
+        public suspend fun send(parameters: Parameters): BaseResponse
+
+        /**
+         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * @param parameters required to receive magic link
+         * @param callback calls callback with BaseResponse response from backend
+         */
+        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 }

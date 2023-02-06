@@ -67,8 +67,24 @@ internal class StytchApiTest {
     fun `StytchApi MagicLinks Email loginOrCreate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-        StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "")
+        StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "")
         coVerify { StytchApi.apiService.loginOrCreateUserByEmail(any()) }
+    }
+
+    @Test
+    fun `StytchApi MagicLinks Email sendPrimary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendEmailMagicLinkPrimary(any()) } returns mockk(relaxed = true)
+        StytchApi.MagicLinks.Email.sendPrimary("", null, null, null, null, null, null, null)
+        coVerify { StytchApi.apiService.sendEmailMagicLinkPrimary(any()) }
+    }
+
+    @Test
+    fun `StytchApi MagicLinks Email sendSecondar calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendEmailMagicLinkSecondary(any()) } returns mockk(relaxed = true)
+        StytchApi.MagicLinks.Email.sendSecondary("", null, null, null, null, null, null, null)
+        coVerify { StytchApi.apiService.sendEmailMagicLinkSecondary(any()) }
     }
 
     @Test
@@ -88,6 +104,22 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi OTP sendOTPWithSMSPrimary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithSMSPrimary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithSMSPrimary("", 30U)
+        coVerify { StytchApi.apiService.sendOTPWithSMSPrimary(any()) }
+    }
+
+    @Test
+    fun `StytchApi OTP sendOTPWithSMSSecondary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithSMSSecondary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithSMSSecondary("", 30U)
+        coVerify { StytchApi.apiService.sendOTPWithSMSSecondary(any()) }
+    }
+
+    @Test
     fun `StytchApi OTP loginOrCreateUserByOTPWithWhatsApp calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithWhatsApp(any()) } returns mockk(relaxed = true)
@@ -96,11 +128,43 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi OTP sendByOTPWithWhatsAppPrimary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithWhatsAppPrimary("", 30U)
+        coVerify { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) }
+    }
+
+    @Test
+    fun `StytchApi OTP sendByOTPWithWhatsAppSecondary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithWhatsAppSecondary("", 30U)
+        coVerify { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) }
+    }
+
+    @Test
     fun `StytchApi OTP loginOrCreateUserByOTPWithEmail calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
-        StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U)
+        StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U, "", "")
         coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) }
+    }
+
+    @Test
+    fun `StytchApi OTP sendOTPWithEmailPrimary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithEmailPrimary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithEmailPrimary("", 30U, null, null)
+        coVerify { StytchApi.apiService.sendOTPWithEmailPrimary(any()) }
+    }
+
+    @Test
+    fun `StytchApi OTP sendOTPWithEmailSecondary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.sendOTPWithEmailSecondary(any()) } returns mockk(relaxed = true)
+        StytchApi.OTP.sendOTPWithEmailSecondary("", 30U, null, null)
+        coVerify { StytchApi.apiService.sendOTPWithEmailSecondary(any()) }
     }
 
     @Test
@@ -155,7 +219,7 @@ internal class StytchApiTest {
     fun `StytchApi Sessions authenticate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-        StytchApi.Sessions.authenticate(30)
+        StytchApi.Sessions.authenticate(30U)
         coVerify { StytchApi.apiService.authenticateSessions(any()) }
     }
 

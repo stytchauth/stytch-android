@@ -1,6 +1,7 @@
 package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.PREFERENCES_CODE_VERIFIER
 import com.stytch.sdk.StorageHelper
@@ -82,8 +83,10 @@ internal class MagicLinksImpl internal constructor(
                 result = api.loginOrCreate(
                     email = parameters.email,
                     loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                    challengeCode,
-                    challengeCodeMethod
+                    codeChallenge = challengeCode,
+                    codeChallengeMethod = challengeCodeMethod,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
                 )
             }
 
@@ -98,6 +101,50 @@ internal class MagicLinksImpl internal constructor(
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
                 // change to main thread to call callback
+                callback(result)
+            }
+        }
+
+        override suspend fun send(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse =
+            withContext(dispatchers.io) {
+                val challengeCode: String
+                try {
+                    val challengePair = storageHelper.generateHashedCodeChallenge()
+                    challengeCode = challengePair.second
+                } catch (ex: Exception) {
+                    return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
+                }
+                if (sessionStorage.activeSessionExists) {
+                    api.sendSecondary(
+                        email = parameters.email,
+                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                        codeChallenge = challengeCode,
+                    )
+                } else {
+                    api.sendPrimary(
+                        email = parameters.email,
+                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
+                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                        codeChallenge = challengeCode,
+                    )
+                }
+            }
+
+        override fun send(
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
+            callback: (response: BaseResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                val result = send(parameters)
                 callback(result)
             }
         }

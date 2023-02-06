@@ -30,6 +30,8 @@ internal class OTPTest {
         val expected = OTP.EmailOTP.Parameters(
             email = "emailAddress",
             expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            loginTemplateId = null,
+            signupTemplateId = null
         )
         assert(params == expected)
     }

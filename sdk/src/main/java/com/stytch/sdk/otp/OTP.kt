@@ -1,6 +1,7 @@
 package com.stytch.sdk.otp
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.LoginOrCreateOTPResponse
@@ -87,6 +88,20 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        /**
+         * Wraps Stytch’s SMS OTP send endpoint. Requests an SMS OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @return BaseResponse response from backend
+         */
+        public suspend fun send(parameters: Parameters): BaseResponse
+
+        /**
+         * Wraps Stytch’s SMS OTP send endpoint. Requests am SMS OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @param callback calls callback with BaseResponse response from backend
+         */
+        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 
     /**
@@ -119,6 +134,20 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        /**
+         * Wraps Stytch’s WhatsApp OTP send endpoint. Requests an WhatsApp OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @return BaseResponse response from backend
+         */
+        public suspend fun send(parameters: Parameters): BaseResponse
+
+        /**
+         * Wraps Stytch’s WhatsApp OTP send endpoint. Requests a WhatsApp OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @param callback calls callback with BaseResponse response from backend
+         */
+        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 
     /**
@@ -129,10 +158,14 @@ public interface OTP {
         /**
          * @param email the address the OTP code would be sent to via Email
          * @param expirationMinutes indicates how long the OTP should last before it expires
+         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
+         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val loginTemplateId: String? = null,
+            val signupTemplateId: String? = null,
         )
 
         /**
@@ -151,5 +184,19 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: LoginOrCreateOTPResponse) -> Unit,
         )
+
+        /**
+         * Wraps Stytch’s Email OTP send endpoint. Requests an Email OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @return BaseResponse response from backend
+         */
+        public suspend fun send(parameters: Parameters): BaseResponse
+
+        /**
+         * Wraps Stytch’s Email OTP send endpoint. Requests an Email OTP for a user to authenticate.
+         * @param parameters required to send OTP
+         * @param callback calls callback with BaseResponse response from backend
+         */
+        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 }

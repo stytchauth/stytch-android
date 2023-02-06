@@ -1,6 +1,7 @@
 package com.stytch.sdk.magicLinks
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.EncryptionManager
 import com.stytch.sdk.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.StorageHelper
@@ -8,6 +9,7 @@ import com.stytch.sdk.StytchDispatchers
 import com.stytch.sdk.StytchResult
 import com.stytch.sdk.network.StytchApi
 import com.stytch.sdk.network.responseData.AuthData
+import com.stytch.sdk.network.responseData.BasicData
 import com.stytch.sdk.sessions.SessionAutoUpdater
 import com.stytch.sdk.sessions.SessionStorage
 import com.stytch.sdk.sessions.launchSessionUpdater
@@ -48,6 +50,7 @@ internal class MagicLinksImplTest {
     private lateinit var impl: MagicLinksImpl
     private val dispatcher = Dispatchers.Unconfined
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
+    private val successfulBaseResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
     private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
     private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
@@ -111,15 +114,60 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email loginOrCreate delegates to api`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        coEvery { mockApi.loginOrCreate(any(), any(), any(), any()) } returns successfulLoginOrCreateResponse
+        coEvery {
+            mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
+        } returns successfulLoginOrCreateResponse
         impl.email.loginOrCreate(emailMagicLinkParameters)
-        coVerify { mockApi.loginOrCreate(any(), any(), any(), any()) }
+        coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
     fun `MagicLinksImpl email loginOrCreate with callback calls callback method`() {
         val mockCallback = spyk<(LoginOrCreateUserByEmailResponse) -> Unit>()
         impl.email.loginOrCreate(emailMagicLinkParameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `MagicLinksImpl email send with active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns true
+        coEvery {
+            mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
+        } returns successfulBaseResponse
+        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+        val response = impl.email.send(
+            MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress")
+        )
+        assert(response is StytchResult.Success)
+        coVerify {
+            mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `MagicLinksImpl email send with no active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery {
+            mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+        } returns successfulBaseResponse
+        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+        val response = impl.email.send(
+            MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress")
+        )
+        assert(response is StytchResult.Success)
+        coVerify {
+            mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `MagicLinksImpl email send with callback calls callback method`() {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery {
+            mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+        } returns successfulBaseResponse
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.email.send(MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

@@ -1,6 +1,7 @@
 package com.stytch.sdk.otp
 
 import com.stytch.sdk.AuthResponse
+import com.stytch.sdk.BaseResponse
 import com.stytch.sdk.EncryptionManager
 import com.stytch.sdk.LoginOrCreateOTPResponse
 import com.stytch.sdk.StytchDispatchers
@@ -103,6 +104,47 @@ internal class OTPImplTest {
     }
 
     @Test
+    fun `OTPImpl sms send with active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns true
+        coEvery { mockApi.sendOTPWithSMSSecondary(any(), any()) } returns mockk(relaxed = true)
+        impl.sms.send(
+            OTP.SmsOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            )
+        )
+        coVerify { mockApi.sendOTPWithSMSSecondary(any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl sms send with no active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
+        impl.sms.send(
+            OTP.SmsOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            )
+        )
+        coVerify { mockApi.sendOTPWithSMSPrimary(any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl sms send with callback calls callback method`() {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.sms.send(
+            OTP.SmsOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            ),
+            mockCallback
+        )
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
     fun `OTPImpl whatsapp loginOrCreate delegates to api`() = runTest {
         coEvery { mockApi.loginOrCreateUserByOTPWithWhatsApp(any(), any()) } returns mockk(relaxed = true)
         impl.whatsapp.loginOrCreate(mockk(relaxed = true))
@@ -118,17 +160,105 @@ internal class OTPImplTest {
     }
 
     @Test
+    fun `OTPImpl whatsapp send with no active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+        impl.whatsapp.send(
+            OTP.WhatsAppOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            )
+        )
+        coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl whatsapp send with active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns true
+        coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) } returns mockk(relaxed = true)
+        impl.whatsapp.send(
+            OTP.WhatsAppOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            )
+        )
+        coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl whatsapp send with callback calls callback method`() {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.whatsapp.send(
+            OTP.WhatsAppOTP.Parameters(
+                phoneNumber = "phoneNumber",
+                expirationMinutes = 10U,
+            ),
+            mockCallback
+        )
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
     fun `OTPImpl email loginOrCreate delegates to api`() = runTest {
-        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
         impl.email.loginOrCreate(mockk(relaxed = true))
-        coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any()) }
+        coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) }
     }
 
     @Test
     fun `OTPImpl email loginOrCreate with callback calls callback method`() {
-        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(LoginOrCreateOTPResponse) -> Unit>()
         impl.email.loginOrCreate(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `OTPImpl email send with no active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        impl.email.send(
+            OTP.EmailOTP.Parameters(
+                email = "emailAddress",
+                expirationMinutes = 10U,
+                loginTemplateId = null,
+                signupTemplateId = null
+            )
+        )
+        coVerify { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl email send with active session delegates to api`() = runTest {
+        every { mockSessionStorage.activeSessionExists } returns true
+        coEvery { mockApi.sendOTPWithEmailSecondary(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        impl.email.send(
+            OTP.EmailOTP.Parameters(
+                email = "emailAddress",
+                expirationMinutes = 10U,
+                loginTemplateId = null,
+                signupTemplateId = null
+            )
+        )
+        coVerify { mockApi.sendOTPWithEmailSecondary(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `OTPImpl email send with callback calls callback method`() {
+        every { mockSessionStorage.activeSessionExists } returns false
+        coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.email.send(
+            OTP.EmailOTP.Parameters(
+                email = "emailAddress",
+                expirationMinutes = 10U,
+                loginTemplateId = null,
+                signupTemplateId = null
+            ),
+            mockCallback
+        )
         verify { mockCallback.invoke(any()) }
     }
 }

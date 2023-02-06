@@ -12,6 +12,8 @@ internal class MagicLinksTest {
             signupMagicLinkUrl = null,
             loginExpirationMinutes = null,
             signupExpirationMinutes = null,
+            loginTemplateId = null,
+            signupTemplateId = null,
         )
         assert(params == expected)
     }

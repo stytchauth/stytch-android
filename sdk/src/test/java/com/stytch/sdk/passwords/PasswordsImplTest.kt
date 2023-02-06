@@ -55,7 +55,13 @@ internal class PasswordsImplTest {
     private val authParameters = mockk<Passwords.AuthParameters>(relaxed = true)
     private val createParameters = mockk<Passwords.CreateParameters>(relaxed = true)
     private val successfulCreateResponse = StytchResult.Success<CreateResponse>(mockk(relaxed = true))
-    private val resetByEmailStartParameters = mockk<Passwords.ResetByEmailStartParameters>(relaxed = true)
+    private val resetByEmailStartParameters = Passwords.ResetByEmailStartParameters(
+        email = "emailAddress",
+        loginRedirectUrl = null,
+        loginExpirationMinutes = null,
+        resetPasswordRedirectUrl = null,
+        resetPasswordExpirationMinutes = null,
+    )
     private val resetByEmailParameters = mockk<Passwords.ResetByEmailParameters>(relaxed = true)
     private val strengthCheckParameters = mockk<Passwords.StrengthCheckParameters>(relaxed = true)
 
