@@ -6,6 +6,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.consumer.StytchClient
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -340,47 +341,47 @@ internal class StytchApiTest {
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         every { StytchApi.isInitialized } returns false
-        val mockApiCall: suspend () -> StytchResponses.StytchDataResponse<Boolean> = mockk()
-        StytchApi.safeApiCall { mockApiCall() }
+        val mockApiCall: suspend () -> StytchDataResponse<Boolean> = mockk()
+        StytchApi.safeConsumerApiCall { mockApiCall() }
     }
 
     @Test
     fun `safeApiCall returns success when call succeeds`() = runTest {
         every { StytchApi.isInitialized } returns true
-        fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
-            return StytchResponses.StytchDataResponse(true)
+        fun mockApiCall(): StytchDataResponse<Boolean> {
+            return StytchDataResponse(true)
         }
-        val result = StytchApi.safeApiCall { mockApiCall() }
+        val result = StytchApi.safeConsumerApiCall { mockApiCall() }
         assert(result is StytchResult.Success)
     }
 
     @Test
     fun `safeApiCall returns correct error for HttpException`() = runTest {
         every { StytchApi.isInitialized } returns true
-        fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
+        fun mockApiCall(): StytchDataResponse<Boolean> {
             throw HttpException(mockk(relaxed = true))
         }
-        val result = StytchApi.safeApiCall { mockApiCall() }
+        val result = StytchApi.safeConsumerApiCall { mockApiCall() }
         assert(result is StytchResult.Error)
     }
 
     @Test
     fun `safeApiCall returns correct error for StytchExceptions`() = runTest {
         every { StytchApi.isInitialized } returns true
-        fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
+        fun mockApiCall(): StytchDataResponse<Boolean> {
             throw StytchExceptions.Critical(RuntimeException("Test"))
         }
-        val result = StytchApi.safeApiCall { mockApiCall() }
+        val result = StytchApi.safeConsumerApiCall { mockApiCall() }
         assert(result is StytchResult.Error)
     }
 
     @Test
     fun `safeApiCall returns correct error for other exceptions`() = runTest {
         every { StytchApi.isInitialized } returns true
-        fun mockApiCall(): StytchResponses.StytchDataResponse<Boolean> {
+        fun mockApiCall(): StytchDataResponse<Boolean> {
             error("Test")
         }
-        val result = StytchApi.safeApiCall { mockApiCall() }
+        val result = StytchApi.safeConsumerApiCall { mockApiCall() }
         assert(result is StytchResult.Error)
     }
 }

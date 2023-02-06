@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
@@ -26,7 +27,12 @@ internal class StytchApiServiceTests {
         mockWebServer = MockWebServer()
         mockWebServer.start(12345)
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
-        apiService = StytchApiService.createApiService(mockWebServer.url("/").toString(), null)
+        apiService = ApiService.createApiService(
+            mockWebServer.url("/").toString(),
+            null,
+            {},
+            StytchApiService::class.java
+        )
     }
 
     @After

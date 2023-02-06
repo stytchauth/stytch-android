@@ -1,23 +1,14 @@
 package com.stytch.sdk.consumer.network
 
-import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
-import com.stytch.sdk.consumer.StytchClient
-import java.util.concurrent.TimeUnit
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import com.stytch.sdk.common.network.ApiService
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-private const val ONE_HUNDRED_TWENTY = 120L
-private const val HTTP_UNAUTHORIZED = 401
-
 @Suppress("TooManyFunctions")
-internal interface StytchApiService {
+internal interface StytchApiService : ApiService {
 
     //region Magic Links
     @POST("magic_links/email/login_or_create")
@@ -184,48 +175,4 @@ internal interface StytchApiService {
         @Body request: StytchRequests.OAuth.ThirdParty.AuthenticateRequest
     ): StytchResponses.OAuth.OAuthAuthenticateResponse
     //endregion OAuth
-
-    companion object {
-        private fun clientBuilder(authHeaderInterceptor: StytchAuthHeaderInterceptor?): OkHttpClient {
-            val builder = OkHttpClient.Builder()
-                .readTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-                .writeTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-                .connectTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
-            authHeaderInterceptor?.let { builder.addInterceptor(it) }
-            builder
-                .addInterceptor(
-                    Interceptor { chain ->
-                        val request = chain.request()
-                        val response = chain.proceed(request)
-                        if (response.code == HTTP_UNAUTHORIZED) {
-                            StytchClient.sessionStorage.revoke()
-                        }
-                        return@Interceptor response
-                    }
-                )
-                .addNetworkInterceptor {
-                    // OkHttp is adding a charset to the content-type which is rejected by the API
-                    // see: https://github.com/square/okhttp/issues/3081
-                    it.proceed(
-                        it.request()
-                            .newBuilder()
-                            .header("Content-Type", "application/json")
-                            .build()
-                    )
-                }
-            return builder.build()
-        }
-
-        fun createApiService(
-            hostUrl: String,
-            authHeaderInterceptor: StytchAuthHeaderInterceptor?,
-        ): StytchApiService {
-            return Retrofit.Builder()
-                .baseUrl(hostUrl)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .client(clientBuilder(authHeaderInterceptor))
-                .build()
-                .create(StytchApiService::class.java)
-        }
-    }
 }

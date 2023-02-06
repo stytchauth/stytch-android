@@ -4,12 +4,12 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.BasicData
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.BaseResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import com.stytch.sdk.consumer.network.AuthData
-import com.stytch.sdk.consumer.network.BasicData
 import com.stytch.sdk.consumer.network.CreateResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.SessionAutoUpdater

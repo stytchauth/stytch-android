@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer
 
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.consumer.network.BasicData
+import com.stytch.sdk.common.network.BasicData
 import com.stytch.sdk.consumer.network.BiometricsAuthData
 import com.stytch.sdk.consumer.network.CreateResponse
 import com.stytch.sdk.consumer.network.DeleteAuthenticationFactorData

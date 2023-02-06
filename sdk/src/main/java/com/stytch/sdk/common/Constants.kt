@@ -16,4 +16,6 @@ internal object Constants {
 
     internal const val DEFAULT_SESSION_TIME_MINUTES = 30u
     internal const val DEFAULT_OTP_EXPIRATION_TIME_MINUTES = 10u
+    internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
+    internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
 }

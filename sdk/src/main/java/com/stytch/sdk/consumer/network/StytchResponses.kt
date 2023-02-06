@@ -1,6 +1,8 @@
 package com.stytch.sdk.consumer.network
 
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.BasicData
+import com.stytch.sdk.common.network.StytchDataResponse
 
 internal object StytchResponses {
 
@@ -69,8 +71,4 @@ internal object StytchResponses {
 
     @JsonClass(generateAdapter = true)
     class SendResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
-
-    open class StytchDataResponse<T>(
-        val data: T,
-    )
 }
