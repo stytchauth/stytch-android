@@ -1,9 +1,9 @@
 package com.stytch.sdk.consumer.magicLinks
 
+import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.consumer.AuthResponse
-import com.stytch.sdk.consumer.BaseResponse
-import com.stytch.sdk.consumer.LoginOrCreateUserByEmailResponse
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality

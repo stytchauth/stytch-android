@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.network
 
 import com.stytch.sdk.common.network.ApiService
+import com.stytch.sdk.common.network.CommonRequests
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
@@ -45,7 +46,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links email loginOrCreate request`() {
         runBlocking {
-            val parameters = StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+            val parameters = ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                 email = EMAIL,
                 loginMagicLinkUrl = LOGIN_MAGIC_LINK,
                 codeChallenge = "123",
@@ -72,7 +73,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links email send primary request`() {
         runBlocking {
-            val parameters = StytchRequests.MagicLinks.SendRequest(
+            val parameters = ConsumerRequests.MagicLinks.SendRequest(
                 email = EMAIL,
                 loginMagicLinkUrl = LOGIN_MAGIC_LINK,
                 codeChallenge = "123",
@@ -103,7 +104,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links email send secondary request`() {
         runBlocking {
-            val parameters = StytchRequests.MagicLinks.SendRequest(
+            val parameters = ConsumerRequests.MagicLinks.SendRequest(
                 email = EMAIL,
                 loginMagicLinkUrl = LOGIN_MAGIC_LINK,
                 codeChallenge = "123",
@@ -134,7 +135,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links authenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.MagicLinks.AuthenticateRequest(
+            val parameters = CommonRequests.MagicLinks.AuthenticateRequest(
                 token = "token",
                 codeVerifier = "123",
                 sessionDurationMinutes = 60
@@ -158,7 +159,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email(
+            val parameters = ConsumerRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -181,7 +182,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email send primary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email(
+            val parameters = ConsumerRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -204,7 +205,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP email send secondary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Email(
+            val parameters = ConsumerRequests.OTP.Email(
                 email = EMAIL,
                 expirationMinutes = 60,
                 loginTemplateId = "loginTemplateId",
@@ -227,7 +228,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms loginOrCreate request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS(
+            val parameters = ConsumerRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -246,7 +247,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms send primary request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS(
+            val parameters = ConsumerRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -265,7 +266,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP sms send secondary request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.SMS(
+            val parameters = ConsumerRequests.OTP.SMS(
                 phoneNumber = "000",
                 expirationMinutes = 24
             )
@@ -284,7 +285,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp loginOrCreate with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp(
+            val parameters = ConsumerRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
@@ -303,7 +304,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp send primary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp(
+            val parameters = ConsumerRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
@@ -322,7 +323,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP whatsapp send secondary with default expiration request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.WhatsApp(
+            val parameters = ConsumerRequests.OTP.WhatsApp(
                 phoneNumber = "000",
                 expirationMinutes = 60
             )
@@ -341,7 +342,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check OTP authenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.OTP.Authenticate(
+            val parameters = ConsumerRequests.OTP.Authenticate(
                 token = "token",
                 methodId = "methodId",
                 sessionDurationMinutes = 60
@@ -366,7 +367,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords create request`() {
         runBlocking {
-            val parameters = StytchRequests.Passwords.CreateRequest(
+            val parameters = ConsumerRequests.Passwords.CreateRequest(
                 email = EMAIL,
                 password = "123asd",
                 sessionDurationMinutes = 60
@@ -387,7 +388,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords strenghtCheck request`() {
         runBlocking {
-            val parameters = StytchRequests.Passwords.StrengthCheckRequest(
+            val parameters = ConsumerRequests.Passwords.StrengthCheckRequest(
                 email = EMAIL,
                 password = "123asd"
             )
@@ -406,7 +407,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords resetbyEmail request`() {
         runBlocking {
-            val parameters = StytchRequests.Passwords.ResetByEmailRequest(
+            val parameters = ConsumerRequests.Passwords.ResetByEmailRequest(
                 token = "token",
                 password = "123asd",
                 sessionDurationMinutes = 60,
@@ -429,7 +430,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords resetbyEmailStart request`() {
         runBlocking {
-            val parameters = StytchRequests.Passwords.ResetByEmailStartRequest(
+            val parameters = ConsumerRequests.Passwords.ResetByEmailStartRequest(
                 email = EMAIL,
                 codeChallenge = "123",
                 codeChallengeMethod = "method2",
@@ -458,7 +459,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Passwords authenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.Passwords.AuthenticateRequest(
+            val parameters = ConsumerRequests.Passwords.AuthenticateRequest(
                 email = EMAIL,
                 password = "123asd",
                 sessionDurationMinutes = 46
@@ -483,7 +484,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check Sessions authenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.Sessions.AuthenticateRequest(sessionDurationMinutes = 24)
+            val parameters = CommonRequests.Sessions.AuthenticateRequest(sessionDurationMinutes = 24)
             requestIgnoringResponseException {
                 apiService.authenticateSessions(parameters)
             }.verifyPost(
@@ -508,7 +509,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsRegisterStart request`() {
         runBlocking {
-            val parameters = StytchRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
+            val parameters = ConsumerRequests.Biometrics.RegisterStartRequest(publicKey = "publicKey")
             requestIgnoringResponseException {
                 apiService.biometricsRegisterStart(parameters)
             }.verifyPost(
@@ -521,7 +522,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsRegister request`() {
         runBlocking {
-            val parameters = StytchRequests.Biometrics.RegisterRequest(
+            val parameters = ConsumerRequests.Biometrics.RegisterRequest(
                 signature = "signature",
                 biometricRegistrationId = "biometricRegistrationId",
                 sessionDurationMinutes = 30
@@ -542,7 +543,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsAuthenticateStart request`() {
         runBlocking {
-            val parameters = StytchRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
+            val parameters = ConsumerRequests.Biometrics.AuthenticateStartRequest(publicKey = "publicKey")
             requestIgnoringResponseException {
                 apiService.biometricsAuthenticateStart(parameters)
             }.verifyPost(
@@ -555,7 +556,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check biometricsAuthenticate request`() {
         runBlocking {
-            val parameters = StytchRequests.Biometrics.AuthenticateRequest(
+            val parameters = ConsumerRequests.Biometrics.AuthenticateRequest(
                 signature = "signature",
                 biometricRegistrationId = "biometricRegistrationId",
                 sessionDurationMinutes = 30
@@ -634,7 +635,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check authenticateWithGoogleIdToken request`() {
         runBlocking {
-            val parameters = StytchRequests.OAuth.Google.AuthenticateRequest(
+            val parameters = ConsumerRequests.OAuth.Google.AuthenticateRequest(
                 idToken = "id_token",
                 nonce = "nonce",
                 sessionDurationMinutes = 30
@@ -655,7 +656,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check authenticateWithThirdPartyToken request`() {
         runBlocking {
-            val parameters = StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+            val parameters = ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest(
                 token = "id_token",
                 sessionDurationMinutes = 30,
                 codeVerifier = "code_challenge",

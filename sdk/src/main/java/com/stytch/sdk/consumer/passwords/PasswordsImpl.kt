@@ -1,13 +1,13 @@
 package com.stytch.sdk.consumer.passwords
 
+import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.PasswordsStrengthCheckResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
-import com.stytch.sdk.consumer.BaseResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
-import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.SessionStorage
 import com.stytch.sdk.consumer.sessions.launchSessionUpdater

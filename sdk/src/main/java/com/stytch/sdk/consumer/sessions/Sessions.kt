@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
+import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.consumer.AuthResponse
-import com.stytch.sdk.consumer.BaseResponse
 
 /**
  * Sessions interface that encompasses authentication functions as well as other related functionality

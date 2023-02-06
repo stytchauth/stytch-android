@@ -9,11 +9,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.DeeplinkHandledStatus
-import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
+import com.stytch.sdk.common.LoginOrCreateOTPResponse
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.otp.OTP
-import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.common.StytchResult
 import java.util.regex.Pattern
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

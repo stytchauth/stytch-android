@@ -8,6 +8,10 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.BasicData
+import com.stytch.sdk.common.network.BiometricsStartResponse
+import com.stytch.sdk.common.network.CommonRequests
+import com.stytch.sdk.common.network.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.StrengthCheckResponse
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.safeApiCall
@@ -78,7 +82,7 @@ internal object StytchApi {
                 signupTemplateId: String?,
             ): StytchResult<BasicData> = safeConsumerApiCall {
                 apiService.loginOrCreateUserByEmail(
-                    StytchRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+                    ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         codeChallenge = codeChallenge,
@@ -95,7 +99,7 @@ internal object StytchApi {
                 codeVerifier: String
             ): StytchResult<AuthData> = safeConsumerApiCall {
                 apiService.authenticate(
-                    StytchRequests.MagicLinks.AuthenticateRequest(
+                    CommonRequests.MagicLinks.AuthenticateRequest(
                         token,
                         codeVerifier,
                         sessionDurationMinutes.toInt()
@@ -115,7 +119,7 @@ internal object StytchApi {
                 codeChallenge: String?,
             ): StytchResult<BasicData> = safeConsumerApiCall {
                 apiService.sendEmailMagicLinkPrimary(
-                    StytchRequests.MagicLinks.SendRequest(
+                    ConsumerRequests.MagicLinks.SendRequest(
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         signupMagicLinkUrl = signupMagicLinkUrl,
@@ -140,7 +144,7 @@ internal object StytchApi {
                 codeChallenge: String?,
             ): StytchResult<BasicData> = safeConsumerApiCall {
                 apiService.sendEmailMagicLinkSecondary(
-                    StytchRequests.MagicLinks.SendRequest(
+                    ConsumerRequests.MagicLinks.SendRequest(
                         email = email,
                         loginMagicLinkUrl = loginMagicLinkUrl,
                         signupMagicLinkUrl = signupMagicLinkUrl,
@@ -161,7 +165,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeConsumerApiCall {
             apiService.loginOrCreateUserByOTPWithSMS(
-                StytchRequests.OTP.SMS(
+                ConsumerRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -174,7 +178,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithSMSPrimary(
-                StytchRequests.OTP.SMS(
+                ConsumerRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -187,7 +191,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithSMSSecondary(
-                StytchRequests.OTP.SMS(
+                ConsumerRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -199,7 +203,7 @@ internal object StytchApi {
             expirationMinutes: UInt
         ): StytchResult<LoginOrCreateOTPData> = safeConsumerApiCall {
             apiService.loginOrCreateUserByOTPWithWhatsApp(
-                StytchRequests.OTP.WhatsApp(
+                ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes.toInt()
                 )
@@ -212,7 +216,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithWhatsAppPrimary(
-                StytchRequests.OTP.WhatsApp(
+                ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -225,7 +229,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithWhatsAppSecondary(
-                StytchRequests.OTP.WhatsApp(
+                ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
                     expirationMinutes = expirationMinutes?.toInt(),
                 )
@@ -239,7 +243,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<LoginOrCreateOTPData> = safeConsumerApiCall {
             apiService.loginOrCreateUserByOTPWithEmail(
-                StytchRequests.OTP.Email(
+                ConsumerRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes.toInt(),
                     loginTemplateId = loginTemplateId,
@@ -256,7 +260,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithEmailPrimary(
-                StytchRequests.OTP.Email(
+                ConsumerRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
@@ -273,7 +277,7 @@ internal object StytchApi {
             signupTemplateId: String?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.sendOTPWithEmailSecondary(
-                StytchRequests.OTP.Email(
+                ConsumerRequests.OTP.Email(
                     email = email,
                     expirationMinutes = expirationMinutes?.toInt(),
                     loginTemplateId = loginTemplateId,
@@ -288,7 +292,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.authenticateWithOTP(
-                StytchRequests.OTP.Authenticate(
+                ConsumerRequests.OTP.Authenticate(
                     token,
                     methodId,
                     sessionDurationMinutes.toInt()
@@ -305,7 +309,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.authenticateWithPasswords(
-                StytchRequests.Passwords.AuthenticateRequest(
+                ConsumerRequests.Passwords.AuthenticateRequest(
                     email,
                     password,
                     sessionDurationMinutes.toInt()
@@ -319,7 +323,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt
         ): StytchResult<CreateResponse> = safeConsumerApiCall {
             apiService.passwords(
-                StytchRequests.Passwords.CreateRequest(
+                ConsumerRequests.Passwords.CreateRequest(
                     email,
                     password,
                     sessionDurationMinutes.toInt()
@@ -338,7 +342,7 @@ internal object StytchApi {
             resetPasswordExpirationMinutes: Int?
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.resetByEmailStart(
-                StytchRequests.Passwords.ResetByEmailStartRequest(
+                ConsumerRequests.Passwords.ResetByEmailStartRequest(
                     email,
                     codeChallenge,
                     codeChallengeMethod,
@@ -357,7 +361,7 @@ internal object StytchApi {
             codeVerifier: String
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.resetByEmail(
-                StytchRequests.Passwords.ResetByEmailRequest(
+                ConsumerRequests.Passwords.ResetByEmailRequest(
                     token,
                     password,
                     sessionDurationMinutes.toInt(),
@@ -371,7 +375,7 @@ internal object StytchApi {
             password: String
         ): StytchResult<StrengthCheckResponse> = safeConsumerApiCall {
             apiService.strengthCheck(
-                StytchRequests.Passwords.StrengthCheckRequest(
+                ConsumerRequests.Passwords.StrengthCheckRequest(
                     email,
                     password
                 )
@@ -385,7 +389,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt? = null
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.authenticateSessions(
-                StytchRequests.Sessions.AuthenticateRequest(
+                CommonRequests.Sessions.AuthenticateRequest(
                     sessionDurationMinutes?.toInt()
                 )
             )
@@ -401,7 +405,7 @@ internal object StytchApi {
             publicKey: String,
         ): StytchResult<BiometricsStartResponse> = safeConsumerApiCall {
             apiService.biometricsRegisterStart(
-                StytchRequests.Biometrics.RegisterStartRequest(
+                ConsumerRequests.Biometrics.RegisterStartRequest(
                     publicKey = publicKey,
                 )
             )
@@ -413,7 +417,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt,
         ): StytchResult<BiometricsAuthData> = safeConsumerApiCall {
             apiService.biometricsRegister(
-                StytchRequests.Biometrics.RegisterRequest(
+                ConsumerRequests.Biometrics.RegisterRequest(
                     signature = signature,
                     biometricRegistrationId = biometricRegistrationId,
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
@@ -425,7 +429,7 @@ internal object StytchApi {
             publicKey: String,
         ): StytchResult<BiometricsStartResponse> = safeConsumerApiCall {
             apiService.biometricsAuthenticateStart(
-                StytchRequests.Biometrics.AuthenticateStartRequest(
+                ConsumerRequests.Biometrics.AuthenticateStartRequest(
                     publicKey = publicKey,
                 )
             )
@@ -437,7 +441,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt,
         ): StytchResult<BiometricsAuthData> = safeConsumerApiCall {
             apiService.biometricsAuthenticate(
-                StytchRequests.Biometrics.AuthenticateRequest(
+                ConsumerRequests.Biometrics.AuthenticateRequest(
                     signature = signature,
                     biometricRegistrationId = biometricRegistrationId,
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
@@ -484,7 +488,7 @@ internal object StytchApi {
             sessionDurationMinutes: UInt,
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.authenticateWithGoogleIdToken(
-                StytchRequests.OAuth.Google.AuthenticateRequest(
+                ConsumerRequests.OAuth.Google.AuthenticateRequest(
                     idToken = idToken,
                     nonce = nonce,
                     sessionDurationMinutes = sessionDurationMinutes.toInt()
@@ -498,7 +502,7 @@ internal object StytchApi {
             codeVerifier: String,
         ): OAuthAuthenticatedResponse = safeConsumerApiCall {
             apiService.authenticateWithThirdPartyToken(
-                StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest(
                     token = token,
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
                     codeVerifier = codeVerifier

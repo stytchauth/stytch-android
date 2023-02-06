@@ -309,7 +309,7 @@ internal class StytchApiTest {
         )
         coVerify {
             StytchApi.apiService.authenticateWithGoogleIdToken(
-                StytchRequests.OAuth.Google.AuthenticateRequest(
+                ConsumerRequests.OAuth.Google.AuthenticateRequest(
                     idToken = "id_token",
                     nonce = "nonce",
                     sessionDurationMinutes = 30
@@ -329,7 +329,7 @@ internal class StytchApiTest {
         )
         coVerify {
             StytchApi.apiService.authenticateWithThirdPartyToken(
-                StytchRequests.OAuth.ThirdParty.AuthenticateRequest(
+                ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest(
                     token = "id_token",
                     sessionDurationMinutes = 30,
                     codeVerifier = "code_challenge"

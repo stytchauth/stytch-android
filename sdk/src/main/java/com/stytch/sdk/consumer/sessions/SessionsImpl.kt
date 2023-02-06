@@ -1,11 +1,10 @@
 package com.stytch.sdk.consumer.sessions
 
+import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
-import com.stytch.sdk.consumer.BaseResponse
-import com.stytch.sdk.consumer.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -59,7 +58,7 @@ internal class SessionsImpl internal constructor(
     }
 
     override suspend fun revoke(): BaseResponse {
-        var result: LoginOrCreateUserByEmailResponse
+        var result: BaseResponse
         withContext(dispatchers.io) {
             result = api.revoke()
         }
