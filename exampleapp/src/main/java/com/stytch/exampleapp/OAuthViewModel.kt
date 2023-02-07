@@ -6,6 +6,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.DeeplinkHandledStatus
 import com.stytch.sdk.StytchClient
 import com.stytch.sdk.oauth.OAuth
 import com.stytch.sdk.oauth.OAuthError
@@ -91,7 +92,12 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             if (resultCode == RESULT_OK) {
                 intent.data?.let {
                     val result = StytchClient.handle(it, 60U)
-                    _currentResponse.value = result.toFriendlyDisplay()
+                    _currentResponse.value = when (result) {
+                        is DeeplinkHandledStatus.NotHandled -> result.reason
+                        is DeeplinkHandledStatus.Handled -> result.response.toFriendlyDisplay()
+                        // This only happens for password reset deeplinks
+                        is DeeplinkHandledStatus.ManualHandlingRequired -> ""
+                    }
                 }
             } else {
                 intent.extras?.getSerializable(OAuthError.OAUTH_EXCEPTION)?.let {
