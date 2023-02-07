@@ -1,10 +1,9 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.stytch.sdk.b2b.network.B2BSessionData
+import com.stytch.sdk.b2b.network.MemberData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.StytchExceptions
-import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.consumer.network.SessionData
 
 internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?
@@ -31,14 +30,29 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
             return value
         }
 
+    var session: B2BSessionData? = null
+        private set
+
+    var user: MemberData? = null
+        set(value) {
+            synchronized(this) {
+                field = value
+            }
+        }
+        get() {
+            synchronized(this) {
+                return field
+            }
+        }
+
     /**
      * @throws Exception if failed to save data
      */
-    fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
+    fun updateSession(sessionToken: String?, sessionJwt: String?, session: B2BSessionData? = null) {
         synchronized(this) {
             this.sessionToken = sessionToken
             this.sessionJwt = sessionJwt
-            // this.session = session
+            this.session = session
         }
     }
 
@@ -49,14 +63,8 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
         synchronized(this) {
             sessionToken = null
             sessionJwt = null
-            // session = null
-            // user = null
-        }
-    }
-
-    fun ensureSessionIsValidOrThrow() {
-        if (sessionToken == null && sessionJwt == null) {
-            throw StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
+            session = null
+            user = null
         }
     }
 }
