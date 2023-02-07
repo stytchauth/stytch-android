@@ -21,7 +21,7 @@ public object StytchB2BClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**
-     * Configures the StytchClient, setting the publicToken and hostUrl.
+     * Configures the StytchB2BClient, setting the publicToken and hostUrl.
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @throws StytchExceptions.Critical - if failed to generate new encryption keys
      */

@@ -46,12 +46,6 @@ internal object StytchB2BApi {
             return ::publicToken.isInitialized && ::deviceInfo.isInitialized
         }
 
-    internal val isTestToken: Boolean
-        get() {
-            StytchB2BClient.assertInitialized()
-            return publicToken.contains("public-token-test")
-        }
-
     @VisibleForTesting
     internal val apiService: StytchB2BApiService by lazy {
         StytchB2BClient.assertInitialized()
@@ -76,9 +70,9 @@ internal object StytchB2BApi {
             suspend fun loginOrCreate(
                 email: String,
                 organizationId: String,
-                loginMagicLinkUrl: String?,
+                loginRedirectUrl: String?,
+                signupRedirectUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
             ): StytchResult<BasicData> = safeB2BApiCall {
@@ -86,9 +80,9 @@ internal object StytchB2BApi {
                     B2BRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                         email = email,
                         organizationId = organizationId,
-                        loginMagicLinkUrl = loginMagicLinkUrl,
+                        loginRedirectUrl = loginRedirectUrl,
+                        signupRedirectUrl = signupRedirectUrl,
                         codeChallenge = codeChallenge,
-                        codeChallengeMethod = codeChallengeMethod,
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
                     )
@@ -99,66 +93,12 @@ internal object StytchB2BApi {
                 token: String,
                 sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String
-            ): StytchResult<B2BAuthData> = safeB2BApiCall {
+            ): StytchResult<B2BEMLAuthenticateData> = safeB2BApiCall {
                 apiService.authenticate(
-                    CommonRequests.MagicLinks.AuthenticateRequest(
-                        token,
-                        codeVerifier,
-                        sessionDurationMinutes.toInt()
-                    )
-                )
-            }
-
-            @Suppress("LongParameterList")
-            suspend fun sendPrimary(
-                email: String,
-                organizationId: String,
-                loginMagicLinkUrl: String?,
-                signupMagicLinkUrl: String?,
-                loginExpirationMinutes: Int?,
-                signupExpirationMinutes: Int?,
-                loginTemplateId: String?,
-                signupTemplateId: String?,
-                codeChallenge: String?,
-            ): StytchResult<BasicData> = safeB2BApiCall {
-                apiService.sendEmailMagicLinkPrimary(
-                    B2BRequests.MagicLinks.SendRequest(
-                        email = email,
-                        organizationId = organizationId,
-                        loginMagicLinkUrl = loginMagicLinkUrl,
-                        signupMagicLinkUrl = signupMagicLinkUrl,
-                        loginExpirationMinutes = loginExpirationMinutes,
-                        signupExpirationMinutes = signupExpirationMinutes,
-                        loginTemplateId = loginTemplateId,
-                        signupTemplateId = signupTemplateId,
-                        codeChallenge = codeChallenge,
-                    )
-                )
-            }
-
-            @Suppress("LongParameterList")
-            suspend fun sendSecondary(
-                email: String,
-                organizationId: String,
-                loginMagicLinkUrl: String?,
-                signupMagicLinkUrl: String?,
-                loginExpirationMinutes: Int?,
-                signupExpirationMinutes: Int?,
-                loginTemplateId: String?,
-                signupTemplateId: String?,
-                codeChallenge: String?,
-            ): StytchResult<BasicData> = safeB2BApiCall {
-                apiService.sendEmailMagicLinkSecondary(
-                    B2BRequests.MagicLinks.SendRequest(
-                        email = email,
-                        organizationId = organizationId,
-                        loginMagicLinkUrl = loginMagicLinkUrl,
-                        signupMagicLinkUrl = signupMagicLinkUrl,
-                        loginExpirationMinutes = loginExpirationMinutes,
-                        signupExpirationMinutes = signupExpirationMinutes,
-                        loginTemplateId = loginTemplateId,
-                        signupTemplateId = signupTemplateId,
-                        codeChallenge = codeChallenge,
+                    B2BRequests.MagicLinks.AuthenticateRequest(
+                        token = token,
+                        codeVerifier = codeVerifier,
+                        sessionDurationMinutes = sessionDurationMinutes.toInt()
                     )
                 )
             }
@@ -168,10 +108,10 @@ internal object StytchB2BApi {
     internal object Sessions {
         suspend fun authenticate(
             sessionDurationMinutes: UInt? = null
-        ): StytchResult<B2BAuthData> = safeB2BApiCall {
+        ): StytchResult<IB2BAuthData> = safeB2BApiCall {
             apiService.authenticateSessions(
                 CommonRequests.Sessions.AuthenticateRequest(
-                    sessionDurationMinutes?.toInt()
+                    sessionDurationMinutes = sessionDurationMinutes?.toInt()
                 )
             )
         }

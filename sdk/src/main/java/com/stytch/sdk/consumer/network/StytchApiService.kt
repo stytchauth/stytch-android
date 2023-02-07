@@ -30,7 +30,7 @@ internal interface StytchApiService : ApiService {
 
     @POST("magic_links/authenticate")
     suspend fun authenticate(
-        @Body request: CommonRequests.MagicLinks.AuthenticateRequest
+        @Body request: ConsumerRequests.MagicLinks.AuthenticateRequest
     ): ConsumerResponses.AuthenticateResponse
     //endregion Magic Links
 

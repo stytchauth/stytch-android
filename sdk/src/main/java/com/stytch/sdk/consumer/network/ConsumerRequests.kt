@@ -24,6 +24,15 @@ internal object ConsumerRequests {
         }
 
         @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            val token: String,
+            @Json(name = "code_verifier")
+            val codeVerifier: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
         data class SendRequest(
             val email: String,
             @Json(name = "login_magic_link_url")

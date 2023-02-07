@@ -99,7 +99,7 @@ internal object StytchApi {
                 codeVerifier: String
             ): StytchResult<AuthData> = safeConsumerApiCall {
                 apiService.authenticate(
-                    CommonRequests.MagicLinks.AuthenticateRequest(
+                    ConsumerRequests.MagicLinks.AuthenticateRequest(
                         token,
                         codeVerifier,
                         sessionDurationMinutes.toInt()
