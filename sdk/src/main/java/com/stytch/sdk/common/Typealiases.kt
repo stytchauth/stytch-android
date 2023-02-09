@@ -10,11 +10,6 @@ import com.stytch.sdk.common.network.StrengthCheckResponse
 public typealias BaseResponse = StytchResult<BasicData>
 
 /**
- * Type alias for StytchResult<BasicData> used for loginOrCreateUserByEmail responses
- */
-public typealias LoginOrCreateUserByEmailResponse = StytchResult<BasicData>
-
-/**
  * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
  */
 public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>

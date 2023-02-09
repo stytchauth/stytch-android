@@ -2,8 +2,12 @@ package com.stytch.sdk.b2b
 
 import android.content.Context
 import android.os.Build
+import com.stytch.sdk.b2b.magicLinks.MagicLinks
+import com.stytch.sdk.b2b.magicLinks.MagicLinksImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.b2b.sessions.Sessions
+import com.stytch.sdk.b2b.sessions.SessionsImpl
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
@@ -68,4 +72,35 @@ public object StytchB2BClient {
         deviceInfo.screenSize = "($width,$height)"
         return deviceInfo
     }
+
+    /**
+     * Exposes an instance of email magic links
+     */
+    public var magicLinks: MagicLinks = MagicLinksImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchB2BApi.MagicLinks.Email
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of sessions
+     */
+    public var sessions: Sessions = SessionsImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchB2BApi.Sessions
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
 }

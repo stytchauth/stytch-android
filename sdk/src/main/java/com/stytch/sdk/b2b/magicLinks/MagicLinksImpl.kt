@@ -1,14 +1,14 @@
-package com.stytch.sdk.consumer.magicLinks
+package com.stytch.sdk.b2b.magicLinks
 
+import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.b2b.sessions.launchSessionUpdater
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.consumer.AuthResponse
-import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,9 +16,9 @@ import kotlinx.coroutines.withContext
 internal class MagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: B2BSessionStorage,
     private val storageHelper: StorageHelper,
-    private val api: StytchApi.MagicLinks.Email
+    private val api: StytchB2BApi.MagicLinks.Email
 ) : MagicLinks {
 
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
@@ -66,12 +66,9 @@ internal class MagicLinksImpl internal constructor(
         ): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
-                val challengeCodeMethod: String
                 val challengeCode: String
-
                 try {
                     val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCodeMethod = challengePair.first
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchExceptions.Critical(ex))
@@ -80,9 +77,10 @@ internal class MagicLinksImpl internal constructor(
 
                 result = api.loginOrCreate(
                     email = parameters.email,
-                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                    organizationId = parameters.organizationId,
+                    loginRedirectUrl = parameters.loginRedirectUrl,
+                    signupRedirectUrl = parameters.signupRedirectUrl,
                     codeChallenge = challengeCode,
-                    codeChallengeMethod = challengeCodeMethod,
                     loginTemplateId = parameters.loginTemplateId,
                     signupTemplateId = parameters.signupTemplateId,
                 )
@@ -99,50 +97,6 @@ internal class MagicLinksImpl internal constructor(
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
                 // change to main thread to call callback
-                callback(result)
-            }
-        }
-
-        override suspend fun send(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse =
-            withContext(dispatchers.io) {
-                val challengeCode: String
-                try {
-                    val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCode = challengePair.second
-                } catch (ex: Exception) {
-                    return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
-                }
-                if (sessionStorage.activeSessionExists) {
-                    api.sendSecondary(
-                        email = parameters.email,
-                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
-                        loginTemplateId = parameters.loginTemplateId,
-                        signupTemplateId = parameters.signupTemplateId,
-                        codeChallenge = challengeCode,
-                    )
-                } else {
-                    api.sendPrimary(
-                        email = parameters.email,
-                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
-                        loginTemplateId = parameters.loginTemplateId,
-                        signupTemplateId = parameters.signupTemplateId,
-                        codeChallenge = challengeCode,
-                    )
-                }
-            }
-
-        override fun send(
-            parameters: MagicLinks.EmailMagicLinks.Parameters,
-            callback: (response: BaseResponse) -> Unit,
-        ) {
-            externalScope.launch(dispatchers.ui) {
-                val result = send(parameters)
                 callback(result)
             }
         }

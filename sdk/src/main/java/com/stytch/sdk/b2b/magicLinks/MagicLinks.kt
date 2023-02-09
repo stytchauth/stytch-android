@@ -1,8 +1,8 @@
-package com.stytch.sdk.consumer.magicLinks
+package com.stytch.sdk.b2b.magicLinks
 
+import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
-import com.stytch.sdk.consumer.AuthResponse
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
@@ -29,9 +29,7 @@ public interface MagicLinks {
      * @param parameters required to authenticate
      * @return AuthResponse response from backend
      */
-    public suspend fun authenticate(
-        parameters: AuthParameters,
-    ): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
 
     /**
      * Wraps the magic link authenticate API endpoint which validates the magic link token passed in. If this method succeeds, the user will be logged in, granted an active session
@@ -50,19 +48,17 @@ public interface MagicLinks {
 
         /**
          * @param email is the account identifier for the account in the form of an Email address where you wish to receive a magic link to authenticate
-         * @param loginMagicLinkUrl is the url where you should be redirected for login
-         * @param signupMagicLinkUrl is the url where you should be redirected for signup
-         * @param loginExpirationMinutes is the duration after which the login url should expire
-         * @param signupExpirationMinutes is the duration after which the signup url should expire
+         * @param organizationId is the member's organization ID
+         * @param loginRedirectUrl is the url where you should be redirected for login
+         * @param signupRedirectUrl is the url where you should be redirected for signup
          * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
          * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
-            val loginMagicLinkUrl: String? = null,
-            val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: UInt? = null,
-            val signupExpirationMinutes: UInt? = null,
+            val organizationId: String,
+            val loginRedirectUrl: String? = null,
+            val signupRedirectUrl: String? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
         )
@@ -83,19 +79,5 @@ public interface MagicLinks {
             parameters: Parameters,
             callback: (response: BaseResponse) -> Unit,
         )
-
-        /**
-         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
-         * @param parameters required to receive magic link
-         * @return BaseResponse response from backend
-         */
-        public suspend fun send(parameters: Parameters): BaseResponse
-
-        /**
-         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
-         * @param parameters required to receive magic link
-         * @param callback calls callback with BaseResponse response from backend
-         */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
 }

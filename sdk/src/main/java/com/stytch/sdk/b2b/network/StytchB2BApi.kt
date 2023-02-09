@@ -26,7 +26,7 @@ internal object StytchB2BApi {
         if (!isInitialized) {
             throw StytchExceptions.Critical(
                 RuntimeException(
-                    "StytchApi not configured. You must call 'configure(...)' before using any functionality of the " // ktlint-disable max-line-length
+                    "StytchB2BApi not configured. You must call 'configure(...)' before using any functionality of the " // ktlint-disable max-line-length
                 )
             )
         }
@@ -65,7 +65,6 @@ internal object StytchB2BApi {
 
     internal object MagicLinks {
         object Email {
-            /** https://stytch.com/docs/api/log-in-or-create-user-by-email */
             @Suppress("LongParameterList")
             suspend fun loginOrCreate(
                 email: String,

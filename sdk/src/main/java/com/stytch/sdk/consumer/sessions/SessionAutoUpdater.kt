@@ -75,7 +75,8 @@ internal object SessionAutoUpdater {
         backoffStartMillis = 0
     }
 
-    fun stopSessionUpdateJob() {
+    @VisibleForTesting
+    internal fun stopSessionUpdateJob() {
         sessionUpdateJob?.cancel()
         sessionUpdateJob = null
     }

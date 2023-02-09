@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.magicLinks
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.LoginOrCreateUserByEmailResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -53,7 +52,7 @@ internal class MagicLinksImplTest {
     private val successfulBaseResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
     private val authParameters = mockk<MagicLinks.AuthParameters>(relaxed = true)
     private val emailMagicLinkParameters = mockk<MagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
-    private val successfulLoginOrCreateResponse = mockk<LoginOrCreateUserByEmailResponse>()
+    private val successfulLoginOrCreateResponse = mockk<BaseResponse>()
 
     @Before
     fun before() {
@@ -123,7 +122,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email loginOrCreate with callback calls callback method`() {
-        val mockCallback = spyk<(LoginOrCreateUserByEmailResponse) -> Unit>()
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.email.loginOrCreate(emailMagicLinkParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }

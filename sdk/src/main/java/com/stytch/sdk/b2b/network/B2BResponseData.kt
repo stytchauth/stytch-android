@@ -2,7 +2,6 @@ package com.stytch.sdk.b2b.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.stytch.sdk.common.sessions.ISessionData
 
 public interface IB2BAuthData {
     public val session: B2BSessionData
@@ -58,7 +57,7 @@ public data class B2BSessionData(
     val expiresAt: String,
     @Json(name = "custom_claims")
     val customClaims: Map<String, String>?,
-) : ISessionData
+)
 
 @JsonClass(generateAdapter = true)
 public data class MemberData(
