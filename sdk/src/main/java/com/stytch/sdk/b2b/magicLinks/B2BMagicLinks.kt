@@ -7,7 +7,7 @@ import com.stytch.sdk.common.Constants
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
  */
-public interface MagicLinks {
+public interface B2BMagicLinks {
 
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication

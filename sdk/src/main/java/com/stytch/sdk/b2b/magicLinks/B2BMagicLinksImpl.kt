@@ -13,17 +13,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class MagicLinksImpl internal constructor(
+internal class B2BMagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
     private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.MagicLinks.Email
-) : MagicLinks {
+) : B2BMagicLinks {
 
-    override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
+    override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
+    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): AuthResponse {
         var result: AuthResponse
         withContext(dispatchers.io) {
             val codeVerifier: String
@@ -49,7 +49,7 @@ internal class MagicLinksImpl internal constructor(
     }
 
     override fun authenticate(
-        parameters: MagicLinks.AuthParameters,
+        parameters: B2BMagicLinks.AuthParameters,
         callback: (response: AuthResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
@@ -59,10 +59,10 @@ internal class MagicLinksImpl internal constructor(
         }
     }
 
-    private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
+    private inner class EmailMagicLinksImpl : B2BMagicLinks.EmailMagicLinks {
 
         override suspend fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.Parameters
+            parameters: B2BMagicLinks.EmailMagicLinks.Parameters
         ): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
@@ -90,7 +90,7 @@ internal class MagicLinksImpl internal constructor(
         }
 
         override fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.Parameters,
+            parameters: B2BMagicLinks.EmailMagicLinks.Parameters,
             callback: (response: BaseResponse) -> Unit,
         ) {
             // call endpoint in IO thread

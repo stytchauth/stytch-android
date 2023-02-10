@@ -1,20 +1,27 @@
 package com.stytch.sdk.b2b
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
-import com.stytch.sdk.b2b.magicLinks.MagicLinks
-import com.stytch.sdk.b2b.magicLinks.MagicLinksImpl
+import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.b2b.sessions.Sessions
-import com.stytch.sdk.b2b.sessions.SessionsImpl
+import com.stytch.sdk.b2b.sessions.B2BSessions
+import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
+import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.TokenType
+import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * The entrypoint for all Stytch B2B-related interaction.
@@ -76,7 +83,7 @@ public object StytchB2BClient {
     /**
      * Exposes an instance of email magic links
      */
-    public var magicLinks: MagicLinks = MagicLinksImpl(
+    public var magicLinks: B2BMagicLinks = B2BMagicLinksImpl(
         externalScope,
         dispatchers,
         sessionStorage,
@@ -92,7 +99,7 @@ public object StytchB2BClient {
     /**
      * Exposes an instance of sessions
      */
-    public var sessions: Sessions = SessionsImpl(
+    public var sessions: B2BSessions = B2BSessionsImpl(
         externalScope,
         dispatchers,
         sessionStorage,
@@ -103,4 +110,54 @@ public object StytchB2BClient {
             return field
         }
         internal set
+
+    /**
+     * Handle magic link
+     * @param uri - intent.data from deep link
+     * @param sessionDurationMinutes - sessionDuration
+     * @return DeeplinkHandledStatus from backend after calling any of the authentication methods
+     */
+    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): DeeplinkHandledStatus {
+        assertInitialized()
+        return withContext(dispatchers.io) {
+            val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+            if (token.isNullOrEmpty()) {
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+            }
+            when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+                TokenType.MAGIC_LINKS -> {
+                    DeeplinkHandledStatus.Handled(
+                        magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                    )
+                }
+                TokenType.OAUTH -> {
+                    DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+                }
+                TokenType.PASSWORD_RESET -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = TokenType.PASSWORD_RESET, token = token)
+                }
+                TokenType.UNKNOWN -> {
+                    DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle magic link
+     * @param uri - intent.data from deep link
+     * @param sessionDurationMinutes - sessionDuration
+     * @param callback calls callback with DeeplinkHandledStatus response from backend
+     */
+    public fun handle(
+        uri: Uri,
+        sessionDurationMinutes: UInt,
+        callback: (response: DeeplinkHandledStatus) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            val result = handle(uri, sessionDurationMinutes)
+            // change to main thread to call callback
+            callback(result)
+        }
+    }
 }

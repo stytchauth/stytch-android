@@ -23,7 +23,7 @@ private const val MINIMUM_RANDOM_MILLIS = -17L
 private const val MAXIMUM_RANDOM_MILLIS = 17L
 private const val MAXIMUM_BACKOFF_DELAY = 32 * SECOND
 
-internal object SessionAutoUpdater {
+internal object B2BSessionAutoUpdater {
     @VisibleForTesting
     internal var sessionUpdateJob: Job? = null
     private var n = 0
@@ -112,7 +112,7 @@ internal fun <T : IB2BAuthData> StytchResult<T>.launchSessionUpdater(
         // save session data
         saveSession(sessionStorage)
         // start auto session update
-        SessionAutoUpdater.startSessionUpdateJob(dispatchers, sessionStorage)
+        B2BSessionAutoUpdater.startSessionUpdateJob(dispatchers, sessionStorage)
     }
 }
 

@@ -135,7 +135,7 @@ internal class StytchApiServiceTests {
     @Test
     fun `check magic links authenticate request`() {
         runBlocking {
-            val parameters = CommonRequests.MagicLinks.AuthenticateRequest(
+            val parameters = ConsumerRequests.MagicLinks.AuthenticateRequest(
                 token = "token",
                 codeVerifier = "123",
                 sessionDurationMinutes = 60

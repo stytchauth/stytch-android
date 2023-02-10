@@ -10,12 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class SessionsImpl internal constructor(
+internal class B2BSessionsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Sessions,
-) : Sessions {
+) : B2BSessions {
     override val sessionToken: String?
         get() {
             try {
@@ -34,7 +34,7 @@ internal class SessionsImpl internal constructor(
             }
         }
 
-    override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
+    override suspend fun authenticate(authParams: B2BSessions.AuthParams): AuthResponse {
         val result: AuthResponse
         withContext(dispatchers.io) {
             // do not revoke session here since we using stored data to authenticate
@@ -48,7 +48,7 @@ internal class SessionsImpl internal constructor(
         return result
     }
 
-    override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(authParams: B2BSessions.AuthParams, callback: (AuthResponse) -> Unit) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)

@@ -24,7 +24,7 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: CommonRequests.Sessions.AuthenticateRequest
     ): B2BResponses.Sessions.AuthenticateResponse
 
-    @POST("sessions/revoke")
+    @POST("b2b/sessions/revoke")
     suspend fun revokeSessions(): CommonResponses.Sessions.RevokeResponse
     //endregion Sessions
 }

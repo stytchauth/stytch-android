@@ -3,7 +3,7 @@ package com.stytch.sdk.b2b.sessions
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.common.BaseResponse
 
-public interface Sessions {
+public interface B2BSessions {
 
     /**
      * @throws StytchExceptions.Critical if failed to decrypt data
