@@ -13,4 +13,9 @@ internal object B2BResponses {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
     }
+
+    object Organizations {
+        @JsonClass(generateAdapter = true)
+        class GetOrganizationResponse(data: Organization) : StytchDataResponse<Organization>(data)
+    }
 }

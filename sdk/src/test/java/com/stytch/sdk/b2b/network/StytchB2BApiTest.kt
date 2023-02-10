@@ -96,6 +96,14 @@ internal class StytchB2BApiTest {
         coVerify { StytchB2BApi.apiService.revokeSessions() }
     }
 
+    @Test
+    fun `StytchB2BApi Organizations getOrganization calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.getOrganizationById(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Organizations.getOrganization("organizationId")
+        coVerify { StytchB2BApi.apiService.getOrganizationById(any()) }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() = runTest {
         every { StytchB2BApi.isInitialized } returns false

@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.network
 
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.CommonRequests
+import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
@@ -118,6 +119,19 @@ internal class StytchB2BApiServiceTest {
     }
 
     // endregion Sessions
+
+    // region Organizations
+
+    @Test
+    fun `check Organizations getOrganizationById request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.getOrganizationById("organizationId")
+            }.verifyGet("/b2b/organizations/organizationId")
+        }
+    }
+
+    // endregion Organizations
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

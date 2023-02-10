@@ -70,3 +70,56 @@ public data class MemberData(
     val status: String,
     val name: String
 )
+
+public enum class SSOJitProvisioning {
+    ALL_ALLOWED,
+    RESTRICTED,
+    NOT_ALLOWED,
+}
+
+public enum class EmailJitProvisioning {
+    RESTRICTED,
+    NOT_ALLOWED,
+}
+
+public enum class EmailInvites {
+    ALL_ALLOWED,
+    RESTRICTED,
+    NOT_ALLOWED,
+}
+
+@JsonClass(generateAdapter = true)
+public data class Organization(
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "organization_name")
+    val organizatioName: String,
+    @Json(name = "organization_slug")
+    val organizationSlug: String,
+    @Json(name = "organization_logo_url")
+    val organizationLogoUrl: String,
+    @Json(name = "trusted_metadata")
+    val trustedMetadata: Map<String, Any?>,
+    @Json(name = "sso_default_connection_id")
+    val ssoDefaultConnectionId: String?,
+    @Json(name = "sso_jit_provisioning")
+    val ssoJitProvisioning: SSOJitProvisioning,
+    @Json(name = "sso_jit_provisioning_allowed_connections")
+    val ssoJITProvisioningAllowedConnections: List<String>,
+    @Json(name = "sso_active_connections")
+    val ssoActiveConnections: List<SSOConnection>,
+    @Json(name = "email_allowed_domains")
+    val emailAllowedDomains: List<String>,
+    @Json(name = "email_jit_provisioning")
+    val emailJitProvisioning: EmailJitProvisioning,
+    @Json(name = "email_invites")
+    val emailInvites: EmailInvites,
+)
+
+@JsonClass(generateAdapter = true)
+public data class SSOConnection(
+    @Json(name = "connection_id")
+    val connectionId: String,
+    @Json(name = "display_name")
+    val displayName: String,
+)

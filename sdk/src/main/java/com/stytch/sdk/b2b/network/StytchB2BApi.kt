@@ -119,4 +119,10 @@ internal object StytchB2BApi {
             apiService.revokeSessions()
         }
     }
+
+    internal object Organizations {
+        suspend fun getOrganization(organizationId: String): StytchResult<Organization> = safeB2BApiCall {
+            apiService.getOrganizationById(organizationId)
+        }
+    }
 }

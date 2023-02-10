@@ -26,6 +26,7 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import java.security.KeyStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +38,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.security.KeyStore
 
 internal class StytchB2BClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -142,6 +142,18 @@ internal class StytchB2BClientTest {
     fun `accessing StytchB2BClient sessions returns instance of Session when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.sessions
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchB2BClient organizations throws IllegalStateException when not configured`() {
+        every { StytchB2BApi.isInitialized } returns false
+        StytchB2BClient.organizations
+    }
+
+    @Test
+    fun `accessing StytchB2BClient organizations returns instance of Session when configured`() {
+        every { StytchB2BApi.isInitialized } returns true
+        StytchB2BClient.organizations
     }
 
     @Test(expected = IllegalStateException::class)
