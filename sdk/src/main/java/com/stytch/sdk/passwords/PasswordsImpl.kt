@@ -98,6 +98,7 @@ internal class PasswordsImpl internal constructor(
                 loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
                 resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
                 resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes?.toInt(),
+                resetPasswordTemplateId = parameters.resetPasswordTemplateId
             )
         }
         return result

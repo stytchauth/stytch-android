@@ -61,6 +61,7 @@ internal class PasswordsImplTest {
         loginExpirationMinutes = null,
         resetPasswordRedirectUrl = null,
         resetPasswordExpirationMinutes = null,
+        resetPasswordTemplateId = null,
     )
     private val resetByEmailParameters = mockk<Passwords.ResetByEmailParameters>(relaxed = true)
     private val strengthCheckParameters = mockk<Passwords.StrengthCheckParameters>(relaxed = true)
@@ -134,15 +135,15 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmailStart delegates to api`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
         impl.resetByEmailStart(resetByEmailStartParameters)
-        coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) }
+        coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
     fun `PasswordsImpl resetByEmailStart with callback calls callback method`() {
         val mockResponse: StytchResult<BasicData> = mockk()
-        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockResponse
+        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) } returns mockResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.resetByEmailStart(resetByEmailStartParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
