@@ -143,7 +143,9 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmailStart with callback calls callback method`() {
         val mockResponse: StytchResult<BasicData> = mockk()
-        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) } returns mockResponse
+        coEvery {
+            mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any())
+        } returns mockResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.resetByEmailStart(resetByEmailStartParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
