@@ -131,6 +131,15 @@ internal class StytchB2BApiServiceTest {
         }
     }
 
+    @Test
+    fun `check Organizations getMember request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.getMember("organizationId")
+            }.verifyGet("/b2b/organizations/organizationId/members/me")
+        }
+    }
+
     // endregion Organizations
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {

@@ -40,7 +40,6 @@ public data class B2BEMLAuthenticateData(
     override val session: B2BSessionData,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean
-
 ) : IB2BAuthData
 
 @JsonClass(generateAdapter = true)
@@ -68,7 +67,11 @@ public data class MemberData(
     @Json(name = "email_address")
     val email: String,
     val status: String,
-    val name: String
+    val name: String,
+    @Json(name = "trusted_metadata")
+    val trustedMetadata: Map<String, Any?>,
+    @Json(name = "untrusted_metadata")
+    val untrustedMetadata: Map<String, Any?>,
 )
 
 public enum class SSOJitProvisioning {

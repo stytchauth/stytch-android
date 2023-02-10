@@ -1,6 +1,8 @@
 package com.stytch.sdk.b2b.organizations
 
+import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.OrganizationResponse
+import com.stytch.sdk.b2b.network.MemberData
 import com.stytch.sdk.b2b.network.Organization
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.StytchDispatchers
@@ -29,7 +31,8 @@ internal class OrganizationsImplTest {
 
     private lateinit var impl: OrganizationsImpl
     private val dispatcher = Dispatchers.Unconfined
-    private val successfulAuthResponse = StytchResult.Success<Organization>(mockk(relaxed = true))
+    private val successfulOrgResponse = StytchResult.Success<Organization>(mockk(relaxed = true))
+    private val successfulMemberResponse = StytchResult.Success<MemberData>(mockk(relaxed = true))
 
     @Before
     fun before() {
@@ -49,17 +52,33 @@ internal class OrganizationsImplTest {
 
     @Test
     fun `Organizations getOrganization delegates to api`() = runTest {
-        coEvery { mockApi.getOrganization(any()) } returns successfulAuthResponse
-        val response = impl.getOrganization(Organizations.GetOrganizationParameters("organizationId"))
+        coEvery { mockApi.getOrganization(any()) } returns successfulOrgResponse
+        val response = impl.getOrganization(Organizations.GetParameters("organizationId"))
         assert(response is StytchResult.Success)
         coVerify { mockApi.getOrganization(any()) }
     }
 
     @Test
     fun `Organizations getOrganization with callback calls callback method`() {
-        coEvery { mockApi.getOrganization(any()) } returns successfulAuthResponse
+        coEvery { mockApi.getOrganization(any()) } returns successfulOrgResponse
         val mockCallback = spyk<(OrganizationResponse) -> Unit>()
-        impl.getOrganization(Organizations.GetOrganizationParameters("organizationId"), mockCallback)
+        impl.getOrganization(Organizations.GetParameters("organizationId"), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `Organizations getMember delegates to api`() = runTest {
+        coEvery { mockApi.getMember(any()) } returns successfulMemberResponse
+        val response = impl.getMember(Organizations.GetParameters("organizationId"))
+        assert(response is StytchResult.Success)
+        coVerify { mockApi.getMember(any()) }
+    }
+
+    @Test
+    fun `Organizations getMember with callback calls callback method`() {
+        coEvery { mockApi.getMember(any()) } returns successfulMemberResponse
+        val mockCallback = spyk<(MemberResponse) -> Unit>()
+        impl.getMember(Organizations.GetParameters("organizationId"), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

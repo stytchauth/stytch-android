@@ -32,4 +32,7 @@ internal interface StytchB2BApiService : ApiService {
 
     @GET("b2b/organizations/{id}")
     suspend fun getOrganizationById(@Path(value = "id") id: String): B2BResponses.Organizations.GetOrganizationResponse
+
+    @GET("b2b/organizations/{id}/members/me")
+    suspend fun getMember(@Path(value = "id") id: String): B2BResponses.Organizations.GetMemberResponse
 }
