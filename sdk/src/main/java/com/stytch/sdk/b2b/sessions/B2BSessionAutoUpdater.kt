@@ -115,4 +115,3 @@ internal fun <T : IB2BAuthData> StytchResult<T>.launchSessionUpdater(
         B2BSessionAutoUpdater.startSessionUpdateJob(dispatchers, sessionStorage)
     }
 }
-

@@ -2,7 +2,7 @@ package com.stytch.sdk.b2b.sessions
 
 import org.junit.Test
 
-internal class SessionsTest {
+internal class B2BSessionsTest {
     @Test
     fun `Sessions AuthParams have correct default values`() {
         val params = B2BSessions.AuthParams()
