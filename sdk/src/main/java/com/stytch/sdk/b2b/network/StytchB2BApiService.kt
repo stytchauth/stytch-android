@@ -6,7 +6,6 @@ import com.stytch.sdk.common.network.CommonResponses
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 internal interface StytchB2BApiService : ApiService {
     @POST("b2b/magic_links/email/login_or_signup")
@@ -30,9 +29,9 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun revokeSessions(): CommonResponses.Sessions.RevokeResponse
     //endregion Sessions
 
-    @GET("b2b/organizations/{id}")
-    suspend fun getOrganizationById(@Path(value = "id") id: String): B2BResponses.Organizations.GetOrganizationResponse
+    @GET("b2b/organizations/me")
+    suspend fun getOrganization(): B2BResponses.Organizations.GetOrganizationResponse
 
-    @GET("b2b/organizations/{id}/members/me")
-    suspend fun getMember(@Path(value = "id") id: String): B2BResponses.Organizations.GetMemberResponse
+    @GET("b2b/organizations/members/me")
+    suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 }

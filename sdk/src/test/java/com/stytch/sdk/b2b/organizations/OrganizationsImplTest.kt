@@ -52,33 +52,33 @@ internal class OrganizationsImplTest {
 
     @Test
     fun `Organizations getOrganization delegates to api`() = runTest {
-        coEvery { mockApi.getOrganization(any()) } returns successfulOrgResponse
-        val response = impl.getOrganization(Organizations.GetParameters("organizationId"))
+        coEvery { mockApi.getOrganization() } returns successfulOrgResponse
+        val response = impl.getOrganization()
         assert(response is StytchResult.Success)
-        coVerify { mockApi.getOrganization(any()) }
+        coVerify { mockApi.getOrganization() }
     }
 
     @Test
     fun `Organizations getOrganization with callback calls callback method`() {
-        coEvery { mockApi.getOrganization(any()) } returns successfulOrgResponse
+        coEvery { mockApi.getOrganization() } returns successfulOrgResponse
         val mockCallback = spyk<(OrganizationResponse) -> Unit>()
-        impl.getOrganization(Organizations.GetParameters("organizationId"), mockCallback)
+        impl.getOrganization(mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
     @Test
     fun `Organizations getMember delegates to api`() = runTest {
-        coEvery { mockApi.getMember(any()) } returns successfulMemberResponse
-        val response = impl.getMember(Organizations.GetParameters("organizationId"))
+        coEvery { mockApi.getMember() } returns successfulMemberResponse
+        val response = impl.getMember()
         assert(response is StytchResult.Success)
-        coVerify { mockApi.getMember(any()) }
+        coVerify { mockApi.getMember() }
     }
 
     @Test
     fun `Organizations getMember with callback calls callback method`() {
-        coEvery { mockApi.getMember(any()) } returns successfulMemberResponse
+        coEvery { mockApi.getMember() } returns successfulMemberResponse
         val mockCallback = spyk<(MemberResponse) -> Unit>()
-        impl.getMember(Organizations.GetParameters("organizationId"), mockCallback)
+        impl.getMember(mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

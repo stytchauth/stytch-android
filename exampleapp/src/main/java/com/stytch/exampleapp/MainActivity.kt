@@ -26,6 +26,7 @@ class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val oauthViewModel: OAuthViewModel by viewModels()
+    private val b2bViewModel: B2BViewModel by viewModels()
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -57,7 +58,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(homeViewModel, oauthViewModel)
+                AppScreen(homeViewModel, oauthViewModel, b2bViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {

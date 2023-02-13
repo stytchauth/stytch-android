@@ -13,29 +13,26 @@ internal class OrganizationsImpl(
     private val dispatchers: StytchDispatchers,
     private val api: StytchB2BApi.Organizations
 ) : Organizations {
-    override suspend fun getOrganization(parameters: Organizations.GetParameters): OrganizationResponse =
+    override suspend fun getOrganization(): OrganizationResponse =
         withContext(dispatchers.io) {
-            api.getOrganization(parameters.organizationId)
+            api.getOrganization()
         }
 
-    override fun getOrganization(
-        parameters: Organizations.GetParameters,
-        callback: (OrganizationResponse) -> Unit,
-    ) {
+    override fun getOrganization(callback: (OrganizationResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
-            val result = getOrganization(parameters)
+            val result = getOrganization()
             callback(result)
         }
     }
 
-    override suspend fun getMember(parameters: Organizations.GetParameters): MemberResponse =
+    override suspend fun getMember(): MemberResponse =
         withContext(dispatchers.io) {
-            api.getMember(parameters.organizationId)
+            api.getMember()
         }
 
-    override fun getMember(parameters: Organizations.GetParameters, callback: (MemberResponse) -> Unit) {
+    override fun getMember(callback: (MemberResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
-            val result = getMember(parameters)
+            val result = getMember()
             callback(result)
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -32,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.stytch.exampleapp.B2BViewModel
 import com.stytch.exampleapp.HomeViewModel
 import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
@@ -40,13 +42,15 @@ val items = listOf(
     Screen.Main,
     Screen.Passwords,
     Screen.Biometrics,
-    Screen.OAuth
+    Screen.OAuth,
+    Screen.B2B,
 )
 
 @Composable
 fun AppScreen(
     homeViewModel: HomeViewModel,
     oAuthViewModel: OAuthViewModel,
+    b2bViewModel: B2BViewModel,
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -89,6 +93,7 @@ fun AppScreen(
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
                 composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                 composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+                composable(Screen.B2B.route) { B2BScreen(viewModel = b2bViewModel) }
             }
         }
     )
@@ -116,4 +121,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconV
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
     object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
     object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+    object B2B : Screen("b2b", R.string.b2b_name, Icons.Filled.AccountBox)
 }

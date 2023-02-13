@@ -14,22 +14,9 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.otp.OTP
-import java.util.regex.Pattern
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
-    "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-        "\\@" +
-        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-        "(" +
-        "\\." +
-        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-        ")+"
-)
-
-private val PHONE_NUMBER_PATTERN = Pattern.compile("^\\+[1-9]\\d{1,14}\$")
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -174,14 +161,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
-
-    private fun isValidEmail(str: String): Boolean {
-        return EMAIL_ADDRESS_PATTERN.matcher(str).matches()
-    }
-
-    private fun isPhoneNumberValid(str: String): Boolean {
-        return PHONE_NUMBER_PATTERN.matcher(str).matches()
     }
 
     private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) = when (response) {

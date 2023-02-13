@@ -126,8 +126,8 @@ internal class StytchB2BApiServiceTest {
     fun `check Organizations getOrganizationById request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.getOrganizationById("organizationId")
-            }.verifyGet("/b2b/organizations/organizationId")
+                apiService.getOrganization()
+            }.verifyGet("/b2b/organizations/me")
         }
     }
 
@@ -135,8 +135,8 @@ internal class StytchB2BApiServiceTest {
     fun `check Organizations getMember request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.getMember("organizationId")
-            }.verifyGet("/b2b/organizations/organizationId/members/me")
+                apiService.getMember()
+            }.verifyGet("/b2b/organizations/members/me")
         }
     }
 

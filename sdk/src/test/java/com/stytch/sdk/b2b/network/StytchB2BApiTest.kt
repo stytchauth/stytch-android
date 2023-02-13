@@ -99,17 +99,17 @@ internal class StytchB2BApiTest {
     @Test
     fun `StytchB2BApi Organizations getOrganization calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
-        coEvery { StytchB2BApi.apiService.getOrganizationById(any()) } returns mockk(relaxed = true)
-        StytchB2BApi.Organizations.getOrganization("organizationId")
-        coVerify { StytchB2BApi.apiService.getOrganizationById(any()) }
+        coEvery { StytchB2BApi.apiService.getOrganization() } returns mockk(relaxed = true)
+        StytchB2BApi.Organizations.getOrganization()
+        coVerify { StytchB2BApi.apiService.getOrganization() }
     }
 
     @Test
     fun `StytchB2BApi Organizations getMember calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
-        coEvery { StytchB2BApi.apiService.getMember(any()) } returns mockk(relaxed = true)
-        StytchB2BApi.Organizations.getMember("organizationId")
-        coVerify { StytchB2BApi.apiService.getMember(any()) }
+        coEvery { StytchB2BApi.apiService.getMember() } returns mockk(relaxed = true)
+        StytchB2BApi.Organizations.getMember()
+        coVerify { StytchB2BApi.apiService.getMember() }
     }
 
     @Test(expected = IllegalStateException::class)
