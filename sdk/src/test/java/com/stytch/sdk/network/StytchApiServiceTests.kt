@@ -430,7 +430,8 @@ internal class StytchApiServiceTests {
                 loginRedirectUrl = "loginRedirect",
                 loginExpirationMinutes = 24,
                 resetPasswordRedirectUrl = "resetPasswordUrl",
-                resetPasswordExpirationMinutes = 23
+                resetPasswordExpirationMinutes = 23,
+                resetPasswordTemplateId = "resetPasswordTemplateId"
             )
             requestIgnoringResponseException {
                 apiService.resetByEmailStart(parameters)
@@ -443,7 +444,8 @@ internal class StytchApiServiceTests {
                     "login_redirect_url" to parameters.loginRedirectUrl,
                     "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
                     "login_expiration_minutes" to parameters.loginExpirationMinutes,
-                    "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes
+                    "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes,
+                    "reset_password_template_id" to parameters.resetPasswordTemplateId,
                 )
             )
         }
