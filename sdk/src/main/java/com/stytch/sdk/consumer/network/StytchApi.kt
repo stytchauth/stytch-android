@@ -339,7 +339,8 @@ internal object StytchApi {
             loginRedirectUrl: String?,
             loginExpirationMinutes: Int?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: Int?
+            resetPasswordExpirationMinutes: Int?,
+            resetPasswordTemplateId: String?,
         ): StytchResult<BasicData> = safeConsumerApiCall {
             apiService.resetByEmailStart(
                 ConsumerRequests.Passwords.ResetByEmailStartRequest(
@@ -349,7 +350,8 @@ internal object StytchApi {
                     loginRedirectUrl,
                     loginExpirationMinutes,
                     resetPasswordRedirectUrl,
-                    resetPasswordExpirationMinutes
+                    resetPasswordExpirationMinutes,
+                    resetPasswordTemplateId
                 )
             )
         }

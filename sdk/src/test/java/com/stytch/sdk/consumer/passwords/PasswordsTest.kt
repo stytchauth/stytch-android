@@ -35,6 +35,7 @@ internal class PasswordsTest {
             loginExpirationMinutes = null,
             resetPasswordRedirectUrl = null,
             resetPasswordExpirationMinutes = null,
+            resetPasswordTemplateId = null,
         )
         assert(params == expected)
     }

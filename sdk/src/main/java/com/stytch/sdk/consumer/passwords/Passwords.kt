@@ -42,6 +42,7 @@ public interface Passwords {
      * @param loginExpirationMinutes is the duration after which the login should expire
      * @param resetPasswordRedirectUrl is the url where you should be redirected after a reset
      * @param resetPasswordExpirationMinutes is the duration after which a reset password request should expire
+     * @param resetPasswordTemplateId Use a custom template for password reset emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Password Reset.
      */
     public data class ResetByEmailStartParameters(
         val email: String,
@@ -49,6 +50,7 @@ public interface Passwords {
         val loginExpirationMinutes: UInt? = null,
         val resetPasswordRedirectUrl: String? = null,
         val resetPasswordExpirationMinutes: UInt? = null,
+        val resetPasswordTemplateId: String? = null
     )
 
     /**

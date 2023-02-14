@@ -84,6 +84,8 @@ internal object ConsumerRequests {
             val resetPasswordRedirectUrl: String?,
             @Json(name = "reset_password_expiration_minutes")
             val resetPasswordExpirationMinutes: Int?,
+            @Json(name = "reset_password_template_id")
+            val resetPasswordTemplateId: String?,
         )
 
         @JsonClass(generateAdapter = true)
