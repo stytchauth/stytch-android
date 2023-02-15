@@ -39,7 +39,7 @@ class B2BViewModel(application: Application) : AndroidViewModel(application) {
     fun getOrganizationDetails() {
         _loadingState.value = true
         viewModelScope.launch {
-            val details = StytchB2BClient.organizations.getOrganization()
+            val details = StytchB2BClient.organization.get()
             _currentResponse.value = details.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false

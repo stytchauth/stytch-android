@@ -145,15 +145,27 @@ internal class StytchB2BClientTest {
     }
 
     @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient organizations throws IllegalStateException when not configured`() {
+    fun `accessing StytchB2BClient organization throws IllegalStateException when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
-        StytchB2BClient.organizations
+        StytchB2BClient.organization
     }
 
     @Test
-    fun `accessing StytchB2BClient organizations returns instance of Session when configured`() {
+    fun `accessing StytchB2BClient organization returns instance of Session when configured`() {
         every { StytchB2BApi.isInitialized } returns true
-        StytchB2BClient.organizations
+        StytchB2BClient.organization
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchB2BClient member throws IllegalStateException when not configured`() {
+        every { StytchB2BApi.isInitialized } returns false
+        StytchB2BClient.member
+    }
+
+    @Test
+    fun `accessing StytchB2BClient member returns instance of Session when configured`() {
+        every { StytchB2BApi.isInitialized } returns true
+        StytchB2BClient.member
     }
 
     @Test(expected = IllegalStateException::class)

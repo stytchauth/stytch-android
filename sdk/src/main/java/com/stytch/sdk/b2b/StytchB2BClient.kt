@@ -5,9 +5,11 @@ import android.net.Uri
 import android.os.Build
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
+import com.stytch.sdk.b2b.member.Member
+import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.organizations.Organizations
-import com.stytch.sdk.b2b.organizations.OrganizationsImpl
+import com.stytch.sdk.b2b.organization.Organization
+import com.stytch.sdk.b2b.organization.OrganizationImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
@@ -114,12 +116,27 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of organizations
+     * Exposes an instance of organization
      */
-    public var organizations: Organizations = OrganizationsImpl(
+    public var organization: Organization = OrganizationImpl(
         externalScope,
         dispatchers,
         StytchB2BApi.Organizations,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of member
+     */
+    public var member: Member = MemberImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchB2BApi.Member,
     )
         get() {
             assertInitialized()

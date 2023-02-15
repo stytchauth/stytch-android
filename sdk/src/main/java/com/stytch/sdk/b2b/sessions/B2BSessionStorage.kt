@@ -33,7 +33,7 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
     var session: B2BSessionData? = null
         private set
 
-    var user: MemberData? = null
+    var member: MemberData? = null
         set(value) {
             synchronized(this) {
                 field = value
@@ -67,7 +67,7 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
             sessionToken = null
             sessionJwt = null
             session = null
-            user = null
+            member = null
         }
     }
 }

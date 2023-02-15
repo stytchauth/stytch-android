@@ -86,6 +86,6 @@ internal class B2BSessionStorageTest {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         storage.revoke()
         assert(storage.session == null)
-        assert(storage.user == null)
+        assert(storage.member == null)
     }
 }
