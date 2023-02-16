@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.AuthenticationFactor
 import com.stytch.sdk.common.network.BiometricRegistrations
 import com.stytch.sdk.common.network.CryptoWalletData
 import com.stytch.sdk.common.network.EmailData
@@ -48,6 +49,8 @@ public data class SessionData(
     val startedAt: String,
     @Json(name = "user_id")
     val userId: String,
+    @Json(name = "authentication_factors")
+    val authenticationFactors: List<AuthenticationFactor>,
 ) {
     @JsonClass(generateAdapter = true)
     public data class AttributesData(

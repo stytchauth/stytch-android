@@ -8,6 +8,7 @@ internal object B2BRequests {
         object Email {
             @JsonClass(generateAdapter = true)
             data class LoginOrCreateUserRequest(
+                @Json(name = "email_address")
                 val email: String,
                 @Json(name = "organization_id")
                 val organizationId: String,

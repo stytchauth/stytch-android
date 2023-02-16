@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.AuthenticationFactor
 
 public interface IB2BAuthData {
     public val session: B2BSessionData
@@ -56,8 +57,10 @@ public data class B2BSessionData(
     val lastAccessedAt: String,
     @Json(name = "expires_at")
     val expiresAt: String,
+    @Json(name = "authentication_factors")
+    val authenticationFactors: List<AuthenticationFactor>,
     @Json(name = "custom_claims")
-    val customClaims: Map<String, String>?,
+    val customClaims: Map<String, Any?>?,
 )
 
 @JsonClass(generateAdapter = true)
@@ -71,9 +74,23 @@ public data class MemberData(
     val status: String,
     val name: String,
     @Json(name = "trusted_metadata")
-    val trustedMetadata: Map<String, Any?>,
+    val trustedMetadata: Map<String, Any?>?,
     @Json(name = "untrusted_metadata")
-    val untrustedMetadata: Map<String, Any?>,
+    val untrustedMetadata: Map<String, Any?>?,
+    @Json(name = "sso_registrations")
+    val ssoRegistrations: List<SSORegistration>
+)
+
+@JsonClass(generateAdapter = true)
+public data class SSORegistration(
+    @Json(name = "connection_id")
+    val connectionId: String,
+    @Json(name = "external_id")
+    val externalId: String,
+    @Json(name = "registration_id")
+    val registrationId: String,
+    @Json(name = "sso_attributes")
+    val ssoAttributes: Map<String, Any?>?,
 )
 
 @JsonClass(generateAdapter = true)

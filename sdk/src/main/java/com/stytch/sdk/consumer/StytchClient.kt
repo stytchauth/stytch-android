@@ -27,7 +27,7 @@ import com.stytch.sdk.consumer.passwords.PasswordsImpl
 import com.stytch.sdk.consumer.sessions.SessionStorage
 import com.stytch.sdk.consumer.sessions.Sessions
 import com.stytch.sdk.consumer.sessions.SessionsImpl
-import com.stytch.sdk.consumer.userManagement.AuthenticationFactor
+import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
 import kotlinx.coroutines.CoroutineScope
@@ -140,7 +140,7 @@ public object StytchClient {
         StytchApi.Biometrics,
         BiometricsProviderImpl(),
     ) { biometricRegistrationId ->
-        user.deleteFactor(AuthenticationFactor.BiometricRegistration(biometricRegistrationId))
+        user.deleteFactor(UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId))
     }
         get() {
             assertInitialized()
