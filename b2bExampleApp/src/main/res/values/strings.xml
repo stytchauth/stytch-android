@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">B2B Example App</string>
+    <string name="home">Home</string>
+    <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
+    <string name="revoke_session">Revoke Session</string>
+    <string name="deep_link_title">Deep links</string>
+    <string name="host">b2bexampleapp.com</string>
+    <string name="deeplink_received_toast">Deeplink received</string>
+    <string name="email">Email</string>
+    <string name="please_enter_email">Please enter a valid email you wish to use</string>
+    <string name="b2b_org_id">Organization ID</string>
+    <string name="b2b_org_details">Get Organization Details</string>
+</resources>

@@ -1,0 +1,92 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 33
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.stytch.exampleapp.b2b"
+        minSdkVersion 23
+        targetSdkVersion 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Placeholders for OAuth redirect
+        manifestPlaceholders = [
+            'stytchOAuthRedirectScheme': 'app',
+            'stytchOAuthRedirectHost': 'b2bOAuth'
+        ]
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    buildTypes {
+        all {
+            String b2bPublicToken = System.getenv("STYTCH_B2B_PUBLIC_TOKEN")
+            if (!b2bPublicToken) {
+                b2bPublicToken = STYTCH_B2B_PUBLIC_TOKEN
+            }
+            buildConfigField "String", "STYTCH_B2B_PUBLIC_TOKEN", "\"$b2bPublicToken\""
+
+            String b2bOrganizationId = System.getenv("STYTCH_B2B_ORG_ID")
+            if (!b2bOrganizationId) {
+                b2bOrganizationId = STYTCH_B2B_ORG_ID
+            }
+            buildConfigField "String", "STYTCH_B2B_ORG_ID", "\"$b2bOrganizationId\""
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.3.0"
+    }
+}
+
+dependencies {
+    implementation project(":sdk")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
+    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "androidx.appcompat:appcompat:1.4.2"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+
+    // Compose
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:1.6.0"
+    // Compose Material Design
+    implementation "com.google.android.material:material:1.8.0-alpha01"
+    // Animations
+    implementation "androidx.compose.animation:animation:1.2.1"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:1.2.1"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:2.6.0-alpha01"
+
+    implementation "com.jakewharton.timber:timber:4.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_coroutines_version"
+}
