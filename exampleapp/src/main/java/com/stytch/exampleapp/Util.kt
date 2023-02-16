@@ -13,7 +13,7 @@ private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
         ")+"
 )
 
-private val PHONE_NUMBER_PATTERN = Pattern.compile("^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$")
+private val PHONE_NUMBER_PATTERN = Pattern.compile("^\\+[1-9]\\d{1,14}\$")
 
 fun isValidEmail(str: String): Boolean {
     return EMAIL_ADDRESS_PATTERN.matcher(str).matches()
