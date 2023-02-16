@@ -59,7 +59,7 @@ internal class StytchB2BApiServiceTest {
             }.verifyPost(
                 expectedPath = "/b2b/magic_links/email/login_or_signup",
                 expectedBody = mapOf(
-                    "email" to parameters.email,
+                    "email_address" to parameters.email,
                     "organization_id" to parameters.organizationId,
                     "login_redirect_url" to parameters.loginRedirectUrl,
                     "signup_redirect_url" to parameters.signupRedirectUrl,
