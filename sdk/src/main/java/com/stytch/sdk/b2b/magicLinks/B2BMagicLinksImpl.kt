@@ -61,7 +61,7 @@ internal class B2BMagicLinksImpl internal constructor(
 
     private inner class EmailMagicLinksImpl : B2BMagicLinks.EmailMagicLinks {
 
-        override suspend fun loginOrCreate(
+        override suspend fun loginOrSignup(
             parameters: B2BMagicLinks.EmailMagicLinks.Parameters
         ): BaseResponse {
             val result: BaseResponse
@@ -75,7 +75,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     return@withContext
                 }
 
-                result = api.loginOrCreate(
+                result = api.loginOrSignupByEmail(
                     email = parameters.email,
                     organizationId = parameters.organizationId,
                     loginRedirectUrl = parameters.loginRedirectUrl,
@@ -89,13 +89,13 @@ internal class B2BMagicLinksImpl internal constructor(
             return result
         }
 
-        override fun loginOrCreate(
+        override fun loginOrSignup(
             parameters: B2BMagicLinks.EmailMagicLinks.Parameters,
             callback: (response: BaseResponse) -> Unit,
         ) {
             // call endpoint in IO thread
             externalScope.launch(dispatchers.ui) {
-                val result = loginOrCreate(parameters)
+                val result = loginOrSignup(parameters)
                 // change to main thread to call callback
                 callback(result)
             }

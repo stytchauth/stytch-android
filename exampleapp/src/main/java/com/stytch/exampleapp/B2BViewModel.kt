@@ -51,7 +51,7 @@ class B2BViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                _currentResponse.value = StytchB2BClient.magicLinks.email.loginOrCreate(
+                _currentResponse.value = StytchB2BClient.magicLinks.email.loginOrSignup(
                     B2BMagicLinks.EmailMagicLinks.Parameters(
                         email = emailState.text,
                         organizationId = orgIdState.text

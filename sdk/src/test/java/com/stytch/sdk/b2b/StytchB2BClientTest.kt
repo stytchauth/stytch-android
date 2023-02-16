@@ -10,6 +10,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
 import io.mockk.MockKAnnotations
@@ -54,6 +55,7 @@ internal class StytchB2BClientTest {
     fun before() {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
+        mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         mContextMock = mockk(relaxed = true)
@@ -88,7 +90,7 @@ internal class StytchB2BClientTest {
     fun `assertInitialized does not throw IllegalStateException when properly configured`() {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         stytchClientObject.assertInitialized()
     }
@@ -97,7 +99,7 @@ internal class StytchB2BClientTest {
     fun `should trigger StytchB2BApi configure when calling StytchB2BClient configure`() {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         verify { StytchB2BApi.configure("", deviceInfo) }
     }
@@ -106,7 +108,7 @@ internal class StytchB2BClientTest {
     fun `should trigger StorageHelper initialize when calling StytchB2BClient configure`() {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         verify { StorageHelper.initialize(mContextMock) }
     }
@@ -116,7 +118,7 @@ internal class StytchB2BClientTest {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
         val deviceInfo = DeviceInfo()
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
     }
 
@@ -207,7 +209,7 @@ internal class StytchB2BClientTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "MAGIC_LINKS"
+                every { getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
             }
             val mockAuthResponse = mockk<AuthResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse

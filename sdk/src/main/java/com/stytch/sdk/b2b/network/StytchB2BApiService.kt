@@ -9,8 +9,8 @@ import retrofit2.http.POST
 
 internal interface StytchB2BApiService : ApiService {
     @POST("b2b/magic_links/email/login_or_signup")
-    suspend fun loginOrCreateUserByEmail(
-        @Body request: B2BRequests.MagicLinks.Email.LoginOrCreateUserRequest
+    suspend fun loginOrSignupByEmail(
+        @Body request: B2BRequests.MagicLinks.Email.LoginOrSignupRequest
     ): CommonResponses.MagicLinks.Email.LoginOrCreateUserResponse
 
     @POST("b2b/magic_links/authenticate")

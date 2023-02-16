@@ -104,7 +104,7 @@ internal class B2BMagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
-        val response = impl.email.loginOrCreate(emailMagicLinkParameters)
+        val response = impl.email.loginOrSignup(emailMagicLinkParameters)
         assert(response is StytchResult.Error)
     }
 
@@ -112,16 +112,16 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl email loginOrCreate delegates to api`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         coEvery {
-            mockApi.loginOrCreate(any(), any(), any(), any(), any(), any(), any())
+            mockApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any())
         } returns successfulLoginOrCreateResponse
-        impl.email.loginOrCreate(emailMagicLinkParameters)
-        coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any(), any()) }
+        impl.email.loginOrSignup(emailMagicLinkParameters)
+        coVerify { mockApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
     fun `MagicLinksImpl email loginOrCreate with callback calls callback method`() {
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.email.loginOrCreate(emailMagicLinkParameters, mockCallback)
+        impl.email.loginOrSignup(emailMagicLinkParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

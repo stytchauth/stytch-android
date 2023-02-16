@@ -8,6 +8,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
@@ -58,6 +59,7 @@ internal class StytchClientTest {
     fun before() {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
+        mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         mContextMock = mockk(relaxed = true)
@@ -93,7 +95,7 @@ internal class StytchClientTest {
     fun `assertInitialized does not throw IllegalStateException when properly configured`() {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         stytchClientObject.assertInitialized()
     }
@@ -102,7 +104,7 @@ internal class StytchClientTest {
     fun `should trigger StytchApi configure when calling StytchClient configure`() {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         verify { StytchApi.configure("", deviceInfo) }
     }
@@ -111,7 +113,7 @@ internal class StytchClientTest {
     fun `should trigger StorageHelper initialize when calling StytchClient configure`() {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         verify { StorageHelper.initialize(mContextMock) }
     }
@@ -121,7 +123,7 @@ internal class StytchClientTest {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
         val deviceInfo = DeviceInfo()
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
-        every { stytchClientObject["getDeviceInfo"].invoke(mContextMock) }.returns(deviceInfo)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
     }
 

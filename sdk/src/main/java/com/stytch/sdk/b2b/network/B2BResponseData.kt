@@ -9,6 +9,7 @@ public interface IB2BAuthData {
     public val sessionJwt: String
     public val sessionToken: String
     public val member: MemberData
+    public val organization: Organization
 }
 
 @JsonClass(generateAdapter = true)
@@ -22,7 +23,8 @@ public data class B2BAuthData(
     override val sessionJwt: String,
     @Json(name = "session_token")
     override val sessionToken: String,
-    override val member: MemberData
+    override val member: MemberData,
+    override val organization: Organization
 ) : IB2BAuthData
 
 @JsonClass(generateAdapter = true)
@@ -40,7 +42,8 @@ public data class B2BEMLAuthenticateData(
     override val sessionJwt: String,
     override val session: B2BSessionData,
     @Json(name = "reset_sessions")
-    val resetSessions: Boolean
+    val resetSessions: Boolean,
+    override val organization: Organization
 ) : IB2BAuthData
 
 @JsonClass(generateAdapter = true)

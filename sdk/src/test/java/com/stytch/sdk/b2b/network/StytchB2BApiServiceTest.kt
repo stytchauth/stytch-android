@@ -45,7 +45,7 @@ internal class StytchB2BApiServiceTest {
     @Test
     fun `check magic links email loginOrCreate request`() {
         runBlocking {
-            val parameters = B2BRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+            val parameters = B2BRequests.MagicLinks.Email.LoginOrSignupRequest(
                 email = EMAIL,
                 organizationId = "organizationId",
                 loginRedirectUrl = LOGIN_MAGIC_LINK,
@@ -55,7 +55,7 @@ internal class StytchB2BApiServiceTest {
                 signupTemplateId = "signUpTemplateId",
             )
             requestIgnoringResponseException {
-                apiService.loginOrCreateUserByEmail(parameters)
+                apiService.loginOrSignupByEmail(parameters)
             }.verifyPost(
                 expectedPath = "/b2b/magic_links/email/login_or_signup",
                 expectedBody = mapOf(

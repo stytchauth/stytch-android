@@ -7,7 +7,7 @@ internal object B2BRequests {
     object MagicLinks {
         object Email {
             @JsonClass(generateAdapter = true)
-            data class LoginOrCreateUserRequest(
+            data class LoginOrSignupRequest(
                 @Json(name = "email_address")
                 val email: String,
                 @Json(name = "organization_id")

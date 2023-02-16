@@ -66,7 +66,7 @@ internal object StytchB2BApi {
     internal object MagicLinks {
         object Email {
             @Suppress("LongParameterList")
-            suspend fun loginOrCreate(
+            suspend fun loginOrSignupByEmail(
                 email: String,
                 organizationId: String,
                 loginRedirectUrl: String?,
@@ -75,8 +75,8 @@ internal object StytchB2BApi {
                 loginTemplateId: String?,
                 signupTemplateId: String?,
             ): StytchResult<BasicData> = safeB2BApiCall {
-                apiService.loginOrCreateUserByEmail(
-                    B2BRequests.MagicLinks.Email.LoginOrCreateUserRequest(
+                apiService.loginOrSignupByEmail(
+                    B2BRequests.MagicLinks.Email.LoginOrSignupRequest(
                         email = email,
                         organizationId = organizationId,
                         loginRedirectUrl = loginRedirectUrl,

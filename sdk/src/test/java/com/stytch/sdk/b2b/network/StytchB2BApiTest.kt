@@ -67,9 +67,9 @@ internal class StytchB2BApiTest {
     @Test
     fun `StytchB2BApi MagicLinks Email loginOrCreate calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
-        coEvery { StytchB2BApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-        StytchB2BApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "", "")
-        coVerify { StytchB2BApi.apiService.loginOrCreateUserByEmail(any()) }
+        coEvery { StytchB2BApi.apiService.loginOrSignupByEmail(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "")
+        coVerify { StytchB2BApi.apiService.loginOrSignupByEmail(any()) }
     }
 
     @Test

@@ -2,14 +2,13 @@ package com.stytch.sdk.consumer
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
-import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.TokenType
+import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.biometrics.Biometrics
@@ -44,13 +43,13 @@ public object StytchClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**
-     * Configures the StytchClient, setting the publicToken and hostUrl.
+     * Configures the StytchClient, setting the publicToken.
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @throws StytchExceptions.Critical - if failed to generate new encryption keys
      */
     public fun configure(context: Context, publicToken: String) {
         try {
-            val deviceInfo = getDeviceInfo(context)
+            val deviceInfo = context.getDeviceInfo()
             StytchApi.configure(publicToken, deviceInfo)
             StorageHelper.initialize(context)
         } catch (ex: Exception) {
@@ -179,31 +178,6 @@ public object StytchClient {
         }
         internal set
 
-    private fun getDeviceInfo(context: Context): DeviceInfo {
-        val deviceInfo = DeviceInfo()
-        deviceInfo.applicationPackageName = context.applicationContext.packageName
-        deviceInfo.osVersion = Build.VERSION.SDK_INT.toString()
-        deviceInfo.deviceName = Build.MODEL
-        deviceInfo.osName = Build.VERSION.CODENAME
-
-        try {
-            // throw exceptions if packageName not found
-            deviceInfo.applicationVersion = context
-                .applicationContext
-                .packageManager
-                .getPackageInfo(deviceInfo.applicationPackageName!!, 0)
-                .versionName
-        } catch (ex: Exception) {
-            deviceInfo.applicationVersion = ""
-        }
-
-        val width = context.resources.displayMetrics.widthPixels
-        val height = context.resources.displayMetrics.heightPixels
-
-        deviceInfo.screenSize = "($width,$height)"
-        return deviceInfo
-    }
-
     /**
      * Handle magic link
      * @param uri - intent.data from deep link
@@ -231,7 +205,7 @@ public object StytchClient {
                 TokenType.PASSWORD_RESET -> {
                     DeeplinkHandledStatus.ManualHandlingRequired(type = TokenType.PASSWORD_RESET, token = token)
                 }
-                TokenType.UNKNOWN -> {
+                else -> {
                     DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
                 }
             }

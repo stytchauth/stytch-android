@@ -64,18 +64,18 @@ public interface B2BMagicLinks {
         )
 
         /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * Wraps Stytch’s email magic link login_or_signup endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
          * @param parameters required to receive magic link
          * @return BaseResponse response from backend
          */
-        public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
+        public suspend fun loginOrSignup(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * Wraps Stytch’s email magic link login_or_signup endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
          * @param parameters required to receive magic link
          * @param callback calls callback with BaseResponse response from backend
          */
-        public fun loginOrCreate(
+        public fun loginOrSignup(
             parameters: Parameters,
             callback: (response: BaseResponse) -> Unit,
         )
