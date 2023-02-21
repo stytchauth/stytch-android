@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 internal class OrganizationImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val api: StytchB2BApi.Organizations
+    private val api: StytchB2BApi.Organization
 ) : Organization {
     override suspend fun get(): OrganizationResponse =
         withContext(dispatchers.io) {

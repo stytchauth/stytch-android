@@ -25,7 +25,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class OrganizationImplTest {
     @MockK
-    private lateinit var mockApi: StytchB2BApi.Organizations
+    private lateinit var mockApi: StytchB2BApi.Organization
 
     private lateinit var impl: OrganizationImpl
     private val dispatcher = Dispatchers.Unconfined

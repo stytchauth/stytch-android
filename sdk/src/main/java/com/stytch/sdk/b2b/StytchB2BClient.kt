@@ -95,7 +95,7 @@ public object StytchB2BClient {
     public var organization: Organization = OrganizationImpl(
         externalScope,
         dispatchers,
-        StytchB2BApi.Organizations,
+        StytchB2BApi.Organization,
     )
         get() {
             assertInitialized()
