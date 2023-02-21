@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.organization
 
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.network.Organization
+import com.stytch.sdk.b2b.network.OrganizationResponseData
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -29,7 +30,7 @@ internal class OrganizationImplTest {
 
     private lateinit var impl: OrganizationImpl
     private val dispatcher = Dispatchers.Unconfined
-    private val successfulOrgResponse = StytchResult.Success<Organization>(mockk(relaxed = true))
+    private val successfulOrgResponse = StytchResult.Success<OrganizationResponseData>(mockk(relaxed = true))
 
     @Before
     fun before() {
