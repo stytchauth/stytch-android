@@ -5,6 +5,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -13,7 +14,7 @@ import kotlinx.coroutines.withContext
 internal class SessionsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
     override val sessionToken: String?

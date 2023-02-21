@@ -6,7 +6,7 @@ import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.UserData
-import com.stytch.sdk.consumer.sessions.SessionStorage
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 internal class UserManagementImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
     override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {

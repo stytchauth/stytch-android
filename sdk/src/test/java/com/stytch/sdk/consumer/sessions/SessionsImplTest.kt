@@ -5,7 +5,9 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.AuthData
 import com.stytch.sdk.consumer.network.StytchApi
 import io.mockk.MockKAnnotations
@@ -37,7 +39,7 @@ internal class SessionsImplTest {
     private lateinit var mockApi: StytchApi.Sessions
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     private lateinit var impl: SessionsImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -53,7 +55,8 @@ internal class SessionsImplTest {
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         impl = SessionsImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),

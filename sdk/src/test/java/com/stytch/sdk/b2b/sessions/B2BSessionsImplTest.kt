@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.IB2BAuthData
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.BaseResponse
@@ -8,6 +9,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -52,8 +54,9 @@ internal class B2BSessionsImplTest {
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(B2BSessionAutoUpdater)
-        every { B2BSessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        mockkObject(SessionAutoUpdater)
+        mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         impl = B2BSessionsImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),

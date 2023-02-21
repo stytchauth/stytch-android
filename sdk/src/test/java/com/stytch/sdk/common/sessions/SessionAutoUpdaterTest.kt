@@ -1,9 +1,10 @@
-package com.stytch.sdk.consumer.sessions
+package com.stytch.sdk.common.sessions
 
 import com.stytch.sdk.common.StytchDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -41,7 +42,7 @@ internal class SessionAutoUpdaterTest {
     @Test
     fun `SessionAutoUpdater startSessionUpdateJob cancels previously running job and creates new one`() {
         assert(sessionAutoUpdater.sessionUpdateJob == null)
-        sessionAutoUpdater.startSessionUpdateJob(dispatchers, mockSessionStorage)
+        sessionAutoUpdater.startSessionUpdateJob(dispatchers, mockk(), mockk())
         verify { sessionAutoUpdater.stopSessionUpdateJob() }
         assert(sessionAutoUpdater.sessionUpdateJob != null)
         sessionAutoUpdater.stopSessionUpdateJob()

@@ -8,9 +8,9 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 internal class PasswordsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: ConsumerSessionStorage,
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Passwords,
 ) : Passwords {

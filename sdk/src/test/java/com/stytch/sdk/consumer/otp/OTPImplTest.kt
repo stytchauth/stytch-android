@@ -4,13 +4,13 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.AuthData
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -40,7 +40,7 @@ internal class OTPImplTest {
     private lateinit var mockApi: StytchApi.OTP
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     private lateinit var impl: OTPImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -56,7 +56,8 @@ internal class OTPImplTest {
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         impl = OTPImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),

@@ -1,16 +1,16 @@
 package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.sessions.B2BSessionAutoUpdater
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.b2b.sessions.launchSessionUpdater
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -60,8 +60,9 @@ internal class B2BMagicLinksImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
-        mockkObject(B2BSessionAutoUpdater)
-        every { B2BSessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        mockkObject(SessionAutoUpdater)
+        mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         impl = B2BMagicLinksImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),

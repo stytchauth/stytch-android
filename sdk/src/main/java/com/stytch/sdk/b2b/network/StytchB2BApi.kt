@@ -127,7 +127,7 @@ internal object StytchB2BApi {
     }
 
     internal object Member {
-        suspend fun getMember(): StytchResult<MemberData> = safeB2BApiCall {
+        suspend fun getMember(): StytchResult<MemberResponseData> = safeB2BApiCall {
             apiService.getMember()
         }
     }

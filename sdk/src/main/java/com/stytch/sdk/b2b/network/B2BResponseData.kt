@@ -68,6 +68,15 @@ public data class B2BSessionData(
 )
 
 @JsonClass(generateAdapter = true)
+public data class MemberResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val member: MemberData,
+)
+
+@JsonClass(generateAdapter = true)
 public data class MemberData(
     @Json(name = "organization_id")
     val organizationId: String,

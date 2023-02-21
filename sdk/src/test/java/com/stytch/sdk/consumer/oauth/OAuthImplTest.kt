@@ -6,10 +6,10 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -39,7 +39,7 @@ internal class OAuthImplTest {
     private lateinit var mockApi: StytchApi.OAuth
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
     private lateinit var mockStorageHelper: StorageHelper
@@ -56,7 +56,7 @@ internal class OAuthImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         impl = OAuthImpl(

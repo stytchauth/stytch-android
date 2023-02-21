@@ -4,8 +4,9 @@ import com.stytch.sdk.b2b.network.B2BSessionData
 import com.stytch.sdk.b2b.network.MemberData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.sessions.SessionStorage
 
-internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
+internal class B2BSessionStorage(private val storageHelper: StorageHelper) : SessionStorage {
     var sessionToken: String?
         private set(value) {
             storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_TOKEN, value)

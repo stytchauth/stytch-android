@@ -23,7 +23,7 @@ import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.consumer.otp.OTPImpl
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.consumer.passwords.PasswordsImpl
-import com.stytch.sdk.consumer.sessions.SessionStorage
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import com.stytch.sdk.consumer.sessions.Sessions
 import com.stytch.sdk.consumer.sessions.SessionsImpl
 import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
@@ -39,7 +39,7 @@ import kotlinx.coroutines.withContext
  */
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal val sessionStorage = SessionStorage(StorageHelper)
+    internal val sessionStorage = ConsumerSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**

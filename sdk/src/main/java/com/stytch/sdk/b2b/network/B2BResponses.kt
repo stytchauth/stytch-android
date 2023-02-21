@@ -19,6 +19,6 @@ internal object B2BResponses {
         class GetOrganizationResponse(data: Organization) : StytchDataResponse<Organization>(data)
 
         @JsonClass(generateAdapter = true)
-        class GetMemberResponse(data: MemberData) : StytchDataResponse<MemberData>(data)
+        class GetMemberResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
     }
 }

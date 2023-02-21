@@ -4,12 +4,12 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.UserData
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -39,7 +39,7 @@ internal class UserManagementImplTest {
     private lateinit var mockApi: StytchApi.UserManagement
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     private lateinit var impl: UserManagementImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -53,7 +53,7 @@ internal class UserManagementImplTest {
         mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         every { mockSessionStorage.user = any() } just runs
         impl = UserManagementImpl(

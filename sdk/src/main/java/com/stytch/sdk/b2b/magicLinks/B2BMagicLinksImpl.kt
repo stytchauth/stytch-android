@@ -1,9 +1,9 @@
 package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.b2b.sessions.launchSessionUpdater
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers

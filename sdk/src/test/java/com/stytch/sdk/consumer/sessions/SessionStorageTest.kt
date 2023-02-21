@@ -23,14 +23,14 @@ internal class SessionStorageTest {
     @MockK
     private lateinit var mockStorageHelper: StorageHelper
 
-    private lateinit var storage: SessionStorage
+    private lateinit var storage: ConsumerSessionStorage
 
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
-        storage = SessionStorage(mockStorageHelper)
+        storage = ConsumerSessionStorage(mockStorageHelper)
     }
 
     @After

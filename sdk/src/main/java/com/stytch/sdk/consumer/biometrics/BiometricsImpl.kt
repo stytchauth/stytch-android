@@ -16,9 +16,9 @@ import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,7 +38,7 @@ private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
 internal class BiometricsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val sessionStorage: SessionStorage,
+    private val sessionStorage: ConsumerSessionStorage,
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,

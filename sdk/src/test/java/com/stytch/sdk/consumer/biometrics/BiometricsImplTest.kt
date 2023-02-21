@@ -8,12 +8,12 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.BiometricsAuthData
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -44,7 +44,7 @@ internal class BiometricsImplTest {
     private lateinit var mockApi: StytchApi.Biometrics
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
     private lateinit var mockStorageHelper: StorageHelper
@@ -67,14 +67,18 @@ internal class BiometricsImplTest {
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
-        mockkStatic("com.stytch.sdk.common.extensions.StringExtKt", "com.stytch.sdk.common.extensions.ByteArrayExtKt")
+        mockkStatic(
+            "com.stytch.sdk.common.extensions.StringExtKt",
+            "com.stytch.sdk.common.extensions.ByteArrayExtKt",
+            "com.stytch.sdk.consumer.extensions.StytchResultExtKt"
+        )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.getBoolean(any()) } returns true
         every { mockStorageHelper.saveValue(any(), any()) } just runs

@@ -6,15 +6,15 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.BasicData
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.AuthData
 import com.stytch.sdk.consumer.network.CreateResponse
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -44,7 +44,7 @@ internal class PasswordsImplTest {
     private lateinit var mockApi: StytchApi.Passwords
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
     private lateinit var mockStorageHelper: StorageHelper
@@ -74,7 +74,8 @@ internal class PasswordsImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
         impl = PasswordsImpl(
             externalScope = TestScope(),

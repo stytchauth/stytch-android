@@ -1,34 +1,34 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.stytch.sdk.common.Constants.PREFERENCES_NAME_SESSION_JWT
-import com.stytch.sdk.common.Constants.PREFERENCES_NAME_SESSION_TOKEN
+import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.sessions.SessionStorage
 import com.stytch.sdk.consumer.network.SessionData
 import com.stytch.sdk.consumer.network.UserData
 
-internal class SessionStorage(private val storageHelper: StorageHelper) {
+internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) : SessionStorage {
     var sessionToken: String?
         private set(value) {
-            storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
+            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
+                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN)
             }
             return value
         }
 
     var sessionJwt: String?
         private set(value) {
-            storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
+            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
+                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT)
             }
             return value
         }

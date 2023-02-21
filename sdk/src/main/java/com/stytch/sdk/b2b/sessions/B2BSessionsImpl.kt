@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers

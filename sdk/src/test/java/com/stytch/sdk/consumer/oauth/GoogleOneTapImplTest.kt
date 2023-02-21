@@ -15,12 +15,12 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.oauth.GoogleOneTapProvider
+import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.AuthData
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.sessions.SessionStorage
-import com.stytch.sdk.consumer.sessions.launchSessionUpdater
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -29,6 +29,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.spyk
@@ -48,7 +49,7 @@ internal class GoogleOneTapImplTest {
     private lateinit var mockApi: StytchApi.OAuth
 
     @MockK
-    private lateinit var mockSessionStorage: SessionStorage
+    private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
     private lateinit var mockGoogleOneTapProvider: GoogleOneTapProvider
@@ -65,7 +66,8 @@ internal class GoogleOneTapImplTest {
     fun before() {
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
-        every { SessionAutoUpdater.startSessionUpdateJob(any(), any()) } just runs
+        every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         mockkObject(EncryptionManager)
         every { EncryptionManager.generateCodeChallenge() } returns "code-challenge"
         every { EncryptionManager.encryptCodeChallenge(any()) } returns "encrypted-code-challenge"
