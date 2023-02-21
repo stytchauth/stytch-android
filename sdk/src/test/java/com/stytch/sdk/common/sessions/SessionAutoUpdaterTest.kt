@@ -3,7 +3,6 @@ package com.stytch.sdk.common.sessions
 import com.stytch.sdk.common.StytchDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.unmockkAll
@@ -15,8 +14,6 @@ import org.junit.Before
 import org.junit.Test
 
 internal class SessionAutoUpdaterTest {
-    @MockK
-    private lateinit var mockSessionStorage: SessionStorage
     private lateinit var sessionAutoUpdater: SessionAutoUpdater
     private val dispatchers = StytchDispatchers(Dispatchers.Unconfined, Dispatchers.Unconfined)
 
