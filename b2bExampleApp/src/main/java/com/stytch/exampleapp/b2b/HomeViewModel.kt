@@ -1,6 +1,7 @@
-package com.stytch.exampleapp
+package com.stytch.exampleapp.b2b
 
 import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,11 +10,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.common.DeeplinkHandledStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class B2BViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -69,6 +72,22 @@ class B2BViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             _currentResponse.value = StytchB2BClient.sessions.revoke().toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun handleUri(uri: Uri) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchB2BClient.handle(uri = uri, sessionDurationMinutes = 60u)
+            _currentResponse.value = when (result) {
+                is DeeplinkHandledStatus.NotHandled -> result.reason
+                is DeeplinkHandledStatus.Handled -> result.response.toFriendlyDisplay()
+                // This only happens for password reset deeplinks
+                is DeeplinkHandledStatus.ManualHandlingRequired ->
+                    "Password reset token retrieved, initiate password reset flow"
+            }
         }.invokeOnCompletion {
             _loadingState.value = false
         }

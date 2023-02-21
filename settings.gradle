@@ -1,3 +1,4 @@
 rootProject.name = "Stytch Android SDK"
 include ':sdk'
-include ':exampleapp'
+include ':consumerExampleApp'
+include ':b2bExampleApp'

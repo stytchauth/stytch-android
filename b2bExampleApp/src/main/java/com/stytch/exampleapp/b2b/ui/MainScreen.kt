@@ -1,4 +1,4 @@
-package com.stytch.exampleapp.ui
+package com.stytch.exampleapp.b2b.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.stytch.exampleapp.B2BViewModel
-import com.stytch.exampleapp.R
-import com.stytch.exampleapp.theme.Red300
+import com.stytch.exampleapp.b2b.HomeViewModel
+import com.stytch.exampleapp.b2b.R
+import com.stytch.exampleapp.b2b.theme.Red300
 
 @Composable
-fun B2BScreen(viewModel: B2BViewModel) {
+fun MainScreen(
+    viewModel: HomeViewModel,
+) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Column(
