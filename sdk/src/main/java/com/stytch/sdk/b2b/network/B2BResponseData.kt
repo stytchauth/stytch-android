@@ -19,6 +19,7 @@ public data class B2BAuthData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
+    @Json(name = "member_session")
     override val memberSession: B2BSessionData,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
@@ -41,6 +42,7 @@ public data class B2BEMLAuthenticateData(
     override val sessionToken: String,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
+    @Json(name = "member_session")
     override val memberSession: B2BSessionData,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean,
@@ -104,6 +106,15 @@ public data class SSORegistration(
     val registrationId: String,
     @Json(name = "sso_attributes")
     val ssoAttributes: Map<String, Any?>?,
+)
+
+@JsonClass(generateAdapter = true)
+public data class OrganizationResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val organization: Organization,
 )
 
 @JsonClass(generateAdapter = true)

@@ -121,7 +121,7 @@ internal object StytchB2BApi {
     }
 
     internal object Organization {
-        suspend fun getOrganization(): StytchResult<com.stytch.sdk.b2b.network.Organization> = safeB2BApiCall {
+        suspend fun getOrganization(): StytchResult<OrganizationResponseData> = safeB2BApiCall {
             apiService.getOrganization()
         }
     }
