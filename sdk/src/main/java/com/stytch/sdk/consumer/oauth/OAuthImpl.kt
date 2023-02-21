@@ -43,7 +43,7 @@ internal class OAuthImpl(
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {
-            val pkce = storageHelper.retrieveHashedCodeChallenge()
+            val pkce = storageHelper.retrieveCodeVerifier()
                 ?: return@withContext StytchResult.Error(
                     StytchExceptions.Input(StytchErrorType.OAUTH_MISSING_PKCE.message)
                 )

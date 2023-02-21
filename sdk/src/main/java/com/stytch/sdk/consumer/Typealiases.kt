@@ -1,6 +1,8 @@
 package com.stytch.sdk.consumer
 
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.BiometricsAuthData
 import com.stytch.sdk.consumer.network.CreateResponse
 import com.stytch.sdk.consumer.network.DeleteAuthenticationFactorData
@@ -37,3 +39,13 @@ public typealias BiometricsAuthResponse = StytchResult<BiometricsAuthData>
  * Type alias for StytchResult<OAuthData> used for Third Party OAuth authentication responses
  */
 public typealias OAuthAuthenticatedResponse = StytchResult<OAuthData>
+
+/**
+ * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
+ */
+public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
+
+/**
+ * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
+ */
+public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>

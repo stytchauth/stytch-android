@@ -77,7 +77,7 @@ internal class B2BSessionStorageTest {
             sessionJwt = "mySessionJwt",
             session = mockedSessionData,
         )
-        assert(storage.session == mockedSessionData)
+        assert(storage.memberSession == mockedSessionData)
     }
 
     @Test
@@ -85,7 +85,7 @@ internal class B2BSessionStorageTest {
         // we're not testing sessiontoken or sessionjwt here, because the getters/setters are already tested above
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         storage.revoke()
-        assert(storage.session == null)
+        assert(storage.memberSession == null)
         assert(storage.member == null)
     }
 }

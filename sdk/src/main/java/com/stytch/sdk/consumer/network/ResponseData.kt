@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.AuthenticationFactor
 import com.stytch.sdk.common.network.BiometricRegistrations
+import com.stytch.sdk.common.network.CommonAuthenticationData
 import com.stytch.sdk.common.network.CryptoWalletData
 import com.stytch.sdk.common.network.EmailData
 import com.stytch.sdk.common.network.NameData
@@ -13,10 +14,10 @@ import com.stytch.sdk.common.network.Provider
 import com.stytch.sdk.common.network.TOTP
 import com.stytch.sdk.common.network.WebAuthNRegistrations
 
-public interface IAuthData {
+public interface IAuthData : CommonAuthenticationData {
     public val session: SessionData
-    public val sessionJwt: String
-    public val sessionToken: String
+    public override val sessionJwt: String
+    public override val sessionToken: String
     public val user: UserData
 }
 

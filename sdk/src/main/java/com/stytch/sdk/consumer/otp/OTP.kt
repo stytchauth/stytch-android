@@ -3,8 +3,8 @@ package com.stytch.sdk.consumer.otp
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
-import com.stytch.sdk.common.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 
 /**
  * OTP interface that encompasses authentication functions as well as other related functionality

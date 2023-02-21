@@ -29,7 +29,7 @@ internal class MagicLinksImpl internal constructor(
             val codeVerifier: String
 
             try {
-                codeVerifier = storageHelper.retrieveHashedCodeChallenge()!!
+                codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchExceptions.Critical(ex))
                 return@withContext

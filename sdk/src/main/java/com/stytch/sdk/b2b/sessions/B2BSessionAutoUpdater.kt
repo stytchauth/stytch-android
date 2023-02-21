@@ -91,7 +91,7 @@ internal fun <T : IB2BAuthData> StytchResult<T>.saveSession(sessionStorage: B2BS
     if (this is StytchResult.Success) {
         value.apply {
             try {
-                sessionStorage.updateSession(sessionToken, sessionJwt, session)
+                sessionStorage.updateSession(sessionToken, sessionJwt, memberSession)
                 sessionStorage.member = member
             } catch (ex: Exception) {
                 return StytchResult.Error(com.stytch.sdk.common.StytchExceptions.Critical(ex))

@@ -3,11 +3,12 @@ package com.stytch.sdk.b2b.network
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.AuthenticationFactor
+import com.stytch.sdk.common.network.CommonAuthenticationData
 
-public interface IB2BAuthData {
-    public val session: B2BSessionData
-    public val sessionJwt: String
-    public val sessionToken: String
+public interface IB2BAuthData : CommonAuthenticationData {
+    public val memberSession: B2BSessionData
+    public override val sessionJwt: String
+    public override val sessionToken: String
     public val member: MemberData
     public val organization: Organization
 }
@@ -18,7 +19,7 @@ public data class B2BAuthData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    override val session: B2BSessionData,
+    override val memberSession: B2BSessionData,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "session_token")
@@ -40,7 +41,7 @@ public data class B2BEMLAuthenticateData(
     override val sessionToken: String,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
-    override val session: B2BSessionData,
+    override val memberSession: B2BSessionData,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean,
     override val organization: Organization

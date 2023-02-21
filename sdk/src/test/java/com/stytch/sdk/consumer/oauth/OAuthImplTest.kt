@@ -96,7 +96,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if PKCE is missing`() = runTest {
-        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns null
+        every { mockStorageHelper.retrieveCodeVerifier() } returns null
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
         assert(result.exception.reason == StytchErrorType.OAUTH_MISSING_PKCE.message)
@@ -104,7 +104,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if api call fails`() = runTest {
-        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns "code-challenge"
+        every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
         coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Error(
             StytchExceptions.Response(mockk(relaxed = true))
         )
@@ -116,7 +116,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns success if api call succeeds`() = runTest {
-        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns "code-challenge"
+        every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
         coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Success(
             mockk(relaxed = true)
         )
@@ -127,7 +127,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate with callback calls callback method`() {
-        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns null
+        every { mockStorageHelper.retrieveCodeVerifier() } returns null
         val spy = spyk<(OAuthAuthenticatedResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), spy)
         verify { spy.invoke(any()) }

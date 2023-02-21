@@ -88,7 +88,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate delegates to api`() = runTest {
-        every { mockStorageHelper.retrieveHashedCodeChallenge() } returns ""
+        every { mockStorageHelper.retrieveCodeVerifier() } returns ""
         coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
         val response = impl.authenticate(authParameters)
         assert(response is StytchResult.Success)

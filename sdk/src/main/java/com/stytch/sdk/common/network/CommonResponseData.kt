@@ -278,3 +278,8 @@ public data class AuthenticationFactor(
         val cryptoWalletType: String,
     )
 }
+
+public interface CommonAuthenticationData {
+    public val sessionJwt: String
+    public val sessionToken: String
+}
