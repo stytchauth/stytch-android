@@ -139,7 +139,7 @@ private fun handleIntent(intent: Intent) {
 #### MainViewModel.kt
 
 ```kotlin
-import com.stytch.sdk.network.responseData.BasicData
+import com.stytch.sdk.consumer.network.responseData.BasicData
 
 lateinit var result: StytchResult<BasicData>
 
