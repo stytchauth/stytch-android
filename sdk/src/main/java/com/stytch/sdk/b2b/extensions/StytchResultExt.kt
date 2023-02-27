@@ -1,8 +1,8 @@
 // ktlint-disable filename
 package com.stytch.sdk.b2b.extensions
 
-import com.stytch.sdk.b2b.network.IB2BAuthData
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult

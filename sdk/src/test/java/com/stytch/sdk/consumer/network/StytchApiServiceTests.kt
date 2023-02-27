@@ -1,7 +1,8 @@
 package com.stytch.sdk.consumer.network
 
 import com.stytch.sdk.common.network.ApiService
-import com.stytch.sdk.common.network.CommonRequests
+import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost

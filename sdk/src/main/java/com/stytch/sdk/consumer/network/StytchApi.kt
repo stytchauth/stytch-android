@@ -7,16 +7,22 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.ApiService
-import com.stytch.sdk.common.network.BasicData
-import com.stytch.sdk.common.network.BiometricsStartResponse
-import com.stytch.sdk.common.network.CommonRequests
-import com.stytch.sdk.common.network.LoginOrCreateOTPData
-import com.stytch.sdk.common.network.StrengthCheckResponse
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.BiometricsStartResponse
+import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.models.StrengthCheckResponse
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.network.models.AuthData
+import com.stytch.sdk.consumer.network.models.BiometricsAuthData
+import com.stytch.sdk.consumer.network.models.ConsumerRequests
+import com.stytch.sdk.consumer.network.models.CreateResponse
+import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
+import com.stytch.sdk.consumer.network.models.UserData
 import java.lang.RuntimeException
 
 internal object StytchApi {

@@ -1,6 +1,7 @@
-package com.stytch.sdk.common.network
+package com.stytch.sdk.common.network.models
 
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.StytchDataResponse
 
 internal object CommonResponses {
     object MagicLinks {

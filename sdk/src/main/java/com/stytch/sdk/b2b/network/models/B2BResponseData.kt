@@ -1,9 +1,9 @@
-package com.stytch.sdk.b2b.network
+package com.stytch.sdk.b2b.network.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.stytch.sdk.common.network.AuthenticationFactor
-import com.stytch.sdk.common.network.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.AuthenticationFactor
+import com.stytch.sdk.common.network.models.CommonAuthenticationData
 
 public interface IB2BAuthData : CommonAuthenticationData {
     public val memberSession: B2BSessionData

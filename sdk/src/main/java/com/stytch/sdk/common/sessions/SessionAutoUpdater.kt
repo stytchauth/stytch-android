@@ -3,7 +3,7 @@ package com.stytch.sdk.common.sessions
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import kotlin.math.pow
 import kotlin.random.Random
 import kotlinx.coroutines.GlobalScope

@@ -2,15 +2,20 @@ package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
+import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.ApiService
-import com.stytch.sdk.common.network.BasicData
-import com.stytch.sdk.common.network.CommonRequests
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.safeApiCall
 import java.lang.RuntimeException
 

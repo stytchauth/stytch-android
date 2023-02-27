@@ -1,4 +1,4 @@
-package com.stytch.sdk.b2b.network
+package com.stytch.sdk.b2b.network.models
 
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse

@@ -1,6 +1,6 @@
 package com.stytch.sdk.b2b.sessions
 
-import com.stytch.sdk.b2b.network.B2BSessionData
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import io.mockk.MockKAnnotations

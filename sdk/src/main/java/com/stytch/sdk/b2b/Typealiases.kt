@@ -1,8 +1,8 @@
 package com.stytch.sdk.b2b
 
-import com.stytch.sdk.b2b.network.IB2BAuthData
-import com.stytch.sdk.b2b.network.MemberResponseData
-import com.stytch.sdk.b2b.network.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.common.StytchResult
 
 /**

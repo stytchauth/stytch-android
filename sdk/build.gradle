@@ -35,6 +35,7 @@ android {
             minifyEnabled false
             buildConfigField "Boolean", "DEBUG_MODE", "true"
             buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
+            testCoverageEnabled true
         }
     }
     compileOptions {

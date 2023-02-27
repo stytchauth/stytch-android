@@ -8,6 +8,7 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

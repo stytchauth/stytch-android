@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.StytchErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
