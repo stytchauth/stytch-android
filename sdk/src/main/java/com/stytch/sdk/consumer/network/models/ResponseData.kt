@@ -1,18 +1,18 @@
-package com.stytch.sdk.consumer.network
+package com.stytch.sdk.consumer.network.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.stytch.sdk.common.network.AuthenticationFactor
-import com.stytch.sdk.common.network.BiometricRegistrations
-import com.stytch.sdk.common.network.CommonAuthenticationData
-import com.stytch.sdk.common.network.CryptoWalletData
-import com.stytch.sdk.common.network.EmailData
-import com.stytch.sdk.common.network.NameData
-import com.stytch.sdk.common.network.Password
-import com.stytch.sdk.common.network.PhoneNumber
-import com.stytch.sdk.common.network.Provider
-import com.stytch.sdk.common.network.TOTP
-import com.stytch.sdk.common.network.WebAuthNRegistrations
+import com.stytch.sdk.common.network.models.AuthenticationFactor
+import com.stytch.sdk.common.network.models.BiometricRegistrations
+import com.stytch.sdk.common.network.models.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.CryptoWalletData
+import com.stytch.sdk.common.network.models.EmailData
+import com.stytch.sdk.common.network.models.NameData
+import com.stytch.sdk.common.network.models.Password
+import com.stytch.sdk.common.network.models.PhoneNumber
+import com.stytch.sdk.common.network.models.Provider
+import com.stytch.sdk.common.network.models.TOTP
+import com.stytch.sdk.common.network.models.WebAuthNRegistrations
 
 public interface IAuthData : CommonAuthenticationData {
     public val session: SessionData

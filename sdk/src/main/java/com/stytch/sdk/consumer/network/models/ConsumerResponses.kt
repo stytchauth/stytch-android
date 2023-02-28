@@ -1,8 +1,8 @@
-package com.stytch.sdk.consumer.network
+package com.stytch.sdk.consumer.network.models
 
 import com.squareup.moshi.JsonClass
-import com.stytch.sdk.common.network.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 
 internal object ConsumerResponses {
     object Passwords {

@@ -4,8 +4,8 @@ package com.stytch.sdk.consumer.extensions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.network.IAuthData
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.withContext
 

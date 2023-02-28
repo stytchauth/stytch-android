@@ -11,8 +11,8 @@ import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
-import com.stytch.sdk.consumer.network.BiometricsAuthData
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks

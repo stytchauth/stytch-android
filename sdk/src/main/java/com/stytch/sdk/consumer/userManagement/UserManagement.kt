@@ -2,7 +2,7 @@ package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.UserResponse
-import com.stytch.sdk.consumer.network.UserData
+import com.stytch.sdk.consumer.network.models.UserData
 
 public interface UserManagement {
 

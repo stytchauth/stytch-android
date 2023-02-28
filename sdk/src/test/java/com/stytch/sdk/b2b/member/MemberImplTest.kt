@@ -1,9 +1,9 @@
 package com.stytch.sdk.b2b.member
 
 import com.stytch.sdk.b2b.MemberResponse
-import com.stytch.sdk.b2b.network.MemberData
-import com.stytch.sdk.b2b.network.MemberResponseData
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.MemberData
+import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult

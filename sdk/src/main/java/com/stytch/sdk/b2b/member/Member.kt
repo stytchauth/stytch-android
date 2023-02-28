@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.member
 
 import com.stytch.sdk.b2b.MemberResponse
-import com.stytch.sdk.b2b.network.MemberData
+import com.stytch.sdk.b2b.network.models.MemberData
 
 /**
  * Member interface that encompasses retrieving a Member

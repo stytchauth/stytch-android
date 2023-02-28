@@ -4,8 +4,8 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.consumer.network.SessionData
-import com.stytch.sdk.consumer.network.UserData
+import com.stytch.sdk.consumer.network.models.SessionData
+import com.stytch.sdk.consumer.network.models.UserData
 
 internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) {
     var sessionToken: String?

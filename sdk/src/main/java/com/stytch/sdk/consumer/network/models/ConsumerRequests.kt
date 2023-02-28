@@ -1,4 +1,4 @@
-package com.stytch.sdk.consumer.network
+package com.stytch.sdk.consumer.network.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

@@ -1,6 +1,6 @@
 package com.stytch.sdk.common
 
-import com.stytch.sdk.common.network.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.CommonAuthenticationData
 
 public sealed interface DeeplinkHandledStatus {
     public data class Handled(val response: StytchResult<CommonAuthenticationData>) : DeeplinkHandledStatus

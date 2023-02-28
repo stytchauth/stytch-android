@@ -8,7 +8,7 @@ import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.network.UserData
+import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks

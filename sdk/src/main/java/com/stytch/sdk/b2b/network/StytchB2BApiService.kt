@@ -1,8 +1,10 @@
 package com.stytch.sdk.b2b.network
 
+import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.B2BResponses
 import com.stytch.sdk.common.network.ApiService
-import com.stytch.sdk.common.network.CommonRequests
-import com.stytch.sdk.common.network.CommonResponses
+import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.CommonResponses
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
