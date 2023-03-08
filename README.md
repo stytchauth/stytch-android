@@ -108,6 +108,18 @@ Add the Stytch dependency to your `app/build.gradle` file:
 
 ```implementation 'com.stytch.sdk:sdk:latest'```
 
+Add the necessary manifest placeholders for our OAuth manager/receiver activities (if you are not using our Third-Party OAuth providers, you must still include this, but can leave the values blank). These values can be any valid scheme or host, and do not relate to your OAuth settings in the Stytch Dashboard. These are only used internally within your app to register a receiver activity. More information is available in the [Consumer OAuth documentation](sdk/src/main/java/com/stytch/sdk/consumer/oauth).
+```
+android {
+    defaultConfig {
+        manifestPlaceholders = [
+            'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
+            'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
+        ]
+    }
+}
+```
+
 ### Getting app secrets ready
 
 1. Go to https://stytch.com/dashboard, and sign up/log in with your email address.
