@@ -116,7 +116,7 @@ Add the Stytch dependency to your `app/build.gradle` file:
    and copy your public token.
 
 3. In your android app, before you call any other part of the Stytch SDK, you must first call
-   the `StytchClient.configure` function and pass in your applicationContext and public token:
+   the `configure` function and pass in your applicationContext and public token:
 
 #### **For Consumer Applications:**
 ```kotlin
@@ -240,6 +240,8 @@ fun loginOrCreateSMS() {
 ```
 
 ## Documentation
+
+Additional documentation is available for the [consumer](sdk/src/main/java/com/stytch/sdk/consumer/) and [B2B](sdk/src/main/java/com/stytch/sdk/b2b) SDKs within this repository.
 
 Full reference documentation is available [here](https://stytchauth.github.io/stytch-kotlin/).
 
