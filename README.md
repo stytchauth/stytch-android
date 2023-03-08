@@ -50,35 +50,35 @@ There are a number of authentication products currently supported by the SDK, wi
 the near future! The full list of currently supported products is as follows:
 
 #### **For Consumer Applications:**
-- Magic links
+- [Magic links](sdk/src/main/java/com/stytch/sdk/consumer/magicLinks/README.md)
     - Send/authenticate magic links via Email
-- OTPs
+- [OTPs](sdk/src/main/java/com/stytch/sdk/consumer/otp/README.md)
     - Send/authenticate one-time passcodes via SMS, WhatsApp, Email
-- Passwords
+- [Passwords](sdk/src/main/java/com/stytch/sdk/consumer/passwords/README.md)
     - Create or authenticate a user
     - Check password strength
     - Reset a password
-- Sessions
+- [Sessions](sdk/src/main/java/com/stytch/sdk/consumer/sessions/README.md)
     - Authenticate/refresh an existing session
     - Revoke a session (Sign out)
-- Biometrics
+- [Biometrics](sdk/src/main/java/com/stytch/sdk/consumer/biometrics/README.md)
     - Register/authenticate with biometrics
-- OAuth
+- [OAuth](sdk/src/main/java/com/stytch/sdk/consumer/oauth/README.md)
     - Register/authenticate with native Google OneTap
     - Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Slack, or Twitch)
-- User Management
+- [User Management](sdk/src/main/java/com/stytch/sdk/consumer/userManagement/README.md)
     - Get or fetch the current user object (sync/cached or async options available)
     - Delete factors by id from the current user
 
 #### **For B2B Applications:**
-- Magic links
+- [Magic links](sdk/src/main/java/com/stytch/sdk/b2b/magicLinks/README.md)
     - Send/authenticate magic links via Email
-- Sessions
+- [Sessions](sdk/src/main/java/com/stytch/sdk/b2b/sessions/README.md)
     - Authenticate/refresh an existing session
     - Revoke a session (Sign out)
-- Members
+- [Members](sdk/src/main/java/com/stytch/sdk/b2b/member/README.md)
     - Get or fetch the current user object (sync/cached or async options available)
-- Organizations
+- [Organizations](sdk/src/main/java/com/stytch/sdk/b2b/organization/README.md)
     - Get or fetch the current user's organization
 
 #### **Async Options**
@@ -253,7 +253,7 @@ fun loginOrCreateSMS() {
 
 ## Documentation
 
-Additional documentation is available for the [consumer](sdk/src/main/java/com/stytch/sdk/consumer/) and [B2B](sdk/src/main/java/com/stytch/sdk/b2b) SDKs within this repository.
+Additional documentation is available for the [consumer](sdk/src/main/java/com/stytch/sdk/consumer/README.md) and [B2B](sdk/src/main/java/com/stytch/sdk/b2b/README.md) SDKs within this repository.
 
 Full reference documentation is available [here](https://stytchauth.github.io/stytch-kotlin/).
 
