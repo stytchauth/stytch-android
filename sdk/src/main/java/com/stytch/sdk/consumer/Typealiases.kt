@@ -11,7 +11,7 @@ import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.UserData
 
 /**
- * Type alias for StytchResult<AuthData> used for authentication responses
+ * Type alias for StytchResult<IAuthData> used for authentication responses
  */
 public typealias AuthResponse = StytchResult<IAuthData>
 
