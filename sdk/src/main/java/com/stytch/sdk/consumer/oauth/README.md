@@ -1,4 +1,4 @@
-# Consumer OAuth
+# Package com.stytch.sdk.consumer.oauth
 The [OAuth](OAuth.kt) interface provides methods for authenticating a user via a native Google OneTap prompt or any of the following third-party OAuth providers, provided you have configured them within your Stytch Dashboard:
 - Amazon
 - BitBucket
@@ -23,7 +23,6 @@ const val GOOGLE_OAUTH_REQUEST=123
 
 Second, in your activity, add a listener for that unique identifier in `onActivityResult`, like so:
 ```kotlin
-...
 class MyActivity : AppCompatActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -50,7 +49,6 @@ const val THIRD_PARTY_OAUTH_REQUEST = 456
 
 Third, in your activity, add a listener for that unique identifier in `onActivityResult`, like so:
 ```kotlin
-...
 class MyActivity : AppCompatActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -67,7 +65,7 @@ Once your listener has retrieved the `resultCode` and `Intent` from the activity
 
 The below diagram explains more about the manager/receiver activities and how they relate to the backstack:
 
- ```kotlin
+ ```unset
  
                            Back Stack Towards Top
                  +------------------------------------------>

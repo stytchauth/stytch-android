@@ -1,4 +1,4 @@
-# Consumer Biometrics
+# Package com.stytch.sdk.consumer.biometrics
 The [Biometrics](Biometrics.kt) interface provides methods for detecting biometric availability, registering, authenticating, and removing biometrics identifiers.
 
 Before beginning a biometric registration, there are two important calls to make:

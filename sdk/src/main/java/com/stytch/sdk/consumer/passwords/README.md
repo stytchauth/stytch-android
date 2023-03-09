@@ -1,4 +1,4 @@
-# Consumer Passwords
+# Package com.stytch.sdk.consumer.passwords
 The [Passwords](Passwords.kt) interface provides methods for authenticating, creating, resetting, and performing strength checks of passwords.
 
 Call the `StytchClient.passwords.create()` method to create a new user with an email address and password. Only use this for creating new users. Existing passwordless users who wish to create a password need to go through the reset password flow.
