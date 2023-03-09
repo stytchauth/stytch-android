@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our supported authentication products.
+ * The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our
+ * supported authentication products.
  */
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
@@ -43,7 +44,8 @@ public object StytchClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**
-     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
@@ -69,7 +71,8 @@ public object StytchClient {
     }
 
     /**
-     * Exposes an instance of the [MagicLinks] interface whicih provides methods for sending and authenticating users with Email Magic Links.
+     * Exposes an instance of the [MagicLinks] interface whicih provides methods for sending and authenticating users
+     * with Email Magic Links.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -87,7 +90,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [OTP] interface which provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and Email.
+     * Exposes an instance of the [OTP] interface which provides methods for sending and authenticating
+     * One-Time Passcodes (OTP) via SMS, WhatsApp, and Email.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -104,7 +108,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [Passwords] interface which provides methods for authenticating, creating, resetting, and performing strength checks of passwords.
+     * Exposes an instance of the [Passwords] interface which provides methods for authenticating, creating, resetting,
+     * and performing strength checks of passwords.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -122,7 +127,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [Sessions] interface which provides methods for authenticating, updating, or revoking sessions, and properties to retrieve the existing session token (opaque or JWT).
+     * Exposes an instance of the [Sessions] interface which provides methods for authenticating, updating, or revoking
+     * sessions, and properties to retrieve the existing session token (opaque or JWT).
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -139,7 +145,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [Biometrics] interface which provides methods for detecting biometric availability, registering, authenticating, and removing biometrics identifiers.
+     * Exposes an instance of the [Biometrics] interface which provides methods for detecting biometric availability,
+     * registering, authenticating, and removing biometrics identifiers.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -160,7 +167,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [UserManagement] interface which provides methods for retrieving an authenticated user and deleting authentication factors from an authenticated user.
+     * Exposes an instance of the [UserManagement] interface which provides methods for retrieving an authenticated
+     * user and deleting authentication factors from an authenticated user.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -177,7 +185,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [OAuth] interface which provides methods for authenticating a user via a native Google OneTap prompt or any of our supported third-party OAuth providers
+     * Exposes an instance of the [OAuth] interface which provides methods for authenticating a user via a native
+     * Google OneTap prompt or any of our supported third-party OAuth providers
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
@@ -195,11 +204,15 @@ public object StytchClient {
         internal set
 
     /**
-     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets.
+     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
+     * deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets.
      *
-     * For Email Magic Links and Third-Party OAuth deeplinks, it will return a [DeeplinkHandledStatus.Handled] class containing either the authenticated response or error.
+     * For Email Magic Links and Third-Party OAuth deeplinks, it will return a [DeeplinkHandledStatus.Handled] class
+     * containing either the authenticated response or error.
      *
-     * For Password Reset deeplinks, it will return a [DeeplinkHandledStatus.ManualHandlingRequired] class containing the relevant token, so that you can provide an appropriate UI to the user for resetting their password. The returned token is used for making the subsequent StytchClient.passwords.resetByEmail() call.
+     * For Password Reset deeplinks, it will return a [DeeplinkHandledStatus.ManualHandlingRequired] class containing
+     * the relevant token, so that you can provide an appropriate UI to the user for resetting their password. The
+     * returned token is used for making the subsequent StytchClient.passwords.resetByEmail() call.
      *
      * Any other link types passed to this method will return a [DeeplinkHandledStatus.NotHandled] class.
      * @param uri intent.data from deep link
@@ -235,11 +248,15 @@ public object StytchClient {
     }
 
     /**
-     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets.
+     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
+     * deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets.
      *
-     * For Email Magic Links and Third-Party OAuth deeplinks, it will return a [DeeplinkHandledStatus.Handled] class containing either the authenticated response or error.
+     * For Email Magic Links and Third-Party OAuth deeplinks, it will return a [DeeplinkHandledStatus.Handled] class
+     * containing either the authenticated response or error.
      *
-     * For Password Reset deeplinks, it will return a [DeeplinkHandledStatus.ManualHandlingRequired] class containing the relevant token, so that you can provide an appropriate UI to the user for resetting their password. The returned token is used for making the subsequent StytchClient.passwords.resetByEmail() call.
+     * For Password Reset deeplinks, it will return a [DeeplinkHandledStatus.ManualHandlingRequired] class containing
+     * the relevant token, so that you can provide an appropriate UI to the user for resetting their password. The
+     * returned token is used for making the subsequent StytchClient.passwords.resetByEmail() call.
      *
      * Any other link types passed to this method will return a [DeeplinkHandledStatus.NotHandled] class.
      * @param uri intent.data from deep link

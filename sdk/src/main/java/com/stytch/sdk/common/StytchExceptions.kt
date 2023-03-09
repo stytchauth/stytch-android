@@ -3,7 +3,9 @@ package com.stytch.sdk.common
 import com.stytch.sdk.common.network.models.StytchErrorResponse
 
 /**
- * Exception wrapper meant for use with Stytch-specific exceptions and provides a straightforward way to encompass any possible errors that come from the SDK.
+ * Exception wrapper meant for use with Stytch-specific exceptions and provides a straightforward way to encompass any
+ * possible errors that come from the SDK.
+ *
  * @property reason provides a reasoning as to what exactly happened for the flow to go wrong.
  */
 public sealed class StytchExceptions(public open val reason: Any?) : Exception() {

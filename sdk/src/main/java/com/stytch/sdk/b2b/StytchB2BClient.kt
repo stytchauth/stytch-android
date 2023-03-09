@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.
+ * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our
+ * supported authentication products.
  */
 public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
@@ -35,7 +36,8 @@ public object StytchB2BClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
 
     /**
-     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
@@ -61,7 +63,8 @@ public object StytchB2BClient {
     }
 
     /**
-     * Exposes an instance of the [B2BMagicLinks] interface whicih provides methods for sending and authenticating users with Email Magic Links.
+     * Exposes an instance of the [B2BMagicLinks] interface whicih provides methods for sending and authenticating
+     * users with Email Magic Links.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
      */
@@ -79,7 +82,8 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of the [B2BSessions] interface which provides methods for authenticating, updating, or revoking sessions, and properties to retrieve the existing session token (opaque or JWT).
+     * Exposes an instance of the [B2BSessions] interface which provides methods for authenticating, updating, or
+     * revoking sessions, and properties to retrieve the existing session token (opaque or JWT).
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
      */
@@ -96,7 +100,8 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of the [Organization] interface which provides methods for retrieving the current authenticated user's organization.
+     * Exposes an instance of the [Organization] interface which provides methods for retrieving the current
+     * authenticated user's organization.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
      */
@@ -112,7 +117,8 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of the [Member] interface which provides methods for retrieving the current authenticated user.
+     * Exposes an instance of the [Member] interface which provides methods for retrieving the current authenticated
+     * user.
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
      */
@@ -129,9 +135,11 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links.
+     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
+     * deeplink types are: B2B Email Magic Links.
      *
-     * For B2B Email Magic Links, it will return a [DeeplinkHandledStatus.Handled] class containing either the authenticated response or error.
+     * For B2B Email Magic Links, it will return a [DeeplinkHandledStatus.Handled] class containing either the
+     * authenticated response or error.
      *
      * Any other link types passed to this method will return a [DeeplinkHandledStatus.NotHandled] class.
      * @param uri intent.data from deep link
@@ -159,9 +167,11 @@ public object StytchB2BClient {
     }
 
     /**
-     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links.
+     * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
+     * deeplink types are: B2B Email Magic Links.
      *
-     * For B2B Email Magic Links, it will return a [DeeplinkHandledStatus.Handled] class containing either the authenticated response or error.
+     * For B2B Email Magic Links, it will return a [DeeplinkHandledStatus.Handled] class containing either the
+     * authenticated response or error.
      *
      * Any other link types passed to this method will return a [DeeplinkHandledStatus.NotHandled] class.
      * @param uri intent.data from deep link

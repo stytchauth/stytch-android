@@ -5,11 +5,14 @@ import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
 
 /**
- * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication factors from an authenticated user.
+ * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
+ * factors from an authenticated user.
  *
- * You can choose to get the local representation of the user, without making a network request, with the StytchClient.user.getSyncUser() method.
+ * You can choose to get the local representation of the user, without making a network request, with the
+ * StytchClient.user.getSyncUser() method.
  *
- * If you want to get the freshest representation of the user from the Stytch servers, use the StytchClient.user.getUser() method.
+ * If you want to get the freshest representation of the user from the Stytch servers, use the
+ * StytchClient.user.getUser() method.
  *
  * To remove an authentication factor from a user, use the StytchClient.user.deleteFactor() method.
  */
