@@ -6,7 +6,10 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 
-@Suppress("MaxLineLength")
+/**
+ * The OAuth interface provides methods for authenticating a user via a native Google OneTap prompt or any of the
+ * supported third-party OAuth providers, provided you have configured them within your Stytch Dashboard.
+ */
 public interface OAuth {
     /**
      * The interface for authenticating a user with Google OneTap
@@ -73,13 +76,16 @@ public interface OAuth {
      */
     public val twitch: ThirdParty
 
+    /**
+     * Provides start, authenticate, and signOut methods for native Google One Tap authentication
+     */
     public interface GoogleOneTap {
         /**
          * Data class used for wrapping parameters to start a Google OneTap flow
-         * @param context is the calling Activity
-         * @param clientId is the Google Cloud OAuth Client Id
-         * @param oAuthRequestIdentifier is an ID associated with the Google Sign In intent
-         * @param autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
+         * @property context is the calling Activity
+         * @property clientId is the Google Cloud OAuth Client Id
+         * @property oAuthRequestIdentifier is an ID associated with the Google Sign In intent
+         * @property autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
          */
         public data class StartParameters(
             val context: Activity,
@@ -90,8 +96,8 @@ public interface OAuth {
 
         /**
          * Data class used for wrapping parameters to authenticate a Google OneTap flow
-         * @param data is the resulting intent returned by the Google OneTap flow
-         * @param sessionDurationMinutes indicates how long the session should last before it expires
+         * @property data is the resulting intent returned by the Google OneTap flow
+         * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
         public data class AuthenticateParameters(
             val data: Intent,
@@ -103,27 +109,30 @@ public interface OAuth {
          * If this returns false, it means the Google OneTap flow is not available (no play services on device
          * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
          * @param parameters required to begin the OneTap flow
+         * @return Boolean
          */
         public suspend fun start(parameters: StartParameters): Boolean
 
         /**
-         * Begin a Google OneTap login flow.
+         * Begin a Google OneTap login flow. Returns true if the flow was successfully initiated, false if not.
+         * If this returns false, it means the Google OneTap flow is not available (no play services on device
+         * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
          * @param parameters required to begin the OneTap flow
-         * @param callback a callback that receives the result of starting the OneTap flow
+         * @param callback a callback that receives a Boolean
          */
         public fun start(parameters: StartParameters, callback: (Boolean) -> Unit)
 
         /**
          * Authenticate a Google OneTap login
          * @param parameters required to authenticate the Google OneTap login
-         * @return StytchResult<AuthData>
+         * @return [AuthResponse]
          */
         public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
 
         /**
          * Authenticate a Google OneTap login
          * @param parameters required to authenticate the Google OneTap login
-         * @param callback a callback that receives the result of authenticating the OneTap login
+         * @param callback a callback that receives an [AuthResponse]
          */
         public fun authenticate(parameters: AuthenticateParameters, callback: (AuthResponse) -> Unit)
 
@@ -133,16 +142,28 @@ public interface OAuth {
         public fun signOut()
     }
 
+    /**
+     * Provides a method for starting Third Party OAuth authentications
+     */
     public interface ThirdParty {
+        /**
+         * The Third Party OAuth provider name
+         */
         public val providerName: String
 
         /**
-         * Data class used for wrapping parameters to start a thirdparty oAuth flow
-         * @param context the calling Activity for launching the browser
-         * @param oAuthRequestIdentifier is an ID for the return intent from the OAuth flow
-         * @param loginRedirectUrl The url an existing user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL, an error is returned.
-         * @param signupRedirectUrl The url a new user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default sign-up redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an error is returned.
-         * @param customScopes Any additional scopes to be requested from the identity provider.
+         * Data class used for wrapping parameters to start a third party OAuth flow
+         * @property context the calling Activity for launching the browser
+         * @property oAuthRequestIdentifier is an ID for the return intent from the OAuth flow
+         * @property loginRedirectUrl The url an existing user is redirected to after authenticating with the identity
+         * provider. This should be a url that redirects back to your app. If this value is not passed, the default
+         * login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL,
+         * an error is returned.
+         * @property signupRedirectUrl The url a new user is redirected to after authenticating with the identity provider.
+         * This should be a url that redirects back to your app. If this value is not passed, the default sign-up
+         * redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an
+         * error is returned.
+         * @property customScopes Any additional scopes to be requested from the identity provider.
          */
         public data class StartParameters(
             val context: Activity,
@@ -153,9 +174,9 @@ public interface OAuth {
         )
 
         /**
-         * Data class used for wrapping parameters to authenticate a thirdparty oAuth flow
-         * @param token is the token returned from the provider
-         * @param sessionDurationMinutes indicates how long the session should last before it expires
+         * Data class used for wrapping parameters to authenticate a third party OAuth flow
+         * @property token is the token returned from the provider
+         * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
         public data class AuthenticateParameters(
             val token: String,
@@ -166,21 +187,20 @@ public interface OAuth {
          * Begin a ThirdParty OAuth flow
          * @param parameters required to start the OAuth flow
          */
-        public fun start(
-            parameters: StartParameters,
-        )
+        public fun start(parameters: StartParameters)
     }
 
     /**
      * Authenticate a ThirdParty OAuth flow
      * @param parameters required to authenticate the OAuth flow
+     * @return [OAuthAuthenticatedResponse]
      */
     public suspend fun authenticate(parameters: ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse
 
     /**
      * Authenticate a ThirdParty OAuth flow
      * @param parameters required to authenticate the ThirdParty OAuth flow
-     * @param callback a callback that receives the result of authenticating the ThirdParty OAuth login
+     * @param callback a callback that receives an [OAuthAuthenticatedResponse]
      */
     public fun authenticate(
         parameters: ThirdParty.AuthenticateParameters,

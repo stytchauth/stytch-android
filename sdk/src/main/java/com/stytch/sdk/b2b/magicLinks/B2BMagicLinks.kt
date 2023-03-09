@@ -22,8 +22,8 @@ public interface B2BMagicLinks {
 
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
-     * @param token is the unique sequence of characters used to log in
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property token is the unique sequence of characters used to log in
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
@@ -40,7 +40,7 @@ public interface B2BMagicLinks {
      * previously used. Provide a value for session_duration_minutes to receive a Session. If the Member’s status is
      * pending, they will be updated to active.
      * @param parameters required to authenticate
-     * @return [AuthResponse] response from backend
+     * @return [AuthResponse]
      */
     public suspend fun authenticate(parameters: AuthParameters): AuthResponse
 
@@ -63,15 +63,15 @@ public interface B2BMagicLinks {
 
         /**
          * Data class used for wrapping parameters used with requesting an email magic link
-         * @param email is the account identifier for the account in the form of an Email address where you wish to
+         * @property email is the account identifier for the account in the form of an Email address where you wish to
          * receive a magic link to authenticate
-         * @param organizationId is the member's organization ID
-         * @param loginRedirectUrl is the url where you should be redirected for login
-         * @param signupRedirectUrl is the url where you should be redirected for signup
-         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email
+         * @property organizationId is the member's organization ID
+         * @property loginRedirectUrl is the url where you should be redirected for login
+         * @property signupRedirectUrl is the url where you should be redirected for signup
+         * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Login.
-         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email
+         * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
          */
@@ -88,7 +88,7 @@ public interface B2BMagicLinks {
          * Send either a login or signup magic link to a Member. A new or pending Member will receive a signup
          * Email Magic Link. An active Member will receive a login Email Magic Link.
          * @param parameters required to receive magic link
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun loginOrSignup(parameters: Parameters): BaseResponse
 

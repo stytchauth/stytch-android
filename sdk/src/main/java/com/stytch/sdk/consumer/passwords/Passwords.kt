@@ -7,15 +7,16 @@ import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 
 /**
- * Passwords interface that encompasses authentication functions as well as other related functionality
+ * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
+ * passwords.
  */
 public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords authentication
-     * @param email is the account identifier for the account in the form of an Email address
-     * @param password is your private sequence of characters to authenticate
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property email is the account identifier for the account in the form of an Email address
+     * @property password is your private sequence of characters to authenticate
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val email: String,
@@ -25,9 +26,11 @@ public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords create endpoint
-     * @param email is the account identifier for the account in the form of an Email address that you wish to use for account creation
-     * @param password is your private sequence of characters you wish to use when authenticating with the newly created account in the future
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property email is the account identifier for the account in the form of an Email address that you wish to use
+     * for account creation
+     * @property password is your private sequence of characters you wish to use when authenticating with the newly
+     * created account in the future
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class CreateParameters(
         val email: String,
@@ -37,12 +40,15 @@ public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint
-     * @param email is the account identifier for the account in the form of an Email address to identify which account's password you wish to start resettting
-     * @param loginRedirectUrl is the url where you should be redirected after a login
-     * @param loginExpirationMinutes is the duration after which the login should expire
-     * @param resetPasswordRedirectUrl is the url where you should be redirected after a reset
-     * @param resetPasswordExpirationMinutes is the duration after which a reset password request should expire
-     * @param resetPasswordTemplateId Use a custom template for password reset emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Password Reset.
+     * @property email is the account identifier for the account in the form of an Email address to identify which
+     * account's password you wish to start resetting
+     * @property loginRedirectUrl is the url where you should be redirected after a login
+     * @property loginExpirationMinutes is the duration after which the login should expire
+     * @property resetPasswordRedirectUrl is the url where you should be redirected after a reset
+     * @property resetPasswordExpirationMinutes is the duration after which a reset password request should expire
+     * @property resetPasswordTemplateId Use a custom template for password reset emails. By default, it will use your
+     * default email template. The template must be a template using our built-in customizations or a custom HTML email
+     * for Password Reset.
      */
     public data class ResetByEmailStartParameters(
         val email: String,
@@ -55,9 +61,9 @@ public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
-     * @param token is the unique sequence of characters that should be received after calling the resetByEmailStart
-     * @param password is the private sequence of characters you wish to use as a password
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property token is the unique sequence of characters that should be received after calling the resetByEmailStart
+     * @property password is the private sequence of characters you wish to use as a password
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class ResetByEmailParameters(
         val token: String,
@@ -67,8 +73,9 @@ public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
-     * @param email is the account identifier for the account in the form of an Email address that you wish to use to initiate a password strength check
-     * @param password is the private sequence of characters you wish to check to get advice on improving it
+     * @property email is the account identifier for the account in the form of an Email address that you wish to use to
+     * initiate a password strength check
+     * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
     public data class StrengthCheckParameters(
         val email: String?,
@@ -76,18 +83,18 @@ public interface Passwords {
     )
 
     /**
-     * Wraps the passwords authenticate API endpoint which validates the passwords token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
+     * currently set, and that the entered password is correct.
      * @param parameters required to authenticate
-     * @return AuthResponse response from backend
+     * @return [AuthResponse]
      */
-    public suspend fun authenticate(
-        parameters: AuthParameters,
-    ): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
 
     /**
-     * Wraps the passwords authenticate API endpoint which validates the passwords token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
+     * currently set, and that the entered password is correct.
      * @param parameters required to authenticate
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback a callback that receives an [AuthResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
@@ -95,18 +102,18 @@ public interface Passwords {
     )
 
     /**
-     * Wraps Stytch’s passwords create endpoint. Creates an account using an email and password given that an account with such an email does not already exist.
+     * Create a new user with a password and an authenticated session for the user if requested. If a user with this
+     * email already exists in the project, this method will return an error.
      * @param parameters required to create an account
-     * @return PasswordsCreateResponse response from backend
+     * @return [PasswordsCreateResponse]
      */
-    public suspend fun create(
-        parameters: CreateParameters,
-    ): PasswordsCreateResponse
+    public suspend fun create(parameters: CreateParameters): PasswordsCreateResponse
 
     /**
-     * Wraps Stytch’s passwords create endpoint. Creates an account using an email and password given that an account with such an email does not already exist.
+     * Create a new user with a password and an authenticated session for the user if requested. If a user with this
+     * email already exists in the project, this method will return an error.
      * @param parameters required to create an account
-     * @param callback calls callback with PasswordsCreateResponse response from backend
+     * @param callback a callback that receives a [PasswordsCreateResponse]
      */
     public fun create(
         parameters: CreateParameters,
@@ -114,18 +121,18 @@ public interface Passwords {
     )
 
     /**
-     * Wraps Stytch’s resetByEmailStart endpoint. Initiates an account password reset by using an email.
+     * Initiates a password reset for the email address provided. This will trigger an email to be sent to the address,
+     * containing a magic link that will allow them to set a new password and authenticate.
      * @param parameters required to reset an account password
-     * @return BaseResponse response from backend
+     * @return [BaseResponse]
      */
-    public suspend fun resetByEmailStart(
-        parameters: ResetByEmailStartParameters,
-    ): BaseResponse
+    public suspend fun resetByEmailStart(parameters: ResetByEmailStartParameters): BaseResponse
 
     /**
-     * Wraps Stytch’s resetByEmailStart endpoint. Initiates an account password reset by using an email.
+     * Initiates a password reset for the email address provided. This will trigger an email to be sent to the address,
+     * containing a magic link that will allow them to set a new password and authenticate.
      * @param parameters required to reset an account password
-     * @param callback calls callback with BaseResponse response from backend
+     * @param callback a callback that receives a [BaseResponse]
      */
     public fun resetByEmailStart(
         parameters: ResetByEmailStartParameters,
@@ -133,18 +140,22 @@ public interface Passwords {
     )
 
     /**
-     * Wraps Stytch’s resetByEmail endpoint. Resets an account password by using a token and password.
+     * Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t
+     * expired, or already been used. The provided password needs to meet our password strength requirements, which can
+     * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
+     * securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset an account password
-     * @return AuthResponse response from backend
+     * @return [AuthResponse]
      */
-    public suspend fun resetByEmail(
-        parameters: ResetByEmailParameters,
-    ): AuthResponse
+    public suspend fun resetByEmail(parameters: ResetByEmailParameters): AuthResponse
 
     /**
-     * Wraps Stytch’s resetByEmail endpoint. Resets an account password by using a token and password.
+     * Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t
+     * expired, or already been used. The provided password needs to meet our password strength requirements, which can
+     * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
+     * securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset an account password
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback a callback that receives an [AuthResponse]
      */
     public fun resetByEmail(
         parameters: ResetByEmailParameters,
@@ -152,18 +163,18 @@ public interface Passwords {
     )
 
     /**
-     * Wraps Stytch’s strengthCheck endpoint. Advises on password strength when provided an email and a password.
+     * This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to
+     * the user on how to increase the strength of their password.
      * @param parameters required to advise on password strength
-     * @return PasswordsStrengthCheckResponse response from backend
+     * @return [PasswordsStrengthCheckResponse]
      */
-    public suspend fun strengthCheck(
-        parameters: StrengthCheckParameters,
-    ): PasswordsStrengthCheckResponse
+    public suspend fun strengthCheck(parameters: StrengthCheckParameters): PasswordsStrengthCheckResponse
 
     /**
-     * Wraps Stytch’s strengthCheck endpoint. Advises on password strength when provided an email and a password.
+     * This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to
+     * the user on how to increase the strength of their password.
      * @param parameters required to advise on password strength
-     * @param callback calls callback with PasswordsStrengthCheckResponse response from backend
+     * @param callback a callback that receives a [PasswordsStrengthCheckResponse]
      */
     public fun strengthCheck(
         parameters: StrengthCheckParameters,

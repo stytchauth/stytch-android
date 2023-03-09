@@ -7,15 +7,16 @@ import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 
 /**
- * OTP interface that encompasses authentication functions as well as other related functionality
+ * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
+ * Email.
  */
 public interface OTP {
 
     /**
      * Data class used for wrapping parameters used with OTP authentication
-     * @param token the value sent to the user via the otp delivery method
-     * @param methodId the identifier returned from the corresponding loginOrCreate method
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property token the value sent to the user via the otp delivery method
+     * @property methodId the identifier returned from the corresponding loginOrCreate or send method
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
@@ -39,18 +40,22 @@ public interface OTP {
     public val email: EmailOTP
 
     /**
-     * Wraps the OTP authenticate API endpoint which validates the OTP token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user given a method_id (the associated email_id or phone_id) and a code. This endpoint verifies
+     * that the code is valid, hasn't expired or been previously used. A given method_id may only have a single active
+     * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
+     * will be invalidated.
      * @param parameters required to authenticate
-     * @return AuthResponse response from backend
+     * @return [AuthResponse]
      */
-    public suspend fun authenticate(
-        parameters: AuthParameters,
-    ): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
 
     /**
-     * Wraps the OTP authenticate API endpoint which validates the OTP token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user given a method_id (the associated email_id or phone_id) and a code. This endpoint verifies
+     * that the code is valid, hasn't expired or been previously used. A given method_id may only have a single active
+     * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
+     * will be invalidated.
      * @param parameters required to authenticate
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback that receives an [AuthResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
@@ -64,8 +69,8 @@ public interface OTP {
 
         /**
          * Data class used for wrapping parameters used with SMS OTP
-         * @param phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
-         * @param expirationMinutes indicates how long the OTP should last before it expires
+         * @property phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
+         * @property expirationMinutes indicates how long the OTP should last before it expires
          */
         public data class Parameters(
             val phoneNumber: String,
@@ -73,16 +78,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s SMS OTP login_or_create endpoint. Requests a SMS OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their phone number via SMS. If the phone number is not
+         * associated with a user already, a user will be created.
          * @param parameters required to receive a SMS OTP
-         * @return BaseResponse response from backend
+         * @return [LoginOrCreateOTPResponse]
          */
         public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
-         * Wraps Stytch’s SMS OTP login_or_create endpoint. Requests a SMS OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their phone number via SMS. If the phone number is not
+         * associated with a user already, a user will be created.
          * @param parameters required to receive a SMS OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [LoginOrCreateOTPResponse]
          */
         public fun loginOrCreate(
             parameters: Parameters,
@@ -90,16 +97,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s SMS OTP send endpoint. Requests an SMS OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
+         * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun send(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s SMS OTP send endpoint. Requests am SMS OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
+         * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [BaseResponse]
          */
         public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
@@ -110,8 +119,10 @@ public interface OTP {
     public interface WhatsAppOTP {
 
         /**
-         * @param phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format (i.e. +1XXXXXXXXXX)
-         * @param expirationMinutes indicates how long the OTP should last before it expires
+         * Data class used for wrapping parameters used with WhatsApp OTP
+         * @property phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format
+         * (i.e. +1XXXXXXXXXX)
+         * @property expirationMinutes indicates how long the OTP should last before it expires
          */
         public data class Parameters(
             val phoneNumber: String,
@@ -119,16 +130,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their phone number via WhatsApp. If the phone number is not
+         * associated with a user already, a user will be created.
          * @param parameters required to receive a WhatsApp OTP
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
-         * Wraps Stytch’s WhatsApp OTP login_or_create endpoint. Requests a WhatsApp OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their phone number via WhatsApp. If the phone number is not
+         * associated with a user already, a user will be created.
          * @param parameters required to receive a WhatsApp OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [LoginOrCreateOTPResponse]
          */
         public fun loginOrCreate(
             parameters: Parameters,
@@ -136,16 +149,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s WhatsApp OTP send endpoint. Requests an WhatsApp OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
+         * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun send(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s WhatsApp OTP send endpoint. Requests a WhatsApp OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
+         * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [BaseResponse]
          */
         public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
@@ -156,10 +171,15 @@ public interface OTP {
     public interface EmailOTP {
 
         /**
-         * @param email the address the OTP code would be sent to via Email
-         * @param expirationMinutes indicates how long the OTP should last before it expires
-         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
-         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
+         * Data class used for wrapping parameters used with Email OTP
+         * @property email the address the OTP code would be sent to via Email
+         * @property expirationMinutes indicates how long the OTP should last before it expires
+         * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
+         * template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic links - Login.
+         * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
+         * email template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
@@ -169,16 +189,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s Email OTP login_or_create endpoint. Requests an Email OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their email address. If the email address is not associated
+         * with a user already, a user will be created.
          * @param parameters required to receive an Email OTP
-         * @return BaseResponse response from backend
+         * @return [LoginOrCreateOTPResponse]
          */
         public suspend fun loginOrCreate(parameters: Parameters): LoginOrCreateOTPResponse
 
         /**
-         * Wraps Stytch’s Email OTP login_or_create endpoint. Requests an Email OTP for a user to log in or create an account depending on the presence and/or status current account.
+         * Send a one-time passcode (OTP) to a user using their email address. If the email address is not associated
+         * with a user already, a user will be created.
          * @param parameters required to receive an Email OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [LoginOrCreateOTPResponse]
          */
         public fun loginOrCreate(
             parameters: Parameters,
@@ -186,16 +208,18 @@ public interface OTP {
         )
 
         /**
-         * Wraps Stytch’s Email OTP send endpoint. Requests an Email OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
+         * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return BaseResponse response from backend
+         * @return [BaseResponse] response from backend
          */
         public suspend fun send(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s Email OTP send endpoint. Requests an Email OTP for a user to authenticate.
+         * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
+         * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [BaseResponse]
          */
         public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }
