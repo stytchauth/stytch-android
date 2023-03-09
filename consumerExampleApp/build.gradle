@@ -39,18 +39,6 @@ android {
                 googleOAuthClientId = GOOGLE_OAUTH_CLIENT_ID
             }
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\""
-
-            String b2bPublicToken = System.getenv("STYTCH_B2B_PUBLIC_TOKEN")
-            if (!b2bPublicToken) {
-                b2bPublicToken = STYTCH_B2B_PUBLIC_TOKEN
-            }
-            buildConfigField "String", "STYTCH_B2B_PUBLIC_TOKEN", "\"$b2bPublicToken\""
-
-            String b2bOrganizationId = System.getenv("STYTCH_B2B_ORG_ID")
-            if (!b2bOrganizationId) {
-                b2bOrganizationId = STYTCH_B2B_ORG_ID
-            }
-            buildConfigField "String", "STYTCH_B2B_ORG_ID", "\"$b2bOrganizationId\""
         }
         release {
             minifyEnabled false

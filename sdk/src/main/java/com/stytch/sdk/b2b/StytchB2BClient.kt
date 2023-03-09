@@ -36,8 +36,9 @@ public object StytchB2BClient {
 
     /**
      * Configures the StytchB2BClient, setting the publicToken
+     * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
-     * @throws StytchExceptions.Critical - if failed to generate new encryption keys
+     * @throws StytchExceptions.Critical - if we failed to generate new encryption keys
      */
     public fun configure(context: Context, publicToken: String) {
         try {

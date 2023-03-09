@@ -1,14 +1,25 @@
 ![Stytch Android SDK](assets/Wordmark-dark-mode.png#gh-dark-mode-only)
 ![Stytch Android SDK](assets/Wordmark-light-mode.png#gh-light-mode-only)
 
+![Language][language-shield]
+[![Release][release-shield]][release-url]
+[![MIT License][license-shield]][license-url]
+[![Contributors][contributors-shield]][contributors-url]
+[![Issues][issues-shield]][issues-url]
+
+## Table of Contents
 * [Getting Started](#getting-started)
     * [What is Stytch?](#what-is-stytch)
     * [Why should I use the Stytch SDK?](#why-should-i-use-the-stytch-sdk)
     * [What can I do with the Stytch SDK?](#what-can-i-do-with-the-stytch-sdk)
+        * [Consumer Applications](#for-consumer-applications)
+        * [B2B Applications](#for-b2b-applications)
         * [Async Options](#async-options)
     * [How do I start using Stytch?](#how-do-i-start-using-stytch)
 * [Requirements](#requirements)
 * [Installation and setup](#installation-and-setup)
+    * [Consumer Applications](#for-consumer-applications-1)
+    * [B2B Applications](#for-b2b-applications-1)
 * [Usage](#usage)
     * [Deeplink Handling](#deeplink-handling)
     * [Example app](#example-app)
@@ -33,38 +44,44 @@ Stytch's SDKs make it simple to seamlessly onboard, authenticate, and engage use
 way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back
 to focusing on the core of your product.
 
-```kotlin
-import com.stytch.sdk.StytchClient
-
-// Initialize StytchClient
-StytchClient.configure(
-    context = application.applicationContext,
-    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
-)
-// Later, handle the subsequent deeplink
-viewModelScope.launch {
-    val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)
-}
-```
-
 ### What can I do with the Stytch SDK?
 
 There are a number of authentication products currently supported by the SDK, with additional functionality coming in
 the near future! The full list of currently supported products is as follows:
 
-- Magic links
+#### **For Consumer Applications:**
+- [Magic links](sdk/src/main/java/com/stytch/sdk/consumer/magicLinks/README.md)
     - Send/authenticate magic links via Email
-- OTPs
+- [OTPs](sdk/src/main/java/com/stytch/sdk/consumer/otp/README.md)
     - Send/authenticate one-time passcodes via SMS, WhatsApp, Email
-- Passwords
+- [Passwords](sdk/src/main/java/com/stytch/sdk/consumer/passwords/README.md)
     - Create or authenticate a user
     - Check password strength
     - Reset a password
-- Sessions
+- [Sessions](sdk/src/main/java/com/stytch/sdk/consumer/sessions/README.md)
     - Authenticate/refresh an existing session
     - Revoke a session (Sign out)
+- [Biometrics](sdk/src/main/java/com/stytch/sdk/consumer/biometrics/README.md)
+    - Register/authenticate with biometrics
+- [OAuth](sdk/src/main/java/com/stytch/sdk/consumer/oauth/README.md)
+    - Register/authenticate with native Google OneTap
+    - Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Slack, or Twitch)
+- [User Management](sdk/src/main/java/com/stytch/sdk/consumer/userManagement/README.md)
+    - Get or fetch the current user object (sync/cached or async options available)
+    - Delete factors by id from the current user
 
-#### Async Options
+#### **For B2B Applications:**
+- [Magic links](sdk/src/main/java/com/stytch/sdk/b2b/magicLinks/README.md)
+    - Send/authenticate magic links via Email
+- [Sessions](sdk/src/main/java/com/stytch/sdk/b2b/sessions/README.md)
+    - Authenticate/refresh an existing session
+    - Revoke a session (Sign out)
+- [Members](sdk/src/main/java/com/stytch/sdk/b2b/member/README.md)
+    - Get or fetch the current user object (sync/cached or async options available)
+- [Organizations](sdk/src/main/java/com/stytch/sdk/b2b/organization/README.md)
+    - Get or fetch the current user's organization
+
+#### **Async Options**
 
 The SDK provides several different mechanisms for handling the asynchronous code, so you can choose what best suits your
 needs.
@@ -82,14 +99,26 @@ to `Authorized environments` and enabling any `Auth methods` you wish to use.
 
 ## Requirements
 
-This SDK supports Android API level 21 and
+This SDK supports Android API level 23 and
 above ([distribution stats](https://developer.android.com/about/dashboards/index.html))
 
 ## Installation and setup
 
-Add the Stytch dependency to your app/build.gradle file:
+Add the Stytch dependency to your `app/build.gradle` file:
 
-`implementation 'com.stytch.sdk:sdk:latest'`
+```implementation 'com.stytch.sdk:sdk:latest'```
+
+Add the necessary manifest placeholders for our OAuth manager/receiver activities (if you are not using our Third-Party OAuth providers, you must still include this, but can leave the values blank). These values can be any valid scheme or host, and do not relate to your OAuth settings in the Stytch Dashboard. These are only used internally within your app to register a receiver activity. More information is available in the [Consumer OAuth documentation](sdk/src/main/java/com/stytch/sdk/consumer/oauth).
+```
+android {
+    defaultConfig {
+        manifestPlaceholders = [
+            'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
+            'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
+        ]
+    }
+}
+```
 
 ### Getting app secrets ready
 
@@ -98,13 +127,23 @@ Add the Stytch dependency to your app/build.gradle file:
 2. Once you are on the dashboard, click on the "API Keys" tab on the left. Scroll down to the "Public tokens" section
    and copy your public token.
 
-3. In your android app, before you can any other part of the Stytch SDK, you must first call
-   the `StytchClient.configure` function and pass in your public token along with the host url:
+3. In your android app, before you call any other part of the Stytch SDK, you must first call
+   the `configure` function and pass in your applicationContext and public token:
 
+#### **For Consumer Applications:**
 ```kotlin
-import com.stytch.sdk.StytchClient
+import com.stytch.sdk.consumer.StytchClient
 
 StytchClient.configure(
+    context = application.applicationContext,
+    publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
+)
+```
+#### **For B2B Applications:**
+```kotlin
+import com.stytch.sdk.b2b.StytchB2BClient
+
+StytchB2BClient.configure(
     context = application.applicationContext,
     publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
 )
@@ -139,7 +178,9 @@ private fun handleIntent(intent: Intent) {
 #### MainViewModel.kt
 
 ```kotlin
-import com.stytch.sdk.consumer.network.responseData.BasicData
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.responseData.BasicData
+import com.stytch.sdk.consumer.StytchClient
 
 lateinit var result: StytchResult<BasicData>
 
@@ -173,9 +214,14 @@ With the above in place your app should be ready to accept deeplinks
 
 ### Example app
 
-The above code is used in practice in the Example App, which can be run and used to test out various flows of the SDK.
-In order to run the application, you have to define a gradle property called STYTCH_PUBLIC_TOKEN in your global or local
-gradle.properties. The token can be received in your Stytch dashboard as mentioned before in this README.
+The above code is used in practice in the Example Apps, which can be run and used to test out various flows of the SDK.
+In order to run the application, you have to define some gradle properties in your global or local `gradle.properties`.
+#### **For Consumer Applications**
+- `STYTCH_PUBLIC_TOKEN` - This token can be retrieved from your Stytch dashboard as mentioned before in this README.
+- `GOOGLE_OAUTH_CLIENT_ID` - This client ID is configured in your Google OAuth settings. You can leave it blank if you are not testing Google OneTap
+#### **For B2B Applications**
+- `STYTCH_B2B_PUBLIC_TOKEN` - This token can be retrieved from your Stytch dashboard as mentioned before in this README.
+- `STYTCH_B2B_ORG_ID` - You must create an organization in your Stytch product, and retrieve this ID
 
 ### Authenticating
 
@@ -188,7 +234,9 @@ This example shows a hypothetical function you could use to use SMS authenticati
 work to the StytchClient under the hood.
 
 ```kotlin
-import com.stytch.sdk.StytchClient
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.responseData.BasicData
+import com.stytch.sdk.consumer.StytchClient
 
 lateinit var result: StytchResult<BasicData>
 
@@ -205,6 +253,8 @@ fun loginOrCreateSMS() {
 
 ## Documentation
 
+Additional documentation is available for the [consumer](sdk/src/main/java/com/stytch/sdk/consumer/README.md) and [B2B](sdk/src/main/java/com/stytch/sdk/b2b/README.md) SDKs within this repository.
+
 Full reference documentation is available [here](https://stytchauth.github.io/stytch-kotlin/).
 
 ## FAQ
@@ -219,12 +269,22 @@ A. A few things here: 1) the session token/JWT will be stored in/retrieved from 
 
 Q. Are there guides or sample apps available to see this in use?
 
-A. Yes! There is a Demo App included in this repo, available [here](exampleapp).
+A. Yes! There is a Demo App included in this repo, available [here (consumer application)](consumerExampleapp) and [here (B2B application)](b2bExampleapp).
 
 ### Questions?
 
-Feel free to reach out any time at support@stytch.com or in our [Slack](https://join.slack.com/t/stytch/shared_invite/zt-nil4wo92-jApJ9Cl32cJbEd9esKkvyg)
+Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://join.slack.com/t/stytch/shared_invite/zt-nil4wo92-jApJ9Cl32cJbEd9esKkvyg), or our [forums](https://forum.stytch.com/).
 
 ## License
 
 The Stytch Android SDK is released under the MIT license. See [LICENSE](LICENSE) for details.
+
+[contributors-shield]: https://img.shields.io/github/contributors/stytchauth/stytch-kotlin.svg?style=for-the-badge
+[contributors-url]: https://github.com/stytchauth/stytch-kotlin/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/stytchauth/stytch-kotlin.svg?style=for-the-badge
+[issues-url]: https://github.com/stytchauth/stytch-kotlin/issues
+[license-shield]: https://img.shields.io/github/license/stytchauth/stytch-kotlin.svg?style=for-the-badge
+[license-url]: https://github.com/stytchauth/stytch-kotlin/blob/master/LICENSE
+[release-shield]: https://img.shields.io/github/v/release/stytchauth/stytch-kotlin?style=for-the-badge
+[release-url]:https://github.com/stytchauth/stytch-kotlin/releases
+[language-shield]: https://img.shields.io/github/languages/top/stytchauth/stytch-kotlin?style=for-the-badge
