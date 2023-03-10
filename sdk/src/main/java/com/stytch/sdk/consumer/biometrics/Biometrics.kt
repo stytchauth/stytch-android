@@ -13,7 +13,8 @@ public interface Biometrics {
      * Data class used for wrapping parameters used with Biometrics registration flow
      * @property context is the calling FragmentActivity
      * @property sessionDurationMinutes indicates how long the session should last before it expires
-     * @property allowFallbackToCleartext opts-in to potentially unsafe behavior
+     * @property allowFallbackToCleartext opts-in to allowing biometric registrations when the KeyStore is unreliable.
+     * If this is set to `false` (default behavior), biometric registrations will fail when the KeyStore is not used.
      * @property promptData is an optional biometric prompt configuration. If one is not provided a default will be
      * created
      * @property allowDeviceCredentials opts-in to allowing the use of non-biometric device credentials (PIN, Pattern)
@@ -73,18 +74,23 @@ public interface Biometrics {
 
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
+     * Returns true if the registration was successfully removed from device.
      * @return Boolean
      */
     public suspend fun removeRegistration(): Boolean
 
     /**
      * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
+     * Returns true if the registration was successfully removed from device.
      * @param callback A callback that receives a Boolean
      */
     public fun removeRegistration(callback: (Boolean) -> Unit)
 
     /**
-     * Indicates if the device is using the Android KeyStore
+     * Indicates if the device is device has a reliable version of the Android KeyStore. If it does not, there may be
+     * issues creating encryption keys, as well as implications on where these keys are stored. The safest approach is
+     * to not offer biometrics if this returns `false`, but it is possible to force a registration with an unreliable
+     * KeyStore.
      * @return Boolean
      */
     public fun isUsingKeystore(): Boolean
