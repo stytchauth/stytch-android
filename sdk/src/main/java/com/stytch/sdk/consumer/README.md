@@ -1,4 +1,4 @@
-# Stytch Consumer SDK
+# Package com.stytch.sdk.consumer
 Stytch's consumer SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.
 
 ## Supported Authentication Products

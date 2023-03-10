@@ -1,4 +1,4 @@
-# B2B Magic Links
+# Package com.stytch.sdk.b2b.magicLinks
 The [B2BMagicLinks](B2BMagicLinks.kt) interface provides methods for sending and authenticating users with Email Magic Links.
 
 Call the `StytchB2BClient.magicLinks.email.loginOrSignup()` method to request an email magic link for a user to log in or create an account, based on if the email is associated with a user already. A new or pending user will receive a signup magic link. An active user will receive a login magic link.

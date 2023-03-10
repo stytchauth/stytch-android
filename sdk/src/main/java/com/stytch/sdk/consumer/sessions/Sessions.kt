@@ -4,7 +4,8 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.consumer.AuthResponse
 
 /**
- * Sessions interface that encompasses authentication functions as well as other related functionality
+ * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
+ * retrieve the existing session token (opaque or JWT).
  */
 public interface Sessions {
 
@@ -20,35 +21,37 @@ public interface Sessions {
 
     /**
      * Data class used for wrapping parameters used with Sessions authentication
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParams(
         val sessionDurationMinutes: UInt? = null,
     )
 
     /**
-     * Wraps the sessions authenticate API endpoint which creates a session using the provided duration
+     * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
+     * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @return AuthResponse response from backend
+     * @return [AuthResponse]
      */
     public suspend fun authenticate(authParams: AuthParams): AuthResponse
 
     /**
-     * Wraps the sessions authenticate API endpoint which creates a session using the provided duration
+     * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
+     * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback a callback that receives an [AuthResponse]
      */
     public fun authenticate(authParams: AuthParams, callback: (AuthResponse) -> Unit)
 
     /**
-     * Wraps the sessions revoke API endpoint which revokes a session
-     * @return BaseResponse response from backend
+     * Revoke a Session and immediately invalidate all its tokens.
+     * @return [BaseResponse]
      */
     public suspend fun revoke(): BaseResponse
 
     /**
-     * Wraps the sessions revoke API endpoint which revokes a session
-     * @param callback calls callback with BaseResponse response from backend
+     * Revoke a Session and immediately invalidate all its tokens.
+     * @param callback a callback that receives a [BaseResponse]
      */
     public fun revoke(callback: (BaseResponse) -> Unit)
 

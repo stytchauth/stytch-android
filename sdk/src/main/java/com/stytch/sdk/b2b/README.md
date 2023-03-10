@@ -1,4 +1,4 @@
-# Stytch B2B SDK
+# Package com.stytch.sdk.b2b
 Stytch's B2B SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.
 
 ## Supported Authentication Products

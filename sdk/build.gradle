@@ -74,6 +74,24 @@ tasks.named("dokkaHtml").configure {
     suppressInheritedMembers.set(true)
     dokkaSourceSets {
         configureEach {
+            includes.from([
+                "module.md",
+                "src/main/java/com/stytch/sdk/b2b/README.md",
+                "src/main/java/com/stytch/sdk/b2b/magicLinks/README.md",
+                "src/main/java/com/stytch/sdk/b2b/member/README.md",
+                "src/main/java/com/stytch/sdk/b2b/organization/README.md",
+                "src/main/java/com/stytch/sdk/b2b/sessions/README.md",
+                "src/main/java/com/stytch/sdk/common/README.md",
+                "src/main/java/com/stytch/sdk/common/oauth/README.md",
+                "src/main/java/com/stytch/sdk/consumer/README.md",
+                "src/main/java/com/stytch/sdk/consumer/biometrics/README.md",
+                "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
+                "src/main/java/com/stytch/sdk/consumer/oauth/README.md",
+                "src/main/java/com/stytch/sdk/consumer/otp/README.md",
+                "src/main/java/com/stytch/sdk/consumer/passwords/README.md",
+                "src/main/java/com/stytch/sdk/consumer/sessions/README.md",
+                "src/main/java/com/stytch/sdk/consumer/userManagement/README.md",
+            ])
             perPackageOption {
                 matchingRegex.set(".*\\.network.*")
                 suppress.set(true)

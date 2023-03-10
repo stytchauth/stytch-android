@@ -11,8 +11,8 @@ public interface MagicLinks {
 
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
-     * @param token is the unique sequence of characters used to log in
-     * @param sessionDurationMinutes indicates how long the session should last before it expires
+     * @property token is the unique sequence of characters used to log in
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthParameters(
         val token: String,
@@ -25,18 +25,20 @@ public interface MagicLinks {
     public val email: EmailMagicLinks
 
     /**
-     * Wraps the magic link authenticate API endpoint which validates the magic link token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user given a magic link. This endpoint verifies that the magic link token is valid, hasn't expired
+     * or been previously used.
      * @param parameters required to authenticate
-     * @return AuthResponse response from backend
+     * @return [AuthResponse]
      */
     public suspend fun authenticate(
         parameters: AuthParameters,
     ): AuthResponse
 
     /**
-     * Wraps the magic link authenticate API endpoint which validates the magic link token passed in. If this method succeeds, the user will be logged in, granted an active session
+     * Authenticate a user given a magic link. This endpoint verifies that the magic link token is valid, hasn't expired
+     * or been previously used.
      * @param parameters required to authenticate
-     * @param callback calls callback with AuthResponse response from backend
+     * @param callback a callback that receives an [AuthResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
@@ -49,13 +51,19 @@ public interface MagicLinks {
     public interface EmailMagicLinks {
 
         /**
-         * @param email is the account identifier for the account in the form of an Email address where you wish to receive a magic link to authenticate
-         * @param loginMagicLinkUrl is the url where you should be redirected for login
-         * @param signupMagicLinkUrl is the url where you should be redirected for signup
-         * @param loginExpirationMinutes is the duration after which the login url should expire
-         * @param signupExpirationMinutes is the duration after which the signup url should expire
-         * @param loginTemplateId Use a custom template for login emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Login.
-         * @param signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email template. The template must be a template using our built-in customizations or a custom HTML email for Magic links - Sign-up.
+         * Data class used for wrapping parameters used with MagicLinks.EmailMagicLinks.loginOrCreate
+         * @property email is the account identifier for the account in the form of an Email address where you wish to
+         * receive a magic link to authenticate
+         * @property loginMagicLinkUrl is the url where you should be redirected for login
+         * @property signupMagicLinkUrl is the url where you should be redirected for signup
+         * @property loginExpirationMinutes is the duration after which the login url should expire
+         * @property signupExpirationMinutes is the duration after which the signup url should expire
+         * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
+         * template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic links - Login.
+         * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
+         * email template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic links - Sign-up.
          */
         public data class Parameters(
             val email: String,
@@ -68,16 +76,18 @@ public interface MagicLinks {
         )
 
         /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * Send either a login or signup magic link to the user based on if the email is associated with a user already.
+         * A new or pending user will receive a signup magic link. An active user will receive a login magic link.
          * @param parameters required to receive magic link
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun loginOrCreate(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s email magic link login_or_create endpoint. Requests an email magic link for a user to log in or create an account depending on the presence and/or status current account.
+         * Send either a login or signup magic link to the user based on if the email is associated with a user already.
+         * A new or pending user will receive a signup magic link. An active user will receive a login magic link.
          * @param parameters required to receive magic link
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [BaseResponse]
          */
         public fun loginOrCreate(
             parameters: Parameters,
@@ -85,16 +95,18 @@ public interface MagicLinks {
         )
 
         /**
-         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * Send a magic link to an existing Stytch user using their email address. If you'd like to create a user and
+         * send them a magic link by email with one request, use [loginOrCreate]
          * @param parameters required to receive magic link
-         * @return BaseResponse response from backend
+         * @return [BaseResponse]
          */
         public suspend fun send(parameters: Parameters): BaseResponse
 
         /**
-         * Wraps Stytch’s email magic link send endpoint. Requests an email magic link for a user to authenticate.
+         * Send a magic link to an existing Stytch user using their email address. If you'd like to create a user and
+         * send them a magic link by email with one request, use [loginOrCreate]
          * @param parameters required to receive magic link
-         * @param callback calls callback with BaseResponse response from backend
+         * @param callback a callback that receives a [BaseResponse]
          */
         public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
     }

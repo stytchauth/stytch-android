@@ -9,16 +9,6 @@ import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import com.stytch.sdk.common.oauth.OAuthError.Companion.OAUTH_EXCEPTION
 
-public sealed class OAuthError(override val message: String) : Exception(message) {
-    public object NoBrowserFound : OAuthError("No supported browser was found on this device")
-    public object NoURIFound : OAuthError("No OAuth URI could be found in the bundle")
-    public object UserCanceled : OAuthError("The user canceled the OAuth flow")
-
-    public companion object {
-        public const val OAUTH_EXCEPTION: String = "com.stytch.sdk.oauth.OAuthError"
-    }
-}
-
 /**
  * State management activity for OAuth flow. This is based on the functionality of AppAuth-Android
  *
