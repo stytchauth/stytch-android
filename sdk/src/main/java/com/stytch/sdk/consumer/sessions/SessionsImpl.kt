@@ -58,24 +58,26 @@ internal class SessionsImpl internal constructor(
         }
     }
 
-    override suspend fun revoke(): BaseResponse {
+    override suspend fun revoke(params: Sessions.RevokeParams): BaseResponse {
         var result: BaseResponse
         withContext(dispatchers.io) {
             result = api.revoke()
         }
         // remove stored session
         try {
-            sessionStorage.revoke()
+            if (result is StytchResult.Success || params.forceClear) {
+                sessionStorage.revoke()
+            }
         } catch (ex: Exception) {
             result = StytchResult.Error(StytchExceptions.Critical(ex))
         }
         return result
     }
 
-    override fun revoke(callback: (BaseResponse) -> Unit) {
+    override fun revoke(params: Sessions.RevokeParams, callback: (BaseResponse) -> Unit) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
-            val result = revoke()
+            val result = revoke(params)
             // change to main thread to call callback
             callback(result)
         }
