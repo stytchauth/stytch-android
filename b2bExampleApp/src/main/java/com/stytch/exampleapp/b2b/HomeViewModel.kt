@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -71,7 +72,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun revokeSession() {
         viewModelScope.launch {
             _loadingState.value = true
-            _currentResponse.value = StytchB2BClient.sessions.revoke().toFriendlyDisplay()
+            _currentResponse.value = StytchB2BClient.sessions.revoke(B2BSessions.RevokeParams()).toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
