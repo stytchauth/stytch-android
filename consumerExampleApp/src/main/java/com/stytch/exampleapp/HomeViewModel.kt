@@ -14,7 +14,6 @@ import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.otp.OTP
-import com.stytch.sdk.consumer.sessions.Sessions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -157,7 +156,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun revokeSession() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.sessions.revoke(Sessions.RevokeParams())
+            val result = StytchClient.sessions.revoke()
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false

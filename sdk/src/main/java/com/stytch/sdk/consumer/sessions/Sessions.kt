@@ -56,14 +56,14 @@ public interface Sessions {
      * @param params required for revoking a session
      * @return [BaseResponse]
      */
-    public suspend fun revoke(params: RevokeParams): BaseResponse
+    public suspend fun revoke(params: RevokeParams? = RevokeParams()): BaseResponse
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
      * @param params required for revoking a session
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun revoke(params: RevokeParams, callback: (BaseResponse) -> Unit)
+    public fun revoke(params: RevokeParams? = RevokeParams(), callback: (BaseResponse) -> Unit)
 
     /**
      * Updates the current session with a sessionToken and/or sessionJwt
