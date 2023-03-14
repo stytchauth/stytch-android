@@ -24,6 +24,6 @@ public sealed class OAuthError(override val message: String) : Exception(message
         /**
          * A string identifying the class of this Exception for serializing/deserializing the error within an Intent
          */
-        public const val OAUTH_EXCEPTION: String = "com.stytch.sdk.oauth.OAuthError"
+        public const val OAUTH_EXCEPTION: String = "com.stytch.sdk.common.oauth.OAuthError"
     }
 }
