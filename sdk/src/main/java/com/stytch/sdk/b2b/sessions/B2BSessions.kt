@@ -28,6 +28,14 @@ public interface B2BSessions {
     )
 
     /**
+     * Data class used for wrapping parameters used with Sessions revocation
+     * @property forceClear if true, we will clear the local session regardless of any network errors
+     */
+    public data class RevokeParams(
+        val forceClear: Boolean = false,
+    )
+
+    /**
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
      * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
@@ -45,15 +53,17 @@ public interface B2BSessions {
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
+     * @param params required for revoking a session
      * @return [BaseResponse]
      */
-    public suspend fun revoke(): BaseResponse
+    public suspend fun revoke(params: RevokeParams = RevokeParams()): BaseResponse
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
+     * @param params required for revoking a session
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun revoke(callback: (BaseResponse) -> Unit)
+    public fun revoke(params: RevokeParams = RevokeParams(), callback: (BaseResponse) -> Unit)
 
     /**
      * Updates the current session with a sessionToken and/or sessionJwt

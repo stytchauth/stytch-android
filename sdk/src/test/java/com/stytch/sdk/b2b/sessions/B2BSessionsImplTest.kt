@@ -118,10 +118,27 @@ internal class B2BSessionsImplTest {
     }
 
     @Test
+    fun `SessionsImpl revoke does not revoke a local session if a network error occurs and forceClear is not true`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns StytchResult.Error(mockk(relaxed = true))
+            impl.revoke()
+            verify(exactly = 0) { mockSessionStorage.revoke() }
+        }
+
+    @Test
+    fun `SessionsImpl revoke does revoke a local session if a network error occurs and forceClear is true`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns StytchResult.Error(mockk(relaxed = true))
+            impl.revoke(B2BSessions.RevokeParams(true))
+            verify { mockSessionStorage.revoke() }
+        }
+
+    @Test
     fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() = runTest {
-        coEvery { mockApi.revoke() } returns mockk()
+        coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
         every { mockSessionStorage.revoke() } throws RuntimeException("Test")
-        val result = impl.revoke()
+        val result = impl.revoke(B2BSessions.RevokeParams(true))
+        verify(exactly = 1) { mockSessionStorage.revoke() }
         assert(result is StytchResult.Error)
     }
 
@@ -129,7 +146,7 @@ internal class B2BSessionsImplTest {
     fun `SessionsImpl revoke with callback calls callback method`() {
         coEvery { mockApi.revoke() } returns mockk()
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.revoke(mockCallback)
+        impl.revoke(callback = mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
