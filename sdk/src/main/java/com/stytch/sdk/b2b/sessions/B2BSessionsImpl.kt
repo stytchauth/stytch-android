@@ -58,14 +58,14 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
-    override suspend fun revoke(params: B2BSessions.RevokeParams?): BaseResponse {
+    override suspend fun revoke(params: B2BSessions.RevokeParams): BaseResponse {
         var result: BaseResponse
         withContext(dispatchers.io) {
             result = api.revoke()
         }
         // remove stored session
         try {
-            if (result is StytchResult.Success || params?.forceClear == true) {
+            if (result is StytchResult.Success || params.forceClear) {
                 sessionStorage.revoke()
             }
         } catch (ex: Exception) {
@@ -74,7 +74,7 @@ internal class B2BSessionsImpl internal constructor(
         return result
     }
 
-    override fun revoke(params: B2BSessions.RevokeParams?, callback: (BaseResponse) -> Unit) {
+    override fun revoke(params: B2BSessions.RevokeParams, callback: (BaseResponse) -> Unit) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = revoke(params)

@@ -113,7 +113,7 @@ internal class SessionsImplTest {
     @Test
     fun `SessionsImpl revoke delegates to api`() = runTest {
         coEvery { mockApi.revoke() } returns mockk()
-        impl.revoke(Sessions.RevokeParams())
+        impl.revoke()
         coVerify { mockApi.revoke() }
     }
 
@@ -121,7 +121,7 @@ internal class SessionsImplTest {
     fun `SessionsImpl revoke does not revoke a local session if a network error occurs and forceClear is not true`() =
         runTest {
             coEvery { mockApi.revoke() } returns StytchResult.Error(mockk(relaxed = true))
-            impl.revoke(Sessions.RevokeParams(false))
+            impl.revoke()
             verify(exactly = 0) { mockSessionStorage.revoke() }
         }
 
@@ -146,7 +146,7 @@ internal class SessionsImplTest {
     fun `SessionsImpl revoke with callback calls callback method`() {
         coEvery { mockApi.revoke() } returns mockk()
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.revoke(Sessions.RevokeParams(), callback = mockCallback)
+        impl.revoke(callback = mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
