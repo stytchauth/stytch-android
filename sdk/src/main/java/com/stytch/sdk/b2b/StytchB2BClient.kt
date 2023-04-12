@@ -17,7 +17,6 @@ import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
-import com.stytch.sdk.common.TokenType
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
@@ -108,7 +107,7 @@ public object StytchB2BClient {
     public var organization: Organization = OrganizationImpl(
         externalScope,
         dispatchers,
-        StytchB2BApi.Organization,
+        StytchB2BApi.Organization
     )
         get() {
             assertInitialized()
@@ -126,7 +125,7 @@ public object StytchB2BClient {
         externalScope,
         dispatchers,
         sessionStorage,
-        StytchB2BApi.Member,
+        StytchB2BApi.Member
     )
         get() {
             assertInitialized()
@@ -153,8 +152,8 @@ public object StytchB2BClient {
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
             }
-            when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
-                TokenType.MULTI_TENANT_MAGIC_LINKS -> {
+            when (B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+                B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
                         magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
                     )
@@ -189,4 +188,15 @@ public object StytchB2BClient {
             callback(result)
         }
     }
+
+    /**
+     * A helper function for determining whether the deeplink is intended for Stytch. Useful in contexts where your
+     * application makes use of a deeplink coordinator/manager which requires a synchronous determination of whether a
+     * given handler can handle a given URL.
+     *
+     * @param uri intent.data from deep link
+     * @return Boolean
+     */
+    public fun canHandle(uri: Uri): Boolean =
+        B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != B2BTokenType.UNKNOWN
 }
