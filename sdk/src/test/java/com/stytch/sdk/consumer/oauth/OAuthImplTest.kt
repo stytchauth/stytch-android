@@ -77,6 +77,7 @@ internal class OAuthImplTest {
     @Test
     fun `Every ThirdParty provider class has the correct provider name`() {
         listOf(
+            Pair(impl.apple, "apple"),
             Pair(impl.amazon, "amazon"),
             Pair(impl.bitbucket, "bitbucket"),
             Pair(impl.coinbase, "coinbase"),

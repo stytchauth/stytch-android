@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 enum class OAuthProvider {
+    APPLE,
     AMAZON,
     BITBUCKET,
     COINBASE,
@@ -71,6 +72,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             signupRedirectUrl = "app://oauth",
         )
         when (provider) {
+            OAuthProvider.APPLE -> StytchClient.oauth.apple.start(startParameters)
             OAuthProvider.AMAZON -> StytchClient.oauth.amazon.start(startParameters)
             OAuthProvider.BITBUCKET -> StytchClient.oauth.bitbucket.start(startParameters)
             OAuthProvider.COINBASE -> StytchClient.oauth.coinbase.start(startParameters)
