@@ -11,7 +11,7 @@ import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.oauth.GoogleOneTapProvider
-import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -83,7 +83,7 @@ internal class GoogleOneTapImpl(
         }
     }
 
-    override suspend fun authenticate(parameters: OAuth.GoogleOneTap.AuthenticateParameters): AuthResponse {
+    override suspend fun authenticate(parameters: OAuth.GoogleOneTap.AuthenticateParameters): NativeOAuthResponse {
         if (!::nonce.isInitialized || !::oneTapClient.isInitialized) {
             return StytchResult.Error(StytchExceptions.Input(StytchErrorType.GOOGLE_ONETAP_MISSING_MEMBER.message))
         }
@@ -107,7 +107,10 @@ internal class GoogleOneTapImpl(
         }
     }
 
-    override fun authenticate(parameters: OAuth.GoogleOneTap.AuthenticateParameters, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(
+        parameters: OAuth.GoogleOneTap.AuthenticateParameters,
+        callback: (NativeOAuthResponse) -> Unit
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
             callback(result)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 
 /**
@@ -127,14 +128,14 @@ public interface OAuth {
          * @param parameters required to authenticate the Google OneTap login
          * @return [AuthResponse]
          */
-        public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
+        public suspend fun authenticate(parameters: AuthenticateParameters): NativeOAuthResponse
 
         /**
          * Authenticate a Google OneTap login
          * @param parameters required to authenticate the Google OneTap login
          * @param callback a callback that receives an [AuthResponse]
          */
-        public fun authenticate(parameters: AuthenticateParameters, callback: (AuthResponse) -> Unit)
+        public fun authenticate(parameters: AuthenticateParameters, callback: (NativeOAuthResponse) -> Unit)
 
         /**
          * Sign a user out of Google Play Services

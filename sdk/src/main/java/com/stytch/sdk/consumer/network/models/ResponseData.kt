@@ -21,6 +21,10 @@ public interface IAuthData : CommonAuthenticationData {
     public val user: UserData
 }
 
+public interface INativeOAuthData : IAuthData {
+    public val userCreated: Boolean
+}
+
 @JsonClass(generateAdapter = true)
 public data class AuthData(
     @Json(name = "status_code")
@@ -167,3 +171,15 @@ public data class OAuthData(
         val scopes: List<String>,
     )
 }
+
+@JsonClass(generateAdapter = true)
+public data class NativeOAuthData(
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+    @Json(name = "user_created")
+    override val userCreated: Boolean
+) : INativeOAuthData

@@ -22,6 +22,7 @@ import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
+import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.UserData
 import java.lang.RuntimeException
 
@@ -494,7 +495,7 @@ internal object StytchApi {
             idToken: String,
             nonce: String,
             sessionDurationMinutes: UInt,
-        ): StytchResult<AuthData> = safeConsumerApiCall {
+        ): StytchResult<NativeOAuthData> = safeConsumerApiCall {
             apiService.authenticateWithGoogleIdToken(
                 ConsumerRequests.OAuth.Google.AuthenticateRequest(
                     idToken = idToken,
