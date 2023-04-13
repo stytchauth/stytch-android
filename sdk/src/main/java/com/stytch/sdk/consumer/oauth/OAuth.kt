@@ -18,6 +18,11 @@ public interface OAuth {
     public val googleOneTap: GoogleOneTap
 
     /**
+     * The interface for authenticating a user with Apple
+     */
+    public val apple: ThirdParty
+
+    /**
      * The interface for authenticating a user with Amazon
      */
     public val amazon: ThirdParty

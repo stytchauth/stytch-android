@@ -34,6 +34,11 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
         ) {
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_apple),
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.APPLE) }
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_amazon),
                 onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.AMAZON) }
             )
