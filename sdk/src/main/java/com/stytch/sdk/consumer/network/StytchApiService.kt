@@ -172,7 +172,7 @@ internal interface StytchApiService : ApiService {
     @POST("oauth/google/id_token/authenticate")
     suspend fun authenticateWithGoogleIdToken(
         @Body request: ConsumerRequests.OAuth.Google.AuthenticateRequest
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.OAuth.NativeOAuthAuthenticateResponse
 
     @POST("oauth/authenticate")
     suspend fun authenticateWithThirdPartyToken(

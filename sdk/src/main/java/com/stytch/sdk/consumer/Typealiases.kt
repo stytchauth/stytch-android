@@ -7,6 +7,7 @@ import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
+import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.UserData
 
@@ -14,6 +15,11 @@ import com.stytch.sdk.consumer.network.models.UserData
  * Type alias for StytchResult<IAuthData> used for authentication responses
  */
 public typealias AuthResponse = StytchResult<IAuthData>
+
+/**
+ * Type alias for StytchResult<INativeOAuthData> used for Native OAuth (Google One Tap) authentication responses
+ */
+public typealias NativeOAuthResponse = StytchResult<INativeOAuthData>
 
 /**
  * Type alias for StytchResult<CreateResponse> used for PasswordsCreate responses
