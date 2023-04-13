@@ -290,4 +290,19 @@ internal class StytchClientTest {
     fun `stytchError throws IllegalStateException`() {
         stytchError("Test")
     }
+
+    @Test
+    fun `canHandle only returns true for supported token types`() {
+        val uri = mockk<Uri>()
+        every { uri.getQueryParameter(any()) } returns "MAGIC_LINKS"
+        assert(StytchClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "OAUTH"
+        assert(StytchClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "PASSWORD_RESET"
+        assert(StytchClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
+        assert(!StytchClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "something random"
+        assert(!StytchClient.canHandle(uri))
+    }
 }

@@ -247,4 +247,15 @@ internal class StytchB2BClientTest {
     fun `stytchError throws IllegalStateException`() {
         stytchError("Test")
     }
+
+    @Test
+    fun `canHandle only returns true for supported token types`() {
+        val uri = mockk<Uri>()
+        every { uri.getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
+        assert(StytchB2BClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "MAGIC_LINKS"
+        assert(!StytchB2BClient.canHandle(uri))
+        every { uri.getQueryParameter(any()) } returns "something random"
+        assert(!StytchB2BClient.canHandle(uri))
+    }
 }

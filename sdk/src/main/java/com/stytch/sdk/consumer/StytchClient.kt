@@ -7,7 +7,6 @@ import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
-import com.stytch.sdk.common.TokenType
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
@@ -156,7 +155,7 @@ public object StytchClient {
         sessionStorage,
         StorageHelper,
         StytchApi.Biometrics,
-        BiometricsProviderImpl(),
+        BiometricsProviderImpl()
     ) { biometricRegistrationId ->
         user.deleteFactor(UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId))
     }
@@ -226,19 +225,19 @@ public object StytchClient {
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
             }
-            when (TokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
-                TokenType.MAGIC_LINKS -> {
+            when (ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+                ConsumerTokenType.MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
                         magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
                     )
                 }
-                TokenType.OAUTH -> {
+                ConsumerTokenType.OAUTH -> {
                     DeeplinkHandledStatus.Handled(
                         oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
                     )
                 }
-                TokenType.PASSWORD_RESET -> {
-                    DeeplinkHandledStatus.ManualHandlingRequired(type = TokenType.PASSWORD_RESET, token = token)
+                ConsumerTokenType.PASSWORD_RESET -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.PASSWORD_RESET, token = token)
                 }
                 else -> {
                     DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
@@ -274,4 +273,15 @@ public object StytchClient {
             callback(result)
         }
     }
+
+    /**
+     * A helper function for determining whether the deeplink is intended for Stytch. Useful in contexts where your
+     * application makes use of a deeplink coordinator/manager which requires a synchronous determination of whether a
+     * given handler can handle a given URL.
+     *
+     * @param uri intent.data from deep link
+     * @return Boolean
+     */
+    public fun canHandle(uri: Uri): Boolean =
+        ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
 }
