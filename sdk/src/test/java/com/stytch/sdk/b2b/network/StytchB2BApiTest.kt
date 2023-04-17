@@ -112,6 +112,67 @@ internal class StytchB2BApiTest {
         coVerify { StytchB2BApi.apiService.getMember() }
     }
 
+    @Test
+    fun `StytchB2BApi Passwords authenticate calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.authenticatePassword(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.authenticate("", "", "")
+        coVerify { StytchB2BApi.apiService.authenticatePassword(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Passwords resetByEmailStart calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.resetPasswordByEmailStart(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.resetByEmailStart(
+            organizationId = "",
+            emailAddress = "",
+            codeChallenge = "",
+            loginRedirectUrl = null,
+            resetPasswordRedirectUrl = null,
+            resetPasswordExpirationMinutes = null,
+            resetPasswordTemplateId = null,
+        )
+        coVerify { StytchB2BApi.apiService.resetPasswordByEmailStart(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Passwords resetByEmail calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.resetPasswordByEmail(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.resetByEmail(passwordResetToken = "", password = "", codeVerifier = "")
+        coVerify { StytchB2BApi.apiService.resetPasswordByEmail(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Passwords resetByExisting calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.resetPasswordByExisting(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.resetByExisting(
+            organizationId = "",
+            emailAddress = "",
+            existingPassword = "",
+            newPassword = ""
+        )
+        coVerify { StytchB2BApi.apiService.resetPasswordByExisting(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Passwords resetBySession calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.resetPasswordBySession(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.resetBySession(organizationId = "", password = "")
+        coVerify { StytchB2BApi.apiService.resetPasswordBySession(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Passwords strengthCheck calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.passwordStrengthCheck(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Passwords.strengthCheck(email = "", password = "")
+        coVerify { StytchB2BApi.apiService.passwordStrengthCheck(any()) }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() = runTest {
         every { StytchB2BApi.isInitialized } returns false

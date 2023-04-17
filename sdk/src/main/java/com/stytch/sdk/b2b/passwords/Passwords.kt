@@ -66,7 +66,7 @@ public interface Passwords {
     public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
 
     public data class StrengthCheckParameters(
-        val email: String?,
+        val email: String? = null,
         val password: String,
     )
     public suspend fun strengthCheck(parameters: StrengthCheckParameters): PasswordStrengthCheckResponse

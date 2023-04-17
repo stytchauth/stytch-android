@@ -143,6 +143,147 @@ internal class StytchB2BApiServiceTest {
 
     // endregion Organizations
 
+    //region Passwords
+
+    @Test
+    fun `check Passwords authenticatePassword request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.AuthenticateRequest(
+                organizationId = "my-organization-id",
+                emailAddress = "my@email.address",
+                password = "my-password",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.authenticatePassword(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/authenticate",
+                expectedBody = mapOf(
+                    "organization_id" to parameters.organizationId,
+                    "email_address" to parameters.emailAddress,
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords resetPasswordByEmailStart request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.ResetByEmailStartRequest(
+                organizationId = "my-organization-id",
+                emailAddress = "my@email.address",
+                codeChallenge = "code-challenge-string",
+                loginRedirectUrl = "login://redirect",
+                resetPasswordExpirationMinutes = 30,
+                resetPasswordTemplateId = "reset-password-template-id",
+                resetPasswordRedirectUrl = "reset://redirect",
+            )
+            requestIgnoringResponseException {
+                apiService.resetPasswordByEmailStart(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/email/reset/start",
+                expectedBody = mapOf(
+                    "organization_id" to parameters.organizationId,
+                    "email_address" to parameters.emailAddress,
+                    "code_challenge" to parameters.codeChallenge,
+                    "login_redirect_url" to parameters.loginRedirectUrl,
+                    "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes,
+                    "reset_password_template_id" to parameters.resetPasswordTemplateId,
+                    "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords resetPasswordByEmail request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.ResetByEmailRequest(
+                passwordResetToken = "password-reset-token",
+                password = "my-password",
+                sessionDurationMinutes = 30,
+                codeVerifier = "code-verifier"
+            )
+            requestIgnoringResponseException {
+                apiService.resetPasswordByEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/email/reset",
+                expectedBody = mapOf(
+                    "password_reset_token" to parameters.passwordResetToken,
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "code_verifier" to parameters.codeVerifier,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords resetPasswordByExisting request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.ResetByExistingPasswordRequest(
+                organizationId = "my-organization-id",
+                emailAddress = "my@email.address",
+                existingPassword = "existing-password",
+                newPassword = "new-password",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.resetPasswordByExisting(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/existing_password/reset",
+                expectedBody = mapOf(
+                    "organization_id" to parameters.organizationId,
+                    "email_address" to parameters.emailAddress,
+                    "existing_password" to parameters.existingPassword,
+                    "new_password" to parameters.newPassword,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords resetPasswordBySession request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.ResetBySessionRequest(
+                organizationId = "my-organization-id",
+                password = "my-password",
+            )
+            requestIgnoringResponseException {
+                apiService.resetPasswordBySession(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/session/reset",
+                expectedBody = mapOf(
+                    "organization_id" to parameters.organizationId,
+                    "password" to parameters.password,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords passwordStrengthCheck request`() {
+        runBlocking {
+            val parameters = B2BRequests.Passwords.StrengthCheckRequest(
+                email = "my@email.address",
+                password = "my-password",
+            )
+            requestIgnoringResponseException {
+                apiService.passwordStrengthCheck(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/strength_check",
+                expectedBody = mapOf(
+                    "email" to parameters.email,
+                    "password" to parameters.password,
+                )
+            )
+        }
+    }
+    //endregion Passwords
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
