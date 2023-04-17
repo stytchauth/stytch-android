@@ -1,8 +1,10 @@
 package com.stytch.sdk.b2b
 
+import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.StytchResult
 
 /**
@@ -19,3 +21,7 @@ public typealias OrganizationResponse = StytchResult<OrganizationResponseData>
  * Type alias for StytchResult<MemberResponseData> used for member.get() responses
  */
 public typealias MemberResponse = StytchResult<MemberResponseData>
+
+public typealias EmailResetResponse = StytchResult<EmailResetResponseData>
+
+public typealias PasswordStrengthCheckResponse = StytchResult<StrengthCheckResponseData>

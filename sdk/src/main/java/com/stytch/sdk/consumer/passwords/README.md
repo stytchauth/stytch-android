@@ -1,6 +1,10 @@
 # Package com.stytch.sdk.consumer.passwords
 The [Passwords](Passwords.kt) interface provides methods for authenticating, creating, resetting, and performing strength checks of passwords.
 
+Stytch supports creating, storing, and authenticating passwords, as well as support for account recovery (password reset) and account deduplication with passwordless login methods.
+
+Our implementation of passwords has built-in breach detection powered by [HaveIBeenPwned](https://haveibeenpwned.com) on both sign-up and login, to prevent the use of compromised credentials and uses configurable strength requirements (either Dropbox’s [zxcvbn](https://github.com/dropbox/zxcvbn) or adjustable LUDS) to guide members towards creating passwords that are easy for humans to remember but difficult for computers to crack.
+
 Call the `StytchClient.passwords.create()` method to create a new user with an email address and password. Only use this for creating new users. Existing passwordless users who wish to create a password need to go through the reset password flow.
 
 Call the `StytchClient.passwords.authenticate()` method to authenticate a user with their email address and password. This method will return an error if the user’s credentials appeared in the HaveIBeenPwned dataset or if a duplicate user is found (eg: Email Magic Links, OAuth).

@@ -31,8 +31,6 @@ public data class B2BAuthData(
 
 @JsonClass(generateAdapter = true)
 public data class B2BEMLAuthenticateData(
-    @Json(name = "member_id")
-    val memberId: String,
     override val member: MemberData,
     @Json(name = "organization_id")
     val organizationId: String,
@@ -130,3 +128,84 @@ public data class Organization(
     @Json(name = "trusted_metadata")
     val trustedMetadata: Map<String, Any?>,
 )
+
+@JsonClass(generateAdapter = true)
+public data class PasswordsAuthenticateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val member: MemberData,
+    override val organization: Organization,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "organization_id")
+    val organizationId: String,
+) : IB2BAuthData
+
+@JsonClass(generateAdapter = true)
+public data class EmailResetResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val member: MemberData,
+    override val organization: Organization,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "member_email_id")
+    val memberEmailId: String,
+) : IB2BAuthData
+
+@JsonClass(generateAdapter = true)
+public data class StrengthCheckResponseData(
+    @Json(name = "valid_password")
+    val validPassword: Boolean,
+    val score: Int,
+    @Json(name = "breached_password")
+    val breachedPassword: Boolean,
+    @Json(name = "strength_policy")
+    val strengthPolicy: String,
+    @Json(name = "breach_detection_on_create")
+    val breachDetectionOnCreate: Boolean,
+    @Json(name = "zxcvbn_feedback")
+    val zxcvbnFeedback: ZXCVBNFeedback,
+    @Json(name = "luds_feedback")
+    val ludsFeedback: LUDSFeedback,
+) {
+    @JsonClass(generateAdapter = true)
+    public data class ZXCVBNFeedback(
+        val suggestions: List<String>,
+        val warning: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    public data class LUDSFeedback(
+        @Json(name = "has_lower_case")
+        val hasLowerCase: Boolean,
+        @Json(name = "has_upper_case")
+        val hasUpperCase: Boolean,
+        @Json(name = "has_digit")
+        val hasDigit: Boolean,
+        @Json(name = "has_symbol")
+        val hasSymbol: Boolean,
+        @Json(name = "missing_complexity")
+        val missingComplexity: Int,
+        @Json(name = "missing_characters")
+        val missingCharacters: Int,
+    )
+}

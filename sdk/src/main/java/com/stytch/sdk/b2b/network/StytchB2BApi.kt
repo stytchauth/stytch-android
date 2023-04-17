@@ -2,11 +2,15 @@ package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
@@ -134,6 +138,105 @@ internal object StytchB2BApi {
     internal object Member {
         suspend fun getMember(): StytchResult<MemberResponseData> = safeB2BApiCall {
             apiService.getMember()
+        }
+    }
+
+    internal object Passwords {
+        suspend fun authenticate(
+            organizationId: String,
+            emailAddress: String,
+            password: String,
+            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        ): StytchResult<PasswordsAuthenticateResponseData> = safeB2BApiCall {
+            apiService.authenticatePassword(
+                B2BRequests.Passwords.AuthenticateRequest(
+                    organizationId = organizationId,
+                    emailAddress = emailAddress,
+                    password = password,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
+        }
+
+        @Suppress("LongParameterList")
+        suspend fun resetByEmailStart(
+            organizationId: String,
+            emailAddress: String,
+            loginRedirectUrl: String?,
+            resetPasswordRedirectUrl: String?,
+            resetPasswordExpirationMinutes: UInt?,
+            resetPasswordTemplateId: String?,
+            codeChallenge: String,
+        ): StytchResult<BasicData> = safeB2BApiCall {
+            apiService.resetPasswordByEmailStart(
+                B2BRequests.Passwords.ResetByEmailStartRequest(
+                    organizationId = organizationId,
+                    emailAddress = emailAddress,
+                    loginRedirectUrl = loginRedirectUrl,
+                    resetPasswordRedirectUrl = resetPasswordRedirectUrl,
+                    resetPasswordExpirationMinutes = resetPasswordExpirationMinutes?.toInt(),
+                    resetPasswordTemplateId = resetPasswordTemplateId,
+                    codeChallenge = codeChallenge,
+                )
+            )
+        }
+
+        suspend fun resetByEmail(
+            passwordResetToken: String,
+            password: String,
+            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            codeVerifier: String,
+        ): StytchResult<EmailResetResponseData> = safeB2BApiCall {
+            apiService.resetPasswordByEmail(
+                B2BRequests.Passwords.ResetByEmailRequest(
+                    passwordResetToken = passwordResetToken,
+                    password = password,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    codeVerifier = codeVerifier
+                )
+            )
+        }
+
+        suspend fun resetByExisting(
+            organizationId: String,
+            emailAddress: String,
+            existingPassword: String,
+            newPassword: String,
+            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        ): StytchResult<B2BAuthData> = safeB2BApiCall {
+            apiService.resetPasswordByExisting(
+                B2BRequests.Passwords.ResetByExistingPasswordRequest(
+                    organizationId = organizationId,
+                    emailAddress = emailAddress,
+                    existingPassword = existingPassword,
+                    newPassword = newPassword,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                )
+            )
+        }
+
+        suspend fun resetBySession(
+            organizationId: String,
+            password: String,
+        ): StytchResult<B2BAuthData> = safeB2BApiCall {
+            apiService.resetPasswordBySession(
+                B2BRequests.Passwords.ResetBySessionRequest(
+                    organizationId = organizationId,
+                    password = password,
+                )
+            )
+        }
+
+        suspend fun strengthCheck(
+            email: String?,
+            password: String,
+        ): StytchResult<StrengthCheckResponseData> = safeB2BApiCall {
+            apiService.passwordStrengthCheck(
+                B2BRequests.Passwords.StrengthCheckRequest(
+                    email = email,
+                    password = password,
+                )
+            )
         }
     }
 }
