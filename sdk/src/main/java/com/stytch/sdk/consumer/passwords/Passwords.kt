@@ -9,6 +9,14 @@ import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
  * passwords.
+ *
+ * Stytch supports creating, storing, and authenticating passwords, as well as support for account recovery
+ * (password reset) and account deduplication with passwordless login methods.
+ *
+ * Our implementation of passwords has built-in breach detection powered by [HaveIBeenPwned](https://haveibeenpwned.com)
+ * on both sign-up and login, to prevent the use of compromised credentials and uses configurable strength requirements
+ * (either Dropbox’s [zxcvbn](https://github.com/dropbox/zxcvbn) or adjustable LUDS) to guide members towards creating
+ * passwords that are easy for humans to remember but difficult for computers to crack.
  */
 public interface Passwords {
 
@@ -85,6 +93,16 @@ public interface Passwords {
     /**
      * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
      * currently set, and that the entered password is correct.
+     *
+     * There are two instances where the endpoint will return a reset_password error even if they enter their previous
+     * password:
+     * 1. The member's credentials appeared in the HaveIBeenPwned dataset. We force a password reset to ensure that the
+     * member is the legitimate owner of the email address, and not a malicious actor abusing the compromised
+     * credentials.
+     * 2. The member used email based authentication (e.g. Magic Links, Google OAuth) for the first time, and had not
+     * previously verified their email address for password based login. We force a password reset in this instance in
+     * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
+     * account-takeover attack.
      * @param parameters required to authenticate
      * @return [AuthResponse]
      */
