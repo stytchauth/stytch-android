@@ -10,4 +10,12 @@
     <string name="please_enter_email">Please enter a valid email you wish to use</string>
     <string name="b2b_org_id">Organization ID</string>
     <string name="b2b_org_details">Get Organization Details</string>
+    <string name="passwords">Passwords</string>
+    <string name="existing_password">Existing Password</string>
+    <string name="new_password">New Password</string>
+    <string name="button_resetByEmail">Reset By Email</string>
+    <string name="button_resetByExisting">Reset By Existing</string>
+    <string name="button_resetBySession">Reset By Session</string>
+    <string name="button_authenticate">Authenticate</string>
+    <string name="button_strengthCheck">Check New Password Strength</string>
 </resources>

@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Suppress("TooManyFunctions")
 internal class PasswordsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
