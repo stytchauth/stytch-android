@@ -23,8 +23,17 @@ public typealias OrganizationResponse = StytchResult<OrganizationResponseData>
  */
 public typealias MemberResponse = StytchResult<MemberResponseData>
 
+/**
+ * Type alias for StytchResult<EmailResetResponseData> used for passwords.resetByEmail() responses
+ */
 public typealias EmailResetResponse = StytchResult<EmailResetResponseData>
 
+/**
+ * Type alias for StytchResult<StrengthCheckResponseData> used for passwords.strengthCheck() responses
+ */
 public typealias PasswordStrengthCheckResponse = StytchResult<StrengthCheckResponseData>
 
+/**
+ * Type alias for StytchResult<SessionResetResponseData> used for passwords.resetBySession() responses
+ */
 public typealias SessionResetResponse = StytchResult<SessionResetResponseData>
