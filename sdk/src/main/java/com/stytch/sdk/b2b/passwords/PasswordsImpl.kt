@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.passwords
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -130,18 +131,19 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse {
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): SessionResetResponse {
         return withContext(dispatchers.io) {
             api.resetBySession(
                 organizationId = parameters.organizationId,
                 password = parameters.password,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            )
         }
     }
 
-    override fun resetBySession(parameters: Passwords.ResetBySessionParameters, callback: (AuthResponse) -> Unit) {
+    override fun resetBySession(
+        parameters: Passwords.ResetBySessionParameters,
+        callback: (SessionResetResponse) -> Unit
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetBySession(parameters)
             callback(result)

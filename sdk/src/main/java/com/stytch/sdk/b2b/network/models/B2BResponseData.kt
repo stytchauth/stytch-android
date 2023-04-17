@@ -172,6 +172,20 @@ public data class EmailResetResponseData(
 ) : IB2BAuthData
 
 @JsonClass(generateAdapter = true)
+public data class SessionResetResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "member_session")
+    val memberSession: B2BSessionData,
+    val member: MemberData,
+    val organization: Organization,
+)
+
+@JsonClass(generateAdapter = true)
 public data class StrengthCheckResponseData(
     @Json(name = "valid_password")
     val validPassword: Boolean,

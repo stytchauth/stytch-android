@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
@@ -218,7 +219,7 @@ internal object StytchB2BApi {
         suspend fun resetBySession(
             organizationId: String,
             password: String,
-        ): StytchResult<B2BAuthData> = safeB2BApiCall {
+        ): StytchResult<SessionResetResponseData> = safeB2BApiCall {
             apiService.resetPasswordBySession(
                 B2BRequests.Passwords.ResetBySessionRequest(
                     organizationId = organizationId,

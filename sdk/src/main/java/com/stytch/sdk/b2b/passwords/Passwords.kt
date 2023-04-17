@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.passwords
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
 
@@ -188,9 +189,9 @@ public interface Passwords {
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
      * the password is securely stored for future authentication and the member is authenticated.
      * @param parameters required to reset a member's password
-     * @return [AuthResponse]
+     * @return [SessionResetResponse]
      */
-    public suspend fun resetBySession(parameters: ResetBySessionParameters): AuthResponse
+    public suspend fun resetBySession(parameters: ResetBySessionParameters): SessionResetResponse
 
     /**
      * Reset the member’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
@@ -198,9 +199,9 @@ public interface Passwords {
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
      * the password is securely stored for future authentication and the member is authenticated.
      * @param parameters required to reset a member's password
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [SessionResetResponse]
      */
-    public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
+    public fun resetBySession(parameters: ResetBySessionParameters, callback: (SessionResetResponse) -> Unit)
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint

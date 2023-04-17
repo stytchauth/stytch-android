@@ -3,11 +3,13 @@ package com.stytch.sdk.b2b.passwords
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
@@ -195,19 +197,18 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetBySession delegates to api`() = runTest {
-        val mockkResponse = StytchResult.Success<B2BAuthData>(mockk(relaxed = true))
+        val mockkResponse = StytchResult.Success<SessionResetResponseData>(mockk(relaxed = true))
         coEvery { mockApi.resetBySession(any(), any()) } returns mockkResponse
         val response = impl.resetBySession(mockk(relaxed = true))
         assert(response is StytchResult.Success)
         coVerify { mockApi.resetBySession(any(), any()) }
-        verify { mockkResponse.launchSessionUpdater(any(), any()) }
     }
 
     @Test
     fun `PasswordsImpl resetBySession with callback calls callback method`() {
-        val mockkResponse = StytchResult.Success<B2BAuthData>(mockk(relaxed = true))
+        val mockkResponse = StytchResult.Success<SessionResetResponseData>(mockk(relaxed = true))
         coEvery { mockApi.resetBySession(any(), any()) } returns mockkResponse
-        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        val mockCallback = spyk<(SessionResetResponse) -> Unit>()
         impl.resetBySession(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
     }

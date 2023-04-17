@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.StytchResult
 
@@ -25,3 +26,5 @@ public typealias MemberResponse = StytchResult<MemberResponseData>
 public typealias EmailResetResponse = StytchResult<EmailResetResponseData>
 
 public typealias PasswordStrengthCheckResponse = StytchResult<StrengthCheckResponseData>
+
+public typealias SessionResetResponse = StytchResult<SessionResetResponseData>

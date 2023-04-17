@@ -41,7 +41,9 @@ internal object B2BResponses {
         class ResetByExistingPasswordResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
 
         @JsonClass(generateAdapter = true)
-        class ResetBySessionResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+        class ResetBySessionResponse(
+            data: SessionResetResponseData
+        ) : StytchDataResponse<SessionResetResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class StrengthCheckResponse(
