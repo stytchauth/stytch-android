@@ -43,15 +43,16 @@ public typealias SessionResetResponse = StytchResult<SessionResetResponseData>
 
 /**
  *
+ * Type alias for StytchResult<DiscoveredOrganizationsResponseData> used for discovery.organizations() responses
  */
 public typealias DiscoverOrganizationsResponse = StytchResult<DiscoveredOrganizationsResponseData>
 
 /**
- *
+ * Type alias for StytchResult<IntermediateSessionExchangeResponseData> used for discovery.exchangeSession() responses
  */
 public typealias IntermediateSessionExchangeResponse = StytchResult<IntermediateSessionExchangeResponseData>
 
 /**
- *
+ * Type alias for StytchResult<OrganizationCreateResponseData> used for discovery.create() responses
  */
 public typealias OrganizationCreateResponse = StytchResult<OrganizationCreateResponseData>
