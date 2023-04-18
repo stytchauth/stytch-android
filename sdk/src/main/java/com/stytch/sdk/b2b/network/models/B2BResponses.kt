@@ -50,4 +50,21 @@ internal object B2BResponses {
             data: StrengthCheckResponseData
         ) : StytchDataResponse<StrengthCheckResponseData>(data)
     }
+
+    object Discovery {
+        @JsonClass(generateAdapter = true)
+        class DiscoverOrganizationsResponse(
+            data: DiscoveredOrganizationsResponseData
+        ) : StytchDataResponse<DiscoveredOrganizationsResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class SessionExchangeResponse(
+            data: IntermediateSessionExchangeResponseData
+        ) : StytchDataResponse<IntermediateSessionExchangeResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class CreateOrganizationResponse(
+            data: OrganizationCreateResponseData
+        ) : StytchDataResponse<OrganizationCreateResponseData>(data)
+    }
 }

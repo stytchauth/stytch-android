@@ -104,4 +104,35 @@ internal object B2BRequests {
             val password: String,
         )
     }
+    object Discovery {
+        @JsonClass(generateAdapter = true)
+        data class MembershipsRequest(
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class SessionExchangeRequest(
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String,
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class CreateRequest(
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "organization_name")
+            val organizationName: String,
+            @Json(name = "organization_slug")
+            val organizationSlug: String,
+            @Json(name = "organization_logo_url")
+            val organizationLogoUrl: String? = null,
+        )
+    }
 }

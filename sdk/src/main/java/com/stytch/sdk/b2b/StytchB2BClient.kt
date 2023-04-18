@@ -2,6 +2,8 @@ package com.stytch.sdk.b2b
 
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.b2b.discovery.Discovery
+import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
@@ -147,6 +149,23 @@ public object StytchB2BClient {
         sessionStorage,
         StorageHelper,
         StytchB2BApi.Passwords,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [Discovery] interface which provides methods for creating and discovering
+     * Organizations and exchanging sessions between organizations
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
+    public var discovery: Discovery = DiscoveryImpl(
+        externalScope,
+        dispatchers,
+        StytchB2BApi.Discovery,
     )
         get() {
             assertInitialized()

@@ -6,8 +6,11 @@ import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
+import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
@@ -116,7 +119,7 @@ internal object StytchB2BApi {
 
     internal object Sessions {
         suspend fun authenticate(
-            sessionDurationMinutes: UInt? = null
+            sessionDurationMinutes: UInt?
         ): StytchResult<IB2BAuthData> = safeB2BApiCall {
             apiService.authenticateSessions(
                 CommonRequests.Sessions.AuthenticateRequest(
@@ -236,6 +239,50 @@ internal object StytchB2BApi {
                 B2BRequests.Passwords.StrengthCheckRequest(
                     email = email,
                     password = password,
+                )
+            )
+        }
+    }
+
+    internal object Discovery {
+        suspend fun discoverOrganizations(
+            intermediateSessionToken: String?,
+        ): StytchResult<DiscoveredOrganizationsResponseData> = safeB2BApiCall {
+            apiService.discoverOrganizations(
+                B2BRequests.Discovery.MembershipsRequest(
+                    intermediateSessionToken = intermediateSessionToken
+                )
+            )
+        }
+
+        suspend fun exchangeSession(
+            intermediateSessionToken: String,
+            organizationId: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<IntermediateSessionExchangeResponseData> = safeB2BApiCall {
+            apiService.intermediateSessionExchange(
+                B2BRequests.Discovery.SessionExchangeRequest(
+                    intermediateSessionToken = intermediateSessionToken,
+                    organizationId = organizationId,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun createOrganization(
+            intermediateSessionToken: String,
+            sessionDurationMinutes: UInt,
+            organizationName: String,
+            organizationSlug: String,
+            organizationLogoUrl: String?,
+        ): StytchResult<OrganizationCreateResponseData> = safeB2BApiCall {
+            apiService.createOrganization(
+                B2BRequests.Discovery.CreateRequest(
+                    intermediateSessionToken = intermediateSessionToken,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    organizationName = organizationName,
+                    organizationSlug = organizationSlug,
+                    organizationLogoUrl = organizationLogoUrl
                 )
             )
         }

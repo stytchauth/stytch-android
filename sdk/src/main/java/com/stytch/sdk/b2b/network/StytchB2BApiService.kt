@@ -71,4 +71,21 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.Passwords.StrengthCheckRequest
     ): B2BResponses.Passwords.StrengthCheckResponse
     //endregion Passwords
+
+    //region Discovery
+    @POST("b2b/discovery/organizations")
+    suspend fun discoverOrganizations(
+        @Body request: B2BRequests.Discovery.MembershipsRequest
+    ): B2BResponses.Discovery.DiscoverOrganizationsResponse
+
+    @POST("b2b/discovery/intermediate_sessions/exchange")
+    suspend fun intermediateSessionExchange(
+        @Body request: B2BRequests.Discovery.SessionExchangeRequest
+    ): B2BResponses.Discovery.SessionExchangeResponse
+
+    @POST("b2b/discovery/organizations/create")
+    suspend fun createOrganization(
+        @Body request: B2BRequests.Discovery.CreateRequest
+    ): B2BResponses.Discovery.CreateOrganizationResponse
+    //endregion Discovery
 }

@@ -1,8 +1,11 @@
 package com.stytch.sdk.b2b
 
+import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
@@ -37,3 +40,18 @@ public typealias PasswordStrengthCheckResponse = StytchResult<StrengthCheckRespo
  * Type alias for StytchResult<SessionResetResponseData> used for passwords.resetBySession() responses
  */
 public typealias SessionResetResponse = StytchResult<SessionResetResponseData>
+
+/**
+ *
+ */
+public typealias DiscoverOrganizationsResponse = StytchResult<DiscoveredOrganizationsResponseData>
+
+/**
+ *
+ */
+public typealias IntermediateSessionExchangeResponse = StytchResult<IntermediateSessionExchangeResponseData>
+
+/**
+ *
+ */
+public typealias OrganizationCreateResponse = StytchResult<OrganizationCreateResponseData>
