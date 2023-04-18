@@ -80,6 +80,10 @@ the near future! The full list of currently supported products is as follows:
     - Get or fetch the current user object (sync/cached or async options available)
 - [Organizations](sdk/src/main/java/com/stytch/sdk/b2b/organization/README.md)
     - Get or fetch the current user's organization
+- [Passwords](sdk/src/main/java/com/stytch/sdk/b2b/passwords/README.md)
+  - Authenticate a member by email and password
+  - Check password strength
+  - Reset a password
 
 #### **Async Options**
 

@@ -13,12 +13,13 @@ import com.stytch.exampleapp.b2b.ui.AppScreen
 class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private val passwordsViewModel: PasswordsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(homeViewModel)
+                AppScreen(homeViewModel, passwordsViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {

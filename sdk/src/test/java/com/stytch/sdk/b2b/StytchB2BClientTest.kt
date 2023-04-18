@@ -171,6 +171,18 @@ internal class StytchB2BClientTest {
     }
 
     @Test(expected = IllegalStateException::class)
+    fun `accessing StytchB2BClient passwords throws IllegalStateException when not configured`() {
+        every { StytchB2BApi.isInitialized } returns false
+        StytchB2BClient.passwords
+    }
+
+    @Test
+    fun `accessing StytchB2BClient passwords returns instance of Session when configured`() {
+        every { StytchB2BApi.isInitialized } returns true
+        StytchB2BClient.passwords
+    }
+
+    @Test(expected = IllegalStateException::class)
     fun `handle with coroutines throws IllegalStateException when not configured`() {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns false

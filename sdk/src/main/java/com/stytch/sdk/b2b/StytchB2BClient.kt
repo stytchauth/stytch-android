@@ -9,6 +9,8 @@ import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.organization.Organization
 import com.stytch.sdk.b2b.organization.OrganizationImpl
+import com.stytch.sdk.b2b.passwords.Passwords
+import com.stytch.sdk.b2b.passwords.PasswordsImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
@@ -126,6 +128,25 @@ public object StytchB2BClient {
         dispatchers,
         sessionStorage,
         StytchB2BApi.Member
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [Passwords] interface which provides methods for authenticating passwords, resetting
+     * passwords, and checking the strength of passwords
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
+    public var passwords: Passwords = PasswordsImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchB2BApi.Passwords,
     )
         get() {
             assertInitialized()

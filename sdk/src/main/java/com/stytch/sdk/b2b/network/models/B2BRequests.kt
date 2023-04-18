@@ -35,4 +35,73 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object Passwords {
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "email_address")
+            val emailAddress: String,
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class ResetByEmailStartRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "email_address")
+            val emailAddress: String,
+            @Json(name = "login_redirect_url")
+            val loginRedirectUrl: String?,
+            @Json(name = "reset_password_redirect_url")
+            val resetPasswordRedirectUrl: String?,
+            @Json(name = "reset_password_expiration_minutes")
+            val resetPasswordExpirationMinutes: Int?,
+            @Json(name = "reset_password_template_id")
+            val resetPasswordTemplateId: String?,
+            @Json(name = "code_challenge")
+            val codeChallenge: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class ResetByEmailRequest(
+            @Json(name = "password_reset_token")
+            val passwordResetToken: String,
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "code_verifier")
+            val codeVerifier: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class ResetByExistingPasswordRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "email_address")
+            val emailAddress: String,
+            @Json(name = "existing_password")
+            val existingPassword: String,
+            @Json(name = "new_password")
+            val newPassword: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class ResetBySessionRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            val password: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class StrengthCheckRequest(
+            val email: String?,
+            val password: String,
+        )
+    }
 }
