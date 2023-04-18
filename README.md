@@ -81,17 +81,14 @@ the near future! The full list of currently supported products is as follows:
     - Get or fetch the current user object (sync/cached or async options available)
 - [Organizations](sdk/src/main/java/com/stytch/sdk/b2b/organization/README.md)
     - Get or fetch the current user's organization
-<<<<<<< HEAD
 - [Passwords](sdk/src/main/java/com/stytch/sdk/b2b/passwords/README.md)
   - Authenticate a member by email and password
   - Check password strength
   - Reset a password
-=======
 - [Discovery](sdk/src/main/java/com/stytch/sdk/b2b/discovery/README.md)
   - Create Organizations
   - Exchange sessions between Organizations
   - Find Organizations
->>>>>>> a3b22a1 (Add scaffolding for Discovery endpoints)
 
 #### **Async Options**
 
