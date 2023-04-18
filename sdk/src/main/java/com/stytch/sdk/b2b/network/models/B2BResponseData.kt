@@ -278,3 +278,13 @@ public data class OrganizationCreateResponseData(
     @Json(name = "session_token")
     val sessionToken: String,
 )
+
+@JsonClass(generateAdapter = true)
+public data class DiscoveryAuthenticateResponseData(
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>
+)

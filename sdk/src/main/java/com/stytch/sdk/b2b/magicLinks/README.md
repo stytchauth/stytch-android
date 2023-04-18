@@ -6,3 +6,7 @@ Call the `StytchB2BClient.magicLinks.email.loginOrSignup()` method to request an
 If you have connected your deeplink handler with `StytchB2BClient`, the resulting magic link should be detected by your application and automatically authenticated (via the `StytchB2BClient.handle()` method). See the instructions in the [top-level README](/README.md) for information on handling deeplink intents.
 
 If you are not using our deeplink handler, you must parse out the token from the deeplink yourself and pass it to the `StytchB2BClient.magicLinks.authenticate()` method.
+
+Call the `StytchB2BClient.magicLinks.discovery.send()` method to send an invite email to a new Member to join an Organization.
+
+Call the `StytchB2BClient.magicLinks.discovery.authenticate()` method to authenticate a Member with a Magic Link.

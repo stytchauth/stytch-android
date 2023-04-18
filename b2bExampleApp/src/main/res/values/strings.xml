@@ -20,4 +20,5 @@
     <string name="button_strengthCheck">Check New Password Strength</string>
     <string name="discovery">Discovery</string>
     <string name="discovery_discover">Discover Organizations</string>
+    <string name="send_discovery_magic_link">Send Discovery Magic Link</string>
 </resources>

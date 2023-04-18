@@ -7,6 +7,7 @@ import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
+import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
@@ -111,6 +112,36 @@ internal object StytchB2BApi {
                         token = token,
                         codeVerifier = codeVerifier,
                         sessionDurationMinutes = sessionDurationMinutes.toInt()
+                    )
+                )
+            }
+        }
+
+        object Discovery {
+            suspend fun send(
+                email: String,
+                discoveryRedirectUrl: String?,
+                codeChallenge: String,
+                loginTemplateId: String?,
+            ): StytchResult<BasicData> = safeB2BApiCall {
+                apiService.sendDiscoveryMagicLink(
+                    B2BRequests.MagicLinks.Discovery.SendRequest(
+                        email = email,
+                        discoveryRedirectUrl = discoveryRedirectUrl,
+                        codeChallenge = codeChallenge,
+                        loginTemplateId = loginTemplateId
+                    )
+                )
+            }
+
+            suspend fun authenticate(
+                token: String,
+                codeVerifier: String,
+            ): StytchResult<DiscoveryAuthenticateResponseData> = safeB2BApiCall {
+                apiService.authenticateDiscoveryMagicLink(
+                    B2BRequests.MagicLinks.Discovery.AuthenticateRequest(
+                        token = token,
+                        codeVerifier = codeVerifier
                     )
                 )
             }

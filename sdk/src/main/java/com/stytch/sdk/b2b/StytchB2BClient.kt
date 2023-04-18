@@ -76,7 +76,8 @@ public object StytchB2BClient {
         dispatchers,
         sessionStorage,
         StorageHelper,
-        StytchB2BApi.MagicLinks.Email
+        StytchB2BApi.MagicLinks.Email,
+        StytchB2BApi.MagicLinks.Discovery,
     )
         get() {
             assertInitialized()
@@ -196,6 +197,15 @@ public object StytchB2BClient {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
                         magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                    )
+                }
+                B2BTokenType.DISCOVERY -> {
+                    DeeplinkHandledStatus.Handled(
+                        magicLinks.discovery.authenticate(
+                            B2BMagicLinks.DiscoveryMagicLinks.AuthenticateParameters(
+                                token = token
+                            )
+                        )
                     )
                 }
                 else -> {

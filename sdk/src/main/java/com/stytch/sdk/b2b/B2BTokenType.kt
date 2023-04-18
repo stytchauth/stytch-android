@@ -13,6 +13,11 @@ public enum class B2BTokenType : TokenType {
     MULTI_TENANT_MAGIC_LINKS,
 
     /**
+     * A B2B Discovery Magic Link deeplink
+     */
+    DISCOVERY,
+
+    /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method
      */
     UNKNOWN;

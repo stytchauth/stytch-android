@@ -93,6 +93,48 @@ internal class StytchB2BApiServiceTest {
         }
     }
 
+    @Test
+    fun `check magic links discovery send request`() {
+        runBlocking {
+            val parameters = B2BRequests.MagicLinks.Discovery.SendRequest(
+                email = "email@address.com",
+                discoveryRedirectUrl = LOGIN_MAGIC_LINK,
+                codeChallenge = "code-challenge",
+                loginTemplateId = "login-template-id"
+            )
+            requestIgnoringResponseException {
+                apiService.sendDiscoveryMagicLink(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/magic_links/email/discovery/send",
+                expectedBody = mapOf(
+                    "email_address" to parameters.email,
+                    "discovery_redirect_url" to parameters.discoveryRedirectUrl,
+                    "pkce_code_challenge" to parameters.codeChallenge,
+                    "login_template_id" to parameters.loginTemplateId,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check magic links discovery authenticate request`() {
+        runBlocking {
+            val parameters = B2BRequests.MagicLinks.Discovery.AuthenticateRequest(
+                token = "token",
+                codeVerifier = "123",
+            )
+            requestIgnoringResponseException {
+                apiService.authenticateDiscoveryMagicLink(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/magic_links/discovery/authenticate",
+                expectedBody = mapOf(
+                    "discovery_magic_links_token" to parameters.token,
+                    "pkce_code_verifier" to parameters.codeVerifier,
+                )
+            )
+        }
+    }
+
     // endregion MagicLinks
 
     // region Sessions

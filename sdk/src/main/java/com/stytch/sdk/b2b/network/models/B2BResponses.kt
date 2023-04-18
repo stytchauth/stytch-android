@@ -8,6 +8,11 @@ internal object B2BResponses {
     object MagicLinks {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(data: B2BEMLAuthenticateData) : StytchDataResponse<B2BEMLAuthenticateData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DiscoveryAuthenticateResponse(
+            data: DiscoveryAuthenticateResponseData
+        ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
     }
 
     object Sessions {

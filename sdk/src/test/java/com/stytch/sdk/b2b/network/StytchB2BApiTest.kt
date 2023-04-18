@@ -81,6 +81,22 @@ internal class StytchB2BApiTest {
     }
 
     @Test
+    fun `StytchB2BApi MagicLinks Discovery send calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.MagicLinks.Discovery.send("", "", "", "")
+        coVerify { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi MagicLinks Discovery authenticate calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.authenticateDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.MagicLinks.Discovery.authenticate("", "")
+        coVerify { StytchB2BApi.apiService.authenticateDiscoveryMagicLink(any()) }
+    }
+
+    @Test
     fun `StytchB2BApi Sessions authenticate calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)

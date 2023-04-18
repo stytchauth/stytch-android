@@ -25,6 +25,28 @@ internal object B2BRequests {
             )
         }
 
+        object Discovery {
+            @JsonClass(generateAdapter = true)
+            data class SendRequest(
+                @Json(name = "email_address")
+                val email: String,
+                @Json(name = "discovery_redirect_url")
+                val discoveryRedirectUrl: String? = null,
+                @Json(name = "pkce_code_challenge")
+                val codeChallenge: String,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String? = null,
+            )
+
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                @Json(name = "discovery_magic_links_token")
+                val token: String,
+                @Json(name = "pkce_code_verifier")
+                val codeVerifier: String,
+            )
+        }
+
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "magic_links_token")

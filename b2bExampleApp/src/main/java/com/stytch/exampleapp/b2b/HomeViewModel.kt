@@ -68,6 +68,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun sendDiscoveryMagicLink() {
+        if (emailIsValid) {
+            showEmailError = false
+            viewModelScope.launch {
+                _loadingState.value = true
+                _currentResponse.value = StytchB2BClient.magicLinks.discovery.send(
+                    B2BMagicLinks.DiscoveryMagicLinks.SendParameters(
+                        emailAddress = emailState.text,
+                    )
+                ).toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
+        } else {
+            showEmailError = true
+        }
+    }
+
     fun revokeSession() {
         viewModelScope.launch {
             _loadingState.value = true

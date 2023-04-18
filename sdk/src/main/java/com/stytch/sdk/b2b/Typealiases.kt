@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b
 
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
+import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
@@ -56,3 +57,8 @@ public typealias IntermediateSessionExchangeResponse = StytchResult<Intermediate
  * Type alias for StytchResult<OrganizationCreateResponseData> used for discovery.create() responses
  */
 public typealias OrganizationCreateResponse = StytchResult<OrganizationCreateResponseData>
+
+/**
+ * Type alias for StytchResult<DiscoveryAuthenticateResponseData> used for magicLinks.discovery.authenticate() responses
+ */
+public typealias DiscoveryEMLAuthResponse = StytchResult<DiscoveryAuthenticateResponseData>
