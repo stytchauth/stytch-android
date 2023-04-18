@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
 
-
 class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()

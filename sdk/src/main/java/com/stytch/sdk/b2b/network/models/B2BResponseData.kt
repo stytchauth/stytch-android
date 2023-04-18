@@ -224,6 +224,7 @@ public data class StrengthCheckResponseData(
     )
 }
 
+@JsonClass(generateAdapter = true)
 public data class DiscoveredOrganizationsResponseData(
     @Json(name = "email_address")
     val emailAddress: String,

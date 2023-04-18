@@ -18,7 +18,8 @@ import com.stytch.exampleapp.b2b.R
 
 @Composable
 fun DiscoveryScreen(
-    viewModel: DiscoveryViewModel
+    viewModel: DiscoveryViewModel,
+    intermediateSessionToken: String = ""
 ) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
@@ -34,6 +35,12 @@ fun DiscoveryScreen(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.discovery_discover),
                 onClick = viewModel::organizations
+            )
+
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.create_organization),
+                onClick = { viewModel.createOrganization(intermediateSessionToken) }
             )
         }
         Column(

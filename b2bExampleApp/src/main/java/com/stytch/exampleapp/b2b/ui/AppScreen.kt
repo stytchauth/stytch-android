@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ fun AppScreen(
     discoveryViewModel: DiscoveryViewModel,
 ) {
     val navController = rememberNavController()
+    val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
     Scaffold(
         modifier = Modifier
             .fillMaxHeight()
@@ -86,8 +88,12 @@ fun AppScreen(
         content = { padding ->
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
                 composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
-                composable(Screen.Passwords.route) { PasswordsScreen(viewModel = passwordsViewModel) }
-                composable(Screen.Discovery.route) { DiscoveryScreen(viewModel = discoveryViewModel) }
+                composable(Screen.Discovery.route) {
+                    DiscoveryScreen(
+                        viewModel = discoveryViewModel,
+                        intermediateSessionToken = intermediateSessionTokenValue.value
+                    )
+                }
             }
         }
     )

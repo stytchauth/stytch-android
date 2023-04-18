@@ -26,6 +26,16 @@ class DiscoveryViewModel : ViewModel() {
         }
     }
 
+    fun createOrganization(intermediateSessionToken: String) {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.discovery.create(
+                    Discovery.CreateOrganizationParameters(
+                        intermediateSessionToken = intermediateSessionToken
+                    )
+                ).toFriendlyDisplay()
+        }
+    }
     private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
         return launch {
             _loadingState.value = true
