@@ -135,6 +135,12 @@ public object StytchB2BClient {
         }
         internal set
 
+    /**
+     * Exposes an instance of the [Passwords] interface which provides methods for authenticating passwords, resetting
+     * passwords, and checking the strength of passwords
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
     public var passwords: Passwords = PasswordsImpl(
         externalScope,
         dispatchers,
