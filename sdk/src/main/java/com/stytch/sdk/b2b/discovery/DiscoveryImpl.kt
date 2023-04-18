@@ -22,7 +22,7 @@ internal class DiscoveryImpl(
         }
     }
 
-    override suspend fun organizations(
+    override fun organizations(
         parameters: Discovery.DiscoverOrganizationsParameters,
         callback: (DiscoverOrganizationsResponse) -> Unit,
     ) {
@@ -44,7 +44,7 @@ internal class DiscoveryImpl(
         }
     }
 
-    override suspend fun exchangeSession(
+    override fun exchangeSession(
         parameters: Discovery.SessionExchangeParameters,
         callback: (IntermediateSessionExchangeResponse) -> Unit,
     ) {
@@ -66,7 +66,7 @@ internal class DiscoveryImpl(
         }
     }
 
-    override suspend fun create(
+    override fun create(
         parameters: Discovery.CreateOrganizationParameters,
         callback: (OrganizationCreateResponse) -> Unit,
     ) {

@@ -173,6 +173,40 @@ internal class StytchB2BApiTest {
         coVerify { StytchB2BApi.apiService.passwordStrengthCheck(any()) }
     }
 
+    @Test
+    fun `StytchB2BApi Discovery discoverOrganizations calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.discoverOrganizations(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Discovery.discoverOrganizations(null)
+        coVerify { StytchB2BApi.apiService.discoverOrganizations(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Discovery exchangeSession calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.intermediateSessionExchange(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Discovery.exchangeSession(
+            intermediateSessionToken = "",
+            organizationId = "",
+            sessionDurationMinutes = 30U
+        )
+        coVerify { StytchB2BApi.apiService.intermediateSessionExchange(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Discovery createOrganization calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.createOrganization(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Discovery.createOrganization(
+            intermediateSessionToken = "",
+            organizationLogoUrl = "",
+            organizationSlug = "",
+            organizationName = "",
+            sessionDurationMinutes = 30U
+        )
+        coVerify { StytchB2BApi.apiService.createOrganization(any()) }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() = runTest {
         every { StytchB2BApi.isInitialized } returns false

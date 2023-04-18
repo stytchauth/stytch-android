@@ -144,7 +144,6 @@ internal class StytchB2BApiServiceTest {
     // endregion Organizations
 
     //region Passwords
-
     @Test
     fun `check Passwords authenticatePassword request`() {
         runBlocking {
@@ -283,6 +282,71 @@ internal class StytchB2BApiServiceTest {
         }
     }
     //endregion Passwords
+
+    //region Discovery
+    @Test
+    fun `check Discovery discoverOrganizations request`() {
+        runBlocking {
+            val parameters = B2BRequests.Discovery.MembershipsRequest(
+                intermediateSessionToken = "intermediate-session-token"
+            )
+            requestIgnoringResponseException {
+                apiService.discoverOrganizations(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/discovery/organizations",
+                expectedBody = mapOf(
+                    "intermediate_session_token" to parameters.intermediateSessionToken
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Discovery intermediateSessionExchange request`() {
+        runBlocking {
+            val parameters = B2BRequests.Discovery.SessionExchangeRequest(
+                intermediateSessionToken = "intermediate-session-token",
+                organizationId = "organization-id",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.intermediateSessionExchange(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/discovery/intermediate_sessions/exchange",
+                expectedBody = mapOf(
+                    "intermediate_session_token" to parameters.intermediateSessionToken,
+                    "organization_id" to parameters.organizationId,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check Discovery createOrganization request`() {
+        runBlocking {
+            val parameters = B2BRequests.Discovery.CreateRequest(
+                intermediateSessionToken = "intermediate-session-token",
+                organizationName = "organization-name",
+                organizationSlug = "organization-slug",
+                organizationLogoUrl = "organization-logo-url",
+                sessionDurationMinutes = 30
+            )
+            requestIgnoringResponseException {
+                apiService.createOrganization(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/discovery/organizations/create",
+                expectedBody = mapOf(
+                    "intermediate_session_token" to parameters.intermediateSessionToken,
+                    "organization_name" to parameters.organizationName,
+                    "organization_slug" to parameters.organizationSlug,
+                    "organization_logo_url" to parameters.organizationLogoUrl,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                )
+            )
+        }
+    }
+    //endregion Discovery
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

@@ -24,7 +24,7 @@ public interface Discovery {
     /**
      *
      */
-    public suspend fun organizations(
+    public fun organizations(
         parameters: DiscoverOrganizationsParameters,
         callback: (DiscoverOrganizationsResponse) -> Unit
     )
@@ -46,7 +46,7 @@ public interface Discovery {
     /**
      *
      */
-    public suspend fun exchangeSession(
+    public fun exchangeSession(
         parameters: SessionExchangeParameters,
         callback: (IntermediateSessionExchangeResponse) -> Unit
     )
@@ -70,7 +70,7 @@ public interface Discovery {
     /**
      *
      */
-    public suspend fun create(
+    public fun create(
         parameters: CreateOrganizationParameters,
         callback: (OrganizationCreateResponse) -> Unit
     )
