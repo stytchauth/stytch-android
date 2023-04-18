@@ -16,7 +16,6 @@ import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -112,7 +111,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     // Hacking this in for organization discovery stuff
                     ((result.response as? StytchResult.Success<Any>)?.value as? DiscoveryAuthenticateResponseData)
                         ?.let {
-                            Timber.d("INTERMEDIATE = ${it.intermediateSessionToken}")
                             _intermediateSessionToken.value = it.intermediateSessionToken
                         }
                     result.response.toFriendlyDisplay()
