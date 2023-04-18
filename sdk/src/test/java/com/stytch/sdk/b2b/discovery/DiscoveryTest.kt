@@ -29,13 +29,11 @@ internal class DiscoveryTest {
     fun `Discovery CreateOrganizationParameters have correct default values`() {
         val params = Discovery.CreateOrganizationParameters(
             intermediateSessionToken = "intermediate-session-token",
-            organizationName = "organization-name",
-            organizationSlug = "organization-slug",
         )
         val expected = Discovery.CreateOrganizationParameters(
             intermediateSessionToken = "intermediate-session-token",
-            organizationName = "organization-name",
-            organizationSlug = "organization-slug",
+            organizationName = null,
+            organizationSlug = null,
             organizationLogoUrl = null,
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
         )

@@ -18,4 +18,6 @@
     <string name="button_resetBySession">Reset By Session</string>
     <string name="button_authenticate">Authenticate</string>
     <string name="button_strengthCheck">Check New Password Strength</string>
+    <string name="discovery">Discovery</string>
+    <string name="discovery_discover">Discover Organizations</string>
 </resources>

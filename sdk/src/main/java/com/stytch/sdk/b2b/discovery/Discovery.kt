@@ -94,8 +94,8 @@ public interface Discovery {
      */
     public data class CreateOrganizationParameters(
         val intermediateSessionToken: String,
-        val organizationName: String,
-        val organizationSlug: String,
+        val organizationName: String? = null,
+        val organizationSlug: String? = null,
         val organizationLogoUrl: String? = null,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )

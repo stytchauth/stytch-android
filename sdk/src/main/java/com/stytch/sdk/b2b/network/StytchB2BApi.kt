@@ -272,8 +272,8 @@ internal object StytchB2BApi {
         suspend fun createOrganization(
             intermediateSessionToken: String,
             sessionDurationMinutes: UInt,
-            organizationName: String,
-            organizationSlug: String,
+            organizationName: String?,
+            organizationSlug: String?,
             organizationLogoUrl: String?,
         ): StytchResult<OrganizationCreateResponseData> = safeB2BApiCall {
             apiService.createOrganization(

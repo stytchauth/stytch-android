@@ -14,12 +14,13 @@ class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val passwordsViewModel: PasswordsViewModel by viewModels()
+    private val discoveryViewModel: DiscoveryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(homeViewModel, passwordsViewModel)
+                AppScreen(homeViewModel, passwordsViewModel, discoveryViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {

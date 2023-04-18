@@ -128,11 +128,11 @@ internal object B2BRequests {
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
             @Json(name = "organization_name")
-            val organizationName: String,
+            val organizationName: String?,
             @Json(name = "organization_slug")
-            val organizationSlug: String,
+            val organizationSlug: String?,
             @Json(name = "organization_logo_url")
-            val organizationLogoUrl: String? = null,
+            val organizationLogoUrl: String?,
         )
     }
 }

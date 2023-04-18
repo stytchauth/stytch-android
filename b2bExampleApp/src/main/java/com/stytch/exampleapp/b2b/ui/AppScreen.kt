@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.stytch.exampleapp.b2b.DiscoveryViewModel
 import com.stytch.exampleapp.b2b.HomeViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
@@ -37,12 +39,14 @@ import com.stytch.exampleapp.b2b.R
 val items = listOf(
     Screen.Main,
     Screen.Passwords,
+    Screen.Discovery,
 )
 
 @Composable
 fun AppScreen(
     homeViewModel: HomeViewModel,
     passwordsViewModel: PasswordsViewModel,
+    discoveryViewModel: DiscoveryViewModel,
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -83,6 +87,7 @@ fun AppScreen(
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
                 composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
                 composable(Screen.Passwords.route) { PasswordsScreen(viewModel = passwordsViewModel) }
+                composable(Screen.Discovery.route) { DiscoveryScreen(viewModel = discoveryViewModel) }
             }
         }
     )
@@ -108,4 +113,5 @@ fun Toolbar(toolbarText: String) {
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconVector: ImageVector) {
     object Main : Screen("main", R.string.home, Icons.Filled.Home)
     object Passwords : Screen("passwords", R.string.passwords, Icons.Filled.AccountBox)
+    object Discovery : Screen("discovery", R.string.discovery, Icons.Filled.Build)
 }
