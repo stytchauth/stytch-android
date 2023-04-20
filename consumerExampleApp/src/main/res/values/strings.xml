@@ -45,6 +45,7 @@
     <string name="oauth_gitlab">Login With Gitlab</string>
     <string name="oauth_linkedin">Login With Linkedin</string>
     <string name="oauth_microsoft">Login With Microsoft</string>
+    <string name="oauth_salesforce">Login With Salesforce</string>
     <string name="oauth_slack">Login With Slack</string>
     <string name="oauth_twitch">Login With Twitch</string>
     <string name="b2b_name">B2B</string>

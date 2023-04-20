@@ -10,6 +10,7 @@ The [OAuth](OAuth.kt) interface provides methods for authenticating a user via a
 - Google
 - LinkedIn
 - Microsoft
+- Salesforce
 - Slack
 - Twitch
 
