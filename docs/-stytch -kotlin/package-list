@@ -257,6 +257,7 @@ $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/google/#/PointingToDeclarati
 $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/googleOneTap/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/google-one-tap.html
 $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/linkedin/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/linkedin.html
 $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/microsoft/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/microsoft.html
+$dokka.location:com.stytch.sdk.consumer.oauth/OAuth/salesforce/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/salesforce.html
 $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/slack/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/slack.html
 $dokka.location:com.stytch.sdk.consumer.oauth/OAuth/twitch/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.oauth/-o-auth/twitch.html
 $dokka.location:com.stytch.sdk.consumer.otp////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.consumer.otp/index.html
