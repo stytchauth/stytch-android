@@ -73,6 +73,11 @@ public interface OAuth {
     public val microsoft: ThirdParty
 
     /**
+     * The interface for authenticating a user with Salesforce
+     */
+    public val salesforce: ThirdParty
+
+    /**
      * The interface for authenticating a user with Slack
      */
     public val slack: ThirdParty

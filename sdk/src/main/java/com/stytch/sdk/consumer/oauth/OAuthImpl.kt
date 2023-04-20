@@ -39,6 +39,7 @@ internal class OAuthImpl(
     override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "google")
     override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "linkedin")
     override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "microsoft")
+    override val salesforce: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "salesforce")
     override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "slack")
     override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitch")
 

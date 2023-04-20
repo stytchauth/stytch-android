@@ -88,6 +88,7 @@ internal class OAuthImplTest {
             Pair(impl.google, "google"),
             Pair(impl.linkedin, "linkedin"),
             Pair(impl.microsoft, "microsoft"),
+            Pair(impl.salesforce, "salesforce"),
             Pair(impl.slack, "slack"),
             Pair(impl.twitch, "twitch"),
         ).forEach {

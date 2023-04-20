@@ -94,6 +94,11 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_salesforce),
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SALESFORCE) }
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_slack),
                 onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SLACK) }
             )

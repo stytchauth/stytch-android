@@ -26,6 +26,7 @@ enum class OAuthProvider {
     GITLAB,
     LINKEDIN,
     MICROSOFT,
+    SALESFORCE,
     SLACK,
     TWITCH,
 }
@@ -83,6 +84,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             OAuthProvider.GITLAB -> StytchClient.oauth.gitlab.start(startParameters)
             OAuthProvider.LINKEDIN -> StytchClient.oauth.linkedin.start(startParameters)
             OAuthProvider.MICROSOFT -> StytchClient.oauth.microsoft.start(startParameters)
+            OAuthProvider.SALESFORCE -> StytchClient.oauth.salesforce.start(startParameters)
             OAuthProvider.SLACK -> StytchClient.oauth.slack.start(startParameters)
             OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(startParameters)
         }
