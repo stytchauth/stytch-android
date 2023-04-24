@@ -229,6 +229,16 @@ public object StytchB2BClient {
                 B2BTokenType.MULTI_TENANT_PASSWORDS -> {
                     DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
                 }
+                B2BTokenType.SSO -> {
+                    DeeplinkHandledStatus.Handled(
+                        sso.authenticate(
+                            SSO.AuthenticateParams(
+                                ssoToken = token,
+                                sessionDurationMinutes = sessionDurationMinutes
+                            )
+                        )
+                    )
+                }
                 else -> {
                     DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
                 }

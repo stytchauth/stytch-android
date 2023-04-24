@@ -23,6 +23,11 @@ public enum class B2BTokenType : TokenType {
     DISCOVERY,
 
     /**
+     * A SSO (SAML, OIDC) deeplink
+     */
+    SSO,
+
+    /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method
      */
     UNKNOWN;
