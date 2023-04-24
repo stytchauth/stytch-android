@@ -1,12 +1,12 @@
-package com.stytch.sdk.common.oauth
+package com.stytch.sdk.common.sso
 
 import android.app.Activity
 import android.os.Bundle
 
-internal class OAuthReceiverActivity : Activity() {
+internal class SSOReceiverActivity : Activity() {
     override fun onCreate(savedInstanceBundle: Bundle?) {
         super.onCreate(savedInstanceBundle)
-        startActivity(OAuthManagerActivity.createResponseHandlingIntent(this, intent.data))
+        startActivity(SSOManagerActivity.createResponseHandlingIntent(this, intent.data))
         finish()
     }
 }

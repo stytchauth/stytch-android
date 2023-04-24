@@ -3,8 +3,8 @@ package com.stytch.sdk.consumer.oauth
 import android.net.Uri
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.oauth.OAuthManagerActivity
-import com.stytch.sdk.common.oauth.OAuthManagerActivity.Companion.URI_KEY
+import com.stytch.sdk.common.sso.SSOManagerActivity
+import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
 import com.stytch.sdk.consumer.network.StytchApi
 
 internal class ThirdPartyOAuthImpl(
@@ -35,7 +35,7 @@ internal class ThirdPartyOAuthImpl(
             "custom_scopes" to parameters.customScopes?.joinToString(" ")
         )
         val requestUri = buildUri(host, potentialParameters, pkce, token)
-        val intent = OAuthManagerActivity.createBaseIntent(parameters.context)
+        val intent = SSOManagerActivity.createBaseIntent(parameters.context)
         intent.putExtra(URI_KEY, requestUri.toString())
         parameters.context.startActivityForResult(intent, parameters.oAuthRequestIdentifier)
     }

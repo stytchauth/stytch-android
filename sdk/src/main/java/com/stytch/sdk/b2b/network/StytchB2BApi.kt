@@ -1,7 +1,6 @@
 package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
-import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData

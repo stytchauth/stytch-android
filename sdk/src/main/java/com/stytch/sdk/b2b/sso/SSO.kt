@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sso
 
+import android.app.Activity
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.common.Constants
 
@@ -10,10 +11,37 @@ import com.stytch.sdk.common.Constants
  * about SSO.
  *
  * Stytch supports the following SSO protocols:
- * - OIDC
  * - SAML
  */
 public interface SSO {
+    /**
+     * Data class used for wrapping parameters used in SSO start calls
+     * @property context
+     * @property ssoAuthRequestIdentifier
+     * @property connectionId The ID of the SSO connection to use for the login flow.
+     * @property loginRedirectUrl The URL Stytch redirects to after the SSO flow is completed for a Member that already
+     * exists. This URL should be a route in your application which will run sso.authenticate (see below) and finish the
+     * login. The URL must be configured as a Login URL in the Redirect URL page. If the field is not specified, the
+     * default Login URL will be used.
+     * @property signupRedirectUrl The URL Stytch redirects to after the SSO flow is completed for a Member that does
+     * not yet exist. This URL should be a route in your application which will run sso.authenticate (see below) and
+     * finish the login. The URL must be configured as a Sign Up URL in the Redirect URL page. If the field is not
+     * specified, the default Sign Up URL will be used.
+     */
+    public data class StartParams(
+        val context: Activity,
+        val ssoAuthRequestIdentifier: Int,
+        val connectionId: String,
+        val loginRedirectUrl: String? = null,
+        val signupRedirectUrl: String? = null,
+    )
+
+    /**
+     * Start an SSO authentication flow
+     * @param params required for beginning an SSO authentication flow
+     */
+    public fun start(params: StartParams)
+
     /**
      * Data class used for wrapping parameters used in SSO Authenticate calls
      * @property ssoToken the SSO token to authenticate

@@ -1,13 +1,17 @@
 package com.stytch.sdk.b2b.sso
 
+import android.net.Uri
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.sso.SSOManagerActivity
+import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,6 +23,32 @@ internal class SSOImpl(
     private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.SSO
 ) : SSO {
+    internal fun buildUri(host: String, parameters: Map<String, String?>): Uri =
+        Uri.parse("${host}public/sso/start")
+            .buildUpon()
+            .apply {
+                parameters.forEach {
+                    if (it.value != null) {
+                        appendQueryParameter(it.key, it.value)
+                    }
+                }
+            }
+            .build()
+    override fun start(params: SSO.StartParams) {
+        val host = if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+        val potentialParameters = mapOf(
+            "connection_id" to params.connectionId,
+            "public_token" to StytchApi.publicToken,
+            "pkce_code_challenge" to storageHelper.generateHashedCodeChallenge().second,
+            "login_redirect_url" to params.loginRedirectUrl,
+            "signup_redirect_url" to params.signupRedirectUrl,
+        )
+        val requestUri = buildUri(host, potentialParameters)
+        val intent = SSOManagerActivity.createBaseIntent(params.context)
+        intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
+        params.context.startActivityForResult(intent, params.ssoAuthRequestIdentifier)
+    }
+
     override suspend fun authenticate(params: SSO.AuthenticateParams): SSOAuthenticateResponse {
         val result: SSOAuthenticateResponse
         withContext(dispatchers.io) {

@@ -5,7 +5,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.common.oauth.GoogleOneTapProviderImpl
+import com.stytch.sdk.common.sso.GoogleOneTapProviderImpl
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi

@@ -12,7 +12,6 @@ import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.StytchDataResponse
 
 /**
  * Type alias for StytchResult<IB2BAuthData> used for authentication responses

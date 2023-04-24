@@ -1,4 +1,4 @@
-package com.stytch.sdk.common.oauth
+package com.stytch.sdk.common.sso
 
 import android.app.Activity
 import android.content.Context

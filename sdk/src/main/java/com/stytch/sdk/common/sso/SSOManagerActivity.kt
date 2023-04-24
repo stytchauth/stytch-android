@@ -1,4 +1,4 @@
-package com.stytch.sdk.common.oauth
+package com.stytch.sdk.common.sso
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -7,10 +7,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
-import com.stytch.sdk.common.oauth.OAuthError.Companion.OAUTH_EXCEPTION
+import com.stytch.sdk.common.sso.SSOError.Companion.SSO_EXCEPTION
 
 /**
- * State management activity for OAuth flow. This is based on the functionality of AppAuth-Android
+ * State management activity for OAuth/SSO flows. This is based on the functionality of AppAuth-Android
  *
  * The following diagram illustrates the operation of the activity:
  *
@@ -19,7 +19,7 @@ import com.stytch.sdk.common.oauth.OAuthError.Companion.OAUTH_EXCEPTION
  *
  * +------------+            +---------------+      +----------------+      +--------------+
  * |            |     (1)    |               | (2)  |                | (S1) |              |
- * | Initiating +----------->| OAuthManager  +----->| Authorization  +----->| OAuthReceiver|
+ * | Initiating +----------->|   SSOManager  +----->| Authorization  +----->|  SSOReceiver |
  * |  Activity  |            |   Activity    |      |   Activity     |      |   Activity   |
  * |            |<-----------+               |<-----+ (e.g. browser) |      |              |
  * |            | (S3, C2)   |               | (C1) |                |      |              |
@@ -28,7 +28,7 @@ import com.stytch.sdk.common.oauth.OAuthError.Companion.OAUTH_EXCEPTION
  *                                   |                   (S2)                       |
  *                                   +----------------------------------------------+
  *
- * - Step 1: ThirdPartyOAuth intiates an intent which launches this (no-ui) activity
+ * - Step 1: ThirdPartyOAuth/SSO intiates an intent which launches this (no-ui) activity
  * - Step 2: This activity determines the best browser to launch the authorization flow in, and launches it. Depending
  *   on user action, we then enter either a cancellation (C)  or success (S) flow
  *
@@ -39,13 +39,13 @@ import com.stytch.sdk.common.oauth.OAuthError.Companion.OAUTH_EXCEPTION
  * if the error returned is one of NO_BROWSER_FOUND or NO_URI_FOUND, or (most likely) do nothing if it is USER_CANCELED.
  *
  * Success (S) flow:
- * When the user completes authorization, the OAuthReceiverActivity is launched (S1), as specified in the manifest. That
+ * When the user completes authorization, the SSOReceiverActivity is launched (S1), as specified in the manifest. That
  * activity will launch this activity (S2) via an intent with CLEAR_TOP set, so that the authorization activity and
  * receiver activity are destroyed leaving this activity at the top of the backstack. This activity will then return a
  * RESULT_OK status for the original intent and pass along the returned URI, then finish itself (S3). The calling
  * activity will listen for this result and use the returned URI to make the authorization call to the Stytch API.
  */
-internal class OAuthManagerActivity : Activity() {
+internal class SSOManagerActivity : Activity() {
     private var authorizationStarted = false
     private lateinit var desiredUri: Uri
 
@@ -60,7 +60,7 @@ internal class OAuthManagerActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
-        // on first run, launch the intent to start the OAuth flow in the browser
+        // on first run, launch the intent to start the OAuth/SSO flow in the browser
         if (!authorizationStarted) {
             try {
                 val browser = BrowserSelector.getBestBrowser(this) ?: throw ActivityNotFoundException()
@@ -76,7 +76,7 @@ internal class OAuthManagerActivity : Activity() {
             }
             return
         }
-        // subsequent runs, we either got the response back from OAuthReceiverActivity or it was cancelled
+        // subsequent runs, we either got the response back from SSOReceiverActivity or it was cancelled
         intent.data?.let { authorizationComplete(it) } ?: authorizationCanceled()
         finish()
     }
@@ -115,19 +115,19 @@ internal class OAuthManagerActivity : Activity() {
 
     private fun authorizationCanceled() {
         val response = Intent()
-        response.putExtra(OAUTH_EXCEPTION, OAuthError.UserCanceled)
+        response.putExtra(SSO_EXCEPTION, SSOError.UserCanceled)
         setResult(RESULT_CANCELED, response)
     }
 
     private fun noBrowserFound() {
         val response = Intent()
-        response.putExtra(OAUTH_EXCEPTION, OAuthError.NoBrowserFound)
+        response.putExtra(SSO_EXCEPTION, SSOError.NoBrowserFound)
         setResult(RESULT_CANCELED, response)
     }
 
     private fun noUriFound() {
         val response = Intent()
-        response.putExtra(OAUTH_EXCEPTION, OAuthError.NoURIFound)
+        response.putExtra(SSO_EXCEPTION, SSOError.NoURIFound)
         setResult(RESULT_CANCELED, response)
     }
 
@@ -140,7 +140,7 @@ internal class OAuthManagerActivity : Activity() {
         }
 
         internal fun createBaseIntent(context: Context): Intent {
-            return Intent(context, OAuthManagerActivity::class.java)
+            return Intent(context, SSOManagerActivity::class.java)
         }
         internal const val URI_KEY = "uri"
         private const val KEY_AUTHORIZATION_STARTED = "authStarted"
