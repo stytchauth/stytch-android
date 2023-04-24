@@ -211,7 +211,7 @@ public object StytchB2BClient {
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
             }
-            when (B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
                         magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
@@ -225,6 +225,9 @@ public object StytchB2BClient {
                             )
                         )
                     )
+                }
+                B2BTokenType.MULTI_TENANT_PASSWORDS -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
                 }
                 else -> {
                     DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
