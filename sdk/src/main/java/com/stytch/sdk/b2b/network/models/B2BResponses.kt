@@ -72,4 +72,11 @@ internal object B2BResponses {
             data: OrganizationCreateResponseData
         ) : StytchDataResponse<OrganizationCreateResponseData>(data)
     }
+
+    object SSO {
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: SSOAuthenticateResponseData
+        ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
+    }
 }

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
+import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
@@ -14,6 +15,7 @@ import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
@@ -314,6 +316,22 @@ internal object StytchB2BApi {
                     organizationName = organizationName,
                     organizationSlug = organizationSlug,
                     organizationLogoUrl = organizationLogoUrl
+                )
+            )
+        }
+    }
+
+    internal object SSO {
+        suspend fun authenticate(
+            ssoToken: String,
+            sessionDurationMinutes: UInt,
+            codeVerifier: String,
+        ): StytchResult<SSOAuthenticateResponseData> = safeB2BApiCall {
+            apiService.ssoAuthenticate(
+                B2BRequests.SSO.AuthenticateRequest(
+                    ssoToken = ssoToken,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    codeVerifier = codeVerifier,
                 )
             )
         }

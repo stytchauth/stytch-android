@@ -8,9 +8,11 @@ import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.StytchDataResponse
 
 /**
  * Type alias for StytchResult<IB2BAuthData> used for authentication responses
@@ -62,3 +64,8 @@ public typealias OrganizationCreateResponse = StytchResult<OrganizationCreateRes
  * Type alias for StytchResult<DiscoveryAuthenticateResponseData> used for magicLinks.discovery.authenticate() responses
  */
 public typealias DiscoveryEMLAuthResponse = StytchResult<DiscoveryAuthenticateResponseData>
+
+/**
+ * Type alias for StytchResult<SSOAuthenticateResponseData> used for sso.authenticate() responses
+ */
+public typealias SSOAuthenticateResponse = StytchResult<SSOAuthenticateResponseData>

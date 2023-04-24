@@ -1,0 +1,49 @@
+package com.stytch.sdk.b2b.sso
+
+import com.stytch.sdk.b2b.SSOAuthenticateResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
+import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+internal class SSOImpl(
+    private val externalScope: CoroutineScope,
+    private val dispatchers: StytchDispatchers,
+    private val sessionStorage: B2BSessionStorage,
+    private val storageHelper: StorageHelper,
+    private val api: StytchB2BApi.SSO
+) : SSO {
+    override suspend fun authenticate(params: SSO.AuthenticateParams): SSOAuthenticateResponse {
+        val result: SSOAuthenticateResponse
+        withContext(dispatchers.io) {
+            val codeVerifier: String
+            try {
+                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+            } catch (ex: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                return@withContext
+            }
+            result = api.authenticate(
+                ssoToken = params.ssoToken,
+                sessionDurationMinutes = params.sessionDurationMinutes,
+                codeVerifier = codeVerifier
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
+        }
+        return result
+    }
+
+    override fun authenticate(params: SSO.AuthenticateParams, callback: (SSOAuthenticateResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = authenticate(params)
+            callback(result)
+        }
+    }
+}

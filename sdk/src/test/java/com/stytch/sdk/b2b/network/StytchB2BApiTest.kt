@@ -223,6 +223,18 @@ internal class StytchB2BApiTest {
         coVerify { StytchB2BApi.apiService.createOrganization(any()) }
     }
 
+    @Test
+    fun `StytchB2BApi SSO authenticate calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.ssoAuthenticate(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.SSO.authenticate(
+            ssoToken = "",
+            sessionDurationMinutes = 30U,
+            codeVerifier = ""
+        )
+        coVerify { StytchB2BApi.apiService.ssoAuthenticate(any()) }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() = runTest {
         every { StytchB2BApi.isInitialized } returns false

@@ -289,3 +289,23 @@ public data class DiscoveryAuthenticateResponseData(
     @Json(name = "discovered_organizations")
     val discoveredOrganizations: List<DiscoveredOrganization>
 )
+
+@JsonClass(generateAdapter = true)
+public data class SSOAuthenticateResponseData(
+    @Json(name = "member_id")
+    val memberId: String,
+    override val member: MemberData,
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "reset_session")
+    val resetSession: Boolean,
+    override val organization: Organization
+) : IB2BAuthData

@@ -16,6 +16,8 @@ import com.stytch.sdk.b2b.passwords.PasswordsImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
+import com.stytch.sdk.b2b.sso.SSO
+import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StorageHelper
@@ -167,6 +169,22 @@ public object StytchB2BClient {
         externalScope,
         dispatchers,
         StytchB2BApi.Discovery,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [SSO] interface which provides methods for authenticating SSO sessions
+     */
+    public var sso: SSO = SSOImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchB2BApi.SSO,
     )
         get() {
             assertInitialized()

@@ -390,6 +390,29 @@ internal class StytchB2BApiServiceTest {
     }
     //endregion Discovery
 
+    //region SSO
+    @Test
+    fun `check SSO authenticate request`() {
+        runBlocking {
+            val parameters = B2BRequests.SSO.AuthenticateRequest(
+                ssoToken = "sso-token",
+                sessionDurationMinutes = 30,
+                codeVerifier = "code-verifier"
+            )
+            requestIgnoringResponseException {
+                apiService.ssoAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/sso/authenticate",
+                expectedBody = mapOf(
+                    "sso_token" to parameters.ssoToken,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "pkce_code_verifier" to parameters.codeVerifier,
+                )
+            )
+        }
+    }
+    //endregion
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
