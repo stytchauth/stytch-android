@@ -201,7 +201,7 @@ internal class StytchB2BClientTest {
     }
 
     @Test
-    fun `accessing StytchB2BClient sso returns instance of Discovery when configured`() {
+    fun `accessing StytchB2BClient sso returns instance of SSO when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.sso
     }

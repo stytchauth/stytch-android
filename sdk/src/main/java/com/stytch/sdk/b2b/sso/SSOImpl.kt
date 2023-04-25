@@ -33,6 +33,7 @@ internal class SSOImpl(
                 }
             }
             .build()
+
     override fun start(params: SSO.StartParams) {
         val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
         val potentialParameters = mapOf(
