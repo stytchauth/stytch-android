@@ -61,6 +61,12 @@ internal object StytchB2BApi {
             return ::publicToken.isInitialized && ::deviceInfo.isInitialized
         }
 
+    internal val isTestToken: Boolean
+        get() {
+            StytchB2BClient.assertInitialized()
+            return publicToken.contains("public-token-test")
+        }
+
     @VisibleForTesting
     internal val apiService: StytchB2BApiService by lazy {
         StytchB2BClient.assertInitialized()

@@ -6,8 +6,8 @@ import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import kotlinx.coroutines.flow.MutableStateFlow

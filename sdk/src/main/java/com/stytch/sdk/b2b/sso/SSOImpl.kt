@@ -11,7 +11,6 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sso.SSOManagerActivity
-import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,10 +34,10 @@ internal class SSOImpl(
             }
             .build()
     override fun start(params: SSO.StartParams) {
-        val host = if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+        val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
         val potentialParameters = mapOf(
             "connection_id" to params.connectionId,
-            "public_token" to StytchApi.publicToken,
+            "public_token" to StytchB2BApi.publicToken,
             "pkce_code_challenge" to storageHelper.generateHashedCodeChallenge().second,
             "login_redirect_url" to params.loginRedirectUrl,
             "signup_redirect_url" to params.signupRedirectUrl,
