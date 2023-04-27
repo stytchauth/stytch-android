@@ -16,6 +16,8 @@ import com.stytch.sdk.b2b.passwords.PasswordsImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
+import com.stytch.sdk.b2b.sso.SSO
+import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
@@ -176,6 +178,22 @@ public object StytchB2BClient {
         internal set
 
     /**
+     * Exposes an instance of the [SSO] interface which provides methods for authenticating SSO sessions
+     */
+    public var sso: SSO = SSOImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StorageHelper,
+        StytchB2BApi.SSO,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: B2B Email Magic Links.
      *
@@ -194,7 +212,7 @@ public object StytchB2BClient {
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
             }
-            when (B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
@@ -209,6 +227,19 @@ public object StytchB2BClient {
                                 B2BMagicLinks.DiscoveryAuthenticateParameters(
                                     token = token
                                 )
+                            )
+                        )
+                    )
+                }
+                B2BTokenType.MULTI_TENANT_PASSWORDS -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
+                }
+                B2BTokenType.SSO -> {
+                    DeeplinkHandledStatus.Handled(
+                        sso.authenticate(
+                            SSO.AuthenticateParams(
+                                ssoToken = token,
+                                sessionDurationMinutes = sessionDurationMinutes
                             )
                         )
                     )

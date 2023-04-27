@@ -22,4 +22,7 @@
     <string name="discovery_discover">Discover Organizations</string>
     <string name="send_discovery_magic_link">Send Discovery Magic Link</string>
     <string name="create_organization">Create an organization</string>
+    <string name="sso">SSO</string>
+    <string name="sso_connection_id">Connection ID</string>
+    <string name="sso_start">Start SSO Flow</string>
 </resources>

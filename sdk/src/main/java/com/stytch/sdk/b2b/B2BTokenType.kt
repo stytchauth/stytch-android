@@ -13,9 +13,19 @@ public enum class B2BTokenType : TokenType {
     MULTI_TENANT_MAGIC_LINKS,
 
     /**
+     * A B2B Password reset deeplink
+     */
+    MULTI_TENANT_PASSWORDS,
+
+    /**
      * A B2B Discovery Magic Link deeplink
      */
     DISCOVERY,
+
+    /**
+     * A SSO (SAML, OIDC) deeplink
+     */
+    SSO,
 
     /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method

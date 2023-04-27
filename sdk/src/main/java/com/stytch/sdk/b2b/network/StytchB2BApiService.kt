@@ -98,4 +98,11 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.Discovery.CreateRequest
     ): B2BResponses.Discovery.CreateOrganizationResponse
     //endregion Discovery
+
+    //region SSO
+    @POST("b2b/sso/authenticate")
+    suspend fun ssoAuthenticate(
+        @Body request: B2BRequests.SSO.AuthenticateRequest
+    ): B2BResponses.SSO.AuthenticateResponse
+    //endregion SSO
 }

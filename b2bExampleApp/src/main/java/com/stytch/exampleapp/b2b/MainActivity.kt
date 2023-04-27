@@ -9,17 +9,19 @@ import androidx.fragment.app.FragmentActivity
 import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
 
+internal const val SSO_REQUEST_ID = 2
 class MainActivity : FragmentActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val passwordsViewModel: PasswordsViewModel by viewModels()
     private val discoveryViewModel: DiscoveryViewModel by viewModels()
+    private val ssoViewModel: SSOViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(homeViewModel, passwordsViewModel, discoveryViewModel)
+                AppScreen(homeViewModel, passwordsViewModel, discoveryViewModel, ssoViewModel)
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {
@@ -31,6 +33,12 @@ class MainActivity : FragmentActivity() {
         intent.data?.let { appLinkData ->
             Toast.makeText(this, getString(R.string.deeplink_received_toast), Toast.LENGTH_LONG).show()
             homeViewModel.handleUri(appLinkData)
+        }
+    }
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            SSO_REQUEST_ID -> { ssoViewModel.authenticateSSO(resultCode = resultCode, intent = data) }
         }
     }
 }

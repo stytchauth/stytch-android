@@ -14,6 +14,7 @@ import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
@@ -58,6 +59,12 @@ internal object StytchB2BApi {
     internal val isInitialized: Boolean
         get() {
             return ::publicToken.isInitialized && ::deviceInfo.isInitialized
+        }
+
+    internal val isTestToken: Boolean
+        get() {
+            StytchB2BClient.assertInitialized()
+            return publicToken.contains("public-token-test")
         }
 
     @VisibleForTesting
@@ -314,6 +321,22 @@ internal object StytchB2BApi {
                     organizationName = organizationName,
                     organizationSlug = organizationSlug,
                     organizationLogoUrl = organizationLogoUrl
+                )
+            )
+        }
+    }
+
+    internal object SSO {
+        suspend fun authenticate(
+            ssoToken: String,
+            sessionDurationMinutes: UInt,
+            codeVerifier: String,
+        ): StytchResult<SSOAuthenticateResponseData> = safeB2BApiCall {
+            apiService.ssoAuthenticate(
+                B2BRequests.SSO.AuthenticateRequest(
+                    ssoToken = ssoToken,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    codeVerifier = codeVerifier,
                 )
             )
         }

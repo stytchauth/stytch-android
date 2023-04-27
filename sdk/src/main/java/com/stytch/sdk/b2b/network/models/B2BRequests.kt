@@ -157,4 +157,16 @@ internal object B2BRequests {
             val organizationLogoUrl: String?,
         )
     }
+
+    object SSO {
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "sso_token")
+            val ssoToken: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "pkce_code_verifier")
+            val codeVerifier: String,
+        )
+    }
 }
