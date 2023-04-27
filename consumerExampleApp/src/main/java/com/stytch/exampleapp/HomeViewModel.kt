@@ -57,7 +57,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             _loadingState.value = true
             _currentResponse.value = when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
                 is DeeplinkHandledStatus.NotHandled -> result.reason
-                is DeeplinkHandledStatus.Handled -> result.response.toFriendlyDisplay()
+                is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                 // This only happens for password reset deeplinks
                 is DeeplinkHandledStatus.ManualHandlingRequired ->
                     "Password reset token retrieved, initiate password reset flow"

@@ -18,7 +18,7 @@ internal interface StytchApiService : ApiService {
     @POST("magic_links/email/login_or_create")
     suspend fun loginOrCreateUserByEmail(
         @Body request: ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest
-    ): CommonResponses.MagicLinks.Email.LoginOrCreateUserResponse
+    ): CommonResponses.BasicResponse
 
     @POST("magic_links/email/send/primary")
     suspend fun sendEmailMagicLinkPrimary(

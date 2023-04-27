@@ -79,6 +79,11 @@ fun MainScreen(
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.send_discovery_magic_link),
+                onClick = viewModel::sendDiscoveryMagicLink
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.revoke_session),
                 onClick = { viewModel.revokeSession() }
             )

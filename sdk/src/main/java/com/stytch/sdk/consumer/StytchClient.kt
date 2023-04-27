@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
@@ -228,12 +229,16 @@ public object StytchClient {
             when (ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 ConsumerTokenType.MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
-                        magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        DeeplinkResponse.Auth(
+                            magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        )
                     )
                 }
                 ConsumerTokenType.OAUTH -> {
                     DeeplinkHandledStatus.Handled(
-                        oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
+                        DeeplinkResponse.Auth(
+                            oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
+                        )
                     )
                 }
                 ConsumerTokenType.PASSWORD_RESET -> {

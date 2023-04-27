@@ -10,7 +10,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +27,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
+
+    private val _intermediateSessionToken = MutableStateFlow("")
+    val intermediateSessionToken: StateFlow<String>
+        get() = _intermediateSessionToken
 
     var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
     var emailState by mutableStateOf(TextFieldValue(""))
@@ -68,6 +75,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun sendDiscoveryMagicLink() {
+        if (emailIsValid) {
+            showEmailError = false
+            viewModelScope.launch {
+                _loadingState.value = true
+                _currentResponse.value = StytchB2BClient.magicLinks.email.discoverySend(
+                    B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
+                        emailAddress = emailState.text,
+                    )
+                ).toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
+        } else {
+            showEmailError = true
+        }
+    }
+
     fun revokeSession() {
         viewModelScope.launch {
             _loadingState.value = true
@@ -83,7 +108,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val result = StytchB2BClient.handle(uri = uri, sessionDurationMinutes = 60u)
             _currentResponse.value = when (result) {
                 is DeeplinkHandledStatus.NotHandled -> result.reason
-                is DeeplinkHandledStatus.Handled -> result.response.toFriendlyDisplay()
+                is DeeplinkHandledStatus.Handled -> {
+                    // Hacking this in for organization discovery stuff
+                    (result.response as? DeeplinkResponse.Discovery)
+                        ?.let {
+                            (it.result as? StytchResult.Success)?.value?.let { response ->
+                                _intermediateSessionToken.value = response.intermediateSessionToken
+                            }
+                        }
+                    result.response.result.toFriendlyDisplay()
+                }
                 // This only happens for password reset deeplinks
                 is DeeplinkHandledStatus.ManualHandlingRequired ->
                     "Password reset token retrieved, initiate password reset flow"

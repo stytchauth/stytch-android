@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
 
@@ -17,6 +18,11 @@ import com.stytch.sdk.common.Constants
  *
  * If you are not using our deeplink handler, you must parse out the token from the deeplink yourself and pass it to
  * the StytchB2BClient.magicLinks.authenticate() method.
+ *
+ * Call the `StytchB2BClient.magicLinks.discovery.send()` method to send an invite email to a new Member to join an
+ * Organization.
+ *
+ * Call the `StytchB2BClient.magicLinks.discovery.authenticate()` method to authenticate a Member with a Magic Link.
  */
 public interface B2BMagicLinks {
 
@@ -57,6 +63,33 @@ public interface B2BMagicLinks {
     )
 
     /**
+     * A data class used for wrapping parameters used for authenticating a discovery magic link
+     * @property token the discovery magic links token
+     */
+    public data class DiscoveryAuthenticateParameters(
+        val token: String,
+    )
+
+    /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @return [DiscoveryEMLAuthResponse]
+     */
+    public suspend fun discoveryAuthenticate(parameters: DiscoveryAuthenticateParameters): DiscoveryEMLAuthResponse
+
+    /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @param callback a callback that receives a [DiscoveryEMLAuthResponse]
+     */
+    public fun discoveryAuthenticate(
+        parameters: DiscoveryAuthenticateParameters,
+        callback: (DiscoveryEMLAuthResponse) -> Unit
+    )
+
+    /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
     public interface EmailMagicLinks {
@@ -71,8 +104,8 @@ public interface B2BMagicLinks {
          * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Login.
-         * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default email
-         * template. The template must be a template using our built-in customizations or a custom HTML email for
+         * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
+         * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
          */
         public data class Parameters(
@@ -102,5 +135,38 @@ public interface B2BMagicLinks {
             parameters: Parameters,
             callback: (response: BaseResponse) -> Unit,
         )
+
+        /**
+         * A data class used for wrapping paramaters used for sending a discovery magic link
+         * @property emailAddress is the account identifier for the account in the form of an Email address where you
+         * wish to receive a magic link to authenticate
+         * @property discoveryRedirectUrl is the url where you should be redirected for organization discovery
+         * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
+         * template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic links - Login.
+         */
+        public data class DiscoverySendParameters(
+            val emailAddress: String,
+            val discoveryRedirectUrl: String? = null,
+            val loginTemplateId: String? = null,
+        )
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send a discovery magic link
+         * @return [BaseResponse]
+         */
+        public suspend fun discoverySend(parameters: DiscoverySendParameters): BaseResponse
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send a discovery magic link
+         * @param callback a callback that receives a [BaseResponse]
+         */
+        public fun discoverySend(parameters: DiscoverySendParameters, callback: (BaseResponse) -> Unit)
     }
 }

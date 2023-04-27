@@ -5,6 +5,7 @@ import android.net.Uri
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
@@ -165,7 +166,7 @@ internal class StytchB2BClientTest {
     }
 
     @Test
-    fun `accessing StytchB2BClient member returns instance of Session when configured`() {
+    fun `accessing StytchB2BClient member returns instance of member when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.member
     }
@@ -180,6 +181,18 @@ internal class StytchB2BClientTest {
     fun `accessing StytchB2BClient passwords returns instance of Session when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.passwords
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchB2BClient discovery throws IllegalStateException when not configured`() {
+        every { StytchB2BApi.isInitialized } returns false
+        StytchB2BClient.discovery
+    }
+
+    @Test
+    fun `accessing StytchB2BClient discovery returns instance of Discovery when configured`() {
+        every { StytchB2BApi.isInitialized } returns true
+        StytchB2BClient.discovery
     }
 
     @Test(expected = IllegalStateException::class)
@@ -217,6 +230,21 @@ internal class StytchB2BClientTest {
     }
 
     @Test
+    fun `handle with coroutines delegates to magiclinks when token is DISCOVERY`() {
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            val mockUri = mockk<Uri> {
+                every { getQueryParameter(any()) } returns "DISCOVERY"
+            }
+            val mockAuthResponse = mockk<DiscoveryEMLAuthResponse>()
+            coEvery { mockMagicLinks.discoveryAuthenticate(any()) } returns mockAuthResponse
+            val response = StytchB2BClient.handle(mockUri, 30U)
+            coVerify { mockMagicLinks.discoveryAuthenticate(any()) }
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Discovery(mockAuthResponse)))
+        }
+    }
+
+    @Test
     fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
@@ -227,7 +255,7 @@ internal class StytchB2BClientTest {
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(mockAuthResponse))
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 

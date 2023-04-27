@@ -8,6 +8,11 @@ internal object B2BResponses {
     object MagicLinks {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(data: B2BEMLAuthenticateData) : StytchDataResponse<B2BEMLAuthenticateData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DiscoveryAuthenticateResponse(
+            data: DiscoveryAuthenticateResponseData
+        ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
     }
 
     object Sessions {
@@ -49,5 +54,22 @@ internal object B2BResponses {
         class StrengthCheckResponse(
             data: StrengthCheckResponseData
         ) : StytchDataResponse<StrengthCheckResponseData>(data)
+    }
+
+    object Discovery {
+        @JsonClass(generateAdapter = true)
+        class DiscoverOrganizationsResponse(
+            data: DiscoveredOrganizationsResponseData
+        ) : StytchDataResponse<DiscoveredOrganizationsResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class SessionExchangeResponse(
+            data: IntermediateSessionExchangeResponseData
+        ) : StytchDataResponse<IntermediateSessionExchangeResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class CreateOrganizationResponse(
+            data: OrganizationCreateResponseData
+        ) : StytchDataResponse<OrganizationCreateResponseData>(data)
     }
 }

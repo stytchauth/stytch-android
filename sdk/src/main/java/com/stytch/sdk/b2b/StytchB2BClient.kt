@@ -2,6 +2,8 @@ package com.stytch.sdk.b2b
 
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.b2b.discovery.Discovery
+import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
@@ -16,6 +18,7 @@ import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
@@ -74,7 +77,8 @@ public object StytchB2BClient {
         dispatchers,
         sessionStorage,
         StorageHelper,
-        StytchB2BApi.MagicLinks.Email
+        StytchB2BApi.MagicLinks.Email,
+        StytchB2BApi.MagicLinks.Discovery,
     )
         get() {
             assertInitialized()
@@ -155,6 +159,23 @@ public object StytchB2BClient {
         internal set
 
     /**
+     * Exposes an instance of the [Discovery] interface which provides methods for creating and discovering
+     * Organizations and exchanging sessions between organizations
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
+    public var discovery: Discovery = DiscoveryImpl(
+        externalScope,
+        dispatchers,
+        StytchB2BApi.Discovery,
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: B2B Email Magic Links.
      *
@@ -176,7 +197,20 @@ public object StytchB2BClient {
             when (B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
-                        magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        DeeplinkResponse.Auth(
+                            magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        )
+                    )
+                }
+                B2BTokenType.DISCOVERY -> {
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Discovery(
+                            magicLinks.discoveryAuthenticate(
+                                B2BMagicLinks.DiscoveryAuthenticateParameters(
+                                    token = token
+                                )
+                            )
+                        )
                     )
                 }
                 else -> {

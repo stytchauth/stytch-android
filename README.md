@@ -73,6 +73,7 @@ the near future! The full list of currently supported products is as follows:
 #### **For B2B Applications:**
 - [Magic links](sdk/src/main/java/com/stytch/sdk/b2b/magicLinks/README.md)
     - Send/authenticate magic links via Email
+    - Send/authenticate discovery magic links via Email
 - [Sessions](sdk/src/main/java/com/stytch/sdk/b2b/sessions/README.md)
     - Authenticate/refresh an existing session
     - Revoke a session (Sign out)
@@ -84,6 +85,10 @@ the near future! The full list of currently supported products is as follows:
   - Authenticate a member by email and password
   - Check password strength
   - Reset a password
+- [Discovery](sdk/src/main/java/com/stytch/sdk/b2b/discovery/README.md)
+  - Create Organizations
+  - Exchange sessions between Organizations
+  - Find Organizations
 
 #### **Async Options**
 

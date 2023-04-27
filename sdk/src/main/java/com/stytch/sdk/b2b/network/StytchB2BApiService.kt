@@ -10,16 +10,26 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 internal interface StytchB2BApiService : ApiService {
-    //region MagicLinks
+    //region Magic Links
     @POST("b2b/magic_links/email/login_or_signup")
     suspend fun loginOrSignupByEmail(
         @Body request: B2BRequests.MagicLinks.Email.LoginOrSignupRequest
-    ): CommonResponses.MagicLinks.Email.LoginOrCreateUserResponse
+    ): CommonResponses.BasicResponse
 
     @POST("b2b/magic_links/authenticate")
     suspend fun authenticate(
         @Body request: B2BRequests.MagicLinks.AuthenticateRequest
     ): B2BResponses.MagicLinks.AuthenticateResponse
+
+    @POST("b2b/magic_links/email/discovery/send")
+    suspend fun sendDiscoveryMagicLink(
+        @Body request: B2BRequests.MagicLinks.Discovery.SendRequest
+    ): CommonResponses.BasicResponse
+
+    @POST("b2b/magic_links/discovery/authenticate")
+    suspend fun authenticateDiscoveryMagicLink(
+        @Body request: B2BRequests.MagicLinks.Discovery.AuthenticateRequest
+    ): B2BResponses.MagicLinks.DiscoveryAuthenticateResponse
     //endregion Magic Links
 
     //region Sessions
@@ -71,4 +81,21 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.Passwords.StrengthCheckRequest
     ): B2BResponses.Passwords.StrengthCheckResponse
     //endregion Passwords
+
+    //region Discovery
+    @POST("b2b/discovery/organizations")
+    suspend fun discoverOrganizations(
+        @Body request: B2BRequests.Discovery.MembershipsRequest
+    ): B2BResponses.Discovery.DiscoverOrganizationsResponse
+
+    @POST("b2b/discovery/intermediate_sessions/exchange")
+    suspend fun intermediateSessionExchange(
+        @Body request: B2BRequests.Discovery.SessionExchangeRequest
+    ): B2BResponses.Discovery.SessionExchangeResponse
+
+    @POST("b2b/discovery/organizations/create")
+    suspend fun createOrganization(
+        @Body request: B2BRequests.Discovery.CreateRequest
+    ): B2BResponses.Discovery.CreateOrganizationResponse
+    //endregion Discovery
 }

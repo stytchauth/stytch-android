@@ -223,3 +223,69 @@ public data class StrengthCheckResponseData(
         val missingCharacters: Int,
     )
 }
+
+@JsonClass(generateAdapter = true)
+public data class DiscoveredOrganizationsResponseData(
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>
+)
+
+@JsonClass(generateAdapter = true)
+public data class DiscoveredOrganization(
+    val organization: Organization,
+    val membership: Membership,
+    @Json(name = "member_authenticated")
+    val memberAuthenticated: Boolean,
+)
+
+@JsonClass(generateAdapter = true)
+public data class Membership(
+    val type: String,
+    val details: MembershipDetails?,
+    val member: MemberData?,
+)
+
+@JsonClass(generateAdapter = true)
+public data class MembershipDetails(
+    val domain: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class IntermediateSessionExchangeResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class OrganizationCreateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    val sessionJwt: String,
+    @Json(name = "session_token")
+    val sessionToken: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class DiscoveryAuthenticateResponseData(
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>
+)
