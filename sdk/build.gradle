@@ -82,7 +82,7 @@ tasks.named("dokkaHtml").configure {
                 "src/main/java/com/stytch/sdk/b2b/organization/README.md",
                 "src/main/java/com/stytch/sdk/b2b/sessions/README.md",
                 "src/main/java/com/stytch/sdk/common/README.md",
-                "src/main/java/com/stytch/sdk/common/oauth/README.md",
+                "src/main/java/com/stytch/sdk/common/sso/README.md",
                 "src/main/java/com/stytch/sdk/consumer/README.md",
                 "src/main/java/com/stytch/sdk/consumer/biometrics/README.md",
                 "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
