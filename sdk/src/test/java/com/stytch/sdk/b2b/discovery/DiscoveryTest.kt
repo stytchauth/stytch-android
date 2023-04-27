@@ -36,6 +36,12 @@ internal class DiscoveryTest {
             organizationSlug = null,
             organizationLogoUrl = null,
             sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            ssoJitProvisioning = null,
+            emailAllowedDomains = null,
+            emailJitProvisioning = null,
+            emailInvites = null,
+            authMethods = null,
+            allowedAuthMethods = null,
         )
         assert(params == expected)
     }

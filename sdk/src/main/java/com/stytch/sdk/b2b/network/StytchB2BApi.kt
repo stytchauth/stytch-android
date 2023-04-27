@@ -2,11 +2,15 @@ package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.EmailInvites
+import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
@@ -16,6 +20,7 @@ import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
+import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
@@ -307,12 +312,19 @@ internal object StytchB2BApi {
             )
         }
 
+        @Suppress("LongParameterList")
         suspend fun createOrganization(
             intermediateSessionToken: String,
             sessionDurationMinutes: UInt,
             organizationName: String?,
             organizationSlug: String?,
             organizationLogoUrl: String?,
+            ssoJitProvisioning: SsoJitProvisioning?,
+            emailAllowedDomains: List<String>?,
+            emailJitProvisioning: EmailJitProvisioning?,
+            emailInvites: EmailInvites?,
+            authMethods: AuthMethods?,
+            allowedAuthMethods: List<AllowedAuthMethods>?,
         ): StytchResult<OrganizationCreateResponseData> = safeB2BApiCall {
             apiService.createOrganization(
                 B2BRequests.Discovery.CreateRequest(
@@ -320,7 +332,13 @@ internal object StytchB2BApi {
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
                     organizationName = organizationName,
                     organizationSlug = organizationSlug,
-                    organizationLogoUrl = organizationLogoUrl
+                    organizationLogoUrl = organizationLogoUrl,
+                    ssoJitProvisioning = ssoJitProvisioning,
+                    emailAllowedDomains = emailAllowedDomains,
+                    emailJitProvisioning = emailJitProvisioning,
+                    emailInvites = emailInvites,
+                    authMethods = authMethods,
+                    allowedAuthMethods = allowedAuthMethods,
                 )
             )
         }

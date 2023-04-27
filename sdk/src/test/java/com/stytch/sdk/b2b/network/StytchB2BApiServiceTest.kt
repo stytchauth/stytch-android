@@ -1,6 +1,11 @@
 package com.stytch.sdk.b2b.network
 
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.EmailInvites
+import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.utils.verifyGet
@@ -372,7 +377,16 @@ internal class StytchB2BApiServiceTest {
                 organizationName = "organization-name",
                 organizationSlug = "organization-slug",
                 organizationLogoUrl = "organization-logo-url",
-                sessionDurationMinutes = 30
+                sessionDurationMinutes = 30,
+                ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
+                emailAllowedDomains = listOf("alloweddomain.com"),
+                emailInvites = EmailInvites.NOT_ALLOWED,
+                emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
+                authMethods = AuthMethods.RESTRICTED,
+                allowedAuthMethods = listOf(
+                    AllowedAuthMethods.MAGIC_LINK,
+                    AllowedAuthMethods.PASSWORD
+                )
             )
             requestIgnoringResponseException {
                 apiService.createOrganization(parameters)
@@ -384,6 +398,12 @@ internal class StytchB2BApiServiceTest {
                     "organization_slug" to parameters.organizationSlug,
                     "organization_logo_url" to parameters.organizationLogoUrl,
                     "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "sso_jit_provisioning" to parameters.ssoJitProvisioning,
+                    "email_allowed_domains" to parameters.emailAllowedDomains,
+                    "email_jit_provisioning" to parameters.emailJitProvisioning,
+                    "email_invites" to parameters.emailInvites,
+                    "auth_methods" to parameters.authMethods,
+                    "allowed_auth_methods" to parameters.allowedAuthMethods?.map { it.jsonName },
                 )
             )
         }

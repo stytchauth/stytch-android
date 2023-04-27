@@ -2,6 +2,12 @@ package com.stytch.sdk.b2b.network
 
 import android.content.Context
 import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.EmailInvites
+import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
@@ -218,9 +224,28 @@ internal class StytchB2BApiTest {
             organizationLogoUrl = "",
             organizationSlug = "",
             organizationName = "",
-            sessionDurationMinutes = 30U
+            sessionDurationMinutes = 30U,
+            ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
+            emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
+            emailInvites = EmailInvites.ALL_ALLOWED,
+            emailAllowedDomains = listOf("allowed-domain.com"),
+            authMethods = AuthMethods.RESTRICTED,
+            allowedAuthMethods = listOf(AllowedAuthMethods.PASSWORD, AllowedAuthMethods.MAGIC_LINK),
         )
-        coVerify { StytchB2BApi.apiService.createOrganization(any()) }
+        val expectedParams = B2BRequests.Discovery.CreateRequest(
+            intermediateSessionToken = "",
+            organizationLogoUrl = "",
+            organizationSlug = "",
+            organizationName = "",
+            sessionDurationMinutes = 30,
+            ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
+            emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
+            emailInvites = EmailInvites.ALL_ALLOWED,
+            emailAllowedDomains = listOf("allowed-domain.com"),
+            authMethods = AuthMethods.RESTRICTED,
+            allowedAuthMethods = listOf(AllowedAuthMethods.PASSWORD, AllowedAuthMethods.MAGIC_LINK),
+        )
+        coVerify { StytchB2BApi.apiService.createOrganization(expectedParams) }
     }
 
     @Test

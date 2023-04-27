@@ -1,5 +1,6 @@
 package com.stytch.sdk.utils
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import okhttp3.mockwebserver.RecordedRequest
@@ -22,8 +23,24 @@ private fun compare(key: String, requestValue: JsonElement, expectedValue: Any?)
             val nestedRequestValue = nestedObject.get(nestedKey)
             compare(nestedKey, nestedRequestValue, expectedValue[nestedKey])
         }
+    } else if (requestValue.isJsonArray) {
+        val array = requestValue.asJsonArray
+        require(expectedValue is List<*>) {
+            "Request contains a list, but expected was not a list"
+        }
+        require(array.size() == expectedValue.size) {
+            "Request contains ${array.size()} elements but expected ${expectedValue.size}"
+        }
+        val expectedAsJsonArray = JsonArray(expectedValue.size).apply {
+            expectedValue.forEach {
+                add(it.toString())
+            }
+        }
+        require(requestValue == expectedAsJsonArray) {
+            "Expected $expectedValue but got $requestValue"
+        }
     } else {
-        // primitives and arrays can be string compared
+        // primitives can be string compared
         require(requestValue.asString == expectedValue.toString()) {
             "Expected $expectedValue but got $requestValue"
         }
