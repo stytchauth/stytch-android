@@ -2,12 +2,18 @@ $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.stytch.sdk.b2b.discovery////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/index.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/index.html
-$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/CreateOrganizationParameters/#kotlin.String#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.UInt/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/-create-organization-parameters.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/CreateOrganizationParameters/#kotlin.String#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.UInt#com.stytch.sdk.b2b.network.models.SsoJitProvisioning?#kotlin.collections.List[kotlin.String]?#com.stytch.sdk.b2b.network.models.EmailJitProvisioning?#com.stytch.sdk.b2b.network.models.EmailInvites?#com.stytch.sdk.b2b.network.models.AuthMethods?#kotlin.collections.List[com.stytch.sdk.b2b.network.models.AllowedAuthMethods]?/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/-create-organization-parameters.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/allowedAuthMethods/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/allowed-auth-methods.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/authMethods/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/auth-methods.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/emailAllowedDomains/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/email-allowed-domains.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/emailInvites/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/email-invites.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/emailJitProvisioning/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/email-jit-provisioning.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/intermediateSessionToken/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/intermediate-session-token.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/organizationLogoUrl/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/organization-logo-url.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/organizationName/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/organization-name.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/organizationSlug/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/organization-slug.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/sessionDurationMinutes/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/session-duration-minutes.html
+$dokka.location:com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters/ssoJitProvisioning/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/sso-jit-provisioning.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.DiscoverOrganizationsParameters///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-discover-organizations-parameters/index.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.DiscoverOrganizationsParameters/DiscoverOrganizationsParameters/#kotlin.String?/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-discover-organizations-parameters/-discover-organizations-parameters.html
 $dokka.location:com.stytch.sdk.b2b.discovery/Discovery.DiscoverOrganizationsParameters/intermediateSessionToken/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-discover-organizations-parameters/intermediate-session-token.html
@@ -127,9 +133,27 @@ $dokka.location:com.stytch.sdk.b2b.sessions/B2BSessions/revoke/#com.stytch.sdk.b
 $dokka.location:com.stytch.sdk.b2b.sessions/B2BSessions/sessionJwt/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sessions/-b2-b-sessions/session-jwt.html
 $dokka.location:com.stytch.sdk.b2b.sessions/B2BSessions/sessionToken/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sessions/-b2-b-sessions/session-token.html
 $dokka.location:com.stytch.sdk.b2b.sessions/B2BSessions/updateSession/#kotlin.String?#kotlin.String?/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sessions/-b2-b-sessions/update-session.html
+$dokka.location:com.stytch.sdk.b2b.sso////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/index.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.AuthenticateParams///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-authenticate-params/index.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.AuthenticateParams/AuthenticateParams/#kotlin.String#kotlin.UInt/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-authenticate-params/-authenticate-params.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.AuthenticateParams/sessionDurationMinutes/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-authenticate-params/session-duration-minutes.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.AuthenticateParams/ssoToken/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-authenticate-params/sso-token.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/index.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/StartParams/#android.app.Activity#kotlin.Int#kotlin.String#kotlin.String?#kotlin.String?/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/-start-params.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/connectionId/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/connection-id.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/context/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/context.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/loginRedirectUrl/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/login-redirect-url.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/signupRedirectUrl/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/signup-redirect-url.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO.StartParams/ssoAuthRequestIdentifier/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/-start-params/sso-auth-request-identifier.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/index.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO/authenticate/#com.stytch.sdk.b2b.sso.SSO.AuthenticateParams#kotlin.Function1[com.stytch.sdk.common.StytchResult[com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData],kotlin.Unit]/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/authenticate.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO/authenticate/#com.stytch.sdk.b2b.sso.SSO.AuthenticateParams/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/authenticate.html
+$dokka.location:com.stytch.sdk.b2b.sso/SSO/start/#com.stytch.sdk.b2b.sso.SSO.StartParams/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b.sso/-s-s-o/start.html
 $dokka.location:com.stytch.sdk.b2b////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/index.html
 $dokka.location:com.stytch.sdk.b2b/B2BTokenType.DISCOVERY///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/-d-i-s-c-o-v-e-r-y/index.html
 $dokka.location:com.stytch.sdk.b2b/B2BTokenType.MULTI_TENANT_MAGIC_LINKS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/-m-u-l-t-i_-t-e-n-a-n-t_-m-a-g-i-c_-l-i-n-k-s/index.html
+$dokka.location:com.stytch.sdk.b2b/B2BTokenType.MULTI_TENANT_PASSWORDS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/-m-u-l-t-i_-t-e-n-a-n-t_-p-a-s-s-w-o-r-d-s/index.html
+$dokka.location:com.stytch.sdk.b2b/B2BTokenType.SSO///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/-s-s-o/index.html
 $dokka.location:com.stytch.sdk.b2b/B2BTokenType.UNKNOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/-u-n-k-n-o-w-n/index.html
 $dokka.location:com.stytch.sdk.b2b/B2BTokenType///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-b2-b-token-type/index.html
 $dokka.location:com.stytch.sdk.b2b/StytchB2BClient///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-stytch-b2-b-client/index.html
@@ -143,14 +167,15 @@ $dokka.location:com.stytch.sdk.b2b/StytchB2BClient/member/#/PointingToDeclaratio
 $dokka.location:com.stytch.sdk.b2b/StytchB2BClient/organization/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-stytch-b2-b-client/organization.html
 $dokka.location:com.stytch.sdk.b2b/StytchB2BClient/passwords/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-stytch-b2-b-client/passwords.html
 $dokka.location:com.stytch.sdk.b2b/StytchB2BClient/sessions/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-stytch-b2-b-client/sessions.html
-$dokka.location:com.stytch.sdk.common.oauth////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError.Companion///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/-companion/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError.Companion/OAUTH_EXCEPTION/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/-companion/-o-a-u-t-h_-e-x-c-e-p-t-i-o-n.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError.NoBrowserFound///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/-no-browser-found/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError.NoURIFound///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/-no-u-r-i-found/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError.UserCanceled///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/-user-canceled/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/index.html
-$dokka.location:com.stytch.sdk.common.oauth/OAuthError/message/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.oauth/-o-auth-error/message.html
+$dokka.location:com.stytch.sdk.b2b/StytchB2BClient/sso/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.b2b/-stytch-b2-b-client/sso.html
+$dokka.location:com.stytch.sdk.common.sso////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError.Companion///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/-companion/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError.Companion/SSO_EXCEPTION/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/-companion/-s-s-o_-e-x-c-e-p-t-i-o-n.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError.NoBrowserFound///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/-no-browser-found/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError.NoURIFound///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/-no-u-r-i-found/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError.UserCanceled///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/-user-canceled/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/index.html
+$dokka.location:com.stytch.sdk.common.sso/SSOError/message/#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common.sso/-s-s-o-error/message.html
 $dokka.location:com.stytch.sdk.common////PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common/index.html
 $dokka.location:com.stytch.sdk.common//toStytchErrorType/kotlin.String#/PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common/to-stytch-error-type.html
 $dokka.location:com.stytch.sdk.common/DeeplinkHandledStatus.Handled///PointingToDeclaration/-stytch -kotlin/com.stytch.sdk.common/-deeplink-handled-status/-handled/index.html
@@ -449,8 +474,9 @@ com.stytch.sdk.b2b.member
 com.stytch.sdk.b2b.organization
 com.stytch.sdk.b2b.passwords
 com.stytch.sdk.b2b.sessions
+com.stytch.sdk.b2b.sso
 com.stytch.sdk.common
-com.stytch.sdk.common.oauth
+com.stytch.sdk.common.sso
 com.stytch.sdk.consumer
 com.stytch.sdk.consumer.biometrics
 com.stytch.sdk.consumer.magicLinks
