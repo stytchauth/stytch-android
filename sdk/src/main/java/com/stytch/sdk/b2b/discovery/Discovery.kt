@@ -3,6 +3,11 @@ package com.stytch.sdk.b2b.discovery
 import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.b2b.network.models.EmailInvites
+import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.Constants
 
 /**
@@ -100,6 +105,12 @@ public interface Discovery {
         val organizationSlug: String? = null,
         val organizationLogoUrl: String? = null,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val ssoJitProvisioning: SsoJitProvisioning? = null,
+        val emailAllowedDomains: List<String>? = null,
+        val emailJitProvisioning: EmailJitProvisioning? = null,
+        val emailInvites: EmailInvites? = null,
+        val authMethods: AuthMethods? = null,
+        val allowedAuthMethods: List<AllowedAuthMethods>? = null,
     )
 
     /**

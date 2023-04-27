@@ -4,6 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.discovery.Discovery
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.b2b.network.models.EmailInvites
+import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +38,13 @@ class DiscoveryViewModel : ViewModel() {
             _currentResponse.value =
                 StytchB2BClient.discovery.createOrganization(
                     Discovery.CreateOrganizationParameters(
-                        intermediateSessionToken = intermediateSessionToken
+                        intermediateSessionToken = intermediateSessionToken,
+                        ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
+                        emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
+                        emailInvites = EmailInvites.ALL_ALLOWED,
+                        emailAllowedDomains = listOf("stytch.com"),
+                        authMethods = AuthMethods.ALL_ALLOWED,
+                        allowedAuthMethods = listOf(AllowedAuthMethods.MAGIC_LINK, AllowedAuthMethods.PASSWORD)
                     )
                 ).toFriendlyDisplay()
         }

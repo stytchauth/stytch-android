@@ -155,6 +155,18 @@ internal object B2BRequests {
             val organizationSlug: String?,
             @Json(name = "organization_logo_url")
             val organizationLogoUrl: String?,
+            @Json(name = "sso_jit_provisioning")
+            val ssoJitProvisioning: SsoJitProvisioning?,
+            @Json(name = "email_allowed_domains")
+            val emailAllowedDomains: List<String>?,
+            @Json(name = "email_jit_provisioning")
+            val emailJitProvisioning: EmailJitProvisioning?,
+            @Json(name = "email_invites")
+            val emailInvites: EmailInvites?,
+            @Json(name = "auth_methods")
+            val authMethods: AuthMethods?,
+            @Json(name = "allowed_auth_methods")
+            val allowedAuthMethods: List<AllowedAuthMethods>?,
         )
     }
 

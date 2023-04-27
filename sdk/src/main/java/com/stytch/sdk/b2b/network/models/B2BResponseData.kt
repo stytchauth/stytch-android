@@ -127,6 +127,32 @@ public data class Organization(
     val organizationLogoUrl: String,
     @Json(name = "trusted_metadata")
     val trustedMetadata: Map<String, Any?>,
+    @Json(name = "sso_default_connection_id")
+    val ssoDefaultConnectionId: String?,
+    @Json(name = "sso_jit_provisioning")
+    val ssoJitProvisioning: SsoJitProvisioning?,
+    @Json(name = "sso_jit_provisioning_allowed_connections")
+    val ssoJitProvisioningAllowedConnections: List<String>?,
+    @Json(name = "sso_active_connections")
+    val ssoActiveConnections: List<SSOActiveConnection>?,
+    @Json(name = "email_allowed_domains")
+    val emailAllowedDomains: List<String>?,
+    @Json(name = "email_jit_provisioning")
+    val emailJitProvisioning: EmailJitProvisioning?,
+    @Json(name = "email_invites")
+    val emailInvites: EmailInvites?,
+    @Json(name = "auth_methods")
+    val authMethods: AuthMethods?,
+    @Json(name = "allowed_auth_methods")
+    val allowedAuthMethods: List<AllowedAuthMethods>?,
+)
+
+@JsonClass(generateAdapter = true)
+public data class SSOActiveConnection(
+    @Json(name = "connection_id")
+    val connectionId: String,
+    @Json(name = "display_name")
+    val displayName: String,
 )
 
 @JsonClass(generateAdapter = true)

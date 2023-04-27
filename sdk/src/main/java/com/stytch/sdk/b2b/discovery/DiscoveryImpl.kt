@@ -63,7 +63,13 @@ internal class DiscoveryImpl(
                 organizationName = parameters.organizationName,
                 organizationSlug = parameters.organizationSlug,
                 organizationLogoUrl = parameters.organizationLogoUrl,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ssoJitProvisioning = parameters.ssoJitProvisioning,
+                emailAllowedDomains = parameters.emailAllowedDomains,
+                emailInvites = parameters.emailInvites,
+                emailJitProvisioning = parameters.emailJitProvisioning,
+                authMethods = parameters.authMethods,
+                allowedAuthMethods = parameters.allowedAuthMethods
             )
         }
     }

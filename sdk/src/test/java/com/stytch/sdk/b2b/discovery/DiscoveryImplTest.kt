@@ -82,17 +82,19 @@ internal class DiscoveryImplTest {
     @Test
     fun `DiscoveryImpl create delegates to api`() = runTest {
         coEvery {
-            mockApi.createOrganization(any(), any(), any(), any(), any())
+            mockApi.createOrganization(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns StytchResult.Success(mockk(relaxed = true))
         val response = impl.createOrganization(mockk(relaxed = true))
         assert(response is StytchResult.Success)
-        coVerify { mockApi.createOrganization(any(), any(), any(), any(), any()) }
+        coVerify {
+            mockApi.createOrganization(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+        }
     }
 
     @Test
     fun `DiscoveryImpl create with callback calls callback method`() {
         coEvery {
-            mockApi.createOrganization(any(), any(), any(), any(), any())
+            mockApi.createOrganization(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(OrganizationCreateResponse) -> Unit>()
         impl.createOrganization(mockk(relaxed = true), mockCallback)

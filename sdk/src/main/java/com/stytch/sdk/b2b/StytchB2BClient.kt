@@ -236,10 +236,12 @@ public object StytchB2BClient {
                 }
                 B2BTokenType.SSO -> {
                     DeeplinkHandledStatus.Handled(
-                        sso.authenticate(
-                            SSO.AuthenticateParams(
-                                ssoToken = token,
-                                sessionDurationMinutes = sessionDurationMinutes
+                        DeeplinkResponse.Auth(
+                            sso.authenticate(
+                                SSO.AuthenticateParams(
+                                    ssoToken = token,
+                                    sessionDurationMinutes = sessionDurationMinutes
+                                )
                             )
                         )
                     )
