@@ -39,14 +39,14 @@ public interface Discovery {
      * @param parameters required for retrieving a member's available organizations
      * @return [DiscoverOrganizationsResponse]
      */
-    public suspend fun organizations(parameters: DiscoverOrganizationsParameters): DiscoverOrganizationsResponse
+    public suspend fun listOrganizations(parameters: DiscoverOrganizationsParameters): DiscoverOrganizationsResponse
 
     /**
      * Discover a member's available organizations
      * @param parameters required for retrieving a member's available organizations
      * @param callback a callback that receives a [DiscoverOrganizationsResponse]
      */
-    public fun organizations(
+    public fun listOrganizations(
         parameters: DiscoverOrganizationsParameters,
         callback: (DiscoverOrganizationsResponse) -> Unit
     )
@@ -70,7 +70,9 @@ public interface Discovery {
      * @param parameters required for exchanging a session between organizations
      * @return [IntermediateSessionExchangeResponse]
      */
-    public suspend fun exchangeSession(parameters: SessionExchangeParameters): IntermediateSessionExchangeResponse
+    public suspend fun exchangeIntermediateSession(
+        parameters: SessionExchangeParameters
+    ): IntermediateSessionExchangeResponse
 
     /**
      * Exchange an Intermediate Session for a fully realized Member Session in a desired Organization. This operation
@@ -79,7 +81,7 @@ public interface Discovery {
      * @param parameters required for exchanging a session between organizations
      * @param callback a callback that receives an [IntermediateSessionExchangeResponse]
      */
-    public fun exchangeSession(
+    public fun exchangeIntermediateSession(
         parameters: SessionExchangeParameters,
         callback: (IntermediateSessionExchangeResponse) -> Unit
     )
@@ -108,7 +110,7 @@ public interface Discovery {
      * @param parameters required for creating an organization
      * @return [OrganizationCreateResponse]
      */
-    public suspend fun create(parameters: CreateOrganizationParameters): OrganizationCreateResponse
+    public suspend fun createOrganization(parameters: CreateOrganizationParameters): OrganizationCreateResponse
 
     /**
      * Create a new organization. If an end user does not want to join any already-existing organization, or has no
@@ -118,7 +120,7 @@ public interface Discovery {
      * @param parameters required for creating an organization
      * @param callback a callback that receives an [OrganizationCreateResponse]
      */
-    public fun create(
+    public fun createOrganization(
         parameters: CreateOrganizationParameters,
         callback: (OrganizationCreateResponse) -> Unit
     )

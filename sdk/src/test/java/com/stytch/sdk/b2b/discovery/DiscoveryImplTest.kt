@@ -50,7 +50,7 @@ internal class DiscoveryImplTest {
     @Test
     fun `DiscoveryImpl organizations delegates to api`() = runTest {
         coEvery { mockApi.discoverOrganizations(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.organizations(mockk(relaxed = true))
+        val response = impl.listOrganizations(mockk(relaxed = true))
         assert(response is StytchResult.Success)
         coVerify { mockApi.discoverOrganizations(any()) }
     }
@@ -59,14 +59,14 @@ internal class DiscoveryImplTest {
     fun `DiscoveryImpl organizations with callback calls callback method`() {
         coEvery { mockApi.discoverOrganizations(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(DiscoverOrganizationsResponse) -> Unit>()
-        impl.organizations(mockk(relaxed = true), mockCallback)
+        impl.listOrganizations(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
     @Test
     fun `DiscoveryImpl exchangeSession delegates to api`() = runTest {
         coEvery { mockApi.exchangeSession(any(), any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.exchangeSession(mockk(relaxed = true))
+        val response = impl.exchangeIntermediateSession(mockk(relaxed = true))
         assert(response is StytchResult.Success)
         coVerify { mockApi.exchangeSession(any(), any(), any()) }
     }
@@ -75,7 +75,7 @@ internal class DiscoveryImplTest {
     fun `DiscoveryImpl exchangeSession with callback calls callback method`() {
         coEvery { mockApi.exchangeSession(any(), any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(IntermediateSessionExchangeResponse) -> Unit>()
-        impl.exchangeSession(mockk(relaxed = true), mockCallback)
+        impl.exchangeIntermediateSession(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
@@ -84,7 +84,7 @@ internal class DiscoveryImplTest {
         coEvery {
             mockApi.createOrganization(any(), any(), any(), any(), any())
         } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.create(mockk(relaxed = true))
+        val response = impl.createOrganization(mockk(relaxed = true))
         assert(response is StytchResult.Success)
         coVerify { mockApi.createOrganization(any(), any(), any(), any(), any()) }
     }
@@ -95,7 +95,7 @@ internal class DiscoveryImplTest {
             mockApi.createOrganization(any(), any(), any(), any(), any())
         } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(OrganizationCreateResponse) -> Unit>()
-        impl.create(mockk(relaxed = true), mockCallback)
+        impl.createOrganization(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

@@ -132,9 +132,9 @@ internal class B2BMagicLinksImplTest {
     }
 
     @Test
-    fun `MagicLinksImpl discovery send returns error if generateCodeChallenge fails`() = runTest {
+    fun `MagicLinksImpl email sendDiscovery returns error if generateCodeChallenge fails`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
-        val response = impl.discovery.send(mockk(relaxed = true))
+        val response = impl.email.discoverySend(mockk(relaxed = true))
         assert(response is StytchResult.Error)
     }
 
@@ -142,21 +142,21 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl discovery send delegates to api`() = runTest {
         every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         coEvery { mockDiscoveryApi.send(any(), any(), any(), any()) } returns mockBaseResponse
-        impl.discovery.send(mockk(relaxed = true))
+        impl.email.discoverySend(mockk(relaxed = true))
         coVerify { mockDiscoveryApi.send(any(), any(), any(), any()) }
     }
 
     @Test
     fun `MagicLinksImpl discovery send with callback calls callback method`() {
         val mockCallback = spyk<(BaseResponse) -> Unit>()
-        impl.discovery.send(mockk(relaxed = true), mockCallback)
+        impl.email.discoverySend(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
     @Test
     fun `MagicLinksImpl discovery authenticate returns error if retrieveCodeVerifier fails`() = runTest {
         every { mockStorageHelper.retrieveCodeVerifier() } returns null
-        val response = impl.discovery.authenticate(mockk(relaxed = true))
+        val response = impl.discoveryAuthenticate(mockk(relaxed = true))
         assert(response is StytchResult.Error)
     }
 
@@ -164,14 +164,14 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl discovery authenticate delegates to api`() = runTest {
         every { mockStorageHelper.retrieveCodeVerifier() } returns ""
         coEvery { mockDiscoveryApi.authenticate(any(), any()) } returns mockk(relaxed = true)
-        impl.discovery.authenticate(mockk(relaxed = true))
+        impl.discoveryAuthenticate(mockk(relaxed = true))
         coVerify { mockDiscoveryApi.authenticate(any(), any()) }
     }
 
     @Test
     fun `MagicLinksImpl discovery authenticate with callback calls callback method`() {
         val mockCallback = spyk<(DiscoveryEMLAuthResponse) -> Unit>()
-        impl.discovery.authenticate(mockk(relaxed = true), mockCallback)
+        impl.discoveryAuthenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

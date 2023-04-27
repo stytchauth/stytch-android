@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.StytchB2BApi.MagicLinks.Discovery.send
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
@@ -24,8 +25,6 @@ internal class B2BMagicLinksImpl internal constructor(
 ) : B2BMagicLinks {
 
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
-
-    override val discovery: B2BMagicLinks.DiscoveryMagicLinks = DiscoveryMagicLinksImpl()
 
     override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): AuthResponse {
         var result: AuthResponse
@@ -59,6 +58,36 @@ internal class B2BMagicLinksImpl internal constructor(
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
             // change to main thread to call callback
+            callback(result)
+        }
+    }
+
+    override suspend fun discoveryAuthenticate(
+        parameters: B2BMagicLinks.DiscoveryAuthenticateParameters
+    ): DiscoveryEMLAuthResponse {
+        var result: DiscoveryEMLAuthResponse
+        withContext(dispatchers.io) {
+            val codeVerifier: String
+            try {
+                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+            } catch (ex: Exception) {
+                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                return@withContext
+            }
+            result = discoveryApi.authenticate(
+                token = parameters.token,
+                codeVerifier = codeVerifier
+            )
+        }
+        return result
+    }
+
+    override fun discoveryAuthenticate(
+        parameters: B2BMagicLinks.DiscoveryAuthenticateParameters,
+        callback: (DiscoveryEMLAuthResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            val result = discoveryAuthenticate(parameters)
             callback(result)
         }
     }
@@ -104,10 +133,10 @@ internal class B2BMagicLinksImpl internal constructor(
                 callback(result)
             }
         }
-    }
 
-    private inner class DiscoveryMagicLinksImpl : B2BMagicLinks.DiscoveryMagicLinks {
-        override suspend fun send(parameters: B2BMagicLinks.DiscoveryMagicLinks.SendParameters): BaseResponse {
+        override suspend fun discoverySend(
+            parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters
+        ): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
                 val challengeCode: String
@@ -129,42 +158,12 @@ internal class B2BMagicLinksImpl internal constructor(
             return result
         }
 
-        override fun send(
-            parameters: B2BMagicLinks.DiscoveryMagicLinks.SendParameters,
+        override fun discoverySend(
+            parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters,
             callback: (BaseResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
-                val result = send(parameters)
-                callback(result)
-            }
-        }
-
-        override suspend fun authenticate(
-            parameters: B2BMagicLinks.DiscoveryMagicLinks.AuthenticateParameters
-        ): DiscoveryEMLAuthResponse {
-            var result: DiscoveryEMLAuthResponse
-            withContext(dispatchers.io) {
-                val codeVerifier: String
-                try {
-                    codeVerifier = storageHelper.retrieveCodeVerifier()!!
-                } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchExceptions.Critical(ex))
-                    return@withContext
-                }
-                result = discoveryApi.authenticate(
-                    token = parameters.token,
-                    codeVerifier = codeVerifier
-                )
-            }
-            return result
-        }
-
-        override fun authenticate(
-            parameters: B2BMagicLinks.DiscoveryMagicLinks.AuthenticateParameters,
-            callback: (DiscoveryEMLAuthResponse) -> Unit,
-        ) {
-            externalScope.launch(dispatchers.ui) {
-                val result = authenticate(parameters)
+                val result = discoverySend(parameters)
                 callback(result)
             }
         }

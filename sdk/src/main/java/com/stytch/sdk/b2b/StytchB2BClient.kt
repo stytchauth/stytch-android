@@ -18,6 +18,7 @@ import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
@@ -196,14 +197,18 @@ public object StytchB2BClient {
             when (B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     DeeplinkHandledStatus.Handled(
-                        magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        DeeplinkResponse.Auth(
+                            magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
+                        )
                     )
                 }
                 B2BTokenType.DISCOVERY -> {
                     DeeplinkHandledStatus.Handled(
-                        magicLinks.discovery.authenticate(
-                            B2BMagicLinks.DiscoveryMagicLinks.AuthenticateParameters(
-                                token = token
+                        DeeplinkResponse.Discovery(
+                            magicLinks.discoveryAuthenticate(
+                                B2BMagicLinks.DiscoveryAuthenticateParameters(
+                                    token = token
+                                )
                             )
                         )
                     )

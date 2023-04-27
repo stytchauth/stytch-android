@@ -8,7 +8,7 @@ public sealed interface DeeplinkHandledStatus {
      * Indicates that a deeplink was successfully parsed from the deeplink.
      * @property response A [StytchResult] representing either the authenticated response or an error.
      */
-    public data class Handled(val response: StytchResult<Any>) : DeeplinkHandledStatus
+    public data class Handled(val response: DeeplinkResponse) : DeeplinkHandledStatus
 
     /**
      * Indicates that a deeplink was not handled by the Stytch client, either because a token could not be parsed from

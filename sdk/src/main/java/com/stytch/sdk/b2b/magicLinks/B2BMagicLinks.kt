@@ -63,6 +63,33 @@ public interface B2BMagicLinks {
     )
 
     /**
+     * A data class used for wrapping parameters used for authenticating a discovery magic link
+     * @property token the discovery magic links token
+     */
+    public data class DiscoveryAuthenticateParameters(
+        val token: String,
+    )
+
+    /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @return [DiscoveryEMLAuthResponse]
+     */
+    public suspend fun discoveryAuthenticate(parameters: DiscoveryAuthenticateParameters): DiscoveryEMLAuthResponse
+
+    /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @param callback a callback that receives a [DiscoveryEMLAuthResponse]
+     */
+    public fun discoveryAuthenticate(
+        parameters: DiscoveryAuthenticateParameters,
+        callback: (DiscoveryEMLAuthResponse) -> Unit
+    )
+
+    /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
     public interface EmailMagicLinks {
@@ -108,17 +135,7 @@ public interface B2BMagicLinks {
             parameters: Parameters,
             callback: (response: BaseResponse) -> Unit,
         )
-    }
 
-    /**
-     * Public variable that exposes an instance of [DiscoveryMagicLinks]
-     */
-    public val discovery: DiscoveryMagicLinks
-
-    /**
-     * Provides all possible ways to call Discovery Magic Links endpoints
-     */
-    public interface DiscoveryMagicLinks {
         /**
          * A data class used for wrapping paramaters used for sending a discovery magic link
          * @property emailAddress is the account identifier for the account in the form of an Email address where you
@@ -128,7 +145,7 @@ public interface B2BMagicLinks {
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Login.
          */
-        public data class SendParameters(
+        public data class DiscoverySendParameters(
             val emailAddress: String,
             val discoveryRedirectUrl: String? = null,
             val loginTemplateId: String? = null,
@@ -141,7 +158,7 @@ public interface B2BMagicLinks {
          * @param parameters required to send a discovery magic link
          * @return [BaseResponse]
          */
-        public suspend fun send(parameters: SendParameters): BaseResponse
+        public suspend fun discoverySend(parameters: DiscoverySendParameters): BaseResponse
 
         /**
          * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
@@ -150,30 +167,6 @@ public interface B2BMagicLinks {
          * @param parameters required to send a discovery magic link
          * @param callback a callback that receives a [BaseResponse]
          */
-        public fun send(parameters: SendParameters, callback: (BaseResponse) -> Unit)
-
-        /**
-         * A data class used for wrapping parameters used for authenticating a discovery magic link
-         * @property token the discovery magic links token
-         */
-        public data class AuthenticateParameters(
-            val token: String,
-        )
-
-        /**
-         * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
-         * expired or previously used.
-         * @param parameters required to authenticate
-         * @return [DiscoveryEMLAuthResponse]
-         */
-        public suspend fun authenticate(parameters: AuthenticateParameters): DiscoveryEMLAuthResponse
-
-        /**
-         * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
-         * expired or previously used.
-         * @param parameters required to authenticate
-         * @param callback a callback that receives a [DiscoveryEMLAuthResponse]
-         */
-        public fun authenticate(parameters: AuthenticateParameters, callback: (DiscoveryEMLAuthResponse) -> Unit)
+        public fun discoverySend(parameters: DiscoverySendParameters, callback: (BaseResponse) -> Unit)
     }
 }

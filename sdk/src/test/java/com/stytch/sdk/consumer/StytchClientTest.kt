@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
@@ -256,7 +257,7 @@ internal class StytchClientTest {
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             val response = StytchClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(mockAuthResponse))
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 
@@ -271,7 +272,7 @@ internal class StytchClientTest {
             coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
             val response = StytchClient.handle(mockUri, 30U)
             coVerify { mockOAuth.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(mockAuthResponse))
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 

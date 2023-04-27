@@ -14,7 +14,7 @@ internal class DiscoveryImpl(
     private val dispatchers: StytchDispatchers,
     private val api: StytchB2BApi.Discovery,
 ) : Discovery {
-    override suspend fun organizations(
+    override suspend fun listOrganizations(
         parameters: Discovery.DiscoverOrganizationsParameters
     ): DiscoverOrganizationsResponse {
         return withContext(dispatchers.io) {
@@ -22,17 +22,17 @@ internal class DiscoveryImpl(
         }
     }
 
-    override fun organizations(
+    override fun listOrganizations(
         parameters: Discovery.DiscoverOrganizationsParameters,
         callback: (DiscoverOrganizationsResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
-            val result = organizations(parameters)
+            val result = listOrganizations(parameters)
             callback(result)
         }
     }
 
-    override suspend fun exchangeSession(
+    override suspend fun exchangeIntermediateSession(
         parameters: Discovery.SessionExchangeParameters
     ): IntermediateSessionExchangeResponse {
         return withContext(dispatchers.io) {
@@ -44,17 +44,19 @@ internal class DiscoveryImpl(
         }
     }
 
-    override fun exchangeSession(
+    override fun exchangeIntermediateSession(
         parameters: Discovery.SessionExchangeParameters,
         callback: (IntermediateSessionExchangeResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
-            val result = exchangeSession(parameters)
+            val result = exchangeIntermediateSession(parameters)
             callback(result)
         }
     }
 
-    override suspend fun create(parameters: Discovery.CreateOrganizationParameters): OrganizationCreateResponse {
+    override suspend fun createOrganization(
+        parameters: Discovery.CreateOrganizationParameters
+    ): OrganizationCreateResponse {
         return withContext(dispatchers.io) {
             api.createOrganization(
                 intermediateSessionToken = parameters.intermediateSessionToken,
@@ -66,12 +68,12 @@ internal class DiscoveryImpl(
         }
     }
 
-    override fun create(
+    override fun createOrganization(
         parameters: Discovery.CreateOrganizationParameters,
         callback: (OrganizationCreateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
-            val result = create(parameters)
+            val result = createOrganization(parameters)
             callback(result)
         }
     }

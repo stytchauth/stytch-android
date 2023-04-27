@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -79,8 +80,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                _currentResponse.value = StytchB2BClient.magicLinks.discovery.send(
-                    B2BMagicLinks.DiscoveryMagicLinks.SendParameters(
+                _currentResponse.value = StytchB2BClient.magicLinks.email.discoverySend(
+                    B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
                         emailAddress = emailState.text,
                     )
                 ).toFriendlyDisplay()
@@ -109,11 +110,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 is DeeplinkHandledStatus.NotHandled -> result.reason
                 is DeeplinkHandledStatus.Handled -> {
                     // Hacking this in for organization discovery stuff
-                    ((result.response as? StytchResult.Success<Any>)?.value as? DiscoveryAuthenticateResponseData)
+                    (result.response as? DeeplinkResponse.Discovery)
                         ?.let {
-                            _intermediateSessionToken.value = it.intermediateSessionToken
+                            (it.result as? StytchResult.Success)?.value?.let { response ->
+                                _intermediateSessionToken.value = response.intermediateSessionToken
+                            }
                         }
-                    result.response.toFriendlyDisplay()
+                    result.response.result.toFriendlyDisplay()
                 }
                 // This only happens for password reset deeplinks
                 is DeeplinkHandledStatus.ManualHandlingRequired ->

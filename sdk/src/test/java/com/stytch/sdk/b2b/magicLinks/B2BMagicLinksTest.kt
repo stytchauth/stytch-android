@@ -22,10 +22,10 @@ internal class B2BMagicLinksTest {
 
     @Test
     fun `MagicLinks Discovery Send parameters have correct default values`() {
-        val params = B2BMagicLinks.DiscoveryMagicLinks.SendParameters(
+        val params = B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
             emailAddress = "",
         )
-        val expected = B2BMagicLinks.DiscoveryMagicLinks.SendParameters(
+        val expected = B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
             emailAddress = "",
             discoveryRedirectUrl = null,
             loginTemplateId = null,

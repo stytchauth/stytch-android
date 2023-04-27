@@ -22,14 +22,16 @@ class DiscoveryViewModel : ViewModel() {
     fun organizations() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.discovery.organizations(Discovery.DiscoverOrganizationsParameters()).toFriendlyDisplay()
+                StytchB2BClient.discovery.listOrganizations(
+                    Discovery.DiscoverOrganizationsParameters()
+                ).toFriendlyDisplay()
         }
     }
 
     fun createOrganization(intermediateSessionToken: String) {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.discovery.create(
+                StytchB2BClient.discovery.createOrganization(
                     Discovery.CreateOrganizationParameters(
                         intermediateSessionToken = intermediateSessionToken
                     )
