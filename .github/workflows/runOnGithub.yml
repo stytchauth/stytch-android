@@ -22,7 +22,7 @@ jobs:
 
       # Execute Gradle commands in GitHub Actions workflows
       # => https://github.com/marketplace/actions/gradle-command
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: runOnGitHub
         env:
