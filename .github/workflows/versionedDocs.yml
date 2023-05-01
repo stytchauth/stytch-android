@@ -25,7 +25,7 @@ jobs:
 
       - id: set-matrix
         run: |
-          matrix_values='{"ref":"latest","ref_label":"latest"}'
+          matrix_values='{"ref":"main","ref_label":"main"}'
           for ref in $(git tag --list); do
             docs_path="docs/docs/olderVersions/$ref"
             mkdir -p $docs_path
@@ -58,7 +58,7 @@ jobs:
         STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
         STYTCH_B2B_ORG_ID: 'abc123'
       working-directory: main
-      run: ./gradlew sdk:dokkaHtml
+      run: ./gradlew --info sdk:dokkaHtml
 
     - name: Copy docs
       run: rsync -a sdk/build/dokka/html/ ../docs/docs/olderVersions/${{ matrix.ref }}
