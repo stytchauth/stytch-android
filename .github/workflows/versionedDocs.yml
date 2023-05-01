@@ -59,8 +59,11 @@ jobs:
       working-directory: main
       run: |
         cd sdk/build/dokka/html
+        pwd
         zip -r ../../../../Docs.zip .
+        ls ../../../../
         cd -
+        pwd
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.ref_label }}
