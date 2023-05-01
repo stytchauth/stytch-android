@@ -61,6 +61,7 @@ jobs:
       run: ./gradlew --info sdk:dokkaHtml
 
     - name: Copy docs
+      working-directory: main
       run: rsync -a sdk/build/dokka/html/ ../docs/docs/olderVersions/${{ matrix.ref }}
 
   publish:
