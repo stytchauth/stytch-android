@@ -55,21 +55,40 @@ jobs:
       working-directory: main
       run: ./gradlew sdk:dokkaHtml
 
-    - name: Copy docs
+    - name: Zip docs site
+      working-directory: main
       run: |
-        pwd
-        ls
-        echo '----'
-        ls docs
-        echo '----'
-        ls docs/docs
-        echo '----'
-        rsync -a main/sdk/build/dokka/html/ docs/docs/olderVersions/${{ matrix.ref }}
-
+        cd sdk/build/dokka/html
+        zip -r ../../../../Docs.zip .
+        cd -
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.ref_label }}
+        path: Docs.zip
   publish:
-    needs: docs
+    needs: [set-matrix, docs]
     runs-on: ubuntu-latest
     steps:
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: docs
+        path: docs
+
+    - uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+
+    - name: Unzip
+      run: |
+        mkdir unzipped-docs
+        for ref in $(echo ${{ toJSON(needs.set-matrix.outputs.matrix-values) }} | jq -r '.[].ref_label'); do
+          unzipped_path="unzipped-docs/$ref"
+          mkdir -p "$unzipped_path"
+          unzip "artifacts/$ref/DocsSite.zip" -d "$unzipped_path"
+          rsync -a "$unzipped_path" docs/docs/olderVersions/${{ matrix.ref }}
+        done
+        ls docs/docs/olderVersions
     - name: Update git config
       working-directory: docs
       run: |
