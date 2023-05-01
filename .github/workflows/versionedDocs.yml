@@ -58,8 +58,8 @@ jobs:
     - name: Zip docs site
       run: |
         cd main/sdk/build/dokka/html
-        zip -r ../../../../Docs.zip .
-        ls ../../../../
+        zip -r ../../../../../Docs.zip .
+        ls ../../../../../
         cd -
     - uses: actions/upload-artifact@v3
       with:
@@ -84,7 +84,7 @@ jobs:
         for ref in $(echo ${{ toJSON(needs.set-matrix.outputs.matrix-values) }} | jq -r '.[].ref_label'); do
           unzipped_path="unzipped-docs/$ref"
           mkdir -p "$unzipped_path"
-          unzip "artifacts/$ref/DocsSite.zip" -d "$unzipped_path"
+          unzip "artifacts/$ref/Docs.zip" -d "$unzipped_path"
           rsync -a "$unzipped_path" docs/docs/olderVersions/${{ matrix.ref }}
         done
         ls docs/docs/olderVersions
