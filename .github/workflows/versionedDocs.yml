@@ -1,0 +1,83 @@
+name: Versioned Docs
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/main' || github.run_number }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull') }}
+
+jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-values: ${{ steps.set-matrix.outputs.matrix-values }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: git fetch --tags origin
+
+      - uses: actions/checkout@v3
+        with:
+          ref: docs
+          path: docs
+
+      - id: set-matrix
+        run: |
+          matrix_values='{"ref":"latest","ref_label":"latest"}'
+          for ref in $(git tag --list); do
+            docs_path="docs/docs/olderVersions/$ref"
+            mkdir -p $docs_path
+            if [[ $(find $docs_path -type d -empty) ]]; then
+              matrix_values+=",{\"ref\":\"$ref\",\"ref_label\":\"$ref\"}"
+            fi
+          done
+          echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
+          echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
+  docs:
+    needs: set-matrix
+    strategy:
+      matrix: ${{ fromJSON(needs.set-matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ matrix.ref }}
+        path: main
+
+    - uses: actions/checkout@v3
+      with:
+        ref: docs
+        path: docs
+
+    - name: Generate docs
+      env:
+        STYTCH_PUBLIC_TOKEN: 'abc123'
+        GOOGLE_OAUTH_CLIENT_ID: 'abc123'
+        STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
+        STYTCH_B2B_ORG_ID: 'abc123'
+      working-directory: main
+      run: ./gradlew sdk:dokkaHtml
+
+    - name: Copy docs
+      run: rsync -a sdk/build/dokka/html/ ../docs/docs/olderVersions/${{ matrix.ref }}
+
+  publish:
+    needs: docs
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update git config
+      working-directory: docs
+      run: |
+        git config --local user.name "CI"
+        git config --local user.email "ci@stytch.com"
+    - name: Commit
+      working-directory: main
+      run: |
+        current_sha="$(git rev-parse @)"
+        cd ../docs
+        if [[ -z $(git status --porcelain) ]]; then exit 0; fi
+        git add --all
+        git commit -m "$current_sha"
+        git push
