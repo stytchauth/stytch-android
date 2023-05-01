@@ -56,14 +56,11 @@ jobs:
       run: ./gradlew sdk:dokkaHtml
 
     - name: Zip docs site
-      working-directory: main
       run: |
-        cd sdk/build/dokka/html
-        pwd
+        cd main/sdk/build/dokka/html
         zip -r ../../../../Docs.zip .
         ls ../../../../
         cd -
-        pwd
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.ref_label }}
