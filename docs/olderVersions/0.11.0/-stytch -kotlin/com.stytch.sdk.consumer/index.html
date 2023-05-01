@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.consumer</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../index.html">
+                    <span>Stytch Kotlin</span>
+            </a>
+    </div>
+    <div>
+0.11.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="Stytch Kotlin::com.stytch.sdk.consumer////PointingToDeclaration//165651098">
+  <div class="breadcrumbs"><a href="../../index.html">Stytch Kotlin</a><span class="delimiter">/</span><a href="index.html">com.stytch.sdk.consumer</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr></wbr><span>stytch.</span><wbr></wbr><span>sdk.</span><wbr></wbr><span>consumer</span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><p class="paragraph">Stytch's consumer SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.</p><h2 class=""> Supported Authentication Products</h2><ul><li><p class="paragraph">magicLinks</p></li><ul><li><p class="paragraph">Send/authenticate magic links via Email</p></li></ul><li><p class="paragraph">otp</p></li><ul><li><p class="paragraph">Send/authenticate one-time passcodes via SMS, WhatsApp, Email</p></li></ul><li><p class="paragraph">passwords</p></li><ul><li><p class="paragraph">Create or authenticate a user</p></li><li><p class="paragraph">Check password strength</p></li><li><p class="paragraph">Reset a password</p></li></ul><li><p class="paragraph">sessions</p></li><ul><li><p class="paragraph">Authenticate/refresh an existing session</p></li><li><p class="paragraph">Revoke a session (Sign out)</p></li></ul><li><p class="paragraph">biometrics</p></li><ul><li><p class="paragraph">Register/authenticate with biometrics</p></li></ul><li><p class="paragraph">oauth</p></li><ul><li><p class="paragraph">Register/authenticate with native Google OneTap</p></li><li><p class="paragraph">Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Salesforce, Slack, or Twitch)</p></li></ul><li><p class="paragraph">userManagement</p></li><ul><li><p class="paragraph">Get or fetch the current user object (sync/cached or async options available)</p></li><li><p class="paragraph">Delete factors by id from the current user</p></li></ul></ul><h2 class=""> Using the Consumer SDK</h2><p class="paragraph">The <code class="lang-kotlin">StytchClient</code> object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our supported authentication products.</p><p class="paragraph">Each endpoint is explained in their respective READMEs and inline-documentation, but there are a few special methods on the <code class="lang-kotlin">StytchClient</code> object to document here.</p><h3 class=""><strong>Configuration</strong></h3><p class="paragraph">As mentioned in the /README.md, before making any Stytch authentication requests, you must configure the <code class="lang-kotlin">StytchClient</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">StytchClient.configure(context: Context, publicToken: String)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.</p><h3 class=""><strong>Handling Deeplinks</strong></h3><p class="paragraph"><code class="lang-kotlin">StytchClient.handle()</code> is the method you call for parsing out and authenticating deeplinks that your application receives. The currently supported deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets. This method returns a ../common/DeeplinkHandledStatus.kt class which details the result of the authentication call.</p><p class="paragraph">For Email Magic Links and Third-Party OAuth deeplinks, it will return a <code class="lang-kotlin">Handled</code> class containing either the authenticated response or error.</p><p class="paragraph">For Password Reset deeplinks, it will return a <code class="lang-kotlin">ManualHandlingRequired</code> class containing the relevant token, so that you can provide an appropriate UI to the user for resetting their password. The returned token is used for making the subsequent <code class="lang-kotlin">StytchClient.passwords.resetByEmail()</code> call.</p><p class="paragraph">Any other link types passed to this method will return a <code class="lang-kotlin">NotHandled</code> class.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="-754065597%2FClasslikes%2F165651098" anchor-label="AuthResponse" id="-754065597%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-754065597%2FClasslikes%2F165651098"><span>Auth</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-754065597%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-754065597%2FClasslikes%2F165651098">AuthResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/IAuthData///PointingToDeclaration/">IAuthData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<IAuthData> used for authentication responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-545861752%2FClasslikes%2F165651098" anchor-label="BiometricsAuthResponse" id="-545861752%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-545861752%2FClasslikes%2F165651098"><span>Biometrics</span><wbr></wbr><span>Auth</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-545861752%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-545861752%2FClasslikes%2F165651098">BiometricsAuthResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/BiometricsAuthData///PointingToDeclaration/">BiometricsAuthData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<BiometricsAuthData> used for Biometrics authentication responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1311187655%2FClasslikes%2F165651098" anchor-label="ConsumerTokenType" id="-1311187655%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-consumer-token-type/index.html"><span>Consumer</span><wbr></wbr><span>Token</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1311187655%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-consumer-token-type/index.html">ConsumerTokenType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-consumer-token-type/index.html">ConsumerTokenType</a><span class="token operator">&gt; </span>, <a href="../com.stytch.sdk.common/-token-type/index.html">TokenType</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An enum representing the supported (consumer) token types that we can extract from a deeplink</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-165822127%2FClasslikes%2F165651098" anchor-label="DeleteFactorResponse" id="-165822127%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-165822127%2FClasslikes%2F165651098"><span>Delete</span><wbr></wbr><span>Factor</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-165822127%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-165822127%2FClasslikes%2F165651098">DeleteFactorResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/DeleteAuthenticationFactorData///PointingToDeclaration/">DeleteAuthenticationFactorData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<DeleteAuthenticationFactorData> used for deleting authentication factors from a user</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1390371576%2FClasslikes%2F165651098" anchor-label="LoginOrCreateOTPResponse" id="-1390371576%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1390371576%2FClasslikes%2F165651098"><span>Login</span><wbr></wbr><span>Or</span><wbr></wbr><span>Create</span><wbr></wbr><span><span>OTPResponse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1390371576%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-1390371576%2FClasslikes%2F165651098">LoginOrCreateOTPResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.common.network.models/LoginOrCreateOTPData///PointingToDeclaration/">LoginOrCreateOTPData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1417671861%2FClasslikes%2F165651098" anchor-label="NativeOAuthResponse" id="1417671861%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1417671861%2FClasslikes%2F165651098"><span>Native</span><wbr></wbr><span>OAuth</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1417671861%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#1417671861%2FClasslikes%2F165651098">NativeOAuthResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/INativeOAuthData///PointingToDeclaration/">INativeOAuthData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<INativeOAuthData> used for Native OAuth (Google One Tap) authentication responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-7370509%2FClasslikes%2F165651098" anchor-label="OAuthAuthenticatedResponse" id="-7370509%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-7370509%2FClasslikes%2F165651098"><span>OAuth</span><wbr></wbr><span>Authenticated</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-7370509%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-7370509%2FClasslikes%2F165651098">OAuthAuthenticatedResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/OAuthData///PointingToDeclaration/">OAuthData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<OAuthData> used for Third Party OAuth authentication responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1594471745%2FClasslikes%2F165651098" anchor-label="PasswordsCreateResponse" id="1594471745%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1594471745%2FClasslikes%2F165651098"><span>Passwords</span><wbr></wbr><span>Create</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1594471745%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#1594471745%2FClasslikes%2F165651098">PasswordsCreateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/CreateResponse///PointingToDeclaration/">CreateResponse</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<CreateResponse> used for PasswordsCreate responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="964862492%2FClasslikes%2F165651098" anchor-label="PasswordsStrengthCheckResponse" id="964862492%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#964862492%2FClasslikes%2F165651098"><span>Passwords</span><wbr></wbr><span>Strength</span><wbr></wbr><span>Check</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="964862492%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#964862492%2FClasslikes%2F165651098">PasswordsStrengthCheckResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.common.network.models/StrengthCheckResponse///PointingToDeclaration/">StrengthCheckResponse</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="869164256%2FClasslikes%2F165651098" anchor-label="StytchClient" id="869164256%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-stytch-client/index.html"><span>Stytch</span><wbr></wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="869164256%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-stytch-client/index.html">StytchClient</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our supported authentication products.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-801742464%2FClasslikes%2F165651098" anchor-label="UserResponse" id="-801742464%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-801742464%2FClasslikes%2F165651098"><span>User</span><wbr></wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-801742464%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-801742464%2FClasslikes%2F165651098">UserResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.consumer.network.models/UserData///PointingToDeclaration/">UserData</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<UserData> used for GetUser responses</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
