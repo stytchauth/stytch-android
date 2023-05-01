@@ -33,6 +33,10 @@ jobs:
               matrix_values+=",{\"ref\":\"$ref\",\"ref_label\":\"$ref\"}"
             fi
           done
+          pwd
+          echo "ls"
+          ls .
+          echo "ls docs/docs/olderVersions"
           echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
           echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
   docs:
@@ -58,14 +62,12 @@ jobs:
         STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
         STYTCH_B2B_ORG_ID: 'abc123'
       working-directory: main
-      run: ./gradlew --info sdk:dokkaHtml
+      run: ./gradlew sdk:dokkaHtml
 
     - name: Copy docs
       working-directory: main
       run: |
-        ls ..
-        ls ../docs
-        ls ../docs/docs
+        pwd
         rsync -a sdk/build/dokka/html/ ../docs/docs/olderVersions/${{ matrix.ref }}
 
   publish:
