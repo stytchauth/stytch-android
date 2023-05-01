@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+on: workflow_dispatch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.ref != 'refs/heads/main' || github.run_number }}
