@@ -34,9 +34,8 @@ jobs:
             fi
           done
           pwd
-          echo "ls"
-          ls .
           echo "ls docs/docs/olderVersions"
+          ls docs/docs/olderVersions
           echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
           echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
   docs:
@@ -65,10 +64,15 @@ jobs:
       run: ./gradlew sdk:dokkaHtml
 
     - name: Copy docs
-      working-directory: main
       run: |
         pwd
-        rsync -a sdk/build/dokka/html/ ../docs/docs/olderVersions/${{ matrix.ref }}
+        ls
+        echo '----'
+        ls docs
+        echo '----'
+        ls docs/docs
+        echo '----'
+        rsync -a main/sdk/build/dokka/html/ docs/docs/olderVersions/${{ matrix.ref }}
 
   publish:
     needs: docs
