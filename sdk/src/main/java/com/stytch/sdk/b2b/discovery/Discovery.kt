@@ -98,6 +98,33 @@ public interface Discovery {
      * @property organizationSlug is the desired slug of the new organization
      * @property organizationLogoUrl is the optional URL of the new organization's logo
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property ssoJitProvisioning The authentication setting that controls the JIT provisioning of Members when
+     * authenticating via SSO. The accepted values are:
+     * ALL_ALLOWED – new Members will be automatically provisioned upon successful authentication via any of the
+     * Organization's sso_active_connections.
+     * RESTRICTED – only new Members with SSO logins that comply with sso_jit_provisioning_allowed_connections can be
+     * provisioned upon authentication.
+     * NOT_ALLOWED – disable JIT provisioning via SSO.
+     * @property emailAllowedDomains An array of email domains that allow invites or JIT provisioning for new Members.
+     * This list is enforced when either email_invites or email_jit_provisioning is set to RESTRICTED.
+     * @property emailJitProvisioning The authentication setting that controls how a new Member can be provisioned by
+     * authenticating via Email Magic Link. The accepted values are:
+     * RESTRICTED – only new Members with verified emails that comply with email_allowed_domains can be provisioned upon
+     * authentication via Email Magic Link.
+     * NOT_ALLOWED – disable JIT provisioning via Email Magic Link.
+     * @property emailInvites The authentication setting that controls how a new Member can be invited to an
+     * organization by email. The accepted values are:
+     * ALL_ALLOWED – any new Member can be invited to join via email.
+     * RESTRICTED – only new Members with verified emails that comply with email_allowed_domains can be invited via
+     * email.
+     * NOT_ALLOWED – disable email invites.
+     * @property authMethods The setting that controls which authentication methods can be used by Members of an
+     * Organization. The accepted values are:
+     * ALL_ALLOWED – the default setting which allows all authentication methods to be used.
+     * RESTRICTED - only methods that comply with allowed_auth_methods can be used for authentication. This setting does
+     * not apply to Members with is_breakglass set to true.
+     * @property allowedAuthMethods An array of allowed authentication methods. This list is enforced when auth_methods
+     * is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .
      */
     public data class CreateOrganizationParameters(
         val intermediateSessionToken: String,

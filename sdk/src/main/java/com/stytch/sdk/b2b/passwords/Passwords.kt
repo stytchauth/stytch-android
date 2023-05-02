@@ -143,7 +143,9 @@ public interface Passwords {
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property organizationId is the member's organization ID
      * @property emailAddress is the member's email address
-     * @property password is the new password to set
+     * @property existingPassword The member's current password that they supplied.
+     * @property newPassword The member's elected new password.
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class ResetByExistingPasswordParameters(
         val organizationId: String,
