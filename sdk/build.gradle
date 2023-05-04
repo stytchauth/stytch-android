@@ -71,7 +71,7 @@ android {
 
 tasks.named("dokkaHtml").configure {
     dependencies {
-        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:1.7.10")
+        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }
     moduleName.set("Stytch Kotlin")
     suppressInheritedMembers.set(true)

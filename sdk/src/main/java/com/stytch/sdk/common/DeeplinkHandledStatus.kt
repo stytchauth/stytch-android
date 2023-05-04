@@ -6,7 +6,7 @@ package com.stytch.sdk.common
 public sealed interface DeeplinkHandledStatus {
     /**
      * Indicates that a deeplink was successfully parsed from the deeplink.
-     * @property response A [StytchResult] representing either the authenticated response or an error.
+     * @property response A [DeeplinkResponse] representing either the authenticated response or an error.
      */
     public data class Handled(val response: DeeplinkResponse) : DeeplinkHandledStatus
 
