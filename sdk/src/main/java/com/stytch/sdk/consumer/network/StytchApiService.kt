@@ -122,7 +122,7 @@ internal interface StytchApiService : ApiService {
     @POST("passwords/strength_check")
     suspend fun strengthCheck(
         @Body request: ConsumerRequests.Passwords.StrengthCheckRequest
-    ): CommonResponses.Passwords.PasswordsStrengthCheckResponse
+    ): ConsumerResponses.Passwords.PasswordsStrengthCheckResponse
     //endregion passwords
 
     // region biometrics

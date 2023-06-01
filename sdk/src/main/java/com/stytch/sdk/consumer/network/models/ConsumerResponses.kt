@@ -9,6 +9,10 @@ internal object ConsumerResponses {
 
         @JsonClass(generateAdapter = true)
         class PasswordsCreateResponse(data: CreateResponse) : StytchDataResponse<CreateResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
+            StytchDataResponse<StrengthCheckResponse>(data)
     }
 
     object Biometrics {

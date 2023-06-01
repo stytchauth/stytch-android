@@ -10,7 +10,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
-import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StytchResult
