@@ -13,7 +13,6 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
-import com.stytch.sdk.common.network.models.StrengthCheckResponse
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
@@ -23,6 +22,7 @@ import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
+import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.UserData
 import java.lang.RuntimeException
 

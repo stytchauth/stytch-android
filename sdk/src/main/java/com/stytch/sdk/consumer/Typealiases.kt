@@ -2,13 +2,13 @@ package com.stytch.sdk.consumer
 
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
-import com.stytch.sdk.common.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.consumer.network.models.OAuthData
+import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.UserData
 
 /**

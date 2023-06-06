@@ -4,11 +4,6 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 
 internal object CommonResponses {
-    object Passwords {
-        @JsonClass(generateAdapter = true)
-        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
-            StytchDataResponse<StrengthCheckResponse>(data)
-    }
 
     object Biometrics {
         @JsonClass(generateAdapter = true)

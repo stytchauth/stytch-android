@@ -183,3 +183,41 @@ public data class NativeOAuthData(
     @Json(name = "user_created")
     override val userCreated: Boolean
 ) : INativeOAuthData
+
+@JsonClass(generateAdapter = true)
+public data class Feedback(
+    val suggestions: List<String>,
+    val warning: String,
+    @Json(name = "luds_requirements")
+    val ludsRequirements: LUDSRequirements?
+)
+
+@JsonClass(generateAdapter = true)
+public data class LUDSRequirements(
+    @Json(name = "has_lower_case")
+    val hasLowerCase: Boolean,
+    @Json(name = "has_upper_case")
+    val hasUpperCase: Boolean,
+    @Json(name = "has_digit")
+    val hasDigit: Boolean,
+    @Json(name = "has_symbol")
+    val hasSymbol: Boolean,
+    @Json(name = "missing_complexity")
+    val missingComplexity: Int,
+    @Json(name = "missing_characters")
+    val missingCharacters: Int,
+)
+
+@JsonClass(generateAdapter = true)
+public data class StrengthCheckResponse(
+    @Json(name = "breached_password")
+    val breachedPassword: Boolean,
+    val feedback: Feedback,
+    @Json(name = "request_id")
+    val requestId: String,
+    val score: Int,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "valid_password")
+    val validPassword: Boolean,
+)

@@ -120,26 +120,6 @@ public data class Password(
 )
 
 @JsonClass(generateAdapter = true)
-public data class Feedback(
-    val suggestions: List<String>,
-    val warning: String,
-)
-
-@JsonClass(generateAdapter = true)
-public data class StrengthCheckResponse(
-    @Json(name = "breached_password")
-    val breachedPassword: Boolean,
-    val feedback: Feedback,
-    @Json(name = "request_id")
-    val requestId: String,
-    val score: Int,
-    @Json(name = "status_code")
-    val statusCode: Int,
-    @Json(name = "valid_password")
-    val validPassword: Boolean,
-)
-
-@JsonClass(generateAdapter = true)
 public data class BiometricsStartResponse(
     @Json(name = "status_code")
     val statusCode: Int,
