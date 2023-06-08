@@ -2,8 +2,6 @@ name: Versioned Docs
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
 
@@ -34,7 +32,9 @@ jobs:
           for ref in $(git tag --list); do
             docs_path="docs/docs/olderVersions/$ref"
             mkdir -p $docs_path
-            matrix_values+=",{\"ref\":\"$ref\",\"ref_label\":\"$ref\"}"
+            if [[ $(find $docs_path -type d -empty) ]]; then
+              matrix_values+=",{\"ref\":\"$ref\",\"ref_label\":\"$ref\"}"
+            fi
           done
           echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
           echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
