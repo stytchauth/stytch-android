@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: git fetch --tags origin
+      - run: git fetch --tags -f origin
 
       - uses: actions/checkout@v3
         with:
