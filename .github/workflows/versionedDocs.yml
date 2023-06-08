@@ -28,14 +28,15 @@ jobs:
 
       - id: set-matrix
         run: |
-          matrix_values='{"ref":"main","ref_label":"main"}'
+          matrix_values=''
           for ref in $(git tag --list); do
             docs_path="docs/docs/olderVersions/$ref"
             mkdir -p $docs_path
             if [[ $(find $docs_path -type d -empty) ]]; then
-              matrix_values+=",{\"ref\":\"$ref\",\"ref_label\":\"$ref\"}"
+              matrix_values+="{\"ref\":\"$ref\",\"ref_label\":\"$ref\"},"
             fi
           done
+          matrix_values+='{"ref":"main","ref_label":"main"}' 
           echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
           echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
   docs:
