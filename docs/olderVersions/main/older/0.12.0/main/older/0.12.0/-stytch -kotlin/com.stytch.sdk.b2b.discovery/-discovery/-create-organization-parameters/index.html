@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CreateOrganizationParameters</title>
+    <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<link href="../../../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../../index.html">
+                    <span>Stytch Kotlin</span>
+            </a>
+    </div>
+    <div>
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;-stytch -kotlin/com.stytch.sdk.b2b.discovery/-discovery/-create-organization-parameters/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">0.9.0</div>
+  <div class="versions-dropdown-data"><a href="../../../../../../../../../not-found-version.html?v=0.12.0">0.12.0</a><a href="../../../../../../../../../not-found-version.html?v=0.11.0">0.11.0</a><a href="../../../../../../../../../not-found-version.html?v=0.10.0">0.10.0</a><a href="index.html">0.9.0</a><a href="../../../../../../../../../not-found-version.html?v=0.8.0">0.8.0</a><a href="../../../../../../../../../not-found-version.html?v=0.7.0">0.7.0</a><a href="../../../../../../../../../not-found-version.html?v=0.6.0">0.6.0</a><a href="../../../../../../../../../not-found-version.html?v=0.5.0">0.5.0</a></div>
+</div>
+</dokka-template-command>    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Stytch Kotlin::com.stytch.sdk.b2b.discovery/Discovery.CreateOrganizationParameters///PointingToDeclaration//165651098">
+  <div class="breadcrumbs"><a href="../../../../index.html">Stytch Kotlin</a><span class="delimiter">/</span><a href="../../index.html">com.stytch.sdk.b2b.discovery</a><span class="delimiter">/</span><a href="../index.html">Discovery</a><span class="delimiter">/</span><a href="index.html">CreateOrganizationParameters</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Create</span><wbr><span>Organization</span><wbr><span><span>Parameters</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">CreateOrganizationParameters</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>intermediateSessionToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>organizationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>organizationSlug<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>organizationLogoUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>Constants.DEFAULT_SESSION_TIME_MINUTES<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>ssoJitProvisioning<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SsoJitProvisioning///PointingToDeclaration/">SsoJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>emailAllowedDomains<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>emailJitProvisioning<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailJitProvisioning///PointingToDeclaration/">EmailJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>emailInvites<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailInvites///PointingToDeclaration/">EmailInvites</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>authMethods<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AuthMethods///PointingToDeclaration/">AuthMethods</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>allowedAuthMethods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AllowedAuthMethods///PointingToDeclaration/">AllowedAuthMethods</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A data class used for wrapping parameters used with creating organizations</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-269931052%2FConstructors%2F165651098" anchor-label="CreateOrganizationParameters" id="-269931052%2FConstructors%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-create-organization-parameters.html"><span>Create</span><wbr><span>Organization</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-269931052%2FConstructors%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-create-organization-parameters.html"><span class="token function">CreateOrganizationParameters</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;intermediateSessionToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;organizationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;organizationSlug<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;organizationLogoUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>Constants.DEFAULT_SESSION_TIME_MINUTES<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;ssoJitProvisioning<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SsoJitProvisioning///PointingToDeclaration/">SsoJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;emailAllowedDomains<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;emailJitProvisioning<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailJitProvisioning///PointingToDeclaration/">EmailJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;emailInvites<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailInvites///PointingToDeclaration/">EmailInvites</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;authMethods<span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AuthMethods///PointingToDeclaration/">AuthMethods</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;allowedAuthMethods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AllowedAuthMethods///PointingToDeclaration/">AllowedAuthMethods</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-2055490702%2FProperties%2F165651098" anchor-label="allowedAuthMethods" id="-2055490702%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="allowed-auth-methods.html"><span>allowed</span><wbr><span>Auth</span><wbr><span><span>Methods</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2055490702%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="-2055490702%2FProperties%2F165651098" anchor-label="allowedAuthMethods" id="-2055490702%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="allowed-auth-methods.html">allowedAuthMethods</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AllowedAuthMethods///PointingToDeclaration/">AllowedAuthMethods</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-2055490702%2FProperties%2F165651098" anchor-label="allowedAuthMethods" id="-2055490702%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">An array of allowed authentication methods. This list is enforced when auth_methods is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1703994972%2FProperties%2F165651098" anchor-label="authMethods" id="1703994972%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="auth-methods.html"><span>auth</span><wbr><span><span>Methods</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1703994972%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="1703994972%2FProperties%2F165651098" anchor-label="authMethods" id="1703994972%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="auth-methods.html">authMethods</a><span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/AuthMethods///PointingToDeclaration/">AuthMethods</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1703994972%2FProperties%2F165651098" anchor-label="authMethods" id="1703994972%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">The setting that controls which authentication methods can be used by Members of an Organization. The accepted values are: ALL_ALLOWED – the default setting which allows all authentication methods to be used. RESTRICTED - only methods that comply with allowed_auth_methods can be used for authentication. This setting does not apply to Members with is_breakglass set to true.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1571421117%2FProperties%2F165651098" anchor-label="emailAllowedDomains" id="-1571421117%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="email-allowed-domains.html"><span>email</span><wbr><span>Allowed</span><wbr><span><span>Domains</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1571421117%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="-1571421117%2FProperties%2F165651098" anchor-label="emailAllowedDomains" id="-1571421117%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="email-allowed-domains.html">emailAllowedDomains</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1571421117%2FProperties%2F165651098" anchor-label="emailAllowedDomains" id="-1571421117%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">An array of email domains that allow invites or JIT provisioning for new Members. This list is enforced when either email_invites or email_jit_provisioning is set to RESTRICTED.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-936523514%2FProperties%2F165651098" anchor-label="emailInvites" id="-936523514%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="email-invites.html"><span>email</span><wbr><span><span>Invites</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-936523514%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="-936523514%2FProperties%2F165651098" anchor-label="emailInvites" id="-936523514%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="email-invites.html">emailInvites</a><span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailInvites///PointingToDeclaration/">EmailInvites</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-936523514%2FProperties%2F165651098" anchor-label="emailInvites" id="-936523514%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">The authentication setting that controls how a new Member can be invited to an organization by email. The accepted values are: ALL_ALLOWED – any new Member can be invited to join via email. RESTRICTED – only new Members with verified emails that comply with email_allowed_domains can be invited via email. NOT_ALLOWED – disable email invites.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1543256302%2FProperties%2F165651098" anchor-label="emailJitProvisioning" id="1543256302%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="email-jit-provisioning.html"><span>email</span><wbr><span>Jit</span><wbr><span><span>Provisioning</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1543256302%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="1543256302%2FProperties%2F165651098" anchor-label="emailJitProvisioning" id="1543256302%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="email-jit-provisioning.html">emailJitProvisioning</a><span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailJitProvisioning///PointingToDeclaration/">EmailJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1543256302%2FProperties%2F165651098" anchor-label="emailJitProvisioning" id="1543256302%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">The authentication setting that controls how a new Member can be provisioned by authenticating via Email Magic Link. The accepted values are: RESTRICTED – only new Members with verified emails that comply with email_allowed_domains can be provisioned upon authentication via Email Magic Link. NOT_ALLOWED – disable JIT provisioning via Email Magic Link.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="603737336%2FProperties%2F165651098" anchor-label="intermediateSessionToken" id="603737336%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="intermediate-session-token.html"><span>intermediate</span><wbr><span>Session</span><wbr><span><span>Token</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="603737336%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="603737336%2FProperties%2F165651098" anchor-label="intermediateSessionToken" id="603737336%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="intermediate-session-token.html">intermediateSessionToken</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="603737336%2FProperties%2F165651098" anchor-label="intermediateSessionToken" id="603737336%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">is the unique sequence of characters used to authenticate a member</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1933070059%2FProperties%2F165651098" anchor-label="organizationLogoUrl" id="-1933070059%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="organization-logo-url.html"><span>organization</span><wbr><span>Logo</span><wbr><span><span>Url</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1933070059%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="-1933070059%2FProperties%2F165651098" anchor-label="organizationLogoUrl" id="-1933070059%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="organization-logo-url.html">organizationLogoUrl</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1933070059%2FProperties%2F165651098" anchor-label="organizationLogoUrl" id="-1933070059%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">is the optional URL of the new organization's logo</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1767703670%2FProperties%2F165651098" anchor-label="organizationName" id="1767703670%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="organization-name.html"><span>organization</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1767703670%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="1767703670%2FProperties%2F165651098" anchor-label="organizationName" id="1767703670%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="organization-name.html">organizationName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1767703670%2FProperties%2F165651098" anchor-label="organizationName" id="1767703670%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">is the name of the new organization</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1596127318%2FProperties%2F165651098" anchor-label="organizationSlug" id="1596127318%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="organization-slug.html"><span>organization</span><wbr><span><span>Slug</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1596127318%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="1596127318%2FProperties%2F165651098" anchor-label="organizationSlug" id="1596127318%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="organization-slug.html">organizationSlug</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1596127318%2FProperties%2F165651098" anchor-label="organizationSlug" id="1596127318%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">is the desired slug of the new organization</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="839520831%2FProperties%2F165651098" anchor-label="sessionDurationMinutes" id="839520831%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="session-duration-minutes.html"><span>session</span><wbr><span>Duration</span><wbr><span><span>Minutes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="839520831%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="839520831%2FProperties%2F165651098" anchor-label="sessionDurationMinutes" id="839520831%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="session-duration-minutes.html">sessionDurationMinutes</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="839520831%2FProperties%2F165651098" anchor-label="sessionDurationMinutes" id="839520831%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">indicates how long the session should last before it expires</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-477002207%2FProperties%2F165651098" anchor-label="ssoJitProvisioning" id="-477002207%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="sso-jit-provisioning.html"><span>sso</span><wbr><span>Jit</span><wbr><span><span>Provisioning</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-477002207%2FProperties%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><a data-name="-477002207%2FProperties%2F165651098" anchor-label="ssoJitProvisioning" id="-477002207%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="sso-jit-provisioning.html">ssoJitProvisioning</a><span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SsoJitProvisioning///PointingToDeclaration/">SsoJitProvisioning</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-477002207%2FProperties%2F165651098" anchor-label="ssoJitProvisioning" id="-477002207%2FProperties%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a><p class="paragraph">The authentication setting that controls the JIT provisioning of Members when authenticating via SSO. The accepted values are: ALL_ALLOWED – new Members will be automatically provisioned upon successful authentication via any of the Organization's sso_active_connections. RESTRICTED – only new Members with SSO logins that comply with sso_jit_provisioning_allowed_connections can be provisioned upon authentication. NOT_ALLOWED – disable JIT provisioning via SSO.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
+
