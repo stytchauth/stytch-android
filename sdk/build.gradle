@@ -105,7 +105,7 @@ tasks.named("dokkaHtml").configure {
         pluginsMapConfiguration.set([
             "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
                 "version": "$PUBLISH_VERSION",
-                "olderVersionsDir": "$projectDir/build/dokka/html/olderVersions"
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions"
             }"""
         ])
     }

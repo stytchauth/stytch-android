@@ -49,7 +49,10 @@ jobs:
       with:
         ref: ${{ matrix.ref }}
         path: main
-
+    - uses: actions/checkout@v3
+      with:
+        ref: docs
+        path: docs
     - name: Generate docs
       env:
         STYTCH_PUBLIC_TOKEN: 'abc123'
