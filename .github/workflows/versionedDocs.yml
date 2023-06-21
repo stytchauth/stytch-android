@@ -96,7 +96,11 @@ jobs:
           unzipped_path="unzipped-docs/$ref"
           mkdir -p "$unzipped_path"
           unzip "artifacts/$ref/Docs.zip" -d "$unzipped_path"
-          rsync -a "$unzipped_path" docs/docs/olderVersions/${{ matrix.ref }}
+          if [[${{ matrix.ref }} == "main"]]; then
+            rsync -a "$unzipped_path" docs/docs
+          else
+            rsync -a "$unzipped_path" docs/docs/olderVersions/${{ matrix.ref }}
+          fi
         done
     - name: Update git config
       working-directory: docs
