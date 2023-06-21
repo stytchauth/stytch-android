@@ -6,7 +6,7 @@ internal object Constants {
     internal const val LIVE_API_URL: String = "https://api.stytch.com/v1/"
 
     // Auth headers
-    internal const val AUTH_HEADER_SDK_NAME = "stytch-kotlin"
+    internal const val AUTH_HEADER_SDK_NAME = "stytch-android"
 
     // Query parameters
     internal const val QUERY_TOKEN_TYPE = "stytch_token_type"
