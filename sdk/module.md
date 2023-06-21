@@ -1,4 +1,4 @@
-# Module Stytch Kotlin
+# Module Stytch Android
 [Stytch](https://stytch.com) is an authentication platform, written by developers for developers, with a focus on
 improving security and user experience via passwordless authentication. Stytch offers direct API integrations,
 language-specific libraries, and SDKs (like this one) to make the process of setting up an authentication flow for your
