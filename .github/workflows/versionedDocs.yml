@@ -96,9 +96,12 @@ jobs:
           unzipped_path="unzipped-docs/$ref"
           mkdir -p "$unzipped_path"
           unzip "artifacts/$ref/Docs.zip" -d "$unzipped_path"
+          echo "ref is $ref"
           if [[$ref == "main"]]; then
+            echo "extracting to root"
             rsync -a "$unzipped_path" docs/docs
           else
+            echo "extracting to olderVersions"
             rsync -a "$unzipped_path" docs/docs/olderVersions/
           fi
         done
