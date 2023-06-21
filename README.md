@@ -264,7 +264,7 @@ fun loginOrCreateSMS() {
 
 Additional documentation is available for the [consumer](sdk/src/main/java/com/stytch/sdk/consumer/README.md) and [B2B](sdk/src/main/java/com/stytch/sdk/b2b/README.md) SDKs within this repository.
 
-Full reference documentation is available [here](https://stytchauth.github.io/stytch-kotlin/).
+Full reference documentation is available [here](https://stytchauth.github.io/stytch-android/).
 
 ## FAQ
 
@@ -288,12 +288,12 @@ Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.co
 
 The Stytch Android SDK is released under the MIT license. See [LICENSE](LICENSE) for details.
 
-[contributors-shield]: https://img.shields.io/github/contributors/stytchauth/stytch-kotlin.svg?style=for-the-badge
-[contributors-url]: https://github.com/stytchauth/stytch-kotlin/graphs/contributors
-[issues-shield]: https://img.shields.io/github/issues/stytchauth/stytch-kotlin.svg?style=for-the-badge
-[issues-url]: https://github.com/stytchauth/stytch-kotlin/issues
-[license-shield]: https://img.shields.io/github/license/stytchauth/stytch-kotlin.svg?style=for-the-badge
-[license-url]: https://github.com/stytchauth/stytch-kotlin/blob/master/LICENSE
-[release-shield]: https://img.shields.io/github/v/release/stytchauth/stytch-kotlin?style=for-the-badge
-[release-url]:https://github.com/stytchauth/stytch-kotlin/releases
-[language-shield]: https://img.shields.io/github/languages/top/stytchauth/stytch-kotlin?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/stytchauth/stytch-android.svg?style=for-the-badge
+[contributors-url]: https://github.com/stytchauth/stytch-android/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/stytchauth/stytch-android.svg?style=for-the-badge
+[issues-url]: https://github.com/stytchauth/stytch-android/issues
+[license-shield]: https://img.shields.io/github/license/stytchauth/stytch-android.svg?style=for-the-badge
+[license-url]: https://github.com/stytchauth/stytch-android/blob/master/LICENSE
+[release-shield]: https://img.shields.io/github/v/release/stytchauth/stytch-android?style=for-the-badge
+[release-url]:https://github.com/stytchauth/stytch-android/releases
+[language-shield]: https://img.shields.io/github/languages/top/stytchauth/stytch-android?style=for-the-badge

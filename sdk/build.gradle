@@ -73,7 +73,7 @@ tasks.named("dokkaHtml").configure {
     dependencies {
         dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }
-    moduleName.set("Stytch Kotlin")
+    moduleName.set("Stytch Android")
     suppressInheritedMembers.set(true)
     dokkaSourceSets {
         configureEach {
