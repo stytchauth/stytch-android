@@ -2,6 +2,8 @@ package com.stytch.sdk.consumer.network.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.models.NameData
+import java.util.jar.Attributes
 
 internal object ConsumerRequests {
 
@@ -202,5 +204,14 @@ internal object ConsumerRequests {
                 val codeVerifier: String
             )
         }
+    }
+
+    object User {
+        @JsonClass(generateAdapter = true)
+        data class UpdateRequest(
+            val name: NameData? = null,
+            @Json(name = "untrusted_metadata")
+            val untrustedMetadata: Map<String, Any?>? = null,
+        )
     }
 }

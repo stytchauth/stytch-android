@@ -89,3 +89,8 @@ internal fun RecordedRequest.verifyGet(
 internal fun RecordedRequest.verifyDelete(
     expectedPath: String,
 ) = verify("DELETE", expectedPath, emptyMap())
+
+internal fun RecordedRequest.verifyPut(
+    expectedPath: String,
+    expectedBody: Map<String, Any?> = emptyMap()
+) = verify("PUT", expectedPath, expectedBody)

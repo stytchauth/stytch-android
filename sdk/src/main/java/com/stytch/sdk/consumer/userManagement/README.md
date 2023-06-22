@@ -6,3 +6,5 @@ You can choose to get the local representation of the user, without making a net
 If you want to get the freshest representation of the user from the Stytch servers, use the `StytchClient.user.getUser()` method.
 
 To remove an authentication factor from a user, use the `StytchClient.user.deleteFactor()` method.
+
+To update a user, use the `StytchClient.user.update()` method.

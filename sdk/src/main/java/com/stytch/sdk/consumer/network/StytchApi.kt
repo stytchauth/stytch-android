@@ -13,6 +13,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
@@ -23,6 +24,7 @@ import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import java.lang.RuntimeException
 
@@ -487,6 +489,19 @@ internal object StytchApi {
         suspend fun deleteWebAuthnById(id: String): StytchResult<DeleteAuthenticationFactorData> =
             safeConsumerApiCall {
                 apiService.deleteWebAuthnById(id)
+            }
+
+        suspend fun updateUser(
+            name: NameData?,
+            untrustedMetadata: Map<String, Any?>?,
+        ): StytchResult<UpdateUserResponseData> =
+            safeConsumerApiCall {
+                apiService.updateUser(
+                    ConsumerRequests.User.UpdateRequest(
+                        name = name,
+                        untrustedMetadata = untrustedMetadata
+                    )
+                )
             }
     }
 

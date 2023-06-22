@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
@@ -123,5 +124,21 @@ internal class UserManagementImplTest {
         coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
         coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
         coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
+    }
+
+    @Test
+    fun `UserManagementImpl updateUser delegates to api`() = runTest {
+        coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
+        val response = impl.update(mockk(relaxed = true))
+        assert(response is StytchResult.Success)
+        coVerify { mockApi.updateUser(any(), any()) }
+    }
+
+    @Test
+    fun `UserManagementImpl updateUser with callback calls callback method`() {
+        coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
+        val mockCallback = spyk<(UpdateUserResponse) -> Unit>()
+        impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 }

@@ -300,6 +300,14 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi User updateUser calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.updateUser(any()) } returns mockk(relaxed = true)
+        StytchApi.UserManagement.updateUser(mockk(), mockk())
+        coVerify { StytchApi.apiService.updateUser(any()) }
+    }
+
+    @Test
     fun `StytchApi OAuth authenticateWithGoogleIdToken calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.authenticateWithGoogleIdToken(any()) } returns mockk(relaxed = true)
