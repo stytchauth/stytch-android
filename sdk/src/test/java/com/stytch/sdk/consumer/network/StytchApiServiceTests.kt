@@ -2,10 +2,12 @@ package com.stytch.sdk.consumer.network
 
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
+import com.stytch.sdk.utils.verifyPut
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -387,7 +389,7 @@ internal class StytchApiServiceTests {
     }
 
     @Test
-    fun `check Passwords strenghtCheck request`() {
+    fun `check Passwords strengthCheck request`() {
         runBlocking {
             val parameters = ConsumerRequests.Passwords.StrengthCheckRequest(
                 email = EMAIL,
@@ -630,6 +632,29 @@ internal class StytchApiServiceTests {
             requestIgnoringResponseException {
                 apiService.deleteWebAuthnById(id = "webauthn_registration_id")
             }.verifyDelete("/users/webauthn_registrations/webauthn_registration_id")
+        }
+    }
+
+    @Test
+    fun `check updateUser request`() {
+        val parameters = ConsumerRequests.User.UpdateRequest(
+            name = NameData(firstName = "Test", middleName = "Tester", lastName = "Testington"),
+            untrustedMetadata = mapOf("parameter 1" to "value 1")
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.updateUser(request = parameters)
+            }.verifyPut(
+                expectedPath = "/users/me",
+                expectedBody = mapOf(
+                    "name" to mapOf(
+                        "first_name" to parameters.name?.firstName,
+                        "middle_name" to parameters.name?.middleName,
+                        "last_name" to parameters.name?.lastName
+                    ),
+                    "untrusted_metadata" to parameters.untrustedMetadata
+                )
+            )
         }
     }
     // endregion UserManagement

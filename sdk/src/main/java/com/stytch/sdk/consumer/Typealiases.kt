@@ -9,6 +9,7 @@ import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 
 /**
@@ -55,3 +56,8 @@ public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
  * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses
  */
 public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResponse>
+
+/**
+ * Type alias for StytchResult<UpdateUserResponseData> used for UpdateUser responses
+ */
+public typealias UpdateUserResponse = StytchResult<UpdateUserResponseData>

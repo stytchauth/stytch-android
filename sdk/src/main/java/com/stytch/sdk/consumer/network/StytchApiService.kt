@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 @Suppress("TooManyFunctions")
@@ -166,6 +167,11 @@ internal interface StytchApiService : ApiService {
 
     @DELETE("users/webauthn_registrations/{id}")
     suspend fun deleteWebAuthnById(@Path(value = "id") id: String): ConsumerResponses.User.DeleteFactorResponse
+
+    @PUT("users/me")
+    suspend fun updateUser(
+        @Body request: ConsumerRequests.User.UpdateRequest
+    ): ConsumerResponses.User.UpdateUserResponse
     //endregion User Management
 
     //region OAuth

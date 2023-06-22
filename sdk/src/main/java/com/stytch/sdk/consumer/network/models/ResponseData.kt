@@ -89,7 +89,11 @@ public data class UserData(
     @Json(name = "webauthn_registrations")
     val webauthnRegistrations: List<WebAuthNRegistrations>,
     @Json(name = "biometric_registrations")
-    val biometricRegistrations: List<BiometricRegistrations>
+    val biometricRegistrations: List<BiometricRegistrations>,
+    @Json(name = "trusted_metadata")
+    val trustedMetadata: Map<String, Any?>?,
+    @Json(name = "untrusted_metadata")
+    val untrustedMetadata: Map<String, Any?>?,
 )
 
 @JsonClass(generateAdapter = true)
@@ -220,4 +224,13 @@ public data class StrengthCheckResponse(
     val statusCode: Int,
     @Json(name = "valid_password")
     val validPassword: Boolean,
+)
+
+@JsonClass(generateAdapter = true)
+public data class UpdateUserResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val user: UserData
 )

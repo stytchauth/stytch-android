@@ -32,6 +32,9 @@ internal object ConsumerResponses {
         @JsonClass(generateAdapter = true)
         class DeleteFactorResponse(data: DeleteAuthenticationFactorData) :
             StytchDataResponse<DeleteAuthenticationFactorData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UpdateUserResponse(data: UpdateUserResponseData) : StytchDataResponse<UpdateUserResponseData>(data)
     }
 
     object OAuth {

@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.userManagement
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
@@ -48,6 +49,21 @@ internal class UserManagementImpl(
     override fun deleteFactor(factor: UserAuthenticationFactor, callback: (DeleteFactorResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
             val result = deleteFactor(factor)
+            callback(result)
+        }
+    }
+
+    override suspend fun update(params: UserManagement.UpdateParams): UpdateUserResponse =
+        withContext(dispatchers.io) {
+            api.updateUser(
+                name = params.name,
+                untrustedMetadata = params.untrustedMetadata
+            )
+        }
+
+    override fun update(params: UserManagement.UpdateParams, callback: (UpdateUserResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = update(params)
             callback(result)
         }
     }
