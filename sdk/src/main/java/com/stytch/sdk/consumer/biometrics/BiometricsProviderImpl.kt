@@ -126,19 +126,8 @@ internal class BiometricsProviderImpl : BiometricsProvider {
         return showBiometricPrompt(context, promptData, cipher, allowedAuthenticators)
     }
 
-    override fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): BiometricAvailability {
-        val biometricManager = BiometricManager.from(context)
-        return when (biometricManager.canAuthenticate(allowedAuthenticators)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> BiometricAvailability.BIOMETRIC_SUCCESS
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> BiometricAvailability.BIOMETRIC_ERROR_NO_HARDWARE
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> BiometricAvailability.BIOMETRIC_ERROR_HW_UNAVAILABLE
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> BiometricAvailability.BIOMETRIC_ERROR_NONE_ENROLLED
-            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
-                BiometricAvailability.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED
-            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> BiometricAvailability.BIOMETRIC_ERROR_UNSUPPORTED
-            BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> BiometricAvailability.BIOMETRIC_STATUS_UNKNOWN
-            else -> BiometricAvailability.BIOMETRIC_STATUS_UNKNOWN
-        }
+    override fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): Int {
+        return BiometricManager.from(context).canAuthenticate(allowedAuthenticators)
     }
 
     override fun deleteSecretKey() {
