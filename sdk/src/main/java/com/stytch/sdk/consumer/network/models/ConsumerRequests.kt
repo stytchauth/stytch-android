@@ -3,7 +3,6 @@ package com.stytch.sdk.consumer.network.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.NameData
-import java.util.jar.Attributes
 
 internal object ConsumerRequests {
 
