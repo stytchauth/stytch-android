@@ -21,8 +21,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.stytch.exampleapp.BiometricsViewModel
 import com.stytch.exampleapp.R
-import com.stytch.sdk.consumer.biometrics.BiometricAvailability
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.biometrics.BiometricAvailability
 
 @Composable
 fun BiometricsScreen(navController: NavController) {
@@ -31,7 +31,7 @@ fun BiometricsScreen(navController: NavController) {
     val responseState = viewModel.currentResponse.collectAsState()
     val context = LocalContext.current as FragmentActivity
     val biometricAvailability = StytchClient.biometrics.areBiometricsAvailable(context, true)
-    val biometricsAreAvailable = biometricAvailability == BiometricAvailability.BIOMETRIC_SUCCESS
+    val biometricsAreAvailable = biometricAvailability !is BiometricAvailability.Unavailable
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -60,12 +60,13 @@ fun BiometricsScreen(navController: NavController) {
                 onClick = { viewModel.removeRegistration() }
             )
         } else {
+            val unavailable = biometricAvailability as BiometricAvailability.Unavailable
             Text(
-                text = stringResource(id = R.string.biometrics_unavailable, biometricAvailability.message),
+                text = stringResource(id = R.string.biometrics_unavailable, unavailable.reason.message),
                 modifier = Modifier.padding(8.dp)
             )
             if (
-                (biometricAvailability == BiometricAvailability.BIOMETRIC_ERROR_NONE_ENROLLED) &&
+                (unavailable.reason == BiometricAvailability.Unavailable.Reason.BIOMETRIC_ERROR_NONE_ENROLLED) &&
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
             ) {
                 StytchButton(

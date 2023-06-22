@@ -17,7 +17,7 @@ internal interface BiometricsProvider {
         allowedAuthenticators: Int,
     ): Cipher
 
-    fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): BiometricAvailability
+    fun areBiometricsAvailable(context: FragmentActivity, allowedAuthenticators: Int): Int
 
     fun deleteSecretKey()
 

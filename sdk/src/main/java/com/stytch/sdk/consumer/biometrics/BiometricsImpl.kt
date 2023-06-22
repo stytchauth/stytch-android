@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.biometrics
 
 import android.os.Build
 import android.security.keystore.KeyPermanentlyInvalidatedException
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.fragment.app.FragmentActivity
@@ -50,9 +51,12 @@ internal class BiometricsImpl internal constructor(
         } else {
             BIOMETRIC_STRONG
         }
+
+    private fun registrationExists(): Boolean = KEYS_REQUIRED_FOR_REGISTRATION.all {
+        storageHelper.preferenceExists(it)
+    }
     override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
-        return KEYS_REQUIRED_FOR_REGISTRATION.all { storageHelper.preferenceExists(it) } &&
-            areBiometricsAvailable(context) != BiometricAvailability.BIOMETRICS_REVOKED
+        return registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
     }
 
     override fun areBiometricsAvailable(
@@ -66,12 +70,20 @@ internal class BiometricsImpl internal constructor(
             externalScope.launch(dispatchers.io) {
                 removeRegistration()
             }
-            return BiometricAvailability.BIOMETRICS_REVOKED
+            return BiometricAvailability.RegistrationRevoked
         } catch (_: IllegalStateException) {
             // Secret key is null/couldn't be created (likely because of missing biometric factor). Do nothing and fall
             // back to regular areBiometricsAvailable check for full information
         }
-        return biometricsProvider.areBiometricsAvailable(context, allowedAuthenticators)
+        return when (val result = biometricsProvider.areBiometricsAvailable(context, allowedAuthenticators)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                when (registrationExists()) {
+                    true -> BiometricAvailability.AvailableRegistered
+                    false -> BiometricAvailability.AvailableNoRegistrations
+                }
+            }
+            else -> BiometricAvailability.Unavailable.fromReason(result)
+        }
     }
 
     override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
