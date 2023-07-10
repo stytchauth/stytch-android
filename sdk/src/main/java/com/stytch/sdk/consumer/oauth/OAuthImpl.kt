@@ -34,6 +34,7 @@ internal class OAuthImpl(
     override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "coinbase")
     override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "discord")
     override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "facebook")
+    override val figma: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "figma")
     override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "github")
     override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "gitlab")
     override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "google")
@@ -41,7 +42,10 @@ internal class OAuthImpl(
     override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "microsoft")
     override val salesforce: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "salesforce")
     override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "slack")
+    override val snapchat: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "snapchat")
+    override val tiktok: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "tiktok")
     override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitch")
+    override val twitter: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitter")
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {

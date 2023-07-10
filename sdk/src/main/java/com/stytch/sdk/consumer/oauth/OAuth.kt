@@ -48,6 +48,11 @@ public interface OAuth {
     public val facebook: ThirdParty
 
     /**
+     * The interface for authenticating a user with Figma
+     */
+    public val figma: ThirdParty
+
+    /**
      * The interface for authenticating a user with GitHub
      */
     public val github: ThirdParty
@@ -83,9 +88,24 @@ public interface OAuth {
     public val slack: ThirdParty
 
     /**
+     * The interface for authenticating a user with Snapchat
+     */
+    public val snapchat: ThirdParty
+
+    /**
+     * The interface for authenticating a user with TikTok
+     */
+    public val tiktok: ThirdParty
+
+    /**
      * The interface for authenticating a user with Twitch
      */
     public val twitch: ThirdParty
+
+    /**
+     * The interface for authenticating a user with Twitter
+     */
+    public val twitter: ThirdParty
 
     /**
      * Provides start, authenticate, and signOut methods for native Google One Tap authentication
