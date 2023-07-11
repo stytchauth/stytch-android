@@ -83,6 +83,7 @@ internal class OAuthImplTest {
             Pair(impl.coinbase, "coinbase"),
             Pair(impl.discord, "discord"),
             Pair(impl.facebook, "facebook"),
+            Pair(impl.figma, "figma"),
             Pair(impl.github, "github"),
             Pair(impl.gitlab, "gitlab"),
             Pair(impl.google, "google"),
@@ -90,7 +91,10 @@ internal class OAuthImplTest {
             Pair(impl.microsoft, "microsoft"),
             Pair(impl.salesforce, "salesforce"),
             Pair(impl.slack, "slack"),
+            Pair(impl.snapchat, "snapchat"),
+            Pair(impl.tiktok, "tiktok"),
             Pair(impl.twitch, "twitch"),
+            Pair(impl.twitter, "twitter"),
         ).forEach {
             assert(it.first.providerName == it.second)
         }
