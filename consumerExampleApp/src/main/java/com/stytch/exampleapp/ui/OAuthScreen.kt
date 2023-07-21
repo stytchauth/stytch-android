@@ -107,6 +107,11 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
                 text = stringResource(id = R.string.oauth_twitch),
                 onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.TWITCH) }
             )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_twitch),
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.YAHOO) }
+            )
         }
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),

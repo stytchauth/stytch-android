@@ -46,6 +46,7 @@ internal class OAuthImpl(
     override val tiktok: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "tiktok")
     override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitch")
     override val twitter: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitter")
+    override val yahoo: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "yahoo")
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {

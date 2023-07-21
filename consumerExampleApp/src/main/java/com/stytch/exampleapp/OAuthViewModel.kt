@@ -29,6 +29,7 @@ enum class OAuthProvider {
     SALESFORCE,
     SLACK,
     TWITCH,
+    YAHOO,
 }
 
 class OAuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -87,6 +88,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             OAuthProvider.SALESFORCE -> StytchClient.oauth.salesforce.start(startParameters)
             OAuthProvider.SLACK -> StytchClient.oauth.slack.start(startParameters)
             OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(startParameters)
+            OAuthProvider.YAHOO -> StytchClient.oauth.yahoo.start(startParameters)
         }
     }
 
