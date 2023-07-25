@@ -52,7 +52,8 @@ android {
             includeAndroidResources = true
         }
     }
-    lintOptions {
+    namespace 'com.stytch.sdk'
+    lint {
         disable 'OldTargetApi'
     }
     testVariants.all {
@@ -115,8 +116,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
     implementation "androidx.browser:browser:1.4.0"
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
@@ -130,6 +131,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:4.6.1"
     testImplementation "io.mockk:mockk:1.12.5"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.7.2")
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
 }

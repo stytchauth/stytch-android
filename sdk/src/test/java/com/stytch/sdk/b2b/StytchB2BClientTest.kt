@@ -48,7 +48,7 @@ internal class StytchB2BClientTest {
     @MockK
     private lateinit var mockMagicLinks: B2BMagicLinks
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @OptIn(ExperimentalCoroutinesApi::class)
