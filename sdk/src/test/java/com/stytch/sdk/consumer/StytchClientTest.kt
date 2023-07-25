@@ -52,7 +52,7 @@ internal class StytchClientTest {
     @MockK
     private lateinit var mockOAuth: OAuth
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @OptIn(ExperimentalCoroutinesApi::class)
