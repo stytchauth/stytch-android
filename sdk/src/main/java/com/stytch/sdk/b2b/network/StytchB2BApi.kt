@@ -30,6 +30,7 @@ import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.safeApiCall
 import java.lang.RuntimeException
@@ -358,5 +359,9 @@ internal object StytchB2BApi {
                 )
             )
         }
+    }
+
+    suspend fun getBootstrapData(): StytchResult<BootstrapData> = safeB2BApiCall {
+        apiService.getBootstrapData(publicToken = publicToken)
     }
 }

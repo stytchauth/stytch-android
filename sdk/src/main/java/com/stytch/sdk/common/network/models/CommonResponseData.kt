@@ -267,3 +267,32 @@ public interface CommonAuthenticationData {
     public val sessionJwt: String
     public val sessionToken: String
 }
+
+@JsonClass(generateAdapter = true)
+public data class BootstrapData(
+    @Json(name = "disable_sdk_watermark")
+    val disableSDKWatermark: Boolean = false,
+    @Json(name = "cname_domain")
+    val cnameDomain: String? = null,
+    @Json(name = "email_domains")
+    val emailDomains: List<String> = listOf("stytch.com"),
+    @Json(name = "captcha_settings")
+    val captchaSettings: CaptchaSettings = CaptchaSettings(),
+    @Json(name = "pkce_required_for_email_magic_links")
+    val pkceRequiredForEmailMagicLinks: Boolean = false,
+    @Json(name = "pkce_required_for_password_resets")
+    val pkceRequiredForPasswordResets: Boolean = false,
+    @Json(name = "pkce_required_for_oauth")
+    val pkceRequiredForOAuth: Boolean = false,
+    @Json(name = "pkce_required_for_sso")
+    val pkceRequiredForSso: Boolean = false,
+    @Json(name = "slug_pattern")
+    val slugPattern: String? = null,
+    @Json(name = "create_organization_enabled")
+    val createOrganizationEnabled: Boolean = false,
+)
+
+@JsonClass(generateAdapter = true)
+public data class CaptchaSettings(
+    val enabled: Boolean = false
+)

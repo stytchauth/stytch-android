@@ -114,6 +114,14 @@ internal class StytchB2BClientTest {
         verify { StorageHelper.initialize(mContextMock) }
     }
 
+    @Test
+    fun `should fetch bootstrap data when calling StytchB2BClient configure`() {
+        runBlocking {
+            StytchB2BClient.configure(mContextMock, "")
+            coVerify { StytchB2BApi.getBootstrapData() }
+        }
+    }
+
     @Test(expected = StytchExceptions.Critical::class)
     fun `an exception in StytchB2BClient configure throws a Critical exception`() {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
