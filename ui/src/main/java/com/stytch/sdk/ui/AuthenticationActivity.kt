@@ -1,0 +1,53 @@
+package com.stytch.sdk.ui
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.theme.StytchAndroidSDKTheme
+
+public class AuthenticationActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val productConfig = intent.getParcelableExtra<StytchProductConfig>(STYTCH_PRODUCT_CONFIG_KEY)
+            ?: error("No Product Configuration Provided")
+        println(productConfig)
+
+        setContent {
+            StytchAndroidSDKTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    Text("This is the stytch authentication activity")
+                    Button(onClick = {
+                        val x = StytchResult.Error(StytchExceptions.Input("This is just a test of passing data"))
+                        val data = Intent().apply {
+                            putExtra(STYTCH_RESULT_KEY, x)
+                        }
+                        setResult(RESULT_OK, data)
+                        finish()
+                    }) {
+                        Text("Click to return to calling activity")
+                    }
+                }
+            }
+        }
+    }
+
+    internal companion object {
+        internal const val STYTCH_PRODUCT_CONFIG_KEY = "STYTCH_PRODUCT_CONFIG"
+        internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
+        internal fun createIntent(context: Context, productConfig: StytchProductConfig) =
+            Intent(context, AuthenticationActivity::class.java).apply {
+                putExtra(STYTCH_PRODUCT_CONFIG_KEY, productConfig)
+            }
+    }
+}
