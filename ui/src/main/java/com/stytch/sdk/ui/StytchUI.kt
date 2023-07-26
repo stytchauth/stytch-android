@@ -77,7 +77,7 @@ public class StytchUI private constructor(
             this.isB2B = isB2B
         }
 
-        public fun onAuthenticated(onAuthenticated: (StytchResult<*>?) -> Unit): Builder = apply {
+        public fun onAuthenticated(onAuthenticated: (StytchResult<*>) -> Unit): Builder = apply {
             this.onAuthenticated = onAuthenticated
         }
 
