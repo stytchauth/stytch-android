@@ -10,9 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.ui.EmailMagicLinksOptions
-import com.stytch.sdk.ui.StytchProduct
-import com.stytch.sdk.ui.StytchProductConfig
+import com.stytch.sdk.ui.data.EmailMagicLinksOptions
+import com.stytch.sdk.ui.data.StytchProduct
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.StytchUI
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 

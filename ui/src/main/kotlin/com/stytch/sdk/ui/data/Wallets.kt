@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui
+package com.stytch.sdk.ui.data
 
 public enum class Wallets(public val displayName: String) {
     VESSEL("Vessel"),

@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui
+package com.stytch.sdk.ui.data
 
 public enum class OAuthProviders(public val providerName: String) {
     AMAZON("amazon"),

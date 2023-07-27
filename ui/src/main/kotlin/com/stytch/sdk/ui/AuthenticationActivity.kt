@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.StytchAndroidSDKTheme
 
@@ -23,22 +24,25 @@ public class AuthenticationActivity : ComponentActivity() {
             ?: error("No UI Configuration Provided")
         setContent {
             StytchAndroidSDKTheme(stytchStyles = styles) {
-                // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = Color(LocalStytchTheme.current.backgroundColor)) {
                     Text("This is the stytch authentication activity")
                     Button(onClick = {
                         val x = StytchResult.Error(StytchExceptions.Input("This is just a test of passing data"))
-                        val data = Intent().apply {
-                            putExtra(STYTCH_RESULT_KEY, x)
-                        }
-                        setResult(RESULT_OK, data)
-                        finish()
+                        returnAuthenticationResult(x)
                     }) {
                         Text("Click to return to calling activity")
                     }
                 }
             }
         }
+    }
+
+    private fun returnAuthenticationResult(result: StytchResult<*>) {
+        val data = Intent().apply {
+            putExtra(STYTCH_RESULT_KEY, result)
+        }
+        setResult(RESULT_OK, data)
+        finish()
     }
 
     internal companion object {

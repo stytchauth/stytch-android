@@ -10,8 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.stytch.sdk.ui.StytchStyles
-import com.stytch.sdk.ui.StytchTheme
+import com.stytch.sdk.ui.data.StytchStyles
+import com.stytch.sdk.ui.data.StytchTheme
 
 @Composable
 internal fun StytchAndroidSDKTheme(

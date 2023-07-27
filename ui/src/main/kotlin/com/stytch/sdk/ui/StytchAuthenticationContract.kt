@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.data.StytchUIConfig
 
 internal class StytchAuthenticationContract : ActivityResultContract<StytchUIConfig, StytchResult<*>>() {
     override fun createIntent(context: Context, input: StytchUIConfig): Intent =

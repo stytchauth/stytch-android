@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui
+package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

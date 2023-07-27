@@ -5,6 +5,9 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.data.StytchStyles
+import com.stytch.sdk.ui.data.StytchUIConfig
 
 @Suppress("LongParameterList")
 public class StytchUI private constructor(
@@ -30,7 +33,7 @@ public class StytchUI private constructor(
         this.styles = styles ?: StytchStyles()
         this.productConfig = productConfig
         this.authHandler = StytchAuthHandler(activity, onAuthenticated)
-        this.bootstrapData = if (this.isB2B) StytchClient.bootstrapData else StytchB2BClient.bootstrapData
+        this.bootstrapData = if (this.isB2B) StytchB2BClient.bootstrapData else StytchClient.bootstrapData
     }
 
     public fun authenticate() {

@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.data.StytchUIConfig
 
 public interface StytchAuth {
     public fun authenticate(options: StytchUIConfig)
@@ -32,13 +33,16 @@ private class StytchAuthImpl(
     }
 
     override fun onCreate(owner: LifecycleOwner) {
-        resultLauncher = registry.register(
-            "stytchAuth",
-            StytchAuthenticationContract()
-        ) { result -> onAuthenticated(result) }
+        resultLauncher = registry.register(REGISTRY_KEY, StytchAuthenticationContract()) { result ->
+            onAuthenticated(result)
+        }
     }
 
     override fun authenticate(options: StytchUIConfig) {
         resultLauncher.launch(options)
+    }
+
+    companion object {
+        private const val REGISTRY_KEY = "STYTCH_AUTHENTICATION_REGISTRY_KEY"
     }
 }
