@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.stytch.sdk.common.StytchResult
 
 public interface StytchAuth {
-    public fun authenticate(options: StytchProductConfig)
+    public fun authenticate(options: StytchUIConfig)
 }
 
 internal class StytchAuthHandler(
@@ -25,7 +25,7 @@ private class StytchAuthImpl(
     lifecycleOwner: LifecycleOwner,
     private val onAuthenticated: (StytchResult<*>) -> Unit,
 ) : DefaultLifecycleObserver, StytchAuth {
-    private lateinit var resultLauncher: ActivityResultLauncher<StytchProductConfig>
+    private lateinit var resultLauncher: ActivityResultLauncher<StytchUIConfig>
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
@@ -38,7 +38,7 @@ private class StytchAuthImpl(
         ) { result -> onAuthenticated(result) }
     }
 
-    override fun authenticate(options: StytchProductConfig) {
+    override fun authenticate(options: StytchUIConfig) {
         resultLauncher.launch(options)
     }
 }

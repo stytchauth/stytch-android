@@ -18,7 +18,6 @@ import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 
 class UiWorkbenchActivity : ComponentActivity() {
     private val stytchUi = StytchUI.Builder().apply {
-        publicToken(BuildConfig.STYTCH_PUBLIC_TOKEN)
         activity(this@UiWorkbenchActivity)
         isB2B(false)
         productConfig(
