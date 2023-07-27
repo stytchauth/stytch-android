@@ -5,31 +5,44 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.stytch.sdk.common.StytchExceptions
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
-import com.stytch.sdk.ui.theme.StytchAndroidSDKTheme
+import com.stytch.sdk.ui.theme.StytchTheme
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
+    private val viewModel: AuthenticationViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val (productConfig, styles) = intent.getParcelableExtra<StytchUIConfig>(STYTCH_UI_CONFIG_KEY)
             ?: error("No UI Configuration Provided")
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel
+                    .state
+                    .filter { it is AuthenticationState.Result }
+                    .collect { returnAuthenticationResult((it as AuthenticationState.Result).response) }
+            }
+        }
         setContent {
-            StytchAndroidSDKTheme(stytchStyles = styles) {
+            StytchTheme(stytchStyles = styles) {
                 Surface(modifier = Modifier.fillMaxSize(), color = Color(LocalStytchTheme.current.backgroundColor)) {
                     Text("This is the stytch authentication activity")
-                    Button(onClick = {
-                        val x = StytchResult.Error(StytchExceptions.Input("This is just a test of passing data"))
-                        returnAuthenticationResult(x)
-                    }) {
+                    Button(onClick = viewModel::test) {
                         Text("Click to return to calling activity")
                     }
                 }
@@ -45,9 +58,19 @@ public class AuthenticationActivity : ComponentActivity() {
         finish()
     }
 
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        when (requestCode) {
+            STYTCH_GOOGLE_OAUTH_REQUEST_ID -> intent?.let { viewModel.authenticateGoogleOneTapLogin(it) }
+            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID -> intent?.let { viewModel.authenticateThirdPartyOAuth(resultCode, it) }
+        }
+    }
+
     internal companion object {
         internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_UI_CONFIG"
         internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
+        internal const val STYTCH_GOOGLE_OAUTH_REQUEST_ID = 5551
+        internal const val STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID = 5552
         internal fun createIntent(context: Context, uiConfig: StytchUIConfig) =
             Intent(context, AuthenticationActivity::class.java).apply {
                 putExtra(STYTCH_UI_CONFIG_KEY, uiConfig)

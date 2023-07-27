@@ -14,7 +14,7 @@ import com.stytch.sdk.ui.data.StytchStyles
 import com.stytch.sdk.ui.data.StytchTheme
 
 @Composable
-internal fun StytchAndroidSDKTheme(
+internal fun StytchTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     stytchStyles: StytchStyles,
     content: @Composable () -> Unit,
