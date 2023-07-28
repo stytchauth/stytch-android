@@ -22,18 +22,17 @@ public class StytchUI private constructor(
     private val styles: StytchStyles
     private val productConfig: StytchProductConfig
     private val authHandler: StytchAuthHandler
-    private val bootstrapData: BootstrapData
+    internal val bootstrapData: BootstrapData
+        get() = if (this.isB2B) StytchB2BClient.bootstrapData else StytchClient.bootstrapData
 
     init {
         require(activity != null) { "Missing required activity" }
         require(onAuthenticated != null) { "Missing required authentication result handler" }
-        require(productConfig != null) { "Missing required productConfig" }
         this.activity = activity
         this.isB2B = isB2B ?: false
         this.styles = styles ?: StytchStyles()
-        this.productConfig = productConfig
+        this.productConfig = productConfig ?: StytchProductConfig()
         this.authHandler = StytchAuthHandler(activity, onAuthenticated)
-        this.bootstrapData = if (this.isB2B) StytchB2BClient.bootstrapData else StytchClient.bootstrapData
     }
 
     public fun authenticate() {
@@ -41,6 +40,7 @@ public class StytchUI private constructor(
             StytchUIConfig(
                 productConfig = this.productConfig,
                 styles = this.styles,
+                bootstrapData = this.bootstrapData,
             )
         )
     }

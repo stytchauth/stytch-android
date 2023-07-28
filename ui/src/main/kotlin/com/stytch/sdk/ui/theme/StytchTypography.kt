@@ -10,15 +10,7 @@ import androidx.compose.ui.unit.sp
 import com.stytch.sdk.ui.R
 
 internal data class StytchTypography(
-    val titleCentered: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W600,
-        fontSize = 24.sp,
-        lineHeight = 30.sp,
-        textAlign = TextAlign.Center,
-        color = Color.Black,
-    ),
-    val titleStart: TextStyle = TextStyle(
+    val title: TextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
         fontWeight = FontWeight.W600,
         fontSize = 24.sp,

@@ -1,7 +1,9 @@
 package com.stytch.sdk.common.network.models
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 @JsonClass(generateAdapter = true)
 public data class BasicData(
@@ -267,6 +269,7 @@ public interface CommonAuthenticationData {
 }
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class BootstrapData(
     @Json(name = "disable_sdk_watermark")
     val disableSDKWatermark: Boolean = false,
@@ -288,9 +291,10 @@ public data class BootstrapData(
     val slugPattern: String? = null,
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
-)
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class CaptchaSettings(
     val enabled: Boolean = false
-)
+) : Parcelable

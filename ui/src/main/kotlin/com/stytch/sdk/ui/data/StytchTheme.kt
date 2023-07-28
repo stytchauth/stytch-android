@@ -3,7 +3,7 @@ package com.stytch.sdk.ui.data
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import java.net.URL
+import java.io.File
 import kotlinx.parcelize.Parcelize
 
 private val CHARCOAL: Int = Color(0xFF19303D).toArgb()
@@ -47,7 +47,7 @@ public data class StytchTheme(
     val disabledInputBackgroundColor: Int = CHALK,
     val disabledInputTextColor: Int = STEEL,
     val hideHeaderText: Boolean = false,
-    val logoImageUrl: URL? = null,
+    val logoImageUrl: File? = null,
 ) : Parcelable {
     internal companion object {
         fun defaultDarkTheme(): StytchTheme = StytchTheme(

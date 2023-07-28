@@ -6,19 +6,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.data.AuthenticationState
 import com.stytch.sdk.ui.data.StytchUIConfig
-import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -28,7 +21,7 @@ public class AuthenticationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val (productConfig, styles) = intent.getParcelableExtra<StytchUIConfig>(STYTCH_UI_CONFIG_KEY)
+        val (productConfig, styles, bootstrapData) = intent.getParcelableExtra<StytchUIConfig>(STYTCH_UI_CONFIG_KEY)
             ?: error("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -40,12 +33,11 @@ public class AuthenticationActivity : ComponentActivity() {
         }
         setContent {
             StytchTheme(stytchStyles = styles) {
-                Surface(modifier = Modifier.fillMaxSize(), color = Color(LocalStytchTheme.current.backgroundColor)) {
-                    Text("This is the stytch authentication activity")
-                    Button(onClick = viewModel::test) {
-                        Text("Click to return to calling activity")
-                    }
-                }
+                StytchAuthenticationApp(
+                    authenticationState = viewModel.state,
+                    productConfig = productConfig,
+                    disableWatermark = bootstrapData.disableSDKWatermark
+                )
             }
         }
     }
