@@ -1,16 +1,20 @@
 package com.stytch.sdk.common
 
+import android.os.Parcelable
 import com.stytch.sdk.common.network.StytchErrorType
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 /**
  * Provides a wrapper for responses from the Stytch API
  */
-public sealed class StytchResult<out T> {
+@Parcelize
+public sealed class StytchResult<out T> : Parcelable {
     /**
      * Data class that can hold a successful response from a Stytch endpoint
      * @property value is the value of the response
      */
-    public data class Success<out T>(val value: T) : StytchResult<T>()
+    public data class Success<out T>(val value: @RawValue T) : StytchResult<T>()
 
     /**
      * Data class that can hold a StytchException
