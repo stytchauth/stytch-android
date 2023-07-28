@@ -7,14 +7,20 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
+import com.stytch.sdk.ui.data.GoogleOAuthOptions
+import com.stytch.sdk.ui.data.OAuthOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 internal class MainScreenViewModel : ViewModel() {
-    internal fun onStartGoogle(context: ComponentActivity, clientId: String? = null) {
+    internal fun onStartGoogle(
+        context: ComponentActivity,
+        googleOAuthOptions: GoogleOAuthOptions? = null,
+        oAuthOptions: OAuthOptions? = null
+    ) {
         viewModelScope.launch {
-            val didStartOneTap = clientId?.let {
+            val didStartOneTap = googleOAuthOptions?.clientId?.let { clientId ->
                 StytchClient.oauth.googleOneTap.start(
                     OAuth.GoogleOneTap.StartParameters(
                         context = context,
@@ -29,20 +35,20 @@ internal class MainScreenViewModel : ViewModel() {
                     OAuth.ThirdParty.StartParameters(
                         context = context,
                         oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                        loginRedirectUrl = "",
-                        signupRedirectUrl = "",
+                        loginRedirectUrl = oAuthOptions?.loginRedirectURL,
+                        signupRedirectUrl = oAuthOptions?.signupRedirectURL,
                     ),
                 )
             }
         }
     }
-    internal fun onStartApple(context: ComponentActivity) {
+    internal fun onStartApple(context: ComponentActivity, oAuthOptions: OAuthOptions? = null) {
         StytchClient.oauth.apple.start(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = "",
-                signupRedirectUrl = "",
+                loginRedirectUrl = oAuthOptions?.loginRedirectURL,
+                signupRedirectUrl = oAuthOptions?.signupRedirectURL,
             ),
         )
     }

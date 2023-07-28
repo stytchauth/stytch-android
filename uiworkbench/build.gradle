@@ -3,6 +3,9 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN") ?: STYTCH_PUBLIC_TOKEN
+String googleOAuthClientId = System.getenv("UI_GOOGLE_CLIENT_ID") ?: GOOGLE_OAUTH_CLIENT_ID
+
 android {
     namespace 'com.stytch.uiworkbench'
     compileSdk 33
@@ -20,23 +23,15 @@ android {
         }
         // Placeholders for OAuth redirect
         manifestPlaceholders = [
-                'stytchOAuthRedirectScheme': 'app',
-                'stytchOAuthRedirectHost': 'oauth'
+            'stytchOAuthRedirectScheme': 'uiworkbench',
+            'stytchOAuthRedirectHost': 'oauth',
+            'STYTCH_UI_PUBLIC_TOKEN': publicToken
         ]
     }
 
     buildTypes {
         all {
-            String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN")
-            if (!publicToken) {
-                publicToken = STYTCH_PUBLIC_TOKEN
-            }
             buildConfigField "String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\""
-
-            String googleOAuthClientId = System.getenv("UI_GOOGLE_CLIENT_ID")
-            if (!googleOAuthClientId) {
-                googleOAuthClientId = GOOGLE_OAUTH_CLIENT_ID
-            }
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\""
         }
         release {

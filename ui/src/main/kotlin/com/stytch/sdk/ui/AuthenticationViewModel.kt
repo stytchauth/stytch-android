@@ -11,6 +11,7 @@ import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.data.AuthenticationState
+import com.stytch.sdk.ui.data.SessionOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,26 +20,27 @@ internal class AuthenticationViewModel : ViewModel() {
     private val _state = MutableStateFlow<AuthenticationState>(AuthenticationState.Idle)
     val state = _state.asStateFlow()
 
-    fun authenticateGoogleOneTapLogin(data: Intent) {
+    fun authenticateGoogleOneTapLogin(data: Intent, sessionOptions: SessionOptions) {
         viewModelScope.launch {
-            val parameters = OAuth.GoogleOneTap.AuthenticateParameters(data)
+            val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
+                data = data,
+                sessionDurationMinutes = sessionOptions.sessionDurationMinutes
+            )
             val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
             _state.value = AuthenticationState.Result(result)
         }
     }
 
-    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent) {
+    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent, sessionOptions: SessionOptions) {
         viewModelScope.launch {
             if (resultCode == Activity.RESULT_OK) {
                 intent.data?.let {
-                    when (val result = StytchClient.handle(it, 60U)) {
+                    when (val result = StytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
                             _state.value = AuthenticationState.Result(result.response.result)
                         }
-                        // do nothing, this shouldn't happen
-                        is DeeplinkHandledStatus.NotHandled -> {}
-                        // This only happens for password reset deeplinks
-                        is DeeplinkHandledStatus.ManualHandlingRequired -> {}
+                        is DeeplinkHandledStatus.NotHandled -> {} // TODO: report to app
+                        is DeeplinkHandledStatus.ManualHandlingRequired -> {} // TODO: Navigate to password reset
                     }
                 }
             } else {

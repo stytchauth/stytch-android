@@ -9,4 +9,5 @@ public data class StytchUIConfig(
     val productConfig: StytchProductConfig,
     val styles: StytchStyles,
     val bootstrapData: BootstrapData,
+    val publicToken: String,
 ) : Parcelable

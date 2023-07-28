@@ -13,7 +13,7 @@ public data class StytchProductConfig(
     val emailMagicLinksOptions: EmailMagicLinksOptions? = null,
     val oAuthOptions: OAuthOptions? = null,
     val otpOptions: OTPOptions? = null,
-    val sessionOptions: SessionOptions? = null,
+    val sessionOptions: SessionOptions = SessionOptions(),
     val passwordOptions: PasswordOptions? = null,
     val googleOauthOptions: GoogleOAuthOptions? = null,
 ) : Parcelable

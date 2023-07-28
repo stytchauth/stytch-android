@@ -13,6 +13,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.StytchUI
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.GoogleOAuthOptions
+import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
@@ -20,16 +21,20 @@ import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 class UiWorkbenchActivity : ComponentActivity() {
     private val stytchUi = StytchUI.Builder().apply {
         activity(this@UiWorkbenchActivity)
-        isB2B(false)
+        publicToken(BuildConfig.STYTCH_PUBLIC_TOKEN)
         productConfig(
             StytchProductConfig(
                 products = listOf(StytchProduct.EMAIL_MAGIC_LINKS),
                 emailMagicLinksOptions = EmailMagicLinksOptions(
-                    loginRedirectURL = "uiworkbench://Authenticate",
-                    signupRedirectURL = "uiworkbench://Authenticate",
+                    loginRedirectURL = "uiworkbench://${BuildConfig.STYTCH_PUBLIC_TOKEN}",
+                    signupRedirectURL = "uiworkbench://${BuildConfig.STYTCH_PUBLIC_TOKEN}",
                 ),
                 googleOauthOptions = GoogleOAuthOptions(
                     clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
+                ),
+                oAuthOptions = OAuthOptions(
+                    loginRedirectURL = "uiworkbench://oauth",
+                    signupRedirectURL = "uiworkbench://oauth",
                 )
             )
         )

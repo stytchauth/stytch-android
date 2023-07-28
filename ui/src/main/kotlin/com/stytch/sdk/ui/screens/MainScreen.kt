@@ -14,6 +14,7 @@ import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.SocialLoginButton
+import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 
@@ -30,14 +31,20 @@ internal fun MainScreen(
         }
         SocialLoginButton(
             modifier = Modifier.padding(bottom = 12.dp),
-            onClick = { viewModel.onStartGoogle(context, productConfig.googleOauthOptions?.clientId) },
+            onClick = {
+                viewModel.onStartGoogle(
+                    context,
+                    null,//productConfig.googleOauthOptions?.clientId,
+                    productConfig.oAuthOptions
+                )
+            },
             iconDrawable = painterResource(id = R.drawable.google),
             iconDescription = stringResource(id = R.string.google_logo),
             text = stringResource(id = R.string.continue_with_google),
         )
         SocialLoginButton(
             modifier = Modifier.padding(bottom = 24.dp),
-            onClick = { viewModel.onStartApple(context) },
+            onClick = { viewModel.onStartApple(context, productConfig.oAuthOptions) },
             iconDrawable = painterResource(id = R.drawable.apple),
             iconDescription = stringResource(id = R.string.apple_logo),
             text = stringResource(id = R.string.continue_with_apple),

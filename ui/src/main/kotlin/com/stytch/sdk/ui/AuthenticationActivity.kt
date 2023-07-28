@@ -18,11 +18,11 @@ import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
     private val viewModel: AuthenticationViewModel by viewModels()
+    private lateinit var uiConfig: StytchUIConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val (productConfig, styles, bootstrapData) = intent.getParcelableExtra<StytchUIConfig>(STYTCH_UI_CONFIG_KEY)
-            ?: error("No UI Configuration Provided")
+        uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY) ?: error("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
@@ -32,14 +32,19 @@ public class AuthenticationActivity : ComponentActivity() {
             }
         }
         setContent {
-            StytchTheme(stytchStyles = styles) {
+            StytchTheme(stytchStyles = uiConfig.styles) {
                 StytchAuthenticationApp(
                     authenticationState = viewModel.state,
-                    productConfig = productConfig,
-                    disableWatermark = bootstrapData.disableSDKWatermark
+                    productConfig = uiConfig.productConfig,
+                    disableWatermark = uiConfig.bootstrapData.disableSDKWatermark,
                 )
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(STYTCH_UI_CONFIG_KEY, uiConfig)
+        super.onSaveInstanceState(outState)
     }
 
     private fun returnAuthenticationResult(result: StytchResult<*>) {
@@ -53,8 +58,12 @@ public class AuthenticationActivity : ComponentActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         when (requestCode) {
-            STYTCH_GOOGLE_OAUTH_REQUEST_ID -> intent?.let { viewModel.authenticateGoogleOneTapLogin(it) }
-            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID -> intent?.let { viewModel.authenticateThirdPartyOAuth(resultCode, it) }
+            STYTCH_GOOGLE_OAUTH_REQUEST_ID -> intent?.let {
+                viewModel.authenticateGoogleOneTapLogin(it, uiConfig.productConfig.sessionOptions)
+            }
+            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID -> intent?.let {
+                viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
+            }
         }
     }
 
