@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 internal class MainScreenViewModel : ViewModel() {
     internal fun onStartGoogle(context: ComponentActivity, clientId: String? = null) {
         viewModelScope.launch {
-            println("JORDAN >>> 1 $clientId")
             val didStartOneTap = clientId?.let {
                 StytchClient.oauth.googleOneTap.start(
                     OAuth.GoogleOneTap.StartParameters(
@@ -24,7 +23,6 @@ internal class MainScreenViewModel : ViewModel() {
                     ),
                 )
             } ?: false
-            println("JORDAN >>>> 2 $didStartOneTap")
             if (!didStartOneTap) {
                 // Google OneTap is unavailable, fallback to traditional OAuth
                 StytchClient.oauth.google.start(
@@ -39,7 +37,6 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
     internal fun onStartApple(context: ComponentActivity) {
-        println("JORDAN >>> apple 1")
         StytchClient.oauth.apple.start(
             OAuth.ThirdParty.StartParameters(
                 context = context,
