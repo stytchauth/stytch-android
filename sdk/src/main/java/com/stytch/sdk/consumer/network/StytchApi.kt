@@ -11,6 +11,7 @@ import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
@@ -533,6 +534,10 @@ internal object StytchApi {
                 )
             )
         }
+    }
+
+    suspend fun getBootstrapData(): StytchResult<BootstrapData> = safeConsumerApiCall {
+        apiService.getBootstrapData(publicToken = publicToken)
     }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeConsumerApiCall(

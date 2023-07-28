@@ -9,15 +9,13 @@ import com.stytch.sdk.common.StytchResult
 
 internal class StytchAuthenticationContract : ActivityResultContract<StytchProductConfig, StytchResult<*>>() {
     override fun createIntent(context: Context, input: StytchProductConfig): Intent =
-        Intent().apply {
-            putExtra("authOptions", input)
-        }
+        AuthenticationActivity.createIntent(context, input)
 
     override fun parseResult(resultCode: Int, intent: Intent?): StytchResult<*> {
         if (resultCode != Activity.RESULT_OK) {
             return StytchResult.Error(StytchExceptions.Input("Activity failed with resultCode = $resultCode"))
         }
-        return intent?.extras?.getParcelable("")
+        return intent?.extras?.getParcelable(AuthenticationActivity.STYTCH_RESULT_KEY)
             ?: StytchResult.Error(StytchExceptions.Input("Failed to retrieve data from intent"))
     }
 }

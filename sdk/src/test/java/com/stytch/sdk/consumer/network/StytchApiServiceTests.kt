@@ -708,6 +708,17 @@ internal class StytchApiServiceTests {
     }
     // endregion OAuth
 
+    // region Bootstrap
+    @Test
+    fun `check getBootstrapData request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.getBootstrapData("mock-public-token")
+            }.verifyGet("/projects/bootstrap/mock-public-token")
+        }
+    }
+    // endregion Bootstrap
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()

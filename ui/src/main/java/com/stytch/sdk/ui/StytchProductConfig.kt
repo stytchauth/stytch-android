@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 public data class StytchProductConfig(
     val products: List<StytchProduct>,
-    val emailMagicLinksOptions: EmailMagicLinksOptions,
-    val oAuthOptions: OAuthOptions,
-    val otpOptions: OTPOptions,
-    val sessionOptions: SessionOptions,
-    val passwordOptions: PasswordOptions,
+    val emailMagicLinksOptions: EmailMagicLinksOptions? = null,
+    val oAuthOptions: OAuthOptions? = null,
+    val otpOptions: OTPOptions? = null,
+    val sessionOptions: SessionOptions? = null,
+    val passwordOptions: PasswordOptions? = null,
 ) : Parcelable
