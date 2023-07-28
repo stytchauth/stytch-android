@@ -347,6 +347,15 @@ internal class StytchApiTest {
         }
     }
 
+    @Test
+    fun `StytchApi Bootstrap getBootstrapData calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        every { StytchApi.publicToken } returns "mock-public-token"
+        coEvery { StytchApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
+        StytchApi.getBootstrapData()
+        coVerify { StytchApi.apiService.getBootstrapData("mock-public-token") }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         every { StytchApi.isInitialized } returns false

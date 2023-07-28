@@ -24,8 +24,10 @@ import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.stytchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -40,6 +42,8 @@ public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal val sessionStorage = B2BSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    public var bootstrapData: BootstrapData = BootstrapData()
+        internal set
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -54,6 +58,12 @@ public object StytchB2BClient {
             val deviceInfo = context.getDeviceInfo()
             StytchB2BApi.configure(publicToken, deviceInfo)
             StorageHelper.initialize(context)
+            externalScope.launch(dispatchers.io) {
+                bootstrapData = when (val res = StytchB2BApi.getBootstrapData()) {
+                    is StytchResult.Success -> res.value
+                    else -> BootstrapData()
+                }
+            }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)
         }
