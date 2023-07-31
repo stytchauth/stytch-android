@@ -29,6 +29,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.DividerWithText
+import com.stytch.sdk.ui.components.EmailEntry
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
@@ -57,7 +58,7 @@ private fun MainScreenComposable(
         productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
         productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true
     ) {
-        error("You cannot have both Email Magic Links and Email OTP configured at the same time")
+        error(stringResource(id = R.string.eml_and_otp_error))
     }
     val navigator = LocalNavigator.currentOrThrow
     val theme = LocalStytchTheme.current
@@ -136,21 +137,38 @@ private fun MainScreenComposable(
                 }
             }
             when (tabTitles[selectedTabIndex]) {
-                stringResource(id = R.string.email) -> Text("EMAIL")
+                stringResource(id = R.string.email) -> EmailEntry(
+                    emailAddress = emailState.value.emailAddress,
+                    onEmailAddressChanged = viewModel::onEmailAddressChanged,
+                    onEmailAddressSubmit = {
+                        if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
+                            // send EML
+                            viewModel.sendEmailMagicLink()
+                        } else {
+                            // send OTP
+                            viewModel.sendEmailOTP()
+                        }
+                    },
+                    emailAddressError = emailState.value.error,
+                    statusText = emailState.value.error
+                )
                 stringResource(id = R.string.text) -> PhoneEntry(
                     countryCode = phoneState.value.countryCode,
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = viewModel::sendSmsOTP
+                    onPhoneNumberSubmit = viewModel::sendSmsOTP,
+                    statusText = phoneState.value.error
                 )
                 stringResource(id = R.string.whatsapp) -> PhoneEntry(
                     countryCode = phoneState.value.countryCode,
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = viewModel::sendWhatsAppOTP
+                    onPhoneNumberSubmit = viewModel::sendWhatsAppOTP,
+                    statusText = phoneState.value.error
                 )
+                else -> Text(stringResource(id = R.string.misconfigured_otp))
             }
             Spacer(modifier = Modifier.height(24.dp))
         }

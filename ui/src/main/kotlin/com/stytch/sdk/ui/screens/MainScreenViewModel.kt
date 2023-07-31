@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 internal data class PhoneNumberState(
     val countryCode: String = "1",
     val phoneNumber: String = "",
-    val error: String? = null
+    val error: String? = null,
 ) {
     fun toE164(): String {
         val phone = Phonenumber.PhoneNumber().apply {
@@ -34,7 +34,7 @@ internal data class PhoneNumberState(
 }
 
 internal data class EmailState(
-    val emailAddress: String? = null,
+    val emailAddress: String = "",
     val error: String? = null,
 )
 
@@ -91,20 +91,20 @@ internal class MainScreenViewModel : ViewModel() {
     fun onCountryCodeChanged(countryCode: String) {
         _phoneState.value = _phoneState.value.copy(
             countryCode = countryCode,
-            error = null
+            error = null,
         )
     }
     fun onPhoneNumberChanged(phoneNumber: String) {
         _phoneState.value = _phoneState.value.copy(
             phoneNumber = phoneNumber,
-            error = null
+            error = null,
         )
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
         _emailState.value = _emailState.value.copy(
             emailAddress = emailAddress,
-            error = null
+            error = null,
         )
     }
 
@@ -113,7 +113,7 @@ internal class MainScreenViewModel : ViewModel() {
             when (
                 val result = StytchClient.magicLinks.email.loginOrCreate(
                     parameters = MagicLinks.EmailMagicLinks.Parameters(
-                        email = _emailState.value.emailAddress ?: ""
+                        email = _emailState.value.emailAddress
                     )
                 )
             ) {
@@ -132,7 +132,7 @@ internal class MainScreenViewModel : ViewModel() {
             when (
                 val result = StytchClient.otps.email.loginOrCreate(
                     parameters = OTP.EmailOTP.Parameters(
-                        email = _emailState.value.emailAddress ?: ""
+                        email = _emailState.value.emailAddress
                     )
                 )
             ) {

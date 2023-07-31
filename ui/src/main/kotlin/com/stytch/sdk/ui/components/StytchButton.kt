@@ -24,8 +24,10 @@ internal fun StytchButton(
         onClick = onClick,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            contentColor = Color(theme.buttonBackgroundColor),
-            disabledContentColor = Color(theme.disabledButtonBackgroundColor),
+            containerColor = Color(theme.buttonBackgroundColor),
+            disabledContainerColor = Color(theme.disabledButtonBackgroundColor),
+            contentColor = Color(theme.buttonTextColor),
+            disabledContentColor = Color(theme.disabledButtonTextColor),
         ),
     ) {
         Text(

@@ -34,7 +34,6 @@ public class AuthenticationActivity : ComponentActivity() {
         setContent {
             StytchTheme(stytchStyles = uiConfig.styles) {
                 StytchAuthenticationApp(
-                    authenticationState = viewModel.state,
                     productConfig = uiConfig.productConfig,
                     disableWatermark = uiConfig.bootstrapData.disableSDKWatermark,
                 )

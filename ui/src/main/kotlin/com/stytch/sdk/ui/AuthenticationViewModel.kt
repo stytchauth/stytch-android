@@ -39,8 +39,7 @@ internal class AuthenticationViewModel : ViewModel() {
                         is DeeplinkHandledStatus.Handled -> {
                             _state.value = AuthenticationState.Result(result.response.result)
                         }
-                        is DeeplinkHandledStatus.NotHandled -> {} // TODO: report to app
-                        is DeeplinkHandledStatus.ManualHandlingRequired -> {} // TODO: Navigate to password reset
+                        else -> {} // this shouldn't happen
                     }
                 }
             } else {

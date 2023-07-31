@@ -35,4 +35,6 @@
     <string name="invalid_passcode">Invalid passcode, please try again.</string>
     <string name="whatsapp">WhatsApp</string>
     <string name="powered_by_stytch">Powered by Stytch</string>
+    <string name="eml_and_otp_error">You cannot have both Email Magic Links and Email OTP configured at the same time</string>
+    <string name="misconfigured_otp">Unrecognized EML/OTP configuration</string>
 </resources>
