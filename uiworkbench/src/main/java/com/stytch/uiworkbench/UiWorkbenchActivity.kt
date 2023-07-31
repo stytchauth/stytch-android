@@ -15,6 +15,8 @@ import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.GoogleOAuthOptions
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
+import com.stytch.sdk.ui.data.OTPMethods
+import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
@@ -42,6 +44,9 @@ class UiWorkbenchActivity : ComponentActivity() {
                     loginRedirectURL = "uiworkbench://oauth",
                     signupRedirectURL = "uiworkbench://oauth",
                     providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE)
+                ),
+                otpOptions = OTPOptions(
+                    methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
                 )
             )
         )

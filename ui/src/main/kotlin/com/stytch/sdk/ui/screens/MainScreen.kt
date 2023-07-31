@@ -2,13 +2,27 @@ package com.stytch.sdk.ui.screens
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -16,11 +30,13 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.PageTitle
+import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
-import com.stytch.sdk.ui.data.OAuthProvider
+import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
+import com.stytch.sdk.ui.theme.LocalStytchTypography
 
 internal data class MainScreen(
     val productConfig: StytchProductConfig
@@ -37,13 +53,39 @@ private fun MainScreenComposable(
     productConfig: StytchProductConfig,
     viewModel: MainScreenViewModel,
 ) {
-    val theme = LocalStytchTheme.current
-    val context = LocalContext.current as ComponentActivity
+    if (
+        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
+        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true
+    ) {
+        error("You cannot have both Email Magic Links and Email OTP configured at the same time")
+    }
     val navigator = LocalNavigator.currentOrThrow
-    val hasDivider =
-        productConfig.products.contains(StytchProduct.OAUTH) && productConfig.products.any {
-            listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
+    val theme = LocalStytchTheme.current
+    val type = LocalStytchTypography.current
+    val context = LocalContext.current as ComponentActivity
+    val hasButtons = productConfig.products.contains(StytchProduct.OAUTH)
+    val hasInput = productConfig.products.any {
+        listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
+    }
+    val hasEmail = productConfig.products.any {
+        listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
+    }
+    val hasDivider = hasButtons && hasInput
+    val tabTitles = mutableListOf<String>().apply {
+        if (hasEmail) {
+            add(stringResource(id = R.string.email))
         }
+        if (productConfig.otpOptions?.methods?.contains(OTPMethods.SMS) == true) {
+            add(stringResource(id = R.string.text))
+        }
+        if (productConfig.otpOptions?.methods?.contains(OTPMethods.WHATSAPP) == true) {
+            add(stringResource(id = R.string.whatsapp))
+        }
+    }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val phoneState = viewModel.phoneState.collectAsState()
+    val emailState = viewModel.emailState.collectAsState()
+
     Column {
         if (!theme.hideHeaderText) {
             PageTitle(text = stringResource(id = R.string.sign_up_or_login))
@@ -64,6 +106,53 @@ private fun MainScreenComposable(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
                 text = stringResource(id = R.string.or),
             )
+        }
+        if (hasInput && tabTitles.isNotEmpty()) { // sanity check
+            TabRow(
+                selectedTabIndex = selectedTabIndex,
+                containerColor = Color(theme.backgroundColor),
+                modifier = Modifier.padding(bottom = 12.dp),
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                        color = Color(theme.primaryTextColor)
+                    )
+                }
+            ) {
+                tabTitles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = index == selectedTabIndex,
+                        onClick = { selectedTabIndex = index },
+                        modifier = Modifier.height(48.dp)
+                    ) {
+                        Text(
+                            text = title,
+                            style = type.tab.copy(
+                                color = Color(theme.primaryTextColor),
+                                lineHeight = 48.sp
+                            )
+                        )
+                    }
+                }
+            }
+            when (tabTitles[selectedTabIndex]) {
+                stringResource(id = R.string.email) -> Text("EMAIL")
+                stringResource(id = R.string.text) -> PhoneEntry(
+                    countryCode = phoneState.value.countryCode,
+                    onCountryCodeChanged = viewModel::onCountryCodeChanged,
+                    phoneNumber = phoneState.value.phoneNumber,
+                    onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
+                    onPhoneNumberSubmit = viewModel::sendSmsOTP
+                )
+                stringResource(id = R.string.whatsapp) -> PhoneEntry(
+                    countryCode = phoneState.value.countryCode,
+                    onCountryCodeChanged = viewModel::onCountryCodeChanged,
+                    phoneNumber = phoneState.value.phoneNumber,
+                    onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
+                    onPhoneNumberSubmit = viewModel::sendWhatsAppOTP
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

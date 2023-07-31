@@ -31,6 +31,8 @@ public data class StytchTheme(
     val disabledTextColor: Int = STEEL,
     val successColor: Int = PINE,
     val errorColor: Int = MAROON,
+    val socialButtonBackgroundColor: Int = WHITE,
+    val socialButtonTextColor: Int = CHARCOAL,
     val buttonBackgroundColor: Int = CHARCOAL,
     val buttonTextColor: Int = WHITE,
     val buttonBorderColor: Int = CHARCOAL,

@@ -42,4 +42,13 @@ internal data class StytchTypography(
         textAlign = TextAlign.Start,
         color = Color.Black,
     ),
+    val tab: TextStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+        fontWeight = FontWeight.W500,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        textAlign = TextAlign.Center,
+        color = Color.Black,
+        letterSpacing = 0.1.sp,
+    ),
 )

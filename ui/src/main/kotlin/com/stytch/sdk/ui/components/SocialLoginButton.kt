@@ -35,8 +35,8 @@ internal fun SocialLoginButton(
         modifier = modifier.fillMaxWidth(),
         border = BorderStroke(1.dp, Color(theme.inputBorderColor)),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(theme.buttonBackgroundColor),
-            disabledContainerColor = Color(theme.disabledButtonBackgroundColor),
+            containerColor = Color(theme.socialButtonBackgroundColor),
+            disabledContainerColor = Color(theme.socialButtonBackgroundColor),
         )
     ) {
         Row(
@@ -52,7 +52,7 @@ internal fun SocialLoginButton(
                 text = text,
                 style = type.buttonLabel.copy(
                     lineHeight = 45.sp,
-                    color = Color(theme.buttonTextColor)
+                    color = Color(theme.socialButtonTextColor)
                 ),
             )
         }
