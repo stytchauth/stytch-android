@@ -20,7 +20,7 @@ internal data class StytchTypography(
     ),
     val body: TextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W700,
+        fontWeight = FontWeight.W400,
         fontSize = 18.sp,
         lineHeight = 25.sp,
         textAlign = TextAlign.Start,
@@ -42,7 +42,7 @@ internal data class StytchTypography(
         textAlign = TextAlign.Start,
         color = Color.Black,
     ),
-    val tab: TextStyle = TextStyle(
+    val body2: TextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_regular)),
         fontWeight = FontWeight.W500,
         fontSize = 14.sp,

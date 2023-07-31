@@ -12,19 +12,20 @@ import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 
 @Composable
-internal fun PageTitle(
+internal fun BodyText(
     modifier: Modifier = Modifier,
     text: String,
-    textAlign: TextAlign = TextAlign.Center
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color? = null,
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
     Text(
         text = text,
-        style = type.title.copy(
+        style = type.body.copy(
             textAlign = textAlign,
-            color = Color(theme.primaryTextColor)
+            color = color ?: Color(theme.primaryTextColor)
         ),
-        modifier = modifier.fillMaxWidth().padding(bottom = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
     )
 }

@@ -151,7 +151,7 @@ private fun MainScreenComposable(
                     ) {
                         Text(
                             text = title,
-                            style = type.tab.copy(
+                            style = type.body2.copy(
                                 color = Color(theme.primaryTextColor),
                                 lineHeight = 48.sp
                             )

@@ -48,6 +48,7 @@ public data class StytchTheme(
     val disabledInputBorderColor: Int = FOG,
     val disabledInputBackgroundColor: Int = CHALK,
     val disabledInputTextColor: Int = STEEL,
+    val dialogTextColor: Int = CHARCOAL,
     val hideHeaderText: Boolean = false,
     val logoImageUrl: File? = null,
 ) : Parcelable {
