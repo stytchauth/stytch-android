@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.ui.data.AuthenticationState
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.screens.MainScreen
@@ -38,7 +39,7 @@ internal fun StytchAuthenticationApp(
                 .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
                 .fillMaxSize()
         ) {
-            MainScreen(productConfig = productConfig)
+            Navigator(screen = MainScreen(productConfig = productConfig))
             if (!disableWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 public data class OAuthOptions(
     val loginRedirectURL: String? = null,
     val signupRedirectURL: String? = null,
-    val providers: List<OAuthProviders> = emptyList(),
+    val providers: List<OAuthProvider> = emptyList(),
 ) : Parcelable

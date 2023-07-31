@@ -7,49 +7,52 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
-import com.stytch.sdk.ui.data.GoogleOAuthOptions
 import com.stytch.sdk.ui.data.OAuthOptions
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.stytch.sdk.ui.data.OAuthProvider
+import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.coroutines.launch
 
-@HiltViewModel
 internal class MainScreenViewModel : ViewModel() {
-    internal fun onStartGoogle(
+    internal fun onStartOAuthLogin(
         context: ComponentActivity,
-        googleOAuthOptions: GoogleOAuthOptions? = null,
-        oAuthOptions: OAuthOptions? = null
+        provider: OAuthProvider,
+        productConfig: StytchProductConfig
     ) {
-        viewModelScope.launch {
-            val didStartOneTap = googleOAuthOptions?.clientId?.let { clientId ->
-                StytchClient.oauth.googleOneTap.start(
-                    OAuth.GoogleOneTap.StartParameters(
-                        context = context,
-                        clientId = clientId,
-                        oAuthRequestIdentifier = STYTCH_GOOGLE_OAUTH_REQUEST_ID,
-                    ),
-                )
-            } ?: false
-            if (!didStartOneTap) {
-                // Google OneTap is unavailable, fallback to traditional OAuth
-                StytchClient.oauth.google.start(
-                    OAuth.ThirdParty.StartParameters(
-                        context = context,
-                        oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                        loginRedirectUrl = oAuthOptions?.loginRedirectURL,
-                        signupRedirectUrl = oAuthOptions?.signupRedirectURL,
-                    ),
-                )
+        if (provider == OAuthProvider.GOOGLE) {
+            viewModelScope.launch {
+                val didStartOneTap = productConfig.googleOauthOptions?.clientId?.let { clientId ->
+                    StytchClient.oauth.googleOneTap.start(
+                        OAuth.GoogleOneTap.StartParameters(
+                            context = context,
+                            clientId = clientId,
+                            oAuthRequestIdentifier = STYTCH_GOOGLE_OAUTH_REQUEST_ID,
+                        ),
+                    )
+                } ?: false
+                if (!didStartOneTap) {
+                    // Google OneTap is unavailable, fallback to traditional OAuth
+                    onStartThirdParty(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
+                }
             }
+        } else {
+            onStartThirdParty(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
         }
     }
-    internal fun onStartApple(context: ComponentActivity, oAuthOptions: OAuthOptions? = null) {
-        StytchClient.oauth.apple.start(
-            OAuth.ThirdParty.StartParameters(
-                context = context,
-                oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = oAuthOptions?.loginRedirectURL,
-                signupRedirectUrl = oAuthOptions?.signupRedirectURL,
-            ),
+
+    internal fun onStartThirdParty(
+        context: ComponentActivity,
+        provider: OAuthProvider,
+        oAuthOptions: OAuthOptions? = null
+    ) {
+        val parameters = OAuth.ThirdParty.StartParameters(
+            context = context,
+            oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
+            loginRedirectUrl = oAuthOptions?.loginRedirectURL,
+            signupRedirectUrl = oAuthOptions?.signupRedirectURL,
         )
+        when (provider) {
+            OAuthProvider.APPLE -> StytchClient.oauth.apple.start(parameters)
+            OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(parameters)
+        }
     }
 }

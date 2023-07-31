@@ -14,6 +14,7 @@ import com.stytch.sdk.ui.StytchUI
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.GoogleOAuthOptions
 import com.stytch.sdk.ui.data.OAuthOptions
+import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
@@ -24,10 +25,15 @@ class UiWorkbenchActivity : ComponentActivity() {
         publicToken(BuildConfig.STYTCH_PUBLIC_TOKEN)
         productConfig(
             StytchProductConfig(
-                products = listOf(StytchProduct.EMAIL_MAGIC_LINKS),
+                products = listOf(
+                    StytchProduct.OAUTH,
+                    StytchProduct.EMAIL_MAGIC_LINKS,
+                    StytchProduct.OTP,
+                    StytchProduct.PASSWORDS,
+                ),
                 emailMagicLinksOptions = EmailMagicLinksOptions(
-                    loginRedirectURL = "uiworkbench://${BuildConfig.STYTCH_PUBLIC_TOKEN}",
-                    signupRedirectURL = "uiworkbench://${BuildConfig.STYTCH_PUBLIC_TOKEN}",
+                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://eml",
+                    signupRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://eml",
                 ),
                 googleOauthOptions = GoogleOAuthOptions(
                     clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
@@ -35,6 +41,7 @@ class UiWorkbenchActivity : ComponentActivity() {
                 oAuthOptions = OAuthOptions(
                     loginRedirectURL = "uiworkbench://oauth",
                     signupRedirectURL = "uiworkbench://oauth",
+                    providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE)
                 )
             )
         )
