@@ -11,6 +11,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.R
+import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.EmailEntry
 import com.stytch.sdk.ui.components.PageTitle
@@ -38,20 +40,27 @@ import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
+import kotlinx.coroutines.flow.collectLatest
 
 internal data class MainScreen(
-    val productConfig: StytchProductConfig
+    val productConfig: StytchProductConfig,
+    val exit: () -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
         val viewModel = viewModel<MainScreenViewModel>()
-        MainScreenComposable(productConfig = productConfig, viewModel = viewModel)
+        MainScreenComposable(
+            productConfig = productConfig,
+            exit = exit,
+            viewModel = viewModel
+        )
     }
 }
 
 @Composable
 private fun MainScreenComposable(
     productConfig: StytchProductConfig,
+    exit: () -> Unit,
     viewModel: MainScreenViewModel,
 ) {
     if (
@@ -87,7 +96,21 @@ private fun MainScreenComposable(
     val phoneState = viewModel.phoneState.collectAsState()
     val emailState = viewModel.emailState.collectAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.otpConfirmation.collectLatest {
+            navigator.push(
+                OTPConfirmationScreen(
+                    recipient = it.recipient,
+                    method = it.method,
+                )
+            )
+        }
+    }
+
     Column {
+        BackButton {
+            exit()
+        }
         if (!theme.hideHeaderText) {
             PageTitle(text = stringResource(id = R.string.sign_up_or_login))
         }

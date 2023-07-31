@@ -65,6 +65,7 @@ internal fun PhoneEntry(
                     modifier = Modifier.menuAnchor(),
                     value = "+$countryCode",
                     readOnly = true,
+                    isError = isError,
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded,

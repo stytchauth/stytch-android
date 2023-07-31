@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,6 +26,7 @@ internal fun StytchAuthenticationApp(
     modifier: Modifier = Modifier,
     productConfig: StytchProductConfig,
     disableWatermark: Boolean,
+    exit: () -> Unit,
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -33,8 +36,14 @@ internal fun StytchAuthenticationApp(
             modifier = Modifier
                 .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Navigator(screen = MainScreen(productConfig = productConfig))
+            Navigator(
+                screen = MainScreen(
+                    productConfig = productConfig,
+                    exit = exit,
+                )
+            )
             if (!disableWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

@@ -36,6 +36,7 @@ public class AuthenticationActivity : ComponentActivity() {
                 StytchAuthenticationApp(
                     productConfig = uiConfig.productConfig,
                     disableWatermark = uiConfig.bootstrapData.disableSDKWatermark,
+                    exit = { exitWithoutAuthenticating() }
                 )
             }
         }
@@ -51,6 +52,11 @@ public class AuthenticationActivity : ComponentActivity() {
             putExtra(STYTCH_RESULT_KEY, result)
         }
         setResult(RESULT_OK, data)
+        finish()
+    }
+
+    private fun exitWithoutAuthenticating() {
+        setResult(RESULT_CANCELED)
         finish()
     }
 
