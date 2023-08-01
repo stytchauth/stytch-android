@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.ui.theme.LocalStytchTheme
@@ -14,7 +15,7 @@ import com.stytch.sdk.ui.theme.LocalStytchTypography
 @Composable
 internal fun BodyText(
     modifier: Modifier = Modifier,
-    text: String,
+    text: AnnotatedString,
     textAlign: TextAlign = TextAlign.Start,
     color: Color? = null,
 ) {

@@ -28,8 +28,8 @@
     <string name="secure_your_account">We want to make sure your account is secure and that it’s really you logging in! A login link was sent to you at %1$s.</string>
     <string name="breached_password">A different site where you use the same password had a security issue recently. For your safety, an email was sent to you at %1$s to reset your password.</string>
     <string name="enter_passcode">Enter Passcode</string>
-    <string name="passcode_sent_to">A 6-digit passcode was sent to you at %1$s</string>
-    <string name="code_expires_in">Your code expires in %1$s. Didn’t get it? %2$s</string>
+    <string name="passcode_sent_to">A 6-digit passcode was sent to you at </string>
+    <string name="code_expires_in">Your code expires in %1$s. Didn’t get it? Resend code.</string>
     <string name="invalid_number">Invalid number, please try again.</string>
     <string name="invalid_email">Invalid email address, please try again.</string>
     <string name="invalid_passcode">Invalid passcode, please try again.</string>
@@ -38,5 +38,9 @@
     <string name="eml_and_otp_error">You cannot have both Email Magic Links and Email OTP configured at the same time</string>
     <string name="misconfigured_otp">Unrecognized EML/OTP configuration</string>
     <string name="resend_code">Resend code</string>
-    <string name="new_code_will_be_sent_to">A new code will be sent to %1$s.</string>
+    <string name="new_code_will_be_sent_to">A new code will be sent to </string>
+    <string name="send_code">Send code</string>
+    <string name="cancel">Cancel</string>
+    <string name="success">Success!</string>
+    <string name="logged_in">You have successfully logged in.</string>
 </resources>

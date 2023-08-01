@@ -99,10 +99,7 @@ private fun MainScreenComposable(
     LaunchedEffect(key1 = Unit) {
         viewModel.otpConfirmation.collectLatest {
             navigator.push(
-                OTPConfirmationScreen(
-                    recipient = it.recipient,
-                    method = it.method,
-                )
+                OTPConfirmationScreen(it)
             )
         }
     }

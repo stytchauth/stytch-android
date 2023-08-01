@@ -16,7 +16,6 @@ import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAU
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
-import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,11 +43,13 @@ internal data class EmailState(
     val error: String? = null,
 )
 
-internal data class OTPConfirmationState(
-    val recipient: String,
-    val method: OTPMethods,
-    val expirationMinutes: UInt,
-)
+internal sealed class OTPResendParameters {
+    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters) : OTPResendParameters()
+
+    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters) : OTPResendParameters()
+
+    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters) : OTPResendParameters()
+}
 
 internal class MainScreenViewModel : ViewModel() {
     private val _phoneState = MutableStateFlow(PhoneNumberState())
@@ -57,7 +58,7 @@ internal class MainScreenViewModel : ViewModel() {
     private val _emailState = MutableStateFlow(EmailState())
     val emailState = _emailState.asStateFlow()
 
-    private val _otpConfirmation = MutableSharedFlow<OTPConfirmationState>()
+    private val _otpConfirmation = MutableSharedFlow<OTPResendParameters>()
     val otpConfirmation = _otpConfirmation.asSharedFlow()
 
     fun onStartOAuthLogin(
@@ -109,6 +110,7 @@ internal class MainScreenViewModel : ViewModel() {
             error = null,
         )
     }
+
     fun onPhoneNumberChanged(phoneNumber: String) {
         _phoneState.value = _phoneState.value.copy(
             phoneNumber = phoneNumber,
@@ -157,15 +159,7 @@ internal class MainScreenViewModel : ViewModel() {
                 signupTemplateId = otpOptions?.signupTemplateId,
             )
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
-                is StytchResult.Success -> {
-                    _otpConfirmation.emit(
-                        OTPConfirmationState(
-                            recipient = _emailState.value.emailAddress,
-                            method = OTPMethods.EMAIL,
-                            expirationMinutes = parameters.expirationMinutes
-                        )
-                    )
-                }
+                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.EmailOTP(parameters))
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
                         error = result.exception.reason.toString()
@@ -182,15 +176,7 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
-                is StytchResult.Success -> {
-                    _otpConfirmation.emit(
-                        OTPConfirmationState(
-                            recipient = _phoneState.value.toE164(),
-                            method = OTPMethods.SMS,
-                            expirationMinutes = parameters.expirationMinutes
-                        )
-                    )
-                }
+                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.SmsOTP(parameters))
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
                         error = result.exception.reason.toString()
@@ -207,15 +193,7 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
-                is StytchResult.Success -> {
-                    _otpConfirmation.emit(
-                        OTPConfirmationState(
-                            recipient = _phoneState.value.toE164(),
-                            method = OTPMethods.WHATSAPP,
-                            expirationMinutes = parameters.expirationMinutes
-                        )
-                    )
-                }
+                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.WhatsAppOTP(parameters))
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
                         error = result.exception.reason.toString()

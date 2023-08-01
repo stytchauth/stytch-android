@@ -104,6 +104,7 @@ internal fun PhoneEntry(
             }
             Spacer(modifier = Modifier.width(8.dp))
             StytchInput(
+                modifier = Modifier.fillMaxWidth(),
                 value = phoneNumber,
                 onValueChange = {
                     if (it.length <= maxPhoneLengthForRegion) onPhoneNumberChanged(it)

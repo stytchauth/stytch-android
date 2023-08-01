@@ -36,7 +36,7 @@ internal data class StytchTypography(
     ),
     val caption: TextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.W400,
         fontSize = 16.sp,
         lineHeight = 20.sp,
         textAlign = TextAlign.Start,
