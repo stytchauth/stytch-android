@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 internal data class OTPConfirmationScreen(
-    val resendParameters: OTPResendParameters
+    val resendParameters: OTPPersistence
 ) : Screen {
     @Composable
     override fun Content() {
@@ -62,23 +63,28 @@ internal data class OTPConfirmationScreen(
 @Composable
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
-    resendParameters: OTPResendParameters
+    resendParameters: OTPPersistence
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
     val recipient = when (resendParameters) {
-        is OTPResendParameters.EmailOTP -> resendParameters.parameters.email
-        is OTPResendParameters.SmsOTP -> resendParameters.parameters.phoneNumber
-        is OTPResendParameters.WhatsAppOTP -> resendParameters.parameters.phoneNumber
+        is OTPPersistence.EmailOTP -> resendParameters.parameters.email
+        is OTPPersistence.SmsOTP -> resendParameters.parameters.phoneNumber
+        is OTPPersistence.WhatsAppOTP -> resendParameters.parameters.phoneNumber
     }
     fun getExpirationSeconds() = (
         when (resendParameters) {
-            is OTPResendParameters.EmailOTP -> resendParameters.parameters.expirationMinutes
-            is OTPResendParameters.SmsOTP -> resendParameters.parameters.expirationMinutes
-            is OTPResendParameters.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
+            is OTPPersistence.EmailOTP -> resendParameters.parameters.expirationMinutes
+            is OTPPersistence.SmsOTP -> resendParameters.parameters.expirationMinutes
+            is OTPPersistence.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
         } * 60U
         ).toLong()
+    val methodId = when (resendParameters) {
+        is OTPPersistence.EmailOTP -> resendParameters.methodId
+        is OTPPersistence.SmsOTP -> resendParameters.methodId
+        is OTPPersistence.WhatsAppOTP -> resendParameters.methodId
+    }
     val recipientFormatted = AnnotatedString(
         text = " $recipient",
         spanStyle = SpanStyle(fontWeight = FontWeight.W700)
@@ -86,6 +92,7 @@ private fun OTPConfirmationScreenComposable(
     val showResendDialog = remember { mutableStateOf(false) }
     var countdownSeconds by remember { mutableStateOf(getExpirationSeconds()) }
     var countdownTimeFormat by remember { mutableStateOf(DateUtils.formatElapsedTime(countdownSeconds)) }
+    val confirmationState = viewModel.confirmationState.collectAsState()
     LaunchedEffect(key1 = countdownSeconds) {
         if (countdownSeconds > 0) {
             delay(1000)
@@ -94,11 +101,17 @@ private fun OTPConfirmationScreenComposable(
         }
     }
     LaunchedEffect(key1 = Unit) {
+        viewModel.setInitialMethodId(methodId)
         viewModel.didResend.collectLatest {
             if (it) {
                 countdownSeconds = getExpirationSeconds()
                 countdownTimeFormat = DateUtils.formatElapsedTime(countdownSeconds)
             }
+        }
+    }
+    LaunchedEffect(key1 = confirmationState.value) {
+        if (confirmationState.value is ConfirmationState.Confirmed) {
+            navigator.push(SuccessScreen())
         }
     }
 
@@ -114,9 +127,10 @@ private fun OTPConfirmationScreenComposable(
                 append(recipientFormatted)
             }
         )
-        OTPEntry {
-            println("JORDAN >>> DONE! $it")
-        }
+        OTPEntry(
+            errorMessage = (confirmationState.value as? ConfirmationState.Failed)?.message,
+            onCodeComplete = { viewModel.authenticateOTP(it) }
+        )
         Text(
             text = stringResource(id = R.string.code_expires_in, countdownTimeFormat),
             textAlign = TextAlign.Start,

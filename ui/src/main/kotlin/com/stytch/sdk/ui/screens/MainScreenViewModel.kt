@@ -43,12 +43,12 @@ internal data class EmailState(
     val error: String? = null,
 )
 
-internal sealed class OTPResendParameters {
-    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters) : OTPResendParameters()
+internal sealed class OTPPersistence {
+    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters, val methodId: String) : OTPPersistence()
 
-    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters) : OTPResendParameters()
+    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters, val methodId: String) : OTPPersistence()
 
-    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters) : OTPResendParameters()
+    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters, val methodId: String) : OTPPersistence()
 }
 
 internal class MainScreenViewModel : ViewModel() {
@@ -58,7 +58,7 @@ internal class MainScreenViewModel : ViewModel() {
     private val _emailState = MutableStateFlow(EmailState())
     val emailState = _emailState.asStateFlow()
 
-    private val _otpConfirmation = MutableSharedFlow<OTPResendParameters>()
+    private val _otpConfirmation = MutableSharedFlow<OTPPersistence>()
     val otpConfirmation = _otpConfirmation.asSharedFlow()
 
     fun onStartOAuthLogin(
@@ -159,7 +159,12 @@ internal class MainScreenViewModel : ViewModel() {
                 signupTemplateId = otpOptions?.signupTemplateId,
             )
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.EmailOTP(parameters))
+                is StytchResult.Success -> _otpConfirmation.emit(
+                    OTPPersistence.EmailOTP(
+                        parameters = parameters,
+                        methodId = result.value.methodId
+                    )
+                )
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
                         error = result.exception.reason.toString()
@@ -176,7 +181,12 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.SmsOTP(parameters))
+                is StytchResult.Success -> _otpConfirmation.emit(
+                    OTPPersistence.SmsOTP(
+                        parameters = parameters,
+                        methodId = result.value.methodId
+                    )
+                )
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
                         error = result.exception.reason.toString()
@@ -193,7 +203,12 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(OTPResendParameters.WhatsAppOTP(parameters))
+                is StytchResult.Success -> _otpConfirmation.emit(
+                    OTPPersistence.WhatsAppOTP(
+                        parameters = parameters,
+                        methodId = result.value.methodId
+                    )
+                )
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
                         error = result.exception.reason.toString()
