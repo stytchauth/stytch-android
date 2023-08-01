@@ -164,12 +164,13 @@ private fun MainScreenComposable(
                     emailAddress = emailState.value.emailAddress,
                     onEmailAddressChanged = viewModel::onEmailAddressChanged,
                     onEmailAddressSubmit = {
+                        // TODO: decide between EML, Passwords, OTP
                         if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
                             // send EML
-                            viewModel.sendEmailMagicLink()
+                            viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions)
                         } else {
                             // send OTP
-                            viewModel.sendEmailOTP()
+                            viewModel.sendEmailOTP(productConfig.otpOptions)
                         }
                     },
                     emailAddressError = emailState.value.error,
@@ -180,7 +181,7 @@ private fun MainScreenComposable(
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = viewModel::sendSmsOTP,
+                    onPhoneNumberSubmit = { viewModel.sendSmsOTP(productConfig.otpOptions) },
                     statusText = phoneState.value.error
                 )
                 stringResource(id = R.string.whatsapp) -> PhoneEntry(
@@ -188,7 +189,7 @@ private fun MainScreenComposable(
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = viewModel::sendWhatsAppOTP,
+                    onPhoneNumberSubmit = { viewModel.sendWhatsAppOTP(productConfig.otpOptions) },
                     statusText = phoneState.value.error
                 )
                 else -> Text(stringResource(id = R.string.misconfigured_otp))

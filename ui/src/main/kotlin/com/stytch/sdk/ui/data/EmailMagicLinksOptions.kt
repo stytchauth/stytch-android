@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 public data class EmailMagicLinksOptions(
     val loginRedirectURL: String,
-    val loginExpirationMinutes: Int? = null,
+    val loginExpirationMinutes: UInt? = null,
     val signupRedirectURL: String,
-    val signupExpirationMinutes: Int? = null,
+    val signupExpirationMinutes: UInt? = null,
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,
     val createUserAsPending: Boolean = false,

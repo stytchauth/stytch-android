@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.google.i18n.phonenumbers.Phonenumber
+import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
@@ -12,9 +13,11 @@ import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
+import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
+import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +47,7 @@ internal data class EmailState(
 internal data class OTPConfirmationState(
     val recipient: String,
     val method: OTPMethods,
+    val expirationMinutes: UInt,
 )
 
 internal class MainScreenViewModel : ViewModel() {
@@ -119,12 +123,18 @@ internal class MainScreenViewModel : ViewModel() {
         )
     }
 
-    fun sendEmailMagicLink() {
+    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
         viewModelScope.launch {
             when (
                 val result = StytchClient.magicLinks.email.loginOrCreate(
                     parameters = MagicLinks.EmailMagicLinks.Parameters(
-                        email = _emailState.value.emailAddress
+                        email = _emailState.value.emailAddress,
+                        loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
+                        signupMagicLinkUrl = emailMagicLinksOptions?.signupRedirectURL,
+                        loginExpirationMinutes = emailMagicLinksOptions?.loginExpirationMinutes,
+                        signupExpirationMinutes = emailMagicLinksOptions?.signupExpirationMinutes,
+                        loginTemplateId = emailMagicLinksOptions?.loginTemplateId,
+                        signupTemplateId = emailMagicLinksOptions?.signupTemplateId,
                     )
                 )
             ) {
@@ -138,20 +148,21 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    fun sendEmailOTP() {
+    fun sendEmailOTP(otpOptions: OTPOptions?) {
         viewModelScope.launch {
-            when (
-                val result = StytchClient.otps.email.loginOrCreate(
-                    parameters = OTP.EmailOTP.Parameters(
-                        email = _emailState.value.emailAddress
-                    )
-                )
-            ) {
+            val parameters = OTP.EmailOTP.Parameters(
+                email = _emailState.value.emailAddress,
+                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                loginTemplateId = otpOptions?.loginTemplateId,
+                signupTemplateId = otpOptions?.signupTemplateId,
+            )
+            when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _otpConfirmation.emit(
                         OTPConfirmationState(
                             recipient = _emailState.value.emailAddress,
-                            method = OTPMethods.EMAIL
+                            method = OTPMethods.EMAIL,
+                            expirationMinutes = parameters.expirationMinutes
                         )
                     )
                 }
@@ -164,20 +175,19 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    fun sendSmsOTP() {
+    fun sendSmsOTP(otpOptions: OTPOptions?) {
         viewModelScope.launch {
-            when (
-                val result = StytchClient.otps.sms.loginOrCreate(
-                    parameters = OTP.SmsOTP.Parameters(
-                        phoneNumber = _phoneState.value.toE164()
-                    )
-                )
-            ) {
+            val parameters = OTP.SmsOTP.Parameters(
+                phoneNumber = _phoneState.value.toE164(),
+                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            )
+            when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _otpConfirmation.emit(
                         OTPConfirmationState(
                             recipient = _phoneState.value.toE164(),
-                            method = OTPMethods.SMS
+                            method = OTPMethods.SMS,
+                            expirationMinutes = parameters.expirationMinutes
                         )
                     )
                 }
@@ -190,20 +200,19 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    fun sendWhatsAppOTP() {
+    fun sendWhatsAppOTP(otpOptions: OTPOptions?) {
         viewModelScope.launch {
-            when (
-                val result = StytchClient.otps.whatsapp.loginOrCreate(
-                    parameters = OTP.WhatsAppOTP.Parameters(
-                        phoneNumber = _phoneState.value.toE164()
-                    )
-                )
-            ) {
+            val parameters = OTP.WhatsAppOTP.Parameters(
+                phoneNumber = _phoneState.value.toE164(),
+                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            )
+            when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _otpConfirmation.emit(
                         OTPConfirmationState(
                             recipient = _phoneState.value.toE164(),
-                            method = OTPMethods.WHATSAPP
+                            method = OTPMethods.WHATSAPP,
+                            expirationMinutes = parameters.expirationMinutes
                         )
                     )
                 }
