@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui
 
+import android.app.Activity.RESULT_CANCELED
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +14,8 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.AuthenticationState
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -28,7 +31,9 @@ public class AuthenticationActivity : ComponentActivity() {
                 viewModel
                     .state
                     .filter { it is AuthenticationState.Result }
-                    .collect { returnAuthenticationResult((it as AuthenticationState.Result).response) }
+                    .collect {
+                        returnAuthenticationResult((it as AuthenticationState.Result).response)
+                    }
             }
         }
         setContent {
@@ -36,8 +41,6 @@ public class AuthenticationActivity : ComponentActivity() {
                 StytchAuthenticationApp(
                     productConfig = uiConfig.productConfig,
                     disableWatermark = uiConfig.bootstrapData.disableSDKWatermark,
-                    exit = { exitWithoutAuthenticating() },
-                    onAuthenticationResult = viewModel::onAuthenticationResult
                 )
             }
         }
@@ -48,7 +51,7 @@ public class AuthenticationActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun returnAuthenticationResult(result: StytchResult<*>) {
+    internal fun returnAuthenticationResult(result: StytchResult<*>) {
         val data = Intent().apply {
             putExtra(STYTCH_RESULT_KEY, result)
         }
@@ -56,12 +59,12 @@ public class AuthenticationActivity : ComponentActivity() {
         finish()
     }
 
-    private fun exitWithoutAuthenticating() {
+    internal fun exitWithoutAuthenticating() {
         setResult(RESULT_CANCELED)
         finish()
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         when (requestCode) {
             STYTCH_GOOGLE_OAUTH_REQUEST_ID -> intent?.let {

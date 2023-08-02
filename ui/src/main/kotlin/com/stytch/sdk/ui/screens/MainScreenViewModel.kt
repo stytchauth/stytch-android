@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 internal data class PhoneNumberState(
     val countryCode: String = "1",
@@ -43,7 +45,8 @@ internal data class EmailState(
     val error: String? = null,
 )
 
-internal sealed class OTPPersistence {
+@Parcelize
+internal sealed class OTPPersistence : Parcelable {
     data class EmailOTP(val parameters: OTP.EmailOTP.Parameters, val methodId: String) : OTPPersistence()
 
     data class SmsOTP(val parameters: OTP.SmsOTP.Parameters, val methodId: String) : OTPPersistence()

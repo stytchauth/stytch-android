@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
 import android.text.format.DateUtils
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -34,10 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.AuthenticationActivity
+import com.stytch.sdk.ui.AuthenticationViewModel
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.Body2Text
@@ -49,20 +52,22 @@ import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class OTPConfirmationScreen(
     val resendParameters: OTPPersistence,
     val sessionOptions: SessionOptions,
-    val onAuthenticationResult: (StytchResult<Any>) -> Unit,
-) : Screen {
+) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<OTPConfirmationScreenViewModel>()
+        val authViewModel = viewModel<AuthenticationViewModel>()
         OTPConfirmationScreenComposable(
             viewModel = viewModel,
+            authViewModel = authViewModel,
             resendParameters = resendParameters,
             sessionOptions = sessionOptions,
-            onAuthenticationResult = onAuthenticationResult,
         )
     }
 }
@@ -71,10 +76,11 @@ internal data class OTPConfirmationScreen(
 @Composable
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
+    authViewModel: AuthenticationViewModel,
     resendParameters: OTPPersistence,
     sessionOptions: SessionOptions,
-    onAuthenticationResult: (StytchResult<Any>) -> Unit,
 ) {
+    val context = LocalContext.current as AuthenticationActivity
     val navigator = LocalNavigator.currentOrThrow
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
@@ -126,7 +132,7 @@ private fun OTPConfirmationScreenComposable(
         when (val state = confirmationState.value) {
             is ConfirmationState.Confirmed -> {
                 showLoadingOverlay = false
-                onAuthenticationResult(state.result)
+                context.returnAuthenticationResult(state.result)
             }
             is ConfirmationState.Failed -> showLoadingOverlay = false
             else -> {}

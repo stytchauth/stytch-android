@@ -12,13 +12,13 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.data.AuthenticationState
 import com.stytch.sdk.ui.data.SessionOptions
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 internal class AuthenticationViewModel : ViewModel() {
-    private val _state = MutableStateFlow<AuthenticationState>(AuthenticationState.Idle)
-    val state = _state.asStateFlow()
+    private val _state = MutableSharedFlow<AuthenticationState>()
+    val state = _state.asSharedFlow()
 
     fun authenticateGoogleOneTapLogin(data: Intent, sessionOptions: SessionOptions) {
         viewModelScope.launch {
@@ -27,7 +27,7 @@ internal class AuthenticationViewModel : ViewModel() {
                 sessionDurationMinutes = sessionOptions.sessionDurationMinutes
             )
             val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
-            _state.value = AuthenticationState.Result(result)
+            _state.emit(AuthenticationState.Result(result))
         }
     }
 
@@ -37,30 +37,28 @@ internal class AuthenticationViewModel : ViewModel() {
                 intent.data?.let {
                     when (val result = StytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
-                            _state.value = AuthenticationState.Result(result.response.result)
+                            _state.emit(AuthenticationState.Result(result.response.result))
                         }
                         else -> {} // this shouldn't happen
                     }
                 }
             } else {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
-                    _state.value = AuthenticationState.Result(
-                        StytchResult.Error(
-                            StytchExceptions.Input(
-                                when (it as SSOError) {
-                                    is SSOError.UserCanceled -> "User Cancelled"
-                                    is SSOError.NoBrowserFound,
-                                    is SSOError.NoURIFound -> it.message
-                                }
+                    _state.emit(
+                        AuthenticationState.Result(
+                            StytchResult.Error(
+                                StytchExceptions.Input(
+                                    when (it as SSOError) {
+                                        is SSOError.UserCanceled -> "User Cancelled"
+                                        is SSOError.NoBrowserFound,
+                                        is SSOError.NoURIFound -> it.message
+                                    }
+                                )
                             )
                         )
                     )
                 }
             }
         }
-    }
-
-    fun onAuthenticationResult(result: StytchResult<Any>) {
-        _state.value = AuthenticationState.Result(result)
     }
 }

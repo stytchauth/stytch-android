@@ -29,7 +29,7 @@ class UiWorkbenchActivity : ComponentActivity() {
             StytchProductConfig(
                 products = listOf(
                     StytchProduct.OAUTH,
-                    StytchProduct.EMAIL_MAGIC_LINKS,
+                    //StytchProduct.EMAIL_MAGIC_LINKS,
                     StytchProduct.OTP,
                     StytchProduct.PASSWORDS,
                 ),
@@ -46,7 +46,7 @@ class UiWorkbenchActivity : ComponentActivity() {
                     providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE)
                 ),
                 otpOptions = OTPOptions(
-                    methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
+                    methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP, OTPMethods.EMAIL),
                 )
             )
         )

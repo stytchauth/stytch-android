@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.screens.MainScreen
 import com.stytch.sdk.ui.theme.LocalStytchTheme
@@ -27,8 +26,6 @@ internal fun StytchAuthenticationApp(
     modifier: Modifier = Modifier,
     productConfig: StytchProductConfig,
     disableWatermark: Boolean,
-    exit: () -> Unit,
-    onAuthenticationResult: (StytchResult<Any>) -> Unit,
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -43,8 +40,6 @@ internal fun StytchAuthenticationApp(
             Navigator(
                 screen = MainScreen(
                     productConfig = productConfig,
-                    exit = exit,
-                    onAuthenticationResult = onAuthenticationResult,
                 ),
             )
             if (!disableWatermark) {

@@ -1,6 +1,8 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -25,10 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.AuthenticationActivity
+import com.stytch.sdk.ui.AuthenticationViewModel
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
@@ -42,20 +45,18 @@ import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class MainScreen(
     val productConfig: StytchProductConfig,
-    val exit: () -> Unit,
-    val onAuthenticationResult: (StytchResult<Any>) -> Unit,
-) : Screen {
+) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<MainScreenViewModel>()
         MainScreenComposable(
             productConfig = productConfig,
-            exit = exit,
             viewModel = viewModel,
-            onAuthenticationResult = onAuthenticationResult,
         )
     }
 }
@@ -63,9 +64,7 @@ internal data class MainScreen(
 @Composable
 private fun MainScreenComposable(
     productConfig: StytchProductConfig,
-    exit: () -> Unit,
-    viewModel: MainScreenViewModel,
-    onAuthenticationResult: (StytchResult<Any>) -> Unit,
+    viewModel: MainScreenViewModel
 ) {
     if (
         productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
@@ -76,7 +75,7 @@ private fun MainScreenComposable(
     val navigator = LocalNavigator.currentOrThrow
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
-    val context = LocalContext.current as ComponentActivity
+    val context = LocalContext.current as AuthenticationActivity
     val hasButtons = productConfig.products.contains(StytchProduct.OAUTH)
     val hasInput = productConfig.products.any {
         listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
@@ -106,7 +105,6 @@ private fun MainScreenComposable(
                 OTPConfirmationScreen(
                     resendParameters = it,
                     sessionOptions = productConfig.sessionOptions,
-                    onAuthenticationResult = onAuthenticationResult,
                 )
             )
         }
@@ -114,7 +112,7 @@ private fun MainScreenComposable(
 
     Column {
         BackButton {
-            exit()
+            context.exitWithoutAuthenticating()
         }
         if (!theme.hideHeaderText) {
             PageTitle(text = stringResource(id = R.string.sign_up_or_login))
