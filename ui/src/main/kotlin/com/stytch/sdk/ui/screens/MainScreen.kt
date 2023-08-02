@@ -1,8 +1,6 @@
 package com.stytch.sdk.ui.screens
 
 import android.os.Parcelable
-import androidx.activity.ComponentActivity
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.AuthenticationActivity
-import com.stytch.sdk.ui.AuthenticationViewModel
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
@@ -99,13 +97,22 @@ private fun MainScreenComposable(
     val phoneState = viewModel.phoneState.collectAsState()
     val emailState = viewModel.emailState.collectAsState()
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.otpConfirmation.collectLatest {
+    LaunchedEffect(Unit) {
+        viewModel.nextPage.collectLatest {
             navigator.push(
-                OTPConfirmationScreen(
-                    resendParameters = it,
-                    sessionOptions = productConfig.sessionOptions,
-                )
+                when (it) {
+                    is NextPage.OTPConfirmation -> OTPConfirmationScreen(
+                        resendParameters = it.details,
+                        sessionOptions = productConfig.sessionOptions,
+                    )
+                    /*
+                    is NextPage.NewUserChooser -> {} // TODO
+                    is NextPage.NewUserCreatePassword -> {} // TODO
+                    is NextPage.ReturningUserNoPassword -> {} // TODO
+                    is NextPage.ReturningUserWithPassword -> {} // TODO
+                     */
+                    else -> object : Screen { @Composable override fun Content() {} }
+                }
             )
         }
     }
@@ -166,16 +173,7 @@ private fun MainScreenComposable(
                 stringResource(id = R.string.email) -> EmailEntry(
                     emailAddress = emailState.value.emailAddress,
                     onEmailAddressChanged = viewModel::onEmailAddressChanged,
-                    onEmailAddressSubmit = {
-                        // TODO: decide between EML, Passwords, OTP
-                        if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
-                            // send EML
-                            viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions)
-                        } else {
-                            // send OTP
-                            viewModel.sendEmailOTP(productConfig.otpOptions)
-                        }
-                    },
+                    onEmailAddressSubmit = { viewModel.determineNextPageFromEmailAddress(productConfig) },
                     emailAddressError = emailState.value.error,
                     statusText = emailState.value.error
                 )

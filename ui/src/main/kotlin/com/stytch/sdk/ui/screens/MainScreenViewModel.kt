@@ -46,12 +46,24 @@ internal data class EmailState(
 )
 
 @Parcelize
-internal sealed class OTPPersistence : Parcelable {
-    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters, val methodId: String) : OTPPersistence()
+internal sealed class OTPDetails : Parcelable {
+    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters, val methodId: String) : OTPDetails()
 
-    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters, val methodId: String) : OTPPersistence()
+    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters, val methodId: String) : OTPDetails()
 
-    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters, val methodId: String) : OTPPersistence()
+    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters, val methodId: String) : OTPDetails()
+}
+
+internal sealed class NextPage {
+    data class OTPConfirmation(val details: OTPDetails) : NextPage()
+
+    data class NewUserChooser(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
+
+    data class NewUserCreatePassword(val emailAddress: String) : NextPage()
+
+    data class ReturningUserNoPassword(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
+
+    data class ReturningUserWithPassword(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
 }
 
 internal class MainScreenViewModel : ViewModel() {
@@ -61,8 +73,8 @@ internal class MainScreenViewModel : ViewModel() {
     private val _emailState = MutableStateFlow(EmailState())
     val emailState = _emailState.asStateFlow()
 
-    private val _otpConfirmation = MutableSharedFlow<OTPPersistence>()
-    val otpConfirmation = _otpConfirmation.asSharedFlow()
+    private val _nextPage = MutableSharedFlow<NextPage>()
+    val nextPage = _nextPage.asSharedFlow()
 
     fun onStartOAuthLogin(
         context: ComponentActivity,
@@ -128,6 +140,10 @@ internal class MainScreenViewModel : ViewModel() {
         )
     }
 
+    fun determineNextPageFromEmailAddress(productConfig: StytchProductConfig) {
+        // TODO: search user and determine the next page
+    }
+
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
         viewModelScope.launch {
             when (
@@ -162,10 +178,12 @@ internal class MainScreenViewModel : ViewModel() {
                 signupTemplateId = otpOptions?.signupTemplateId,
             )
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(
-                    OTPPersistence.EmailOTP(
-                        parameters = parameters,
-                        methodId = result.value.methodId
+                is StytchResult.Success -> _nextPage.emit(
+                    NextPage.OTPConfirmation(
+                        OTPDetails.EmailOTP(
+                            parameters = parameters,
+                            methodId = result.value.methodId
+                        )
                     )
                 )
                 is StytchResult.Error -> {
@@ -184,10 +202,12 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(
-                    OTPPersistence.SmsOTP(
-                        parameters = parameters,
-                        methodId = result.value.methodId
+                is StytchResult.Success -> _nextPage.emit(
+                    NextPage.OTPConfirmation(
+                        OTPDetails.SmsOTP(
+                            parameters = parameters,
+                            methodId = result.value.methodId
+                        )
                     )
                 )
                 is StytchResult.Error -> {
@@ -206,10 +226,12 @@ internal class MainScreenViewModel : ViewModel() {
                 expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _otpConfirmation.emit(
-                    OTPPersistence.WhatsAppOTP(
-                        parameters = parameters,
-                        methodId = result.value.methodId
+                is StytchResult.Success -> _nextPage.emit(
+                    NextPage.OTPConfirmation(
+                        OTPDetails.WhatsAppOTP(
+                            parameters = parameters,
+                            methodId = result.value.methodId
+                        )
                     )
                 )
                 is StytchResult.Error -> {

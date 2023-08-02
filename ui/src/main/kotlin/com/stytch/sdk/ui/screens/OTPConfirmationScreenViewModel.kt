@@ -49,12 +49,12 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
         }
     }
 
-    fun resendOTP(resend: OTPPersistence) {
+    fun resendOTP(resend: OTPDetails) {
         viewModelScope.launch {
             val result = when (resend) {
-                is OTPPersistence.EmailOTP -> StytchClient.otps.email.loginOrCreate(resend.parameters)
-                is OTPPersistence.SmsOTP -> StytchClient.otps.sms.loginOrCreate(resend.parameters)
-                is OTPPersistence.WhatsAppOTP -> StytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
+                is OTPDetails.EmailOTP -> StytchClient.otps.email.loginOrCreate(resend.parameters)
+                is OTPDetails.SmsOTP -> StytchClient.otps.sms.loginOrCreate(resend.parameters)
+                is OTPDetails.WhatsAppOTP -> StytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
             }
             when (result) {
                 is StytchResult.Success -> _didResend.emit(result.value.methodId)

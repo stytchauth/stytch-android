@@ -56,7 +56,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class OTPConfirmationScreen(
-    val resendParameters: OTPPersistence,
+    val resendParameters: OTPDetails,
     val sessionOptions: SessionOptions,
 ) : AndroidScreen(), Parcelable {
     @Composable
@@ -77,7 +77,7 @@ internal data class OTPConfirmationScreen(
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
     authViewModel: AuthenticationViewModel,
-    resendParameters: OTPPersistence,
+    resendParameters: OTPDetails,
     sessionOptions: SessionOptions,
 ) {
     val context = LocalContext.current as AuthenticationActivity
@@ -85,22 +85,22 @@ private fun OTPConfirmationScreenComposable(
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
     val recipient = when (resendParameters) {
-        is OTPPersistence.EmailOTP -> resendParameters.parameters.email
-        is OTPPersistence.SmsOTP -> resendParameters.parameters.phoneNumber
-        is OTPPersistence.WhatsAppOTP -> resendParameters.parameters.phoneNumber
+        is OTPDetails.EmailOTP -> resendParameters.parameters.email
+        is OTPDetails.SmsOTP -> resendParameters.parameters.phoneNumber
+        is OTPDetails.WhatsAppOTP -> resendParameters.parameters.phoneNumber
     }
     fun getExpirationSeconds() = (
         when (resendParameters) {
-            is OTPPersistence.EmailOTP -> resendParameters.parameters.expirationMinutes
-            is OTPPersistence.SmsOTP -> resendParameters.parameters.expirationMinutes
-            is OTPPersistence.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
+            is OTPDetails.EmailOTP -> resendParameters.parameters.expirationMinutes
+            is OTPDetails.SmsOTP -> resendParameters.parameters.expirationMinutes
+            is OTPDetails.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
         } * 60U
         ).toLong()
     var methodId = remember {
         when (resendParameters) {
-            is OTPPersistence.EmailOTP -> resendParameters.methodId
-            is OTPPersistence.SmsOTP -> resendParameters.methodId
-            is OTPPersistence.WhatsAppOTP -> resendParameters.methodId
+            is OTPDetails.EmailOTP -> resendParameters.methodId
+            is OTPDetails.SmsOTP -> resendParameters.methodId
+            is OTPDetails.WhatsAppOTP -> resendParameters.methodId
         }
     }
     val recipientFormatted = AnnotatedString(
