@@ -251,3 +251,20 @@ public data class UpdateUserResponseData(
     val requestId: String,
     val user: UserData
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class UserSearchResponseData(
+    val userType: UserType
+) : Parcelable
+
+@JsonClass(generateAdapter = false)
+@Parcelize
+public enum class UserType : Parcelable {
+    @Json(name = "new")
+    NEW,
+    @Json(name = "password")
+    PASSWORD,
+    @Json(name = "passwordless")
+    PASSWORDLESS,
+}

@@ -35,6 +35,9 @@ internal object ConsumerResponses {
 
         @JsonClass(generateAdapter = true)
         class UpdateUserResponse(data: UpdateUserResponseData) : StytchDataResponse<UpdateUserResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UserSearchResponse(data: UserSearchResponseData) : StytchDataResponse<UserSearchResponseData>(data)
     }
 
     object OAuth {

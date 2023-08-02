@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.userManagement
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
@@ -65,6 +66,17 @@ internal class UserManagementImpl(
         externalScope.launch(dispatchers.ui) {
             val result = update(params)
             callback(result)
+        }
+    }
+
+    override suspend fun search(params: UserManagement.SearchParams): SearchUserResponse =
+        withContext(dispatchers.io) {
+            api.searchUsers(email = params.email)
+        }
+
+    override fun search(params: UserManagement.SearchParams, callback: (SearchUserResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            callback(search(params))
         }
     }
 }

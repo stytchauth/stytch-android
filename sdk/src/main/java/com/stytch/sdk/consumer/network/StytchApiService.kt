@@ -172,6 +172,11 @@ internal interface StytchApiService : ApiService {
     suspend fun updateUser(
         @Body request: ConsumerRequests.User.UpdateRequest
     ): ConsumerResponses.User.UpdateUserResponse
+
+    @POST("users/search")
+    suspend fun searchUsers(
+        @Body request: ConsumerRequests.User.SearchRequest
+    ): ConsumerResponses.User.UserSearchResponse
     //endregion User Management
 
     //region OAuth

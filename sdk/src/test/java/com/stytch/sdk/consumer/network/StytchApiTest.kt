@@ -356,6 +356,20 @@ internal class StytchApiTest {
         coVerify { StytchApi.apiService.getBootstrapData("mock-public-token") }
     }
 
+    @Test
+    fun `StytchApi User searchUsers calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.searchUsers(any()) } returns mockk(relaxed = true)
+        StytchApi.UserManagement.searchUsers("user@domain.com")
+        coVerify {
+            StytchApi.apiService.searchUsers(
+                ConsumerRequests.User.SearchRequest(
+                    email = "user@domain.com"
+                )
+            )
+        }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         every { StytchApi.isInitialized } returns false

@@ -657,6 +657,23 @@ internal class StytchApiServiceTests {
             )
         }
     }
+
+    @Test
+    fun `check searchUsers request`() {
+        val parameters = ConsumerRequests.User.SearchRequest(
+            email = "user@domain.com"
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.searchUsers(request = parameters)
+            }.verifyPost(
+                expectedPath = "/users/search",
+                expectedBody = mapOf(
+                    "email" to parameters.email
+                )
+            )
+        }
+    }
     // endregion UserManagement
 
     // region OAuth
