@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -24,9 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.AuthenticationActivity
@@ -65,10 +66,17 @@ private fun MainScreenComposable(
     viewModel: MainScreenViewModel
 ) {
     if (
-        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
-        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true
+        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // EML
+        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true // Email OTP
     ) {
         error(stringResource(id = R.string.eml_and_otp_error))
+    }
+    if (
+        !productConfig.products.contains(StytchProduct.PASSWORDS) && // no passwords
+        !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
+        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == false // no Email OTP
+    ) {
+        error(stringResource(id = R.string.misconfigured_products_and_options))
     }
     val navigator = LocalNavigator.currentOrThrow
     val theme = LocalStytchTheme.current
@@ -96,22 +104,33 @@ private fun MainScreenComposable(
     var selectedTabIndex by remember { mutableStateOf(0) }
     val phoneState = viewModel.phoneState.collectAsState()
     val emailState = viewModel.emailState.collectAsState()
+    var showLoadingOverlay by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.nextPage.collectLatest {
+            showLoadingOverlay = false
             navigator.push(
                 when (it) {
                     is NextPage.OTPConfirmation -> OTPConfirmationScreen(
                         resendParameters = it.details,
                         sessionOptions = productConfig.sessionOptions,
                     )
-                    /*
-                    is NextPage.NewUserChooser -> {} // TODO
-                    is NextPage.NewUserCreatePassword -> {} // TODO
-                    is NextPage.ReturningUserNoPassword -> {} // TODO
-                    is NextPage.ReturningUserWithPassword -> {} // TODO
-                     */
-                    else -> object : Screen { @Composable override fun Content() {} }
+                    is NextPage.NewUserChooser -> NewUserChooserScreen(
+                        emailAddress = it.emailAddress,
+                        productConfig = productConfig,
+                    )
+                    is NextPage.NewUserCreatePassword -> NewUserCreatePasswordScreen(
+                        emailAddress = it.emailAddress,
+                        productConfig = productConfig
+                    )
+                    is NextPage.ReturningUserNoPassword -> ReturningUserNoPasswordScreen(
+                        emailAddress = it.emailAddress,
+                        productConfig = productConfig,
+                    )
+                    is NextPage.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
+                        emailAddress = it.emailAddress,
+                        productConfig = productConfig,
+                    )
                 }
             )
         }
@@ -173,7 +192,10 @@ private fun MainScreenComposable(
                 stringResource(id = R.string.email) -> EmailEntry(
                     emailAddress = emailState.value.emailAddress,
                     onEmailAddressChanged = viewModel::onEmailAddressChanged,
-                    onEmailAddressSubmit = { viewModel.determineNextPageFromEmailAddress(productConfig) },
+                    onEmailAddressSubmit = {
+                        showLoadingOverlay = true
+                        viewModel.determineNextPageFromEmailAddress(productConfig)
+                    },
                     emailAddressError = emailState.value.error,
                     statusText = emailState.value.error
                 )
@@ -182,7 +204,10 @@ private fun MainScreenComposable(
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = { viewModel.sendSmsOTP(productConfig.otpOptions) },
+                    onPhoneNumberSubmit = {
+                        showLoadingOverlay = true
+                        viewModel.sendSmsOTP(productConfig.otpOptions)
+                    },
                     statusText = phoneState.value.error
                 )
                 stringResource(id = R.string.whatsapp) -> PhoneEntry(
@@ -190,12 +215,22 @@ private fun MainScreenComposable(
                     onCountryCodeChanged = viewModel::onCountryCodeChanged,
                     phoneNumber = phoneState.value.phoneNumber,
                     onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = { viewModel.sendWhatsAppOTP(productConfig.otpOptions) },
+                    onPhoneNumberSubmit = {
+                        showLoadingOverlay = true
+                        viewModel.sendWhatsAppOTP(productConfig.otpOptions)
+                    },
                     statusText = phoneState.value.error
                 )
                 else -> Text(stringResource(id = R.string.misconfigured_otp))
             }
             Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+    if (showLoadingOverlay) {
+        Dialog(onDismissRequest = {}) {
+            CircularProgressIndicator(
+                color = Color(theme.inputTextColor)
+            )
         }
     }
 }

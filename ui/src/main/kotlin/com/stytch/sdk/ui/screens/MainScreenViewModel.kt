@@ -10,14 +10,18 @@ import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
+import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
+import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
+import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,13 +61,13 @@ internal sealed class OTPDetails : Parcelable {
 internal sealed class NextPage {
     data class OTPConfirmation(val details: OTPDetails) : NextPage()
 
-    data class NewUserChooser(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
+    data class NewUserChooser(val emailAddress: String) : NextPage()
 
     data class NewUserCreatePassword(val emailAddress: String) : NextPage()
 
-    data class ReturningUserNoPassword(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
+    data class ReturningUserNoPassword(val emailAddress: String) : NextPage()
 
-    data class ReturningUserWithPassword(val emailAddress: String, val productConfig: StytchProductConfig) : NextPage()
+    data class ReturningUserWithPassword(val emailAddress: String) : NextPage()
 }
 
 internal class MainScreenViewModel : ViewModel() {
@@ -141,7 +145,36 @@ internal class MainScreenViewModel : ViewModel() {
     }
 
     fun determineNextPageFromEmailAddress(productConfig: StytchProductConfig) {
-        // TODO: search user and determine the next page
+        val emailAddress = _emailState.value.emailAddress
+        viewModelScope.launch {
+            when (
+                val result = StytchClient.user.search(
+                    UserManagement.SearchParams(
+                        email = emailAddress
+                    )
+                )
+            ) {
+                is StytchResult.Success -> {
+                    val user = result.value
+                    val nextPage = when (user.userType) {
+                        UserType.NEW -> if (
+                            !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
+                            productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) != true // no Email OTP
+                        ) {
+                            NextPage.NewUserCreatePassword(emailAddress = emailAddress)
+                        } else {
+                            NextPage.NewUserChooser(emailAddress = emailAddress)
+                        }
+                        UserType.PASSWORD ->
+                            NextPage.ReturningUserWithPassword(emailAddress = emailAddress)
+                        UserType.PASSWORDLESS ->
+                            NextPage.ReturningUserNoPassword(emailAddress = emailAddress)
+                    }
+                    _nextPage.emit(nextPage)
+                }
+                is StytchResult.Error -> error(result.exception) // TODO
+            }
+        }
     }
 
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
