@@ -195,7 +195,7 @@ internal class MainScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {}
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString()
+                        error = result.exception.reason.toString() // TODO
                     )
                 }
             }
@@ -221,7 +221,7 @@ internal class MainScreenViewModel : ViewModel() {
                 )
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString()
+                        error = result.exception.reason.toString() // TODO
                     )
                 }
             }
@@ -245,7 +245,7 @@ internal class MainScreenViewModel : ViewModel() {
                 )
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
-                        error = result.exception.reason.toString()
+                        error = result.exception.reason.toString() // TODO
                     )
                 }
             }
@@ -269,7 +269,7 @@ internal class MainScreenViewModel : ViewModel() {
                 )
                 is StytchResult.Error -> {
                     _phoneState.value = _phoneState.value.copy(
-                        error = result.exception.reason.toString()
+                        error = result.exception.reason.toString() // TODO
                     )
                 }
             }

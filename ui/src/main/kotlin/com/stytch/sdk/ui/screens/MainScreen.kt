@@ -88,7 +88,7 @@ private fun MainScreenComposable(
     }
     val hasEmail = productConfig.products.any {
         listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
-    }
+    } || (productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true)
     val hasDivider = hasButtons && hasInput
     val tabTitles = mutableListOf<String>().apply {
         if (hasEmail) {

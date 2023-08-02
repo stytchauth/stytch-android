@@ -40,7 +40,6 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.AuthenticationActivity
-import com.stytch.sdk.ui.AuthenticationViewModel
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.Body2Text
@@ -62,10 +61,8 @@ internal data class OTPConfirmationScreen(
     @Composable
     override fun Content() {
         val viewModel = viewModel<OTPConfirmationScreenViewModel>()
-        val authViewModel = viewModel<AuthenticationViewModel>()
         OTPConfirmationScreenComposable(
             viewModel = viewModel,
-            authViewModel = authViewModel,
             resendParameters = resendParameters,
             sessionOptions = sessionOptions,
         )
@@ -76,7 +73,6 @@ internal data class OTPConfirmationScreen(
 @Composable
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
-    authViewModel: AuthenticationViewModel,
     resendParameters: OTPDetails,
     sessionOptions: SessionOptions,
 ) {
