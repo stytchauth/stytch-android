@@ -59,4 +59,8 @@ internal class AuthenticationViewModel : ViewModel() {
             }
         }
     }
+
+    fun onAuthenticationResult(result: StytchResult<Any>) {
+        _state.value = AuthenticationState.Result(result)
+    }
 }

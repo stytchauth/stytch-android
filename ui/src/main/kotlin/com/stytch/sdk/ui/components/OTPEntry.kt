@@ -14,10 +14,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -35,25 +38,36 @@ internal fun OTPEntry(
     onCodeComplete: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
     val finalCode = remember { mutableStateListOf("", "", "", "", "", "") }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
     Row(
         modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        for (i in 0 until OTP_LENGTH) {
+        finalCode.asIterable().forEachIndexed { i, value ->
+            var modifier = Modifier.width(48.dp).height(48.dp)
+            if (i == 0) {
+                modifier = modifier.focusRequester(focusRequester)
+            }
             StytchInput(
-                modifier = Modifier.width(48.dp).height(48.dp),
+                modifier = modifier,
                 contentPadding = PaddingValues(0.dp),
-                value = finalCode[i],
+                value = value,
                 isError = errorMessage != null,
-                onValueChange = { value ->
-                    if (value.length <= 1) {
-                        finalCode[i] = value
+                onValueChange = { newValue ->
+                    if (newValue.length <= 1) {
+                        finalCode[i] = newValue
                         if (finalCode.filter { it.isNotBlank() }.size == OTP_LENGTH) {
                             onCodeComplete(finalCode.joinToString(""))
                         }
-                        if (value.length == 1 && i < (OTP_LENGTH - 1)) {
+                        if (newValue.length == 1 && i < (OTP_LENGTH - 1)) {
                             focusManager.moveFocus(FocusDirection.Next)
+                        }
+                        if (newValue.isEmpty() && i > 0) {
+                            focusManager.moveFocus(FocusDirection.Previous)
                         }
                     }
                 },

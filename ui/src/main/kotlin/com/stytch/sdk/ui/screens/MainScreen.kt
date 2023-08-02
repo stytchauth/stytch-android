@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
@@ -45,6 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 internal data class MainScreen(
     val productConfig: StytchProductConfig,
     val exit: () -> Unit,
+    val onAuthenticationResult: (StytchResult<Any>) -> Unit,
 ) : Screen {
     @Composable
     override fun Content() {
@@ -52,7 +54,8 @@ internal data class MainScreen(
         MainScreenComposable(
             productConfig = productConfig,
             exit = exit,
-            viewModel = viewModel
+            viewModel = viewModel,
+            onAuthenticationResult = onAuthenticationResult,
         )
     }
 }
@@ -62,6 +65,7 @@ private fun MainScreenComposable(
     productConfig: StytchProductConfig,
     exit: () -> Unit,
     viewModel: MainScreenViewModel,
+    onAuthenticationResult: (StytchResult<Any>) -> Unit,
 ) {
     if (
         productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
@@ -99,7 +103,11 @@ private fun MainScreenComposable(
     LaunchedEffect(key1 = Unit) {
         viewModel.otpConfirmation.collectLatest {
             navigator.push(
-                OTPConfirmationScreen(it)
+                OTPConfirmationScreen(
+                    resendParameters = it,
+                    sessionOptions = productConfig.sessionOptions,
+                    onAuthenticationResult = onAuthenticationResult,
+                )
             )
         }
     }
