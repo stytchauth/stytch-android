@@ -2,5 +2,5 @@ package com.stytch.sdk.ui.screens
 
 import androidx.lifecycle.ViewModel
 
-internal class NewUserCreatePasswordScreenViewModel: ViewModel() {
+internal class NewUserPasswordOnlyScreenViewModel: ViewModel() {
 }

@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal class NewUserChooserScreenViewModel : ViewModel() {
+internal class NewUserWithEMLOrOTPScreenViewModel : ViewModel() {
     private val _emailState = MutableStateFlow(EmailState())
     val emailState = _emailState.asStateFlow()
 

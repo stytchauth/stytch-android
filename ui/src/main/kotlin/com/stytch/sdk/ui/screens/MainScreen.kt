@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -25,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -116,11 +114,11 @@ private fun MainScreenComposable(
                     resendParameters = it.details,
                     sessionOptions = productConfig.sessionOptions,
                 )
-                is NextPage.NewUserChooser -> NewUserChooserScreen(
+                is NextPage.NewUserWithEMLOrOTP -> NewUserWithEMLOrOTPScreen(
                     emailAddress = it.emailAddress,
                     productConfig = productConfig,
                 )
-                is NextPage.NewUserCreatePassword -> NewUserCreatePasswordScreen(
+                is NextPage.NewUserPasswordOnly -> NewUserPasswordOnlyScreen(
                     emailAddress = it.emailAddress,
                     productConfig = productConfig
                 )

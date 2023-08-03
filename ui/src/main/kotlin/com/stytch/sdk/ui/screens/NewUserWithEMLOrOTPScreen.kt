@@ -38,15 +38,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class NewUserChooserScreen(
+internal class NewUserWithEMLOrOTPScreen(
     val emailAddress: String,
     val productConfig: StytchProductConfig,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<NewUserChooserScreenViewModel>()
+        val viewModel = viewModel<NewUserWithEMLOrOTPScreenViewModel>()
         viewModel.setInitialEmailState(emailAddress)
-        NewUserChooserScreenComposable(
+        NewUserWithEMLOrOTPScreenComposable(
             productConfig = productConfig,
             viewModel = viewModel,
         )
@@ -54,9 +54,9 @@ internal class NewUserChooserScreen(
 }
 
 @Composable
-private fun NewUserChooserScreenComposable(
+private fun NewUserWithEMLOrOTPScreenComposable(
     productConfig: StytchProductConfig,
-    viewModel: NewUserChooserScreenViewModel,
+    viewModel: NewUserWithEMLOrOTPScreenViewModel,
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val context = LocalContext.current as AuthenticationActivity

@@ -8,14 +8,14 @@ import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class NewUserCreatePasswordScreen(
+internal class NewUserPasswordOnlyScreen(
     val emailAddress: String,
     val productConfig: StytchProductConfig,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<NewUserCreatePasswordScreenViewModel>()
-        NewUserCreatePasswordScreenComposable(
+        val viewModel = viewModel<NewUserPasswordOnlyScreenViewModel>()
+        NewUserPasswordOnlyScreenComposable(
             emailAddress = emailAddress,
             productConfig = productConfig,
             viewModel = viewModel
@@ -24,9 +24,9 @@ internal class NewUserCreatePasswordScreen(
 }
 
 @Composable
-private fun NewUserCreatePasswordScreenComposable(
+private fun NewUserPasswordOnlyScreenComposable(
     emailAddress: String,
     productConfig: StytchProductConfig,
-    viewModel: NewUserCreatePasswordScreenViewModel
+    viewModel: NewUserPasswordOnlyScreenViewModel
 ) {
 }

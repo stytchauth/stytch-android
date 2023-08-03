@@ -119,9 +119,9 @@ internal class MainScreenViewModel : ViewModel() {
                             !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
                             productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) != true // no Email OTP
                         ) {
-                            NextPage.NewUserCreatePassword(emailAddress = emailAddress)
+                            NextPage.NewUserPasswordOnly(emailAddress = emailAddress)
                         } else {
-                            NextPage.NewUserChooser(emailAddress = emailAddress)
+                            NextPage.NewUserWithEMLOrOTP(emailAddress = emailAddress)
                         }
                         UserType.PASSWORD ->
                             NextPage.ReturningUserWithPassword(emailAddress = emailAddress)
