@@ -6,6 +6,6 @@ internal data class PasswordState(
     val password: String = "",
     val breachedPassword: Boolean = false,
     val feedback: Feedback? = null,
-    val score: Int? = null,
+    val score: Int = 0,
     val validPassword: Boolean = false,
 )
