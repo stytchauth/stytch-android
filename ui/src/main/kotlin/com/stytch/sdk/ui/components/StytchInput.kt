@@ -43,6 +43,7 @@ internal fun StytchInput(
     trailingIcon: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = OutlinedTextFieldDefaults.contentPadding(),
     textAlign: TextAlign = TextAlign.Start,
+    label: String? = null,
 ) {
     val focusManager = LocalFocusManager.current
     val theme = LocalStytchTheme.current
@@ -86,6 +87,15 @@ internal fun StytchInput(
                 value = value,
                 visualTransformation = visualTransformation,
                 innerTextField = innerTextField,
+                label = {
+                    if (label != null) {
+                        Text(
+                            text = label,
+                            style = type.labelText,
+                            color = Color(theme.inputPlaceholderTextColor),
+                        )
+                    }
+                },
                 placeholder = {
                     Text(
                         text = placeholder,

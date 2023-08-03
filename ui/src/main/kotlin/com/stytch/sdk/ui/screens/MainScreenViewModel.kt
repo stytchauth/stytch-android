@@ -1,26 +1,25 @@
 package com.stytch.sdk.ui.screens
 
-import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.google.i18n.phonenumbers.Phonenumber
 import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
-import com.stytch.sdk.ui.data.EmailMagicLinksOptions
+import com.stytch.sdk.ui.data.EmailState
+import com.stytch.sdk.ui.data.NextPage
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
+import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
+import com.stytch.sdk.ui.data.PhoneNumberState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,47 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-
-internal data class PhoneNumberState(
-    val countryCode: String = "1",
-    val phoneNumber: String = "",
-    val error: String? = null,
-) {
-    fun toE164(): String {
-        val phone = Phonenumber.PhoneNumber().apply {
-            countryCode = this@PhoneNumberState.countryCode.toInt()
-            nationalNumber = (this@PhoneNumberState.phoneNumber).toLong()
-        }
-        return PhoneNumberUtil.getInstance().format(phone, PhoneNumberUtil.PhoneNumberFormat.E164)
-    }
-}
-
-internal data class EmailState(
-    val emailAddress: String = "",
-    val error: String? = null,
-)
-
-@Parcelize
-internal sealed class OTPDetails : Parcelable {
-    data class EmailOTP(val parameters: OTP.EmailOTP.Parameters, val methodId: String) : OTPDetails()
-
-    data class SmsOTP(val parameters: OTP.SmsOTP.Parameters, val methodId: String) : OTPDetails()
-
-    data class WhatsAppOTP(val parameters: OTP.WhatsAppOTP.Parameters, val methodId: String) : OTPDetails()
-}
-
-internal sealed class NextPage {
-    data class OTPConfirmation(val details: OTPDetails) : NextPage()
-
-    data class NewUserChooser(val emailAddress: String) : NextPage()
-
-    data class NewUserCreatePassword(val emailAddress: String) : NextPage()
-
-    data class ReturningUserNoPassword(val emailAddress: String) : NextPage()
-
-    data class ReturningUserWithPassword(val emailAddress: String) : NextPage()
-}
 
 internal class MainScreenViewModel : ViewModel() {
     private val _phoneState = MutableStateFlow(PhoneNumberState())
@@ -173,57 +131,6 @@ internal class MainScreenViewModel : ViewModel() {
                     _nextPage.emit(nextPage)
                 }
                 is StytchResult.Error -> error(result.exception) // TODO
-            }
-        }
-    }
-
-    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
-        viewModelScope.launch {
-            when (
-                val result = StytchClient.magicLinks.email.loginOrCreate(
-                    parameters = MagicLinks.EmailMagicLinks.Parameters(
-                        email = _emailState.value.emailAddress,
-                        loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
-                        signupMagicLinkUrl = emailMagicLinksOptions?.signupRedirectURL,
-                        loginExpirationMinutes = emailMagicLinksOptions?.loginExpirationMinutes,
-                        signupExpirationMinutes = emailMagicLinksOptions?.signupExpirationMinutes,
-                        loginTemplateId = emailMagicLinksOptions?.loginTemplateId,
-                        signupTemplateId = emailMagicLinksOptions?.signupTemplateId,
-                    )
-                )
-            ) {
-                is StytchResult.Success -> {}
-                is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString() // TODO
-                    )
-                }
-            }
-        }
-    }
-
-    fun sendEmailOTP(otpOptions: OTPOptions?) {
-        viewModelScope.launch {
-            val parameters = OTP.EmailOTP.Parameters(
-                email = _emailState.value.emailAddress,
-                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-                loginTemplateId = otpOptions?.loginTemplateId,
-                signupTemplateId = otpOptions?.signupTemplateId,
-            )
-            when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _nextPage.emit(
-                    NextPage.OTPConfirmation(
-                        OTPDetails.EmailOTP(
-                            parameters = parameters,
-                            methodId = result.value.methodId
-                        )
-                    )
-                )
-                is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString() // TODO
-                    )
-                }
             }
         }
     }

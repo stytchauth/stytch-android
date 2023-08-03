@@ -11,8 +11,8 @@
     <string name="text">Text</string>
     <string name="back">Back</string>
     <string name="check_your_email">Check your email</string>
-    <string name="login_link_sent">A login link was sent to you at %1$s</string>
-    <string name="didnt_get_it">Didn’t get it? %1$s</string>
+    <string name="login_link_sent">A login link was sent to you at</string>
+    <string name="didnt_get_it">Didn’t get it? </string>
     <string name="create_password_instead">Create a password instead</string>
     <string name="check_email_new_password">Check your email to set a new password</string>
     <string name="create_password_link_sent">A login link was sent to you at %1$s to create a password for your account.</string>
@@ -21,6 +21,7 @@
     <string name="log_in">Log in</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="email_me_a_login_link">Email me a login link</string>
+    <string name="email_me_a_login_code">Email me a login code</string>
     <string name="reset_password_link_sent">A link to reset your password was sent to you at %1$s.</string>
     <string name="login_without_password">Login without a password</string>
     <string name="choose_how">Choose how you would like to create your account.</string>
@@ -44,4 +45,6 @@
     <string name="success">Success!</string>
     <string name="logged_in">You have successfully logged in.</string>
     <string name="misconfigured_products_and_options">You must have at least one primary authentication factor (Passwords, EML, or Email OTP) enabled</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.SessionOptions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

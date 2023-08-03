@@ -51,4 +51,12 @@ internal data class StytchTypography(
         color = Color.Black,
         letterSpacing = 0.1.sp,
     ),
+    val labelText: TextStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+        fontWeight = FontWeight.W400,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        textAlign = TextAlign.Start,
+        color = Color.Black,
+    ),
 )

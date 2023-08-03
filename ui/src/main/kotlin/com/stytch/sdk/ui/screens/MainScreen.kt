@@ -35,9 +35,11 @@ import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.EmailEntry
+import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
+import com.stytch.sdk.ui.data.NextPage
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
@@ -109,30 +111,29 @@ private fun MainScreenComposable(
     LaunchedEffect(Unit) {
         viewModel.nextPage.collectLatest {
             showLoadingOverlay = false
-            navigator.push(
-                when (it) {
-                    is NextPage.OTPConfirmation -> OTPConfirmationScreen(
-                        resendParameters = it.details,
-                        sessionOptions = productConfig.sessionOptions,
-                    )
-                    is NextPage.NewUserChooser -> NewUserChooserScreen(
-                        emailAddress = it.emailAddress,
-                        productConfig = productConfig,
-                    )
-                    is NextPage.NewUserCreatePassword -> NewUserCreatePasswordScreen(
-                        emailAddress = it.emailAddress,
-                        productConfig = productConfig
-                    )
-                    is NextPage.ReturningUserNoPassword -> ReturningUserNoPasswordScreen(
-                        emailAddress = it.emailAddress,
-                        productConfig = productConfig,
-                    )
-                    is NextPage.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
-                        emailAddress = it.emailAddress,
-                        productConfig = productConfig,
-                    )
-                }
-            )
+            when (it) {
+                is NextPage.OTPConfirmation -> OTPConfirmationScreen(
+                    resendParameters = it.details,
+                    sessionOptions = productConfig.sessionOptions,
+                )
+                is NextPage.NewUserChooser -> NewUserChooserScreen(
+                    emailAddress = it.emailAddress,
+                    productConfig = productConfig,
+                )
+                is NextPage.NewUserCreatePassword -> NewUserCreatePasswordScreen(
+                    emailAddress = it.emailAddress,
+                    productConfig = productConfig
+                )
+                is NextPage.ReturningUserNoPassword -> ReturningUserNoPasswordScreen(
+                    emailAddress = it.emailAddress,
+                    productConfig = productConfig,
+                )
+                is NextPage.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
+                    emailAddress = it.emailAddress,
+                    productConfig = productConfig,
+                )
+                else -> null
+            }?.let { nextPage -> navigator.push(nextPage) }
         }
     }
 
@@ -227,10 +228,6 @@ private fun MainScreenComposable(
         }
     }
     if (showLoadingOverlay) {
-        Dialog(onDismissRequest = {}) {
-            CircularProgressIndicator(
-                color = Color(theme.inputTextColor)
-            )
-        }
+        LoadingDialog()
     }
 }
