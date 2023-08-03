@@ -94,11 +94,13 @@ private fun MainScreenComposable(
         if (hasEmail) {
             add(stringResource(id = R.string.email))
         }
-        if (productConfig.otpOptions?.methods?.contains(OTPMethods.SMS) == true) {
-            add(stringResource(id = R.string.text))
-        }
-        if (productConfig.otpOptions?.methods?.contains(OTPMethods.WHATSAPP) == true) {
-            add(stringResource(id = R.string.whatsapp))
+        if (productConfig.products.contains(StytchProduct.OTP)) {
+            if (productConfig.otpOptions?.methods?.contains(OTPMethods.SMS) == true) {
+                add(stringResource(id = R.string.text))
+            }
+            if (productConfig.otpOptions?.methods?.contains(OTPMethods.WHATSAPP) == true) {
+                add(stringResource(id = R.string.whatsapp))
+            }
         }
     }
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -160,30 +162,32 @@ private fun MainScreenComposable(
             )
         }
         if (hasInput && tabTitles.isNotEmpty()) { // sanity check
-            TabRow(
-                selectedTabIndex = selectedTabIndex,
-                containerColor = Color(theme.backgroundColor),
-                modifier = Modifier.padding(bottom = 12.dp),
-                indicator = { tabPositions ->
-                    TabRowDefaults.Indicator(
-                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                        color = Color(theme.primaryTextColor)
-                    )
-                }
-            ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        selected = index == selectedTabIndex,
-                        onClick = { selectedTabIndex = index },
-                        modifier = Modifier.height(48.dp)
-                    ) {
-                        Text(
-                            text = title,
-                            style = type.body2.copy(
-                                color = Color(theme.primaryTextColor),
-                                lineHeight = 48.sp
-                            )
+            if (tabTitles.size > 1) {
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    containerColor = Color(theme.backgroundColor),
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    indicator = { tabPositions ->
+                        TabRowDefaults.Indicator(
+                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                            color = Color(theme.primaryTextColor)
                         )
+                    }
+                ) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = index == selectedTabIndex,
+                            onClick = { selectedTabIndex = index },
+                            modifier = Modifier.height(48.dp)
+                        ) {
+                            Text(
+                                text = title,
+                                style = type.body2.copy(
+                                    color = Color(theme.primaryTextColor),
+                                    lineHeight = 48.sp
+                                )
+                            )
+                        }
                     }
                 }
             }

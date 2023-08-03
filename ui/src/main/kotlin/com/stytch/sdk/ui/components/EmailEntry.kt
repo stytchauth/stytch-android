@@ -28,6 +28,7 @@ internal fun EmailEntry(
         emailState = emailState,
         onEmailAddressChanged = onEmailAddressChanged,
         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+        label = stringResource(id = R.string.email),
     )
     StytchButton(
         onClick = onEmailAddressSubmit,
