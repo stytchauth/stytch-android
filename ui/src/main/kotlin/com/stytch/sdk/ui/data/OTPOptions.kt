@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 public data class OTPOptions(
-    val methods: List<OTPMethods>,
+    val methods: List<OTPMethods> = emptyList(),
     val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,

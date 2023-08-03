@@ -5,9 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 public data class PasswordOptions(
-    val loginRedirectURL: String,
-    val loginExpirationMinutes: Int? = null,
-    val resetPasswordRedirectURL: String,
-    val resetPasswordExpirationMinutes: Int? = null,
+    val loginRedirectURL: String? = null,
+    val loginExpirationMinutes: UInt? = null,
+    val resetPasswordRedirectURL: String? = null,
+    val resetPasswordExpirationMinutes: UInt? = null,
     val resetPasswordTemplateId: String? = null,
 ) : Parcelable

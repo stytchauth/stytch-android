@@ -1,10 +1,12 @@
 package com.stytch.sdk.consumer.passwords
 
+import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
+import kotlinx.parcelize.Parcelize
 
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
@@ -58,6 +60,7 @@ public interface Passwords {
      * default email template. The template must be a template using our built-in customizations or a custom HTML email
      * for Password Reset.
      */
+    @Parcelize
     public data class ResetByEmailStartParameters(
         val email: String,
         val loginRedirectUrl: String? = null,
@@ -65,7 +68,7 @@ public interface Passwords {
         val resetPasswordRedirectUrl: String? = null,
         val resetPasswordExpirationMinutes: UInt? = null,
         val resetPasswordTemplateId: String? = null
-    )
+    ) : Parcelable
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint

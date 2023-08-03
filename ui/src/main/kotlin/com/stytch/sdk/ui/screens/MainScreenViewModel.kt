@@ -11,6 +11,7 @@ import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
@@ -23,6 +24,8 @@ import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
+import com.stytch.sdk.ui.data.PasswordOptions
+import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PhoneNumberState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
@@ -118,30 +121,31 @@ internal class MainScreenViewModel : ViewModel() {
                 )
             ) {
                 is StytchResult.Success -> {
-                    val user = result.value
-                    when (user.userType) {
+                    when (result.value.userType) {
                         UserType.NEW -> if (
                             !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
-                            productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) != true // no Email OTP
+                            !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
                         ) {
                             NextPage.NewUserPasswordOnly(emailAddress = emailAddress)
                         } else {
                             NextPage.NewUserWithEMLOrOTP(emailAddress = emailAddress)
                         }
-                        UserType.PASSWORD ->
+                        UserType.PASSWORD -> {
                             NextPage.ReturningUserWithPassword(emailAddress = emailAddress)
+                        }
                         UserType.PASSWORDLESS -> {
                             if (
                                 productConfig.products.contains(StytchProduct.OTP) &&
-                                productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true
+                                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
                             ) {
                                 // send Email OTP
-                                sendEmailOTPForReturningUser(productConfig.otpOptions)
-                                null
-                            } else {
+                                sendEmailOTPForReturningUserAndGetPage(productConfig.otpOptions)
+                            } else if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
                                 // send EML
-                                sendEmailMagicLinkForReturningUser(productConfig.emailMagicLinksOptions)
-                                null
+                                sendEmailMagicLinkForReturningUserAndGetPage(productConfig.emailMagicLinksOptions)
+                            } else {
+                                // no Email OTP or EML, so set password
+                                sendResetPasswordForReturningUserAndGetPage(productConfig.passwordOptions)
                             }
                         }
                     }?.let {
@@ -153,7 +157,9 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    fun sendEmailMagicLinkForReturningUser(emailMagicLinksOptions: EmailMagicLinksOptions?) {
+    suspend fun sendEmailMagicLinkForReturningUserAndGetPage(
+        emailMagicLinksOptions: EmailMagicLinksOptions?
+    ): NextPage? {
         val parameters = MagicLinks.EmailMagicLinks.Parameters(
             email = _emailState.value.emailAddress,
             loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
@@ -163,46 +169,47 @@ internal class MainScreenViewModel : ViewModel() {
             loginTemplateId = emailMagicLinksOptions?.loginTemplateId,
             signupTemplateId = emailMagicLinksOptions?.signupTemplateId,
         )
-        viewModelScope.launch {
-            when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
-                is StytchResult.Success -> _nextPage.emit(
-                    NextPage.EMLConfirmation(EMLDetails(parameters), isReturningUser = true)
-                )
-                is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        errorMessage = result.exception.reason.toString() // TODO
-                    )
-                }
-            }
+        return when (StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
+            is StytchResult.Success -> NextPage.EMLConfirmation(EMLDetails(parameters), isReturningUser = true)
+            is StytchResult.Error -> null // TODO
         }
     }
 
-    fun sendEmailOTPForReturningUser(otpOptions: OTPOptions?) {
-        viewModelScope.launch {
-            val parameters = OTP.EmailOTP.Parameters(
-                email = _emailState.value.emailAddress,
-                expirationMinutes = otpOptions?.expirationMinutes ?: Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-                loginTemplateId = otpOptions?.loginTemplateId,
-                signupTemplateId = otpOptions?.signupTemplateId,
-            )
-            when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
-                is StytchResult.Success -> {
-                    _nextPage.emit(
-                        NextPage.OTPConfirmation(
-                            OTPDetails.EmailOTP(
-                                parameters = parameters,
-                                methodId = result.value.methodId
-                            ),
-                            isReturningUser = true,
-                        )
-                    )
-                }
-                is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        errorMessage = result.exception.reason.toString() // TODO
-                    )
-                }
+    suspend fun sendEmailOTPForReturningUserAndGetPage(otpOptions: OTPOptions?): NextPage? {
+        val parameters = OTP.EmailOTP.Parameters(
+            email = _emailState.value.emailAddress,
+            expirationMinutes = otpOptions?.expirationMinutes ?: Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            loginTemplateId = otpOptions?.loginTemplateId,
+            signupTemplateId = otpOptions?.signupTemplateId,
+        )
+        return when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
+            is StytchResult.Success -> {
+                NextPage.OTPConfirmation(
+                    OTPDetails.EmailOTP(
+                        parameters = parameters,
+                        methodId = result.value.methodId
+                    ),
+                    isReturningUser = true,
+                )
             }
+            is StytchResult.Error -> null // TODO
+        }
+    }
+
+    suspend fun sendResetPasswordForReturningUserAndGetPage(passwordOptions: PasswordOptions): NextPage? {
+        val parameters = Passwords.ResetByEmailStartParameters(
+            email = _emailState.value.emailAddress,
+            loginRedirectUrl = passwordOptions.loginRedirectURL,
+            loginExpirationMinutes = passwordOptions.loginExpirationMinutes,
+            resetPasswordRedirectUrl = passwordOptions.resetPasswordRedirectURL,
+            resetPasswordExpirationMinutes = passwordOptions.resetPasswordExpirationMinutes,
+            resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId
+        )
+        return when (StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
+            is StytchResult.Success -> NextPage.PasswordResetSent(
+                PasswordResetDetails(parameters)
+            )
+            is StytchResult.Error -> null // TODO
         }
     }
 

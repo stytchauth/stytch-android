@@ -134,6 +134,9 @@ private fun MainScreenComposable(
                     emailAddress = it.emailAddress,
                     productConfig = productConfig,
                 )
+                is NextPage.PasswordResetSent -> PasswordResetSentScreen(
+                    details = it.details
+                )
                 else -> null
             }?.let { nextPage -> navigator.push(nextPage) }
         }

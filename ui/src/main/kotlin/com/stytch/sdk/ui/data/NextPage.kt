@@ -10,4 +10,6 @@ internal sealed class NextPage {
     data class NewUserPasswordOnly(val emailAddress: String) : NextPage()
 
     data class ReturningUserWithPassword(val emailAddress: String) : NextPage()
+
+    data class PasswordResetSent(val details: PasswordResetDetails) : NextPage()
 }
