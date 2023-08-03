@@ -114,7 +114,13 @@ private fun MainScreenComposable(
             when (it) {
                 is NextPage.OTPConfirmation -> OTPConfirmationScreen(
                     resendParameters = it.details,
-                    sessionOptions = productConfig.sessionOptions,
+                    productConfig = productConfig,
+                    isReturningUser = it.isReturningUser
+                )
+                is NextPage.EMLConfirmation -> EMLConfirmationScreen(
+                    parameters = it.details.parameters,
+                    productConfig = productConfig,
+                    isReturningUser = it.isReturningUser,
                 )
                 is NextPage.NewUserWithEMLOrOTP -> NewUserWithEMLOrOTPScreen(
                     emailAddress = it.emailAddress,
@@ -123,10 +129,6 @@ private fun MainScreenComposable(
                 is NextPage.NewUserPasswordOnly -> NewUserPasswordOnlyScreen(
                     emailAddress = it.emailAddress,
                     productConfig = productConfig
-                )
-                is NextPage.ReturningUserNoPassword -> ReturningUserNoPasswordScreen(
-                    emailAddress = it.emailAddress,
-                    productConfig = productConfig,
                 )
                 is NextPage.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
                     emailAddress = it.emailAddress,

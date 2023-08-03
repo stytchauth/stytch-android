@@ -27,22 +27,30 @@ import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
+import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
+import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.StytchProduct
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class EMLConfirmationScreen(
-    val parameters: MagicLinks.EmailMagicLinks.Parameters
+    val parameters: MagicLinks.EmailMagicLinks.Parameters,
+    val productConfig: StytchProductConfig,
+    val isReturningUser: Boolean,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<EMLConfirmationScreenViewModel>()
         EMLConfirmationScreenComposable(
             parameters = parameters,
-            viewModel = viewModel
+            viewModel = viewModel,
+            productConfig = productConfig,
+            isReturningUser = isReturningUser,
         )
     }
 }
@@ -51,6 +59,8 @@ internal data class EMLConfirmationScreen(
 private fun EMLConfirmationScreenComposable(
     parameters: MagicLinks.EmailMagicLinks.Parameters,
     viewModel: EMLConfirmationScreenViewModel,
+    productConfig: StytchProductConfig,
+    isReturningUser: Boolean,
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val type = LocalStytchTypography.current
@@ -87,6 +97,16 @@ private fun EMLConfirmationScreenComposable(
             ),
             modifier = Modifier.clickable { showResendDialog = true }
         )
+        if (isReturningUser && productConfig.products.contains(StytchProduct.PASSWORDS)) {
+            DividerWithText(
+                modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+                text = stringResource(id = R.string.or),
+            )
+            StytchTextButton(
+                text = stringResource(id = R.string.create_password_instead),
+                onClick = { /* TODO */ }
+            )
+        }
     }
     if (showResendDialog) {
         StytchAlertDialog(

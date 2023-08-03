@@ -55,7 +55,7 @@ internal class CreateAccountViewModel : ViewModel() {
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> _nextPage.emit(
-                    NextPage.EMLConfirmation(EMLDetails(parameters))
+                    NextPage.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
                 )
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
@@ -81,7 +81,8 @@ internal class CreateAccountViewModel : ViewModel() {
                             OTPDetails.EmailOTP(
                                 parameters = parameters,
                                 methodId = result.value.methodId
-                            )
+                            ),
+                            isReturningUser = false,
                         )
                     )
                 }

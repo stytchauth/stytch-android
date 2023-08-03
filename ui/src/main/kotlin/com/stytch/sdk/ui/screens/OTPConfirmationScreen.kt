@@ -31,12 +31,15 @@ import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
+import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.OTPEntry
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
+import com.stytch.sdk.ui.components.StytchTextButton
 import com.stytch.sdk.ui.data.OTPDetails
-import com.stytch.sdk.ui.data.SessionOptions
+import com.stytch.sdk.ui.data.StytchProduct
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.delay
@@ -46,7 +49,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 internal data class OTPConfirmationScreen(
     val resendParameters: OTPDetails,
-    val sessionOptions: SessionOptions,
+    val productConfig: StytchProductConfig,
+    val isReturningUser: Boolean,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
@@ -54,7 +58,8 @@ internal data class OTPConfirmationScreen(
         OTPConfirmationScreenComposable(
             viewModel = viewModel,
             resendParameters = resendParameters,
-            sessionOptions = sessionOptions,
+            productConfig = productConfig,
+            isReturningUser = isReturningUser,
         )
     }
 }
@@ -63,7 +68,8 @@ internal data class OTPConfirmationScreen(
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
     resendParameters: OTPDetails,
-    sessionOptions: SessionOptions,
+    productConfig: StytchProductConfig,
+    isReturningUser: Boolean,
 ) {
     val context = LocalContext.current as AuthenticationActivity
     val navigator = LocalNavigator.currentOrThrow
@@ -139,7 +145,7 @@ private fun OTPConfirmationScreenComposable(
             errorMessage = (confirmationState.value as? ConfirmationState.Failed)?.message,
             onCodeComplete = {
                 showLoadingOverlay = true
-                viewModel.authenticateOTP(it, methodId, sessionOptions)
+                viewModel.authenticateOTP(it, methodId, productConfig.sessionOptions)
             }
         )
         Text(
@@ -150,6 +156,16 @@ private fun OTPConfirmationScreenComposable(
             ),
             modifier = Modifier.clickable { showResendDialog = true }
         )
+        if (isReturningUser && productConfig.products.contains(StytchProduct.PASSWORDS)) {
+            DividerWithText(
+                modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
+                text = stringResource(id = R.string.or),
+            )
+            StytchTextButton(
+                text = stringResource(id = R.string.create_password_instead),
+                onClick = { /* TODO */ }
+            )
+        }
     }
     if (showLoadingOverlay) {
         LoadingDialog()

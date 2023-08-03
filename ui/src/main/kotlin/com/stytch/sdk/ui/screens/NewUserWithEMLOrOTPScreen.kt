@@ -84,12 +84,15 @@ private fun NewUserWithEMLOrOTPScreenComposable(
                 is NextPage.OTPConfirmation -> navigator.push(
                     OTPConfirmationScreen(
                         resendParameters = it.details,
-                        sessionOptions = productConfig.sessionOptions,
+                        productConfig = productConfig,
+                        isReturningUser = false,
                     )
                 )
                 is NextPage.EMLConfirmation -> navigator.push(
                     EMLConfirmationScreen(
-                        parameters = it.details.parameters
+                        parameters = it.details.parameters,
+                        productConfig = productConfig,
+                        isReturningUser = false,
                     )
                 )
                 else -> {} // this won't happen
