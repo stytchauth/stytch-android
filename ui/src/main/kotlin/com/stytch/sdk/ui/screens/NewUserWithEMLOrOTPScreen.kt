@@ -133,7 +133,7 @@ private fun NewUserWithEMLOrOTPScreenComposable(
         Spacer(modifier = Modifier.height(24.dp))
         BodyText(text = AnnotatedString(stringResource(id = R.string.finish_creating)))
         EmailAndPasswordEntry(
-            emailAddress = emailState.value.emailAddress,
+            emailState = emailState.value,
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             passwordState = passwordState.value,
             onPasswordChanged = viewModel::onPasswordChanged,

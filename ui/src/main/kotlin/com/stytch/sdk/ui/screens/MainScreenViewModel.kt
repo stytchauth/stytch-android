@@ -22,6 +22,7 @@ import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PhoneNumberState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.utils.isValidEmailAddress
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -98,7 +99,7 @@ internal class MainScreenViewModel : ViewModel() {
     fun onEmailAddressChanged(emailAddress: String) {
         _emailState.value = _emailState.value.copy(
             emailAddress = emailAddress,
-            error = null,
+            validEmail = emailAddress.isValidEmailAddress(),
         )
     }
 

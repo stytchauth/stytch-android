@@ -8,4 +8,5 @@ internal data class PasswordState(
     val feedback: Feedback? = null,
     val score: Int = 0,
     val validPassword: Boolean = false,
+    val errorMessage: String? = null
 )

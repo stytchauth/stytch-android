@@ -15,6 +15,7 @@ import com.stytch.sdk.ui.data.NextPage
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PasswordState
+import com.stytch.sdk.ui.utils.isValidEmailAddress
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -58,7 +59,7 @@ internal class CreateAccountViewModel : ViewModel() {
                 )
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString() // TODO
+                        errorMessage = result.exception.reason.toString() // TODO
                     )
                 }
             }
@@ -86,7 +87,7 @@ internal class CreateAccountViewModel : ViewModel() {
                 }
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
-                        error = result.exception.reason.toString() // TODO
+                        errorMessage = result.exception.reason.toString() // TODO
                     )
                 }
             }
@@ -96,7 +97,7 @@ internal class CreateAccountViewModel : ViewModel() {
     fun onEmailAddressChanged(emailAddress: String) {
         _emailState.value = _emailState.value.copy(
             emailAddress = emailAddress,
-            error = null,
+            validEmail = emailAddress.isValidEmailAddress()
         )
     }
 
@@ -119,21 +120,31 @@ internal class CreateAccountViewModel : ViewModel() {
                     )
                 }
 
-                is StytchResult.Error -> {} // TODO
+                is StytchResult.Error -> {
+                    _passwordState.value = _passwordState.value.copy(
+                        errorMessage = result.exception.reason.toString() // TODO
+                    )
+                }
             }
         }
     }
 
     fun createPassword(sessionDurationMinutes: UInt) {
         viewModelScope.launch {
-            val result = StytchClient.passwords.create(
-                Passwords.CreateParameters(
-                    email = _emailState.value.emailAddress,
-                    password = _passwordState.value.password,
-                    sessionDurationMinutes = sessionDurationMinutes,
+            when (
+                val result = StytchClient.passwords.create(
+                    Passwords.CreateParameters(
+                        email = _emailState.value.emailAddress,
+                        password = _passwordState.value.password,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                    )
                 )
-            )
-            _passwordCreated.emit(result)
+            ) {
+                is StytchResult.Success -> _passwordCreated.emit(result)
+                is StytchResult.Error -> _passwordState.value = _passwordState.value.copy(
+                    errorMessage = result.exception.reason.toString() // TODO
+                )
+            }
         }
     }
 }

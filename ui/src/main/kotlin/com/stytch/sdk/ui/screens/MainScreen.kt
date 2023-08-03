@@ -189,14 +189,12 @@ private fun MainScreenComposable(
             }
             when (tabTitles[selectedTabIndex]) {
                 stringResource(id = R.string.email) -> EmailEntry(
-                    emailAddress = emailState.value.emailAddress,
+                    emailState = emailState.value,
                     onEmailAddressChanged = viewModel::onEmailAddressChanged,
                     onEmailAddressSubmit = {
                         showLoadingOverlay = true
                         viewModel.determineNextPageFromEmailAddress(productConfig)
                     },
-                    emailAddressError = emailState.value.error,
-                    statusText = emailState.value.error
                 )
                 stringResource(id = R.string.text) -> PhoneEntry(
                     countryCode = phoneState.value.countryCode,
