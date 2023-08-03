@@ -36,7 +36,8 @@ internal fun PasswordStrengthIndicator(
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
-    val color = Color(if (score < MAX_SCORE) theme.errorColor else theme.successColor)
+    val emptyColor = Color(theme.inputBorderColor)
+    val filledColor = Color(if (score < MAX_SCORE) theme.errorColor else theme.successColor)
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
@@ -44,7 +45,11 @@ internal fun PasswordStrengthIndicator(
         ) {
             repeat(MAX_SCORE + 1) {
                 Box(
-                    modifier = Modifier.fillMaxWidth().weight(1F).height(4.dp).background(color)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1F)
+                        .height(4.dp)
+                        .background(if (score >= it) filledColor else emptyColor)
                 )
                 if (it < MAX_SCORE) {
                     Spacer(modifier = Modifier.width(4.dp))
@@ -58,7 +63,7 @@ internal fun PasswordStrengthIndicator(
                 stringResource(id = R.string.strong_password)
             },
             style = type.caption.copy(
-                color = color,
+                color = filledColor,
                 textAlign = TextAlign.Start
             )
         )
@@ -83,7 +88,7 @@ private fun PreviewPasswordStrengthIndicator() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            PasswordStrengthIndicator(feedback = mockFeedback, score = 0)
+            PasswordStrengthIndicator(feedback = mockFeedback, score = 2)
         }
     }
 }

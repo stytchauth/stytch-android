@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -22,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
@@ -34,6 +37,8 @@ import com.stytch.sdk.ui.components.StytchButton
 import com.stytch.sdk.ui.data.NextPage
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.theme.LocalStytchTheme
+import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
@@ -44,7 +49,7 @@ internal class NewUserWithEMLOrOTPScreen(
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<NewUserWithEMLOrOTPScreenViewModel>()
+        val viewModel = viewModel<CreateAccountViewModel>()
         viewModel.setInitialEmailState(emailAddress)
         NewUserWithEMLOrOTPScreenComposable(
             productConfig = productConfig,
@@ -56,15 +61,17 @@ internal class NewUserWithEMLOrOTPScreen(
 @Composable
 private fun NewUserWithEMLOrOTPScreenComposable(
     productConfig: StytchProductConfig,
-    viewModel: NewUserWithEMLOrOTPScreenViewModel,
+    viewModel: CreateAccountViewModel,
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val context = LocalContext.current as AuthenticationActivity
+    val type = LocalStytchTypography.current
+    val theme = LocalStytchTheme.current
     val isEml = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
     val emailState = viewModel.emailState.collectAsState()
     val passwordState = viewModel.passwordState.collectAsState()
     var showLoadingOverlay by remember { mutableStateOf(false) }
-
+    var passwordCreateFailed by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
         viewModel.emailLinkSent.collectLatest {
             showLoadingOverlay = false
@@ -86,6 +93,15 @@ private fun NewUserWithEMLOrOTPScreenComposable(
                     )
                 )
                 else -> {} // this won't happen
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.passwordCreated.collectLatest {
+            showLoadingOverlay = false
+            when (it) {
+                is StytchResult.Success -> context.returnAuthenticationResult(it)
+                is StytchResult.Error -> passwordCreateFailed = it.exception.reason.toString() // TODO
             }
         }
     }
@@ -121,8 +137,20 @@ private fun NewUserWithEMLOrOTPScreenComposable(
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             passwordState = passwordState.value,
             onPasswordChanged = viewModel::onPasswordChanged,
-            onSubmit = viewModel::createPassword
+            onSubmit = {
+                showLoadingOverlay = true
+                viewModel.createPassword(productConfig.sessionOptions.sessionDurationMinutes)
+            }
         )
+        passwordCreateFailed?.let {
+            Text(
+                modifier = Modifier.padding(bottom = 32.dp),
+                text = it,
+                style = type.caption.copy(
+                    color = Color(theme.errorColor)
+                )
+            )
+        }
     }
     if (showLoadingOverlay) {
         LoadingDialog()

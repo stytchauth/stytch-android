@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal class NewUserWithEMLOrOTPScreenViewModel : ViewModel() {
+internal class CreateAccountViewModel : ViewModel() {
     private val _emailState = MutableStateFlow(EmailState())
     val emailState = _emailState.asStateFlow()
 
@@ -33,6 +33,9 @@ internal class NewUserWithEMLOrOTPScreenViewModel : ViewModel() {
 
     private val _emailLinkSent = MutableSharedFlow<Boolean>()
     val emailLinkSent = _emailLinkSent.asSharedFlow()
+
+    private val _passwordCreated = MutableSharedFlow<StytchResult<Any>>()
+    val passwordCreated = _passwordCreated.asSharedFlow()
 
     fun setInitialEmailState(email: String) {
         _emailState.value = _emailState.value.copy(emailAddress = email)
@@ -121,6 +124,16 @@ internal class NewUserWithEMLOrOTPScreenViewModel : ViewModel() {
         }
     }
 
-    fun createPassword() {
+    fun createPassword(sessionDurationMinutes: UInt) {
+        viewModelScope.launch {
+            val result = StytchClient.passwords.create(
+                Passwords.CreateParameters(
+                    email = _emailState.value.emailAddress,
+                    password = _passwordState.value.password,
+                    sessionDurationMinutes = sessionDurationMinutes,
+                )
+            )
+            _passwordCreated.emit(result)
+        }
     }
 }
