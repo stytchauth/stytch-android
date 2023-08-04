@@ -29,7 +29,7 @@ public class AuthenticationActivity : ComponentActivity() {
         setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
-                    bootstrapData = uiConfig.bootstrapData
+                    bootstrapData = uiConfig.bootstrapData,
                 )
             }
         }

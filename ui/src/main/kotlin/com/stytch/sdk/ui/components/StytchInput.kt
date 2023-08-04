@@ -66,7 +66,7 @@ internal fun StytchInput(
         value = value,
         modifier = modifier.defaultMinSize(
             minWidth = OutlinedTextFieldDefaults.MinWidth,
-            minHeight = OutlinedTextFieldDefaults.MinHeight
+            minHeight = OutlinedTextFieldDefaults.MinHeight,
         ),
         onValueChange = onValueChange,
         enabled = true,
@@ -116,11 +116,11 @@ internal fun StytchInput(
                         isError,
                         interactionSource,
                         colors,
-                        OutlinedTextFieldDefaults.shape
+                        OutlinedTextFieldDefaults.shape,
                     )
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -129,13 +129,13 @@ internal fun StytchInput(
 private fun PreviewStytchInput() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(LocalStytchTheme.current.backgroundColor)
+        color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
             modifier = Modifier
                 .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             StytchInput(value = "Test")
         }

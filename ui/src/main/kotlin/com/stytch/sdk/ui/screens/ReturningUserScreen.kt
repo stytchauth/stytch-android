@@ -63,6 +63,7 @@ internal class ReturningUserScreen(
             onEmailAndPasswordSubmitted = { viewModel.authenticate(productConfig.sessionOptions) },
             sendEML = { viewModel.sendEML(productConfig.emailMagicLinksOptions) },
             sendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
+            onForgotPasswordClicked = { viewModel.onForgotPasswordClicked(productConfig.passwordOptions) },
         )
     }
 }
@@ -78,6 +79,7 @@ private fun ReturningUserScreenComposable(
     onEmailAndPasswordSubmitted: () -> Unit,
     sendEML: () -> Unit,
     sendEmailOTP: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
 ) {
     val emailState = uiState.emailState
     val passwordState = uiState.passwordState
@@ -86,16 +88,20 @@ private fun ReturningUserScreenComposable(
         BackButton(onBack)
         PageTitle(
             text = stringResource(id = R.string.log_in),
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
             passwordState = passwordState,
             onPasswordChanged = onPasswordChanged,
-            onSubmit = onEmailAndPasswordSubmitted
+            onSubmit = onEmailAndPasswordSubmitted,
         )
         Spacer(modifier = Modifier.height(24.dp))
+        StytchTextButton(
+            text = stringResource(id = R.string.forgot_password),
+            onClick = onForgotPasswordClicked,
+        )
         if (hasEML || hasEmailOTP) {
             DividerWithText(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
@@ -107,9 +113,9 @@ private fun ReturningUserScreenComposable(
                         R.string.email_me_a_login_link
                     } else {
                         R.string.email_me_a_login_code
-                    }
+                    },
                 ),
-                onClick = { if (hasEML) sendEML() else sendEmailOTP() }
+                onClick = { if (hasEML) sendEML() else sendEmailOTP() },
             )
         }
     }

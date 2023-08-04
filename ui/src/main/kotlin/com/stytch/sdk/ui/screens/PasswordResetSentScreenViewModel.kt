@@ -5,17 +5,33 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
+import com.stytch.sdk.ui.data.EMLDetails
+import com.stytch.sdk.ui.data.EmailMagicLinksOptions
+import com.stytch.sdk.ui.data.NavigationRoute
+import com.stytch.sdk.ui.data.OTPDetails
+import com.stytch.sdk.ui.data.OTPOptions
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal data class PasswordResetUiState(
     val showResendDialog: Boolean = false,
-    val genericErrorMessage: String? = null
+    val genericErrorMessage: String? = null,
+    val showLoadingDialog: Boolean = false,
 )
+
+internal sealed class PasswordResetEventState {
+    data class NavigationRequested(val navigationRoute: NavigationRoute) : PasswordResetEventState()
+}
+
 internal class PasswordResetSentScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(PasswordResetUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<PasswordResetEventState>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onDialogDismiss() {
         _uiState.value = _uiState.value.copy(showResendDialog = false)
@@ -32,9 +48,62 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {} // do nothing
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        genericErrorMessage = result.exception.reason.toString() // TODO
+                        genericErrorMessage = result.exception.reason.toString(), // TODO
                     )
                 }
+            }
+        }
+    }
+    fun sendEML(emailAddress: String, emailMagicLinksOptions: EmailMagicLinksOptions) {
+        _uiState.value = _uiState.value.copy(
+            showLoadingDialog = true,
+            genericErrorMessage = null,
+        )
+        viewModelScope.launch {
+            val parameters = emailMagicLinksOptions.toParameters(emailAddress)
+            when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters)) {
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _eventFlow.emit(
+                        PasswordResetEventState.NavigationRequested(
+                            NavigationRoute.EMLConfirmation(
+                                details = EMLDetails(parameters),
+                                isReturningUser = true,
+                            ),
+                        ),
+                    )
+                }
+                is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                    showLoadingDialog = false,
+                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                )
+            }
+        }
+    }
+
+    fun sendEmailOTP(emailAddress: String, otpOptions: OTPOptions) {
+        _uiState.value = _uiState.value.copy(
+            showLoadingDialog = true,
+            genericErrorMessage = null,
+        )
+        viewModelScope.launch {
+            val parameters = otpOptions.toEmailOtpParameters(emailAddress)
+            when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _eventFlow.emit(
+                        PasswordResetEventState.NavigationRequested(
+                            NavigationRoute.OTPConfirmation(
+                                details = OTPDetails.EmailOTP(parameters, methodId = result.value.methodId),
+                                isReturningUser = true,
+                            ),
+                        ),
+                    )
+                }
+                is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                    showLoadingDialog = false,
+                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                )
             }
         }
     }

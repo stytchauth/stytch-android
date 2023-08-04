@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 public data class GoogleOAuthOptions(
-    val clientId: String? = null
+    val clientId: String? = null,
 ) : Parcelable

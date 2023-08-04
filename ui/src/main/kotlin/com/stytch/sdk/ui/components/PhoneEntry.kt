@@ -70,7 +70,7 @@ internal fun PhoneEntry(
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded,
                         )
-                    }
+                    },
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
@@ -97,7 +97,7 @@ internal fun PhoneEntry(
                             ),
                             modifier = Modifier
                                 .background(color = Color(theme.disabledButtonBackgroundColor))
-                                .fillMaxSize()
+                                .fillMaxSize(),
                         )
                     }
                 }
@@ -115,7 +115,7 @@ internal fun PhoneEntry(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Done,
-                )
+                ),
             )
         }
         if (statusText != null) {

@@ -75,7 +75,7 @@ internal fun OTPEntry(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done,
                 ),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -89,13 +89,13 @@ internal fun OTPEntry(
 private fun PreviewOTPEntry() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(LocalStytchTheme.current.backgroundColor)
+        color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
             modifier = Modifier
                 .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             OTPEntry {}
         }

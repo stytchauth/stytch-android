@@ -24,7 +24,7 @@ internal class AuthenticationViewModel : ViewModel() {
         viewModelScope.launch {
             val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
                 data = data,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes
+                sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
             )
             val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
             _state.emit(OAuthAuthenticationResult(result))
@@ -45,7 +45,7 @@ internal class AuthenticationViewModel : ViewModel() {
             } else {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
                     _state.emit(
-                        OAuthAuthenticationResult(StytchResult.Error(StytchExceptions.Critical(it as SSOError)))
+                        OAuthAuthenticationResult(StytchResult.Error(StytchExceptions.Critical(it as SSOError))),
                     )
                 }
             }

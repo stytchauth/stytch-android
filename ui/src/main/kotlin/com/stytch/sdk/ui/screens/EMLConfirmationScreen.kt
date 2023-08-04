@@ -87,11 +87,11 @@ private fun EMLConfirmationScreenComposable(
     val theme = LocalStytchTheme.current
     val recipientFormatted = AnnotatedString(
         text = " $emailAddress",
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700)
+        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
     )
     val resendLinkFormatted = AnnotatedString(
         text = stringResource(id = R.string.resend_link),
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700)
+        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
     )
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
@@ -103,7 +103,7 @@ private fun EMLConfirmationScreenComposable(
             text = buildAnnotatedString {
                 append(stringResource(id = R.string.login_link_sent))
                 append(recipientFormatted)
-            }
+            },
         )
         Text(
             text = buildAnnotatedString {
@@ -113,9 +113,9 @@ private fun EMLConfirmationScreenComposable(
             },
             textAlign = TextAlign.Start,
             style = type.caption.copy(
-                color = Color(theme.secondaryTextColor)
+                color = Color(theme.secondaryTextColor),
             ),
-            modifier = Modifier.clickable { onShowResendDialog() }
+            modifier = Modifier.clickable { onShowResendDialog() },
         )
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
@@ -124,7 +124,7 @@ private fun EMLConfirmationScreenComposable(
             )
             StytchTextButton(
                 text = stringResource(id = R.string.create_password_instead),
-                onClick = onCreatePasswordClicked
+                onClick = onCreatePasswordClicked,
             )
         }
         uiState.genericErrorMessage?.let {
@@ -142,7 +142,7 @@ private fun EMLConfirmationScreenComposable(
             cancelText = stringResource(id = R.string.cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.send_link),
-            onAcceptClick = onResendEML
+            onAcceptClick = onResendEML,
         )
     }
 }

@@ -43,7 +43,7 @@ public class StytchUI private constructor(
                 styles = this.styles,
                 bootstrapData = this.bootstrapData,
                 publicToken = this.publicToken,
-            )
+            ),
         )
     }
 

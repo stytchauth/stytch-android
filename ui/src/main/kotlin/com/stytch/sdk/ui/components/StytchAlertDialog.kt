@@ -50,22 +50,22 @@ internal fun StytchAlertDialog(
                 PageTitle(
                     text = title,
                     textAlign = TextAlign.Start,
-                    color = Color(theme.dialogTextColor)
+                    color = Color(theme.dialogTextColor),
                 )
                 Body2Text(
                     text = body,
-                    color = Color(theme.dialogTextColor)
+                    color = Color(theme.dialogTextColor),
                 )
                 Row(
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
                 ) {
                     if (cancelText != null) {
                         TextButton(onClick = onCancelClick) {
                             Text(
                                 text = cancelText,
                                 style = type.body2.copy(
-                                    color = Color(theme.buttonTextColor)
-                                )
+                                    color = Color(theme.buttonTextColor),
+                                ),
                             )
                         }
                     }
@@ -73,8 +73,8 @@ internal fun StytchAlertDialog(
                         Text(
                             text = acceptText,
                             style = type.body2.copy(
-                                color = Color(theme.buttonTextColor)
-                            )
+                                color = Color(theme.buttonTextColor),
+                            ),
                         )
                     }
                 }

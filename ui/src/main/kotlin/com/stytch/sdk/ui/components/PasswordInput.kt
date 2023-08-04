@@ -56,12 +56,12 @@ internal fun PasswordInput(
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(imageVector = icon, contentDescription = description)
                 }
-            }
+            },
         )
         if (passwordState.feedback != null) {
             PasswordStrengthIndicator(
                 feedback = passwordState.feedback,
-                score = passwordState.score
+                score = passwordState.score,
             )
         }
         passwordState.errorMessage?.let {

@@ -11,7 +11,7 @@ internal fun LoadingDialog() {
     val theme = LocalStytchTheme.current
     Dialog(onDismissRequest = {}) {
         CircularProgressIndicator(
-            color = Color(theme.inputTextColor)
+            color = Color(theme.inputTextColor),
         )
     }
 }

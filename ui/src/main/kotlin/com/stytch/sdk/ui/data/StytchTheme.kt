@@ -3,8 +3,8 @@ package com.stytch.sdk.ui.data
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import java.io.File
 import kotlinx.parcelize.Parcelize
+import java.io.File
 
 private val CHARCOAL: Int = Color(0xFF19303D).toArgb()
 private val BLACK: Int = Color(0xFF000000).toArgb()

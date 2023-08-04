@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import com.stytch.sdk.consumer.passwords.Passwords
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -10,4 +11,13 @@ public data class PasswordOptions(
     val resetPasswordRedirectURL: String? = null,
     val resetPasswordExpirationMinutes: UInt? = null,
     val resetPasswordTemplateId: String? = null,
-) : Parcelable
+) : Parcelable {
+    internal fun toResetByEmailStartParameters(emailAddress: String) = Passwords.ResetByEmailStartParameters(
+        email = emailAddress,
+        loginRedirectUrl = loginRedirectURL,
+        loginExpirationMinutes = loginExpirationMinutes,
+        resetPasswordRedirectUrl = resetPasswordRedirectURL,
+        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
+        resetPasswordTemplateId = resetPasswordTemplateId,
+    )
+}

@@ -1,6 +1,5 @@
 package com.stytch.sdk.ui.components
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,14 +19,14 @@ internal fun StytchTextButton(
     val theme = LocalStytchTheme.current
     TextButton(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Text(
             text = text,
             style = type.buttonLabel.copy(
                 color = Color(theme.primaryTextColor),
                 textAlign = TextAlign.Center,
-            )
+            ),
         )
     }
 }

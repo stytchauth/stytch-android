@@ -89,7 +89,7 @@ private fun NewUserScreenComposable(
         if (hasEML || hasEmailOTP) {
             PageTitle(
                 text = stringResource(id = R.string.choose_how),
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
             StytchButton(
                 enabled = true,
@@ -98,7 +98,7 @@ private fun NewUserScreenComposable(
                 } else {
                     stringResource(id = R.string.email_me_a_login_code)
                 },
-                onClick = { if (hasEML) onSendEML() else onSendEmailOTP() }
+                onClick = { if (hasEML) onSendEML() else onSendEmailOTP() },
             )
             Spacer(modifier = Modifier.height(24.dp))
             DividerWithText(text = stringResource(id = R.string.or))
@@ -107,7 +107,7 @@ private fun NewUserScreenComposable(
         } else {
             PageTitle(
                 text = stringResource(id = R.string.create_account),
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
         }
         EmailAndPasswordEntry(
@@ -115,7 +115,7 @@ private fun NewUserScreenComposable(
             onEmailAddressChanged = onEmailAddressChanged,
             passwordState = uiState.passwordState,
             onPasswordChanged = onPasswordChanged,
-            onSubmit = onEmailAndPasswordSubmitted
+            onSubmit = onEmailAndPasswordSubmitted,
         )
     }
     if (uiState.showLoadingDialog) {

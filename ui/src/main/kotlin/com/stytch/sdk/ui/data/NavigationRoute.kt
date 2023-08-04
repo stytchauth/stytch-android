@@ -17,7 +17,7 @@ internal sealed class NavigationRoute {
         override fun getScreen() = OTPConfirmationScreen(
             resendParameters = details,
             isReturningUser = isReturningUser,
-            emailAddress = emailAddress
+            emailAddress = emailAddress,
         )
     }
 

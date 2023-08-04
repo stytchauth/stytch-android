@@ -16,7 +16,7 @@ internal fun PageTitle(
     modifier: Modifier = Modifier,
     text: String,
     textAlign: TextAlign = TextAlign.Center,
-    color: Color? = null
+    color: Color? = null,
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
@@ -24,7 +24,7 @@ internal fun PageTitle(
         text = text,
         style = type.title.copy(
             textAlign = textAlign,
-            color = color ?: Color(theme.primaryTextColor)
+            color = color ?: Color(theme.primaryTextColor),
         ),
         modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
     )

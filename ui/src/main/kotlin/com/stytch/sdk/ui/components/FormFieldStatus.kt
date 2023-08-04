@@ -16,7 +16,7 @@ internal fun FormFieldStatus(
     modifier: Modifier = Modifier,
     isError: Boolean = false,
     text: String,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
@@ -24,7 +24,7 @@ internal fun FormFieldStatus(
         text = text,
         style = type.caption.copy(
             textAlign = textAlign,
-            color = Color(if (isError) theme.errorColor else theme.successColor)
+            color = Color(if (isError) theme.errorColor else theme.successColor),
         ),
         modifier = modifier.fillMaxWidth().padding(bottom = 24.dp),
     )

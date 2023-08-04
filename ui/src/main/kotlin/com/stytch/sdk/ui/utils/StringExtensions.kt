@@ -9,7 +9,7 @@ private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
         "(" +
         "\\." +
         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-        ")+"
+        ")+",
 )
 
 internal fun String.isValidEmailAddress(): Boolean = EMAIL_ADDRESS_PATTERN.matcher(this).matches()

@@ -30,7 +30,7 @@ internal fun EmailInput(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Done,
             ),
-            label = label
+            label = label,
         )
         if (isError) {
             FormFieldStatus(

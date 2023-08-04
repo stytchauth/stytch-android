@@ -70,7 +70,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
             sendSmsOtp = viewModel::sendSmsOTP,
             sendWhatsAppOTP = viewModel::sendWhatsAppOTP,
-            exitWithoutAuthenticating = context::exitWithoutAuthenticating
+            exitWithoutAuthenticating = context::exitWithoutAuthenticating,
         )
     }
 }
@@ -85,7 +85,7 @@ private fun MainScreenComposable(
     onPhoneNumberChanged: (String) -> Unit,
     sendSmsOtp: (OTPOptions) -> Unit,
     sendWhatsAppOTP: (OTPOptions) -> Unit,
-    exitWithoutAuthenticating: () -> Unit
+    exitWithoutAuthenticating: () -> Unit,
 ) {
     val productConfig = LocalStytchProductConfig.current
     val theme = LocalStytchTheme.current
@@ -146,22 +146,22 @@ private fun MainScreenComposable(
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                            color = Color(theme.primaryTextColor)
+                            color = Color(theme.primaryTextColor),
                         )
-                    }
+                    },
                 ) {
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
                             selected = index == selectedTabIndex,
                             onClick = { selectedTabIndex = index },
-                            modifier = Modifier.height(48.dp)
+                            modifier = Modifier.height(48.dp),
                         ) {
                             Text(
                                 text = title,
                                 style = type.body2.copy(
                                     color = Color(theme.primaryTextColor),
-                                    lineHeight = 48.sp
-                                )
+                                    lineHeight = 48.sp,
+                                ),
                             )
                         }
                     }
@@ -179,7 +179,7 @@ private fun MainScreenComposable(
                     phoneNumber = phoneState.phoneNumber,
                     onPhoneNumberChanged = onPhoneNumberChanged,
                     onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
-                    statusText = phoneState.error
+                    statusText = phoneState.error,
                 )
                 stringResource(id = R.string.whatsapp) -> PhoneEntry(
                     countryCode = phoneState.countryCode,
@@ -187,7 +187,7 @@ private fun MainScreenComposable(
                     phoneNumber = phoneState.phoneNumber,
                     onPhoneNumberChanged = onPhoneNumberChanged,
                     onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
-                    statusText = phoneState.error
+                    statusText = phoneState.error,
                 )
                 else -> Text(stringResource(id = R.string.misconfigured_otp))
             }

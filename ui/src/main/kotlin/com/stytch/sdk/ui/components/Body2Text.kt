@@ -25,7 +25,7 @@ internal fun Body2Text(
         text = text,
         style = type.body2.copy(
             textAlign = textAlign,
-            color = color ?: Color(theme.primaryTextColor)
+            color = color ?: Color(theme.primaryTextColor),
         ),
         modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
     )

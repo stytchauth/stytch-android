@@ -43,18 +43,18 @@ internal fun EmailEntry(
 private fun PreviewStytchInput() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(LocalStytchTheme.current.backgroundColor)
+        color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
             modifier = Modifier
                 .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             EmailEntry(
                 onEmailAddressChanged = {},
                 onEmailAddressSubmit = {},
-                emailState = EmailState(validEmail = false)
+                emailState = EmailState(validEmail = false),
             )
         }
     }

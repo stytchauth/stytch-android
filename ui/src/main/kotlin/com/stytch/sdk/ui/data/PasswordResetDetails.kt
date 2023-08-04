@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class PasswordResetDetails(
-    val parameters: Passwords.ResetByEmailStartParameters
+    val parameters: Passwords.ResetByEmailStartParameters,
+    val resetType: PasswordResetType,
 ) : Parcelable

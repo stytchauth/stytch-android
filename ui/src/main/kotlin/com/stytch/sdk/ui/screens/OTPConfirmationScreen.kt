@@ -77,7 +77,7 @@ internal data class OTPConfirmationScreen(
             onShowResendDialog = viewModel::onShowResendDialog,
             onResendEML = { viewModel.resendOTP(resendParameters) },
             onOTPCodeComplete = { code -> viewModel.authenticateOTP(code, productConfig.sessionOptions) },
-            onCreatePasswordClicked = { viewModel.sendResetPasswordEmail(emailAddress, productConfig.passwordOptions) }
+            onCreatePasswordClicked = { viewModel.sendResetPasswordEmail(emailAddress, productConfig.passwordOptions) },
         )
     }
 }
@@ -99,7 +99,7 @@ private fun OTPConfirmationScreenComposable(
     val theme = LocalStytchTheme.current
     val recipientFormatted = AnnotatedString(
         text = " $recipient",
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700)
+        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
     )
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
@@ -111,7 +111,7 @@ private fun OTPConfirmationScreenComposable(
             text = buildAnnotatedString {
                 append(stringResource(id = R.string.passcode_sent_to))
                 append(recipientFormatted)
-            }
+            },
         )
         OTPEntry(
             errorMessage = uiState.genericErrorMessage,
@@ -121,9 +121,9 @@ private fun OTPConfirmationScreenComposable(
             text = stringResource(id = R.string.code_expires_in, uiState.expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style = type.caption.copy(
-                color = Color(theme.secondaryTextColor)
+                color = Color(theme.secondaryTextColor),
             ),
-            modifier = Modifier.clickable { onShowResendDialog() }
+            modifier = Modifier.clickable { onShowResendDialog() },
         )
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
@@ -132,7 +132,7 @@ private fun OTPConfirmationScreenComposable(
             )
             StytchTextButton(
                 text = stringResource(id = R.string.create_password_instead),
-                onClick = onCreatePasswordClicked
+                onClick = onCreatePasswordClicked,
             )
         }
     }
@@ -150,7 +150,7 @@ private fun OTPConfirmationScreenComposable(
             cancelText = stringResource(id = R.string.cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.send_code),
-            onAcceptClick = onResendEML
+            onAcceptClick = onResendEML,
         )
     }
 }

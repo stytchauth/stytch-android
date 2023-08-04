@@ -37,7 +37,7 @@ internal fun SocialLoginButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(theme.socialButtonBackgroundColor),
             disabledContainerColor = Color(theme.socialButtonBackgroundColor),
-        )
+        ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +52,7 @@ internal fun SocialLoginButton(
                 text = text,
                 style = type.buttonLabel.copy(
                     lineHeight = 45.sp,
-                    color = Color(theme.socialButtonTextColor)
+                    color = Color(theme.socialButtonTextColor),
                 ),
             )
         }

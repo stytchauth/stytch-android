@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.magicLinks.MagicLinks
-import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
@@ -45,39 +43,31 @@ internal class NewUserScreenViewModel : ViewModel() {
     fun setInitialState(email: String) {
         if (didInitialize) return
         _uiState.value = _uiState.value.copy(
-            emailState = EmailState(emailAddress = email)
+            emailState = EmailState(emailAddress = email),
         )
         didInitialize = true
     }
 
-    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
+    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions) {
         val emailState = _uiState.value.emailState
         _uiState.value = _uiState.value.copy(showLoadingDialog = true)
-        val parameters = MagicLinks.EmailMagicLinks.Parameters(
-            email = emailState.emailAddress,
-            loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
-            signupMagicLinkUrl = emailMagicLinksOptions?.signupRedirectURL,
-            loginExpirationMinutes = emailMagicLinksOptions?.loginExpirationMinutes,
-            signupExpirationMinutes = emailMagicLinksOptions?.signupExpirationMinutes,
-            loginTemplateId = emailMagicLinksOptions?.loginTemplateId,
-            signupTemplateId = emailMagicLinksOptions?.signupTemplateId,
-        )
+        val parameters = emailMagicLinksOptions.toParameters(emailState.emailAddress)
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         NewUserEventState.NavigationRequested(
-                            NavigationRoute.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
-                        )
+                            NavigationRoute.EMLConfirmation(EMLDetails(parameters), isReturningUser = false),
+                        ),
                     )
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _uiState.value = _uiState.value.copy(
                         emailState = emailState.copy(
-                            errorMessage = result.exception.reason.toString() // TODO
-                        )
+                            errorMessage = result.exception.reason.toString(), // TODO
+                        ),
                     )
                 }
             }
@@ -88,12 +78,7 @@ internal class NewUserScreenViewModel : ViewModel() {
         val emailState = _uiState.value.emailState
         _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
-            val parameters = OTP.EmailOTP.Parameters(
-                email = emailState.emailAddress,
-                expirationMinutes = otpOptions.expirationMinutes,
-                loginTemplateId = otpOptions.loginTemplateId,
-                signupTemplateId = otpOptions.signupTemplateId,
-            )
+            val parameters = otpOptions.toEmailOtpParameters(emailState.emailAddress)
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
@@ -102,19 +87,19 @@ internal class NewUserScreenViewModel : ViewModel() {
                             NavigationRoute.OTPConfirmation(
                                 OTPDetails.EmailOTP(
                                     parameters = parameters,
-                                    methodId = result.value.methodId
+                                    methodId = result.value.methodId,
                                 ),
                                 isReturningUser = false,
-                            )
-                        )
+                            ),
+                        ),
                     )
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         emailState = emailState.copy(
-                            errorMessage = result.exception.reason.toString() // TODO
-                        )
+                            errorMessage = result.exception.reason.toString(), // TODO
+                        ),
                     )
                 }
             }
@@ -125,8 +110,8 @@ internal class NewUserScreenViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(
             emailState = _uiState.value.emailState.copy(
                 emailAddress = emailAddress,
-                validEmail = emailAddress.isValidEmailAddress()
-            )
+                validEmail = emailAddress.isValidEmailAddress(),
+            ),
         )
     }
 
@@ -134,15 +119,15 @@ internal class NewUserScreenViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(
             passwordState = _uiState.value.passwordState.copy(
                 password = password,
-            )
+            ),
         )
         viewModelScope.launch {
             when (
                 val result = StytchClient.passwords.strengthCheck(
                     Passwords.StrengthCheckParameters(
                         email = _uiState.value.emailState.emailAddress,
-                        password = password
-                    )
+                        password = password,
+                    ),
                 )
             ) {
                 is StytchResult.Success -> {
@@ -152,15 +137,15 @@ internal class NewUserScreenViewModel : ViewModel() {
                             feedback = result.value.feedback,
                             score = result.value.score,
                             validPassword = result.value.validPassword,
-                        )
+                        ),
                     )
                 }
 
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         passwordState = _uiState.value.passwordState.copy(
-                            errorMessage = result.exception.reason.toString() // TODO
-                        )
+                            errorMessage = result.exception.reason.toString(), // TODO
+                        ),
                     )
                 }
             }
@@ -178,7 +163,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                         email = emailState.emailAddress,
                         password = passwordState.password,
                         sessionDurationMinutes = sessionDurationMinutes,
-                    )
+                    ),
                 )
             ) {
                 is StytchResult.Success -> {
@@ -189,8 +174,8 @@ internal class NewUserScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         passwordState = _uiState.value.passwordState.copy(
-                            errorMessage = result.exception.reason.toString() // TODO
-                        )
+                            errorMessage = result.exception.reason.toString(), // TODO
+                        ),
                     )
                 }
             }

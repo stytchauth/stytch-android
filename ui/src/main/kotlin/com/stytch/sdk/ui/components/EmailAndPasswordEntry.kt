@@ -28,12 +28,12 @@ internal fun EmailAndPasswordEntry(
             modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
-            label = stringResource(id = R.string.email)
+            label = stringResource(id = R.string.email),
         )
         PasswordInput(
             passwordState = passwordState,
             onPasswordChanged = onPasswordChanged,
-            label = stringResource(id = R.string.password)
+            label = stringResource(id = R.string.password),
         )
         StytchButton(
             onClick = onSubmit,
