@@ -17,7 +17,7 @@ Stytch's consumer SDK makes it simple to seamlessly onboard, authenticate, and e
     - Register/authenticate with biometrics
 - [OAuth](oauth)
     - Register/authenticate with native Google OneTap
-    - Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Salesforce, Slack, or Twitch)
+    - Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Salesforce, Slack, Twitch, or Yahoo)
 - [User Management](userManagement)
     - Get or fetch the current user object (sync/cached or async options available)
     - Delete factors by id from the current user

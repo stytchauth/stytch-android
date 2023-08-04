@@ -48,6 +48,7 @@
     <string name="oauth_salesforce">Login With Salesforce</string>
     <string name="oauth_slack">Login With Slack</string>
     <string name="oauth_twitch">Login With Twitch</string>
+    <string name="oauth_yahoo">Login With Yahoo</string>
     <string name="b2b_name">B2B</string>
     <string name="b2b_org_id">Organization ID</string>
     <string name="b2b_org_details">Get Organization Details</string>

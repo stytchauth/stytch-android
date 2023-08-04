@@ -167,6 +167,8 @@ public data class AuthenticationFactor(
     val discordOAuthFactor: OAuthFactor?,
     @Json(name = "salesforce_oauth_factor")
     val salesforceOAuthFactor: OAuthFactor?,
+    @Json(name = "yahoo_oauth_factor")
+    val yahooOAuthFactor: OAuthFactor?,
     @Json(name = "slack_oauth_factor")
     val slackOAuthFactor: OAuthFactor?,
     @Json(name = "amazon_oauth_factor")
