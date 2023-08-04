@@ -53,13 +53,7 @@ internal class NewUserWithEMLOrOTPScreen(
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is CreateAccountEventState.AccountCreated -> context.returnAuthenticationResult(it.result)
-                    is CreateAccountEventState.NavigationRequested -> {
-                        when (val navState = it.navigationState) {
-                            is NavigationState.OTPConfirmation -> navigator.push(navState.getScreen())
-                            is NavigationState.EMLConfirmation -> navigator.push(navState.getScreen())
-                            else -> {} // this won't happen
-                        }
-                    }
+                    is CreateAccountEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
                 }
             }
         }
