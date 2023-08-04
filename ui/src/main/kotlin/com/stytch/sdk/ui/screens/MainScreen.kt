@@ -2,7 +2,6 @@ package com.stytch.sdk.ui.screens
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Tab
@@ -12,6 +11,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,127 +33,127 @@ import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.EmailEntry
+import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
-import com.stytch.sdk.ui.data.NextPage
+import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
+import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal data class MainScreen(
-    val productConfig: StytchProductConfig,
-) : AndroidScreen(), Parcelable {
+internal object MainScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<MainScreenViewModel>()
+        val uiState = viewModel.uiState.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+        val context = LocalContext.current as AuthenticationActivity
+        LaunchedEffect(Unit) {
+            viewModel.navigationFlow.collectLatest {
+                val screen = when (it) {
+                    is NavigationState.OTPConfirmation -> OTPConfirmationScreen(
+                        resendParameters = it.details,
+                        isReturningUser = it.isReturningUser
+                    )
+
+                    is NavigationState.EMLConfirmation -> EMLConfirmationScreen(
+                        parameters = it.details.parameters,
+                        isReturningUser = it.isReturningUser,
+                    )
+
+                    is NavigationState.NewUserWithEMLOrOTP -> NewUserWithEMLOrOTPScreen(
+                        emailAddress = it.emailAddress,
+                    )
+
+                    is NavigationState.NewUserPasswordOnly -> NewUserPasswordOnlyScreen(
+                        emailAddress = it.emailAddress,
+                    )
+
+                    is NavigationState.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
+                        emailAddress = it.emailAddress
+                    )
+
+                    is NavigationState.PasswordResetSent -> PasswordResetSentScreen(
+                        details = it.details
+                    )
+                }
+                navigator.push(screen)
+            }
+        }
         MainScreenComposable(
-            productConfig = productConfig,
-            viewModel = viewModel,
+            uiState = uiState,
+            onStartOAuthLogin = { provider, config -> viewModel.onStartOAuthLogin(context, provider, config) },
+            onEmailAddressChanged = viewModel::onEmailAddressChanged,
+            onEmailAddressSubmit = viewModel::onEmailAddressSubmit,
+            onCountryCodeChanged = viewModel::onCountryCodeChanged,
+            onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
+            sendSmsOtp = viewModel::sendSmsOTP,
+            sendWhatsAppOTP = viewModel::sendWhatsAppOTP,
+            exitWithoutAuthenticating = context::exitWithoutAuthenticating
         )
     }
 }
 
 @Composable
 private fun MainScreenComposable(
-    productConfig: StytchProductConfig,
-    viewModel: MainScreenViewModel
+    uiState: State<UiState>,
+    onStartOAuthLogin: (OAuthProvider, StytchProductConfig) -> Unit,
+    onEmailAddressChanged: (String) -> Unit,
+    onEmailAddressSubmit: (StytchProductConfig) -> Unit,
+    onCountryCodeChanged: (String) -> Unit,
+    onPhoneNumberChanged: (String) -> Unit,
+    sendSmsOtp: (OTPOptions) -> Unit,
+    sendWhatsAppOTP: (OTPOptions) -> Unit,
+    exitWithoutAuthenticating: () -> Unit
 ) {
-    if (
-        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // EML
-        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true // Email OTP
-    ) {
-        error(stringResource(id = R.string.eml_and_otp_error))
-    }
-    if (
-        !productConfig.products.contains(StytchProduct.PASSWORDS) && // no passwords
-        !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
-        productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == false // no Email OTP
-    ) {
-        error(stringResource(id = R.string.misconfigured_products_and_options))
-    }
-    val navigator = LocalNavigator.currentOrThrow
+    val productConfig = LocalStytchProductConfig.current
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
-    val context = LocalContext.current as AuthenticationActivity
     val hasButtons = productConfig.products.contains(StytchProduct.OAUTH)
     val hasInput = productConfig.products.any {
         listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
     }
     val hasEmail = productConfig.products.any {
         listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
-    } || (productConfig.otpOptions?.methods?.contains(OTPMethods.EMAIL) == true)
+    } || productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
     val hasDivider = hasButtons && hasInput
     val tabTitles = mutableListOf<String>().apply {
         if (hasEmail) {
             add(stringResource(id = R.string.email))
         }
         if (productConfig.products.contains(StytchProduct.OTP)) {
-            if (productConfig.otpOptions?.methods?.contains(OTPMethods.SMS) == true) {
+            if (productConfig.otpOptions.methods.contains(OTPMethods.SMS)) {
                 add(stringResource(id = R.string.text))
             }
-            if (productConfig.otpOptions?.methods?.contains(OTPMethods.WHATSAPP) == true) {
+            if (productConfig.otpOptions.methods.contains(OTPMethods.WHATSAPP)) {
                 add(stringResource(id = R.string.whatsapp))
             }
         }
     }
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val phoneState = viewModel.phoneState.collectAsState()
-    val emailState = viewModel.emailState.collectAsState()
-    var showLoadingOverlay by remember { mutableStateOf(false) }
+    val phoneState = uiState.value.phoneNumberState
+    val emailState = uiState.value.emailState
 
-    LaunchedEffect(Unit) {
-        viewModel.nextPage.collectLatest {
-            showLoadingOverlay = false
-            when (it) {
-                is NextPage.OTPConfirmation -> OTPConfirmationScreen(
-                    resendParameters = it.details,
-                    productConfig = productConfig,
-                    isReturningUser = it.isReturningUser
-                )
-                is NextPage.EMLConfirmation -> EMLConfirmationScreen(
-                    parameters = it.details.parameters,
-                    productConfig = productConfig,
-                    isReturningUser = it.isReturningUser,
-                )
-                is NextPage.NewUserWithEMLOrOTP -> NewUserWithEMLOrOTPScreen(
-                    emailAddress = it.emailAddress,
-                    productConfig = productConfig,
-                )
-                is NextPage.NewUserPasswordOnly -> NewUserPasswordOnlyScreen(
-                    emailAddress = it.emailAddress,
-                    productConfig = productConfig
-                )
-                is NextPage.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
-                    emailAddress = it.emailAddress,
-                    productConfig = productConfig,
-                )
-                is NextPage.PasswordResetSent -> PasswordResetSentScreen(
-                    details = it.details
-                )
-                else -> null
-            }?.let { nextPage -> navigator.push(nextPage) }
-        }
-    }
-
-    Column {
-        BackButton {
-            context.exitWithoutAuthenticating()
-        }
+    Column(modifier = Modifier.padding(bottom = 24.dp)) {
+        BackButton { exitWithoutAuthenticating() }
         if (!theme.hideHeaderText) {
             PageTitle(text = stringResource(id = R.string.sign_up_or_login))
         }
         if (productConfig.products.contains(StytchProduct.OAUTH)) {
-            productConfig.oAuthOptions?.providers?.map {
+            productConfig.oAuthOptions.providers.map {
                 SocialLoginButton(
                     modifier = Modifier.padding(bottom = 12.dp),
-                    onClick = { viewModel.onStartOAuthLogin(context, it, productConfig) },
+                    onClick = { onStartOAuthLogin(it, productConfig) },
                     iconDrawable = painterResource(id = it.iconDrawable),
                     iconDescription = stringResource(id = it.iconText),
                     text = stringResource(id = it.text),
@@ -198,41 +198,34 @@ private fun MainScreenComposable(
             }
             when (tabTitles[selectedTabIndex]) {
                 stringResource(id = R.string.email) -> EmailEntry(
-                    emailState = emailState.value,
-                    onEmailAddressChanged = viewModel::onEmailAddressChanged,
-                    onEmailAddressSubmit = {
-                        showLoadingOverlay = true
-                        viewModel.determineNextPageFromEmailAddress(productConfig)
-                    },
+                    emailState = emailState,
+                    onEmailAddressChanged = onEmailAddressChanged,
+                    onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
                 )
                 stringResource(id = R.string.text) -> PhoneEntry(
-                    countryCode = phoneState.value.countryCode,
-                    onCountryCodeChanged = viewModel::onCountryCodeChanged,
-                    phoneNumber = phoneState.value.phoneNumber,
-                    onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = {
-                        showLoadingOverlay = true
-                        viewModel.sendSmsOTP(productConfig.otpOptions)
-                    },
-                    statusText = phoneState.value.error
+                    countryCode = phoneState.countryCode,
+                    onCountryCodeChanged = onCountryCodeChanged,
+                    phoneNumber = phoneState.phoneNumber,
+                    onPhoneNumberChanged = onPhoneNumberChanged,
+                    onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
+                    statusText = phoneState.error
                 )
                 stringResource(id = R.string.whatsapp) -> PhoneEntry(
-                    countryCode = phoneState.value.countryCode,
-                    onCountryCodeChanged = viewModel::onCountryCodeChanged,
-                    phoneNumber = phoneState.value.phoneNumber,
-                    onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-                    onPhoneNumberSubmit = {
-                        showLoadingOverlay = true
-                        viewModel.sendWhatsAppOTP(productConfig.otpOptions)
-                    },
-                    statusText = phoneState.value.error
+                    countryCode = phoneState.countryCode,
+                    onCountryCodeChanged = onCountryCodeChanged,
+                    phoneNumber = phoneState.phoneNumber,
+                    onPhoneNumberChanged = onPhoneNumberChanged,
+                    onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
+                    statusText = phoneState.error
                 )
                 else -> Text(stringResource(id = R.string.misconfigured_otp))
             }
-            Spacer(modifier = Modifier.height(24.dp))
+        }
+        uiState.value.genericErrorMessage?.let {
+            FormFieldStatus(text = it, isError = true)
         }
     }
-    if (showLoadingOverlay) {
+    if (uiState.value.showLoadingOverlay) {
         LoadingDialog()
     }
 }

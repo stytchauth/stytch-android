@@ -34,9 +34,9 @@ import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchButton
-import com.stytch.sdk.ui.data.NextPage
+import com.stytch.sdk.ui.data.NavigationState
 import com.stytch.sdk.ui.data.StytchProduct
-import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
@@ -45,14 +45,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 internal class NewUserWithEMLOrOTPScreen(
     val emailAddress: String,
-    val productConfig: StytchProductConfig,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<CreateAccountViewModel>()
         viewModel.setInitialEmailState(emailAddress)
         NewUserWithEMLOrOTPScreenComposable(
-            productConfig = productConfig,
             viewModel = viewModel,
         )
     }
@@ -60,9 +58,9 @@ internal class NewUserWithEMLOrOTPScreen(
 
 @Composable
 private fun NewUserWithEMLOrOTPScreenComposable(
-    productConfig: StytchProductConfig,
     viewModel: CreateAccountViewModel,
 ) {
+    val productConfig = LocalStytchProductConfig.current
     val navigator = LocalNavigator.currentOrThrow
     val context = LocalContext.current as AuthenticationActivity
     val type = LocalStytchTypography.current
@@ -81,17 +79,15 @@ private fun NewUserWithEMLOrOTPScreenComposable(
         viewModel.nextPage.collectLatest {
             showLoadingOverlay = false
             when (it) {
-                is NextPage.OTPConfirmation -> navigator.push(
+                is NavigationState.OTPConfirmation -> navigator.push(
                     OTPConfirmationScreen(
                         resendParameters = it.details,
-                        productConfig = productConfig,
                         isReturningUser = false,
                     )
                 )
-                is NextPage.EMLConfirmation -> navigator.push(
+                is NavigationState.EMLConfirmation -> navigator.push(
                     EMLConfirmationScreen(
                         parameters = it.details.parameters,
-                        productConfig = productConfig,
                         isReturningUser = false,
                     )
                 )

@@ -39,7 +39,7 @@ import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.StytchProduct
-import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
 import kotlinx.coroutines.delay
@@ -49,7 +49,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 internal data class OTPConfirmationScreen(
     val resendParameters: OTPDetails,
-    val productConfig: StytchProductConfig,
     val isReturningUser: Boolean,
 ) : AndroidScreen(), Parcelable {
     @Composable
@@ -58,7 +57,6 @@ internal data class OTPConfirmationScreen(
         OTPConfirmationScreenComposable(
             viewModel = viewModel,
             resendParameters = resendParameters,
-            productConfig = productConfig,
             isReturningUser = isReturningUser,
         )
     }
@@ -68,9 +66,9 @@ internal data class OTPConfirmationScreen(
 private fun OTPConfirmationScreenComposable(
     viewModel: OTPConfirmationScreenViewModel,
     resendParameters: OTPDetails,
-    productConfig: StytchProductConfig,
     isReturningUser: Boolean,
 ) {
+    val productConfig = LocalStytchProductConfig.current
     val context = LocalContext.current as AuthenticationActivity
     val navigator = LocalNavigator.currentOrThrow
     val type = LocalStytchTypography.current

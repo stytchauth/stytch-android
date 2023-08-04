@@ -10,22 +10,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.stytch.sdk.ui.data.StytchStyles
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.data.StytchTheme
+import com.stytch.sdk.ui.data.StytchUIConfig
 
 @Composable
 internal fun StytchTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    stytchStyles: StytchStyles,
+    config: StytchUIConfig,
     content: @Composable () -> Unit,
 ) {
     val stytchTheme = when {
-        darkTheme -> stytchStyles.darkTheme
-        else -> stytchStyles.lightTheme
+        darkTheme -> config.styles.darkTheme
+        else -> config.styles.lightTheme
     }
     val view = LocalView.current
     val rememberedStytchTheme = remember { stytchTheme }
     val rememberedStytchTypography = remember { StytchTypography() }
+    val rememberedStytchProductConfig = remember { config.productConfig }
 
     if (!view.isInEditMode) {
         SideEffect {
@@ -37,7 +39,8 @@ internal fun StytchTheme(
 
     CompositionLocalProvider(
         LocalStytchTheme provides rememberedStytchTheme,
-        LocalStytchTypography provides rememberedStytchTypography
+        LocalStytchTypography provides rememberedStytchTypography,
+        LocalStytchProductConfig provides rememberedStytchProductConfig,
     ) {
         content()
     }
@@ -49,4 +52,8 @@ internal val LocalStytchTheme: ProvidableCompositionLocal<StytchTheme> = staticC
 
 internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography> = staticCompositionLocalOf {
     StytchTypography()
+}
+
+internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchProductConfig> = staticCompositionLocalOf {
+    StytchProductConfig()
 }

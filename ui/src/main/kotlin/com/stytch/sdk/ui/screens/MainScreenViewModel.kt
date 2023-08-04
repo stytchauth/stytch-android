@@ -3,8 +3,6 @@ package com.stytch.sdk.ui.screens
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.common.Constants
-import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
@@ -18,7 +16,7 @@ import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAU
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.NextPage
+import com.stytch.sdk.ui.data.NavigationState
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPDetails
@@ -36,24 +34,29 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+internal data class UiState(
+    val emailState: EmailState = EmailState(),
+    val phoneNumberState: PhoneNumberState = PhoneNumberState(),
+    val genericErrorMessage: String? = null,
+    val showLoadingOverlay: Boolean = false,
+)
+
 internal class MainScreenViewModel : ViewModel() {
-    private val _phoneState = MutableStateFlow(PhoneNumberState())
-    val phoneState = _phoneState.asStateFlow()
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _emailState = MutableStateFlow(EmailState())
-    val emailState = _emailState.asStateFlow()
-
-    private val _nextPage = MutableSharedFlow<NextPage>()
-    val nextPage = _nextPage.asSharedFlow()
+    private val _navigationFlow = MutableSharedFlow<NavigationState>()
+    val navigationFlow = _navigationFlow.asSharedFlow()
 
     fun onStartOAuthLogin(
         context: ComponentActivity,
         provider: OAuthProvider,
         productConfig: StytchProductConfig
     ) {
+        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
         if (provider == OAuthProvider.GOOGLE) {
             viewModelScope.launch {
-                val didStartOneTap = productConfig.googleOauthOptions?.clientId?.let { clientId ->
+                val didStartOneTap = productConfig.googleOauthOptions.clientId?.let { clientId ->
                     StytchClient.oauth.googleOneTap.start(
                         OAuth.GoogleOneTap.StartParameters(
                             context = context,
@@ -90,101 +93,133 @@ internal class MainScreenViewModel : ViewModel() {
     }
 
     fun onCountryCodeChanged(countryCode: String) {
-        _phoneState.value = _phoneState.value.copy(
-            countryCode = countryCode,
-            error = null,
+        _uiState.value = _uiState.value.copy(
+            phoneNumberState = PhoneNumberState(
+                countryCode = countryCode,
+                error = null
+            ),
+            genericErrorMessage = null
         )
     }
 
     fun onPhoneNumberChanged(phoneNumber: String) {
-        _phoneState.value = _phoneState.value.copy(
-            phoneNumber = phoneNumber,
-            error = null,
+        _uiState.value = _uiState.value.copy(
+            phoneNumberState = PhoneNumberState(
+                phoneNumber = phoneNumber,
+                error = null
+            ),
+            genericErrorMessage = null
         )
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        _emailState.value = _emailState.value.copy(
-            emailAddress = emailAddress,
-            validEmail = emailAddress.isValidEmailAddress(),
+        _uiState.value = _uiState.value.copy(
+            emailState = EmailState(
+                emailAddress = emailAddress,
+                validEmail = emailAddress.isValidEmailAddress(),
+            ),
+            genericErrorMessage = null
         )
     }
 
-    fun determineNextPageFromEmailAddress(productConfig: StytchProductConfig) {
-        val emailAddress = _emailState.value.emailAddress
+    fun onEmailAddressSubmit(productConfig: StytchProductConfig) {
+        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
         viewModelScope.launch {
-            when (
-                val result = StytchClient.user.search(
-                    UserManagement.SearchParams(
-                        email = emailAddress
-                    )
-                )
-            ) {
-                is StytchResult.Success -> {
-                    when (result.value.userType) {
-                        UserType.NEW -> if (
-                            !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
-                            !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
-                        ) {
-                            NextPage.NewUserPasswordOnly(emailAddress = emailAddress)
-                        } else {
-                            NextPage.NewUserWithEMLOrOTP(emailAddress = emailAddress)
-                        }
-                        UserType.PASSWORD -> {
-                            NextPage.ReturningUserWithPassword(emailAddress = emailAddress)
-                        }
-                        UserType.PASSWORDLESS -> {
-                            if (
-                                productConfig.products.contains(StytchProduct.OTP) &&
-                                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
-                            ) {
-                                // send Email OTP
-                                sendEmailOTPForReturningUserAndGetPage(productConfig.otpOptions)
-                            } else if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
-                                // send EML
-                                sendEmailMagicLinkForReturningUserAndGetPage(productConfig.emailMagicLinksOptions)
-                            } else {
-                                // no Email OTP or EML, so set password
-                                sendResetPasswordForReturningUserAndGetPage(productConfig.passwordOptions)
-                            }
-                        }
-                    }?.let {
-                        _nextPage.emit(it)
+            val emailAddress = _uiState.value.emailState.emailAddress
+            when (getUserType(emailAddress)) {
+                UserType.NEW -> if (
+                    !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
+                    !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
+                ) {
+                    NavigationState.NewUserPasswordOnly(emailAddress = emailAddress)
+                } else {
+                    NavigationState.NewUserWithEMLOrOTP(emailAddress = emailAddress)
+                }
+                UserType.PASSWORD -> {
+                    NavigationState.ReturningUserWithPassword(emailAddress = emailAddress)
+                }
+                UserType.PASSWORDLESS -> {
+                    if (
+                        productConfig.products.contains(StytchProduct.OTP) &&
+                        productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+                    ) {
+                        // send Email OTP
+                        sendEmailOTPForReturningUserAndGetNavigationArguments(
+                            emailAddress = emailAddress,
+                            otpOptions = productConfig.otpOptions,
+                        )
+                    } else if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
+                        // send EML
+                        sendEmailMagicLinkForReturningUserAndGetNavigationArguments(
+                            emailAddress = emailAddress,
+                            emailMagicLinksOptions = productConfig.emailMagicLinksOptions
+                        )
+                    } else {
+                        // no Email OTP or EML, so set password
+                        sendResetPasswordForReturningUserAndGetNavigationArguments(
+                            emailAddress = emailAddress,
+                            passwordOptions = productConfig.passwordOptions
+                        )
                     }
                 }
-                is StytchResult.Error -> error(result.exception) // TODO
+                else -> {
+                    _uiState.value = uiState.value.copy(
+                        showLoadingOverlay = false,
+                        genericErrorMessage = "Failed to get user type"
+                    )
+                    null
+                }
+            }?.let {
+                _navigationFlow.emit(it)
+            }
+            _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+        }
+    }
+
+    suspend fun getUserType(emailAddress: String): UserType? {
+        return when (val result = StytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
+            is StytchResult.Success -> result.value.userType
+            is StytchResult.Error -> null
+        }
+    }
+
+    suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationArguments(
+        emailAddress: String,
+        emailMagicLinksOptions: EmailMagicLinksOptions
+    ): NavigationState? {
+        val parameters = MagicLinks.EmailMagicLinks.Parameters(
+            email = emailAddress,
+            loginMagicLinkUrl = emailMagicLinksOptions.loginRedirectURL,
+            signupMagicLinkUrl = emailMagicLinksOptions.signupRedirectURL,
+            loginExpirationMinutes = emailMagicLinksOptions.loginExpirationMinutes,
+            signupExpirationMinutes = emailMagicLinksOptions.signupExpirationMinutes,
+            loginTemplateId = emailMagicLinksOptions.loginTemplateId,
+            signupTemplateId = emailMagicLinksOptions.signupTemplateId,
+        )
+        return when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
+            is StytchResult.Success -> {
+                NavigationState.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
+            }
+            is StytchResult.Error -> {
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                null
             }
         }
     }
 
-    suspend fun sendEmailMagicLinkForReturningUserAndGetPage(
-        emailMagicLinksOptions: EmailMagicLinksOptions?
-    ): NextPage? {
-        val parameters = MagicLinks.EmailMagicLinks.Parameters(
-            email = _emailState.value.emailAddress,
-            loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
-            signupMagicLinkUrl = emailMagicLinksOptions?.signupRedirectURL,
-            loginExpirationMinutes = emailMagicLinksOptions?.loginExpirationMinutes,
-            signupExpirationMinutes = emailMagicLinksOptions?.signupExpirationMinutes,
-            loginTemplateId = emailMagicLinksOptions?.loginTemplateId,
-            signupTemplateId = emailMagicLinksOptions?.signupTemplateId,
-        )
-        return when (StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
-            is StytchResult.Success -> NextPage.EMLConfirmation(EMLDetails(parameters), isReturningUser = true)
-            is StytchResult.Error -> null // TODO
-        }
-    }
-
-    suspend fun sendEmailOTPForReturningUserAndGetPage(otpOptions: OTPOptions?): NextPage? {
+    suspend fun sendEmailOTPForReturningUserAndGetNavigationArguments(
+        emailAddress: String,
+        otpOptions: OTPOptions
+    ): NavigationState? {
         val parameters = OTP.EmailOTP.Parameters(
-            email = _emailState.value.emailAddress,
-            expirationMinutes = otpOptions?.expirationMinutes ?: Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            loginTemplateId = otpOptions?.loginTemplateId,
-            signupTemplateId = otpOptions?.signupTemplateId,
+            email = emailAddress,
+            expirationMinutes = otpOptions.expirationMinutes,
+            loginTemplateId = otpOptions.loginTemplateId,
+            signupTemplateId = otpOptions.signupTemplateId,
         )
         return when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
-                NextPage.OTPConfirmation(
+                NavigationState.OTPConfirmation(
                     OTPDetails.EmailOTP(
                         parameters = parameters,
                         methodId = result.value.methodId
@@ -192,71 +227,94 @@ internal class MainScreenViewModel : ViewModel() {
                     isReturningUser = true,
                 )
             }
-            is StytchResult.Error -> null // TODO
+            is StytchResult.Error -> {
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                null
+            }
         }
     }
 
-    suspend fun sendResetPasswordForReturningUserAndGetPage(passwordOptions: PasswordOptions): NextPage? {
+    suspend fun sendResetPasswordForReturningUserAndGetNavigationArguments(
+        emailAddress: String,
+        passwordOptions: PasswordOptions
+    ): NavigationState? {
         val parameters = Passwords.ResetByEmailStartParameters(
-            email = _emailState.value.emailAddress,
+            email = emailAddress,
             loginRedirectUrl = passwordOptions.loginRedirectURL,
             loginExpirationMinutes = passwordOptions.loginExpirationMinutes,
             resetPasswordRedirectUrl = passwordOptions.resetPasswordRedirectURL,
             resetPasswordExpirationMinutes = passwordOptions.resetPasswordExpirationMinutes,
             resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId
         )
-        return when (StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
-            is StytchResult.Success -> NextPage.PasswordResetSent(
-                PasswordResetDetails(parameters)
-            )
-            is StytchResult.Error -> null // TODO
+        return when (val result = StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
+            is StytchResult.Success -> NavigationState.PasswordResetSent(PasswordResetDetails(parameters))
+            is StytchResult.Error -> {
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                null
+            }
         }
     }
 
-    fun sendSmsOTP(otpOptions: OTPOptions?) {
+    fun sendSmsOTP(otpOptions: OTPOptions) {
+        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
         viewModelScope.launch {
+            val phoneNumberState = _uiState.value.phoneNumberState
             val parameters = OTP.SmsOTP.Parameters(
-                phoneNumber = _phoneState.value.toE164(),
-                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                phoneNumber = phoneNumberState.toE164(),
+                expirationMinutes = otpOptions.expirationMinutes,
             )
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _nextPage.emit(
-                    NextPage.OTPConfirmation(
-                        OTPDetails.SmsOTP(
-                            parameters = parameters,
-                            methodId = result.value.methodId
-                        ),
-                        isReturningUser = false
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+                    _navigationFlow.emit(
+                        NavigationState.OTPConfirmation(
+                            OTPDetails.SmsOTP(
+                                parameters = parameters,
+                                methodId = result.value.methodId
+                            ),
+                            isReturningUser = false
+                        )
                     )
-                )
+                }
                 is StytchResult.Error -> {
-                    _phoneState.value = _phoneState.value.copy(
-                        error = result.exception.reason.toString() // TODO
+                    _uiState.value = _uiState.value.copy(
+                        phoneNumberState = phoneNumberState.copy(
+                            error = result.exception.reason.toString() // TODO
+                        ),
+                        showLoadingOverlay = false
                     )
                 }
             }
         }
     }
 
-    fun sendWhatsAppOTP(otpOptions: OTPOptions?) {
+    fun sendWhatsAppOTP(otpOptions: OTPOptions) {
+        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
         viewModelScope.launch {
+            val phoneNumberState = _uiState.value.phoneNumberState
             val parameters = OTP.WhatsAppOTP.Parameters(
-                phoneNumber = _phoneState.value.toE164(),
-                expirationMinutes = otpOptions?.expirationMinutes ?: DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                phoneNumber = phoneNumberState.toE164(),
+                expirationMinutes = otpOptions.expirationMinutes,
             )
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
-                is StytchResult.Success -> _nextPage.emit(
-                    NextPage.OTPConfirmation(
-                        OTPDetails.WhatsAppOTP(
-                            parameters = parameters,
-                            methodId = result.value.methodId
-                        ),
-                        isReturningUser = false
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+                    _navigationFlow.emit(
+                        NavigationState.OTPConfirmation(
+                            OTPDetails.WhatsAppOTP(
+                                parameters = parameters,
+                                methodId = result.value.methodId
+                            ),
+                            isReturningUser = false
+                        )
                     )
-                )
+                }
                 is StytchResult.Error -> {
-                    _phoneState.value = _phoneState.value.copy(
-                        error = result.exception.reason.toString() // TODO
+                    _uiState.value = _uiState.value.copy(
+                        phoneNumberState = phoneNumberState.copy(
+                            error = result.exception.reason.toString() // TODO
+                        ),
+                        showLoadingOverlay = false
                     )
                 }
             }

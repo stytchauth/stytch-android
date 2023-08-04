@@ -2,7 +2,6 @@ package com.stytch.sdk.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
@@ -11,7 +10,7 @@ import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.NextPage
+import com.stytch.sdk.ui.data.NavigationState
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PasswordState
@@ -29,7 +28,7 @@ internal class CreateAccountViewModel : ViewModel() {
     private val _passwordState = MutableStateFlow(PasswordState())
     val passwordState = _passwordState.asStateFlow()
 
-    private val _nextPage = MutableSharedFlow<NextPage>()
+    private val _nextPage = MutableSharedFlow<NavigationState>()
     val nextPage = _nextPage.asSharedFlow()
 
     private val _emailLinkSent = MutableSharedFlow<Boolean>()
@@ -55,7 +54,7 @@ internal class CreateAccountViewModel : ViewModel() {
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> _nextPage.emit(
-                    NextPage.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
+                    NavigationState.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
                 )
                 is StytchResult.Error -> {
                     _emailState.value = _emailState.value.copy(
@@ -66,18 +65,18 @@ internal class CreateAccountViewModel : ViewModel() {
         }
     }
 
-    fun sendEmailOTP(otpOptions: OTPOptions?) {
+    fun sendEmailOTP(otpOptions: OTPOptions) {
         viewModelScope.launch {
             val parameters = OTP.EmailOTP.Parameters(
                 email = _emailState.value.emailAddress,
-                expirationMinutes = otpOptions?.expirationMinutes ?: Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-                loginTemplateId = otpOptions?.loginTemplateId,
-                signupTemplateId = otpOptions?.signupTemplateId,
+                expirationMinutes = otpOptions.expirationMinutes,
+                loginTemplateId = otpOptions.loginTemplateId,
+                signupTemplateId = otpOptions.signupTemplateId,
             )
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _nextPage.emit(
-                        NextPage.OTPConfirmation(
+                        NavigationState.OTPConfirmation(
                             OTPDetails.EmailOTP(
                                 parameters = parameters,
                                 methodId = result.value.methodId

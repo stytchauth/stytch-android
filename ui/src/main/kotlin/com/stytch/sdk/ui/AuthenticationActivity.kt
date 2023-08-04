@@ -1,6 +1,5 @@
 package com.stytch.sdk.ui
 
-import android.app.Activity.RESULT_CANCELED
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,12 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.ui.data.AuthenticationState
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
@@ -28,19 +23,13 @@ public class AuthenticationActivity : ComponentActivity() {
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY) ?: error("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel
-                    .state
-                    .filter { it is AuthenticationState.Result }
-                    .collect {
-                        returnAuthenticationResult((it as AuthenticationState.Result).response)
-                    }
+                viewModel.state.collect { returnAuthenticationResult(it.result) }
             }
         }
         setContent {
-            StytchTheme(stytchStyles = uiConfig.styles) {
+            StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
-                    productConfig = uiConfig.productConfig,
-                    disableWatermark = uiConfig.bootstrapData.disableSDKWatermark,
+                    bootstrapData = uiConfig.bootstrapData
                 )
             }
         }

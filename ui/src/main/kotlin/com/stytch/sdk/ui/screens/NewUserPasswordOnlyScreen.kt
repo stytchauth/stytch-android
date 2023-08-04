@@ -25,23 +25,19 @@ import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
-import com.stytch.sdk.ui.data.StytchProductConfig
-import com.stytch.sdk.ui.theme.LocalStytchTheme
-import com.stytch.sdk.ui.theme.LocalStytchTypography
+import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal class NewUserPasswordOnlyScreen(
     val emailAddress: String,
-    val productConfig: StytchProductConfig,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<CreateAccountViewModel>()
         viewModel.setInitialEmailState(emailAddress)
         NewUserPasswordOnlyScreenComposable(
-            productConfig = productConfig,
             viewModel = viewModel
         )
     }
@@ -49,13 +45,11 @@ internal class NewUserPasswordOnlyScreen(
 
 @Composable
 private fun NewUserPasswordOnlyScreenComposable(
-    productConfig: StytchProductConfig,
     viewModel: CreateAccountViewModel
 ) {
+    val productConfig = LocalStytchProductConfig.current
     val navigator = LocalNavigator.currentOrThrow
     val context = LocalContext.current as AuthenticationActivity
-    val type = LocalStytchTypography.current
-    val theme = LocalStytchTheme.current
     val emailState = viewModel.emailState.collectAsState()
     val passwordState = viewModel.passwordState.collectAsState()
     var showLoadingOverlay by remember { mutableStateOf(false) }
