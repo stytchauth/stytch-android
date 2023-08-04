@@ -39,7 +39,7 @@ internal class NewUserPasswordOnlyScreen(
         viewModel.setInitialState(emailAddress)
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
-                if (it is EventState.AccountCreated) {
+                if (it is CreateAccountEventState.AccountCreated) {
                     context.returnAuthenticationResult(it.result)
                 }
             }

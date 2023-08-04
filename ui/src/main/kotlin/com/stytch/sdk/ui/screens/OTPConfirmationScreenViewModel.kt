@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.consumer.passwords.Passwords
+import com.stytch.sdk.ui.data.NavigationState
 import com.stytch.sdk.ui.data.OTPDetails
+import com.stytch.sdk.ui.data.PasswordOptions
+import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.SessionOptions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,13 +26,17 @@ internal data class OTPConfirmationUiState(
     val genericErrorMessage: String? = null,
 )
 
-internal data class AuthenticatedState(val result: StytchResult<Any>)
+internal sealed class OTPEventState {
+    data class AuthenticatedState(val result: StytchResult<Any>) : OTPEventState()
+
+    data class NavigationRequested(val navigationState: NavigationState) : OTPEventState()
+}
 
 internal class OTPConfirmationScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(OTPConfirmationUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<AuthenticatedState>()
+    private val _eventFlow = MutableSharedFlow<OTPEventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var methodId: String = ""
@@ -89,7 +97,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                         showLoadingOverlay = false,
                         genericErrorMessage = null,
                     )
-                    _eventFlow.emit(AuthenticatedState(result))
+                    _eventFlow.emit(OTPEventState.AuthenticatedState(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
@@ -124,6 +132,38 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                         genericErrorMessage = result.exception.reason.toString(),
                     )
                 }
+            }
+        }
+    }
+
+    fun sendResetPasswordEmail(emailAddress: String?, passwordOptions: PasswordOptions) {
+        viewModelScope.launch {
+            emailAddress?.let {
+                val parameters = Passwords.ResetByEmailStartParameters(
+                    email = emailAddress,
+                    loginRedirectUrl = passwordOptions.loginRedirectURL,
+                    loginExpirationMinutes = passwordOptions.loginExpirationMinutes,
+                    resetPasswordRedirectUrl = passwordOptions.resetPasswordRedirectURL,
+                    resetPasswordExpirationMinutes = passwordOptions.resetPasswordExpirationMinutes,
+                    resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId,
+                )
+                when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
+                    is StytchResult.Success -> _eventFlow.emit(
+                        OTPEventState.NavigationRequested(
+                            NavigationState.PasswordResetSent(
+                                PasswordResetDetails(parameters)
+                            )
+                        )
+                    )
+                    is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                        genericErrorMessage = result.exception.reason.toString() // TODO
+                    )
+                }
+            } ?: run {
+                // this should never happen
+                _uiState.value = _uiState.value.copy(
+                    genericErrorMessage = "Can't reset password for unknown email address"
+                )
             }
         }
     }

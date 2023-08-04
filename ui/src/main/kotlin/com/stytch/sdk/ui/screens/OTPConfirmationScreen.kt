@@ -44,6 +44,7 @@ import kotlinx.parcelize.Parcelize
 internal data class OTPConfirmationScreen(
     val resendParameters: OTPDetails,
     val isReturningUser: Boolean,
+    val emailAddress: String? = null,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
@@ -60,7 +61,10 @@ internal data class OTPConfirmationScreen(
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
-                context.returnAuthenticationResult(it.result)
+                when (it) {
+                    is OTPEventState.AuthenticatedState -> context.returnAuthenticationResult(it.result)
+                    is OTPEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
+                }
             }
         }
         OTPConfirmationScreenComposable(
@@ -73,6 +77,7 @@ internal data class OTPConfirmationScreen(
             onShowResendDialog = viewModel::onShowResendDialog,
             onResendEML = { viewModel.resendOTP(resendParameters) },
             onOTPCodeComplete = { code -> viewModel.authenticateOTP(code, productConfig.sessionOptions) },
+            onCreatePasswordClicked = { viewModel.sendResetPasswordEmail(emailAddress, productConfig.passwordOptions) }
         )
     }
 }
@@ -88,6 +93,7 @@ private fun OTPConfirmationScreenComposable(
     onShowResendDialog: () -> Unit,
     onResendEML: () -> Unit,
     onOTPCodeComplete: (String) -> Unit,
+    onCreatePasswordClicked: () -> Unit,
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
@@ -126,7 +132,7 @@ private fun OTPConfirmationScreenComposable(
             )
             StytchTextButton(
                 text = stringResource(id = R.string.create_password_instead),
-                onClick = { /* TODO */ }
+                onClick = onCreatePasswordClicked
             )
         }
     }

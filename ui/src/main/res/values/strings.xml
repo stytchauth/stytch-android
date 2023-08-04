@@ -15,7 +15,7 @@
     <string name="didnt_get_it">Didn’t get it? </string>
     <string name="create_password_instead">Create a password instead</string>
     <string name="check_email_new_password">Check your email to set a new password</string>
-    <string name="create_password_link_sent">A login link was sent to you at %1$s to create a password for your account.</string>
+    <string name="create_password_for_account">to create a password for your account.</string>
     <string name="set_new_password">Set a new password</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>

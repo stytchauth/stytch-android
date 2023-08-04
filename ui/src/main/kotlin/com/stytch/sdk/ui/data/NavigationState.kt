@@ -10,10 +10,15 @@ import com.stytch.sdk.ui.screens.ReturningUserWithPasswordScreen
 
 internal sealed class NavigationState {
     abstract fun getScreen(): AndroidScreen
-    data class OTPConfirmation(val details: OTPDetails, val isReturningUser: Boolean) : NavigationState() {
+    data class OTPConfirmation(
+        val details: OTPDetails,
+        val isReturningUser: Boolean,
+        val emailAddress: String? = null,
+    ) : NavigationState() {
         override fun getScreen() = OTPConfirmationScreen(
             resendParameters = details,
             isReturningUser = isReturningUser,
+            emailAddress = emailAddress
         )
     }
 

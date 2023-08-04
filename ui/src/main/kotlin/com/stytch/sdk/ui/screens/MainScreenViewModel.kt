@@ -225,6 +225,7 @@ internal class MainScreenViewModel : ViewModel() {
                         methodId = result.value.methodId
                     ),
                     isReturningUser = true,
+                    emailAddress = emailAddress,
                 )
             }
             is StytchResult.Error -> {

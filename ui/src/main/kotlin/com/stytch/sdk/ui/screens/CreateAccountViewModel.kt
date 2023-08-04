@@ -27,17 +27,17 @@ internal data class CreateAccountUiState(
     val showLoadingDialog: Boolean = false,
 )
 
-internal sealed class EventState {
-    data class AccountCreated(val result: StytchResult<Any>) : EventState()
+internal sealed class CreateAccountEventState {
+    data class AccountCreated(val result: StytchResult<Any>) : CreateAccountEventState()
 
-    data class NavigationRequested(val navigationState: NavigationState) : EventState()
+    data class NavigationRequested(val navigationState: NavigationState) : CreateAccountEventState()
 }
 
 internal class CreateAccountViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CreateAccountUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<EventState>()
+    private val _eventFlow = MutableSharedFlow<CreateAccountEventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var didInitialize = false
@@ -67,7 +67,7 @@ internal class CreateAccountViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        EventState.NavigationRequested(
+                        CreateAccountEventState.NavigationRequested(
                             NavigationState.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
                         )
                     )
@@ -98,7 +98,7 @@ internal class CreateAccountViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        EventState.NavigationRequested(
+                        CreateAccountEventState.NavigationRequested(
                             NavigationState.OTPConfirmation(
                                 OTPDetails.EmailOTP(
                                     parameters = parameters,
@@ -183,7 +183,7 @@ internal class CreateAccountViewModel : ViewModel() {
             ) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _eventFlow.emit(EventState.AccountCreated(result))
+                    _eventFlow.emit(CreateAccountEventState.AccountCreated(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(

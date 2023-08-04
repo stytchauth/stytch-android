@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
 import com.stytch.sdk.ui.components.DividerWithText
+import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
@@ -32,6 +34,7 @@ import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 import com.stytch.sdk.ui.theme.LocalStytchTypography
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -44,6 +47,14 @@ internal data class EMLConfirmationScreen(
         val viewModel = viewModel<EMLConfirmationScreenViewModel>()
         val uiState = viewModel.uiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+        val productConfig = LocalStytchProductConfig.current
+        LaunchedEffect(Unit) {
+            viewModel.eventFlow.collectLatest {
+                when (it) {
+                    is EMLEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
+                }
+            }
+        }
         EMLConfirmationScreenComposable(
             emailAddress = details.parameters.email,
             uiState = uiState.value,
@@ -52,6 +63,10 @@ internal data class EMLConfirmationScreen(
             onShowResendDialog = viewModel::onShowResendDialog,
             onResendEML = { viewModel.resendEML(details.parameters) },
             isReturningUser = isReturningUser,
+            onCreatePasswordClicked = {
+                viewModel.sendResetPasswordEmail(details.parameters.email, productConfig.passwordOptions)
+            },
+            productList = productConfig.products,
         )
     }
 }
@@ -65,8 +80,9 @@ private fun EMLConfirmationScreenComposable(
     onShowResendDialog: () -> Unit,
     onResendEML: () -> Unit,
     isReturningUser: Boolean,
+    onCreatePasswordClicked: () -> Unit,
+    productList: List<StytchProduct>,
 ) {
-    val productConfig = LocalStytchProductConfig.current
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
     val recipientFormatted = AnnotatedString(
@@ -101,15 +117,18 @@ private fun EMLConfirmationScreenComposable(
             ),
             modifier = Modifier.clickable { onShowResendDialog() }
         )
-        if (isReturningUser && productConfig.products.contains(StytchProduct.PASSWORDS)) {
+        if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
                 modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
                 text = stringResource(id = R.string.or),
             )
             StytchTextButton(
                 text = stringResource(id = R.string.create_password_instead),
-                onClick = { /* TODO */ }
+                onClick = onCreatePasswordClicked
             )
+        }
+        uiState.genericErrorMessage?.let {
+            FormFieldStatus(text = it, isError = true)
         }
     }
     if (uiState.showResendDialog) {
