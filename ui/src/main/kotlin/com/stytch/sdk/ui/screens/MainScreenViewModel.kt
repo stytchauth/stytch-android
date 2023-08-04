@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal data class UiState(
+internal data class MainScreenUiState(
     val emailState: EmailState = EmailState(),
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),
     val genericErrorMessage: String? = null,
@@ -42,7 +42,7 @@ internal data class UiState(
 )
 
 internal class MainScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _navigationFlow = MutableSharedFlow<NavigationState>()

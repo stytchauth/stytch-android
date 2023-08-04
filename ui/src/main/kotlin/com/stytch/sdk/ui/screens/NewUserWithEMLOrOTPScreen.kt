@@ -9,10 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
@@ -49,64 +44,56 @@ internal class NewUserWithEMLOrOTPScreen(
     @Composable
     override fun Content() {
         val viewModel = viewModel<CreateAccountViewModel>()
-        viewModel.setInitialEmailState(emailAddress)
+        val navigator = LocalNavigator.currentOrThrow
+        val productConfig = LocalStytchProductConfig.current
+        val uiState = viewModel.uiState.collectAsState()
+        val context = LocalContext.current as AuthenticationActivity
+        viewModel.setInitialState(emailAddress)
+        LaunchedEffect(Unit) {
+            viewModel.eventFlow.collectLatest {
+                when (it) {
+                    is EventState.AccountCreated -> context.returnAuthenticationResult(it.result)
+                    is EventState.NavigationRequested -> {
+                        when (val navState = it.navigationState) {
+                            is NavigationState.OTPConfirmation -> navigator.push(navState.getScreen())
+                            is NavigationState.EMLConfirmation -> navigator.push(navState.getScreen())
+                            else -> {} // this won't happen
+                        }
+                    }
+                }
+            }
+        }
         NewUserWithEMLOrOTPScreenComposable(
-            viewModel = viewModel,
+            uiState = uiState.value,
+            onBack = navigator::pop,
+            onEmailAddressChanged = viewModel::onEmailAddressChanged,
+            onPasswordChanged = viewModel::onPasswordChanged,
+            onEmailAndPasswordSubmitted = {
+                viewModel.createAccountWithPassword(productConfig.sessionOptions.sessionDurationMinutes)
+            },
+            isEml = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS),
+            onSendEML = { viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions) },
+            onSendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
         )
     }
 }
 
 @Composable
 private fun NewUserWithEMLOrOTPScreenComposable(
-    viewModel: CreateAccountViewModel,
+    onBack: () -> Unit,
+    uiState: CreateAccountUiState,
+    onEmailAddressChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onEmailAndPasswordSubmitted: () -> Unit,
+    isEml: Boolean,
+    onSendEML: () -> Unit,
+    onSendEmailOTP: () -> Unit,
 ) {
-    val productConfig = LocalStytchProductConfig.current
-    val navigator = LocalNavigator.currentOrThrow
-    val context = LocalContext.current as AuthenticationActivity
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val isEml = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
-    val emailState = viewModel.emailState.collectAsState()
-    val passwordState = viewModel.passwordState.collectAsState()
-    var showLoadingOverlay by remember { mutableStateOf(false) }
-    var passwordCreateFailed by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) {
-        viewModel.emailLinkSent.collectLatest {
-            showLoadingOverlay = false
-        }
-    }
-    LaunchedEffect(Unit) {
-        viewModel.nextPage.collectLatest {
-            showLoadingOverlay = false
-            when (it) {
-                is NavigationState.OTPConfirmation -> navigator.push(
-                    OTPConfirmationScreen(
-                        resendParameters = it.details,
-                        isReturningUser = false,
-                    )
-                )
-                is NavigationState.EMLConfirmation -> navigator.push(
-                    EMLConfirmationScreen(
-                        parameters = it.details.parameters,
-                        isReturningUser = false,
-                    )
-                )
-                else -> {} // this won't happen
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        viewModel.passwordCreated.collectLatest {
-            showLoadingOverlay = false
-            when (it) {
-                is StytchResult.Success -> context.returnAuthenticationResult(it)
-                is StytchResult.Error -> passwordCreateFailed = it.exception.reason.toString() // TODO
-            }
-        }
-    }
 
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        BackButton { navigator.pop() }
+        BackButton(onBack)
         PageTitle(
             text = stringResource(id = R.string.choose_how),
             textAlign = TextAlign.Start
@@ -118,30 +105,20 @@ private fun NewUserWithEMLOrOTPScreenComposable(
             } else {
                 stringResource(id = R.string.email_me_a_login_code)
             },
-            onClick = {
-                showLoadingOverlay = true
-                if (isEml) {
-                    viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions)
-                } else {
-                    viewModel.sendEmailOTP(productConfig.otpOptions)
-                }
-            }
+            onClick = { if (isEml) onSendEML() else onSendEmailOTP() }
         )
         Spacer(modifier = Modifier.height(24.dp))
         DividerWithText(text = stringResource(id = R.string.or))
         Spacer(modifier = Modifier.height(24.dp))
         BodyText(text = AnnotatedString(stringResource(id = R.string.finish_creating)))
         EmailAndPasswordEntry(
-            emailState = emailState.value,
-            onEmailAddressChanged = viewModel::onEmailAddressChanged,
-            passwordState = passwordState.value,
-            onPasswordChanged = viewModel::onPasswordChanged,
-            onSubmit = {
-                showLoadingOverlay = true
-                viewModel.createPassword(productConfig.sessionOptions.sessionDurationMinutes)
-            }
+            emailState = uiState.emailState,
+            onEmailAddressChanged = onEmailAddressChanged,
+            passwordState = uiState.passwordState,
+            onPasswordChanged = onPasswordChanged,
+            onSubmit = onEmailAndPasswordSubmitted
         )
-        passwordCreateFailed?.let {
+        uiState.passwordState.errorMessage?.let {
             Text(
                 modifier = Modifier.padding(bottom = 32.dp),
                 text = it,
@@ -151,7 +128,7 @@ private fun NewUserWithEMLOrOTPScreenComposable(
             )
         }
     }
-    if (showLoadingOverlay) {
+    if (uiState.showLoadingDialog) {
         LoadingDialog()
     }
 }

@@ -17,7 +17,6 @@ internal data class PasswordResetSentScreen(
         val viewModel = viewModel<PasswordResetScreenViewModel>()
         PasswordResetSentScreenComposable(
             details = details,
-            viewModel = viewModel
         )
     }
 }
@@ -25,7 +24,6 @@ internal data class PasswordResetSentScreen(
 @Composable
 private fun PasswordResetSentScreenComposable(
     details: PasswordResetDetails,
-    viewModel: PasswordResetScreenViewModel,
 ) {
     Text(text = "Password reset sent")
 }

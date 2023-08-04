@@ -29,8 +29,8 @@ class UiWorkbenchActivity : ComponentActivity() {
             StytchProductConfig(
                 products = listOf(
                     StytchProduct.OAUTH,
-                    //StytchProduct.EMAIL_MAGIC_LINKS,
-                    //StytchProduct.OTP,
+                    StytchProduct.EMAIL_MAGIC_LINKS,
+                    StytchProduct.OTP,
                     StytchProduct.PASSWORDS,
                 ),
                 emailMagicLinksOptions = EmailMagicLinksOptions(

@@ -11,7 +11,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +37,6 @@ import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
-import com.stytch.sdk.ui.data.NavigationState
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
@@ -55,43 +53,16 @@ internal object MainScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<MainScreenViewModel>()
-        val uiState = viewModel.uiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current as AuthenticationActivity
+        val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.navigationFlow.collectLatest {
-                val screen = when (it) {
-                    is NavigationState.OTPConfirmation -> OTPConfirmationScreen(
-                        resendParameters = it.details,
-                        isReturningUser = it.isReturningUser
-                    )
-
-                    is NavigationState.EMLConfirmation -> EMLConfirmationScreen(
-                        parameters = it.details.parameters,
-                        isReturningUser = it.isReturningUser,
-                    )
-
-                    is NavigationState.NewUserWithEMLOrOTP -> NewUserWithEMLOrOTPScreen(
-                        emailAddress = it.emailAddress,
-                    )
-
-                    is NavigationState.NewUserPasswordOnly -> NewUserPasswordOnlyScreen(
-                        emailAddress = it.emailAddress,
-                    )
-
-                    is NavigationState.ReturningUserWithPassword -> ReturningUserWithPasswordScreen(
-                        emailAddress = it.emailAddress
-                    )
-
-                    is NavigationState.PasswordResetSent -> PasswordResetSentScreen(
-                        details = it.details
-                    )
-                }
-                navigator.push(screen)
+                navigator.push(it.getScreen())
             }
         }
         MainScreenComposable(
-            uiState = uiState,
+            uiState = uiState.value,
             onStartOAuthLogin = { provider, config -> viewModel.onStartOAuthLogin(context, provider, config) },
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onEmailAddressSubmit = viewModel::onEmailAddressSubmit,
@@ -106,7 +77,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
 
 @Composable
 private fun MainScreenComposable(
-    uiState: State<UiState>,
+    uiState: MainScreenUiState,
     onStartOAuthLogin: (OAuthProvider, StytchProductConfig) -> Unit,
     onEmailAddressChanged: (String) -> Unit,
     onEmailAddressSubmit: (StytchProductConfig) -> Unit,
@@ -141,8 +112,8 @@ private fun MainScreenComposable(
         }
     }
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val phoneState = uiState.value.phoneNumberState
-    val emailState = uiState.value.emailState
+    val phoneState = uiState.phoneNumberState
+    val emailState = uiState.emailState
 
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
@@ -221,11 +192,11 @@ private fun MainScreenComposable(
                 else -> Text(stringResource(id = R.string.misconfigured_otp))
             }
         }
-        uiState.value.genericErrorMessage?.let {
+        uiState.genericErrorMessage?.let {
             FormFieldStatus(text = it, isError = true)
         }
     }
-    if (uiState.value.showLoadingOverlay) {
+    if (uiState.showLoadingOverlay) {
         LoadingDialog()
     }
 }

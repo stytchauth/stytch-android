@@ -39,8 +39,11 @@
     <string name="eml_and_otp_error">You cannot have both Email Magic Links and Email OTP configured at the same time</string>
     <string name="misconfigured_otp">Unrecognized EML/OTP configuration</string>
     <string name="resend_code">Resend code</string>
+    <string name="resend_link">Resend link</string>
     <string name="new_code_will_be_sent_to">A new code will be sent to </string>
+    <string name="new_link_will_be_sent_to">A new link will be sent to </string>
     <string name="send_code">Send code</string>
+    <string name="send_link">Send link</string>
     <string name="cancel">Cancel</string>
     <string name="success">Success!</string>
     <string name="logged_in">You have successfully logged in.</string>

@@ -6,10 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -36,48 +32,56 @@ internal class NewUserPasswordOnlyScreen(
     @Composable
     override fun Content() {
         val viewModel = viewModel<CreateAccountViewModel>()
-        viewModel.setInitialEmailState(emailAddress)
+        val navigator = LocalNavigator.currentOrThrow
+        val productConfig = LocalStytchProductConfig.current
+        val uiState = viewModel.uiState.collectAsState()
+        val context = LocalContext.current as AuthenticationActivity
+        viewModel.setInitialState(emailAddress)
+        LaunchedEffect(Unit) {
+            viewModel.eventFlow.collectLatest {
+                if (it is EventState.AccountCreated) {
+                    context.returnAuthenticationResult(it.result)
+                }
+            }
+        }
         NewUserPasswordOnlyScreenComposable(
-            viewModel = viewModel
+            uiState = uiState.value,
+            onBack = navigator::pop,
+            onEmailAddressChanged = viewModel::onEmailAddressChanged,
+            onPasswordChanged = viewModel::onPasswordChanged,
+            onEmailAndPasswordSubmitted = {
+                viewModel.createAccountWithPassword(productConfig.sessionOptions.sessionDurationMinutes)
+            }
         )
     }
 }
 
 @Composable
 private fun NewUserPasswordOnlyScreenComposable(
-    viewModel: CreateAccountViewModel
+    uiState: CreateAccountUiState,
+    onBack: () -> Unit,
+    onEmailAddressChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onEmailAndPasswordSubmitted: () -> Unit,
 ) {
-    val productConfig = LocalStytchProductConfig.current
-    val navigator = LocalNavigator.currentOrThrow
-    val context = LocalContext.current as AuthenticationActivity
-    val emailState = viewModel.emailState.collectAsState()
-    val passwordState = viewModel.passwordState.collectAsState()
-    var showLoadingOverlay by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        viewModel.passwordCreated.collectLatest {
-            showLoadingOverlay = false
-            context.returnAuthenticationResult(it)
-        }
-    }
+    val emailState = uiState.emailState
+    val passwordState = uiState.passwordState
 
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        BackButton { navigator.pop() }
+        BackButton(onBack)
         PageTitle(
             text = stringResource(id = R.string.create_account),
             textAlign = TextAlign.Start
         )
         EmailAndPasswordEntry(
-            emailState = emailState.value,
-            onEmailAddressChanged = viewModel::onEmailAddressChanged,
-            passwordState = passwordState.value,
-            onPasswordChanged = viewModel::onPasswordChanged,
-            onSubmit = {
-                showLoadingOverlay = true
-                viewModel.createPassword(productConfig.sessionOptions.sessionDurationMinutes)
-            }
+            emailState = emailState,
+            onEmailAddressChanged = onEmailAddressChanged,
+            passwordState = passwordState,
+            onPasswordChanged = onPasswordChanged,
+            onSubmit = onEmailAndPasswordSubmitted
         )
     }
-    if (showLoadingOverlay) {
+    if (uiState.showLoadingDialog) {
         LoadingDialog()
     }
 }

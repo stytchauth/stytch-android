@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -23,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
@@ -31,6 +27,7 @@ import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
@@ -39,15 +36,21 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class EMLConfirmationScreen(
-    val parameters: MagicLinks.EmailMagicLinks.Parameters,
+    val details: EMLDetails,
     val isReturningUser: Boolean,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val viewModel = viewModel<EMLConfirmationScreenViewModel>()
+        val uiState = viewModel.uiState.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
         EMLConfirmationScreenComposable(
-            parameters = parameters,
-            viewModel = viewModel,
+            emailAddress = details.parameters.email,
+            uiState = uiState.value,
+            onBack = navigator::pop,
+            onDialogDismiss = viewModel::onDialogDismiss,
+            onShowResendDialog = viewModel::onShowResendDialog,
+            onResendEML = { viewModel.resendEML(details.parameters) },
             isReturningUser = isReturningUser,
         )
     }
@@ -55,25 +58,27 @@ internal data class EMLConfirmationScreen(
 
 @Composable
 private fun EMLConfirmationScreenComposable(
-    parameters: MagicLinks.EmailMagicLinks.Parameters,
-    viewModel: EMLConfirmationScreenViewModel,
+    emailAddress: String,
+    uiState: EMLConfirmationUiState,
+    onBack: () -> Unit,
+    onDialogDismiss: () -> Unit,
+    onShowResendDialog: () -> Unit,
+    onResendEML: () -> Unit,
     isReturningUser: Boolean,
 ) {
     val productConfig = LocalStytchProductConfig.current
-    val navigator = LocalNavigator.currentOrThrow
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    var showResendDialog by remember { mutableStateOf(false) }
     val recipientFormatted = AnnotatedString(
-        text = " ${parameters.email}",
+        text = " $emailAddress",
         spanStyle = SpanStyle(fontWeight = FontWeight.W700)
     )
-    val resendCodeFormatted = AnnotatedString(
-        text = stringResource(id = R.string.resend_code),
+    val resendLinkFormatted = AnnotatedString(
+        text = stringResource(id = R.string.resend_link),
         spanStyle = SpanStyle(fontWeight = FontWeight.W700)
     )
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        BackButton { navigator.pop() }
+        BackButton(onBack)
         PageTitle(
             text = stringResource(id = R.string.check_your_email),
             textAlign = TextAlign.Start,
@@ -87,13 +92,14 @@ private fun EMLConfirmationScreenComposable(
         Text(
             text = buildAnnotatedString {
                 append(stringResource(id = R.string.didnt_get_it))
-                append(resendCodeFormatted)
+                append(" ")
+                append(resendLinkFormatted)
             },
             textAlign = TextAlign.Start,
             style = type.caption.copy(
                 color = Color(theme.secondaryTextColor)
             ),
-            modifier = Modifier.clickable { showResendDialog = true }
+            modifier = Modifier.clickable { onShowResendDialog() }
         )
         if (isReturningUser && productConfig.products.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
@@ -106,21 +112,18 @@ private fun EMLConfirmationScreenComposable(
             )
         }
     }
-    if (showResendDialog) {
+    if (uiState.showResendDialog) {
         StytchAlertDialog(
-            onDismissRequest = { showResendDialog = false },
-            title = stringResource(id = R.string.resend_code),
+            onDismissRequest = onDialogDismiss,
+            title = stringResource(id = R.string.resend_link),
             body = buildAnnotatedString {
-                append(stringResource(id = R.string.new_code_will_be_sent_to))
+                append(stringResource(id = R.string.new_link_will_be_sent_to))
                 append(recipientFormatted)
             },
             cancelText = stringResource(id = R.string.cancel),
-            onCancelClick = { showResendDialog = false },
-            acceptText = stringResource(id = R.string.send_code),
-            onAcceptClick = {
-                showResendDialog = false
-                viewModel.resendEML(parameters)
-            }
+            onCancelClick = onDialogDismiss,
+            acceptText = stringResource(id = R.string.send_link),
+            onAcceptClick = onResendEML
         )
     }
 }

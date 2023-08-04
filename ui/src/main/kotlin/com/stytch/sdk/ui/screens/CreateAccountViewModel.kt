@@ -21,29 +21,40 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+internal data class CreateAccountUiState(
+    val emailState: EmailState = EmailState(),
+    val passwordState: PasswordState = PasswordState(),
+    val showLoadingDialog: Boolean = false,
+)
+
+internal sealed class EventState {
+    data class AccountCreated(val result: StytchResult<Any>) : EventState()
+
+    data class NavigationRequested(val navigationState: NavigationState) : EventState()
+}
+
 internal class CreateAccountViewModel : ViewModel() {
-    private val _emailState = MutableStateFlow(EmailState())
-    val emailState = _emailState.asStateFlow()
+    private val _uiState = MutableStateFlow(CreateAccountUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _passwordState = MutableStateFlow(PasswordState())
-    val passwordState = _passwordState.asStateFlow()
+    private val _eventFlow = MutableSharedFlow<EventState>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
-    private val _nextPage = MutableSharedFlow<NavigationState>()
-    val nextPage = _nextPage.asSharedFlow()
+    private var didInitialize = false
 
-    private val _emailLinkSent = MutableSharedFlow<Boolean>()
-    val emailLinkSent = _emailLinkSent.asSharedFlow()
-
-    private val _passwordCreated = MutableSharedFlow<StytchResult<Any>>()
-    val passwordCreated = _passwordCreated.asSharedFlow()
-
-    fun setInitialEmailState(email: String) {
-        _emailState.value = _emailState.value.copy(emailAddress = email)
+    fun setInitialState(email: String) {
+        if (didInitialize) return
+        _uiState.value = _uiState.value.copy(
+            emailState = EmailState(emailAddress = email)
+        )
+        didInitialize = true
     }
 
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions?) {
+        val emailState = _uiState.value.emailState
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         val parameters = MagicLinks.EmailMagicLinks.Parameters(
-            email = _emailState.value.emailAddress,
+            email = emailState.emailAddress,
             loginMagicLinkUrl = emailMagicLinksOptions?.loginRedirectURL,
             signupMagicLinkUrl = emailMagicLinksOptions?.signupRedirectURL,
             loginExpirationMinutes = emailMagicLinksOptions?.loginExpirationMinutes,
@@ -53,12 +64,20 @@ internal class CreateAccountViewModel : ViewModel() {
         )
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
-                is StytchResult.Success -> _nextPage.emit(
-                    NavigationState.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
-                )
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(
+                            NavigationState.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
+                        )
+                    )
+                }
                 is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        errorMessage = result.exception.reason.toString() // TODO
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _uiState.value = _uiState.value.copy(
+                        emailState = emailState.copy(
+                            errorMessage = result.exception.reason.toString() // TODO
+                        )
                     )
                 }
             }
@@ -66,28 +85,36 @@ internal class CreateAccountViewModel : ViewModel() {
     }
 
     fun sendEmailOTP(otpOptions: OTPOptions) {
+        val emailState = _uiState.value.emailState
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             val parameters = OTP.EmailOTP.Parameters(
-                email = _emailState.value.emailAddress,
+                email = emailState.emailAddress,
                 expirationMinutes = otpOptions.expirationMinutes,
                 loginTemplateId = otpOptions.loginTemplateId,
                 signupTemplateId = otpOptions.signupTemplateId,
             )
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _nextPage.emit(
-                        NavigationState.OTPConfirmation(
-                            OTPDetails.EmailOTP(
-                                parameters = parameters,
-                                methodId = result.value.methodId
-                            ),
-                            isReturningUser = false,
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(
+                            NavigationState.OTPConfirmation(
+                                OTPDetails.EmailOTP(
+                                    parameters = parameters,
+                                    methodId = result.value.methodId
+                                ),
+                                isReturningUser = false,
+                            )
                         )
                     )
                 }
                 is StytchResult.Error -> {
-                    _emailState.value = _emailState.value.copy(
-                        errorMessage = result.exception.reason.toString() // TODO
+                    _uiState.value = _uiState.value.copy(
+                        showLoadingDialog = false,
+                        emailState = emailState.copy(
+                            errorMessage = result.exception.reason.toString() // TODO
+                        )
                     )
                 }
             }
@@ -95,55 +122,77 @@ internal class CreateAccountViewModel : ViewModel() {
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        _emailState.value = _emailState.value.copy(
-            emailAddress = emailAddress,
-            validEmail = emailAddress.isValidEmailAddress()
+        _uiState.value = _uiState.value.copy(
+            emailState = _uiState.value.emailState.copy(
+                emailAddress = emailAddress,
+                validEmail = emailAddress.isValidEmailAddress()
+            )
         )
     }
 
     fun onPasswordChanged(password: String) {
-        _passwordState.value = _passwordState.value.copy(
-            password = password,
+        _uiState.value = _uiState.value.copy(
+            passwordState = _uiState.value.passwordState.copy(
+                password = password,
+            )
         )
         viewModelScope.launch {
             when (
                 val result = StytchClient.passwords.strengthCheck(
-                    Passwords.StrengthCheckParameters(email = _emailState.value.emailAddress, password = password)
+                    Passwords.StrengthCheckParameters(
+                        email = _uiState.value.emailState.emailAddress,
+                        password = password
+                    )
                 )
             ) {
                 is StytchResult.Success -> {
-                    _passwordState.value = _passwordState.value.copy(
-                        breachedPassword = result.value.breachedPassword,
-                        feedback = result.value.feedback,
-                        score = result.value.score,
-                        validPassword = result.value.validPassword,
+                    _uiState.value = _uiState.value.copy(
+                        passwordState = _uiState.value.passwordState.copy(
+                            breachedPassword = result.value.breachedPassword,
+                            feedback = result.value.feedback,
+                            score = result.value.score,
+                            validPassword = result.value.validPassword,
+                        )
                     )
                 }
 
                 is StytchResult.Error -> {
-                    _passwordState.value = _passwordState.value.copy(
-                        errorMessage = result.exception.reason.toString() // TODO
+                    _uiState.value = _uiState.value.copy(
+                        passwordState = _uiState.value.passwordState.copy(
+                            errorMessage = result.exception.reason.toString() // TODO
+                        )
                     )
                 }
             }
         }
     }
 
-    fun createPassword(sessionDurationMinutes: UInt) {
+    fun createAccountWithPassword(sessionDurationMinutes: UInt) {
+        val emailState = _uiState.value.emailState
+        val passwordState = _uiState.value.passwordState
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             when (
                 val result = StytchClient.passwords.create(
                     Passwords.CreateParameters(
-                        email = _emailState.value.emailAddress,
-                        password = _passwordState.value.password,
+                        email = emailState.emailAddress,
+                        password = passwordState.password,
                         sessionDurationMinutes = sessionDurationMinutes,
                     )
                 )
             ) {
-                is StytchResult.Success -> _passwordCreated.emit(result)
-                is StytchResult.Error -> _passwordState.value = _passwordState.value.copy(
-                    errorMessage = result.exception.reason.toString() // TODO
-                )
+                is StytchResult.Success -> {
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    _eventFlow.emit(EventState.AccountCreated(result))
+                }
+                is StytchResult.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        showLoadingDialog = false,
+                        passwordState = _uiState.value.passwordState.copy(
+                            errorMessage = result.exception.reason.toString() // TODO
+                        )
+                    )
+                }
             }
         }
     }

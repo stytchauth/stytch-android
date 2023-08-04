@@ -14,9 +14,9 @@ internal class ReturningUserWithPasswordScreen(
     @Composable
     override fun Content() {
         val viewModel = viewModel<ReturningUserWithPasswordScreenViewModel>()
+        val productConfig = LocalStytchProductConfig.current
         ReturningUserWithPasswordScreenComposable(
-            emailAddress = emailAddress,
-            viewModel = viewModel
+            emailAddress = emailAddress
         )
     }
 }
@@ -24,7 +24,6 @@ internal class ReturningUserWithPasswordScreen(
 @Composable
 private fun ReturningUserWithPasswordScreenComposable(
     emailAddress: String,
-    viewModel: ReturningUserWithPasswordScreenViewModel
 ) {
-    val productConfig = LocalStytchProductConfig.current
+
 }
