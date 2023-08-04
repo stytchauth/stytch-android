@@ -51,7 +51,7 @@ internal data class EMLConfirmationScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is EMLEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
+                    is EMLEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
                 }
             }
         }

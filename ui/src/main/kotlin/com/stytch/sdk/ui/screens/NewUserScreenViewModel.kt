@@ -10,7 +10,7 @@ import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PasswordState
@@ -21,23 +21,23 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal data class CreateAccountUiState(
+internal data class NewUserUiState(
     val emailState: EmailState = EmailState(),
     val passwordState: PasswordState = PasswordState(),
     val showLoadingDialog: Boolean = false,
 )
 
-internal sealed class CreateAccountEventState {
-    data class AccountCreated(val result: StytchResult<Any>) : CreateAccountEventState()
+internal sealed class NewUserEventState {
+    data class AccountCreated(val result: StytchResult<Any>) : NewUserEventState()
 
-    data class NavigationRequested(val navigationState: NavigationState) : CreateAccountEventState()
+    data class NavigationRequested(val navigationRoute: NavigationRoute) : NewUserEventState()
 }
 
-internal class CreateAccountViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(CreateAccountUiState())
+internal class NewUserScreenViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(NewUserUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<CreateAccountEventState>()
+    private val _eventFlow = MutableSharedFlow<NewUserEventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var didInitialize = false
@@ -67,8 +67,8 @@ internal class CreateAccountViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        CreateAccountEventState.NavigationRequested(
-                            NavigationState.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
+                        NewUserEventState.NavigationRequested(
+                            NavigationRoute.EMLConfirmation(EMLDetails(parameters), isReturningUser = false)
                         )
                     )
                 }
@@ -98,8 +98,8 @@ internal class CreateAccountViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        CreateAccountEventState.NavigationRequested(
-                            NavigationState.OTPConfirmation(
+                        NewUserEventState.NavigationRequested(
+                            NavigationRoute.OTPConfirmation(
                                 OTPDetails.EmailOTP(
                                     parameters = parameters,
                                     methodId = result.value.methodId
@@ -183,7 +183,7 @@ internal class CreateAccountViewModel : ViewModel() {
             ) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _eventFlow.emit(CreateAccountEventState.AccountCreated(result))
+                    _eventFlow.emit(NewUserEventState.AccountCreated(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(

@@ -16,7 +16,7 @@ import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAU
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPDetails
@@ -45,7 +45,7 @@ internal class MainScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _navigationFlow = MutableSharedFlow<NavigationState>()
+    private val _navigationFlow = MutableSharedFlow<NavigationRoute>()
     val navigationFlow = _navigationFlow.asSharedFlow()
 
     fun onStartOAuthLogin(
@@ -127,24 +127,15 @@ internal class MainScreenViewModel : ViewModel() {
         viewModelScope.launch {
             val emailAddress = _uiState.value.emailState.emailAddress
             when (getUserType(emailAddress)) {
-                UserType.NEW -> if (
-                    !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
-                    !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
-                ) {
-                    NavigationState.NewUserPasswordOnly(emailAddress = emailAddress)
-                } else {
-                    NavigationState.NewUserWithEMLOrOTP(emailAddress = emailAddress)
-                }
-                UserType.PASSWORD -> {
-                    NavigationState.ReturningUserWithPassword(emailAddress = emailAddress)
-                }
+                UserType.NEW -> NavigationRoute.NewUser(emailAddress = emailAddress)
+                UserType.PASSWORD -> NavigationRoute.ReturningUser(emailAddress = emailAddress)
                 UserType.PASSWORDLESS -> {
                     if (
                         productConfig.products.contains(StytchProduct.OTP) &&
                         productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
                     ) {
                         // send Email OTP
-                        sendEmailOTPForReturningUserAndGetNavigationArguments(
+                        sendEmailOTPForReturningUserAndGetNavigationState(
                             emailAddress = emailAddress,
                             otpOptions = productConfig.otpOptions,
                         )
@@ -156,7 +147,7 @@ internal class MainScreenViewModel : ViewModel() {
                         )
                     } else {
                         // no Email OTP or EML, so set password
-                        sendResetPasswordForReturningUserAndGetNavigationArguments(
+                        sendResetPasswordForReturningUserAndGetNavigationState(
                             emailAddress = emailAddress,
                             passwordOptions = productConfig.passwordOptions
                         )
@@ -186,7 +177,7 @@ internal class MainScreenViewModel : ViewModel() {
     suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationArguments(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions
-    ): NavigationState? {
+    ): NavigationRoute? {
         val parameters = MagicLinks.EmailMagicLinks.Parameters(
             email = emailAddress,
             loginMagicLinkUrl = emailMagicLinksOptions.loginRedirectURL,
@@ -198,7 +189,7 @@ internal class MainScreenViewModel : ViewModel() {
         )
         return when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
-                NavigationState.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
+                NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
             is StytchResult.Error -> {
                 _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
@@ -207,10 +198,10 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    suspend fun sendEmailOTPForReturningUserAndGetNavigationArguments(
+    suspend fun sendEmailOTPForReturningUserAndGetNavigationState(
         emailAddress: String,
         otpOptions: OTPOptions
-    ): NavigationState? {
+    ): NavigationRoute? {
         val parameters = OTP.EmailOTP.Parameters(
             email = emailAddress,
             expirationMinutes = otpOptions.expirationMinutes,
@@ -219,7 +210,7 @@ internal class MainScreenViewModel : ViewModel() {
         )
         return when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
-                NavigationState.OTPConfirmation(
+                NavigationRoute.OTPConfirmation(
                     OTPDetails.EmailOTP(
                         parameters = parameters,
                         methodId = result.value.methodId
@@ -235,10 +226,10 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    suspend fun sendResetPasswordForReturningUserAndGetNavigationArguments(
+    suspend fun sendResetPasswordForReturningUserAndGetNavigationState(
         emailAddress: String,
         passwordOptions: PasswordOptions
-    ): NavigationState? {
+    ): NavigationRoute? {
         val parameters = Passwords.ResetByEmailStartParameters(
             email = emailAddress,
             loginRedirectUrl = passwordOptions.loginRedirectURL,
@@ -248,7 +239,7 @@ internal class MainScreenViewModel : ViewModel() {
             resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId
         )
         return when (val result = StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
-            is StytchResult.Success -> NavigationState.PasswordResetSent(PasswordResetDetails(parameters))
+            is StytchResult.Success -> NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters))
             is StytchResult.Error -> {
                 _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
                 null
@@ -268,7 +259,7 @@ internal class MainScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
                     _navigationFlow.emit(
-                        NavigationState.OTPConfirmation(
+                        NavigationRoute.OTPConfirmation(
                             OTPDetails.SmsOTP(
                                 parameters = parameters,
                                 methodId = result.value.methodId
@@ -301,7 +292,7 @@ internal class MainScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
                     _navigationFlow.emit(
-                        NavigationState.OTPConfirmation(
+                        NavigationRoute.OTPConfirmation(
                             OTPDetails.WhatsAppOTP(
                                 parameters = parameters,
                                 methodId = result.value.methodId

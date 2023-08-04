@@ -10,7 +10,7 @@ import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PasswordState
@@ -22,24 +22,24 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal data class LoginUiState(
+internal data class ReturningUserUiState(
     val emailState: EmailState = EmailState(),
     val passwordState: PasswordState = PasswordState(),
     val showLoadingDialog: Boolean = false,
     val genericErrorMessage: String? = null,
 )
 
-internal sealed class LoginEventState {
-    data class LoggedInResult(val result: StytchResult<Any>) : LoginEventState()
+internal sealed class ReturningUserEventState {
+    data class LoggedInResult(val result: StytchResult<Any>) : ReturningUserEventState()
 
-    data class NavigationRequested(val navigationState: NavigationState) : LoginEventState()
+    data class NavigationRequested(val navigationRoute: NavigationRoute) : ReturningUserEventState()
 }
 
-internal class ReturningUserWithPasswordScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(LoginUiState())
+internal class ReturningUserScreenViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(ReturningUserUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<LoginEventState>()
+    private val _eventFlow = MutableSharedFlow<ReturningUserEventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var didInitialize = false
@@ -84,7 +84,7 @@ internal class ReturningUserWithPasswordScreenViewModel : ViewModel() {
             when (val result = StytchClient.passwords.authenticate(parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _eventFlow.emit(LoginEventState.LoggedInResult(result))
+                    _eventFlow.emit(ReturningUserEventState.LoggedInResult(result))
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
@@ -113,8 +113,8 @@ internal class ReturningUserWithPasswordScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        LoginEventState.NavigationRequested(
-                            NavigationState.EMLConfirmation(
+                        ReturningUserEventState.NavigationRequested(
+                            NavigationRoute.EMLConfirmation(
                                 details = EMLDetails(parameters),
                                 isReturningUser = true
                             )
@@ -145,8 +145,8 @@ internal class ReturningUserWithPasswordScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        LoginEventState.NavigationRequested(
-                            NavigationState.OTPConfirmation(
+                        ReturningUserEventState.NavigationRequested(
+                            NavigationRoute.OTPConfirmation(
                                 details = OTPDetails.EmailOTP(parameters, methodId = result.value.methodId),
                                 isReturningUser = true
                             )

@@ -33,12 +33,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class ReturningUserWithPasswordScreen(
+internal class ReturningUserScreen(
     val emailAddress: String,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<ReturningUserWithPasswordScreenViewModel>()
+        val viewModel = viewModel<ReturningUserScreenViewModel>()
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val navigator = LocalNavigator.currentOrThrow
@@ -46,13 +46,13 @@ internal class ReturningUserWithPasswordScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is LoginEventState.LoggedInResult -> context.returnAuthenticationResult(it.result)
-                    is LoginEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
+                    is ReturningUserEventState.LoggedInResult -> context.returnAuthenticationResult(it.result)
+                    is ReturningUserEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
                 }
             }
         }
         viewModel.initializeState(emailAddress)
-        ReturningUserWithPasswordScreenComposable(
+        ReturningUserScreenComposable(
             uiState = uiState.value,
             hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS),
             hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
@@ -68,8 +68,8 @@ internal class ReturningUserWithPasswordScreen(
 }
 
 @Composable
-private fun ReturningUserWithPasswordScreenComposable(
-    uiState: LoginUiState,
+private fun ReturningUserScreenComposable(
+    uiState: ReturningUserUiState,
     hasEML: Boolean,
     hasEmailOTP: Boolean,
     onBack: () -> Unit,

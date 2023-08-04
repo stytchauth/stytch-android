@@ -7,7 +7,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.consumer.passwords.Passwords
-import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
@@ -29,7 +29,7 @@ internal data class OTPConfirmationUiState(
 internal sealed class OTPEventState {
     data class AuthenticatedState(val result: StytchResult<Any>) : OTPEventState()
 
-    data class NavigationRequested(val navigationState: NavigationState) : OTPEventState()
+    data class NavigationRequested(val navigationRoute: NavigationRoute) : OTPEventState()
 }
 
 internal class OTPConfirmationScreenViewModel : ViewModel() {
@@ -150,7 +150,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         OTPEventState.NavigationRequested(
-                            NavigationState.PasswordResetSent(
+                            NavigationRoute.PasswordResetSent(
                                 PasswordResetDetails(parameters)
                             )
                         )

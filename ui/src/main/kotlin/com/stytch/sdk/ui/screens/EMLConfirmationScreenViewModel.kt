@@ -6,7 +6,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.passwords.Passwords
-import com.stytch.sdk.ui.data.NavigationState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +21,7 @@ internal data class EMLConfirmationUiState(
 )
 
 internal sealed class EMLEventState {
-    data class NavigationRequested(val navigationState: NavigationState) : EMLEventState()
+    data class NavigationRequested(val navigationRoute: NavigationRoute) : EMLEventState()
 }
 
 internal class EMLConfirmationScreenViewModel : ViewModel() {
@@ -72,7 +72,7 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
                 when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         EMLEventState.NavigationRequested(
-                            NavigationState.PasswordResetSent(
+                            NavigationRoute.PasswordResetSent(
                                 PasswordResetDetails(parameters)
                             )
                         )

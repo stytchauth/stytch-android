@@ -63,7 +63,7 @@ internal data class OTPConfirmationScreen(
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is OTPEventState.AuthenticatedState -> context.returnAuthenticationResult(it.result)
-                    is OTPEventState.NavigationRequested -> navigator.push(it.navigationState.getScreen())
+                    is OTPEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
                 }
             }
         }
