@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.PasswordOptions
@@ -26,17 +27,11 @@ internal data class OTPConfirmationUiState(
     val genericErrorMessage: String? = null,
 )
 
-internal sealed class OTPEventState {
-    data class AuthenticatedState(val result: StytchResult<Any>) : OTPEventState()
-
-    data class NavigationRequested(val navigationRoute: NavigationRoute) : OTPEventState()
-}
-
 internal class OTPConfirmationScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(OTPConfirmationUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<OTPEventState>()
+    private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var methodId: String = ""
@@ -97,7 +92,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                         showLoadingOverlay = false,
                         genericErrorMessage = null,
                     )
-                    _eventFlow.emit(OTPEventState.AuthenticatedState(result))
+                    _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
@@ -142,7 +137,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
                 when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
-                        OTPEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(
                                 PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET),
                             ),

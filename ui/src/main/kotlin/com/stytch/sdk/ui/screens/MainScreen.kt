@@ -37,6 +37,7 @@ import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
@@ -57,8 +58,11 @@ internal object MainScreen : AndroidScreen(), Parcelable {
         val context = LocalContext.current as AuthenticationActivity
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
-            viewModel.navigationFlow.collectLatest {
-                navigator.push(it.getScreen())
+            viewModel.eventFlow.collectLatest {
+                when (it) {
+                    is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
+                    else -> {}
+                }
             }
         }
         MainScreenComposable(

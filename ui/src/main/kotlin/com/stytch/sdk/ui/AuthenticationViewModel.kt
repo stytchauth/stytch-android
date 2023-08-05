@@ -10,15 +10,15 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
-import com.stytch.sdk.ui.data.OAuthAuthenticationResult
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.SessionOptions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 internal class AuthenticationViewModel : ViewModel() {
-    private val _state = MutableSharedFlow<OAuthAuthenticationResult>()
-    val state = _state.asSharedFlow()
+    private val _eventFlow = MutableSharedFlow<EventState>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun authenticateGoogleOneTapLogin(data: Intent, sessionOptions: SessionOptions) {
         viewModelScope.launch {
@@ -27,7 +27,7 @@ internal class AuthenticationViewModel : ViewModel() {
                 sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
             )
             val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
-            _state.emit(OAuthAuthenticationResult(result))
+            _eventFlow.emit(EventState.Authenticated(result))
         }
     }
 
@@ -37,15 +37,15 @@ internal class AuthenticationViewModel : ViewModel() {
                 intent.data?.let {
                     when (val result = StytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
-                            _state.emit(OAuthAuthenticationResult(result.response.result))
+                            _eventFlow.emit(EventState.Authenticated(result.response.result))
                         }
                         else -> {} // this shouldn't happen
                     }
                 }
             } else {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
-                    _state.emit(
-                        OAuthAuthenticationResult(StytchResult.Error(StytchExceptions.Critical(it as SSOError))),
+                    _eventFlow.emit(
+                        EventState.Authenticated(StytchResult.Error(StytchExceptions.Critical(it as SSOError))),
                     )
                 }
             }

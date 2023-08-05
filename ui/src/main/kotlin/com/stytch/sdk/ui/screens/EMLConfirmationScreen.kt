@@ -30,6 +30,7 @@ import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
 import com.stytch.sdk.ui.data.EMLDetails
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
@@ -51,7 +52,8 @@ internal data class EMLConfirmationScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is EMLEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
+                    is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
+                    else -> {}
                 }
             }
         }

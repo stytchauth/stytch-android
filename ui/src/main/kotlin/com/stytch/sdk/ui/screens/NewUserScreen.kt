@@ -27,6 +27,7 @@ import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchButton
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
@@ -51,8 +52,8 @@ internal class NewUserScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is NewUserEventState.AccountCreated -> context.returnAuthenticationResult(it.result)
-                    is NewUserEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
+                    is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
+                    is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
                 }
             }
         }

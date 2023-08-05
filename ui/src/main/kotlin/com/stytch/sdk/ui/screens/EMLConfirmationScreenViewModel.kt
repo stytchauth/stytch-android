@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
@@ -20,15 +21,11 @@ internal data class EMLConfirmationUiState(
     val genericErrorMessage: String? = null,
 )
 
-internal sealed class EMLEventState {
-    data class NavigationRequested(val navigationRoute: NavigationRoute) : EMLEventState()
-}
-
 internal class EMLConfirmationScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(EMLConfirmationUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<EMLEventState>()
+    private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun resendEML(parameters: MagicLinks.EmailMagicLinks.Parameters) {
@@ -64,7 +61,7 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
                 val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
                 when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
-                        EMLEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(
                                 PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET),
                             ),

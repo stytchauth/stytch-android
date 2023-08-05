@@ -7,6 +7,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
@@ -22,15 +23,11 @@ internal data class PasswordResetUiState(
     val showLoadingDialog: Boolean = false,
 )
 
-internal sealed class PasswordResetEventState {
-    data class NavigationRequested(val navigationRoute: NavigationRoute) : PasswordResetEventState()
-}
-
 internal class PasswordResetSentScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(PasswordResetUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<PasswordResetEventState>()
+    private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun onDialogDismiss() {
@@ -65,7 +62,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        PasswordResetEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(
                                 details = EMLDetails(parameters),
                                 isReturningUser = true,
@@ -92,7 +89,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        PasswordResetEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
                                 details = OTPDetails.EmailOTP(parameters, methodId = result.value.methodId),
                                 isReturningUser = true,

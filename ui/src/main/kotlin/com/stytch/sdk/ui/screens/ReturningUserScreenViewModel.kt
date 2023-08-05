@@ -8,6 +8,7 @@ import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
@@ -30,17 +31,11 @@ internal data class ReturningUserUiState(
     val genericErrorMessage: String? = null,
 )
 
-internal sealed class ReturningUserEventState {
-    data class LoggedInResult(val result: StytchResult<Any>) : ReturningUserEventState()
-
-    data class NavigationRequested(val navigationRoute: NavigationRoute) : ReturningUserEventState()
-}
-
 internal class ReturningUserScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ReturningUserUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<ReturningUserEventState>()
+    private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var didInitialize = false
@@ -85,7 +80,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
             when (val result = StytchClient.passwords.authenticate(parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _eventFlow.emit(ReturningUserEventState.LoggedInResult(result))
+                    _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
@@ -106,7 +101,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        ReturningUserEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(
                                 details = EMLDetails(parameters),
                                 isReturningUser = true,
@@ -133,7 +128,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        ReturningUserEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
                                 details = OTPDetails.EmailOTP(parameters, methodId = result.value.methodId),
                                 isReturningUser = true,
@@ -160,7 +155,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        ReturningUserEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(
                                 PasswordResetDetails(parameters, PasswordResetType.FORGOT_PASSWORD),
                             ),

@@ -30,6 +30,7 @@ import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PasswordResetType
@@ -53,7 +54,8 @@ internal data class PasswordResetSentScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is PasswordResetEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
+                    is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
+                    else -> {}
                 }
             }
         }

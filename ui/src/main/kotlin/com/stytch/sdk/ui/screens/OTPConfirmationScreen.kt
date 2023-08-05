@@ -32,6 +32,7 @@ import com.stytch.sdk.ui.components.OTPEntry
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
@@ -62,8 +63,8 @@ internal data class OTPConfirmationScreen(
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
-                    is OTPEventState.AuthenticatedState -> context.returnAuthenticationResult(it.result)
-                    is OTPEventState.NavigationRequested -> navigator.push(it.navigationRoute.getScreen())
+                    is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
+                    is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
                 }
             }
         }

@@ -10,8 +10,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
@@ -23,7 +25,10 @@ public class AuthenticationActivity : ComponentActivity() {
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY) ?: error("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { returnAuthenticationResult(it.result) }
+                viewModel
+                    .eventFlow
+                    .filter { it is EventState.Authenticated }
+                    .collect { returnAuthenticationResult((it as EventState.Authenticated).result) }
             }
         }
         setContent {

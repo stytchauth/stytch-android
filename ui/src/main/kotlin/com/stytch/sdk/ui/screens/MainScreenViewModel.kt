@@ -13,6 +13,7 @@ import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAU
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
@@ -43,8 +44,8 @@ internal class MainScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _navigationFlow = MutableSharedFlow<NavigationRoute>()
-    val navigationFlow = _navigationFlow.asSharedFlow()
+    private val _eventFlow = MutableSharedFlow<EventState>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onStartOAuthLogin(
         context: ComponentActivity,
@@ -159,7 +160,7 @@ internal class MainScreenViewModel : ViewModel() {
                     null
                 }
             }?.let {
-                _navigationFlow.emit(it)
+                _eventFlow.emit(EventState.NavigationRequested(it))
             }
             _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
         }
@@ -235,13 +236,15 @@ internal class MainScreenViewModel : ViewModel() {
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
-                    _navigationFlow.emit(
-                        NavigationRoute.OTPConfirmation(
-                            OTPDetails.SmsOTP(
-                                parameters = parameters,
-                                methodId = result.value.methodId,
-                            ),
-                            isReturningUser = false,
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(
+                            NavigationRoute.OTPConfirmation(
+                                OTPDetails.SmsOTP(
+                                    parameters = parameters,
+                                    methodId = result.value.methodId,
+                                ),
+                                isReturningUser = false,
+                            )
                         ),
                     )
                 }
@@ -265,13 +268,15 @@ internal class MainScreenViewModel : ViewModel() {
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
-                    _navigationFlow.emit(
-                        NavigationRoute.OTPConfirmation(
-                            OTPDetails.WhatsAppOTP(
-                                parameters = parameters,
-                                methodId = result.value.methodId,
-                            ),
-                            isReturningUser = false,
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(
+                            NavigationRoute.OTPConfirmation(
+                                OTPDetails.WhatsAppOTP(
+                                    parameters = parameters,
+                                    methodId = result.value.methodId,
+                                ),
+                                isReturningUser = false,
+                            )
                         ),
                     )
                 }

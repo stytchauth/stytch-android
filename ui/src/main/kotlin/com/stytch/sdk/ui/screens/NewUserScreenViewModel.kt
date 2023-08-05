@@ -8,6 +8,7 @@ import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
+import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
@@ -25,17 +26,11 @@ internal data class NewUserUiState(
     val showLoadingDialog: Boolean = false,
 )
 
-internal sealed class NewUserEventState {
-    data class AccountCreated(val result: StytchResult<Any>) : NewUserEventState()
-
-    data class NavigationRequested(val navigationRoute: NavigationRoute) : NewUserEventState()
-}
-
 internal class NewUserScreenViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(NewUserUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<NewUserEventState>()
+    private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var didInitialize = false
@@ -57,7 +52,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        NewUserEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(EMLDetails(parameters), isReturningUser = false),
                         ),
                     )
@@ -83,7 +78,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
-                        NewUserEventState.NavigationRequested(
+                        EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
                                 OTPDetails.EmailOTP(
                                     parameters = parameters,
@@ -168,7 +163,7 @@ internal class NewUserScreenViewModel : ViewModel() {
             ) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _eventFlow.emit(NewUserEventState.AccountCreated(result))
+                    _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
