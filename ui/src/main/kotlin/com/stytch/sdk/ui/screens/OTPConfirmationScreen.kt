@@ -58,9 +58,9 @@ internal data class OTPConfirmationScreen(
             is OTPDetails.SmsOTP -> resendParameters.parameters.phoneNumber
             is OTPDetails.WhatsAppOTP -> resendParameters.parameters.phoneNumber
         }
-        viewModel.setInitialState(resendParameters)
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
+            viewModel.setInitialState(resendParameters)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -137,7 +137,7 @@ private fun OTPConfirmationScreenComposable(
             )
         }
     }
-    if (uiState.showLoadingOverlay) {
+    if (uiState.showLoadingDialog) {
         LoadingDialog()
     }
     if (uiState.showResendDialog) {

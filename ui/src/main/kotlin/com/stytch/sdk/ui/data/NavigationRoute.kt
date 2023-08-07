@@ -6,6 +6,7 @@ import com.stytch.sdk.ui.screens.NewUserScreen
 import com.stytch.sdk.ui.screens.OTPConfirmationScreen
 import com.stytch.sdk.ui.screens.PasswordResetSentScreen
 import com.stytch.sdk.ui.screens.ReturningUserScreen
+import com.stytch.sdk.ui.screens.SetPasswordScreen
 
 internal sealed class NavigationRoute {
     abstract val screen: AndroidScreen
@@ -38,5 +39,9 @@ internal sealed class NavigationRoute {
 
     data class PasswordResetSent(val details: PasswordResetDetails) : NavigationRoute() {
         override val screen = PasswordResetSentScreen(details = details)
+    }
+
+    data class SetNewPassword(val emailAddress: String, val token: String) : NavigationRoute() {
+        override val screen: AndroidScreen = SetPasswordScreen(emailAddress = emailAddress, token = token)
     }
 }

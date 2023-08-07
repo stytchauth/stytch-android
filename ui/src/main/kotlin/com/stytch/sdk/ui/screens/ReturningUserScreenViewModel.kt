@@ -38,14 +38,10 @@ internal class ReturningUserScreenViewModel : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var didInitialize = false
-
     fun initializeState(emailAddress: String) {
-        if (didInitialize) return
         _uiState.value = _uiState.value.copy(
             emailState = EmailState(emailAddress = emailAddress, validEmail = true),
         )
-        didInitialize = true
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
@@ -82,10 +78,14 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
-                is StytchResult.Error -> _uiState.value = _uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.reason.toString(), // TODO
-                )
+                is StytchResult.Error -> {
+                    // TODO: check the error type and if it's reset_password, send reset password request and nav appropriately
+                    // else:
+                    _uiState.value = _uiState.value.copy(
+                        showLoadingDialog = false,
+                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                    )
+                }
             }
         }
     }

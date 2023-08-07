@@ -48,8 +48,8 @@ internal class NewUserScreen(
         val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
         val hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
             productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
-        viewModel.setInitialState(emailAddress)
         LaunchedEffect(Unit) {
+            viewModel.setInitialState(emailAddress)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)

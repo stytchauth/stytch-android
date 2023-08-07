@@ -37,7 +37,7 @@ internal data class MainScreenUiState(
     val emailState: EmailState = EmailState(),
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),
     val genericErrorMessage: String? = null,
-    val showLoadingOverlay: Boolean = false,
+    val showLoadingDialog: Boolean = false,
 )
 
 internal class MainScreenViewModel : ViewModel() {
@@ -52,7 +52,7 @@ internal class MainScreenViewModel : ViewModel() {
         provider: OAuthProvider,
         productConfig: StytchProductConfig,
     ) {
-        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         if (provider == OAuthProvider.GOOGLE) {
             viewModelScope.launch {
                 val didStartOneTap = productConfig.googleOauthOptions.clientId?.let { clientId ->
@@ -122,7 +122,7 @@ internal class MainScreenViewModel : ViewModel() {
     }
 
     fun onEmailAddressSubmit(productConfig: StytchProductConfig) {
-        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             val emailAddress = _uiState.value.emailState.emailAddress
             when (getUserType(emailAddress)) {
@@ -134,19 +134,19 @@ internal class MainScreenViewModel : ViewModel() {
                         productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
                     ) {
                         // send Email OTP
-                        sendEmailOTPForReturningUserAndGetNavigationState(
+                        sendEmailOTPForReturningUserAndGetNavigationRoute(
                             emailAddress = emailAddress,
                             otpOptions = productConfig.otpOptions,
                         )
                     } else if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
                         // send EML
-                        sendEmailMagicLinkForReturningUserAndGetNavigationArguments(
+                        sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
                             emailAddress = emailAddress,
                             emailMagicLinksOptions = productConfig.emailMagicLinksOptions,
                         )
                     } else {
                         // no Email OTP or EML, so set password
-                        sendResetPasswordForReturningUserAndGetNavigationState(
+                        sendResetPasswordForReturningUserAndGetNavigationRoute(
                             emailAddress = emailAddress,
                             passwordOptions = productConfig.passwordOptions,
                         )
@@ -154,7 +154,7 @@ internal class MainScreenViewModel : ViewModel() {
                 }
                 else -> {
                     _uiState.value = uiState.value.copy(
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                         genericErrorMessage = "Failed to get user type",
                     )
                     null
@@ -162,7 +162,7 @@ internal class MainScreenViewModel : ViewModel() {
             }?.let {
                 _eventFlow.emit(EventState.NavigationRequested(it))
             }
-            _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+            _uiState.value = _uiState.value.copy(showLoadingDialog = false)
         }
     }
 
@@ -173,7 +173,7 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationArguments(
+    suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
     ): NavigationRoute? {
@@ -189,7 +189,7 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    suspend fun sendEmailOTPForReturningUserAndGetNavigationState(
+    suspend fun sendEmailOTPForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         otpOptions: OTPOptions,
     ): NavigationRoute? {
@@ -212,7 +212,7 @@ internal class MainScreenViewModel : ViewModel() {
         }
     }
 
-    suspend fun sendResetPasswordForReturningUserAndGetNavigationState(
+    suspend fun sendResetPasswordForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         passwordOptions: PasswordOptions,
     ): NavigationRoute? {
@@ -229,13 +229,13 @@ internal class MainScreenViewModel : ViewModel() {
     }
 
     fun sendSmsOTP(otpOptions: OTPOptions) {
-        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             val phoneNumberState = _uiState.value.phoneNumberState
             val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164())
             when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -253,7 +253,7 @@ internal class MainScreenViewModel : ViewModel() {
                         phoneNumberState = phoneNumberState.copy(
                             error = result.exception.reason.toString(), // TODO
                         ),
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                     )
                 }
             }
@@ -261,13 +261,13 @@ internal class MainScreenViewModel : ViewModel() {
     }
 
     fun sendWhatsAppOTP(otpOptions: OTPOptions) {
-        _uiState.value = _uiState.value.copy(showLoadingOverlay = true)
+        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             val phoneNumberState = _uiState.value.phoneNumberState
             val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164())
             when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingOverlay = false)
+                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -285,7 +285,7 @@ internal class MainScreenViewModel : ViewModel() {
                         phoneNumberState = phoneNumberState.copy(
                             error = result.exception.reason.toString(), // TODO
                         ),
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                     )
                 }
             }

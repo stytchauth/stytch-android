@@ -200,7 +200,7 @@ private fun MainScreenComposable(
             FormFieldStatus(text = it, isError = true)
         }
     }
-    if (uiState.showLoadingOverlay) {
+    if (uiState.showLoadingDialog) {
         LoadingDialog()
     }
 }

@@ -33,14 +33,10 @@ internal class NewUserScreenViewModel : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var didInitialize = false
-
     fun setInitialState(email: String) {
-        if (didInitialize) return
         _uiState.value = _uiState.value.copy(
             emailState = EmailState(emailAddress = email),
         )
-        didInitialize = true
     }
 
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions) {

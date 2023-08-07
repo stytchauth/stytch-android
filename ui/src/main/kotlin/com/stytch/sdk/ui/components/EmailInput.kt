@@ -31,6 +31,7 @@ internal fun EmailInput(
                 imeAction = ImeAction.Done,
             ),
             label = label,
+            readOnly = emailState.readOnly,
         )
         if (isError) {
             FormFieldStatus(

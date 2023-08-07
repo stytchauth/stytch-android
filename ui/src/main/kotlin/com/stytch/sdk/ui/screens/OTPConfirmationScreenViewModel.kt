@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 internal data class OTPConfirmationUiState(
     val expirationTimeFormatted: String = "",
-    val showLoadingOverlay: Boolean = false,
+    val showLoadingDialog: Boolean = false,
     val showResendDialog: Boolean = false,
     val genericErrorMessage: String? = null,
 )
@@ -43,9 +43,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 expirationTimeFormatted = DateUtils.formatElapsedTime(value),
             )
         }
-    private var didInitialize = false
     fun setInitialState(resendParameters: OTPDetails) {
-        if (didInitialize) return
         methodId = when (resendParameters) {
             is OTPDetails.EmailOTP -> resendParameters.methodId
             is OTPDetails.SmsOTP -> resendParameters.methodId
@@ -65,7 +63,6 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 countdownSeconds -= 1
             }
         }
-        didInitialize = true
     }
 
     fun onDialogDismiss() {
@@ -89,14 +86,14 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
             ) {
                 is StytchResult.Success -> {
                     _uiState.value = _uiState.value.copy(
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                         genericErrorMessage = null,
                     )
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                         genericErrorMessage = result.exception.reason.toString(),
                     )
                 }
@@ -115,14 +112,14 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {
                     methodId = result.value.methodId
                     _uiState.value = _uiState.value.copy(
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                         showResendDialog = false,
                     )
                     countdownSeconds = resendCountdownSeconds
                 }
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        showLoadingOverlay = false,
+                        showLoadingDialog = false,
                         showResendDialog = false,
                         genericErrorMessage = result.exception.reason.toString(),
                     )

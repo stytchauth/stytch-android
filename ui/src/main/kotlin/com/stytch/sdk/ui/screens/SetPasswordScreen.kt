@@ -2,8 +2,6 @@ package com.stytch.sdk.ui.screens
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,32 +18,29 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
-import com.stytch.sdk.ui.components.DividerWithText
 import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
-import com.stytch.sdk.ui.components.StytchTextButton
 import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.OTPMethods
-import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class ReturningUserScreen(
+internal data class SetPasswordScreen(
     val emailAddress: String,
+    val token: String,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<ReturningUserScreenViewModel>()
-        val productConfig = LocalStytchProductConfig.current
-        val context = LocalContext.current as AuthenticationActivity
+        val viewModel = viewModel<SetPasswordScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
         val uiState = viewModel.uiState.collectAsState()
+        val context = LocalContext.current as AuthenticationActivity
+        val productConfig = LocalStytchProductConfig.current
         LaunchedEffect(Unit) {
-            viewModel.initializeState(emailAddress)
+            viewModel.setInitialState(emailAddress = emailAddress, token = token)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -53,72 +48,37 @@ internal class ReturningUserScreen(
                 }
             }
         }
-        ReturningUserScreenComposable(
+        SetPasswordScreenComposable(
             uiState = uiState.value,
-            hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS),
-            hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
-                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
             onBack = navigator::pop,
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
-            onEmailAndPasswordSubmitted = { viewModel.authenticate(productConfig.sessionOptions) },
-            sendEML = { viewModel.sendEML(productConfig.emailMagicLinksOptions) },
-            sendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
-            onForgotPasswordClicked = { viewModel.onForgotPasswordClicked(productConfig.passwordOptions) },
+            onSubmit = { viewModel.onSubmit(productConfig.sessionOptions) },
         )
     }
 }
 
 @Composable
-private fun ReturningUserScreenComposable(
-    uiState: ReturningUserUiState,
-    hasEML: Boolean,
-    hasEmailOTP: Boolean,
+private fun SetPasswordScreenComposable(
+    uiState: SetPasswordScreenUiState,
     onBack: () -> Unit,
     onEmailAddressChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onEmailAndPasswordSubmitted: () -> Unit,
-    sendEML: () -> Unit,
-    sendEmailOTP: () -> Unit,
-    onForgotPasswordClicked: () -> Unit,
+    onSubmit: () -> Unit,
 ) {
-    val emailState = uiState.emailState
-    val passwordState = uiState.passwordState
-
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.log_in),
+            text = stringResource(id = R.string.set_new_password),
             textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(
-            emailState = emailState,
+            emailState = uiState.emailState,
             onEmailAddressChanged = onEmailAddressChanged,
-            passwordState = passwordState,
+            passwordState = uiState.passwordState,
             onPasswordChanged = onPasswordChanged,
-            onSubmit = onEmailAndPasswordSubmitted,
+            onSubmit = onSubmit,
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        StytchTextButton(
-            text = stringResource(id = R.string.forgot_password),
-            onClick = onForgotPasswordClicked,
-        )
-        if (hasEML || hasEmailOTP) {
-            DividerWithText(
-                modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
-            )
-            StytchTextButton(
-                text = stringResource(
-                    id = if (hasEML) {
-                        R.string.email_me_a_login_link
-                    } else {
-                        R.string.email_me_a_login_code
-                    },
-                ),
-                onClick = { if (hasEML) sendEML() else sendEmailOTP() },
-            )
-        }
     }
     uiState.genericErrorMessage?.let {
         FormFieldStatus(text = it, isError = true)
