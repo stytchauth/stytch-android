@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
-import com.stytch.sdk.ui.screens.MainScreen
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 
@@ -28,6 +28,7 @@ import com.stytch.sdk.ui.theme.LocalStytchTheme
 internal fun StytchAuthenticationApp(
     modifier: Modifier = Modifier,
     bootstrapData: BootstrapData,
+    startingScreen: AndroidScreen,
 ) {
     val productConfig = LocalStytchProductConfig.current
     if (
@@ -53,7 +54,7 @@ internal fun StytchAuthenticationApp(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Navigator(MainScreen)
+            Navigator(startingScreen)
             if (!bootstrapData.disableSDKWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

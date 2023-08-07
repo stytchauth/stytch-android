@@ -15,7 +15,7 @@
                 <!-- These manifestPlaceholders in are defined in the application build.gradle -->
                 <data
                     android:scheme="stytchui-${STYTCH_UI_PUBLIC_TOKEN}"
-                    android:host="/" />
+                    android:host="deeplink" />
             </intent-filter>
         </activity>
     </application>

@@ -54,6 +54,7 @@ internal class NewUserScreen(
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
                     is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
+                    is EventState.Exit -> context.exitWithoutAuthenticating()
                 }
             }
         }

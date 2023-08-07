@@ -9,11 +9,12 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import cafe.adriel.voyager.androidx.AndroidScreen
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchUIConfig
+import com.stytch.sdk.ui.screens.MainScreen
 import com.stytch.sdk.ui.theme.StytchTheme
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
@@ -22,20 +23,41 @@ public class AuthenticationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY) ?: error("No UI Configuration Provided")
+        uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
+            ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
+            ?: error("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
                     .eventFlow
-                    .filter { it is EventState.Authenticated }
-                    .collect { returnAuthenticationResult((it as EventState.Authenticated).result) }
+                    .collect {
+                        when (it) {
+                            is EventState.Authenticated -> returnAuthenticationResult(it.result)
+                            is EventState.Exit -> exitWithoutAuthenticating()
+                            is EventState.NavigationRequested -> renderApplication(it.navigationRoute.screen)
+                        }
+                    }
             }
         }
+        renderApplication(MainScreen)
+    }
+
+    private fun renderApplication(screen: AndroidScreen) {
         setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
                     bootstrapData = uiConfig.bootstrapData,
+                    startingScreen = screen,
                 )
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent.data?.let {
+                viewModel.handleDeepLink(it, uiConfig.productConfig.sessionOptions)
             }
         }
     }

@@ -2,6 +2,7 @@ package com.stytch.sdk.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.DeeplinkHandledStatus
@@ -11,6 +12,7 @@ import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.SessionOptions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -46,6 +48,31 @@ internal class AuthenticationViewModel : ViewModel() {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
                     _eventFlow.emit(
                         EventState.Authenticated(StytchResult.Error(StytchExceptions.Critical(it as SSOError))),
+                    )
+                }
+            }
+        }
+    }
+
+    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions) {
+        viewModelScope.launch {
+            when (
+                val result = StytchClient.handle(
+                    uri = uri,
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes
+                )
+            ) {
+                is DeeplinkHandledStatus.Handled -> {
+                    _eventFlow.emit(EventState.Authenticated(result.response.result))
+                }
+                is DeeplinkHandledStatus.NotHandled -> {
+                    _eventFlow.emit(EventState.Exit)
+                }
+                is DeeplinkHandledStatus.ManualHandlingRequired -> {
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(
+                            NavigationRoute.SetNewPassword(emailAddress = "", token = result.token)
+                        )
                     )
                 }
             }

@@ -17,6 +17,7 @@ import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.OTPOptions
+import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
@@ -34,8 +35,12 @@ class UiWorkbenchActivity : ComponentActivity() {
                     StytchProduct.PASSWORDS,
                 ),
                 emailMagicLinksOptions = EmailMagicLinksOptions(
-                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://eml",
-                    signupRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://eml",
+                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
+                    signupRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
+                ),
+                passwordOptions = PasswordOptions(
+                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
+                    resetPasswordRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
                 ),
                 googleOauthOptions = GoogleOAuthOptions(
                     clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
