@@ -21,7 +21,6 @@ internal data class SetPasswordScreenUiState(
     val passwordState: PasswordState = PasswordState(),
     val genericErrorMessage: String? = null,
     val showLoadingDialog: Boolean = false,
-    val token: String? = null,
 )
 
 internal class SetPasswordScreenViewModel : ViewModel() {
@@ -31,14 +30,13 @@ internal class SetPasswordScreenViewModel : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun setInitialState(emailAddress: String, token: String,) {
+    fun setInitialState(emailAddress: String) {
         _uiState.value = _uiState.value.copy(
             emailState = EmailState(
                 emailAddress = emailAddress,
                 validEmail = emailAddress.isValidEmailAddress(),
                 readOnly = true,
-            ),
-            token = token,
+            )
         )
     }
 
@@ -88,14 +86,8 @@ internal class SetPasswordScreenViewModel : ViewModel() {
         }
     }
 
-    fun onSubmit(sessionOptions: SessionOptions) {
+    fun onSubmit(token: String, sessionOptions: SessionOptions) {
         val password = _uiState.value.passwordState.password
-        val token = _uiState.value.token ?: run {
-            _uiState.value = _uiState.value.copy(
-                genericErrorMessage = "Missing token" // TODO
-            )
-            return
-        }
         viewModelScope.launch {
             val parameters = Passwords.ResetByEmailParameters(
                 token = token,

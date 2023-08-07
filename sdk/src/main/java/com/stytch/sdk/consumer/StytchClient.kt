@@ -251,8 +251,8 @@ public object StytchClient {
                         )
                     )
                 }
-                ConsumerTokenType.PASSWORD_RESET -> {
-                    DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.PASSWORD_RESET, token = token)
+                ConsumerTokenType.RESET_PASSWORD -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.RESET_PASSWORD, token = token)
                 }
                 else -> {
                     DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)

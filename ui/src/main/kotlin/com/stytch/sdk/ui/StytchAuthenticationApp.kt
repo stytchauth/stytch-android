@@ -21,6 +21,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
+import com.stytch.sdk.ui.screens.MainScreen
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 
@@ -28,7 +29,7 @@ import com.stytch.sdk.ui.theme.LocalStytchTheme
 internal fun StytchAuthenticationApp(
     modifier: Modifier = Modifier,
     bootstrapData: BootstrapData,
-    startingScreen: AndroidScreen,
+    screen: AndroidScreen? = null,
 ) {
     val productConfig = LocalStytchProductConfig.current
     if (
@@ -54,7 +55,7 @@ internal fun StytchAuthenticationApp(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Navigator(startingScreen)
+            Navigator(listOfNotNull(MainScreen, screen))
             if (!bootstrapData.disableSDKWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

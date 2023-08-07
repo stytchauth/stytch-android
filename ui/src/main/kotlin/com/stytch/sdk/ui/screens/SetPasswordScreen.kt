@@ -40,7 +40,7 @@ internal data class SetPasswordScreen(
         val context = LocalContext.current as AuthenticationActivity
         val productConfig = LocalStytchProductConfig.current
         LaunchedEffect(Unit) {
-            viewModel.setInitialState(emailAddress = emailAddress, token = token)
+            viewModel.setInitialState(emailAddress = emailAddress)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -54,7 +54,7 @@ internal data class SetPasswordScreen(
             onBack = navigator::pop,
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
-            onSubmit = { viewModel.onSubmit(productConfig.sessionOptions) },
+            onSubmit = { viewModel.onSubmit(token, productConfig.sessionOptions) },
         )
     }
 }

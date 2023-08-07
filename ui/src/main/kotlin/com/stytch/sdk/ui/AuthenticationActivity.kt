@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.Text
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -39,7 +40,13 @@ public class AuthenticationActivity : ComponentActivity() {
                     }
             }
         }
-        renderApplication(MainScreen)
+        setContent {
+            StytchTheme(config = uiConfig) {
+                StytchAuthenticationApp(
+                    bootstrapData = uiConfig.bootstrapData,
+                )
+            }
+        }
     }
 
     private fun renderApplication(screen: AndroidScreen) {
@@ -47,7 +54,7 @@ public class AuthenticationActivity : ComponentActivity() {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
                     bootstrapData = uiConfig.bootstrapData,
-                    startingScreen = screen,
+                    screen = screen,
                 )
             }
         }
