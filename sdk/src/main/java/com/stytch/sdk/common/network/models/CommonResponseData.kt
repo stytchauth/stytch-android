@@ -290,6 +290,8 @@ public data class BootstrapData(
     val slugPattern: String? = null,
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
+    @Json(name = "dfp_protected_auth_enabled")
+    val dfpProtectedAuthEnabled: Boolean = true, // TODO: Change this to false after this is configured in the dash
 )
 
 @JsonClass(generateAdapter = true)
