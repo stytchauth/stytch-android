@@ -290,36 +290,9 @@ public data class BootstrapData(
     val slugPattern: String? = null,
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
-    // TODO: Disabled by default, this is just for testing
     @Json(name = "dfp_protected_auth_enabled")
-    val dfpProtectedAuthEnabled: DFPProtectedAuthEnabled = DFPProtectedAuthEnabled.ENABLED,
-    @Json(name = "dfp_protected_auth_on_challenge")
-    val dfpProtectedAuthOnChallenge: DFPProtectedAuthOnChallenge = DFPProtectedAuthOnChallenge.TRIGGER_CAPTCHA,
+    val dfpProtectedAuthEnabled: Boolean = true, // TODO: Disabled by default, this is just for testing
 )
-
-@JsonClass(generateAdapter = false)
-public enum class DFPProtectedAuthEnabled {
-    @Json(name = "enabled")
-    ENABLED,
-
-    @Json(name = "disabled")
-    DISABLED,
-
-    @Json(name = "passive")
-    PASSIVE
-}
-
-@JsonClass(generateAdapter = false)
-public enum class DFPProtectedAuthOnChallenge {
-    @Json(name = "allow")
-    ALLOW,
-
-    @Json(name = "block")
-    BLOCK,
-
-    @Json(name = "trigger_captcha")
-    TRIGGER_CAPTCHA
-}
 
 @JsonClass(generateAdapter = true)
 public data class CaptchaSettings(
