@@ -8,6 +8,7 @@ import com.stytch.sdk.common.network.models.CommonResponses
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 internal interface StytchB2BApiService : ApiService {
     //region Magic Links
@@ -105,4 +106,11 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.SSO.AuthenticateRequest
     ): B2BResponses.SSO.AuthenticateResponse
     //endregion SSO
+
+    //region Bootstrap
+    @GET("projects/bootstrap/{publicToken}")
+    suspend fun getBootstrapData(
+        @Path(value = "publicToken") publicToken: String
+    ): CommonResponses.Bootstrap.BootstrapResponse
+    //endregion Bootstrap
 }

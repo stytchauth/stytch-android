@@ -20,6 +20,11 @@ internal object CommonResponses {
         class RevokeResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
     }
 
+    object Bootstrap {
+        @JsonClass(generateAdapter = true)
+        class BootstrapResponse(data: BootstrapData) : StytchDataResponse<BootstrapData>(data)
+    }
+
     @JsonClass(generateAdapter = true)
     class BasicResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
 
