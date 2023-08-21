@@ -8,6 +8,7 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
+import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
@@ -52,6 +53,15 @@ internal object StytchApi {
         ) { StytchClient.sessionStorage.sessionToken }
     }
 
+    @VisibleForTesting
+    internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
+        if (StytchClient.bootstrapData.dfpProtectedAuthEnabled || true) { // TODO: remove short circuit
+            StytchDFPInterceptor()
+        } else {
+            null
+        }
+    }
+
     internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
@@ -74,6 +84,7 @@ internal object StytchApi {
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
+            dfpInterceptor,
             { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java
         )

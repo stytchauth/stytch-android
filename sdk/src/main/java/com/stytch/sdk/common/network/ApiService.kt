@@ -16,6 +16,7 @@ internal interface ApiService {
     companion object {
         private fun clientBuilder(
             authHeaderInterceptor: StytchAuthHeaderInterceptor?,
+            dfpInterceptor: StytchDFPInterceptor?,
             revokeSession: () -> Unit,
         ): OkHttpClient {
             val builder = OkHttpClient.Builder()
@@ -23,6 +24,7 @@ internal interface ApiService {
                 .writeTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
                 .connectTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
             authHeaderInterceptor?.let { builder.addInterceptor(it) }
+            dfpInterceptor?.let { builder.addInterceptor(it) }
             builder
                 .addInterceptor(
                     Interceptor { chain ->
@@ -50,6 +52,7 @@ internal interface ApiService {
         fun <T : ApiService> createApiService(
             hostUrl: String,
             authHeaderInterceptor: StytchAuthHeaderInterceptor?,
+            dfpInterceptor: StytchDFPInterceptor?,
             revokeSession: () -> Unit,
             apiService: Class<T>
         ): T {
@@ -59,7 +62,7 @@ internal interface ApiService {
             return Retrofit.Builder()
                 .baseUrl(hostUrl)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .client(clientBuilder(authHeaderInterceptor, revokeSession))
+                .client(clientBuilder(authHeaderInterceptor, dfpInterceptor, revokeSession))
                 .build()
                 .create(apiService)
         }
