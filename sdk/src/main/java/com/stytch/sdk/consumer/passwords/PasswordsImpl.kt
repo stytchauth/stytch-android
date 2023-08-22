@@ -157,7 +157,8 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override fun resetBySession(parameters: Passwords.ResetBySessionParameters,
+    override fun resetBySession(
+        parameters: Passwords.ResetBySessionParameters,
         callback: (AuthResponse) -> Unit
     ) {
         externalScope.launch(dispatchers.ui) {

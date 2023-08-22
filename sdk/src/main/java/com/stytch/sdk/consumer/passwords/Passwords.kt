@@ -107,7 +107,6 @@ public interface Passwords {
      */
     public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
 
-
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property email is the account identifier for the account in the form of an Email address that you wish to use to
