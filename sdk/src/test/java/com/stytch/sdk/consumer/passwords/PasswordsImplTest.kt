@@ -64,6 +64,7 @@ internal class PasswordsImplTest {
         resetPasswordTemplateId = null,
     )
     private val resetByEmailParameters = mockk<Passwords.ResetByEmailParameters>(relaxed = true)
+    private val resetBySessionParameters = mockk<Passwords.ResetBySessionParameters>(relaxed = true)
     private val strengthCheckParameters = mockk<Passwords.StrengthCheckParameters>(relaxed = true)
 
     @Before
@@ -172,6 +173,21 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl resetByEmail with callback calls callback method`() {
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.resetByEmail(resetByEmailParameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `PasswordsImpl resetBySession delegates to api`() = runTest {
+        coEvery { mockApi.resetBySession(any()) } returns mockk()
+        impl.resetBySession(resetBySessionParameters)
+        coVerify { mockApi.resetBySession(any()) }
+    }
+
+    @Test
+    fun `PasswordsImpl resetBySession with callback calls callback method`() {
+        coEvery { mockApi.resetBySession(any()) } returns mockk()
+        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        impl.resetBySession(resetBySessionParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
