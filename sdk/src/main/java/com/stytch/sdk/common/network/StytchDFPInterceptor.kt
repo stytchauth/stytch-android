@@ -1,5 +1,6 @@
 package com.stytch.sdk.common.network
 
+import com.stytch.sdk.common.dfp.DFPProvider
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -12,7 +13,9 @@ private const val DFP_TELEMETRY_ID_KEY = "dfp_telemetry_id"
 private const val CAPTCHA_TOKEN_KEY = "captcha_token"
 private const val HTTP_UNAUTHORIZED = 403
 
-internal class StytchDFPInterceptor : Interceptor {
+internal class StytchDFPInterceptor(
+    private val dfpProvider: DFPProvider
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         if (request.method == "GET" || request.method == "DELETE") return chain.proceed(request)
@@ -30,8 +33,8 @@ internal class StytchDFPInterceptor : Interceptor {
     }
 
     private fun Request.addDfpTelemetryIdToRequest(): Request {
-        // TODO: fetch the telemetry ID (SDK-1127)
         val dfpTelemetryId = "dfp-telemetry-id"
+        dfpProvider.getTelemetryId()
         return toNewRequest(mapOf(DFP_TELEMETRY_ID_KEY to dfpTelemetryId))
     }
 

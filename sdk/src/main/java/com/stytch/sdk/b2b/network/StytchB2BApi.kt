@@ -26,6 +26,7 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -39,6 +40,7 @@ import java.lang.RuntimeException
 internal object StytchB2BApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    private lateinit var dfpProvider: DFPProvider
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -61,15 +63,16 @@ internal object StytchB2BApi {
     @VisibleForTesting
     internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
         if (StytchB2BClient.bootstrapData.dfpProtectedAuthEnabled) {
-            StytchDFPInterceptor()
+            StytchDFPInterceptor(this.dfpProvider)
         } else {
             null
         }
     }
 
-    internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo, dfpProvider: DFPProvider) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+        this.dfpProvider = dfpProvider
     }
 
     internal val isInitialized: Boolean

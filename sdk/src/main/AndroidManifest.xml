@@ -24,6 +24,10 @@
                     android:host="${stytchOAuthRedirectHost}" />
             </intent-filter>
         </activity>
+        <activity
+            android:exported="true"
+            android:name=".common.dfp.DFPActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     </application>
     <queries>
         <intent>
