@@ -38,6 +38,11 @@ internal class DFPProviderImpl(
     private val stytchDfpInterface = object {
         @JavascriptInterface
         fun reportTelemetryId(telemetryId: String) {
+            activityProvider.currentActivity?.let {
+                it.runOnUiThread {
+                    (webview.parent as? ViewGroup)?.removeView(webview)
+                }
+            }
             if (continuation.isActive) {
                 continuation.resume(telemetryId, null)
             }
@@ -46,11 +51,14 @@ internal class DFPProviderImpl(
 
     private lateinit var continuation: CancellableContinuation<String>
 
+    private lateinit var webview: WebView
+
     override suspend fun getTelemetryId(): String = suspendCancellableCoroutine { cont ->
         continuation = cont
         activityProvider.currentActivity?.let {
             it.runOnUiThread {
-                it.addContentView(createWebView(it), ViewGroup.LayoutParams(0, 0))
+                webview = createWebView(it)
+                it.addContentView(webview, ViewGroup.LayoutParams(0, 0))
             }
         }
     }
