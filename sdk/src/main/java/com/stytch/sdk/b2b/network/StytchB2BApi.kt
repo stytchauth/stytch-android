@@ -28,6 +28,7 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
+import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
@@ -57,6 +58,15 @@ internal object StytchB2BApi {
         ) { StytchB2BClient.sessionStorage.sessionToken }
     }
 
+    @VisibleForTesting
+    internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
+        if (StytchB2BClient.bootstrapData.dfpProtectedAuthEnabled) {
+            StytchDFPInterceptor()
+        } else {
+            null
+        }
+    }
+
     internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
@@ -79,6 +89,7 @@ internal object StytchB2BApi {
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
+            dfpInterceptor,
             { StytchB2BClient.sessionStorage.revoke() },
             StytchB2BApiService::class.java
         )
