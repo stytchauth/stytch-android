@@ -296,5 +296,6 @@ public data class BootstrapData(
 
 @JsonClass(generateAdapter = true)
 public data class CaptchaSettings(
-    val enabled: Boolean = false
+    val enabled: Boolean = false,
+    val siteKey: String? = null
 )
