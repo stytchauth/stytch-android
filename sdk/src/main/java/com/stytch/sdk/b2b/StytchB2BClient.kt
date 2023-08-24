@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
@@ -25,6 +26,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
@@ -57,7 +59,11 @@ public object StytchB2BClient {
     public fun configure(context: Context, publicToken: String) {
         try {
             val deviceInfo = context.getDeviceInfo()
-            StytchB2BApi.configure(publicToken, deviceInfo, DFPProviderImpl(context, publicToken))
+            StytchB2BApi.configure(
+                publicToken,
+                deviceInfo,
+                DFPProviderImpl(publicToken, ActivityProvider(context.applicationContext as Application))
+            )
             StorageHelper.initialize(context)
             externalScope.launch(dispatchers.io) {
                 bootstrapData = when (val res = StytchB2BApi.getBootstrapData()) {

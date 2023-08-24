@@ -1,6 +1,7 @@
 package com.stytch.sdk.common.network
 
 import com.stytch.sdk.common.dfp.DFPProvider
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -33,14 +34,12 @@ internal class StytchDFPInterceptor(
     }
 
     private fun Request.addDfpTelemetryIdToRequest(): Request {
-        val dfpTelemetryId = "dfp-telemetry-id"
-        dfpProvider.getTelemetryId()
+        val dfpTelemetryId = runBlocking { dfpProvider.getTelemetryId() }
         return toNewRequest(mapOf(DFP_TELEMETRY_ID_KEY to dfpTelemetryId))
     }
 
     private fun Request.addDfpTelemetryIdAndCaptchaTokenToRequest(): Request {
-        // TODO: fetch the telemetry ID (SDK-1127)
-        val dfpTelemetryId = "dfp-telemetry-id-2"
+        val dfpTelemetryId = runBlocking { dfpProvider.getTelemetryId() }
         // TODO: fetch the captcha token (SDK-1129)
         val dfpCaptchaToken = "dfp-captcha-token"
         return toNewRequest(
