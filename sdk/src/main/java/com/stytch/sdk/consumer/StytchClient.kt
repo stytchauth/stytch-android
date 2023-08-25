@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.common.Constants
@@ -9,6 +10,8 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.ActivityProvider
+import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.network.models.BootstrapData
@@ -58,7 +61,11 @@ public object StytchClient {
     public fun configure(context: Context, publicToken: String) {
         try {
             val deviceInfo = context.getDeviceInfo()
-            StytchApi.configure(publicToken, deviceInfo)
+            StytchApi.configure(
+                publicToken,
+                deviceInfo,
+                DFPProviderImpl(publicToken, ActivityProvider(context.applicationContext as Application))
+            )
             StorageHelper.initialize(context)
             externalScope.launch(dispatchers.io) {
                 bootstrapData = when (val res = StytchApi.getBootstrapData()) {
