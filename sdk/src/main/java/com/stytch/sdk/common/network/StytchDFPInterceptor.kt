@@ -1,5 +1,6 @@
 package com.stytch.sdk.common.network
 
+import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -15,7 +16,8 @@ private const val CAPTCHA_TOKEN_KEY = "captcha_token"
 private const val HTTP_UNAUTHORIZED = 403
 
 internal class StytchDFPInterceptor(
-    private val dfpProvider: DFPProvider
+    private val dfpProvider: DFPProvider,
+    private val captchaProvider: CaptchaProvider
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -40,8 +42,7 @@ internal class StytchDFPInterceptor(
 
     private fun Request.addDfpTelemetryIdAndCaptchaTokenToRequest(): Request {
         val dfpTelemetryId = runBlocking { dfpProvider.getTelemetryId() }
-        // TODO: fetch the captcha token (SDK-1129)
-        val dfpCaptchaToken = "dfp-captcha-token"
+        val dfpCaptchaToken = runBlocking { captchaProvider.executeRecaptcha() }
         return toNewRequest(
             mapOf(
                 DFP_TELEMETRY_ID_KEY to dfpTelemetryId,

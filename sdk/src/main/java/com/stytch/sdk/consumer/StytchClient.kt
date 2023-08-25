@@ -11,6 +11,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
+import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
@@ -64,7 +65,8 @@ public object StytchClient {
             StytchApi.configure(
                 publicToken,
                 deviceInfo,
-                DFPProviderImpl(publicToken, ActivityProvider(context.applicationContext as Application))
+                DFPProviderImpl(publicToken, ActivityProvider(context.applicationContext as Application)),
+                CaptchaProviderImpl(context.applicationContext as Application)
             )
             StorageHelper.initialize(context)
             externalScope.launch(dispatchers.io) {

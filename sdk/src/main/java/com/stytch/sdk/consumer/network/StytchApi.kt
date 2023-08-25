@@ -6,6 +6,7 @@ import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
@@ -29,13 +30,13 @@ import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
-import java.lang.RuntimeException
 
 internal object StytchApi {
 
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var dfpProvider: DFPProvider
+    private lateinit var captchaProvider: CaptchaProvider
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -58,16 +59,17 @@ internal object StytchApi {
     @VisibleForTesting
     internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
         if (StytchClient.bootstrapData.dfpProtectedAuthEnabled || true) { // TODO: remove short circuit
-            StytchDFPInterceptor(this.dfpProvider)
+            StytchDFPInterceptor(this.dfpProvider, this.captchaProvider)
         } else {
             null
         }
     }
 
-    internal fun configure(publicToken: String, deviceInfo: DeviceInfo, dfpProvider: DFPProvider) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo, dfpProvider: DFPProvider, captchaProvider: CaptchaProvider) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.dfpProvider = dfpProvider
+        this.captchaProvider = captchaProvider
     }
 
     internal val isInitialized: Boolean
