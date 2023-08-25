@@ -26,6 +26,7 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
@@ -41,6 +42,7 @@ internal object StytchB2BApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var dfpProvider: DFPProvider
+    private lateinit var captchaProvider: CaptchaProvider
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -62,17 +64,28 @@ internal object StytchB2BApi {
 
     @VisibleForTesting
     internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
-        if (StytchB2BClient.bootstrapData.dfpProtectedAuthEnabled) {
-            StytchDFPInterceptor(this.dfpProvider)
+        if (::dfpProvider.isInitialized && ::captchaProvider.isInitialized) {
+            StytchDFPInterceptor(this.dfpProvider, this.captchaProvider)
         } else {
             null
         }
     }
 
-    internal fun configure(publicToken: String, deviceInfo: DeviceInfo, dfpProvider: DFPProvider) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+    }
+
+    internal fun configureDFP(dfpProvider: DFPProvider, captchaProvider: CaptchaProvider) {
         this.dfpProvider = dfpProvider
+        this.captchaProvider = captchaProvider
+        dfpProtectedStytchApiService = ApiService.createApiService(
+            Constants.WEB_URL,
+            authHeaderInterceptor,
+            dfpInterceptor,
+            { StytchB2BClient.sessionStorage.revoke() },
+            StytchB2BApiService::class.java
+        )
     }
 
     internal val isInitialized: Boolean
@@ -86,17 +99,26 @@ internal object StytchB2BApi {
             return publicToken.contains("public-token-test")
         }
 
-    @VisibleForTesting
-    internal val apiService: StytchB2BApiService by lazy {
+    private val regularStytchApiService: StytchB2BApiService by lazy {
         StytchB2BClient.assertInitialized()
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
-            dfpInterceptor,
+            null,
             { StytchB2BClient.sessionStorage.revoke() },
             StytchB2BApiService::class.java
         )
     }
+
+    private lateinit var dfpProtectedStytchApiService: StytchB2BApiService
+
+    @VisibleForTesting
+    internal val apiService: StytchB2BApiService
+        get() = if (::dfpProtectedStytchApiService.isInitialized) {
+            dfpProtectedStytchApiService
+        } else {
+            regularStytchApiService
+        }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(
         apiCall: suspend () -> T

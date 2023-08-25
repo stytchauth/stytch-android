@@ -58,18 +58,28 @@ internal object StytchApi {
 
     @VisibleForTesting
     internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
-        if (StytchClient.bootstrapData.dfpProtectedAuthEnabled || true) { // TODO: remove short circuit
-            StytchDFPInterceptor(this.dfpProvider, this.captchaProvider)
+        if (::dfpProvider.isInitialized && ::captchaProvider.isInitialized) {
+            StytchDFPInterceptor(dfpProvider, captchaProvider)
         } else {
             null
         }
     }
 
-    internal fun configure(publicToken: String, deviceInfo: DeviceInfo, dfpProvider: DFPProvider, captchaProvider: CaptchaProvider) {
+    internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+    }
+
+    internal fun configureDFP(dfpProvider: DFPProvider, captchaProvider: CaptchaProvider) {
         this.dfpProvider = dfpProvider
         this.captchaProvider = captchaProvider
+        dfpProtectedStytchApiService = ApiService.createApiService(
+            Constants.WEB_URL,
+            authHeaderInterceptor,
+            dfpInterceptor,
+            { StytchClient.sessionStorage.revoke() },
+            StytchApiService::class.java
+        )
     }
 
     internal val isInitialized: Boolean
@@ -83,17 +93,26 @@ internal object StytchApi {
             return publicToken.contains("public-token-test")
         }
 
-    @VisibleForTesting
-    internal val apiService: StytchApiService by lazy {
+    private val regularStytchApiService: StytchApiService by lazy {
         StytchClient.assertInitialized()
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
-            dfpInterceptor,
+            null,
             { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java
         )
     }
+
+    private lateinit var dfpProtectedStytchApiService: StytchApiService
+
+    @VisibleForTesting
+    internal val apiService: StytchApiService
+        get() = if (::dfpProtectedStytchApiService.isInitialized) {
+            dfpProtectedStytchApiService
+        } else {
+            regularStytchApiService
+        }
 
     internal object MagicLinks {
         object Email {
