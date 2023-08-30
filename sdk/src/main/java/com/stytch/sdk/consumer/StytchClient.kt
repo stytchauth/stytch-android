@@ -11,6 +11,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
+import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
@@ -61,16 +62,23 @@ public object StytchClient {
     public fun configure(context: Context, publicToken: String) {
         try {
             val deviceInfo = context.getDeviceInfo()
-            StytchApi.configure(
-                publicToken,
-                deviceInfo,
-                DFPProviderImpl(publicToken, ActivityProvider(context.applicationContext as Application))
-            )
             StorageHelper.initialize(context)
+            StytchApi.configure(publicToken, deviceInfo)
+            val activityProvider = ActivityProvider(context.applicationContext as Application)
             externalScope.launch(dispatchers.io) {
                 bootstrapData = when (val res = StytchApi.getBootstrapData()) {
                     is StytchResult.Success -> res.value
                     else -> BootstrapData()
+                }
+                if (bootstrapData.dfpProtectedAuthEnabled) {
+                    StytchApi.configureDFP(
+                        dfpProvider = DFPProviderImpl(publicToken, activityProvider),
+                        captchaProvider = CaptchaProviderImpl(
+                            context.applicationContext as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey
+                        )
+                    )
                 }
             }
         } catch (ex: Exception) {
