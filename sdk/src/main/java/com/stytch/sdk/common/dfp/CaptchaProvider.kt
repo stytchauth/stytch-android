@@ -22,10 +22,16 @@ internal class CaptchaProviderImpl(
 
     init {
         scope.launch(Dispatchers.Main) {
-            recaptchaClient = Recaptcha.getClient(application, siteKey).getOrThrow()
+            Recaptcha.getClient(application, siteKey).onSuccess {
+                recaptchaClient = it
+            }
         }
     }
 
     override suspend fun executeRecaptcha(): String =
-        recaptchaClient.execute(RecaptchaAction.LOGIN).getOrThrow()
+        if (::recaptchaClient.isInitialized) {
+            recaptchaClient.execute(RecaptchaAction.LOGIN).getOrElse { "" }
+        } else {
+            ""
+        }
 }
