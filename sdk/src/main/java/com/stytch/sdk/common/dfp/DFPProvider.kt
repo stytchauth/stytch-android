@@ -9,6 +9,7 @@ import android.webkit.WebViewClient
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 internal interface DFPProvider {
     suspend fun getTelemetryId(): String
@@ -60,6 +61,9 @@ internal class DFPProviderImpl(
                 webview = createWebView(it)
                 it.addContentView(webview, ViewGroup.LayoutParams(0, 0))
             }
+        } ?: run {
+            // Couldn't inject webview, return empty string
+            continuation.resume("")
         }
     }
 }

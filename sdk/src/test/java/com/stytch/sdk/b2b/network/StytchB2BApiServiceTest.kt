@@ -36,6 +36,7 @@ internal class StytchB2BApiServiceTest {
         apiService = ApiService.createApiService(
             mockWebServer.url("/").toString(),
             null,
+            null,
             {},
             StytchB2BApiService::class.java
         )

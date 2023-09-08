@@ -34,6 +34,7 @@ internal class StytchApiServiceTests {
         apiService = ApiService.createApiService(
             mockWebServer.url("/").toString(),
             null,
+            null,
             {},
             StytchApiService::class.java
         )
