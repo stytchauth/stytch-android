@@ -8,8 +8,8 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 
-private const val DFP_TELEMETRY_ID_KEY = "dfp_telemetry_id"
-private const val CAPTCHA_TOKEN_KEY = "captcha_token"
+internal const val DFP_TELEMETRY_ID_KEY = "dfp_telemetry_id"
+internal const val CAPTCHA_TOKEN_KEY = "captcha_token"
 internal class StytchDFPInterceptor(
     private val dfpProvider: DFPProvider,
     private val captchaProvider: CaptchaProvider
