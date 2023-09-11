@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -60,6 +61,9 @@ internal class DFPProviderImpl(
                 webview = createWebView(it)
                 it.addContentView(webview, ViewGroup.LayoutParams(0, 0))
             }
+        } ?: run {
+            // Couldn't inject webview, return empty string
+            continuation.resume("")
         }
     }
 }

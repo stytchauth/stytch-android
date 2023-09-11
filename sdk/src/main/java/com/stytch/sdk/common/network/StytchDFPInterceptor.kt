@@ -2,19 +2,14 @@ package com.stytch.sdk.common.network
 
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.extensions.requiresCaptcha
+import com.stytch.sdk.common.extensions.toNewRequest
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okio.Buffer
-import org.json.JSONObject
 
-private const val DFP_TELEMETRY_ID_KEY = "dfp_telemetry_id"
-private const val CAPTCHA_TOKEN_KEY = "captcha_token"
-private const val HTTP_UNAUTHORIZED = 403
-
+internal const val DFP_TELEMETRY_ID_KEY = "dfp_telemetry_id"
+internal const val CAPTCHA_TOKEN_KEY = "captcha_token"
 internal class StytchDFPInterceptor(
     private val dfpProvider: DFPProvider,
     private val captchaProvider: CaptchaProvider
@@ -22,57 +17,25 @@ internal class StytchDFPInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         if (request.method == "GET" || request.method == "DELETE") return chain.proceed(request)
-        val response = chain.proceed(request.addDfpTelemetryIdToRequest())
+        val response = chain.proceed(
+            request.toNewRequest(
+                mapOf(
+                    DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() }
+                )
+            )
+        )
         return if (response.requiresCaptcha()) {
             response.close()
-            chain.proceed(request.addDfpTelemetryIdAndCaptchaTokenToRequest())
+            chain.proceed(
+                request.toNewRequest(
+                    mapOf(
+                        DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() },
+                        CAPTCHA_TOKEN_KEY to runBlocking { captchaProvider.executeRecaptcha() }
+                    )
+                )
+            )
         } else {
             response
         }
-    }
-
-    private fun Response.requiresCaptcha(): Boolean {
-        return code == HTTP_UNAUTHORIZED && message.contains("Captcha required")
-    }
-
-    private fun Request.addDfpTelemetryIdToRequest(): Request {
-        val dfpTelemetryId = runBlocking { dfpProvider.getTelemetryId() }
-        return toNewRequest(mapOf(DFP_TELEMETRY_ID_KEY to dfpTelemetryId))
-    }
-
-    private fun Request.addDfpTelemetryIdAndCaptchaTokenToRequest(): Request {
-        val dfpTelemetryId = runBlocking { dfpProvider.getTelemetryId() }
-        val dfpCaptchaToken = runBlocking { captchaProvider.executeRecaptcha() }
-        return toNewRequest(
-            mapOf(
-                DFP_TELEMETRY_ID_KEY to dfpTelemetryId,
-                CAPTCHA_TOKEN_KEY to dfpCaptchaToken
-            )
-        )
-    }
-
-    private fun Request.toNewRequest(params: Map<String, String>): Request {
-        val bodyAsString = body.asJsonString()
-        val updatedBody = JSONObject(bodyAsString).apply {
-            params.forEach {
-                put(it.key, it.value)
-            }
-        }.toString()
-        val newBody = updatedBody.toRequestBody(body?.contentType())
-        return newBuilder().method(method, newBody).build()
-    }
-
-    private fun RequestBody?.asJsonString(): String {
-        if (this == null) return "{}"
-        val buffer = Buffer()
-        writeTo(buffer)
-        var bodyAsString: String
-        buffer.use {
-            bodyAsString = it.readUtf8()
-        }
-        if (bodyAsString.isBlank()) {
-            bodyAsString = "{}"
-        }
-        return bodyAsString
     }
 }
