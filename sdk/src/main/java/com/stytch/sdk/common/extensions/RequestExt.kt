@@ -4,7 +4,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-internal fun Request.toNewRequest(params: Map<String, String>): Request {
+internal fun Request.toNewRequestWithParams(params: Map<String, String>): Request {
     val bodyAsString = body.asJsonString()
     val updatedBody = JSONObject(bodyAsString).apply {
         params.forEach {

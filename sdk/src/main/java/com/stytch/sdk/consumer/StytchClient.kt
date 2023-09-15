@@ -70,16 +70,15 @@ public object StytchClient {
                     is StytchResult.Success -> res.value
                     else -> BootstrapData()
                 }
-                if (bootstrapData.dfpProtectedAuthEnabled) {
-                    StytchApi.configureDFP(
-                        dfpProvider = DFPProviderImpl(publicToken, activityProvider),
-                        captchaProvider = CaptchaProviderImpl(
-                            context.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey
-                        )
-                    )
-                }
+                StytchApi.configureDFP(
+                    dfpProvider = DFPProviderImpl(publicToken, activityProvider),
+                    captchaProvider = CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey
+                    ),
+                    bootstrapData.dfpProtectedAuthEnabled
+                )
             }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)

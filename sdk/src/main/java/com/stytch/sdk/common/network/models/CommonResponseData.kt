@@ -291,8 +291,14 @@ public data class BootstrapData(
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
     @Json(name = "dfp_protected_auth_enabled")
-    val dfpProtectedAuthEnabled: Boolean = false,
+    val dfpProtectedAuthEnabled: DFPProtectedAuthEnabled = DFPProtectedAuthEnabled.DISABLED,
 )
+
+public enum class DFPProtectedAuthEnabled {
+    ENABLED,
+    PASSIVE,
+    DISABLED
+}
 
 @JsonClass(generateAdapter = true)
 public data class CaptchaSettings(

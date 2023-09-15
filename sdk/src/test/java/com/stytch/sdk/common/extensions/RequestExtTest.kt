@@ -15,7 +15,7 @@ internal class RequestExtTest {
             "telemetry_id" to "telemetry-id",
             "captcha_token" to "captcha-token"
         )
-        val newRequest = originalRequest.toNewRequest(newParams)
+        val newRequest = originalRequest.toNewRequestWithParams(newParams)
         val newRequestBodyAsJson = JSONObject(newRequest.body.asJsonString())
         assert(newRequestBodyAsJson.getBoolean("a"))
         assert(newRequestBodyAsJson.getString("telemetry_id") == "telemetry-id")

@@ -68,16 +68,15 @@ public object StytchB2BClient {
                     is StytchResult.Success -> res.value
                     else -> BootstrapData()
                 }
-                if (bootstrapData.dfpProtectedAuthEnabled) {
-                    StytchB2BApi.configureDFP(
-                        dfpProvider = DFPProviderImpl(publicToken, activityProvider),
-                        captchaProvider = CaptchaProviderImpl(
-                            context.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey
-                        )
-                    )
-                }
+                StytchB2BApi.configureDFP(
+                    dfpProvider = DFPProviderImpl(publicToken, activityProvider),
+                    captchaProvider = CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey
+                    ),
+                    bootstrapData.dfpProtectedAuthEnabled
+                )
             }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)
