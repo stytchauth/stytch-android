@@ -16,6 +16,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.safeApiCall
@@ -35,8 +36,6 @@ internal object StytchApi {
 
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
-    private lateinit var dfpProvider: DFPProvider
-    private lateinit var captchaProvider: CaptchaProvider
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
@@ -56,27 +55,21 @@ internal object StytchApi {
         ) { StytchClient.sessionStorage.sessionToken }
     }
 
-    @VisibleForTesting
-    internal val dfpInterceptor: StytchDFPInterceptor? by lazy {
-        if (::dfpProvider.isInitialized && ::captchaProvider.isInitialized) {
-            StytchDFPInterceptor(dfpProvider, captchaProvider)
-        } else {
-            null
-        }
-    }
-
     internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
     }
 
-    internal fun configureDFP(dfpProvider: DFPProvider, captchaProvider: CaptchaProvider) {
-        this.dfpProvider = dfpProvider
-        this.captchaProvider = captchaProvider
+    internal fun configureDFP(
+        dfpProvider: DFPProvider,
+        captchaProvider: CaptchaProvider,
+        dfpProtectedAuthEnabled: Boolean,
+        dfpProtectedAuthMode: DFPProtectedAuthMode,
+    ) {
         dfpProtectedStytchApiService = ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
-            dfpInterceptor,
+            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
             { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java
         )

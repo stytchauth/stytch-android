@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 
 internal interface CaptchaProvider {
     suspend fun executeRecaptcha(): String
+
+    val captchaIsConfigured: Boolean
 }
 
 internal class CaptchaProviderImpl(
@@ -20,6 +22,9 @@ internal class CaptchaProviderImpl(
 
     private lateinit var recaptchaClient: RecaptchaClient
 
+    override val captchaIsConfigured: Boolean
+        get() = ::recaptchaClient.isInitialized
+
     init {
         scope.launch(Dispatchers.Main) {
             Recaptcha.getClient(application, siteKey).onSuccess {
@@ -29,7 +34,7 @@ internal class CaptchaProviderImpl(
     }
 
     override suspend fun executeRecaptcha(): String =
-        if (::recaptchaClient.isInitialized) {
+        if (captchaIsConfigured) {
             recaptchaClient.execute(RecaptchaAction.LOGIN).getOrElse { "" }
         } else {
             ""
