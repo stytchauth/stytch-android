@@ -55,7 +55,7 @@ internal class StytchDFPInterceptor(
 
     @VisibleForTesting
     override fun handleDFPDecisioningMode(chain: Interceptor.Chain): Response {
-        // ENABLED = add DFP Id, proceed; if request 403s, add a captcha token
+        // DECISIONING = add DFP Id, proceed; if request 403s, add a captcha token
         val request = chain.request()
         val response = chain.proceed(
             request.toNewRequestWithParams(
@@ -81,7 +81,7 @@ internal class StytchDFPInterceptor(
 
     @VisibleForTesting
     override fun handleDFPObservationMode(chain: Interceptor.Chain): Response {
-        // PASSIVE = Always DFP; CAPTCHA if configured
+        // OBSERVATION = Always DFP; CAPTCHA if configured
         val request = chain.request()
         val newParams = mutableMapOf(
             DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() }
