@@ -291,13 +291,14 @@ public data class BootstrapData(
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
     @Json(name = "dfp_protected_auth_enabled")
-    val dfpProtectedAuthEnabled: DFPProtectedAuthEnabled = DFPProtectedAuthEnabled.DISABLED,
+    val dfpProtectedAuthEnabled: Boolean = false,
+    @Json(name = "dfp_protected_auth_mode")
+    val dfpProtectedAuthMode: DFPProtectedAuthMode = DFPProtectedAuthMode.OBSERVATION
 )
 
-public enum class DFPProtectedAuthEnabled {
-    ENABLED,
-    PASSIVE,
-    DISABLED
+public enum class DFPProtectedAuthMode {
+    OBSERVATION,
+    DECISIONING,
 }
 
 @JsonClass(generateAdapter = true)

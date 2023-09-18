@@ -3,7 +3,7 @@ package com.stytch.sdk.common.network
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.extensions.toNewRequestWithParams
-import com.stytch.sdk.common.network.models.DFPProtectedAuthEnabled
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -30,7 +30,7 @@ internal class StytchDFPInterceptorTest {
     private lateinit var captchaProvider: CaptchaProvider
 
     @MockK
-    private lateinit var dfpProtectedAuthEnabled: DFPProtectedAuthEnabled
+    private lateinit var dfpProtectedAuthMode: DFPProtectedAuthMode
 
     private lateinit var interceptor: DFPInterceptor
 
@@ -39,7 +39,7 @@ internal class StytchDFPInterceptorTest {
         MockKAnnotations.init(this, true, true)
         mockkStatic("com.stytch.sdk.common.extensions.RequestExtKt")
         interceptor = spyk(
-            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled),
+            StytchDFPInterceptor(dfpProvider, captchaProvider, true, dfpProtectedAuthMode),
             recordPrivateCalls = true
         )
     }
@@ -79,24 +79,32 @@ internal class StytchDFPInterceptorTest {
         val chain: Interceptor.Chain = mockk {
             every { request() } returns request
         }
-        // DISABLED
+        // DISABLED (need to reset the spy)
+        interceptor = spyk(
+            StytchDFPInterceptor(dfpProvider, captchaProvider, false, dfpProtectedAuthMode),
+            recordPrivateCalls = true
+        )
         every { interceptor.handleDisabledDFPStatus(any()) } returns mockk()
-        every { dfpProtectedAuthEnabled.name } returns DFPProtectedAuthEnabled.DISABLED.name
-        every { dfpProtectedAuthEnabled.ordinal } returns DFPProtectedAuthEnabled.DISABLED.ordinal
         interceptor.intercept(chain)
         verify { interceptor.handleDisabledDFPStatus(any()) }
-        // ENABLED
-        every { interceptor.handleEnabledDFPStatus(any()) } returns mockk()
-        every { dfpProtectedAuthEnabled.name } returns DFPProtectedAuthEnabled.ENABLED.name
-        every { dfpProtectedAuthEnabled.ordinal } returns DFPProtectedAuthEnabled.ENABLED.ordinal
+
+        // ENABLED + DECISIONING (need to reset the spy)
+        interceptor = spyk(
+            StytchDFPInterceptor(dfpProvider, captchaProvider, true, dfpProtectedAuthMode),
+            recordPrivateCalls = true
+        )
+        every { interceptor.handleDFPDecisioningMode(any()) } returns mockk()
+        every { dfpProtectedAuthMode.name } returns DFPProtectedAuthMode.DECISIONING.name
+        every { dfpProtectedAuthMode.ordinal } returns DFPProtectedAuthMode.DECISIONING.ordinal
         interceptor.intercept(chain)
-        verify { interceptor.handleEnabledDFPStatus(any()) }
-        // PASSIVE
-        every { interceptor.handlePassiveDFPStatus(any()) } returns mockk()
-        every { dfpProtectedAuthEnabled.name } returns DFPProtectedAuthEnabled.PASSIVE.name
-        every { dfpProtectedAuthEnabled.ordinal } returns DFPProtectedAuthEnabled.PASSIVE.ordinal
+        verify { interceptor.handleDFPDecisioningMode(any()) }
+
+        // ENABLED + OBSERVATION
+        every { interceptor.handleDFPObservationMode(any()) } returns mockk()
+        every { dfpProtectedAuthMode.name } returns DFPProtectedAuthMode.OBSERVATION.name
+        every { dfpProtectedAuthMode.ordinal } returns DFPProtectedAuthMode.OBSERVATION.ordinal
         interceptor.intercept(chain)
-        verify { interceptor.handlePassiveDFPStatus(any()) }
+        verify { interceptor.handleDFPObservationMode(any()) }
     }
 
     @Test
@@ -154,7 +162,7 @@ internal class StytchDFPInterceptorTest {
             }
         }
         coEvery { dfpProvider.getTelemetryId() } returns "dfp-telemetry-id"
-        interceptor.handleEnabledDFPStatus(chain)
+        interceptor.handleDFPDecisioningMode(chain)
         verify(exactly = 1) { request.toNewRequestWithParams(any()) }
     }
 
@@ -174,7 +182,7 @@ internal class StytchDFPInterceptorTest {
         }
         coEvery { dfpProvider.getTelemetryId() } returns "dfp-telemetry-id"
         coEvery { captchaProvider.executeRecaptcha() } returns "captcha-token"
-        interceptor.handleEnabledDFPStatus(chain)
+        interceptor.handleDFPDecisioningMode(chain)
         verify(exactly = 1) { request.toNewRequestWithParams(mapOf(DFP_TELEMETRY_ID_KEY to "dfp-telemetry-id")) }
         verify(exactly = 1) {
             request.toNewRequestWithParams(
@@ -203,7 +211,7 @@ internal class StytchDFPInterceptorTest {
         coEvery { dfpProvider.getTelemetryId() } returns "dfp-telemetry-id"
         every { captchaProvider.captchaIsConfigured } returns true
         coEvery { captchaProvider.executeRecaptcha() } returns "captcha-token"
-        interceptor.handlePassiveDFPStatus(chain)
+        interceptor.handleDFPObservationMode(chain)
         verify(exactly = 1) {
             request.toNewRequestWithParams(
                 mapOf(
@@ -230,7 +238,7 @@ internal class StytchDFPInterceptorTest {
         }
         coEvery { dfpProvider.getTelemetryId() } returns "dfp-telemetry-id"
         every { captchaProvider.captchaIsConfigured } returns false
-        interceptor.handlePassiveDFPStatus(chain)
+        interceptor.handleDFPObservationMode(chain)
         verify(exactly = 1) {
             request.toNewRequestWithParams(
                 mapOf(

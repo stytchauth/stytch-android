@@ -16,7 +16,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
-import com.stytch.sdk.common.network.models.DFPProtectedAuthEnabled
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.safeApiCall
@@ -63,12 +63,13 @@ internal object StytchApi {
     internal fun configureDFP(
         dfpProvider: DFPProvider,
         captchaProvider: CaptchaProvider,
-        dfpProtectedAuthEnabled: DFPProtectedAuthEnabled
+        dfpProtectedAuthEnabled: Boolean,
+        dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         dfpProtectedStytchApiService = ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
-            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled),
+            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
             { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java
         )

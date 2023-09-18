@@ -77,7 +77,8 @@ public object StytchClient {
                         externalScope,
                         bootstrapData.captchaSettings.siteKey
                     ),
-                    bootstrapData.dfpProtectedAuthEnabled
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode
                 )
             }
         } catch (ex: Exception) {
