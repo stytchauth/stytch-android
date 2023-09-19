@@ -56,6 +56,7 @@ public object StytchClient {
             val deviceInfo = context.getDeviceInfo()
             StytchApi.configure(publicToken, deviceInfo)
             StorageHelper.initialize(context)
+            maybeClearBadSessionToken()
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)
         }
@@ -289,4 +290,12 @@ public object StytchClient {
      */
     public fun canHandle(uri: Uri): Boolean =
         ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
+
+    private fun maybeClearBadSessionToken() {
+        if (sessionStorage.sessionToken?.isBlank() == true) {
+            // We accidentally saved a blank session token instead of a null session token. Clear it all out.
+            // This fixes a bug introduced with the original PasswordsResetBySession implementation
+            sessionStorage.revoke()
+        }
+    }
 }
