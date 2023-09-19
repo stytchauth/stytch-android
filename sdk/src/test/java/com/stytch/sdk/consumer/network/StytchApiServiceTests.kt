@@ -466,6 +466,7 @@ internal class StytchApiServiceTests {
         runBlocking {
             val parameters = ConsumerRequests.Passwords.ResetBySessionRequest(
                 password = "my-password",
+                sessionDurationMinutes = 10
             )
             requestIgnoringResponseException {
                 apiService.resetBySession(parameters)
@@ -473,6 +474,7 @@ internal class StytchApiServiceTests {
                 expectedPath = "/passwords/session/reset",
                 expectedBody = mapOf(
                     "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
                 )
             )
         }

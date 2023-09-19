@@ -178,14 +178,14 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetBySession delegates to api`() = runTest {
-        coEvery { mockApi.resetBySession(any()) } returns mockk()
+        coEvery { mockApi.resetBySession(any(), any()) } returns mockk()
         impl.resetBySession(resetBySessionParameters)
-        coVerify { mockApi.resetBySession(any()) }
+        coVerify { mockApi.resetBySession(any(), any()) }
     }
 
     @Test
     fun `PasswordsImpl resetBySession with callback calls callback method`() {
-        coEvery { mockApi.resetBySession(any()) } returns mockk()
+        coEvery { mockApi.resetBySession(any(), any()) } returns mockk()
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.resetBySession(resetBySessionParameters, mockCallback)
         verify { mockCallback.invoke(any()) }

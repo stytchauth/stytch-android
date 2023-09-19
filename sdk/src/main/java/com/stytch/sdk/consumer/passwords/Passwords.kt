@@ -85,6 +85,7 @@ public interface Passwords {
      */
     public data class ResetBySessionParameters(
         val password: String,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

@@ -102,6 +102,8 @@ internal object ConsumerRequests {
         @JsonClass(generateAdapter = true)
         data class ResetBySessionRequest(
             val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
         )
 
         @JsonClass(generateAdapter = true)
