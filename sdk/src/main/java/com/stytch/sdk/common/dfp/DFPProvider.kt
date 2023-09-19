@@ -19,7 +19,8 @@ internal class DFPProviderImpl(
     private val publicToken: String,
     private val activityProvider: ActivityProvider
 ) : DFPProvider {
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+    // for some reason the linter isn't detecting the @JavascriptInterface annotation, so we need to suppress it
     private fun createWebView(context: Context): WebView {
         val dfpWebView = WebView(context)
         dfpWebView.webViewClient = object : WebViewClient() {
