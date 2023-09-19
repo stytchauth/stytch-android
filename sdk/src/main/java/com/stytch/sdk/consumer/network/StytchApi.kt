@@ -383,10 +383,12 @@ internal object StytchApi {
 
         suspend fun resetBySession(
             password: String,
+            sessionDurationMinutes: UInt,
         ): StytchResult<AuthData> = safeConsumerApiCall {
             apiService.resetBySession(
                 ConsumerRequests.Passwords.ResetBySessionRequest(
                     password = password,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
                 )
             )
         }

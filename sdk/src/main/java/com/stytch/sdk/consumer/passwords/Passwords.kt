@@ -82,9 +82,11 @@ public interface Passwords {
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property password is the new password to set
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class ResetBySessionParameters(
         val password: String,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

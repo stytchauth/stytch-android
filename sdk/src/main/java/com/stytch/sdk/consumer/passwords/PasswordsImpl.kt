@@ -153,7 +153,10 @@ internal class PasswordsImpl internal constructor(
         return withContext(dispatchers.io) {
             api.resetBySession(
                 password = parameters.password,
-            )
+                sessionDurationMinutes = parameters.sessionDurationMinutes
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
         }
     }
 

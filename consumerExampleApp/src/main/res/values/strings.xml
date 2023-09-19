@@ -14,6 +14,7 @@
     <string name="passwords_create">Create account</string>
     <string name="passwords_reset_by_email_start">Reset by email start</string>
     <string name="passwords_reset_by_email">Reset by email (needs token)</string>
+    <string name="passwords_reset_by_session">Reset by session</string>
     <string name="deep_link_title">Deep links</string>
     <string name="host">exampleapp.com</string>
     <string name="deeplink_received_toast">Deeplink received</string>
