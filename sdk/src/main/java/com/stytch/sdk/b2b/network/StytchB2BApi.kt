@@ -72,6 +72,7 @@ internal object StytchB2BApi {
         dfpProtectedAuthEnabled: Boolean,
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
+        StytchB2BClient.assertInitialized()
         dfpProtectedStytchApiService = ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
@@ -93,7 +94,6 @@ internal object StytchB2BApi {
         }
 
     private val regularStytchApiService: StytchB2BApiService by lazy {
-        StytchB2BClient.assertInitialized()
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
@@ -107,10 +107,13 @@ internal object StytchB2BApi {
 
     @VisibleForTesting
     internal val apiService: StytchB2BApiService
-        get() = if (::dfpProtectedStytchApiService.isInitialized) {
-            dfpProtectedStytchApiService
-        } else {
-            regularStytchApiService
+        get() {
+            StytchB2BClient.assertInitialized()
+            return if (::dfpProtectedStytchApiService.isInitialized) {
+                dfpProtectedStytchApiService
+            } else {
+                regularStytchApiService
+            }
         }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(

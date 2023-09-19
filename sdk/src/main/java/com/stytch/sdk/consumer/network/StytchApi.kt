@@ -87,7 +87,6 @@ internal object StytchApi {
         }
 
     private val regularStytchApiService: StytchApiService by lazy {
-        StytchClient.assertInitialized()
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
@@ -101,10 +100,13 @@ internal object StytchApi {
 
     @VisibleForTesting
     internal val apiService: StytchApiService
-        get() = if (::dfpProtectedStytchApiService.isInitialized) {
-            dfpProtectedStytchApiService
-        } else {
-            regularStytchApiService
+        get() {
+            StytchClient.assertInitialized()
+            return if (::dfpProtectedStytchApiService.isInitialized) {
+                dfpProtectedStytchApiService
+            } else {
+                regularStytchApiService
+            }
         }
 
     internal object MagicLinks {
