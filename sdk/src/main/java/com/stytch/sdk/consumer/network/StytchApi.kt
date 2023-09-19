@@ -410,6 +410,16 @@ internal object StytchApi {
             )
         }
 
+        suspend fun resetBySession(
+            password: String,
+        ): StytchResult<AuthData> = safeConsumerApiCall {
+            apiService.resetBySession(
+                ConsumerRequests.Passwords.ResetBySessionRequest(
+                    password = password,
+                )
+            )
+        }
+
         suspend fun strengthCheck(
             email: String?,
             password: String

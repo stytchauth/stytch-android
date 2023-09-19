@@ -81,6 +81,34 @@ public interface Passwords {
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
+     * @property password is the new password to set
+     */
+    public data class ResetBySessionParameters(
+        val password: String,
+    )
+
+    /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
+     * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
+     * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
+     * the password is securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset a user's password
+     * @return [AuthResponse]
+     */
+    public suspend fun resetBySession(parameters: ResetBySessionParameters): AuthResponse
+
+    /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
+     * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
+     * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
+     * the password is securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset a user's password
+     * @param callback a callback that receives an [AuthResponse]
+     */
+    public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
+
+    /**
+     * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property email is the account identifier for the account in the form of an Email address that you wish to use to
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it

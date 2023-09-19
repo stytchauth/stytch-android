@@ -100,6 +100,11 @@ internal object ConsumerRequests {
         )
 
         @JsonClass(generateAdapter = true)
+        data class ResetBySessionRequest(
+            val password: String,
+        )
+
+        @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
             val email: String?,
             val password: String,

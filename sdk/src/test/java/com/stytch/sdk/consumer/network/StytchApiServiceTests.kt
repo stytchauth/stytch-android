@@ -463,6 +463,23 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check Passwords resetPasswordBySession request`() {
+        runBlocking {
+            val parameters = ConsumerRequests.Passwords.ResetBySessionRequest(
+                password = "my-password",
+            )
+            requestIgnoringResponseException {
+                apiService.resetBySession(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/session/reset",
+                expectedBody = mapOf(
+                    "password" to parameters.password,
+                )
+            )
+        }
+    }
+
+    @Test
     fun `check Passwords authenticate request`() {
         runBlocking {
             val parameters = ConsumerRequests.Passwords.AuthenticateRequest(
