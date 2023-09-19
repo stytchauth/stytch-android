@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.passwords.Passwords
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -124,6 +124,21 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
             }
         } else {
             showTokenError = true
+        }
+    }
+
+    fun resetPasswordBySession() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchClient.passwords.resetBySession(
+                Passwords.ResetBySessionParameters(
+                    passwordTextState.text,
+                    5U
+                )
+            )
+            _currentResponse.value = result.toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
         }
     }
 }
