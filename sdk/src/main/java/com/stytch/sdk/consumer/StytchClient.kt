@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.common.Constants
@@ -8,8 +9,13 @@ import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.ActivityProvider
+import com.stytch.sdk.common.dfp.CaptchaProviderImpl
+import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
@@ -42,6 +48,8 @@ public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal val sessionStorage = ConsumerSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    public var bootstrapData: BootstrapData = BootstrapData()
+        internal set
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -54,9 +62,26 @@ public object StytchClient {
     public fun configure(context: Context, publicToken: String) {
         try {
             val deviceInfo = context.getDeviceInfo()
-            StytchApi.configure(publicToken, deviceInfo)
             StorageHelper.initialize(context)
+            StytchApi.configure(publicToken, deviceInfo)
+            val activityProvider = ActivityProvider(context.applicationContext as Application)
             maybeClearBadSessionToken()
+            externalScope.launch(dispatchers.io) {
+                bootstrapData = when (val res = StytchApi.getBootstrapData()) {
+                    is StytchResult.Success -> res.value
+                    else -> BootstrapData()
+                }
+                StytchApi.configureDFP(
+                    dfpProvider = DFPProviderImpl(publicToken, activityProvider),
+                    captchaProvider = CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey
+                    ),
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode
+                )
+            }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)
         }

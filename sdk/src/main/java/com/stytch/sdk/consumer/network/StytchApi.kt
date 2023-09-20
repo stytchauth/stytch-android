@@ -6,12 +6,17 @@ import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.CaptchaProvider
+import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
+import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.safeApiCall
@@ -26,7 +31,6 @@ import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
-import java.lang.RuntimeException
 
 internal object StytchApi {
 
@@ -56,6 +60,21 @@ internal object StytchApi {
         this.deviceInfo = deviceInfo
     }
 
+    internal fun configureDFP(
+        dfpProvider: DFPProvider,
+        captchaProvider: CaptchaProvider,
+        dfpProtectedAuthEnabled: Boolean,
+        dfpProtectedAuthMode: DFPProtectedAuthMode,
+    ) {
+        dfpProtectedStytchApiService = ApiService.createApiService(
+            Constants.WEB_URL,
+            authHeaderInterceptor,
+            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
+            { StytchClient.sessionStorage.revoke() },
+            StytchApiService::class.java
+        )
+    }
+
     internal val isInitialized: Boolean
         get() {
             return ::publicToken.isInitialized && ::deviceInfo.isInitialized
@@ -67,16 +86,28 @@ internal object StytchApi {
             return publicToken.contains("public-token-test")
         }
 
-    @VisibleForTesting
-    internal val apiService: StytchApiService by lazy {
-        StytchClient.assertInitialized()
+    private val regularStytchApiService: StytchApiService by lazy {
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
+            null,
             { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java
         )
     }
+
+    private lateinit var dfpProtectedStytchApiService: StytchApiService
+
+    @VisibleForTesting
+    internal val apiService: StytchApiService
+        get() {
+            StytchClient.assertInitialized()
+            return if (::dfpProtectedStytchApiService.isInitialized) {
+                dfpProtectedStytchApiService
+            } else {
+                regularStytchApiService
+            }
+        }
 
     internal object MagicLinks {
         object Email {
@@ -545,6 +576,10 @@ internal object StytchApi {
                 )
             )
         }
+    }
+
+    suspend fun getBootstrapData(): StytchResult<BootstrapData> = safeConsumerApiCall {
+        apiService.getBootstrapData(publicToken = publicToken)
     }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeConsumerApiCall(

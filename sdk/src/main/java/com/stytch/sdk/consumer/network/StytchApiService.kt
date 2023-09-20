@@ -190,4 +190,11 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest
     ): ConsumerResponses.OAuth.OAuthAuthenticateResponse
     //endregion OAuth
+
+    //region Bootstrap
+    @GET("projects/bootstrap/{publicToken}")
+    suspend fun getBootstrapData(
+        @Path(value = "publicToken") publicToken: String
+    ): CommonResponses.Bootstrap.BootstrapResponse
+    //endregion Bootstrap
 }

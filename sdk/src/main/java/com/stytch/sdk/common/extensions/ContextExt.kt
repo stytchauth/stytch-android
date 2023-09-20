@@ -9,7 +9,7 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
     deviceInfo.applicationPackageName = applicationContext.packageName
     deviceInfo.osVersion = Build.VERSION.SDK_INT.toString()
     deviceInfo.deviceName = Build.MODEL
-    deviceInfo.osName = Build.VERSION.CODENAME
+    deviceInfo.osName = "Android"
 
     try {
         // throw exceptions if packageName not found

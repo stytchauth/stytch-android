@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
@@ -59,7 +60,13 @@ internal class StytchB2BClientTest {
         mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        mContextMock = mockk(relaxed = true)
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchB2BApi)
@@ -112,6 +119,14 @@ internal class StytchB2BClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
         verify { StorageHelper.initialize(mContextMock) }
+    }
+
+    @Test
+    fun `should fetch bootstrap data when calling StytchB2BClient configure`() {
+        runBlocking {
+            StytchB2BClient.configure(mContextMock, "")
+            coVerify { StytchB2BApi.getBootstrapData() }
+        }
     }
 
     @Test(expected = StytchExceptions.Critical::class)

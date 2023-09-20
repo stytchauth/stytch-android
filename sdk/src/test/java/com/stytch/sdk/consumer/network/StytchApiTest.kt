@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import android.app.Application
 import android.content.Context
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -13,9 +14,11 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +34,13 @@ internal class StytchApiTest {
 
     @Before
     fun before() {
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchApi)
@@ -353,6 +363,15 @@ internal class StytchApiTest {
                 )
             )
         }
+    }
+
+    @Test
+    fun `StytchApi Bootstrap getBootstrapData calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        every { StytchApi.publicToken } returns "mock-public-token"
+        coEvery { StytchApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
+        StytchApi.getBootstrapData()
+        coVerify { StytchApi.apiService.getBootstrapData("mock-public-token") }
     }
 
     @Test(expected = IllegalStateException::class)

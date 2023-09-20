@@ -7,7 +7,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.13.3'
+  PUBLISH_VERSION = '0.14.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -125,6 +125,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation 'com.google.crypto.tink:tink-android:1.7.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.72'
+    implementation 'com.google.android.recaptcha:recaptcha:18.2.1'
 
 
     testImplementation 'junit:junit:4.13.2'
@@ -132,4 +133,5 @@ dependencies {
     testImplementation "io.mockk:mockk:1.12.5"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.7.2")
+    testImplementation("org.json:json:20230227")
 }

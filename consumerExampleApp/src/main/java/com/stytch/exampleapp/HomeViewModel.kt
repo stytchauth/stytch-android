@@ -19,15 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-
-    init {
-        // Initialize StytchClient
-        StytchClient.configure(
-            context = application.applicationContext,
-            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
-        )
-    }
-
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
