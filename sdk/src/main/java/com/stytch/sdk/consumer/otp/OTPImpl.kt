@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.otp
 
-import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
