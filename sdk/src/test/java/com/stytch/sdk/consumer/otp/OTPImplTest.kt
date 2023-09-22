@@ -1,12 +1,12 @@
 package com.stytch.sdk.consumer.otp
 
-import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
+import com.stytch.sdk.consumer.OTPSendResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
@@ -134,7 +134,7 @@ internal class OTPImplTest {
     fun `OTPImpl sms send with callback calls callback method`() {
         every { mockSessionStorage.activeSessionExists } returns false
         coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.sms.send(
             OTP.SmsOTP.Parameters(
                 phoneNumber = "phoneNumber",
@@ -190,7 +190,7 @@ internal class OTPImplTest {
     fun `OTPImpl whatsapp send with callback calls callback method`() {
         every { mockSessionStorage.activeSessionExists } returns false
         coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "phoneNumber",
@@ -250,7 +250,7 @@ internal class OTPImplTest {
     fun `OTPImpl email send with callback calls callback method`() {
         every { mockSessionStorage.activeSessionExists } returns false
         coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
-        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.email.send(
             OTP.EmailOTP.Parameters(
                 email = "emailAddress",

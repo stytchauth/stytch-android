@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.network.models
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.models.OTPSendResponseData
 
 internal object ConsumerResponses {
     object Passwords {
@@ -50,4 +51,7 @@ internal object ConsumerResponses {
 
     @JsonClass(generateAdapter = true)
     class LoginOrCreateOTPResponse(data: LoginOrCreateOTPData) : StytchDataResponse<LoginOrCreateOTPData>(data)
+
+    @JsonClass(generateAdapter = true)
+    class OTPSendResponse(data: OTPSendResponseData) : StytchDataResponse<OTPSendResponseData>(data)
 }

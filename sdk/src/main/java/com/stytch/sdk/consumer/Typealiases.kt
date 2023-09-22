@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer
 
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
@@ -51,6 +52,11 @@ public typealias OAuthAuthenticatedResponse = StytchResult<OAuthData>
  * Type alias for StytchResult<LoginOrCreateOTPData> used for loginOrCreateOTP responses
  */
 public typealias LoginOrCreateOTPResponse = StytchResult<LoginOrCreateOTPData>
+
+/**
+ * Type alias for StytchResult<OTPSendResponseData> used for OTPSend responses
+ */
+public typealias OTPSendResponse = StytchResult<OTPSendResponseData>
 
 /**
  * Type alias for StytchResult<StrengthCheckResponse> used for PasswordsStrengthCheck responses

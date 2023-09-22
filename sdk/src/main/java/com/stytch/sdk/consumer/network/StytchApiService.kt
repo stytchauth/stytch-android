@@ -56,12 +56,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/sms/send/primary")
     suspend fun sendOTPWithSMSPrimary(
         @Body request: ConsumerRequests.OTP.SMS
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/sms/send/secondary")
     suspend fun sendOTPWithSMSSecondary(
         @Body request: ConsumerRequests.OTP.SMS
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/login_or_create")
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
@@ -71,12 +71,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/whatsapp/send/primary")
     suspend fun sendOTPWithWhatsAppPrimary(
         @Body request: ConsumerRequests.OTP.WhatsApp
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/send/secondary")
     suspend fun sendOTPWithWhatsAppSecondary(
         @Body request: ConsumerRequests.OTP.WhatsApp
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/login_or_create")
     suspend fun loginOrCreateUserByOTPWithEmail(
@@ -86,12 +86,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/email/send/primary")
     suspend fun sendOTPWithEmailPrimary(
         @Body request: ConsumerRequests.OTP.Email
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/send/secondary")
     suspend fun sendOTPWithEmailSecondary(
         @Body request: ConsumerRequests.OTP.Email
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
     suspend fun authenticateWithOTP(
