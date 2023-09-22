@@ -19,6 +19,7 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
+import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
@@ -216,7 +217,7 @@ internal object StytchApi {
         suspend fun sendOTPWithSMSPrimary(
             phoneNumber: String,
             expirationMinutes: UInt?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithSMSPrimary(
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
@@ -229,7 +230,7 @@ internal object StytchApi {
         suspend fun sendOTPWithSMSSecondary(
             phoneNumber: String,
             expirationMinutes: UInt?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithSMSSecondary(
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = phoneNumber,
@@ -254,7 +255,7 @@ internal object StytchApi {
         suspend fun sendOTPWithWhatsAppPrimary(
             phoneNumber: String,
             expirationMinutes: UInt?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithWhatsAppPrimary(
                 ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
@@ -267,7 +268,7 @@ internal object StytchApi {
         suspend fun sendOTPWithWhatsAppSecondary(
             phoneNumber: String,
             expirationMinutes: UInt?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithWhatsAppSecondary(
                 ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = phoneNumber,
@@ -298,7 +299,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
             loginTemplateId: String?,
             signupTemplateId: String?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithEmailPrimary(
                 ConsumerRequests.OTP.Email(
                     email = email,
@@ -315,7 +316,7 @@ internal object StytchApi {
             expirationMinutes: UInt?,
             loginTemplateId: String?,
             signupTemplateId: String?,
-        ): StytchResult<BasicData> = safeConsumerApiCall {
+        ): StytchResult<OTPSendResponseData> = safeConsumerApiCall {
             apiService.sendOTPWithEmailSecondary(
                 ConsumerRequests.OTP.Email(
                     email = email,

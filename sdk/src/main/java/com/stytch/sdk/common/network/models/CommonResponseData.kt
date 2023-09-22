@@ -141,6 +141,16 @@ public data class LoginOrCreateOTPData(
 )
 
 @JsonClass(generateAdapter = true)
+public data class OTPSendResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+)
+
+@JsonClass(generateAdapter = true)
 public data class AuthenticationFactor(
     @Json(name = "delivery_method")
     val deliveryMethod: String,
