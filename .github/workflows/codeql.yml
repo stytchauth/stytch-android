@@ -75,6 +75,11 @@ jobs:
     # - run: |
     #     echo "Run, Build Application using script"
     #     ./location_of_script_within_repo/buildscript.sh
+      env:
+        STYTCH_PUBLIC_TOKEN: 'abc123'
+        GOOGLE_OAUTH_CLIENT_ID: 'abc123'
+        STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
+        STYTCH_B2B_ORG_ID: 'abc123'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
