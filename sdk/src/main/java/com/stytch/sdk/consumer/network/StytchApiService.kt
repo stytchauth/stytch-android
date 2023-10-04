@@ -197,4 +197,26 @@ internal interface StytchApiService : ApiService {
         @Path(value = "publicToken") publicToken: String
     ): CommonResponses.Bootstrap.BootstrapResponse
     //endregion Bootstrap
+
+    //region WebAuthn
+    @POST("webauthn/register/start")
+    suspend fun webAuthnRegisterStart(
+        @Body request: ConsumerRequests.WebAuthn.RegisterStartRequest
+    ): ConsumerResponses.WebAuthn.RegisterResponse
+
+    @POST("webauthn/register")
+    suspend fun webAuthnRegister(
+        @Body request: ConsumerRequests.WebAuthn.RegisterRequest
+    ): CommonResponses.BasicResponse
+
+    @POST("webauthn/authenticate/start")
+    suspend fun webAuthnAuthenticateStart(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateStartRequest
+    ): ConsumerResponses.WebAuthn.AuthenticateResponse
+
+    @POST("webauthn/authenticate")
+    suspend fun webAuthnAuthenticate(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateRequest
+    ): ConsumerResponses.AuthenticateResponse
+    //endregion WebAuthn
 }
