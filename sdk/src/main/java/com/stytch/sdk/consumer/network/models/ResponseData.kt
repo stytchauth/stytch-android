@@ -234,3 +234,17 @@ public data class UpdateUserResponseData(
     val requestId: String,
     val user: UserData
 )
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnRegisterData(
+    @Json(name = "user_id")
+    val userId: String,
+    @Json(name = "public_key_credential_creation_options")
+    val publicKeyCredentialCreationOptions: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnAuthenticateData(
+    @Json(name = "public_key_credential_creation_options")
+    val publicKeyCredentialCreationOptions: String,
+)
