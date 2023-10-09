@@ -586,11 +586,17 @@ internal object StytchApi {
         suspend fun registerStart(
             userId: String,
             domain: String,
+            userAgent: String? = null,
+            authenticatorType: String? = null,
+            isPasskey: Boolean = false,
         ): WebAuthnRegisterResponse = safeConsumerApiCall {
             apiService.webAuthnRegisterStart(
                 ConsumerRequests.WebAuthn.RegisterStartRequest(
                     userId = userId,
-                    domain = domain
+                    domain = domain,
+                    userAgent = userAgent,
+                    authenticatorType = authenticatorType,
+                    isPasskey = isPasskey,
                 )
             )
         }

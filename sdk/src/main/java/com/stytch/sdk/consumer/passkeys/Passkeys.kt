@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.passkeys
 
+import android.content.Context
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.consumer.AuthResponse
 
@@ -11,14 +12,12 @@ public interface Passkeys {
 
     /**
      * Data class used for wrapping parameters used with Passkeys registration
+     * @property context an activity context for launching the native Passkeys UI
      * @property userId the user identifier of the Passkey registration
-     * @property domain the domain of the Passkey registration
-     * @property userAgent the user agent of the Passkey registration
      */
     public data class RegisterParameters(
+        val context: Context,
         val userId: String,
-        val domain: String,
-        val userAgent: String? = null,
     )
 
     /**
