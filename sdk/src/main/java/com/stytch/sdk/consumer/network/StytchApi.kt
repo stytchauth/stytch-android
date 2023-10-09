@@ -21,8 +21,11 @@ import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
+import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
@@ -574,6 +577,52 @@ internal object StytchApi {
                     token = token,
                     sessionDurationMinutes = sessionDurationMinutes.toInt(),
                     codeVerifier = codeVerifier
+                )
+            )
+        }
+    }
+
+    internal object WebAuthn {
+        suspend fun registerStart(
+            userId: String,
+            domain: String,
+        ): WebAuthnRegisterResponse = safeConsumerApiCall {
+            apiService.webAuthnRegisterStart(
+                ConsumerRequests.WebAuthn.RegisterStartRequest(
+                    userId = userId,
+                    domain = domain
+                )
+            )
+        }
+
+        suspend fun register(
+            userId: String,
+            publicKeyCredential: String,
+        ) = safeConsumerApiCall {
+            apiService.webAuthnRegister(
+                ConsumerRequests.WebAuthn.RegisterRequest(
+                    userId = userId,
+                    publicKeyCredential = publicKeyCredential
+                )
+            )
+        }
+
+        suspend fun authenticateStart(
+            domain: String,
+        ): WebAuthnAuthenticateResponse = safeConsumerApiCall {
+            apiService.webAuthnAuthenticateStart(
+                ConsumerRequests.WebAuthn.AuthenticateStartRequest(
+                    domain = domain
+                )
+            )
+        }
+
+        suspend fun authenticate(
+            publicKeyCredential: Map<String, Any>,
+        ): AuthResponse = safeConsumerApiCall {
+            apiService.webAuthnAuthenticate(
+                ConsumerRequests.WebAuthn.AuthenticateRequest(
+                    publicKeyCredential = publicKeyCredential
                 )
             )
         }

@@ -12,6 +12,8 @@ import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
+import com.stytch.sdk.consumer.network.models.WebAuthnAuthenticateData
+import com.stytch.sdk.consumer.network.models.WebAuthnRegisterData
 
 /**
  * Type alias for StytchResult<IAuthData> used for authentication responses
@@ -67,3 +69,13 @@ public typealias PasswordsStrengthCheckResponse = StytchResult<StrengthCheckResp
  * Type alias for StytchResult<UpdateUserResponseData> used for UpdateUser responses
  */
 public typealias UpdateUserResponse = StytchResult<UpdateUserResponseData>
+
+/**
+ * Type alias for StytchResult<WebAuthnRegisterData> used for WebAuthn registration responses
+ */
+public typealias WebAuthnRegisterResponse = StytchResult<WebAuthnRegisterData>
+
+/**
+ * Type alias for StytchResult<WebAuthnAuthenticateData> used for WebAuthn authentication responses
+ */
+public typealias WebAuthnAuthenticateResponse = StytchResult<WebAuthnAuthenticateData>

@@ -27,6 +27,8 @@ import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.oauth.OAuthImpl
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.consumer.otp.OTPImpl
+import com.stytch.sdk.consumer.passkeys.Passkeys
+import com.stytch.sdk.consumer.passkeys.PasskeysImpl
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.consumer.passwords.PasswordsImpl
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -222,6 +224,24 @@ public object StytchClient {
         sessionStorage,
         StorageHelper,
         StytchApi.OAuth
+    )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [Passkeys] interface which provides methods for registering and authenticating
+     * with Passkeys.
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     */
+    public var passkeys: Passkeys = PasskeysImpl(
+        externalScope,
+        dispatchers,
+        sessionStorage,
+        StytchApi.WebAuthn
     )
         get() {
             assertInitialized()
