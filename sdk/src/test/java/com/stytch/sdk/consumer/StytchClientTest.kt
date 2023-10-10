@@ -235,7 +235,7 @@ internal class StytchClientTest {
     }
 
     @Test
-    fun `accessing StytchClient dfp returns instance of OAuth when configured`() {
+    fun `accessing StytchClient dfp returns instance of DFP when configured`() {
         every { StytchApi.isInitialized } returns true
         StytchClient.dfp
     }

@@ -230,7 +230,7 @@ internal class StytchB2BClientTest {
     }
 
     @Test
-    fun `accessing StytchB2BClient dfp returns instance of OAuth when configured`() {
+    fun `accessing StytchB2BClient dfp returns instance of DFP when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.dfp
     }
