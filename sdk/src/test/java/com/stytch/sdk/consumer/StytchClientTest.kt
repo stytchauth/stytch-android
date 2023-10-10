@@ -75,13 +75,14 @@ internal class StytchClientTest {
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
         every { StorageHelper.initialize(any()) } just runs
-        every { StorageHelper.loadValue(any()) } returns ""
+        every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         MockKAnnotations.init(this, true, true)
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+        StytchClient.dfpProvider = mockk()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -225,6 +226,18 @@ internal class StytchClientTest {
     fun `accessing StytchClient oauth returns instance of OAuth when configured`() {
         every { StytchApi.isInitialized } returns true
         StytchClient.oauth
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient dfp throws IllegalStateException when not configured`() {
+        every { StytchApi.isInitialized } returns false
+        StytchClient.dfp
+    }
+
+    @Test
+    fun `accessing StytchClient dfp returns instance of OAuth when configured`() {
+        every { StytchApi.isInitialized } returns true
+        StytchClient.dfp
     }
 
     @Test(expected = IllegalStateException::class)
