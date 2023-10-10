@@ -10,6 +10,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
@@ -78,6 +79,7 @@ internal class StytchClientTest {
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         MockKAnnotations.init(this, true, true)
+        coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()

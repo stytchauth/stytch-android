@@ -241,10 +241,11 @@ public object StytchClient {
      *
      * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
      */
-    public val dfp: DFP by lazy {
-        assertInitialized()
-        DFPImpl(dfpProvider, dispatchers, externalScope)
-    }
+    public val dfp: DFP
+        get() {
+            assertInitialized()
+            return DFPImpl(dfpProvider, dispatchers, externalScope)
+        }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
