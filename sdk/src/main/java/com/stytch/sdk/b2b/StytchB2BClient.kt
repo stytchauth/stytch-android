@@ -28,6 +28,9 @@ import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
+import com.stytch.sdk.common.dfp.DFP
+import com.stytch.sdk.common.dfp.DFPImpl
+import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
@@ -49,6 +52,8 @@ public object StytchB2BClient {
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
 
+    internal lateinit var dfpProvider: DFPProvider
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -63,13 +68,14 @@ public object StytchB2BClient {
             StorageHelper.initialize(context)
             StytchB2BApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
+            dfpProvider = DFPProviderImpl(publicToken, activityProvider)
             externalScope.launch(dispatchers.io) {
                 bootstrapData = when (val res = StytchB2BApi.getBootstrapData()) {
                     is StytchResult.Success -> res.value
                     else -> BootstrapData()
                 }
                 StytchB2BApi.configureDFP(
-                    dfpProvider = DFPProviderImpl(publicToken, activityProvider),
+                    dfpProvider = dfpProvider,
                     captchaProvider = CaptchaProviderImpl(
                         context.applicationContext as Application,
                         externalScope,
@@ -217,6 +223,17 @@ public object StytchB2BClient {
             return field
         }
         internal set
+
+    /**
+     * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
+     * in DFP lookups on your backend server
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
+    public val dfp: DFP by lazy {
+        assertInitialized()
+        DFPImpl(dfpProvider, dispatchers, externalScope)
+    }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
