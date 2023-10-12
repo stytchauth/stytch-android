@@ -6,7 +6,7 @@
     <body>
         <script>
             function fetchTelemetryId(publicToken) {
-                window.GetTelemetryID(publicToken)
+                window.GetTelemetryID({ publicToken: publicToken, platform: "Android" })
                     .then((telemetryId) => StytchDFP.reportTelemetryId(telemetryId))
                     .catch((error) => StytchDFP.reportTelemetryId(error.message));
             }
