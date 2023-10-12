@@ -48,30 +48,38 @@ internal class PasskeysImpl internal constructor(
     override suspend fun register(parameters: Passkeys.RegisterParameters): WebAuthnRegisterResponse {
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
         return withContext(dispatchers.io) {
+            println("JORDAN 1")
             val startResponse = api.registerStart(
                 domain = parameters.domain ?: parameters.context.packageName,
                 userAgent = WebSettings.getDefaultUserAgent(parameters.context),
                 authenticatorType = "platform",
                 isPasskey = true,
             ).getValueOrThrow()
-            println(startResponse.publicKeyCredentialCreationOptions)
+            println("JORDAN 2")
+            println(startResponse)
             val createPublicKeyCredentialRequest = CreatePublicKeyCredentialRequest(
                 requestJson = startResponse.publicKeyCredentialCreationOptions,
                 preferImmediatelyAvailableCredentials = true,
             )
+            println("JORDAN 3")
             val credentialManager = CredentialManager.create(parameters.context)
+            println("JORDAN 4")
             val credentialResponse = withContext(dispatchers.ui) {
                 try {
+                    println("JORDAN 5")
                     val result = credentialManager.createCredential(
                         context = parameters.context,
                         request = createPublicKeyCredentialRequest,
                     )
+                    println("JORDAN 6")
                     result
                 } catch (e: CreateCredentialException) {
                     throw e // TODO: handle this
                 }
             }
+            println("JORDAN 7")
             println(credentialResponse)
+            println("JORDAN 8")
             with(credentialResponse as CreatePublicKeyCredentialResponse) {
                 api.register(
                     publicKeyCredential = this.registrationResponseJson
