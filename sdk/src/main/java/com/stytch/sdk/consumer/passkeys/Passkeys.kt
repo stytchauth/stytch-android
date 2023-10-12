@@ -14,18 +14,22 @@ public interface Passkeys {
      * Data class used for wrapping parameters used with Passkeys registration
      * @property context an activity context for launching the native Passkeys UI
      * @property userId the user identifier of the Passkey registration
+     * @property domain the domain of the Passkey registration. If not provided, the package name will be used
      */
     public data class RegisterParameters(
         val context: Context,
         val userId: String,
+        val domain: String? = null,
     )
 
     /**
      * Data class used for wrapping parameters used with Passkeys authentication
-     * @property domain the domain of the Passkey registration
+     * @property context an activity context for launching the native Passkeys UI
+     * @property domain the domain of the Passkey registration. If not provided, the package name will be used
      */
     public data class AuthenticateParameters(
-        val domain: String,
+        val context: Context,
+        val domain: String? = null,
     )
 
     /**

@@ -4,20 +4,28 @@ import android.os.Build
 import android.webkit.WebSettings
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.credentials.CreatePublicKeyCredentialRequest
+import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.CreateCredentialException
+import androidx.credentials.exceptions.GetCredentialException
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.userAgent
 
 internal class PasskeysImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -25,6 +33,13 @@ internal class PasskeysImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.WebAuthn,
 ) : Passkeys {
+    private val moshi = Moshi.Builder().build()
+    private val type = Types.newParameterizedType(
+        MutableMap::class.java,
+        String::class.java,
+        Any::class.java
+    )
+    private val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(type)
 
     @get:ChecksSdkIntAtLeast(api = Build.VERSION_CODES.P)
     override val isSupported: Boolean
@@ -35,7 +50,7 @@ internal class PasskeysImpl internal constructor(
         return withContext(dispatchers.io) {
             val startResponse = api.registerStart(
                 userId = parameters.userId,
-                domain = parameters.context.packageName,
+                domain = parameters.domain ?: parameters.context.packageName,
                 userAgent = WebSettings.getDefaultUserAgent(parameters.context),
                 authenticatorType = "platform",
                 isPasskey = true,
@@ -46,7 +61,7 @@ internal class PasskeysImpl internal constructor(
                 preferImmediatelyAvailableCredentials = true,
             )
             val credentialManager = CredentialManager.create(parameters.context)
-            val credentialResponse = withContext(dispatchers.ui) createCredential@{
+            val credentialResponse = withContext(dispatchers.ui) {
                 try {
                     val result = credentialManager.createCredential(
                         context = parameters.context,
@@ -58,7 +73,12 @@ internal class PasskeysImpl internal constructor(
                 }
             }
             println(credentialResponse)
-            StytchResult.Error(StytchExceptions.Input("Testing"))
+            with(credentialResponse as CreatePublicKeyCredentialResponse) {
+                api.register(
+                    userId = parameters.userId,
+                    publicKeyCredential = registrationResponseJson
+                )
+            }
         }
     }
 
@@ -71,7 +91,34 @@ internal class PasskeysImpl internal constructor(
 
     override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
-        return StytchResult.Error(StytchExceptions.Input("Testing"))
+        return withContext(dispatchers.io) {
+            val startResponse = api.authenticateStart(
+                domain = parameters.domain ?: parameters.context.packageName,
+            ).getValueOrThrow()
+            val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
+                requestJson = startResponse.publicKeyCredentialCreationOptions
+            )
+            val credentialManager = CredentialManager.create(parameters.context)
+            val credentialResponse = withContext(dispatchers.ui) {
+                try {
+                    val result = credentialManager.getCredential(
+                        context = parameters.context,
+                        request = GetCredentialRequest(listOf(getPublicKeyCredentialOption)),
+                    )
+                    result
+                } catch (e: GetCredentialException) {
+                    throw e // TODO: handle this
+                }
+            }
+            with(credentialResponse.credential as PublicKeyCredential) {
+                val map: Map<String, Any> = adapter.fromJson(authenticationResponseJson) ?: emptyMap()
+                api.authenticate(
+                    publicKeyCredential = map
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
+            }
+        }
     }
 
     override fun authenticate(parameters: Passkeys.AuthenticateParameters, callback: (response: AuthResponse) -> Unit) {
