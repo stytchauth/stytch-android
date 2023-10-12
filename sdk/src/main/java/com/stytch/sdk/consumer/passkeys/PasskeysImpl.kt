@@ -14,12 +14,12 @@ import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -45,11 +45,10 @@ internal class PasskeysImpl internal constructor(
     override val isSupported: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
-    override suspend fun register(parameters: Passkeys.RegisterParameters): BaseResponse {
+    override suspend fun register(parameters: Passkeys.RegisterParameters): WebAuthnRegisterResponse {
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
         return withContext(dispatchers.io) {
             val startResponse = api.registerStart(
-                userId = parameters.userId,
                 domain = parameters.domain ?: parameters.context.packageName,
                 userAgent = WebSettings.getDefaultUserAgent(parameters.context),
                 authenticatorType = "platform",
@@ -75,14 +74,18 @@ internal class PasskeysImpl internal constructor(
             println(credentialResponse)
             with(credentialResponse as CreatePublicKeyCredentialResponse) {
                 api.register(
-                    userId = parameters.userId,
-                    publicKeyCredential = registrationResponseJson
-                )
+                    publicKeyCredential = this.registrationResponseJson
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
             }
         }
     }
 
-    override fun register(parameters: Passkeys.RegisterParameters, callback: (response: BaseResponse) -> Unit) {
+    override fun register(
+        parameters: Passkeys.RegisterParameters,
+        callback: (response: WebAuthnRegisterResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = register(parameters)
             callback(result)
@@ -111,7 +114,7 @@ internal class PasskeysImpl internal constructor(
                 }
             }
             with(credentialResponse.credential as PublicKeyCredential) {
-                val map: Map<String, Any> = adapter.fromJson(authenticationResponseJson) ?: emptyMap()
+                val map: Map<String, Any> = adapter.fromJson(this.authenticationResponseJson) ?: emptyMap()
                 api.authenticate(
                     publicKeyCredential = map
                 ).apply {

@@ -24,8 +24,9 @@ import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
+import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
 import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
@@ -584,15 +585,13 @@ internal object StytchApi {
 
     internal object WebAuthn {
         suspend fun registerStart(
-            userId: String,
             domain: String,
             userAgent: String? = null,
             authenticatorType: String? = null,
             isPasskey: Boolean = false,
-        ): WebAuthnRegisterResponse = safeConsumerApiCall {
+        ): WebAuthnRegisterStartResponse = safeConsumerApiCall {
             apiService.webAuthnRegisterStart(
                 ConsumerRequests.WebAuthn.RegisterStartRequest(
-                    userId = userId,
                     domain = domain,
                     userAgent = userAgent,
                     authenticatorType = authenticatorType,
@@ -602,12 +601,10 @@ internal object StytchApi {
         }
 
         suspend fun register(
-            userId: String,
             publicKeyCredential: String,
-        ) = safeConsumerApiCall {
+        ): WebAuthnRegisterResponse = safeConsumerApiCall {
             apiService.webAuthnRegister(
                 ConsumerRequests.WebAuthn.RegisterRequest(
-                    userId = userId,
                     publicKeyCredential = publicKeyCredential
                 )
             )
@@ -615,7 +612,7 @@ internal object StytchApi {
 
         suspend fun authenticateStart(
             domain: String,
-        ): WebAuthnAuthenticateResponse = safeConsumerApiCall {
+        ): WebAuthnAuthenticateStartResponse = safeConsumerApiCall {
             apiService.webAuthnAuthenticateStart(
                 ConsumerRequests.WebAuthn.AuthenticateStartRequest(
                     domain = domain

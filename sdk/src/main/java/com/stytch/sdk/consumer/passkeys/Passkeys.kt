@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.passkeys
 import android.content.Context
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 
 /**
  * The Passkeys interface provides methods for detecting Passkeys support, registering, and authenticating with
@@ -13,12 +14,10 @@ public interface Passkeys {
     /**
      * Data class used for wrapping parameters used with Passkeys registration
      * @property context an activity context for launching the native Passkeys UI
-     * @property userId the user identifier of the Passkey registration
      * @property domain the domain of the Passkey registration. If not provided, the package name will be used
      */
     public data class RegisterParameters(
         val context: Context,
-        val userId: String,
         val domain: String? = null,
     )
 
@@ -40,18 +39,18 @@ public interface Passkeys {
     /**
      * Creates a new Passkey registration.
      * @param parameters required to register a Passkey
-     * @return [BaseResponse]
+     * @return [WebAuthnRegisterResponse]
      */
-    public suspend fun register(parameters: RegisterParameters): BaseResponse
+    public suspend fun register(parameters: RegisterParameters): WebAuthnRegisterResponse
 
     /**
      * Creates a new Passkey registration.
      * @param parameters required to register a Passkey
-     * @param callback a callback that receives a [BaseResponse]
+     * @param callback a callback that receives a [WebAuthnRegisterResponse]
      */
     public fun register(
         parameters: RegisterParameters,
-        callback: (response: BaseResponse) -> Unit
+        callback: (response: WebAuthnRegisterResponse) -> Unit
     )
 
     /**

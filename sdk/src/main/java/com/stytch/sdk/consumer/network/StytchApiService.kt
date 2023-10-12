@@ -202,12 +202,12 @@ internal interface StytchApiService : ApiService {
     @POST("webauthn/register/start")
     suspend fun webAuthnRegisterStart(
         @Body request: ConsumerRequests.WebAuthn.RegisterStartRequest
-    ): ConsumerResponses.WebAuthn.RegisterResponse
+    ): ConsumerResponses.WebAuthn.RegisterStartResponse
 
     @POST("webauthn/register")
     suspend fun webAuthnRegister(
         @Body request: ConsumerRequests.WebAuthn.RegisterRequest
-    ): CommonResponses.BasicResponse
+    ): ConsumerResponses.WebAuthn.RegisterResponse
 
     @POST("webauthn/authenticate/start")
     suspend fun webAuthnAuthenticateStart(

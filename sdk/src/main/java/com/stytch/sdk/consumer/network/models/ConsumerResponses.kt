@@ -48,6 +48,9 @@ internal object ConsumerResponses {
 
     object WebAuthn {
         @JsonClass(generateAdapter = true)
+        class RegisterStartResponse(data: WebAuthnRegisterStartData) :
+            StytchDataResponse<WebAuthnRegisterStartData>(data)
+        @JsonClass(generateAdapter = true)
         class RegisterResponse(data: WebAuthnRegisterData) : StytchDataResponse<WebAuthnRegisterData>(data)
 
         @JsonClass(generateAdapter = true)

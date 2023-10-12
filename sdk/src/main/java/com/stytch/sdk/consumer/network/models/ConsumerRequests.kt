@@ -224,8 +224,6 @@ internal object ConsumerRequests {
     object WebAuthn {
         @JsonClass(generateAdapter = true)
         data class RegisterStartRequest(
-            @Json(name = "user_id")
-            val userId: String,
             val domain: String,
             @Json(name = "user_agent")
             val userAgent: String? = null,
@@ -237,8 +235,6 @@ internal object ConsumerRequests {
 
         @JsonClass(generateAdapter = true)
         data class RegisterRequest(
-            @Json(name = "user_id")
-            val userId: String,
             @Json(name = "public_key_credential")
             val publicKeyCredential: String
         )
