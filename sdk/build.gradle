@@ -14,8 +14,7 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "30.0.3"
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 23
@@ -23,7 +22,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -52,7 +55,8 @@ android {
             includeAndroidResources = true
         }
     }
-    lintOptions {
+    namespace 'com.stytch.sdk'
+    lint {
         disable 'OldTargetApi'
     }
     testVariants.all {
