@@ -261,6 +261,6 @@ public data class WebAuthnRegisterData(
 
 @JsonClass(generateAdapter = true)
 public data class WebAuthnAuthenticateStartData(
-    @Json(name = "public_key_credential_creation_options")
-    val publicKeyCredentialCreationOptions: String,
+    @Json(name = "public_key_credential_request_options")
+    val publicKeyCredentialRequestOptions: String,
 )

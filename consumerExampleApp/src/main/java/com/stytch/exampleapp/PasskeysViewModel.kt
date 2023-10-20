@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passkeys.Passkeys
+import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,12 +21,33 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun registerPasskey(context: FragmentActivity) {
+    fun clearPasskeyRegistrations() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            when (val user = StytchClient.user.getUser()) {
+                is StytchResult.Success -> {
+                    user.value.webauthnRegistrations.forEach {
+                        val response = StytchClient.user.deleteFactor(
+                            factor = UserAuthenticationFactor.WebAuthn(id = it.id)
+                        )
+                        println(response)
+                    }
+                }
+                is StytchResult.Error -> println(user.exception)
+            }
+            _currentResponse.value = "Cleared all registrations"
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun registerPasskey(activity: FragmentActivity) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.passkeys.register(
                 Passkeys.RegisterParameters(
-                    context = context,
+                    activity = activity,
+                    domain = BuildConfig.PASSKEYS_DOMAIN
                 )
             )
             _currentResponse.value = result.toFriendlyDisplay()
@@ -33,11 +56,14 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun authenticatePasskey(context: FragmentActivity) {
+    fun authenticatePasskey(activity: FragmentActivity) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchClient.passkeys.authenticate(
-                Passkeys.AuthenticateParameters(context = context)
+                Passkeys.AuthenticateParameters(
+                    activity = activity,
+                    domain = BuildConfig.PASSKEYS_DOMAIN
+                )
             )
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {

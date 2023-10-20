@@ -610,22 +610,38 @@ internal object StytchApi {
             )
         }
 
-        suspend fun authenticateStart(
+        suspend fun authenticateStartPrimary(
             domain: String,
+            isPasskey: Boolean = false,
         ): WebAuthnAuthenticateStartResponse = safeConsumerApiCall {
-            apiService.webAuthnAuthenticateStart(
+            apiService.webAuthnAuthenticateStartPrimary(
                 ConsumerRequests.WebAuthn.AuthenticateStartRequest(
-                    domain = domain
+                    domain = domain,
+                    isPasskey = isPasskey,
+                )
+            )
+        }
+
+        suspend fun authenticateStartSecondary(
+            domain: String,
+            isPasskey: Boolean = false,
+        ): WebAuthnAuthenticateStartResponse = safeConsumerApiCall {
+            apiService.webAuthnAuthenticateStartSecondary(
+                ConsumerRequests.WebAuthn.AuthenticateStartRequest(
+                    domain = domain,
+                    isPasskey = isPasskey,
                 )
             )
         }
 
         suspend fun authenticate(
-            publicKeyCredential: Map<String, Any>,
+            publicKeyCredential: String,
+            sessionDurationMinutes: UInt,
         ): AuthResponse = safeConsumerApiCall {
             apiService.webAuthnAuthenticate(
                 ConsumerRequests.WebAuthn.AuthenticateRequest(
-                    publicKeyCredential = publicKeyCredential
+                    publicKeyCredential = publicKeyCredential,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
                 )
             )
         }

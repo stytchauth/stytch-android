@@ -9,8 +9,6 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
-import androidx.credentials.exceptions.CreateCredentialException
-import androidx.credentials.exceptions.GetCredentialException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -47,46 +45,35 @@ internal class PasskeysImpl internal constructor(
 
     override suspend fun register(parameters: Passkeys.RegisterParameters): WebAuthnRegisterResponse {
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
-        return withContext(dispatchers.io) {
-            println("JORDAN 1")
-            val startResponse = api.registerStart(
-                domain = parameters.domain ?: parameters.context.packageName,
-                userAgent = WebSettings.getDefaultUserAgent(parameters.context),
-                authenticatorType = "platform",
-                isPasskey = true,
-            ).getValueOrThrow()
-            println("JORDAN 2")
-            println(startResponse)
-            val createPublicKeyCredentialRequest = CreatePublicKeyCredentialRequest(
-                requestJson = startResponse.publicKeyCredentialCreationOptions,
-                preferImmediatelyAvailableCredentials = true,
-            )
-            println("JORDAN 3")
-            val credentialManager = CredentialManager.create(parameters.context)
-            println("JORDAN 4")
-            val credentialResponse = withContext(dispatchers.ui) {
-                try {
-                    println("JORDAN 5")
-                    val result = credentialManager.createCredential(
-                        context = parameters.context,
+        return try {
+            withContext(dispatchers.io) {
+                val startResponse = api.registerStart(
+                    domain = parameters.domain,
+                    userAgent = WebSettings.getDefaultUserAgent(parameters.activity),
+                    authenticatorType = "platform",
+                    isPasskey = true,
+                ).getValueOrThrow()
+                val createPublicKeyCredentialRequest = CreatePublicKeyCredentialRequest(
+                    requestJson = startResponse.publicKeyCredentialCreationOptions,
+                    preferImmediatelyAvailableCredentials = true,
+                )
+                val credentialManager = CredentialManager.create(parameters.activity)
+                val credentialResponse = withContext(dispatchers.ui) {
+                    credentialManager.createCredential(
+                        context = parameters.activity,
                         request = createPublicKeyCredentialRequest,
                     )
-                    println("JORDAN 6")
-                    result
-                } catch (e: CreateCredentialException) {
-                    throw e // TODO: handle this
+                }
+                with(credentialResponse as CreatePublicKeyCredentialResponse) {
+                    api.register(
+                        publicKeyCredential = this.registrationResponseJson
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
                 }
             }
-            println("JORDAN 7")
-            println(credentialResponse)
-            println("JORDAN 8")
-            with(credentialResponse as CreatePublicKeyCredentialResponse) {
-                api.register(
-                    publicKeyCredential = this.registrationResponseJson
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
-            }
+        } catch (e: Exception) {
+            StytchResult.Error(StytchExceptions.Critical(e))
         }
     }
 
@@ -102,33 +89,41 @@ internal class PasskeysImpl internal constructor(
 
     override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
-        return withContext(dispatchers.io) {
-            val startResponse = api.authenticateStart(
-                domain = parameters.domain ?: parameters.context.packageName,
-            ).getValueOrThrow()
-            val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
-                requestJson = startResponse.publicKeyCredentialCreationOptions
-            )
-            val credentialManager = CredentialManager.create(parameters.context)
-            val credentialResponse = withContext(dispatchers.ui) {
-                try {
+        return try {
+            withContext(dispatchers.io) {
+                val startResponse = if (sessionStorage.activeSessionExists) {
+                    api.authenticateStartSecondary(
+                        domain = parameters.domain,
+                        isPasskey = true
+                    ).getValueOrThrow()
+                } else {
+                    api.authenticateStartPrimary(
+                        domain = parameters.domain,
+                        isPasskey = true
+                    ).getValueOrThrow()
+                }
+                val getPublicKeyCredentialOption = GetPublicKeyCredentialOption(
+                    requestJson = startResponse.publicKeyCredentialRequestOptions
+                )
+                val credentialManager = CredentialManager.create(parameters.activity)
+                val credentialResponse = withContext(dispatchers.ui) {
                     val result = credentialManager.getCredential(
-                        context = parameters.context,
+                        context = parameters.activity,
                         request = GetCredentialRequest(listOf(getPublicKeyCredentialOption)),
                     )
                     result
-                } catch (e: GetCredentialException) {
-                    throw e // TODO: handle this
+                }
+                with(credentialResponse.credential as PublicKeyCredential) {
+                    api.authenticate(
+                        publicKeyCredential = this.authenticationResponseJson,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
                 }
             }
-            with(credentialResponse.credential as PublicKeyCredential) {
-                val map: Map<String, Any> = adapter.fromJson(this.authenticationResponseJson) ?: emptyMap()
-                api.authenticate(
-                    publicKeyCredential = map
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
-            }
+        } catch (e: Exception) {
+            StytchResult.Error(StytchExceptions.Critical(e))
         }
     }
 

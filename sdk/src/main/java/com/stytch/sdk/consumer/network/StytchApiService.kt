@@ -209,8 +209,13 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.WebAuthn.RegisterRequest
     ): ConsumerResponses.WebAuthn.RegisterResponse
 
-    @POST("webauthn/authenticate/start")
-    suspend fun webAuthnAuthenticateStart(
+    @POST("webauthn/authenticate/start/primary")
+    suspend fun webAuthnAuthenticateStartPrimary(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateStartRequest
+    ): ConsumerResponses.WebAuthn.AuthenticateResponse
+
+    @POST("webauthn/authenticate/start/secondary")
+    suspend fun webAuthnAuthenticateStartSecondary(
         @Body request: ConsumerRequests.WebAuthn.AuthenticateStartRequest
     ): ConsumerResponses.WebAuthn.AuthenticateResponse
 

@@ -23,7 +23,7 @@ fun PasskeysScreen(navController: NavController) {
     val viewModel: PasskeysViewModel = viewModel()
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
-    val context = LocalContext.current as FragmentActivity
+    val activity = LocalContext.current as FragmentActivity
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -32,12 +32,17 @@ fun PasskeysScreen(navController: NavController) {
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passkeys_register),
-            onClick = { viewModel.registerPasskey(context) }
+            onClick = { viewModel.registerPasskey(activity) }
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passkeys_authenticate),
-            onClick = { viewModel.authenticatePasskey(context) }
+            onClick = { viewModel.authenticatePasskey(activity) }
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passkeys_clear),
+            onClick = viewModel::clearPasskeyRegistrations
         )
         if (loading.value) {
             CircularProgressIndicator()

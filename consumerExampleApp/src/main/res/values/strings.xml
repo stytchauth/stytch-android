@@ -56,4 +56,5 @@
     <string name="passkeys_name">Passkeys</string>
     <string name="passkeys_register">Register Passkey</string>
     <string name="passkeys_authenticate">Authenticate with Passkey</string>
+    <string name="passkeys_clear">Clear passkey registrations</string>
 </resources>

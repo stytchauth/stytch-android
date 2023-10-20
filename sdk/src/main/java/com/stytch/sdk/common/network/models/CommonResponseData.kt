@@ -63,7 +63,7 @@ public data class WebAuthNRegistrations(
     // The domain of the WebAuthN registration.
     val domain: String,
     // The user agent of the registration.
-    val userAgent: String,
+    val userAgent: String? = null,
     // The verification status of the registration.
     val verified: Boolean,
     // The id of the registration.
@@ -241,7 +241,7 @@ public data class AuthenticationFactor(
         val webauthnRegistrationId: String,
         val domain: String,
         @Json(name = "user_agent")
-        val userAgent: String,
+        val userAgent: String? = null,
     )
 
     @JsonClass(generateAdapter = true)
