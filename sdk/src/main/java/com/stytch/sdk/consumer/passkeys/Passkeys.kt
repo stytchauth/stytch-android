@@ -1,7 +1,9 @@
 package com.stytch.sdk.consumer.passkeys
 
-import com.stytch.sdk.common.BaseResponse
+import android.app.Activity
+import com.stytch.sdk.common.Constants
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 
 /**
  * The Passkeys interface provides methods for detecting Passkeys support, registering, and authenticating with
@@ -11,22 +13,24 @@ public interface Passkeys {
 
     /**
      * Data class used for wrapping parameters used with Passkeys registration
-     * @property userId the user identifier of the Passkey registration
-     * @property domain the domain of the Passkey registration
-     * @property userAgent the user agent of the Passkey registration
+     * @property activity an activity context for launching the native Passkeys UI
+     * @property domain the domain of the Passkey registration. Do not include the protocol
      */
     public data class RegisterParameters(
-        val userId: String,
+        val activity: Activity,
         val domain: String,
-        val userAgent: String? = null,
     )
 
     /**
      * Data class used for wrapping parameters used with Passkeys authentication
-     * @property domain the domain of the Passkey registration
+     * @property activity an activity context for launching the native Passkeys UI
+     * @property domain the domain of the Passkey registration. Do not include the protocol
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class AuthenticateParameters(
+        val activity: Activity,
         val domain: String,
+        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -37,18 +41,18 @@ public interface Passkeys {
     /**
      * Creates a new Passkey registration.
      * @param parameters required to register a Passkey
-     * @return [BaseResponse]
+     * @return [WebAuthnRegisterResponse]
      */
-    public suspend fun register(parameters: RegisterParameters): BaseResponse
+    public suspend fun register(parameters: RegisterParameters): WebAuthnRegisterResponse
 
     /**
      * Creates a new Passkey registration.
      * @param parameters required to register a Passkey
-     * @param callback a callback that receives a [BaseResponse]
+     * @param callback a callback that receives a [WebAuthnRegisterResponse]
      */
     public fun register(
         parameters: RegisterParameters,
-        callback: (response: BaseResponse) -> Unit
+        callback: (response: WebAuthnRegisterResponse) -> Unit
     )
 
     /**

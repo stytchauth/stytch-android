@@ -77,6 +77,7 @@ internal class StytchB2BClientTest {
         StytchB2BClient.magicLinks = mockMagicLinks
         StytchB2BClient.externalScope = TestScope()
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+        StytchB2BClient.dfpProvider = mockk()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -220,6 +221,18 @@ internal class StytchB2BClientTest {
     fun `accessing StytchB2BClient sso returns instance of SSO when configured`() {
         every { StytchB2BApi.isInitialized } returns true
         StytchB2BClient.sso
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `accessing StytchB2BClient dfp throws IllegalStateException when not configured`() {
+        every { StytchB2BApi.isInitialized } returns false
+        StytchB2BClient.dfp
+    }
+
+    @Test
+    fun `accessing StytchB2BClient dfp returns instance of DFP when configured`() {
+        every { StytchB2BApi.isInitialized } returns true
+        StytchB2BClient.dfp
     }
 
     @Test(expected = IllegalStateException::class)

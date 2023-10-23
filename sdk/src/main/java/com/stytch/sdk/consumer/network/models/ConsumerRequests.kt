@@ -224,21 +224,17 @@ internal object ConsumerRequests {
     object WebAuthn {
         @JsonClass(generateAdapter = true)
         data class RegisterStartRequest(
-            @Json(name = "user_id")
-            val userId: String,
             val domain: String,
             @Json(name = "user_agent")
             val userAgent: String? = null,
             @Json(name = "authenticator_type")
             val authenticatorType: String? = null,
-            @Json(name = "is_passkey")
+            @Json(name = "return_passkey_credential_options")
             val isPasskey: Boolean? = false
         )
 
         @JsonClass(generateAdapter = true)
         data class RegisterRequest(
-            @Json(name = "user_id")
-            val userId: String,
             @Json(name = "public_key_credential")
             val publicKeyCredential: String
         )
@@ -248,16 +244,16 @@ internal object ConsumerRequests {
             @Json(name = "user_id")
             val userId: String? = null,
             val domain: String,
-            @Json(name = "is_passkey")
+            @Json(name = "return_passkey_credential_options")
             val isPasskey: Boolean? = false
         )
 
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "public_key_credential")
-            val publicKeyCredential: Map<String, Any>,
+            val publicKeyCredential: String,
             @Json(name = "session_duration_minutes")
-            val sessionDurationMinutes: Int? = null,
+            val sessionDurationMinutes: Int,
             @Json(name = "session_custom_claims")
             val sessionCustomClaims: Map<String, Any>? = null,
             @Json(name = "session_jwt")

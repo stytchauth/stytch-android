@@ -24,8 +24,9 @@ import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
+import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
+import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
 import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
@@ -584,45 +585,63 @@ internal object StytchApi {
 
     internal object WebAuthn {
         suspend fun registerStart(
-            userId: String,
             domain: String,
-        ): WebAuthnRegisterResponse = safeConsumerApiCall {
+            userAgent: String? = null,
+            authenticatorType: String? = null,
+            isPasskey: Boolean = false,
+        ): WebAuthnRegisterStartResponse = safeConsumerApiCall {
             apiService.webAuthnRegisterStart(
                 ConsumerRequests.WebAuthn.RegisterStartRequest(
-                    userId = userId,
-                    domain = domain
+                    domain = domain,
+                    userAgent = userAgent,
+                    authenticatorType = authenticatorType,
+                    isPasskey = isPasskey,
                 )
             )
         }
 
         suspend fun register(
-            userId: String,
             publicKeyCredential: String,
-        ) = safeConsumerApiCall {
+        ): WebAuthnRegisterResponse = safeConsumerApiCall {
             apiService.webAuthnRegister(
                 ConsumerRequests.WebAuthn.RegisterRequest(
-                    userId = userId,
                     publicKeyCredential = publicKeyCredential
                 )
             )
         }
 
-        suspend fun authenticateStart(
+        suspend fun authenticateStartPrimary(
             domain: String,
-        ): WebAuthnAuthenticateResponse = safeConsumerApiCall {
-            apiService.webAuthnAuthenticateStart(
+            isPasskey: Boolean = false,
+        ): WebAuthnAuthenticateStartResponse = safeConsumerApiCall {
+            apiService.webAuthnAuthenticateStartPrimary(
                 ConsumerRequests.WebAuthn.AuthenticateStartRequest(
-                    domain = domain
+                    domain = domain,
+                    isPasskey = isPasskey,
+                )
+            )
+        }
+
+        suspend fun authenticateStartSecondary(
+            domain: String,
+            isPasskey: Boolean = false,
+        ): WebAuthnAuthenticateStartResponse = safeConsumerApiCall {
+            apiService.webAuthnAuthenticateStartSecondary(
+                ConsumerRequests.WebAuthn.AuthenticateStartRequest(
+                    domain = domain,
+                    isPasskey = isPasskey,
                 )
             )
         }
 
         suspend fun authenticate(
-            publicKeyCredential: Map<String, Any>,
+            publicKeyCredential: String,
+            sessionDurationMinutes: UInt,
         ): AuthResponse = safeConsumerApiCall {
             apiService.webAuthnAuthenticate(
                 ConsumerRequests.WebAuthn.AuthenticateRequest(
-                    publicKeyCredential = publicKeyCredential
+                    publicKeyCredential = publicKeyCredential,
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
                 )
             )
         }
