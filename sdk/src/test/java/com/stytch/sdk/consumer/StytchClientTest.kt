@@ -243,6 +243,18 @@ internal class StytchClientTest {
     }
 
     @Test(expected = IllegalStateException::class)
+    fun `accessing StytchClient passkeys throws IllegalStateException when not configured`() {
+        every { StytchApi.isInitialized } returns false
+        StytchClient.passkeys
+    }
+
+    @Test
+    fun `accessing StytchClient passkeys returns instance of Passkeys when configured`() {
+        every { StytchApi.isInitialized } returns true
+        StytchClient.passkeys
+    }
+
+    @Test(expected = IllegalStateException::class)
     fun `handle with coroutines throws IllegalStateException when not configured`() {
         runBlocking {
             every { StytchApi.isInitialized } returns false
