@@ -4,6 +4,7 @@ import android.app.Activity
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
+import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 
 /**
  * The Passkeys interface provides methods for detecting Passkeys support, registering, and authenticating with
@@ -31,6 +32,16 @@ public interface Passkeys {
         val activity: Activity,
         val domain: String,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+    )
+
+    /**
+     * Data class used for wrapping parameters used with Passkeys updates
+     * @property id the id of a Passkey registration
+     * @property name the name for a Passkey
+     */
+    public data class UpdateParameters(
+        val id: String,
+        val name: String,
     )
 
     /**
@@ -70,5 +81,22 @@ public interface Passkeys {
     public fun authenticate(
         parameters: AuthenticateParameters,
         callback: (response: AuthResponse) -> Unit,
+    )
+
+    /**
+     * Updates a Passkey registration.
+     * @param parameters required to update a Passkey registration
+     * @return [WebAuthnUpdateResponse]
+     */
+    public suspend fun update(parameters: UpdateParameters): WebAuthnUpdateResponse
+
+    /**
+     * Updates a Passkey registration.
+     * @param parameters required to update a Passkey registration
+     * @param callback a callback that receives a [WebAuthnUpdateResponse]
+     */
+    public fun update(
+        parameters: UpdateParameters,
+        callback: (response: WebAuthnUpdateResponse) -> Unit,
     )
 }

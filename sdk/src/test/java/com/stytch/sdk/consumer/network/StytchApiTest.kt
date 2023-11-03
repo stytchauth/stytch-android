@@ -418,6 +418,14 @@ internal class StytchApiTest {
         coVerify { StytchApi.apiService.webAuthnAuthenticate(any()) }
     }
 
+    @Test
+    fun `StytchApi Webauthn webAuthnUpdate calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.webAuthnUpdate(any(), any()) } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.update("", "my new name")
+        coVerify { StytchApi.apiService.webAuthnUpdate("", any()) }
+    }
+
     @Test(expected = IllegalStateException::class)
     fun `safeApiCall throws exception when StytchClient is not initialized`() = runTest {
         every { StytchApi.isInitialized } returns false

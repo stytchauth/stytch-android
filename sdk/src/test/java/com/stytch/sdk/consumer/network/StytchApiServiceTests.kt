@@ -842,6 +842,24 @@ internal class StytchApiServiceTests {
             )
         }
     }
+
+    @Test
+    fun `check webAuthnUpdate request`() {
+        val id = "webauthn-registration-id"
+        val parameters = ConsumerRequests.WebAuthn.UpdateRequest(
+            name = "Cool Memorable Name",
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnUpdate(id, parameters)
+            }.verifyPut(
+                expectedPath = "/webauthn/update/$id",
+                expectedBody = mapOf(
+                    "name" to parameters.name,
+                )
+            )
+        }
+    }
     //endregion
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {

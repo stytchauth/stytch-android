@@ -69,6 +69,8 @@ public data class WebAuthNRegistrations(
     // The id of the registration.
     @Json(name = "webauthn_registration_id")
     val id: String,
+    // the name of the registration
+    val name: String? = null,
 )
 
 @JsonClass(generateAdapter = true)
