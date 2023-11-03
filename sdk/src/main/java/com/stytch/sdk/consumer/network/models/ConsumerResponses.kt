@@ -56,6 +56,9 @@ internal object ConsumerResponses {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(data: WebAuthnAuthenticateStartData) :
             StytchDataResponse<WebAuthnAuthenticateStartData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UpdateResponse(data: WebAuthnUpdateResponseData) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
     }
 
     @JsonClass(generateAdapter = true)

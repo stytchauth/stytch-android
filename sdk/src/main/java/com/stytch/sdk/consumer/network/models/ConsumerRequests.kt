@@ -261,5 +261,10 @@ internal object ConsumerRequests {
             @Json(name = "session_token")
             val sessionToken: String? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class UpdateRequest(
+            val name: String,
+        )
     }
 }

@@ -3,8 +3,11 @@ package com.stytch.exampleapp.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -24,6 +27,7 @@ fun PasskeysScreen(navController: NavController) {
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
     val activity = LocalContext.current as FragmentActivity
+    val registrationId = viewModel.currentPasskeyRegistrationId.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -44,6 +48,25 @@ fun PasskeysScreen(navController: NavController) {
             text = stringResource(id = R.string.passkeys_clear),
             onClick = viewModel::clearPasskeyRegistrations
         )
+        if (registrationId.value.isNotBlank()) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.passkeyNameState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.passkey_name))
+                },
+                onValueChange = {
+                    viewModel.passkeyNameState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.passkey_update),
+                onClick = viewModel::updatePasskey
+            )
+        }
         if (loading.value) {
             CircularProgressIndicator()
         } else {

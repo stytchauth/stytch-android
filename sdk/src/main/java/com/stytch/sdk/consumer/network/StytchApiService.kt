@@ -223,5 +223,11 @@ internal interface StytchApiService : ApiService {
     suspend fun webAuthnAuthenticate(
         @Body request: ConsumerRequests.WebAuthn.AuthenticateRequest
     ): ConsumerResponses.AuthenticateResponse
+
+    @PUT("webauthn/update/{id}")
+    suspend fun webAuthnUpdate(
+        @Path(value = "id") id: String,
+        @Body request: ConsumerRequests.WebAuthn.UpdateRequest
+    ): ConsumerResponses.WebAuthn.UpdateResponse
     //endregion WebAuthn
 }

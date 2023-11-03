@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
+import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -231,6 +232,21 @@ internal class PasskeysImplTest {
         // short circuit on the first internal check, since we just care that the callback method is called
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `update delegates to api`() = runTest {
+        coEvery { mockApi.update(any(), any()) } returns mockk(relaxed = true)
+        impl.update(Passkeys.UpdateParameters(id = "registration-id", name = "new name"))
+        coVerify { mockApi.update("registration-id", "new name") }
+    }
+
+    @Test
+    fun `update with callback calls callback method`() {
+        coEvery { mockApi.update(any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(WebAuthnUpdateResponse) -> Unit>()
+        impl.update(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

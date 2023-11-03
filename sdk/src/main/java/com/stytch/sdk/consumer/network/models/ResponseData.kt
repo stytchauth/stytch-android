@@ -264,3 +264,13 @@ public data class WebAuthnAuthenticateStartData(
     @Json(name = "public_key_credential_request_options")
     val publicKeyCredentialRequestOptions: String,
 )
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnUpdateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "webauthn_registration")
+    val webauthnRegistration: WebAuthNRegistrations,
+)

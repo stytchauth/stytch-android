@@ -27,6 +27,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
+import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
@@ -642,6 +643,18 @@ internal object StytchApi {
                 ConsumerRequests.WebAuthn.AuthenticateRequest(
                     publicKeyCredential = publicKeyCredential,
                     sessionDurationMinutes = sessionDurationMinutes.toInt()
+                )
+            )
+        }
+
+        suspend fun update(
+            id: String,
+            name: String
+        ): WebAuthnUpdateResponse = safeConsumerApiCall {
+            apiService.webAuthnUpdate(
+                id = id,
+                ConsumerRequests.WebAuthn.UpdateRequest(
+                    name = name
                 )
             )
         }

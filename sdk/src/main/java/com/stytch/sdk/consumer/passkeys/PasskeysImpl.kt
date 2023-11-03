@@ -16,6 +16,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
+import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.WebAuthnAuthenticateStartData
@@ -24,6 +25,7 @@ import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal interface PasskeysProvider {
     suspend fun createPublicKeyCredential(
@@ -160,6 +162,22 @@ internal class PasskeysImpl internal constructor(
     override fun authenticate(parameters: Passkeys.AuthenticateParameters, callback: (response: AuthResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
+            callback(result)
+        }
+    }
+
+    override suspend fun update(parameters: Passkeys.UpdateParameters): WebAuthnUpdateResponse {
+        return withContext(dispatchers.io) {
+            api.update(
+                id = parameters.id,
+                name = parameters.name
+            )
+        }
+    }
+
+    override fun update(parameters: Passkeys.UpdateParameters, callback: (response: WebAuthnUpdateResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = update(parameters)
             callback(result)
         }
     }
