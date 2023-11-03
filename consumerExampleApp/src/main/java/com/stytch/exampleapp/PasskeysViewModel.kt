@@ -1,6 +1,10 @@
 package com.stytch.exampleapp
 
 import android.app.Application
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +24,12 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
+
+    private val _currentPasskeyRegistrationId = MutableStateFlow("")
+    val currentPasskeyRegistrationId: StateFlow<String>
+        get() = _currentPasskeyRegistrationId
+
+    var passkeyNameState by mutableStateOf(TextFieldValue(""))
 
     fun clearPasskeyRegistrations() {
         viewModelScope.launch {
@@ -51,6 +61,10 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
                 )
             )
             _currentResponse.value = result.toFriendlyDisplay()
+            _currentPasskeyRegistrationId.value = when (result) {
+                is StytchResult.Success -> result.value.webauthnRegistrationId
+                else -> ""
+            }
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -63,6 +77,25 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
                 Passkeys.AuthenticateParameters(
                     activity = activity,
                     domain = BuildConfig.PASSKEYS_DOMAIN
+                )
+            )
+            _currentPasskeyRegistrationId.value = when (result) {
+                is StytchResult.Success -> result.value.user.webauthnRegistrations[0].id
+                else -> ""
+            }
+            _currentResponse.value = result.toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun updatePasskey() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchClient.passkeys.update(
+                Passkeys.UpdateParameters(
+                    id = _currentPasskeyRegistrationId.value,
+                    name = passkeyNameState.text,
                 )
             )
             _currentResponse.value = result.toFriendlyDisplay()
