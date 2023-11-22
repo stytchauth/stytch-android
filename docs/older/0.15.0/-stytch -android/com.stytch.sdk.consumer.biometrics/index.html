@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.consumer.biometrics</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<link href="../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../index.html">
+                    <span>Stytch Android</span>
+            </a>
+    </div>
+    <div>
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;-stytch -android/com.stytch.sdk.consumer.biometrics/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">0.15.0</div>
+  <div class="versions-dropdown-data"><a href="../../../../-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.16.0</a><a href="index.html">0.15.0</a><a href="../../../0.14.1/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.14.1</a><a href="../../../0.14.0/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.14.0</a><a href="../../../0.13.3/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.13.3</a><a href="../../../0.13.2/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.13.2</a><a href="../../../0.13.1/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.13.1</a><a href="../../../0.13.0/-stytch -android/com.stytch.sdk.consumer.biometrics/index.html">0.13.0</a><a href="../../../../not-found-version.html?v=0.12.0">0.12.0</a><a href="../../../../not-found-version.html?v=0.11.0">0.11.0</a><a href="../../../../not-found-version.html?v=0.10.0">0.10.0</a><a href="../../../../not-found-version.html?v=0.9.0">0.9.0</a><a href="../../../../not-found-version.html?v=0.8.0">0.8.0</a><a href="../../../../not-found-version.html?v=0.7.0">0.7.0</a><a href="../../../../not-found-version.html?v=0.6.0">0.6.0</a><a href="../../../../not-found-version.html?v=0.5.0">0.5.0</a></div>
+</div>
+</dokka-template-command>    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Stytch Android::com.stytch.sdk.consumer.biometrics////PointingToDeclaration//165651098">
+  <div class="breadcrumbs"><a href="../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="index.html">com.stytch.sdk.consumer.biometrics</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>stytch.</span><wbr><span>sdk.</span><wbr><span>consumer.</span><wbr><span>biometrics</span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><p class="paragraph">The Biometrics.kt interface provides methods for detecting biometric availability, registering, authenticating, and removing biometrics identifiers.</p><p class="paragraph">Before beginning a biometric registration, there are two important calls to make:</p><ol><li><p class="paragraph"><code class="lang-kotlin">StytchClient.biometrics.areBiometricsAvailable()</code> will tell you if biometrics are possible on this device, given its sensors, Android version, existing registrations, etc.</p></li><li><p class="paragraph"><code class="lang-kotlin">StytchClient.biometrics.isUsingKeystore()</code> will report whether or not this device has a reliable version of the Android KeyStore. If it does not, there may be issues creating encryption keys, as well as implications on where these keys are stored. The safest approach is to not offer biometrics if this returns <code class="lang-kotlin">false</code>, but it is possible to force a registration with an unreliable KeyStore.</p></li></ol><p class="paragraph">If you would like to begin a biometric registration flow, call the <code class="lang-kotlin">StytchClient.biometrics.register()</code> method. By default, this method will disallow registrations when the device has an unreliable Android KeyStore. If you are sure you wish to offer biometric authentication on those devices, you must set <code class="lang-kotlin">allowFallbackToCleartext</code> to <code class="lang-kotlin">true</code> in the <code class="lang-kotlin">Biometrics.RegisterParameters</code>.</p><p class="paragraph">To determine if a biometric registration exists, call the <code class="lang-kotlin">StytchClient.biometrics.isRegistrationAvailable()</code> method.</p><p class="paragraph">If a biometric registration exists, you can call the <code class="lang-kotlin">StytchClient.biometrics.authenticate()</code> method to begin the authentication flow.</p><p class="paragraph">To remove a biometric registration, call <code class="lang-kotlin">StytchClient.biometrics.removeRegistration()</code>. This will remove the registration from both the device and the Stytch User object.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="659132878%2FClasslikes%2F165651098" anchor-label="BiometricAvailability" id="659132878%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-biometric-availability/index.html"><span>Biometric</span><wbr><span><span>Availability</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="659132878%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-biometric-availability/index.html">BiometricAvailability</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Wrapper around BiometricManager results to provide friendly messaging for developers</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1356801178%2FClasslikes%2F165651098" anchor-label="Biometrics" id="-1356801178%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-biometrics/index.html"><span><span>Biometrics</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1356801178%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-biometrics/index.html">Biometrics</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The Biometrics interface provides methods for detecting biometric availability, registering, authenticating, and removing biometrics identifiers.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
