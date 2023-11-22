@@ -7,15 +7,14 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.15.0'
+  PUBLISH_VERSION = '0.16.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "30.0.3"
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 23
@@ -23,7 +22,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -52,7 +55,8 @@ android {
             includeAndroidResources = true
         }
     }
-    lintOptions {
+    namespace 'com.stytch.sdk'
+    lint {
         disable 'OldTargetApi'
     }
     testVariants.all {
@@ -126,6 +130,8 @@ dependencies {
     implementation 'com.google.crypto.tink:tink-android:1.7.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.72'
     implementation 'com.google.android.recaptcha:recaptcha:18.2.1'
+    implementation "androidx.credentials:credentials:1.2.0-rc01"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.0-rc01"
 
 
     testImplementation 'junit:junit:4.13.2'

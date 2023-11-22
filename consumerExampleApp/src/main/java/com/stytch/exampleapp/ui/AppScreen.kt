@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -41,6 +42,7 @@ val items = listOf(
     Screen.Passwords,
     Screen.Biometrics,
     Screen.OAuth,
+    Screen.Passkeys
 )
 
 @Composable
@@ -89,6 +91,7 @@ fun AppScreen(
                 composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
                 composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                 composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+                composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
             }
         }
     )
@@ -116,4 +119,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconV
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
     object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
     object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+    object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
 }

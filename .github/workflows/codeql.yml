@@ -60,6 +60,10 @@ jobs:
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
+    - uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 17
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -80,6 +84,7 @@ jobs:
         GOOGLE_OAUTH_CLIENT_ID: 'abc123'
         STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
         STYTCH_B2B_ORG_ID: 'abc123'
+        PASSKEYS_DOMAIN: 'abc123'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

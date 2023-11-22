@@ -234,3 +234,43 @@ public data class UpdateUserResponseData(
     val requestId: String,
     val user: UserData
 )
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnRegisterStartData(
+    @Json(name = "user_id")
+    val userId: String,
+    @Json(name = "public_key_credential_creation_options")
+    val publicKeyCredentialCreationOptions: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnRegisterData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+    @Json(name = "webauthn_registration_id")
+    val webauthnRegistrationId: String,
+) : IAuthData
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnAuthenticateStartData(
+    @Json(name = "public_key_credential_request_options")
+    val publicKeyCredentialRequestOptions: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class WebAuthnUpdateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "webauthn_registration")
+    val webauthnRegistration: WebAuthNRegistrations,
+)
