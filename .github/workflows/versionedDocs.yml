@@ -53,6 +53,10 @@ jobs:
       with:
         ref: docs
         path: docs
+    - uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 17
     - name: Generate docs
       env:
         STYTCH_PUBLIC_TOKEN: 'abc123'

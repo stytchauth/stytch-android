@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: zulu
-          java-version: 11
+          java-version: 17
 
       # Execute Gradle commands in GitHub Actions workflows
       # => https://github.com/marketplace/actions/gradle-command
