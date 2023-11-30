@@ -23,6 +23,7 @@ import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
 import com.stytch.sdk.consumer.network.StytchApi
@@ -89,6 +90,12 @@ public object StytchClient {
                     bootstrapData.dfpProtectedAuthEnabled,
                     bootstrapData.dfpProtectedAuthMode
                 )
+                // if there are session identifiers on device start the auto updater to ensure it is still valid
+                if (sessionStorage.persistedSessionIdentifiersExist) {
+                    StytchApi.Sessions.authenticate(null).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
+                }
             }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)

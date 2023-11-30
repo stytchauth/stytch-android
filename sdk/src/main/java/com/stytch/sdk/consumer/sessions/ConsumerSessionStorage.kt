@@ -47,7 +47,7 @@ internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) 
             }
         }
 
-    val activeSessionExists: Boolean
+    val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
 
     /**

@@ -1,20 +1,25 @@
 package com.stytch.sdk.common
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.os.Build
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
+import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException
 import com.google.crypto.tink.signature.SignatureConfig
 import com.stytch.sdk.common.extensions.hexStringToByteArray
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.extensions.toHexString
 import com.stytch.sdk.common.network.StytchErrorType
+import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
 import kotlin.random.Random
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 import org.bouncycastle.crypto.Signer
 import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
 import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
@@ -36,11 +41,24 @@ internal object EncryptionManager {
     }
 
     private fun getOrGenerateNewAES256KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
-        return AndroidKeysetManager.Builder()
-            .withSharedPref(context, keyAlias, PREF_FILE_NAME)
-            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri(MASTER_KEY_URI)
-            .build()
+        return try {
+            AndroidKeysetManager.Builder()
+                .withSharedPref(context, keyAlias, PREF_FILE_NAME)
+                .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
+                .withMasterKeyUri(MASTER_KEY_URI)
+                .build()
+        } catch (_: InvalidProtocolBufferException) {
+            // possible that the signing key was changed (happens when we're testing, shouldn't happen for developers)
+            // but if it does, the app gets in a bad state, so we need to destroy and recreate the preferences file
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                context.deleteSharedPreferences(PREF_FILE_NAME)
+            } else {
+                context.getSharedPreferences(PREF_FILE_NAME, MODE_PRIVATE).edit().clear().apply()
+                val dir = File(context.applicationInfo.dataDir, "shared_prefs")
+                File(dir, "$name.xml").delete()
+            }
+            return getOrGenerateNewAES256KeysetManager(context, keyAlias)
+        }
     }
 
     /**

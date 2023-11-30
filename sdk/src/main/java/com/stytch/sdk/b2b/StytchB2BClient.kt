@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
@@ -84,6 +85,12 @@ public object StytchB2BClient {
                     bootstrapData.dfpProtectedAuthEnabled,
                     bootstrapData.dfpProtectedAuthMode
                 )
+                // if there are session identifiers on device start the auto updater to ensure it is still valid
+                if (sessionStorage.persistedSessionIdentifiersExist) {
+                    StytchB2BApi.Sessions.authenticate(null).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
+                }
             }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)

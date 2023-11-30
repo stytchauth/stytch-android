@@ -72,7 +72,7 @@ internal class OTPImpl internal constructor(
 
         override suspend fun send(parameters: OTP.SmsOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendOTPWithSMSSecondary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
@@ -120,7 +120,7 @@ internal class OTPImpl internal constructor(
 
         override suspend fun send(parameters: OTP.WhatsAppOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendOTPWithWhatsAppSecondary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
@@ -167,7 +167,7 @@ internal class OTPImpl internal constructor(
         }
 
         override suspend fun send(parameters: OTP.EmailOTP.Parameters): OTPSendResponse = withContext(dispatchers.io) {
-            if (sessionStorage.activeSessionExists) {
+            if (sessionStorage.persistedSessionIdentifiersExist) {
                 api.sendOTPWithEmailSecondary(
                     email = parameters.email,
                     expirationMinutes = parameters.expirationMinutes,

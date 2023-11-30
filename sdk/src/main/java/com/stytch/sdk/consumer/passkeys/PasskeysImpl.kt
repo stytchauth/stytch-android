@@ -25,7 +25,6 @@ import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal interface PasskeysProvider {
     suspend fun createPublicKeyCredential(
@@ -131,7 +130,7 @@ internal class PasskeysImpl internal constructor(
         if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
         return try {
             withContext(dispatchers.io) {
-                val startResponse = if (sessionStorage.activeSessionExists) {
+                val startResponse = if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.authenticateStartSecondary(
                         domain = parameters.domain,
                         isPasskey = true

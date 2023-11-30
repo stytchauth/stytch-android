@@ -112,7 +112,7 @@ internal class MagicLinksImpl internal constructor(
                 } catch (ex: Exception) {
                     return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
                 }
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendSecondary(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
