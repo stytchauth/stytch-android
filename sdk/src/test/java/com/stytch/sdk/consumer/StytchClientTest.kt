@@ -14,8 +14,10 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.oauth.OAuth
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -62,7 +64,10 @@ internal class StytchClientTest {
     fun before() {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
-        mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
+        mockkStatic(
+            "com.stytch.sdk.common.extensions.ContextExtKt",
+            "com.stytch.sdk.consumer.extensions.StytchResultExtKt",
+        )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         val mockApplication: Application = mockk {
@@ -75,6 +80,7 @@ internal class StytchClientTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
+        mockkObject(StytchApi.Sessions)
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
@@ -134,6 +140,26 @@ internal class StytchClientTest {
         runBlocking {
             StytchClient.configure(mContextMock, "")
             coVerify { StytchApi.getBootstrapData() }
+        }
+    }
+
+    @Test
+    fun `should validate persisted sessions if applicable when calling StytchClient configure`() {
+        runBlocking {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            // no session data == no authentication/updater
+            every { StorageHelper.loadValue(any()) } returns null
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
+            // yes session data == yes authentication/updater
+            every { StorageHelper.loadValue(any()) } returns "some-session-data"
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
         }
     }
 

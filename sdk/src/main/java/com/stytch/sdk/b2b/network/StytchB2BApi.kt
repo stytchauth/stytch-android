@@ -195,7 +195,7 @@ internal object StytchB2BApi {
 
     internal object Sessions {
         suspend fun authenticate(
-            sessionDurationMinutes: UInt?
+            sessionDurationMinutes: UInt? = null
         ): StytchResult<IB2BAuthData> = safeB2BApiCall {
             apiService.authenticateSessions(
                 CommonRequests.Sessions.AuthenticateRequest(
