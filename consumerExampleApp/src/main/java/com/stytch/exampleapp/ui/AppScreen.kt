@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.HomeViewModel
 import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
+import com.stytch.sdk.consumer.StytchClient
 
 val items = listOf(
     Screen.Main,
@@ -51,6 +53,7 @@ fun AppScreen(
     oAuthViewModel: OAuthViewModel,
 ) {
     val navController = rememberNavController()
+    val stytchIsInitialized = StytchClient.isInitialized.collectAsState()
     Scaffold(
         modifier = Modifier
             .fillMaxHeight()
@@ -86,12 +89,16 @@ fun AppScreen(
             }
         },
         content = { padding ->
-            NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
-                composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
-                composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
-                composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
-                composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
-                composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+            if (stytchIsInitialized.value) {
+                NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
+                    composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
+                    composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
+                    composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
+                    composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+                    composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+                }
+            } else {
+                // maybe show a loading state while stytch sets up
             }
         }
     )
