@@ -40,6 +40,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -139,6 +140,14 @@ internal class StytchB2BClientTest {
     }
 
     @Test
+    fun `configures DFP when calling StytchB2BClient configure`() {
+        runBlocking {
+            StytchB2BClient.configure(mContextMock, "")
+            verify(exactly = 1) { StytchB2BApi.configureDFP(any(), any(), any(), any()) }
+        }
+    }
+
+    @Test
     fun `should validate persisted sessions if applicable when calling StytchB2BClient configure`() {
         runBlocking {
             val mockResponse: StytchResult<IB2BAuthData> = mockk {
@@ -155,6 +164,22 @@ internal class StytchB2BClientTest {
             StytchB2BClient.configure(mContextMock, "")
             coVerify(exactly = 1) { StytchB2BApi.Sessions.authenticate() }
             verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should report the initialization state after configuration and initialization is complete`() {
+        runTest {
+            val mockResponse: StytchResult<IB2BAuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
+            val callback = spyk<(Boolean) -> Unit>()
+            StytchB2BClient.configure(mContextMock, "", callback)
+            // callback is called with expected value
+            verify(exactly = 1) { callback(true) }
+            // isInitialized has fired
+            assert(StytchB2BClient.isInitialized.value)
         }
     }
 

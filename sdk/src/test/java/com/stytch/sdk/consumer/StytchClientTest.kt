@@ -41,6 +41,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -144,6 +145,14 @@ internal class StytchClientTest {
     }
 
     @Test
+    fun `configures DFP when calling StytchClient configure`() {
+        runBlocking {
+            StytchClient.configure(mContextMock, "")
+            verify(exactly = 1) { StytchApi.configureDFP(any(), any(), any(), any()) }
+        }
+    }
+
+    @Test
     fun `should validate persisted sessions if applicable when calling StytchClient configure`() {
         runBlocking {
             val mockResponse: StytchResult<AuthData> = mockk {
@@ -160,6 +169,22 @@ internal class StytchClientTest {
             StytchClient.configure(mContextMock, "")
             coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
             verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should report the initialization state after configuration and initialization is complete`() {
+        runTest {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            val callback = spyk<(Boolean) -> Unit>()
+            StytchClient.configure(mContextMock, "", callback)
+            // callback is called with expected value
+            verify(exactly = 1) { callback(true) }
+            // isInitialized has fired
+            assert(StytchClient.isInitialized.value)
         }
     }
 
