@@ -7,7 +7,6 @@ import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import io.mockk.MockKAnnotations

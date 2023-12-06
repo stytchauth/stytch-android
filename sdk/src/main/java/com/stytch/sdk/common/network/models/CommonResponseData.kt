@@ -26,6 +26,13 @@ public data class StytchErrorResponse(
 )
 
 @JsonClass(generateAdapter = true)
+public data class StytchSchemaError(
+    val body: Any?,
+    val params: Any?,
+    val query: Any?,
+)
+
+@JsonClass(generateAdapter = true)
 public data class CryptoWalletData(
     // The id of the crypto wallet.
     @Json(name = "crypto_wallet_id")

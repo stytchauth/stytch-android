@@ -8,7 +8,6 @@ import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
@@ -16,10 +15,11 @@ import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -76,7 +76,7 @@ public object StytchClient {
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param callback An optional callback that is triggered after configuration and initialization has completed
-     * @throws StytchExceptions.Critical - if we failed to generate new encryption keys
+     * @throws StytchInternalError - if we failed to initialize for any reason
      */
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
@@ -111,16 +111,16 @@ public object StytchClient {
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
-            throw StytchExceptions.Critical(ex)
+            throw StytchInternalError(
+                description = "Failed to initialize the SDK",
+                exception = ex,
+            )
         }
     }
 
-    @Suppress("MaxLineLength")
     internal fun assertInitialized() {
-        if (!StytchApi.isInitialized) {
-            stytchError(
-                "StytchClient not configured. You must call 'StytchClient.configure(...)' before using any functionality of the StytchClient." // ktlint-disable max-line-length
-            )
+        if (!StytchApi.isInitialized || !_isInitialized.value) {
+            throw StytchSDKNotConfiguredError("StytchClient")
         }
     }
 

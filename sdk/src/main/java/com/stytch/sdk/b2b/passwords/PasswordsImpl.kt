@@ -10,7 +10,6 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

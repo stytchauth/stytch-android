@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider

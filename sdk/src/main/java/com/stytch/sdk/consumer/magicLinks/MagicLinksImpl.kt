@@ -3,7 +3,6 @@ package com.stytch.sdk.consumer.magicLinks
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater

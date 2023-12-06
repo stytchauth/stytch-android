@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray

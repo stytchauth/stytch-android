@@ -5,7 +5,6 @@ import android.content.Context
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.consumer.StytchClient

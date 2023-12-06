@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData

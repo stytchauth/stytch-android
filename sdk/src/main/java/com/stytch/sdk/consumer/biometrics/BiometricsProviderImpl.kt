@@ -9,7 +9,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.R
-import com.stytch.sdk.common.StytchExceptions
 import java.security.KeyStore
 import java.util.concurrent.Executors
 import javax.crypto.Cipher

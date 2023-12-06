@@ -24,7 +24,6 @@ import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider

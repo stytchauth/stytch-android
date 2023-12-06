@@ -3,7 +3,6 @@ package com.stytch.sdk.consumer.oauth
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.sessions.SessionAutoUpdater

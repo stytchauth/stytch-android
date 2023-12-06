@@ -13,11 +13,10 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.common.stytchError
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -183,7 +182,7 @@ internal class StytchB2BClientTest {
         }
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
+    @Test(expected = StytchInternalError::class)
     fun `an exception in StytchB2BClient configure throws a Critical exception`() {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
         val deviceInfo = DeviceInfo()
@@ -374,11 +373,6 @@ internal class StytchB2BClientTest {
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
         StytchB2BClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `stytchError throws IllegalStateException`() {
-        stytchError("Test")
     }
 
     @Test
