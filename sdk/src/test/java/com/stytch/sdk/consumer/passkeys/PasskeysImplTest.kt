@@ -158,7 +158,7 @@ internal class PasskeysImplTest {
     @Test
     fun `authenticate returns error if authenticateStartSecondary api call fails`() = runTest {
         every { impl.isSupported } returns true
-        every { mockSessionStorage.activeSessionExists } returns true
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
         coEvery { mockApi.authenticateStartSecondary(any(), any()) } returns StytchResult.Error(mockk())
         val result = impl.authenticate(mockk(relaxed = true))
         assert(result is StytchResult.Error)
@@ -171,7 +171,7 @@ internal class PasskeysImplTest {
     @Test
     fun `authenticate returns error if authenticateStartPrimary api call fails`() = runTest {
         every { impl.isSupported } returns true
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns StytchResult.Error(mockk())
         val result = impl.authenticate(mockk(relaxed = true))
         assert(result is StytchResult.Error)
@@ -184,7 +184,7 @@ internal class PasskeysImplTest {
     @Test
     fun `authenticate returns error if getPublicKeyCredential call fails`() = runTest {
         every { impl.isSupported } returns true
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
         coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } throws Exception()
         val result = impl.authenticate(mockk(relaxed = true))
@@ -198,7 +198,7 @@ internal class PasskeysImplTest {
     @Test
     fun `authenticate returns error if authenticate api call fails`() = runTest {
         every { impl.isSupported } returns true
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
         coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } returns mockk(relaxed = true)
         coEvery { mockApi.authenticate(any(), any()) } returns StytchResult.Error(mockk(relaxed = true))
@@ -213,7 +213,7 @@ internal class PasskeysImplTest {
     @Test
     fun `authenticate calls launchSessionUpdater and returns success if authentication flow succeeds`() = runTest {
         every { impl.isSupported } returns true
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
         coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } returns mockk(relaxed = true)
         val mockSuccessResponse = mockk<AuthResponse>(relaxed = true)

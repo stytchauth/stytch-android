@@ -106,7 +106,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms send with active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns true
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
         coEvery { mockApi.sendOTPWithSMSSecondary(any(), any()) } returns mockk(relaxed = true)
         impl.sms.send(
             OTP.SmsOTP.Parameters(
@@ -119,7 +119,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms send with no active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
         impl.sms.send(
             OTP.SmsOTP.Parameters(
@@ -132,7 +132,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms send with callback calls callback method`() {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.sms.send(
@@ -162,7 +162,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp send with no active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
@@ -175,7 +175,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp send with active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns true
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
         coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) } returns mockk(relaxed = true)
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
@@ -188,7 +188,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp send with callback calls callback method`() {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.whatsapp.send(
@@ -218,7 +218,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email send with no active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
         impl.email.send(
             OTP.EmailOTP.Parameters(
@@ -233,7 +233,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email send with active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns true
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
         coEvery { mockApi.sendOTPWithEmailSecondary(any(), any(), any(), any()) } returns mockk(relaxed = true)
         impl.email.send(
             OTP.EmailOTP.Parameters(
@@ -248,7 +248,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email send with callback calls callback method`() {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.email.send(

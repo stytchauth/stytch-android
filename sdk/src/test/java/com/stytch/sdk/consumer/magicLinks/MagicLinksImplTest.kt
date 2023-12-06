@@ -130,7 +130,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email send with active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns true
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
         coEvery {
             mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse
@@ -146,7 +146,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email send with no active session delegates to api`() = runTest {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery {
             mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse
@@ -162,7 +162,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email send with callback calls callback method`() {
-        every { mockSessionStorage.activeSessionExists } returns false
+        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
         coEvery {
             mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
         } returns successfulBaseResponse

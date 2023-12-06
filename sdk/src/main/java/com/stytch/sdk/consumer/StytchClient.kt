@@ -23,6 +23,7 @@ import com.stytch.sdk.common.stytchError
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
 import com.stytch.sdk.consumer.network.StytchApi
@@ -42,6 +43,9 @@ import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -59,14 +63,22 @@ public object StytchClient {
     internal lateinit var dfpProvider: DFPProvider
 
     /**
+     * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
+     * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
+     */
+    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchExceptions.Critical - if we failed to generate new encryption keys
      */
-    public fun configure(context: Context, publicToken: String) {
+    public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
             val deviceInfo = context.getDeviceInfo()
             StorageHelper.initialize(context)
@@ -89,6 +101,14 @@ public object StytchClient {
                     bootstrapData.dfpProtectedAuthEnabled,
                     bootstrapData.dfpProtectedAuthMode
                 )
+                // if there are session identifiers on device start the auto updater to ensure it is still valid
+                if (sessionStorage.persistedSessionIdentifiersExist) {
+                    StytchApi.Sessions.authenticate(null).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
+                }
+                _isInitialized.value = true
+                callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
             throw StytchExceptions.Critical(ex)

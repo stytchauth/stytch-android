@@ -14,8 +14,10 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.stytchError
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.oauth.OAuth
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -39,6 +41,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -62,7 +65,10 @@ internal class StytchClientTest {
     fun before() {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
-        mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
+        mockkStatic(
+            "com.stytch.sdk.common.extensions.ContextExtKt",
+            "com.stytch.sdk.consumer.extensions.StytchResultExtKt",
+        )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         val mockApplication: Application = mockk {
@@ -75,6 +81,7 @@ internal class StytchClientTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
+        mockkObject(StytchApi.Sessions)
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
@@ -134,6 +141,50 @@ internal class StytchClientTest {
         runBlocking {
             StytchClient.configure(mContextMock, "")
             coVerify { StytchApi.getBootstrapData() }
+        }
+    }
+
+    @Test
+    fun `configures DFP when calling StytchClient configure`() {
+        runBlocking {
+            StytchClient.configure(mContextMock, "")
+            verify(exactly = 1) { StytchApi.configureDFP(any(), any(), any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should validate persisted sessions if applicable when calling StytchClient configure`() {
+        runBlocking {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            // no session data == no authentication/updater
+            every { StorageHelper.loadValue(any()) } returns null
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
+            // yes session data == yes authentication/updater
+            every { StorageHelper.loadValue(any()) } returns "some-session-data"
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should report the initialization state after configuration and initialization is complete`() {
+        runTest {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            val callback = spyk<(Boolean) -> Unit>()
+            StytchClient.configure(mContextMock, "", callback)
+            // callback is called with expected value
+            verify(exactly = 1) { callback(true) }
+            // isInitialized has fired
+            assert(StytchClient.isInitialized.value)
         }
     }
 
