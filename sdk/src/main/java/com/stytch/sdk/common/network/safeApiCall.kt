@@ -46,13 +46,15 @@ private fun HttpException.toStytchError(): StytchError {
             Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
         }
     } catch (t: Throwable) {
-        // if we can parse this out to a StytchSchemaError, it's a schema error
-        source?.let {
-            Moshi.Builder().build().adapter(StytchSchemaError::class.java).fromJson(it)
+        try {
+            // if we can parse this out to a StytchSchemaError, it's a schema error
+            source?.let {
+                Moshi.Builder().build().adapter(StytchSchemaError::class.java).fromJson(it)
+            }
+        } catch (t: Throwable) {
+            // Can't parse anything, assume it's a network error
+            null
         }
-    } catch (t: Throwable) {
-        // Can't parse anything, assume it's a network error
-        null
     }
     StytchLog.w("http error code: $errorCode, errorResponse: $parsedErrorResponse")
     return when (parsedErrorResponse) {

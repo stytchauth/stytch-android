@@ -16,7 +16,7 @@ public data class StytchErrorResponse(
     @Json(name = "status_code")
     val statusCode: Int,
     @Json(name = "request_id")
-    val requestId: String,
+    val requestId: String? = null,
     @Json(name = "error_type")
     val errorType: String,
     @Json(name = "error_message")
