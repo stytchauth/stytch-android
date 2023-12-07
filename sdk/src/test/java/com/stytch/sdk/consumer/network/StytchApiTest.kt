@@ -459,7 +459,7 @@ internal class StytchApiTest {
     }
 
     @Test
-    fun `safeApiCall returns correct error for StytchExceptions`() = runTest {
+    fun `safeApiCall returns correct error for StytchErrors`() = runTest {
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchDataResponse<Boolean> {
             throw StytchAPIError(name = "", description = "")

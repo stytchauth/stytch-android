@@ -159,7 +159,7 @@ internal class B2BSessionsImplTest {
     }
 
     @Test(expected = StytchInternalError::class)
-    fun `SessionsImpl updateSession throws Critical exception when sessionstorage fails`() {
+    fun `SessionsImpl updateSession throws StytchInternalError when sessionstorage fails`() {
         every { mockSessionStorage.updateSession(any(), any()) } throws RuntimeException("Test")
         impl.updateSession("token", "jwt")
     }

@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
 
 /**
@@ -10,12 +11,12 @@ import com.stytch.sdk.consumer.AuthResponse
 public interface Sessions {
 
     /**
-     * @throws StytchExceptions.Critical if failed to decrypt data
+     * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionToken: String?
 
     /**
-     * @throws StytchExceptions.Critical if failed to decrypt data
+     * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionJwt: String?
 
