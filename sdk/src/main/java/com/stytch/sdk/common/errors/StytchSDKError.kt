@@ -186,3 +186,32 @@ public object StytchInvalidAuthorizationCredentialError : StytchSDKError(
     name = "invalid_authorization_credential",
     description = "The authorization credential is invalid.",
 )
+
+/**
+ * Thrown when you attempt to perform a passkey flow on a device that does not support passkeys
+ */
+public object StytchPasskeysNotSupportedError : StytchSDKError(
+    name = "passkeys_unsupported",
+    description = "Passkeys are not supported on this device.",
+)
+
+/**
+ * Thrown when there was an error decrypting data from persistent storage
+ */
+public data class StytchFailedToDecryptDataError(
+    public override val exception: Throwable?,
+) : StytchSDKError(
+    name = "failed_to_decrypt_data",
+    description = "Failed to decrypt user data",
+    exception = exception,
+)
+
+/**
+ * Thrown when biometric authentication has failed, providing a reason if available
+ */
+public data class StytchBiometricAuthenticationFailed(
+    val reason: String,
+) : StytchSDKError(
+    name = "biometrics_failed",
+    description = "Biometric authentication failed"
+)

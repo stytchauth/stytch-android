@@ -3,6 +3,8 @@ package com.stytch.sdk.consumer.sessions
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -21,7 +23,7 @@ internal class SessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionToken
             } catch (ex: Exception) {
-                throw StytchExceptions.Critical(ex)
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -30,7 +32,7 @@ internal class SessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionJwt
             } catch (ex: Exception) {
-                throw StytchExceptions.Critical(ex)
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -68,7 +70,7 @@ internal class SessionsImpl internal constructor(
                 sessionStorage.revoke()
             }
         } catch (ex: Exception) {
-            result = StytchResult.Error(StytchExceptions.Critical(ex))
+            result = StytchResult.Error(StytchInternalError(ex))
         }
         return result
     }
@@ -83,13 +85,13 @@ internal class SessionsImpl internal constructor(
     }
 
     /**
-     * @throws StytchExceptions.Critical if failed to save data
+     * @throws StytchInternalError if failed to save data
      */
     override fun updateSession(sessionToken: String?, sessionJwt: String?) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {
-            throw StytchExceptions.Critical(ex)
+            throw StytchInternalError(ex)
         }
     }
 }

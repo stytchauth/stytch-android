@@ -12,6 +12,8 @@ import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PublicKeyCredential
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchPasskeysNotSupportedError
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
@@ -90,7 +92,7 @@ internal class PasskeysImpl internal constructor(
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
     override suspend fun register(parameters: Passkeys.RegisterParameters): WebAuthnRegisterResponse {
-        if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
+        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError)
         return try {
             withContext(dispatchers.io) {
                 val startResponse = api.registerStart(
@@ -111,7 +113,7 @@ internal class PasskeysImpl internal constructor(
                 }
             }
         } catch (e: Exception) {
-            StytchResult.Error(StytchExceptions.Critical(e))
+            StytchResult.Error(StytchInternalError(e))
         }
     }
 
@@ -126,7 +128,7 @@ internal class PasskeysImpl internal constructor(
     }
 
     override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
-        if (!isSupported) return StytchResult.Error(StytchExceptions.Input("Passkeys are not supported"))
+        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError)
         return try {
             withContext(dispatchers.io) {
                 val startResponse = if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -153,7 +155,7 @@ internal class PasskeysImpl internal constructor(
                 }
             }
         } catch (e: Exception) {
-            StytchResult.Error(StytchExceptions.Critical(e))
+            StytchResult.Error(StytchInternalError(e))
         }
     }
 
