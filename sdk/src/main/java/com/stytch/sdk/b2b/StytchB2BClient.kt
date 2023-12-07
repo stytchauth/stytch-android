@@ -115,7 +115,7 @@ public object StytchB2BClient {
     }
 
     internal fun assertInitialized() {
-        if (!StytchB2BApi.isInitialized || !_isInitialized.value) {
+        if (!StytchB2BApi.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
     }

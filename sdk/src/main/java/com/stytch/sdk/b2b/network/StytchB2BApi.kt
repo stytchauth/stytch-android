@@ -37,7 +37,6 @@ import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.safeApiCall
-import java.lang.RuntimeException
 
 internal object StytchB2BApi {
     internal lateinit var publicToken: String

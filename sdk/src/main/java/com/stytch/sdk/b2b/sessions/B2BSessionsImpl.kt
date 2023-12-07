@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,10 +23,7 @@ internal class B2BSessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionToken
             } catch (ex: Exception) {
-                throw StytchInternalError(
-                    description = "Failed to retrieve the sessionToken from storage",
-                    exception = ex
-                )
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -34,10 +32,7 @@ internal class B2BSessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionJwt
             } catch (ex: Exception) {
-                throw StytchInternalError(
-                    description = "Failed to retrieve the sessionJWT from storage",
-                    exception = ex
-                )
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -96,10 +91,7 @@ internal class B2BSessionsImpl internal constructor(
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {
-            throw StytchInternalError(
-                description = "Failed to update the session data",
-                exception = ex
-            )
+            throw StytchInternalError(ex)
         }
     }
 }

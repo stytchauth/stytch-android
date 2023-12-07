@@ -13,6 +13,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
 import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
@@ -103,7 +104,7 @@ internal class StytchClientTest {
         clearAllMocks()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `assertInitialized throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.assertInitialized()
@@ -197,7 +198,7 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "")
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient magicLinks throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.magicLinks
@@ -209,7 +210,7 @@ internal class StytchClientTest {
         StytchClient.magicLinks
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient otps throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.otps
@@ -221,7 +222,7 @@ internal class StytchClientTest {
         StytchClient.otps
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient passwords throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.passwords
@@ -233,7 +234,7 @@ internal class StytchClientTest {
         StytchClient.passwords
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient sessions throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.sessions
@@ -245,7 +246,7 @@ internal class StytchClientTest {
         StytchClient.sessions
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient biometrics throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.biometrics
@@ -257,7 +258,7 @@ internal class StytchClientTest {
         StytchClient.biometrics
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient user throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.user
@@ -269,7 +270,7 @@ internal class StytchClientTest {
         StytchClient.user
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient oauth throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.oauth
@@ -281,7 +282,7 @@ internal class StytchClientTest {
         StytchClient.oauth
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient dfp throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.dfp
@@ -293,7 +294,7 @@ internal class StytchClientTest {
         StytchClient.dfp
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `accessing StytchClient passkeys throws IllegalStateException when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.passkeys
@@ -305,7 +306,7 @@ internal class StytchClientTest {
         StytchClient.passkeys
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `handle with coroutines throws IllegalStateException when not configured`() {
         runBlocking {
             every { StytchApi.isInitialized } returns false

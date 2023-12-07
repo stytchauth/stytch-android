@@ -10,7 +10,6 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
-import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

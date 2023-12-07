@@ -8,6 +8,8 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -70,7 +72,7 @@ internal class B2BSessionsImplTest {
         clearAllMocks()
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
+    @Test(expected = StytchFailedToDecryptDataError::class)
     fun `SessionsImpl sessionToken throws exception if fails to retrieve token`() {
         impl.sessionToken
     }
@@ -81,7 +83,7 @@ internal class B2BSessionsImplTest {
         assert(impl.sessionToken == "sessionToken")
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
+    @Test(expected = StytchFailedToDecryptDataError::class)
     fun `SessionsImpl sessionJwt throws exception if fails to retrieve token`() {
         impl.sessionJwt
     }
@@ -156,7 +158,7 @@ internal class B2BSessionsImplTest {
         verify { mockSessionStorage.updateSession("token", "jwt") }
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
+    @Test(expected = StytchInternalError::class)
     fun `SessionsImpl updateSession throws Critical exception when sessionstorage fails`() {
         every { mockSessionStorage.updateSession(any(), any()) } throws RuntimeException("Test")
         impl.updateSession("token", "jwt")

@@ -6,8 +6,8 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchBiometricAuthenticationFailed
 import com.stytch.sdk.common.errors.StytchChallengeSigningFailed
-import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchKeystoreUnavailableError
 import com.stytch.sdk.common.errors.StytchMissingPublicKeyError
@@ -145,11 +145,11 @@ internal class BiometricsImplTest {
         every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
         coEvery {
             mockBiometricsProvider.showBiometricPromptForRegistration(any(), any(), any())
-        } throws StytchExceptions.Input("Authentication failed")
+        } throws StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED)
         every { mockBiometricsProvider.deleteSecretKey() } just runs
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == "Authentication failed")
+        require(result.exception is StytchBiometricAuthenticationFailed)
         verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
         verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
@@ -168,7 +168,7 @@ internal class BiometricsImplTest {
         every { mockBiometricsProvider.deleteSecretKey() } just runs
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason is RuntimeException)
+        assert((result.exception as StytchInternalError).exception is RuntimeException)
         verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
         verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
@@ -181,10 +181,10 @@ internal class BiometricsImplTest {
         every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
         coEvery {
             mockBiometricsProvider.showBiometricPromptForRegistration(any(), any(), any())
-        } throws StytchExceptions.Input("Authentication failed")
+        } throws StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED)
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == "Authentication failed")
+        require(result.exception is StytchBiometricAuthenticationFailed)
     }
 
     @Test
@@ -316,10 +316,10 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.loadValue(any()) } returns ""
         coEvery {
             mockBiometricsProvider.showBiometricPromptForAuthentication(any(), any(), any(), any())
-        } throws StytchExceptions.Input("Authentication failed")
+        } throws StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED)
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == "Authentication failed")
+        require(result.exception is StytchBiometricAuthenticationFailed)
     }
 
     @Test

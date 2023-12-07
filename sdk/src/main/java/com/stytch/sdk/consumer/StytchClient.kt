@@ -120,7 +120,7 @@ public object StytchClient {
     }
 
     internal fun assertInitialized() {
-        if (!StytchApi.isInitialized || !_isInitialized.value) {
+        if (!StytchApi.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchClient")
         }
     }
