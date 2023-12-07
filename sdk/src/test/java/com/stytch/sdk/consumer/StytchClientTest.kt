@@ -10,9 +10,10 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
@@ -321,7 +322,7 @@ internal class StytchClientTest {
             }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+            assert(response.reason is StytchDeeplinkMissingTokenError)
         }
     }
 
@@ -334,7 +335,7 @@ internal class StytchClientTest {
             }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 

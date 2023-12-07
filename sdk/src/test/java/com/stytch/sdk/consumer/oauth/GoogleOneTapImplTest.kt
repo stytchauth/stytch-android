@@ -12,7 +12,10 @@ import com.google.android.gms.tasks.Task
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchInvalidAuthorizationCredentialError
+import com.stytch.sdk.common.errors.StytchMissingAuthorizationCredentialIdTokenError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.common.sso.GoogleOneTapProvider
 import com.stytch.sdk.consumer.AuthResponse
@@ -180,8 +183,7 @@ internal class GoogleOneTapImplTest {
     fun `GoogleOneTapImpl authenticate returns error if nonce is missing`() = runTest {
         val result = impl.authenticate(mockk())
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == StytchErrorType.GOOGLE_ONETAP_MISSING_MEMBER.message)
+        require(result.exception is StytchInvalidAuthorizationCredentialError)
     }
 
     @Test
@@ -189,8 +191,7 @@ internal class GoogleOneTapImplTest {
         impl.nonce = "nonce"
         val result = impl.authenticate(mockk())
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == StytchErrorType.GOOGLE_ONETAP_MISSING_MEMBER.message)
+        assert(result.exception is StytchInvalidAuthorizationCredentialError)
     }
 
     @Test
@@ -201,8 +202,8 @@ internal class GoogleOneTapImplTest {
         }
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Critical)
-        assert(result.exception.reason is ApiException)
+        require(result.exception is StytchInternalError)
+        assert(result.exception.exception is ApiException)
     }
 
     @Test
@@ -215,8 +216,7 @@ internal class GoogleOneTapImplTest {
         }
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == StytchErrorType.GOOGLE_ONETAP_MISSING_ID_TOKEN.message)
+        require(result.exception is StytchMissingAuthorizationCredentialIdTokenError)
     }
 
     @Test
@@ -228,11 +228,11 @@ internal class GoogleOneTapImplTest {
             }
         }
         coEvery { mockApi.authenticateWithGoogleIdToken(any(), any(), any()) } returns StytchResult.Error(
-            StytchExceptions.Response(mockk(relaxed = true))
+            StytchAPIError(name = "something_went_wrong", description = "testing")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Response)
+        require(result.exception is StytchAPIError)
     }
 
     @Test

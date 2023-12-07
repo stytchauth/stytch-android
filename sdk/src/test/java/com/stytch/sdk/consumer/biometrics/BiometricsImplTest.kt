@@ -5,9 +5,16 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchChallengeSigningFailed
+import com.stytch.sdk.common.errors.StytchError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchKeystoreUnavailableError
+import com.stytch.sdk.common.errors.StytchMissingPublicKeyError
+import com.stytch.sdk.common.errors.StytchNoBiometricsRegistrationError
+import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
-import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -110,7 +117,7 @@ internal class BiometricsImplTest {
         }
         val result = impl.register(mockRegisterParameters)
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.NOT_USING_KEYSTORE.message)
+        assert(result.exception is StytchKeystoreUnavailableError)
     }
 
     @Test
@@ -119,10 +126,10 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.preferenceExists(any()) } returns false
         every {
             mockSessionStorage.ensureSessionIsValidOrThrow()
-        } throws StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
+        } throws StytchNoCurrentSessionError
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.NO_CURRENT_SESSION.message)
+        assert(result.exception is StytchNoCurrentSessionError)
     }
 
     @Test
@@ -190,10 +197,10 @@ internal class BiometricsImplTest {
         } returns mockk(relaxed = true)
         every {
             EncryptionManager.generateEd25519KeyPair()
-        } throws StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
+        } throws StytchMissingPublicKeyError(null)
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.KEY_GENERATION_FAILED.message)
+        assert(result.exception is StytchMissingPublicKeyError)
     }
 
     @Test
@@ -208,11 +215,11 @@ internal class BiometricsImplTest {
             EncryptionManager.generateEd25519KeyPair()
         } returns Pair(base64EncodedString, base64EncodedString)
         coEvery { mockApi.registerStart(base64EncodedString) } returns StytchResult.Error(
-            StytchExceptions.Response(mockk(relaxed = true))
+            StytchAPIError(name = "", description = "")
         )
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception is StytchExceptions.Response)
+        assert(result.exception is StytchAPIError)
         coVerify { mockApi.registerStart(base64EncodedString) }
     }
 
@@ -234,11 +241,10 @@ internal class BiometricsImplTest {
         )
         every {
             EncryptionManager.signEd25519Challenge(any(), "challenge")
-        } throws StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+        } throws StytchChallengeSigningFailed(null)
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+        assert(result.exception is StytchChallengeSigningFailed)
         coVerify { mockApi.registerStart(base64EncodedString) }
     }
 
@@ -288,7 +294,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.preferenceExists(any()) } throws RuntimeException("Testing")
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason is RuntimeException)
+        assert(result.exception is StytchInternalError)
     }
 
     @Test
@@ -297,7 +303,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.loadValue(any()) } returns null
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
+        assert(result.exception is StytchNoBiometricsRegistrationError)
     }
 
     @Test
@@ -329,10 +335,10 @@ internal class BiometricsImplTest {
         } returns mockCipher
         every {
             EncryptionManager.deriveEd25519PublicKeyFromPrivateKeyBytes(base64DecodedByteArray)
-        } throws StytchExceptions.Input(StytchErrorType.ERROR_DERIVING_PUBLIC_KEY.message)
+        } throws StytchMissingPublicKeyError(null)
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.ERROR_DERIVING_PUBLIC_KEY.message)
+        assert(result.exception is StytchMissingPublicKeyError)
     }
 
     @Test
@@ -350,11 +356,11 @@ internal class BiometricsImplTest {
             EncryptionManager.deriveEd25519PublicKeyFromPrivateKeyBytes(base64DecodedByteArray)
         } returns "publicKey"
         coEvery { mockApi.authenticateStart("publicKey") } returns StytchResult.Error(
-            StytchExceptions.Response(mockk(relaxed = true))
+            StytchAPIError(name = "", description = "")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception is StytchExceptions.Response)
+        assert(result.exception is StytchAPIError)
         coVerify { mockApi.authenticateStart("publicKey") }
     }
 
@@ -379,11 +385,10 @@ internal class BiometricsImplTest {
         )
         every {
             EncryptionManager.signEd25519Challenge(any(), "challenge")
-        } throws StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+        } throws StytchChallengeSigningFailed(null)
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+        assert(result.exception is StytchChallengeSigningFailed)
         coVerify { mockApi.authenticateStart("publicKey") }
     }
 

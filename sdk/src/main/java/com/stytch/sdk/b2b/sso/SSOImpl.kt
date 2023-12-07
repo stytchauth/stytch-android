@@ -9,6 +9,7 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ internal class SSOImpl(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
             result = api.authenticate(

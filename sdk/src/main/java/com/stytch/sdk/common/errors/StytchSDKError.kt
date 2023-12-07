@@ -42,9 +42,23 @@ public data class StytchInternalError(
 /**
  * Thrown when we couldn't find a code verifier on device
  */
-public object StytchMissingPKCEError : StytchSDKError(
+public data class StytchMissingPKCEError(
+    public override val exception: Throwable?
+) : StytchSDKError(
     name = "missing_pkce",
-    description = "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started."
+    description = "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.",
+    exception = exception,
+)
+
+/**
+ * Thrown when we couldn't create a code challenge on device
+ */
+public data class StytchFailedToCreateCodeChallengeError(
+    public override val exception: Throwable,
+) : StytchSDKError(
+    name = "failed_code_challenge",
+    description = "Failed to generate a PKCE code challenge",
+    exception = exception
 )
 
 /**
@@ -138,17 +152,23 @@ public object StytchDeviceCredentialsNotAllowedError : StytchSDKError(
 /**
  * Thrown when we are unable to retrieve a biometric key
  */
-public object StytchMissingPublicKeyError : StytchSDKError(
+public data class StytchMissingPublicKeyError(
+    override val exception: Throwable?
+) : StytchSDKError(
     name = "missing_public_key",
     description = "Failed to retrieve the public key. Add a new biometric registration.",
+    exception = exception,
 )
 
 /**
  * Thrown when a challenge signing (biometrics, passkeys) has failed
  */
-public object StytchChallengeSigningFailed : StytchSDKError(
+public data class StytchChallengeSigningFailed(
+    public override val exception: Throwable?
+) : StytchSDKError(
     name = "challenge_signing_failed",
     description = "Failed to sign the challenge with the key.",
+    exception = exception,
 )
 
 /**

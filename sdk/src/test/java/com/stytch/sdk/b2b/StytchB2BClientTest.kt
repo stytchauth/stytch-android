@@ -14,9 +14,10 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -304,7 +305,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+            assert(response.reason is StytchDeeplinkMissingTokenError)
         }
     }
 
@@ -317,7 +318,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 
@@ -360,7 +361,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 

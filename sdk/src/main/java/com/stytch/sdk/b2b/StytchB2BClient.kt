@@ -32,10 +32,11 @@ import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.network.models.BootstrapData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -272,7 +273,7 @@ public object StytchB2BClient {
         return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
             }
             when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
@@ -309,7 +310,7 @@ public object StytchB2BClient {
                     )
                 }
                 else -> {
-                    DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
                 }
             }
         }

@@ -9,6 +9,7 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +35,7 @@ internal class B2BMagicLinksImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError)
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
 
@@ -71,7 +72,7 @@ internal class B2BMagicLinksImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError)
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
             result = discoveryApi.authenticate(
@@ -104,10 +105,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     val challengePair = storageHelper.generateHashedCodeChallenge()
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchInternalError(
-                        description = "Failed to generate a PKCE code challenge",
-                        exception = ex
-                    ))
+                    result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext
                 }
 
@@ -147,10 +145,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     val challengePair = storageHelper.generateHashedCodeChallenge()
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchInternalError(
-                        description = "Failed to generate a PKCE code challenge",
-                        exception = ex
-                    ))
+                    result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext
                 }
 

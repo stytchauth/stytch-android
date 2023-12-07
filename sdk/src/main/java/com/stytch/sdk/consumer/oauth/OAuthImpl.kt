@@ -3,7 +3,7 @@ package com.stytch.sdk.consumer.oauth
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.sso.GoogleOneTapProviderImpl
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -50,9 +50,7 @@ internal class OAuthImpl(
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {
             val pkce = storageHelper.retrieveCodeVerifier()
-                ?: return@withContext StytchResult.Error(
-                    StytchExceptions.Input(StytchErrorType.OAUTH_MISSING_PKCE.message)
-                )
+                ?: return@withContext StytchResult.Error(StytchMissingPKCEError(null))
             api.authenticateWithThirdPartyToken(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
