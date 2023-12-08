@@ -1,45 +1,18 @@
-package com.stytch.sdk.common.network // ktlint-disable filename
+package com.stytch.sdk.common.extensions
 
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.StytchLog
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPISchemaError
 import com.stytch.sdk.common.errors.StytchAPIUnreachableError
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.common.network.models.StytchErrorResponse
 import com.stytch.sdk.common.network.models.StytchSchemaError
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
-internal suspend fun <T1, T : StytchDataResponse<T1>> safeApiCall(
-    assertInitialized: () -> Unit,
-    apiCall: suspend () -> T
-): StytchResult<T1> = withContext(Dispatchers.IO) {
-    assertInitialized()
-    try {
-        StytchResult.Success(apiCall().data)
-    } catch (throwable: Throwable) {
-        val stytchError = when (throwable) {
-            is StytchError -> throwable
-            is HttpException -> throwable.toStytchError()
-            else -> {
-                throwable.printStackTrace()
-                StytchLog.w("Network Error")
-                StytchAPIUnreachableError(
-                    description = throwable.message ?: "Invalid or no response from server",
-                    exception = throwable
-                )
-            }
-        }
-        StytchResult.Error(stytchError)
-    }
-}
-
-private fun HttpException.toStytchError(): StytchError {
+internal fun HttpException.toStytchError(): StytchError {
     val errorCode = code()
-    val source = response()?.errorBody()?.source()
+    val source = response()?.errorBody()?.string()
     val parsedErrorResponse = try {
         // if we can parse this out to a StytchErrorResponse, it's an API error
         source?.let {

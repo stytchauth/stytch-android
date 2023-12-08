@@ -1,6 +1,6 @@
 package com.stytch.sdk.common
 
-import com.stytch.sdk.common.errors.StytchError
+import com.stytch.sdk.common.errors.StytchDeeplinkError
 
 /**
  * A class representing the three states of a deeplink handled by StytchClient.handle() / StytchB2BClient.handle()
@@ -19,9 +19,9 @@ public sealed interface DeeplinkHandledStatus {
      * This could happen if you pass a non-Stytch deeplink intent to the StytchClient.handle() method, or are trying to
      * use a Consumer/B2B token in the wrong SDK.
      *
-     * @property reason An error explaining why the deeplink was not handled
+     * @property reason A StytchDeeplinkError explaining why the deeplink was not handled
      */
-    public data class NotHandled(val reason: StytchError) : DeeplinkHandledStatus
+    public data class NotHandled(val reason: StytchDeeplinkError) : DeeplinkHandledStatus
 
     /**
      * Indicates that this was a supported Stytch deeplink, but there is something more your application needs to do
