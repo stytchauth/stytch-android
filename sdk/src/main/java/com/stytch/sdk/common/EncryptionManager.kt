@@ -10,11 +10,12 @@ import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException
 import com.google.crypto.tink.signature.SignatureConfig
+import com.stytch.sdk.common.errors.StytchChallengeSigningFailed
+import com.stytch.sdk.common.errors.StytchMissingPublicKeyError
 import com.stytch.sdk.common.extensions.hexStringToByteArray
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.extensions.toHexString
-import com.stytch.sdk.common.network.StytchErrorType
 import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -138,7 +139,7 @@ internal object EncryptionManager {
         val privateKey = keyPair.private as Ed25519PrivateKeyParameters
         Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
     } catch (e: Exception) {
-        throw StytchExceptions.Input(StytchErrorType.KEY_GENERATION_FAILED.message)
+        throw StytchMissingPublicKeyError(e)
     }
 
     fun signEd25519Challenge(challengeString: String, privateKeyString: String): String = try {
@@ -150,7 +151,7 @@ internal object EncryptionManager {
         val signature: ByteArray = signer.generateSignature()
         signature.toBase64EncodedString()
     } catch (e: Exception) {
-        throw StytchExceptions.Input(StytchErrorType.ERROR_SIGNING_CHALLENGE.message)
+        throw StytchChallengeSigningFailed(e)
     }
 
     fun deriveEd25519PublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String = try {
@@ -158,6 +159,6 @@ internal object EncryptionManager {
         val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
         publicKeyRebuild.encoded.toBase64EncodedString()
     } catch (e: Exception) {
-        throw StytchExceptions.Input(StytchErrorType.ERROR_DERIVING_PUBLIC_KEY.message)
+        throw StytchMissingPublicKeyError(e)
     }
 }

@@ -24,10 +24,10 @@ import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -37,7 +37,6 @@ import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.safeApiCall
-import java.lang.RuntimeException
 
 internal object StytchB2BApi {
     internal lateinit var publicToken: String
@@ -49,11 +48,7 @@ internal object StytchB2BApi {
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
-            throw StytchExceptions.Critical(
-                RuntimeException(
-                    "StytchB2BApi not configured. You must call 'configure(...)' before using any functionality of the " // ktlint-disable max-line-length
-                )
-            )
+            throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,

@@ -10,8 +10,9 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,7 +53,7 @@ internal class PasswordsImpl internal constructor(
                 val challengePair = storageHelper.generateHashedCodeChallenge()
                 challengeCode = challengePair.second
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 return@withContext
             }
             result = api.resetByEmailStart(
@@ -85,7 +86,7 @@ internal class PasswordsImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
             result = api.resetByEmail(

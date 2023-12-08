@@ -1,8 +1,8 @@
 package com.stytch.sdk.consumer.passkeys
 
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchPasskeysNotSupportedError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
@@ -77,8 +77,7 @@ internal class PasskeysImplTest {
         every { impl.isSupported } returns false
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == "Passkeys are not supported")
+        assert(result.exception is StytchPasskeysNotSupportedError)
     }
 
     @Test
@@ -151,8 +150,7 @@ internal class PasskeysImplTest {
         every { impl.isSupported } returns false
         val result = impl.authenticate(mockk())
         require(result is StytchResult.Error)
-        require(result.exception is StytchExceptions.Input)
-        assert(result.exception.reason == "Passkeys are not supported")
+        assert(result.exception is StytchPasskeysNotSupportedError)
     }
 
     @Test

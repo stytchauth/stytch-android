@@ -9,13 +9,14 @@ import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
-import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchKeystoreUnavailableError
+import com.stytch.sdk.common.errors.StytchNoBiometricsRegistrationError
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.getValueOrThrow
-import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -108,7 +109,7 @@ internal class BiometricsImpl internal constructor(
         withContext(dispatchers.io) {
             try {
                 if (!isUsingKeystore() && !parameters.allowFallbackToCleartext) {
-                    throw StytchExceptions.Input(StytchErrorType.NOT_USING_KEYSTORE.message)
+                    throw StytchKeystoreUnavailableError
                 }
                 if (isRegistrationAvailable(parameters.context)) {
                     removeRegistration()
@@ -146,11 +147,11 @@ internal class BiometricsImpl internal constructor(
                     }
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } catch (e: StytchExceptions) {
+            } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
                 removeRegistration()
-                StytchResult.Error(StytchExceptions.Critical(e))
+                StytchResult.Error(StytchInternalError(exception = e))
             }
         }
 
@@ -174,8 +175,7 @@ internal class BiometricsImpl internal constructor(
                 try {
                     require(isRegistrationAvailable(parameters.context) && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalArgumentException) {
-                    StytchLog.e(e.message ?: StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
-                    throw StytchExceptions.Input(StytchErrorType.NO_BIOMETRICS_REGISTRATIONS_AVAILABLE.message)
+                    throw StytchNoBiometricsRegistrationError
                 }
                 val cipher = withContext(dispatchers.ui) {
                     biometricsProvider.showBiometricPromptForAuthentication(
@@ -201,10 +201,10 @@ internal class BiometricsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            } catch (e: StytchExceptions) {
+            } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
-                StytchResult.Error(StytchExceptions.Critical(e))
+                StytchResult.Error(StytchInternalError(e))
             }
         }
 

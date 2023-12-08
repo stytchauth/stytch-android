@@ -13,11 +13,12 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.common.stytchError
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -98,14 +99,14 @@ internal class StytchB2BClientTest {
         clearAllMocks()
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `assertInitialized throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `assertInitialized throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.assertInitialized()
     }
 
     @Test
-    fun `assertInitialized does not throw IllegalStateException when properly configured`() {
+    fun `assertInitialized does not throw StytchSDKNotConfiguredError when properly configured`() {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
@@ -183,8 +184,8 @@ internal class StytchB2BClientTest {
         }
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
-    fun `an exception in StytchB2BClient configure throws a Critical exception`() {
+    @Test(expected = StytchInternalError::class)
+    fun `an exception in StytchB2BClient configure throws a StytchInternalError exception`() {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
         val deviceInfo = DeviceInfo()
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
@@ -192,8 +193,8 @@ internal class StytchB2BClientTest {
         stytchClientObject.configure(mContextMock, "")
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient magicLinks throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient magicLinks throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.magicLinks
     }
@@ -204,8 +205,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.magicLinks
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient sessions throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient sessions throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.sessions
     }
@@ -216,8 +217,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.sessions
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient organization throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient organization throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.organization
     }
@@ -228,8 +229,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.organization
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient member throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient member throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.member
     }
@@ -240,8 +241,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.member
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient passwords throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient passwords throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.passwords
     }
@@ -252,8 +253,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.passwords
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient discovery throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient discovery throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.discovery
     }
@@ -264,8 +265,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.discovery
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient sso throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient sso throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.sso
     }
@@ -276,8 +277,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.sso
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchB2BClient dfp throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchB2BClient dfp throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BClient.dfp
     }
@@ -288,8 +289,8 @@ internal class StytchB2BClientTest {
         StytchB2BClient.dfp
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `handle with coroutines throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `handle with coroutines throws StytchSDKNotConfiguredError when not configured`() {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns false
             StytchB2BClient.handle(mockk(), 30U)
@@ -305,7 +306,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+            assert(response.reason is StytchDeeplinkMissingTokenError)
         }
     }
 
@@ -318,7 +319,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 
@@ -361,7 +362,7 @@ internal class StytchB2BClientTest {
             }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 
@@ -374,11 +375,6 @@ internal class StytchB2BClientTest {
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
         StytchB2BClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `stytchError throws IllegalStateException`() {
-        stytchError("Test")
     }
 
     @Test

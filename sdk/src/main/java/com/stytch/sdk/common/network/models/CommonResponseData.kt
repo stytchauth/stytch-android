@@ -16,13 +16,20 @@ public data class StytchErrorResponse(
     @Json(name = "status_code")
     val statusCode: Int,
     @Json(name = "request_id")
-    val requestId: String,
+    val requestId: String? = null,
     @Json(name = "error_type")
     val errorType: String,
     @Json(name = "error_message")
     val errorMessage: String?,
     @Json(name = "error_url")
     val errorUrl: String,
+)
+
+@JsonClass(generateAdapter = true)
+public data class StytchSchemaError(
+    val body: Any?,
+    val params: Any?,
+    val query: Any?,
 )
 
 @JsonClass(generateAdapter = true)
