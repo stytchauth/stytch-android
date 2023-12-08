@@ -22,7 +22,7 @@ public data class StytchErrorResponse(
     @Json(name = "error_message")
     val errorMessage: String?,
     @Json(name = "error_url")
-    val errorUrl: String,
+    val errorUrl: String? = null,
 )
 
 @JsonClass(generateAdapter = true)

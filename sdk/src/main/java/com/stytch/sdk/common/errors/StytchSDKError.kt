@@ -62,9 +62,17 @@ public data class StytchFailedToCreateCodeChallengeError(
 )
 
 /**
+ * A type of error that can occur during deeplink handling
+ */
+public interface StytchDeeplinkError {
+    public val name: String
+    public val description: String
+}
+
+/**
  * Thrown when we were passed an unknown deeplink token type
  */
-public object StytchDeeplinkUnkownTokenTypeError : StytchSDKError(
+public object StytchDeeplinkUnkownTokenTypeError : StytchDeeplinkError, StytchSDKError(
     name = "deeplink_unknown_token_type",
     description = "The deeplink received has an unknown token type.",
 )
@@ -72,7 +80,7 @@ public object StytchDeeplinkUnkownTokenTypeError : StytchSDKError(
 /**
  * Thrown when we attempted to handle a deeplink, but no token was found
  */
-public object StytchDeeplinkMissingTokenError : StytchSDKError(
+public object StytchDeeplinkMissingTokenError : StytchDeeplinkError, StytchSDKError(
     name = "deeplink_missing_token",
     description = "The deeplink received has a missing token value.",
 )
@@ -94,59 +102,11 @@ public object StytchNoBiometricsRegistrationError : StytchSDKError(
 )
 
 /**
- * Thrown when biometrics are unavailable on the device
- */
-public object StytchBiometricsUnavailableError : StytchSDKError(
-    name = "biometrics_unavailable",
-    description = "Biometrics is not available on the device.",
-)
-
-/**
- * Thrown when the biometrics key was invalidated
- */
-public object StytchKeyInvalidatedError : StytchSDKError(
-    name = "key_invalidated",
-    description = "The biometrics enrollment on the device has changed.",
-)
-
-/**
  * Thrown when the keystore is unavailable, but the developer did not pass allowFallbackToCleartext=true
  */
 public object StytchKeystoreUnavailableError : StytchSDKError(
     name = "keystore_unavailable",
     description = "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
-)
-
-/**
- * Thrown when there are no biometric enrollments on the device (ie: no fingerprints/faces)
- */
-public object StytchNoBiometricsEnrolledError : StytchSDKError(
-    name = "no_biometrics_enrolled",
-    description = "There is no biometric factor enrolled on the device. Add a biometric factor in the device settings.",
-)
-
-/**
- * Thrown when the user canceled something
- */
-public object StytchUserCancellationError : StytchSDKError(
-    name = "user_cancellation",
-    description = "The user canceled the prompt. Ask the user to try again.",
-)
-
-/**
- * Thrown when the user has been locked out
- */
-public object StytchUserLockedOutError : StytchSDKError(
-    name = "user_locked_out",
-    description = "The user has been locked out due to too many failed attempts. Ask the user to try again later.",
-)
-
-/**
- * Thrown when the allowDeviceCredentials parameter used for registration and authentication are different
- */
-public object StytchDeviceCredentialsNotAllowedError : StytchSDKError(
-    name = "device_credentials_not_allowed",
-    description = "The device credentials allowment is mismatched. Change the allowDeviceCredentials parameter to be the same in both the register and authenticate methods.",
 )
 
 /**
