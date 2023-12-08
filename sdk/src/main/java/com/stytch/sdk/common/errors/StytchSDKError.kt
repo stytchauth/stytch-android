@@ -101,38 +101,6 @@ public object StytchNoBiometricsRegistrationError : StytchSDKError(
     description = "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
 )
 
-/* These Biometric errors are not thrown on Android
-public object StytchBiometricsUnavailableError : StytchSDKError(
-    name = "biometrics_unavailable",
-    description = "Biometrics is not available on the device.",
-)
-
-public object StytchKeyInvalidatedError : StytchSDKError(
-    name = "key_invalidated",
-    description = "The biometrics enrollment on the device has changed.",
-)
-
-public object StytchNoBiometricsEnrolledError : StytchSDKError(
-    name = "no_biometrics_enrolled",
-    description = "There is no biometric factor enrolled on the device. Add a biometric factor in the device settings.",
-)
-
-public object StytchUserCancellationError : StytchSDKError(
-    name = "user_cancellation",
-    description = "The user canceled the prompt. Ask the user to try again.",
-)
-
-public object StytchUserLockedOutError : StytchSDKError(
-    name = "user_locked_out",
-    description = "The user has been locked out due to too many failed attempts. Ask the user to try again later.",
-)
-
-public object StytchDeviceCredentialsNotAllowedError : StytchSDKError(
-    name = "device_credentials_not_allowed",
-    description = "The device credentials allowment is mismatched. Change the allowDeviceCredentials parameter to be the same in both the register and authenticate methods.",
-)
-*/
-
 /**
  * Thrown when the keystore is unavailable, but the developer did not pass allowFallbackToCleartext=true
  */
