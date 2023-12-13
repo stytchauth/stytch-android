@@ -5,11 +5,8 @@ package com.stytch.sdk.common.errors
  */
 public data class StytchAPIUnreachableError(
     public override val description: String,
-    public override val url: String? = null,
-    public override val exception: Throwable?
+    public val exception: Throwable? = null,
 ) : StytchError(
     name = "StytchAPIUnreachableError",
     description = description,
-    url = url,
-    exception = exception,
 )

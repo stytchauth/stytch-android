@@ -5,9 +5,7 @@ package com.stytch.sdk.common.errors
  */
 public data class StytchAPISchemaError(
     public override val description: String,
-    public override val url: String? = null,
 ) : StytchError(
     name = "StytchAPISchemaError",
     description = description,
-    url = url
 )
