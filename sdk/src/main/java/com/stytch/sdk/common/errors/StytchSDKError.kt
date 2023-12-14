@@ -10,13 +10,10 @@ package com.stytch.sdk.common.errors
 public sealed class StytchSDKError(
     name: String,
     description: String,
-    url: String? = null,
-    exception: Throwable? = null,
+    public open val exception: Throwable? = null,
 ) : StytchError(
     name = name,
     description = description,
-    url = url,
-    exception = exception,
 )
 
 /**

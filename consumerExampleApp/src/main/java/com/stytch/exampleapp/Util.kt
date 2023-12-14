@@ -1,6 +1,7 @@
 package com.stytch.exampleapp
 
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
 import java.util.regex.Pattern
 
 private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -25,5 +26,11 @@ fun isPhoneNumberValid(str: String): Boolean {
 
 fun <T : Any> StytchResult<T>.toFriendlyDisplay() = when (this) {
     is StytchResult.Success<*> -> this.toString()
-    is StytchResult.Error -> "Name: ${exception.name}\nDescription: ${exception.description}\nURL: ${exception.url}"
+    is StytchResult.Error -> {
+        var message = "Name: ${exception.name}\nDescription: ${exception.description}"
+        if (exception is StytchAPIError) {
+            message += "\nURL: ${(exception as StytchAPIError).url}"
+        }
+        message
+    }
 }

@@ -6,6 +6,4 @@ package com.stytch.sdk.common.errors
 public sealed class StytchError(
     public open val name: String,
     public open val description: String,
-    public open val url: String? = null,
-    public open val exception: Throwable? = null,
 ) : Exception()

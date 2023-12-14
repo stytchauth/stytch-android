@@ -203,7 +203,7 @@ internal class GoogleOneTapImplTest {
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
         require(result.exception is StytchInternalError)
-        assert(result.exception.exception is ApiException)
+        assert((result.exception as StytchInternalError).exception is ApiException)
     }
 
     @Test
