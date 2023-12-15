@@ -99,7 +99,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
                 intent.data?.let {
                     val result = StytchClient.handle(it, 60U)
                     _currentResponse.value = when (result) {
-                        is DeeplinkHandledStatus.NotHandled -> result.reason.description
+                        is DeeplinkHandledStatus.NotHandled -> result.reason.message
                         is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                         // This only happens for password reset deeplinks
                         is DeeplinkHandledStatus.ManualHandlingRequired -> ""

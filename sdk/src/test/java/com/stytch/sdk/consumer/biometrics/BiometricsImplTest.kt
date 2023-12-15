@@ -215,7 +215,7 @@ internal class BiometricsImplTest {
             EncryptionManager.generateEd25519KeyPair()
         } returns Pair(base64EncodedString, base64EncodedString)
         coEvery { mockApi.registerStart(base64EncodedString) } returns StytchResult.Error(
-            StytchAPIError(name = "", description = "")
+            StytchAPIError(errorType = "", message = "")
         )
         val result = impl.register(mockk(relaxed = true))
         require(result is StytchResult.Error)
@@ -356,7 +356,7 @@ internal class BiometricsImplTest {
             EncryptionManager.deriveEd25519PublicKeyFromPrivateKeyBytes(base64DecodedByteArray)
         } returns "publicKey"
         coEvery { mockApi.authenticateStart("publicKey") } returns StytchResult.Error(
-            StytchAPIError(name = "", description = "")
+            StytchAPIError(errorType = "", message = "")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)

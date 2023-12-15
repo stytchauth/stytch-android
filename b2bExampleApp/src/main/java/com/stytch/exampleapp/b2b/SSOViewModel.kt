@@ -46,7 +46,7 @@ class SSOViewModel : ViewModel() {
                     intent?.data?.let {
                         val result = StytchClient.handle(it, 60U)
                         when (result) {
-                            is DeeplinkHandledStatus.NotHandled -> result.reason.description
+                            is DeeplinkHandledStatus.NotHandled -> result.reason.message
                             is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                             // This only happens for password reset deeplinks
                             is DeeplinkHandledStatus.ManualHandlingRequired -> ""

@@ -32,16 +32,16 @@ internal fun HttpException.toStytchError(): StytchError {
     StytchLog.w("http error code: $errorCode, errorResponse: $parsedErrorResponse")
     return when (parsedErrorResponse) {
         is StytchErrorResponse -> StytchAPIError(
-            name = parsedErrorResponse.errorType,
-            description = parsedErrorResponse.errorMessage ?: "",
+            errorType = parsedErrorResponse.errorType,
+            message = parsedErrorResponse.errorMessage ?: "",
             url = parsedErrorResponse.errorUrl,
             requestId = parsedErrorResponse.requestId
         )
         is StytchSchemaError -> StytchAPISchemaError(
-            description = "Request does not match expected schema: ${parsedErrorResponse.body}"
+            message = "Request does not match expected schema: ${parsedErrorResponse.body}"
         )
         else -> StytchAPIUnreachableError(
-            description = message ?: "Invalid or no response from server",
+            message = message ?: "Invalid or no response from server",
             exception = this
         )
     }

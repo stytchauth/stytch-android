@@ -113,7 +113,7 @@ internal class OAuthImplTest {
     fun `authenticate returns correct error if api call fails`() = runTest {
         every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
         coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Error(
-            StytchAPIError(name = "something_went_wrong", description = "testing")
+            StytchAPIError(errorType = "something_went_wrong", message = "testing")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)

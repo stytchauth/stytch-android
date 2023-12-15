@@ -27,7 +27,7 @@ fun isPhoneNumberValid(str: String): Boolean {
 fun <T : Any> StytchResult<T>.toFriendlyDisplay() = when (this) {
     is StytchResult.Success<*> -> this.toString()
     is StytchResult.Error -> {
-        var message = "Name: ${exception.name}\nDescription: ${exception.description}"
+        var message = "Name: ${exception}\nDescription: ${exception.message}"
         if (exception is StytchAPIError) {
             message += "\nURL: ${(exception as StytchAPIError).url}"
         }

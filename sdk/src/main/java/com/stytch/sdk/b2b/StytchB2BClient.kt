@@ -108,7 +108,7 @@ public object StytchB2BClient {
             }
         } catch (ex: Exception) {
             throw StytchInternalError(
-                description = "Failed to initialize the SDK",
+                message = "Failed to initialize the SDK",
                 exception = ex
             )
         }

@@ -315,7 +315,7 @@ internal class StytchB2BApiTest {
     fun `safeApiCall returns correct error for StytchErrors`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         fun mockApiCall(): StytchDataResponse<Boolean> {
-            throw StytchAPIError(name = "", description = "")
+            throw StytchAPIError(errorType = "", message = "")
         }
         val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
         assert(result is StytchResult.Error)
