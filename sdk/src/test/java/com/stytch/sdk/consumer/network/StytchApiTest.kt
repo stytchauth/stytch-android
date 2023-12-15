@@ -462,7 +462,7 @@ internal class StytchApiTest {
     fun `safeApiCall returns correct error for StytchErrors`() = runTest {
         every { StytchApi.isInitialized } returns true
         fun mockApiCall(): StytchDataResponse<Boolean> {
-            throw StytchAPIError(name = "", description = "")
+            throw StytchAPIError(errorType = "", message = "")
         }
         val result = StytchApi.safeConsumerApiCall { mockApiCall() }
         assert(result is StytchResult.Error)

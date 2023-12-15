@@ -12,7 +12,7 @@ internal fun Throwable.toStytchError(): StytchError = when (this) {
         printStackTrace()
         StytchLog.w("Network Error")
         StytchAPIUnreachableError(
-            description = message ?: "Invalid or no response from server",
+            message = message ?: "Invalid or no response from server",
             exception = this
         )
     }

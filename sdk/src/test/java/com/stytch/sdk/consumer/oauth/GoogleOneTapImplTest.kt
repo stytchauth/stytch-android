@@ -228,7 +228,7 @@ internal class GoogleOneTapImplTest {
             }
         }
         coEvery { mockApi.authenticateWithGoogleIdToken(any(), any(), any()) } returns StytchResult.Error(
-            StytchAPIError(name = "something_went_wrong", description = "testing")
+            StytchAPIError(errorType = "something_went_wrong", message = "testing")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)

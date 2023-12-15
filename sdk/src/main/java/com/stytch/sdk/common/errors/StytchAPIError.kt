@@ -5,10 +5,7 @@ package com.stytch.sdk.common.errors
  */
 public data class StytchAPIError(
     public val requestId: String? = null,
-    public override val name: String,
-    public override val description: String,
+    public val errorType: String,
+    public override val message: String,
     public val url: String? = null,
-) : StytchError(
-    name = name,
-    description = description,
-)
+) : StytchError(message = message)
