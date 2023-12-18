@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.data.EMLDetails
@@ -17,6 +18,7 @@ import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PasswordResetType
 import com.stytch.sdk.ui.data.PasswordState
 import com.stytch.sdk.ui.data.SessionOptions
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.utils.isValidEmailAddress
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,7 +64,10 @@ internal class ReturningUserScreenViewModel : ViewModel() {
         )
     }
 
-    fun authenticate(sessionOptions: SessionOptions) {
+    fun authenticate(
+        sessionOptions: SessionOptions,
+        passwordOptions: PasswordOptions,
+    ) {
         _uiState.value = _uiState.value.copy(
             showLoadingDialog = true,
             genericErrorMessage = null,
@@ -79,8 +84,58 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
-                    // TODO: check the error type and if it's reset_password, send reset password request and nav appropriately
-                    // else:
+                    when (val exception = result.exception) {
+                        is StytchAPIError -> {
+                            if (exception.errorType.contains("reset_password")) {
+                               sendPasswordResetAndNavigateAppropriately(
+                                   email = _uiState.value.emailState.emailAddress,
+                                   passwordOptions = passwordOptions,
+                               )
+                            } else {
+                                _uiState.value = _uiState.value.copy(
+                                    showLoadingDialog = false,
+                                    genericErrorMessage = result.exception.message, // TODO
+                                )
+                            }
+                        }
+                        else -> {
+                            _uiState.value = _uiState.value.copy(
+                                showLoadingDialog = false,
+                                genericErrorMessage = result.exception.message, // TODO
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun sendPasswordResetAndNavigateAppropriately(
+        email: String,
+        passwordOptions: PasswordOptions,
+    ) {
+        viewModelScope.launch {
+            // send reset password request and nav appropriately
+            val parameters = Passwords.ResetByEmailStartParameters(
+                email = email,
+                loginRedirectUrl = passwordOptions.loginRedirectURL,
+                loginExpirationMinutes = passwordOptions.loginExpirationMinutes,
+                resetPasswordRedirectUrl = passwordOptions.resetPasswordRedirectURL,
+                resetPasswordExpirationMinutes = passwordOptions.resetPasswordExpirationMinutes,
+                resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId,
+            )
+            when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
+                is StytchResult.Success -> {
+                    _eventFlow.emit(
+                        EventState.NavigationRequested(NavigationRoute.PasswordResetSent(
+                            details = PasswordResetDetails(
+                                parameters = parameters,
+                                resetType = PasswordResetType.DEDUPE
+                            )
+                        ))
+                    )
+                }
+                is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = result.exception.message, // TODO

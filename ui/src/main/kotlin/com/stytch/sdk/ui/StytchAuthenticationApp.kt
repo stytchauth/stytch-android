@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.Navigator
+import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
@@ -36,14 +37,14 @@ internal fun StytchAuthenticationApp(
         productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // EML
         productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // Email OTP
     ) {
-        error(stringResource(id = R.string.eml_and_otp_error))
+        StytchUIInvalidConfiguration(stringResource(id = R.string.eml_and_otp_error))
     }
     if (
         !productConfig.products.contains(StytchProduct.PASSWORDS) && // no passwords
         !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) && // no EML
         !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
     ) {
-        error(stringResource(id = R.string.misconfigured_products_and_options))
+        StytchUIInvalidConfiguration(stringResource(id = R.string.misconfigured_products_and_options))
     }
     Surface(
         modifier = modifier.fillMaxSize(),

@@ -62,7 +62,7 @@ internal class ReturningUserScreen(
             onBack = navigator::pop,
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
-            onEmailAndPasswordSubmitted = { viewModel.authenticate(productConfig.sessionOptions) },
+            onEmailAndPasswordSubmitted = { viewModel.authenticate(productConfig.sessionOptions, productConfig.passwordOptions) },
             sendEML = { viewModel.sendEML(productConfig.emailMagicLinksOptions) },
             sendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
             onForgotPasswordClicked = { viewModel.onForgotPasswordClicked(productConfig.passwordOptions) },

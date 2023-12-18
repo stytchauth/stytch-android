@@ -22,3 +22,10 @@ public data class StytchUIActivityFailed(public val code: Int) : StytchUIError(
 public object StytchUINoDataFromIntent : StytchUIError(
     message = "Failed to retrieve data from intent"
 )
+
+/**
+ * Thrown when your Stytch UI configuration is invalid
+ */
+public data class StytchUIInvalidConfiguration(
+    public override val message: String
+) : StytchUIError(message = message)

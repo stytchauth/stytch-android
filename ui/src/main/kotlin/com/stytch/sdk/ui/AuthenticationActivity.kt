@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.screens.MainScreen
@@ -26,7 +27,7 @@ public class AuthenticationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
             ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
-            ?: error("No UI Configuration Provided")
+            ?: throw StytchUIInvalidConfiguration("No UI Configuration Provided")
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
