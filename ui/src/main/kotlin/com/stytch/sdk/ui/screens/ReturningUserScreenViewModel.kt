@@ -121,14 +121,7 @@ internal class ReturningUserScreenViewModel(
     ) {
         viewModelScope.launch {
             // send reset password request and nav appropriately
-            val parameters = Passwords.ResetByEmailStartParameters(
-                email = email,
-                loginRedirectUrl = passwordOptions.loginRedirectURL,
-                loginExpirationMinutes = passwordOptions.loginExpirationMinutes,
-                resetPasswordRedirectUrl = passwordOptions.resetPasswordRedirectURL,
-                resetPasswordExpirationMinutes = passwordOptions.resetPasswordExpirationMinutes,
-                resetPasswordTemplateId = passwordOptions.resetPasswordTemplateId,
-            )
+            val parameters = passwordOptions.toResetByEmailStartParameters(email)
             when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
                 is StytchResult.Success -> {
                     _eventFlow.emit(
