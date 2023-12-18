@@ -7,6 +7,7 @@ import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import kotlinx.parcelize.Parcelize
+import com.stytch.sdk.consumer.OTPSendResponse
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
@@ -103,17 +104,17 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
          * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse]
+         * @return [OTPSendResponse]
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
          * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 
     /**
@@ -156,17 +157,17 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
          * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse]
+         * @return [OTPSendResponse]
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
          * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 
     /**
@@ -216,16 +217,16 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
          * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse] response from backend
+         * @return [OTPSendResponse] response from backend
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
          * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 }

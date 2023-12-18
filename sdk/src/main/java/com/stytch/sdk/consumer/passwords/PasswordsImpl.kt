@@ -149,6 +149,27 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse {
+        return withContext(dispatchers.io) {
+            api.resetBySession(
+                password = parameters.password,
+                sessionDurationMinutes = parameters.sessionDurationMinutes
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
+        }
+    }
+
+    override fun resetBySession(
+        parameters: Passwords.ResetBySessionParameters,
+        callback: (AuthResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            val result = resetBySession(parameters)
+            callback(result)
+        }
+    }
+
     override suspend fun strengthCheck(parameters: Passwords.StrengthCheckParameters): PasswordsStrengthCheckResponse {
         val result: PasswordsStrengthCheckResponse
         withContext(dispatchers.io) {

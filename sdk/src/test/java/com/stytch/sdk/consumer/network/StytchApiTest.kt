@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import android.app.Application
 import android.content.Context
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -13,9 +14,11 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +34,13 @@ internal class StytchApiTest {
 
     @Before
     fun before() {
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchApi)
@@ -210,6 +220,14 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi Passwords resetBySession calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.resetBySession(any()) } returns mockk(relaxed = true)
+        StytchApi.Passwords.resetBySession(password = "", sessionDurationMinutes = 30U)
+        coVerify { StytchApi.apiService.resetBySession(any()) }
+    }
+
+    @Test
     fun `StytchApi Passwords strengthCheck calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.strengthCheck(any()) } returns mockk(relaxed = true)
@@ -368,6 +386,58 @@ internal class StytchApiTest {
                 )
             )
         }
+    }
+
+    @Test
+    fun `StytchApi Webauthn registerStart calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.webAuthnRegisterStart(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.registerStart("")
+        coVerify { StytchApi.apiService.webAuthnRegisterStart(any()) }
+    }
+
+    @Test
+    fun `StytchApi Webauthn register calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.webAuthnRegister(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.register("")
+        coVerify { StytchApi.apiService.webAuthnRegister(any()) }
+    }
+
+    @Test
+    fun `StytchApi Webauthn webAuthnAuthenticateStartPrimary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery {
+            StytchApi.apiService.webAuthnAuthenticateStartPrimary(mockk(relaxed = true))
+        } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.authenticateStartPrimary("", false)
+        coVerify { StytchApi.apiService.webAuthnAuthenticateStartPrimary(any()) }
+    }
+
+    @Test
+    fun `StytchApi Webauthn webAuthnAuthenticateStartSecondary calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery {
+            StytchApi.apiService.webAuthnAuthenticateStartSecondary(mockk(relaxed = true))
+        } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.authenticateStartSecondary("", true)
+        coVerify { StytchApi.apiService.webAuthnAuthenticateStartSecondary(any()) }
+    }
+
+    @Test
+    fun `StytchApi Webauthn webAuthnAuthenticate calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.webAuthnAuthenticate(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.authenticate("", 30U)
+        coVerify { StytchApi.apiService.webAuthnAuthenticate(any()) }
+    }
+
+    @Test
+    fun `StytchApi Webauthn webAuthnUpdate calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.webAuthnUpdate(any(), any()) } returns mockk(relaxed = true)
+        StytchApi.WebAuthn.update("", "my new name")
+        coVerify { StytchApi.apiService.webAuthnUpdate("", any()) }
     }
 
     @Test(expected = IllegalStateException::class)

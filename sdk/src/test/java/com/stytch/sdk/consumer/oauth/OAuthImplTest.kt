@@ -95,6 +95,7 @@ internal class OAuthImplTest {
             Pair(impl.tiktok, "tiktok"),
             Pair(impl.twitch, "twitch"),
             Pair(impl.twitter, "twitter"),
+            Pair(impl.yahoo, "yahoo"),
         ).forEach {
             assert(it.first.providerName == it.second)
         }

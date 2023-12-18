@@ -126,4 +126,19 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
             showTokenError = true
         }
     }
+
+    fun resetPasswordBySession() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            val result = StytchClient.passwords.resetBySession(
+                Passwords.ResetBySessionParameters(
+                    passwordTextState.text,
+                    5U
+                )
+            )
+            _currentResponse.value = result.toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
 }

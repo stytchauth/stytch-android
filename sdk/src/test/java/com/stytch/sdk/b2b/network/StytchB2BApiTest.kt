@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.network
 
+import android.app.Application
 import android.content.Context
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
@@ -18,9 +19,11 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +39,13 @@ internal class StytchB2BApiTest {
 
     @Before
     fun before() {
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchB2BApi)

@@ -108,6 +108,11 @@ public interface OAuth {
     public val twitter: ThirdParty
 
     /**
+     * The interface for authenticating a user with Twitter
+     */
+    public val yahoo: ThirdParty
+
+    /**
      * Provides start, authenticate, and signOut methods for native Google One Tap authentication
      */
     public interface GoogleOneTap {

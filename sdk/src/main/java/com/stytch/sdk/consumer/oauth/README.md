@@ -13,6 +13,7 @@ The [OAuth](OAuth.kt) interface provides methods for authenticating a user via a
 - Salesforce
 - Slack
 - Twitch
+- Yahoo
 
 ## Google OneTap
 In order to use Google OneTap, you must register an activity result listener in your activity to listen for the intent returned by Google, which you will use to authenticate the request with Stytch.

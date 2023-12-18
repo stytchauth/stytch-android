@@ -1,5 +1,6 @@
 package com.stytch.sdk.common.network.models
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -71,12 +72,14 @@ public data class WebAuthNRegistrations(
     // The domain of the WebAuthN registration.
     val domain: String,
     // The user agent of the registration.
-    val userAgent: String,
+    val userAgent: String? = null,
     // The verification status of the registration.
     val verified: Boolean,
     // The id of the registration.
     @Json(name = "webauthn_registration_id")
     val id: String,
+    // the name of the registration
+    val name: String? = null,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -157,6 +160,17 @@ public data class LoginOrCreateOTPData(
 
 @JsonClass(generateAdapter = true)
 @Parcelize
+public data class OTPSendResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
 public data class AuthenticationFactor(
     @Json(name = "delivery_method")
     val deliveryMethod: String,
@@ -183,6 +197,8 @@ public data class AuthenticationFactor(
     val discordOAuthFactor: OAuthFactor?,
     @Json(name = "salesforce_oauth_factor")
     val salesforceOAuthFactor: OAuthFactor?,
+    @Json(name = "yahoo_oauth_factor")
+    val yahooOAuthFactor: OAuthFactor?,
     @Json(name = "slack_oauth_factor")
     val slackOAuthFactor: OAuthFactor?,
     @Json(name = "amazon_oauth_factor")
@@ -313,10 +329,20 @@ public data class BootstrapData(
     val slugPattern: String? = null,
     @Json(name = "create_organization_enabled")
     val createOrganizationEnabled: Boolean = false,
+    @Json(name = "dfp_protected_auth_enabled")
+    val dfpProtectedAuthEnabled: Boolean = false,
+    @Json(name = "dfp_protected_auth_mode")
+    val dfpProtectedAuthMode: DFPProtectedAuthMode = DFPProtectedAuthMode.OBSERVATION
 ) : Parcelable
+
+public enum class DFPProtectedAuthMode {
+    OBSERVATION,
+    DECISIONING,
+}
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CaptchaSettings(
-    val enabled: Boolean = false
+    val enabled: Boolean = false,
+    val siteKey: String = ""
 ) : Parcelable
