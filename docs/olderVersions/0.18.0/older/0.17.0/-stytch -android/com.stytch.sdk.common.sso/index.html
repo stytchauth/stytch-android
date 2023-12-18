@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.common.sso</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<link href="../../styles/multimodule.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../index.html">
+                    <span>Stytch Android</span>
+            </a>
+    </div>
+    <div>
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;-stytch -android/com.stytch.sdk.common.sso/index.html&quot;}"><div class="versions-dropdown">
+  <div class="versions-dropdown-button">0.17.0</div>
+  <div class="versions-dropdown-data"><a href="../../../../-stytch -android/com.stytch.sdk.common.sso/index.html">0.18.0</a><a href="index.html">0.17.0</a><a href="../../../0.16.0/-stytch -android/com.stytch.sdk.common.sso/index.html">0.16.0</a><a href="../../../0.15.0/-stytch -android/com.stytch.sdk.common.sso/index.html">0.15.0</a><a href="../../../0.14.1/-stytch -android/com.stytch.sdk.common.sso/index.html">0.14.1</a><a href="../../../0.14.0/-stytch -android/com.stytch.sdk.common.sso/index.html">0.14.0</a><a href="../../../0.13.3/-stytch -android/com.stytch.sdk.common.sso/index.html">0.13.3</a><a href="../../../0.13.2/-stytch -android/com.stytch.sdk.common.sso/index.html">0.13.2</a><a href="../../../0.13.1/-stytch -android/com.stytch.sdk.common.sso/index.html">0.13.1</a><a href="../../../0.13.0/-stytch -android/com.stytch.sdk.common.sso/index.html">0.13.0</a><a href="../../../../not-found-version.html?v=0.12.0">0.12.0</a><a href="../../../../not-found-version.html?v=0.11.0">0.11.0</a><a href="../../../../not-found-version.html?v=0.10.0">0.10.0</a><a href="../../../../not-found-version.html?v=0.9.0">0.9.0</a><a href="../../../../not-found-version.html?v=0.8.0">0.8.0</a><a href="../../../../not-found-version.html?v=0.7.0">0.7.0</a><a href="../../../../not-found-version.html?v=0.6.0">0.6.0</a><a href="../../../../not-found-version.html?v=0.5.0">0.5.0</a></div>
+</div>
+</dokka-template-command>    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Stytch Android::com.stytch.sdk.common.sso////PointingToDeclaration//165651098">
+  <div class="breadcrumbs"><a href="../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="index.html">com.stytch.sdk.common.sso</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>stytch.</span><wbr><span>sdk.</span><wbr><span>common.</span><wbr><span>sso</span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><p class="paragraph">Contains shared OAuth/SSO implementation code.</p><p class="paragraph">Our Third Party OAuth and SSO flows follow the model of <a href="https://github.com/openid/AppAuth-Android/">AppAuth-Android</a></p><p class="paragraph">It consists of a "manager" activity that handles the state management of the OAuth/SSO flow and starting the authentication flow in the user's browser, and a "receiver" activity which handles receiving the authentication deeplink. By using this manager/receiver pattern we can ensure better control over the backstack, preventing navigation from keeping authorization activities in the backstack.</p><p class="paragraph">The below diagram explains more about the manager/receiver activities and how they relate to the backstack:</p><div class="sample-container"><pre><code class="block lang-unset" theme="idea"><br>                           Back Stack Towards Top<br>                 +------------------------------------------&gt;<br><br>  +------------+            +---------------+      +----------------+      +--------------+<br>  |            |     (1)    |               | (2)  |                | (S1) |              |<br>  | Initiating +-----------&gt;|   SSOManager  +-----&gt;| Authorization  +-----&gt;|  SSOReceiver |<br>  |  Activity  |            |   Activity    |      |   Activity     |      |   Activity   |<br>  |            |&lt;-----------+               |&lt;-----+ (e.g. browser) |      |              |<br>  |            | (S3, C2)   |               | (C1) |                |      |              |<br>  +------------+            +-------+-------+      +----------------+      +-------+------+<br>                                    ^                                              |<br>                                    |                   (S2)                       |<br>                                    +----------------------------------------------+<br><br>  - Step 1: OAuth/SSO intiates an intent which launches this (no-ui) activity<br>  - Step 2: This activity determines the best browser to launch the authorization flow in, and launches it. Depending<br>    on user action, we then enter either a cancellation (C)  or success (S) flow<br><br>  Cancellation (C) flow:<br>  If the user cancels the authorization, we are returned to this Activity at the top of the backstack (C1). Since no<br>  return URI is provided, we know the user cancelled, and return a RESULT_CANCELED result for the original intent (C2)<br>  and finish the activity. The calling activity will listen for this result and either provide messaging for the user<br>  if the error returned is one of NO_BROWSER_FOUND or NO_URI_FOUND, or (most likely) do nothing if it is USER_CANCELED.<br><br>  Success (S) flow:<br>  When the user completes authorization, the SSOReceiverActivity is launched (S1), as specified in the manifest. That<br>  activity will launch this activity (S2) via an intent with CLEAR_TOP set, so that the authorization activity and<br>  receiver activity are destroyed leaving this activity at the top of the backstack. This activity will then return a<br>  RESULT_OK status for the original intent and pass along the returned URI, then finish itself (S3). The calling<br>  activity will listen for this result and use the returned URI to make the authorization call to the Stytch API.</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="2039565481%2FClasslikes%2F165651098" anchor-label="SSOError" id="2039565481%2FClasslikes%2F165651098" data-filterable-set=":sdk:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":sdk:dokkaHtml/release" data-filterable-set=":sdk:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-s-s-o-error/index.html"><span><span>SSOError</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2039565481%2FClasslikes%2F165651098"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sdk:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-s-s-o-error/index.html">SSOError</a> : <a href="https://developer.android.com/reference/kotlin/java/lang/Exception.html">Exception</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents one of three potential errors encountered during the Third party OAuth or SSO authentication flow.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
