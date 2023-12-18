@@ -4,13 +4,13 @@ import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.network.StytchB2BApi.MagicLinks.Discovery.send
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +34,7 @@ internal class B2BMagicLinksImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
 
@@ -71,7 +71,7 @@ internal class B2BMagicLinksImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
             result = discoveryApi.authenticate(
@@ -104,7 +104,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     val challengePair = storageHelper.generateHashedCodeChallenge()
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchExceptions.Critical(ex))
+                    result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext
                 }
 
@@ -144,7 +144,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     val challengePair = storageHelper.generateHashedCodeChallenge()
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchExceptions.Critical(ex))
+                    result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext
                 }
 

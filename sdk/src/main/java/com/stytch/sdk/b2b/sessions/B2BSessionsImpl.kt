@@ -5,8 +5,9 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import com.stytch.sdk.common.errors.StytchInternalError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +23,7 @@ internal class B2BSessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionToken
             } catch (ex: Exception) {
-                throw StytchExceptions.Critical(ex)
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -31,7 +32,7 @@ internal class B2BSessionsImpl internal constructor(
             try {
                 return sessionStorage.sessionJwt
             } catch (ex: Exception) {
-                throw StytchExceptions.Critical(ex)
+                throw StytchFailedToDecryptDataError(ex)
             }
         }
 
@@ -69,7 +70,7 @@ internal class B2BSessionsImpl internal constructor(
                 sessionStorage.revoke()
             }
         } catch (ex: Exception) {
-            result = StytchResult.Error(StytchExceptions.Critical(ex))
+            result = StytchResult.Error(StytchInternalError(exception = ex))
         }
         return result
     }
@@ -84,13 +85,13 @@ internal class B2BSessionsImpl internal constructor(
     }
 
     /**
-     * @throws StytchExceptions.Critical if failed to save data
+     * @throws StytchInternalError if failed to save data
      */
     override fun updateSession(sessionToken: String?, sessionJwt: String?) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {
-            throw StytchExceptions.Critical(ex)
+            throw StytchInternalError(ex)
         }
     }
 }

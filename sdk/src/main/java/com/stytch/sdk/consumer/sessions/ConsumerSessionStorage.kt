@@ -2,8 +2,7 @@ package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.StytchExceptions
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
 
@@ -75,7 +74,7 @@ internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) 
 
     fun ensureSessionIsValidOrThrow() {
         if (sessionToken == null && sessionJwt == null) {
-            throw StytchExceptions.Input(StytchErrorType.NO_CURRENT_SESSION.message)
+            throw StytchNoCurrentSessionError
         }
     }
 }

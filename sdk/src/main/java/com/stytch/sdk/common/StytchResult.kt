@@ -1,6 +1,6 @@
 package com.stytch.sdk.common
 
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchError
 
 /**
  * Provides a wrapper for responses from the Stytch API
@@ -16,17 +16,7 @@ public sealed class StytchResult<out T> {
      * Data class that can hold a StytchException
      * @property exception provides information about what went wrong during an API call
      */
-    public data class Error(val exception: StytchExceptions) : StytchResult<Nothing>()
-}
-
-/**
- * Converts a string to an error type supported by Stytch
- */
-public fun String.toStytchErrorType(): StytchErrorType? {
-    StytchErrorType.values().forEach {
-        if (this == it.stringValue) return it
-    }
-    return null
+    public data class Error(val exception: StytchError) : StytchResult<Nothing>()
 }
 
 internal fun <T> StytchResult<T>.getValueOrThrow(): T = when (this) {
