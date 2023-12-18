@@ -1,5 +1,7 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
@@ -16,26 +18,29 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class PasswordResetUiState(
     val showResendDialog: Boolean = false,
     val genericErrorMessage: String? = null,
     val showLoadingDialog: Boolean = false,
-)
+) : Parcelable
 
-internal class PasswordResetSentScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(PasswordResetUiState())
-    val uiState = _uiState.asStateFlow()
+internal class PasswordResetSentScreenViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    val uiState = savedStateHandle.getStateFlow("PasswordResetUiState", PasswordResetUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun onDialogDismiss() {
-        _uiState.value = _uiState.value.copy(showResendDialog = false)
+        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        _uiState.value = _uiState.value.copy(showResendDialog = true)
+        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showResendDialog = true)
     }
 
     fun onResendPasswordResetStart(parameters: Passwords.ResetByEmailStartParameters) {
@@ -44,7 +49,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
             when (val result = StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {} // do nothing
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
@@ -52,7 +57,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
         }
     }
     fun sendEML(emailAddress: String, emailMagicLinksOptions: EmailMagicLinksOptions) {
-        _uiState.value = _uiState.value.copy(
+        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
             showLoadingDialog = true,
             genericErrorMessage = null,
         )
@@ -60,7 +65,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
             val parameters = emailMagicLinksOptions.toParameters(emailAddress)
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(
@@ -70,7 +75,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                         ),
                     )
                 }
-                is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                is StytchResult.Error -> savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
                     showLoadingDialog = false,
                     genericErrorMessage = result.exception.message, // TODO
                 )
@@ -79,7 +84,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
     }
 
     fun sendEmailOTP(emailAddress: String, otpOptions: OTPOptions) {
-        _uiState.value = _uiState.value.copy(
+        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
             showLoadingDialog = true,
             genericErrorMessage = null,
         )
@@ -87,7 +92,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
             val parameters = otpOptions.toEmailOtpParameters(emailAddress)
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -97,7 +102,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                         ),
                     )
                 }
-                is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                is StytchResult.Error -> savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
                     showLoadingDialog = false,
                     genericErrorMessage = result.exception.message, // TODO
                 )

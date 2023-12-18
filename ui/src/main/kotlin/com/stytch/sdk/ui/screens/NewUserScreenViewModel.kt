@@ -1,5 +1,7 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
@@ -19,34 +21,37 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class NewUserUiState(
     val emailState: EmailState = EmailState(),
     val passwordState: PasswordState = PasswordState(),
     val showLoadingDialog: Boolean = false,
-)
+) : Parcelable
 
-internal class NewUserScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(NewUserUiState())
-    val uiState = _uiState.asStateFlow()
+internal class NewUserScreenViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    val uiState = savedStateHandle.getStateFlow("NewUserUiState", NewUserUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun setInitialState(email: String) {
-        _uiState.value = _uiState.value.copy(
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(
             emailState = EmailState(emailAddress = email),
         )
     }
 
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions) {
-        val emailState = _uiState.value.emailState
-        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
+        val emailState = uiState.value.emailState
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
         val parameters = emailMagicLinksOptions.toParameters(emailState.emailAddress)
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(EMLDetails(parameters), isReturningUser = false),
@@ -54,8 +59,8 @@ internal class NewUserScreenViewModel : ViewModel() {
                     )
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(
                         emailState = emailState.copy(
                             errorMessage = result.exception.message, // TODO
                         ),
@@ -66,13 +71,13 @@ internal class NewUserScreenViewModel : ViewModel() {
     }
 
     fun sendEmailOTP(otpOptions: OTPOptions) {
-        val emailState = _uiState.value.emailState
-        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
+        val emailState = uiState.value.emailState
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             val parameters = otpOptions.toEmailOtpParameters(emailState.emailAddress)
             when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -86,7 +91,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                     )
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
                         emailState = emailState.copy(
                             errorMessage = result.exception.message, // TODO
@@ -98,8 +103,8 @@ internal class NewUserScreenViewModel : ViewModel() {
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        _uiState.value = _uiState.value.copy(
-            emailState = _uiState.value.emailState.copy(
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(
+            emailState = uiState.value.emailState.copy(
                 emailAddress = emailAddress,
                 validEmail = emailAddress.isValidEmailAddress(),
             ),
@@ -107,8 +112,8 @@ internal class NewUserScreenViewModel : ViewModel() {
     }
 
     fun onPasswordChanged(password: String) {
-        _uiState.value = _uiState.value.copy(
-            passwordState = _uiState.value.passwordState.copy(
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(
+            passwordState = uiState.value.passwordState.copy(
                 password = password,
             ),
         )
@@ -116,14 +121,14 @@ internal class NewUserScreenViewModel : ViewModel() {
             when (
                 val result = StytchClient.passwords.strengthCheck(
                     Passwords.StrengthCheckParameters(
-                        email = _uiState.value.emailState.emailAddress,
+                        email = uiState.value.emailState.emailAddress,
                         password = password,
                     ),
                 )
             ) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(
-                        passwordState = _uiState.value.passwordState.copy(
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(
+                        passwordState = uiState.value.passwordState.copy(
                             breachedPassword = result.value.breachedPassword,
                             feedback = result.value.feedback,
                             score = result.value.score,
@@ -133,8 +138,8 @@ internal class NewUserScreenViewModel : ViewModel() {
                 }
 
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
-                        passwordState = _uiState.value.passwordState.copy(
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(
+                        passwordState = uiState.value.passwordState.copy(
                             errorMessage = result.exception.message, // TODO
                         ),
                     )
@@ -144,9 +149,9 @@ internal class NewUserScreenViewModel : ViewModel() {
     }
 
     fun createAccountWithPassword(sessionDurationMinutes: UInt) {
-        val emailState = _uiState.value.emailState
-        val passwordState = _uiState.value.passwordState
-        _uiState.value = _uiState.value.copy(showLoadingDialog = true)
+        val emailState = uiState.value.emailState
+        val passwordState = uiState.value.passwordState
+        savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
         viewModelScope.launch {
             when (
                 val result = StytchClient.passwords.create(
@@ -158,13 +163,13 @@ internal class NewUserScreenViewModel : ViewModel() {
                 )
             ) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["NewUserUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
-                        passwordState = _uiState.value.passwordState.copy(
+                        passwordState = uiState.value.passwordState.copy(
                             errorMessage = result.exception.message, // TODO
                         ),
                     )

@@ -1,6 +1,8 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
 import android.text.format.DateUtils
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
@@ -19,17 +21,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class OTPConfirmationUiState(
     val expirationTimeFormatted: String = "",
     val showLoadingDialog: Boolean = false,
     val showResendDialog: Boolean = false,
     val genericErrorMessage: String? = null,
-)
+) : Parcelable
 
-internal class OTPConfirmationScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(OTPConfirmationUiState())
-    val uiState = _uiState.asStateFlow()
+internal class OTPConfirmationScreenViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    val uiState = savedStateHandle.getStateFlow("OTPConfirmationUiState", OTPConfirmationUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -39,7 +44,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
     private var countdownSeconds: Long = 0
         set(value) {
             field = value
-            _uiState.value = _uiState.value.copy(
+            savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                 expirationTimeFormatted = DateUtils.formatElapsedTime(value),
             )
         }
@@ -66,11 +71,11 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
     }
 
     fun onDialogDismiss() {
-        _uiState.value = _uiState.value.copy(showResendDialog = false)
+        savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        _uiState.value = _uiState.value.copy(showResendDialog = true)
+        savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
     }
 
     fun authenticateOTP(token: String, sessionOptions: SessionOptions) {
@@ -85,14 +90,14 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 )
             ) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = null,
                     )
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = result.exception.message,
                     )
@@ -111,14 +116,14 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
             when (result) {
                 is StytchResult.Success -> {
                     methodId = result.value.methodId
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
                         showResendDialog = false,
                     )
                     countdownSeconds = resendCountdownSeconds
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                         showLoadingDialog = false,
                         showResendDialog = false,
                         genericErrorMessage = result.exception.message,
@@ -140,13 +145,13 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                             ),
                         ),
                     )
-                    is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                    is StytchResult.Error -> savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {
                 // this should never happen
-                _uiState.value = _uiState.value.copy(
+                savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
                     genericErrorMessage = "Can't reset password for unknown email address",
                 )
             }

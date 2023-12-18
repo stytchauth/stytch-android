@@ -1,5 +1,7 @@
 package com.stytch.sdk.ui.screens
 
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.StytchResult
@@ -15,15 +17,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal data class EMLConfirmationUiState(
     val showResendDialog: Boolean = false,
     val genericErrorMessage: String? = null,
-)
+) : Parcelable
 
-internal class EMLConfirmationScreenViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(EMLConfirmationUiState())
-    val uiState = _uiState.asStateFlow()
+internal class EMLConfirmationScreenViewModel(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    val uiState = savedStateHandle.getStateFlow("EMLConfirmationUiState", EMLConfirmationUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -32,13 +37,13 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
         viewModelScope.launch {
             when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
                         showResendDialog = false,
                         genericErrorMessage = null,
                     )
                 }
                 is StytchResult.Error -> {
-                    _uiState.value = _uiState.value.copy(
+                    savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
                         showResendDialog = false,
                         genericErrorMessage = result.exception.message, // TODO
                     )
@@ -48,11 +53,11 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
     }
 
     fun onDialogDismiss() {
-        _uiState.value = _uiState.value.copy(showResendDialog = false)
+        savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        _uiState.value = _uiState.value.copy(showResendDialog = true)
+        savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
     }
 
     fun sendResetPasswordEmail(emailAddress: String?, passwordOptions: PasswordOptions) {
@@ -67,13 +72,13 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
                             ),
                         ),
                     )
-                    is StytchResult.Error -> _uiState.value = _uiState.value.copy(
+                    is StytchResult.Error -> savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {
                 // this should never happen
-                _uiState.value = _uiState.value.copy(
+                savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
                     genericErrorMessage = "Can't reset password for unknown email address",
                 )
             }
