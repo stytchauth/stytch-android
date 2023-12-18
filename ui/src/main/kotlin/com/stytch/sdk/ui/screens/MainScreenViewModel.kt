@@ -91,8 +91,24 @@ internal class MainScreenViewModel(
             signupRedirectUrl = oAuthOptions?.signupRedirectURL,
         )
         when (provider) {
+            OAuthProvider.AMAZON -> StytchClient.oauth.amazon.start(parameters)
             OAuthProvider.APPLE -> StytchClient.oauth.apple.start(parameters)
+            OAuthProvider.BITBUCKET -> StytchClient.oauth.bitbucket.start(parameters)
+            OAuthProvider.COINBASE -> StytchClient.oauth.coinbase.start(parameters)
+            OAuthProvider.DISCORD -> StytchClient.oauth.discord.start(parameters)
+            OAuthProvider.FACEBOOK -> StytchClient.oauth.facebook.start(parameters)
+            OAuthProvider.FIGMA -> StytchClient.oauth.figma.start(parameters)
+            OAuthProvider.GITHUB -> StytchClient.oauth.github.start(parameters)
+            OAuthProvider.GITLAB -> StytchClient.oauth.gitlab.start(parameters)
             OAuthProvider.GOOGLE -> StytchClient.oauth.google.start(parameters)
+            OAuthProvider.LINKEDIN -> StytchClient.oauth.linkedin.start(parameters)
+            OAuthProvider.MICROSOFT -> StytchClient.oauth.microsoft.start(parameters)
+            OAuthProvider.SALESFORCE -> StytchClient.oauth.salesforce.start(parameters)
+            OAuthProvider.SLACK -> StytchClient.oauth.slack.start(parameters)
+            OAuthProvider.SNAPCHAT -> StytchClient.oauth.snapchat.start(parameters)
+            OAuthProvider.TIKTOK -> StytchClient.oauth.tiktok.start(parameters)
+            OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(parameters)
+            OAuthProvider.TWITTER -> StytchClient.oauth.twitter.start(parameters)
         }
     }
 
