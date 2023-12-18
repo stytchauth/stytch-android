@@ -94,7 +94,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
-                        genericErrorMessage = result.exception.reason.toString(),
+                        genericErrorMessage = result.exception.message,
                     )
                 }
             }
@@ -121,7 +121,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         showResendDialog = false,
-                        genericErrorMessage = result.exception.reason.toString(),
+                        genericErrorMessage = result.exception.message,
                     )
                 }
             }
@@ -141,7 +141,7 @@ internal class OTPConfirmationScreenViewModel : ViewModel() {
                         ),
                     )
                     is StytchResult.Error -> _uiState.value = _uiState.value.copy(
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {

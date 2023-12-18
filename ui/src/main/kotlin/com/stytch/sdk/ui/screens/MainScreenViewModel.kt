@@ -183,7 +183,7 @@ internal class MainScreenViewModel : ViewModel() {
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
             is StytchResult.Error -> {
-                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.message) // TODO
                 null
             }
         }
@@ -206,7 +206,7 @@ internal class MainScreenViewModel : ViewModel() {
                 )
             }
             is StytchResult.Error -> {
-                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.message) // TODO
                 null
             }
         }
@@ -222,7 +222,7 @@ internal class MainScreenViewModel : ViewModel() {
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
             }
             is StytchResult.Error -> {
-                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.reason.toString()) // TODO
+                _uiState.value = _uiState.value.copy(genericErrorMessage = result.exception.message) // TODO
                 null
             }
         }
@@ -251,7 +251,7 @@ internal class MainScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         phoneNumberState = phoneNumberState.copy(
-                            error = result.exception.reason.toString(), // TODO
+                            error = result.exception.message, // TODO
                         ),
                         showLoadingDialog = false,
                     )
@@ -283,7 +283,7 @@ internal class MainScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         phoneNumberState = phoneNumberState.copy(
-                            error = result.exception.reason.toString(), // TODO
+                            error = result.exception.message, // TODO
                         ),
                         showLoadingDialog = false,
                     )

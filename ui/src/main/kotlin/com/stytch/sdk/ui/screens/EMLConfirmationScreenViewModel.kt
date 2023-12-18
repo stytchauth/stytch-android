@@ -40,7 +40,7 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         showResendDialog = false,
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             }
@@ -68,7 +68,7 @@ internal class EMLConfirmationScreenViewModel : ViewModel() {
                         ),
                     )
                     is StytchResult.Error -> _uiState.value = _uiState.value.copy(
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {

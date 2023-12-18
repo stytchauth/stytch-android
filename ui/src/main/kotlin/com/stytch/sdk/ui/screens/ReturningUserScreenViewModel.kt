@@ -83,7 +83,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                     // else:
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             }
@@ -111,7 +111,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
-                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                    genericErrorMessage = result.exception.message, // TODO
                 )
             }
         }
@@ -138,7 +138,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
-                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                    genericErrorMessage = result.exception.message, // TODO
                 )
             }
         }
@@ -165,7 +165,7 @@ internal class ReturningUserScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             }

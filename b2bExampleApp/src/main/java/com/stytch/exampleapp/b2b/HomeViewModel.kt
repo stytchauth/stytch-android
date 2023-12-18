@@ -106,7 +106,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             _loadingState.value = true
             val result = StytchB2BClient.handle(uri = uri, sessionDurationMinutes = 60u)
             _currentResponse.value = when (result) {
-                is DeeplinkHandledStatus.NotHandled -> result.reason
+                is DeeplinkHandledStatus.NotHandled -> result.reason.message
                 is DeeplinkHandledStatus.Handled -> {
                     // Hacking this in for organization discovery stuff
                     (result.response as? DeeplinkResponse.Discovery)

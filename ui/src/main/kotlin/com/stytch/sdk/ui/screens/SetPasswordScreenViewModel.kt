@@ -78,7 +78,7 @@ internal class SetPasswordScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         passwordState = _uiState.value.passwordState.copy(
-                            errorMessage = result.exception.reason.toString(), // TODO
+                            errorMessage = result.exception.message, // TODO
                         ),
                     )
                 }
@@ -100,7 +100,7 @@ internal class SetPasswordScreenViewModel : ViewModel() {
                 )
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             }

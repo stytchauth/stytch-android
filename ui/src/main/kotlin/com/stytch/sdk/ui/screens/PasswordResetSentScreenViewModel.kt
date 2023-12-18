@@ -45,7 +45,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 is StytchResult.Success -> {} // do nothing
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
-                        genericErrorMessage = result.exception.reason.toString(), // TODO
+                        genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             }
@@ -72,7 +72,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
-                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                    genericErrorMessage = result.exception.message, // TODO
                 )
             }
         }
@@ -99,7 +99,7 @@ internal class PasswordResetSentScreenViewModel : ViewModel() {
                 }
                 is StytchResult.Error -> _uiState.value = _uiState.value.copy(
                     showLoadingDialog = false,
-                    genericErrorMessage = result.exception.reason.toString(), // TODO
+                    genericErrorMessage = result.exception.message, // TODO
                 )
             }
         }

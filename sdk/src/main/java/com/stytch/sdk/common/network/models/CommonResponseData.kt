@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @JsonClass(generateAdapter = true)
 @Parcelize
@@ -21,13 +22,21 @@ public data class StytchErrorResponse(
     @Json(name = "status_code")
     val statusCode: Int,
     @Json(name = "request_id")
-    val requestId: String,
+    val requestId: String? = null,
     @Json(name = "error_type")
     val errorType: String,
     @Json(name = "error_message")
     val errorMessage: String?,
     @Json(name = "error_url")
-    val errorUrl: String,
+    val errorUrl: String? = null,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class StytchSchemaError(
+    val body: @RawValue Any?,
+    val params: @RawValue Any?,
+    val query: @RawValue Any?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)

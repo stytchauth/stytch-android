@@ -6,10 +6,11 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchInvalidAuthorizationCredentialError
+import com.stytch.sdk.common.errors.StytchMissingAuthorizationCredentialIdTokenError
 import com.stytch.sdk.common.sso.GoogleOneTapProvider
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -85,15 +86,13 @@ internal class GoogleOneTapImpl(
 
     override suspend fun authenticate(parameters: OAuth.GoogleOneTap.AuthenticateParameters): NativeOAuthResponse {
         if (!::nonce.isInitialized || !::oneTapClient.isInitialized) {
-            return StytchResult.Error(StytchExceptions.Input(StytchErrorType.GOOGLE_ONETAP_MISSING_MEMBER.message))
+            return StytchResult.Error(StytchInvalidAuthorizationCredentialError)
         }
         return withContext(dispatchers.io) {
             try {
                 val credential = oneTapClient.getSignInCredentialFromIntent(parameters.data)
                 val idToken = credential.googleIdToken
-                    ?: return@withContext StytchResult.Error(
-                        StytchExceptions.Input(StytchErrorType.GOOGLE_ONETAP_MISSING_ID_TOKEN.message)
-                    )
+                    ?: return@withContext StytchResult.Error(StytchMissingAuthorizationCredentialIdTokenError)
                 api.authenticateWithGoogleIdToken(
                     idToken = idToken,
                     nonce = nonce,
@@ -102,7 +101,7 @@ internal class GoogleOneTapImpl(
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
             } catch (e: ApiException) {
-                StytchResult.Error(StytchExceptions.Critical(e))
+                StytchResult.Error(StytchInternalError(e))
             }
         }
     }

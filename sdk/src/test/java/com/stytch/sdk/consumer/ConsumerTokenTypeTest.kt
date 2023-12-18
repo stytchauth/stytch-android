@@ -7,7 +7,7 @@ internal class ConsumerTokenTypeTest {
     fun `ConsumerTokenType fromString returns expected values`() {
         assert(ConsumerTokenType.fromString("magic_links") == ConsumerTokenType.MAGIC_LINKS)
         assert(ConsumerTokenType.fromString("oauth") == ConsumerTokenType.OAUTH)
-        assert(ConsumerTokenType.fromString("password_reset") == ConsumerTokenType.RESET_PASSWORD)
+        assert(ConsumerTokenType.fromString("reset_password") == ConsumerTokenType.RESET_PASSWORD)
         assert(ConsumerTokenType.fromString("something_unexpected") == ConsumerTokenType.UNKNOWN)
     }
 }

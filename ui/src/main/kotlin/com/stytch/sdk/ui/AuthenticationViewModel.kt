@@ -6,8 +6,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.DeeplinkHandledStatus
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchSSOError
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
@@ -47,7 +47,7 @@ internal class AuthenticationViewModel : ViewModel() {
             } else {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
                     _eventFlow.emit(
-                        EventState.Authenticated(StytchResult.Error(StytchExceptions.Critical(it as SSOError))),
+                        EventState.Authenticated(StytchResult.Error(StytchSSOError(it as SSOError))),
                     )
                 }
             }

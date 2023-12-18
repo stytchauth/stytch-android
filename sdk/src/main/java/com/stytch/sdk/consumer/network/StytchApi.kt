@@ -4,10 +4,10 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -51,11 +51,7 @@ internal object StytchApi {
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
-            throw StytchExceptions.Critical(
-                RuntimeException(
-                    "StytchApi not configured. You must call 'StytchApi.configure(...)' before using any functionality of the StytchApi." // ktlint-disable max-line-length
-                )
-            )
+            throw StytchSDKNotConfiguredError("StytchClient")
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,

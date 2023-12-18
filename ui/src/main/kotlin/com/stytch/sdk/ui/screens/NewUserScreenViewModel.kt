@@ -57,7 +57,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(showLoadingDialog = false)
                     _uiState.value = _uiState.value.copy(
                         emailState = emailState.copy(
-                            errorMessage = result.exception.reason.toString(), // TODO
+                            errorMessage = result.exception.message, // TODO
                         ),
                     )
                 }
@@ -89,7 +89,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         emailState = emailState.copy(
-                            errorMessage = result.exception.reason.toString(), // TODO
+                            errorMessage = result.exception.message, // TODO
                         ),
                     )
                 }
@@ -135,7 +135,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                 is StytchResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         passwordState = _uiState.value.passwordState.copy(
-                            errorMessage = result.exception.reason.toString(), // TODO
+                            errorMessage = result.exception.message, // TODO
                         ),
                     )
                 }
@@ -165,7 +165,7 @@ internal class NewUserScreenViewModel : ViewModel() {
                     _uiState.value = _uiState.value.copy(
                         showLoadingDialog = false,
                         passwordState = _uiState.value.passwordState.copy(
-                            errorMessage = result.exception.reason.toString(), // TODO
+                            errorMessage = result.exception.message, // TODO
                         ),
                     )
                 }
