@@ -24,13 +24,13 @@ internal class NavigationRouteTest {
 
     @Test
     fun `NewUser returns correct screen`() {
-        val screen = NavigationRoute.NewUser(mockk())
+        val screen = NavigationRoute.NewUser("")
         assert(screen.screen is NewUserScreen)
     }
 
     @Test
     fun `ReturningUser returns correct screen`() {
-        val screen = NavigationRoute.ReturningUser(mockk())
+        val screen = NavigationRoute.ReturningUser("")
         assert(screen.screen is ReturningUserScreen)
     }
 
@@ -42,7 +42,7 @@ internal class NavigationRouteTest {
 
     @Test
     fun `SetNewPassword returns correct screen`() {
-        val screen = NavigationRoute.SetNewPassword(mockk(), mockk())
+        val screen = NavigationRoute.SetNewPassword("", "")
         assert(screen.screen is SetPasswordScreen)
     }
 }

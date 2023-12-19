@@ -14,30 +14,42 @@ import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.SessionOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-internal class AuthenticationViewModel : ViewModel() {
+internal class AuthenticationViewModel(
+    private val stytchClient: StytchClient
+) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun authenticateGoogleOneTapLogin(data: Intent, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun authenticateGoogleOneTapLogin(
+        data: Intent,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
                 data = data,
                 sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
             )
-            val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
+            val result = stytchClient.oauth.googleOneTap.authenticate(parameters)
             _eventFlow.emit(EventState.Authenticated(result))
         }
     }
 
-    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun authenticateThirdPartyOAuth(
+        resultCode: Int,
+        intent: Intent,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             if (resultCode == Activity.RESULT_OK) {
                 intent.data?.let {
-                    when (val result = StytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
+                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
                             _eventFlow.emit(EventState.Authenticated(result.response.result))
                         }
@@ -54,10 +66,10 @@ internal class AuthenticationViewModel : ViewModel() {
         }
     }
 
-    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             when (
-                val result = StytchClient.handle(
+                val result = stytchClient.handle(
                     uri = uri,
                     sessionDurationMinutes = sessionOptions.sessionDurationMinutes
                 )

@@ -45,7 +45,7 @@ internal data class MainScreenUiState(
 
 internal class MainScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("MainScreenUiState", MainScreenUiState())
 

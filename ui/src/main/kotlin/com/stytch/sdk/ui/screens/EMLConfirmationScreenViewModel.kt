@@ -26,7 +26,7 @@ internal data class EMLConfirmationUiState(
 
 internal class EMLConfirmationScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("EMLConfirmationUiState", EMLConfirmationUiState())
 

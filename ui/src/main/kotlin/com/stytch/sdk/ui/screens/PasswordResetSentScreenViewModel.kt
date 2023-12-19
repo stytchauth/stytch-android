@@ -28,7 +28,7 @@ internal data class PasswordResetUiState(
 
 internal class PasswordResetSentScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("PasswordResetUiState", PasswordResetUiState())
 

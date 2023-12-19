@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.screens
 
 import android.os.Parcelable
 import android.text.format.DateUtils
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,16 +33,20 @@ internal data class OTPConfirmationUiState(
 
 internal class OTPConfirmationScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("OTPConfirmationUiState", OTPConfirmationUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var methodId: String = ""
-    private var resendCountdownSeconds: Long = 0
-    private var countdownSeconds: Long = 0
+    @VisibleForTesting
+    internal var methodId: String = ""
+
+    @VisibleForTesting
+    internal var resendCountdownSeconds: Long = 0
+    @VisibleForTesting
+    internal var countdownSeconds: Long = 0
         set(value) {
             field = value
             savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(

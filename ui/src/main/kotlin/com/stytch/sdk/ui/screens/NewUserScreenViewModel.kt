@@ -31,7 +31,7 @@ internal data class NewUserUiState(
 
 internal class NewUserScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("NewUserUiState", NewUserUiState())
 

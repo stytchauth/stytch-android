@@ -37,7 +37,7 @@ internal data class ReturningUserUiState(
 
 internal class ReturningUserScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("ReturningUserUiState", ReturningUserUiState())
 
@@ -115,31 +115,28 @@ internal class ReturningUserScreenViewModel(
         }
     }
 
-    private fun sendPasswordResetAndNavigateAppropriately(
+    private suspend fun sendPasswordResetAndNavigateAppropriately(
         email: String,
         passwordOptions: PasswordOptions,
-        scope: CoroutineScope = viewModelScope
     ) {
-        scope.launch {
-            // send reset password request and nav appropriately
-            val parameters = passwordOptions.toResetByEmailStartParameters(email)
-            when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
-                is StytchResult.Success -> {
-                    _eventFlow.emit(
-                        EventState.NavigationRequested(NavigationRoute.PasswordResetSent(
-                            details = PasswordResetDetails(
-                                parameters = parameters,
-                                resetType = PasswordResetType.DEDUPE
-                            )
-                        ))
-                    )
-                }
-                is StytchResult.Error -> {
-                    savedStateHandle["ReturningUserUiState"] = uiState.value.copy(
-                        showLoadingDialog = false,
-                        genericErrorMessage = result.exception.message, // TODO
-                    )
-                }
+        // send reset password request and nav appropriately
+        val parameters = passwordOptions.toResetByEmailStartParameters(email)
+        when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
+            is StytchResult.Success -> {
+                _eventFlow.emit(
+                    EventState.NavigationRequested(NavigationRoute.PasswordResetSent(
+                        details = PasswordResetDetails(
+                            parameters = parameters,
+                            resetType = PasswordResetType.DEDUPE
+                        )
+                    ))
+                )
+            }
+            is StytchResult.Error -> {
+                savedStateHandle["ReturningUserUiState"] = uiState.value.copy(
+                    showLoadingDialog = false,
+                    genericErrorMessage = result.exception.message, // TODO
+                )
             }
         }
     }
