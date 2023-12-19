@@ -15,11 +15,10 @@ import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PasswordResetType
 import com.stytch.sdk.ui.data.SessionOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -32,7 +31,8 @@ internal data class OTPConfirmationUiState(
 ) : Parcelable
 
 internal class OTPConfirmationScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("OTPConfirmationUiState", OTPConfirmationUiState())
 
@@ -48,7 +48,7 @@ internal class OTPConfirmationScreenViewModel(
                 expirationTimeFormatted = DateUtils.formatElapsedTime(value),
             )
         }
-    fun setInitialState(resendParameters: OTPDetails) {
+    fun setInitialState(resendParameters: OTPDetails, scope: CoroutineScope = viewModelScope) {
         methodId = when (resendParameters) {
             is OTPDetails.EmailOTP -> resendParameters.methodId
             is OTPDetails.SmsOTP -> resendParameters.methodId
@@ -62,7 +62,7 @@ internal class OTPConfirmationScreenViewModel(
             } * 60U
             ).toLong()
         resendCountdownSeconds = countdownSeconds
-        viewModelScope.launch {
+        scope.launch {
             while (countdownSeconds > 0) {
                 delay(1000)
                 countdownSeconds -= 1
@@ -78,10 +78,10 @@ internal class OTPConfirmationScreenViewModel(
         savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
     }
 
-    fun authenticateOTP(token: String, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun authenticateOTP(token: String, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             when (
-                val result = StytchClient.otps.authenticate(
+                val result = stytchClient.otps.authenticate(
                     OTP.AuthParameters(
                         token = token,
                         methodId = methodId,
@@ -106,12 +106,12 @@ internal class OTPConfirmationScreenViewModel(
         }
     }
 
-    fun resendOTP(resend: OTPDetails) {
-        viewModelScope.launch {
+    fun resendOTP(resend: OTPDetails, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             val result = when (resend) {
-                is OTPDetails.EmailOTP -> StytchClient.otps.email.loginOrCreate(resend.parameters)
-                is OTPDetails.SmsOTP -> StytchClient.otps.sms.loginOrCreate(resend.parameters)
-                is OTPDetails.WhatsAppOTP -> StytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
+                is OTPDetails.EmailOTP -> stytchClient.otps.email.loginOrCreate(resend.parameters)
+                is OTPDetails.SmsOTP -> stytchClient.otps.sms.loginOrCreate(resend.parameters)
+                is OTPDetails.WhatsAppOTP -> stytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
             }
             when (result) {
                 is StytchResult.Success -> {
@@ -133,11 +133,15 @@ internal class OTPConfirmationScreenViewModel(
         }
     }
 
-    fun sendResetPasswordEmail(emailAddress: String?, passwordOptions: PasswordOptions) {
-        viewModelScope.launch {
+    fun sendResetPasswordEmail(
+        emailAddress: String?,
+        passwordOptions: PasswordOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             emailAddress?.let {
                 val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
-                when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
+                when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(

@@ -12,10 +12,9 @@ import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PasswordResetType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -26,16 +25,17 @@ internal data class EMLConfirmationUiState(
 ) : Parcelable
 
 internal class EMLConfirmationScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("EMLConfirmationUiState", EMLConfirmationUiState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun resendEML(parameters: MagicLinks.EmailMagicLinks.Parameters) {
-        viewModelScope.launch {
-            when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters)) {
+    fun resendEML(parameters: MagicLinks.EmailMagicLinks.Parameters, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
+            when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
                         showResendDialog = false,
@@ -60,11 +60,15 @@ internal class EMLConfirmationScreenViewModel(
         savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
     }
 
-    fun sendResetPasswordEmail(emailAddress: String?, passwordOptions: PasswordOptions) {
-        viewModelScope.launch {
+    fun sendResetPasswordEmail(
+        emailAddress: String?,
+        passwordOptions: PasswordOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             emailAddress?.let {
                 val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
-                when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
+                when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(

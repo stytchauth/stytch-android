@@ -16,10 +16,9 @@ import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
 import com.stytch.sdk.ui.data.PasswordState
 import com.stytch.sdk.ui.utils.isValidEmailAddress
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -31,7 +30,8 @@ internal data class NewUserUiState(
 ) : Parcelable
 
 internal class NewUserScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("NewUserUiState", NewUserUiState())
 
@@ -44,12 +44,12 @@ internal class NewUserScreenViewModel(
         )
     }
 
-    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions) {
+    fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions, scope: CoroutineScope = viewModelScope) {
         val emailState = uiState.value.emailState
         savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
         val parameters = emailMagicLinksOptions.toParameters(emailState.emailAddress)
-        viewModelScope.launch {
-            when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
+        scope.launch {
+            when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
@@ -70,12 +70,12 @@ internal class NewUserScreenViewModel(
         }
     }
 
-    fun sendEmailOTP(otpOptions: OTPOptions) {
+    fun sendEmailOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
         val emailState = uiState.value.emailState
         savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+        scope.launch {
             val parameters = otpOptions.toEmailOtpParameters(emailState.emailAddress)
-            when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
+            when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
@@ -111,15 +111,15 @@ internal class NewUserScreenViewModel(
         )
     }
 
-    fun onPasswordChanged(password: String) {
+    fun onPasswordChanged(password: String, scope: CoroutineScope = viewModelScope) {
         savedStateHandle["NewUserUiState"] = uiState.value.copy(
             passwordState = uiState.value.passwordState.copy(
                 password = password,
             ),
         )
-        viewModelScope.launch {
+        scope.launch {
             when (
-                val result = StytchClient.passwords.strengthCheck(
+                val result = stytchClient.passwords.strengthCheck(
                     Passwords.StrengthCheckParameters(
                         email = uiState.value.emailState.emailAddress,
                         password = password,
@@ -148,13 +148,13 @@ internal class NewUserScreenViewModel(
         }
     }
 
-    fun createAccountWithPassword(sessionDurationMinutes: UInt) {
+    fun createAccountWithPassword(sessionDurationMinutes: UInt, scope: CoroutineScope = viewModelScope) {
         val emailState = uiState.value.emailState
         val passwordState = uiState.value.passwordState
         savedStateHandle["NewUserUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+        scope.launch {
             when (
-                val result = StytchClient.passwords.create(
+                val result = stytchClient.passwords.create(
                     Passwords.CreateParameters(
                         email = emailState.emailAddress,
                         password = passwordState.password,

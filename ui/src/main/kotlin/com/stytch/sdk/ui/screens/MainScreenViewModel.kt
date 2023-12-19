@@ -29,6 +29,7 @@ import com.stytch.sdk.ui.data.PhoneNumberState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.utils.isValidEmailAddress
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -43,7 +44,8 @@ internal data class MainScreenUiState(
 ) : Parcelable
 
 internal class MainScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    val stytchClient: StytchClient = StytchClient
 ) : ViewModel() {
     val uiState = savedStateHandle.getStateFlow("MainScreenUiState", MainScreenUiState())
 
@@ -54,12 +56,13 @@ internal class MainScreenViewModel(
         context: ComponentActivity,
         provider: OAuthProvider,
         productConfig: StytchProductConfig,
+        scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
         if (provider == OAuthProvider.GOOGLE) {
-            viewModelScope.launch {
+            scope.launch {
                 val didStartOneTap = productConfig.googleOauthOptions.clientId?.let { clientId ->
-                    StytchClient.oauth.googleOneTap.start(
+                    stytchClient.oauth.googleOneTap.start(
                         OAuth.GoogleOneTap.StartParameters(
                             context = context,
                             clientId = clientId,
@@ -121,9 +124,9 @@ internal class MainScreenViewModel(
         )
     }
 
-    fun onEmailAddressSubmit(productConfig: StytchProductConfig) {
+    fun onEmailAddressSubmit(productConfig: StytchProductConfig, scope: CoroutineScope = viewModelScope) {
         savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+        scope.launch {
             val emailAddress = uiState.value.emailState.emailAddress
             when (getUserType(emailAddress)) {
                 UserType.NEW -> NavigationRoute.NewUser(emailAddress = emailAddress)
@@ -167,7 +170,7 @@ internal class MainScreenViewModel(
     }
 
     suspend fun getUserType(emailAddress: String): UserType? {
-        return when (val result = StytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
+        return when (val result = stytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
             is StytchResult.Success -> result.value.userType
             is StytchResult.Error -> null
         }
@@ -178,7 +181,7 @@ internal class MainScreenViewModel(
         emailMagicLinksOptions: EmailMagicLinksOptions,
     ): NavigationRoute? {
         val parameters = emailMagicLinksOptions.toParameters(emailAddress)
-        return when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
+        return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
@@ -196,7 +199,7 @@ internal class MainScreenViewModel(
         otpOptions: OTPOptions,
     ): NavigationRoute? {
         val parameters = otpOptions.toEmailOtpParameters(emailAddress)
-        return when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
+        return when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.OTPConfirmation(
                     OTPDetails.EmailOTP(
@@ -221,7 +224,7 @@ internal class MainScreenViewModel(
         passwordOptions: PasswordOptions,
     ): NavigationRoute? {
         val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
-        return when (val result = StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
+        return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
             }
@@ -234,12 +237,12 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun sendSmsOTP(otpOptions: OTPOptions) {
+    fun sendSmsOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
         savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+        scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
             val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164())
-            when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
+            when (val result = stytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
@@ -266,12 +269,12 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun sendWhatsAppOTP(otpOptions: OTPOptions) {
+    fun sendWhatsAppOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
         savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+        scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
             val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164())
-            when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
+            when (val result = stytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
