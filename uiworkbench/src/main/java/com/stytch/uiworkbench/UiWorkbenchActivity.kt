@@ -58,7 +58,7 @@ class UiWorkbenchActivity : ComponentActivity() {
         onAuthenticated {
             when (it) {
                 is StytchResult.Success -> println("Authentication Succeeded: ${it.value}")
-                is StytchResult.Error -> println("Authentication Failed: ${it.exception}")
+                is StytchResult.Error -> println("Authentication Failed: ${it.exception.message}")
             }
         }
     }.build()
