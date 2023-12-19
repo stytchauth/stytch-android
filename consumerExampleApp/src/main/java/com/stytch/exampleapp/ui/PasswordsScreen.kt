@@ -99,6 +99,11 @@ fun PasswordsScreen(navController: NavController) {
             text = stringResource(id = R.string.passwords_reset_by_email),
             onClick = { viewModel.resetPasswordByEmail() }
         )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_reset_by_session),
+            onClick = { viewModel.resetPasswordBySession() }
+        )
         if (loading.value) {
             CircularProgressIndicator()
         } else {

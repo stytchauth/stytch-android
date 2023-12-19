@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.StytchApi
@@ -139,6 +140,22 @@ internal class UserManagementImplTest {
         coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(UpdateUserResponse) -> Unit>()
         impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `UserManagementImpl searchUsers delegates to api`() = runTest {
+        coEvery { mockApi.searchUsers(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        val response = impl.search(mockk(relaxed = true))
+        assert(response is StytchResult.Success)
+        coVerify { mockApi.searchUsers(any()) }
+    }
+
+    @Test
+    fun `UserManagementImpl searchUsers with callback calls callback method`() {
+        coEvery { mockApi.searchUsers(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        val mockCallback = spyk<(SearchUserResponse) -> Unit>()
+        impl.search(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

@@ -29,6 +29,7 @@ enum class OAuthProvider {
     SALESFORCE,
     SLACK,
     TWITCH,
+    YAHOO,
 }
 
 class OAuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -87,6 +88,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
             OAuthProvider.SALESFORCE -> StytchClient.oauth.salesforce.start(startParameters)
             OAuthProvider.SLACK -> StytchClient.oauth.slack.start(startParameters)
             OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(startParameters)
+            OAuthProvider.YAHOO -> StytchClient.oauth.yahoo.start(startParameters)
         }
     }
 
@@ -97,7 +99,7 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
                 intent.data?.let {
                     val result = StytchClient.handle(it, 60U)
                     _currentResponse.value = when (result) {
-                        is DeeplinkHandledStatus.NotHandled -> result.reason
+                        is DeeplinkHandledStatus.NotHandled -> result.reason.message
                         is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                         // This only happens for password reset deeplinks
                         is DeeplinkHandledStatus.ManualHandlingRequired -> ""

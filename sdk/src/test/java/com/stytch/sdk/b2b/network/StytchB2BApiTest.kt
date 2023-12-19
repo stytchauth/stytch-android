@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.network
 
+import android.app.Application
 import android.content.Context
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
@@ -11,16 +12,19 @@ import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.StytchDataResponse
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +40,13 @@ internal class StytchB2BApiTest {
 
     @Before
     fun before() {
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchB2BApi)
@@ -56,7 +67,7 @@ internal class StytchB2BApiTest {
         assert(StytchB2BApi.isInitialized)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `StytchB2BApi apiService throws exception when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
         StytchB2BApi.apiService
@@ -269,7 +280,7 @@ internal class StytchB2BApiTest {
         coVerify { StytchB2BApi.apiService.getBootstrapData("mock-public-token") }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() = runTest {
         every { StytchB2BApi.isInitialized } returns false
         val mockApiCall: suspend () -> StytchDataResponse<Boolean> = mockk()
@@ -290,17 +301,21 @@ internal class StytchB2BApiTest {
     fun `safeApiCall returns correct error for HttpException`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         fun mockApiCall(): StytchDataResponse<Boolean> {
-            throw HttpException(mockk(relaxed = true))
+            throw HttpException(
+                mockk(relaxed = true) {
+                    every { errorBody() } returns null
+                }
+            )
         }
         val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
         assert(result is StytchResult.Error)
     }
 
     @Test
-    fun `safeApiCall returns correct error for StytchExceptions`() = runTest {
+    fun `safeApiCall returns correct error for StytchErrors`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         fun mockApiCall(): StytchDataResponse<Boolean> {
-            throw StytchExceptions.Critical(RuntimeException("Test"))
+            throw StytchAPIError(errorType = "", message = "")
         }
         val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
         assert(result is StytchResult.Error)

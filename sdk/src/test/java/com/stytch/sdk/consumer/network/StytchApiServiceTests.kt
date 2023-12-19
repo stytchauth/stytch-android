@@ -34,6 +34,7 @@ internal class StytchApiServiceTests {
         apiService = ApiService.createApiService(
             mockWebServer.url("/").toString(),
             null,
+            null,
             {},
             StytchApiService::class.java
         )
@@ -462,6 +463,25 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check Passwords resetPasswordBySession request`() {
+        runBlocking {
+            val parameters = ConsumerRequests.Passwords.ResetBySessionRequest(
+                password = "my-password",
+                sessionDurationMinutes = 10
+            )
+            requestIgnoringResponseException {
+                apiService.resetBySession(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/session/reset",
+                expectedBody = mapOf(
+                    "password" to parameters.password,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                )
+            )
+        }
+    }
+
+    @Test
     fun `check Passwords authenticate request`() {
         runBlocking {
             val parameters = ConsumerRequests.Passwords.AuthenticateRequest(
@@ -657,6 +677,23 @@ internal class StytchApiServiceTests {
             )
         }
     }
+
+    @Test
+    fun `check searchUsers request`() {
+        val parameters = ConsumerRequests.User.SearchRequest(
+            email = "user@domain.com"
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.searchUsers(request = parameters)
+            }.verifyPost(
+                expectedPath = "/users/search",
+                expectedBody = mapOf(
+                    "email" to parameters.email
+                )
+            )
+        }
+    }
     // endregion UserManagement
 
     // region OAuth
@@ -718,6 +755,129 @@ internal class StytchApiServiceTests {
         }
     }
     // endregion Bootstrap
+
+    //region Webauthn
+    @Test
+    fun `check webAuthnRegisterStart request`() {
+        val parameters = ConsumerRequests.WebAuthn.RegisterStartRequest(
+            domain = "test.domain.com",
+            userAgent = "My Test UserAgent",
+            authenticatorType = "platform",
+            isPasskey = true
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnRegisterStart(parameters)
+            }.verifyPost(
+                expectedPath = "/webauthn/register/start",
+                expectedBody = mapOf(
+                    "domain" to parameters.domain,
+                    "user_agent" to parameters.userAgent,
+                    "authenticator_type" to parameters.authenticatorType,
+                    "return_passkey_credential_options" to parameters.isPasskey,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check webAuthnRegister request`() {
+        val parameters = ConsumerRequests.WebAuthn.RegisterRequest(
+            publicKeyCredential = "my-public-key-credential"
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnRegister(parameters)
+            }.verifyPost(
+                expectedPath = "/webauthn/register",
+                expectedBody = mapOf(
+                    "public_key_credential" to parameters.publicKeyCredential,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check webAuthnAuthenticateStartPrimary request`() {
+        val parameters = ConsumerRequests.WebAuthn.AuthenticateStartRequest(
+            domain = "test.domain.com",
+            isPasskey = true,
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnAuthenticateStartPrimary(parameters)
+            }.verifyPost(
+                expectedPath = "/webauthn/authenticate/start/primary",
+                expectedBody = mapOf(
+                    "domain" to parameters.domain,
+                    "return_passkey_credential_options" to parameters.isPasskey,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check webAuthnAuthenticateStartSecondary request`() {
+        val parameters = ConsumerRequests.WebAuthn.AuthenticateStartRequest(
+            domain = "test.domain.com",
+            isPasskey = true,
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnAuthenticateStartSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/webauthn/authenticate/start/secondary",
+                expectedBody = mapOf(
+                    "domain" to parameters.domain,
+                    "return_passkey_credential_options" to parameters.isPasskey,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check webAuthnAuthenticate request`() {
+        val parameters = ConsumerRequests.WebAuthn.AuthenticateRequest(
+            publicKeyCredential = "my-public-key-credential",
+            sessionDurationMinutes = 30,
+            sessionCustomClaims = mapOf("test" to true),
+            sessionJwt = "my-session-jwt",
+            sessionToken = "my-session-token",
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/webauthn/authenticate",
+                expectedBody = mapOf(
+                    "public_key_credential" to parameters.publicKeyCredential,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    "session_custom_claims" to parameters.sessionCustomClaims,
+                    "session_jwt" to parameters.sessionJwt,
+                    "session_token" to parameters.sessionToken,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check webAuthnUpdate request`() {
+        val id = "webauthn-registration-id"
+        val parameters = ConsumerRequests.WebAuthn.UpdateRequest(
+            name = "Cool Memorable Name",
+        )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.webAuthnUpdate(id, parameters)
+            }.verifyPut(
+                expectedPath = "/webauthn/update/$id",
+                expectedBody = mapOf(
+                    "name" to parameters.name,
+                )
+            )
+        }
+    }
+    //endregion
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

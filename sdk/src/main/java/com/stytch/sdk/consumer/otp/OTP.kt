@@ -1,10 +1,13 @@
 package com.stytch.sdk.consumer.otp
 
+import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
+import com.stytch.sdk.consumer.OTPSendResponse
+import kotlinx.parcelize.Parcelize
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
@@ -72,10 +75,11 @@ public interface OTP {
          * @property phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @property expirationMinutes indicates how long the OTP should last before it expires
          */
+        @Parcelize
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-        )
+        ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their phone number via SMS. If the phone number is not
@@ -100,17 +104,17 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
          * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse]
+         * @return [OTPSendResponse]
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
          * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 
     /**
@@ -124,10 +128,11 @@ public interface OTP {
          * (i.e. +1XXXXXXXXXX)
          * @property expirationMinutes indicates how long the OTP should last before it expires
          */
+        @Parcelize
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-        )
+        ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their phone number via WhatsApp. If the phone number is not
@@ -152,17 +157,17 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
          * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse]
+         * @return [OTPSendResponse]
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
          * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 
     /**
@@ -181,12 +186,13 @@ public interface OTP {
          * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
          */
+        @Parcelize
         public data class Parameters(
             val email: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
-        )
+        ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their email address. If the email address is not associated
@@ -211,16 +217,16 @@ public interface OTP {
          * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
          * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @return [BaseResponse] response from backend
+         * @return [OTPSendResponse] response from backend
          */
-        public suspend fun send(parameters: Parameters): BaseResponse
+        public suspend fun send(parameters: Parameters): OTPSendResponse
 
         /**
          * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
          * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
-         * @param callback a callback that receives a [BaseResponse]
+         * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
     }
 }

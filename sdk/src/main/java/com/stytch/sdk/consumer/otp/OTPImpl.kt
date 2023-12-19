@@ -1,9 +1,9 @@
 package com.stytch.sdk.consumer.otp
 
-import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
+import com.stytch.sdk.consumer.OTPSendResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -70,9 +70,9 @@ internal class OTPImpl internal constructor(
             }
         }
 
-        override suspend fun send(parameters: OTP.SmsOTP.Parameters): BaseResponse =
+        override suspend fun send(parameters: OTP.SmsOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendOTPWithSMSSecondary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
@@ -85,7 +85,7 @@ internal class OTPImpl internal constructor(
                 }
             }
 
-        override fun send(parameters: OTP.SmsOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun send(parameters: OTP.SmsOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)
@@ -118,9 +118,9 @@ internal class OTPImpl internal constructor(
             }
         }
 
-        override suspend fun send(parameters: OTP.WhatsAppOTP.Parameters): BaseResponse =
+        override suspend fun send(parameters: OTP.WhatsAppOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendOTPWithWhatsAppSecondary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
@@ -133,7 +133,7 @@ internal class OTPImpl internal constructor(
                 }
             }
 
-        override fun send(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun send(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)
@@ -166,8 +166,8 @@ internal class OTPImpl internal constructor(
             }
         }
 
-        override suspend fun send(parameters: OTP.EmailOTP.Parameters): BaseResponse = withContext(dispatchers.io) {
-            if (sessionStorage.activeSessionExists) {
+        override suspend fun send(parameters: OTP.EmailOTP.Parameters): OTPSendResponse = withContext(dispatchers.io) {
+            if (sessionStorage.persistedSessionIdentifiersExist) {
                 api.sendOTPWithEmailSecondary(
                     email = parameters.email,
                     expirationMinutes = parameters.expirationMinutes,
@@ -184,7 +184,7 @@ internal class OTPImpl internal constructor(
             }
         }
 
-        override fun send(parameters: OTP.EmailOTP.Parameters, callback: (response: BaseResponse) -> Unit) {
+        override fun send(parameters: OTP.EmailOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)

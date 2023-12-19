@@ -11,6 +11,8 @@ Call the `StytchClient.passwords.authenticate()` method to authenticate a user w
 
 Call the `StytchClient.passwords.resetByEmailStart()` method to initiate a password reset for the email address provided. This will trigger an email to be sent to the address, containing a magic link that will allow them to set a new password and authenticate.
 
+Call the `StytchClient.passwords.resetBySession()` method to reset the user’s password using their existing session. The endpoint will error if the session does not have a password, email magic link, or email OTP authentication factor that has been issued within the last 5 minutes.
+
 If you have connected your deeplink handler with `StytchClient`, the resulting magic link should be detected by your application and automatically parsed (via the `StytchClient.handle()` method). See the instructions in the [top-level README](/README.md) for information on handling deeplink intents. You should get a `DeeplinkHandledStatus.ManualHandlingRequired` result, which includes the necessary token for resetting the user's password. If you are not using our deeplink handler, you must parse out the token from the deeplink yourself.
 
 Once you have a password reset token, and have collected the user's new desired password, you can call the `StytchClient.passwords.resetByEmail()` method to finish resetting their password.

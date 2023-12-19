@@ -20,7 +20,7 @@ public enum class ConsumerTokenType : TokenType {
     /**
      * A Password Reset deeplink
      */
-    PASSWORD_RESET,
+    RESET_PASSWORD,
 
     /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method

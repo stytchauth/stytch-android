@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 
 /**
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
@@ -10,12 +11,12 @@ import com.stytch.sdk.common.BaseResponse
 public interface B2BSessions {
 
     /**
-     * @throws StytchExceptions.Critical if failed to decrypt data
+     * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionToken: String?
 
     /**
-     * @throws StytchExceptions.Critical if failed to decrypt data
+     * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionJwt: String?
 

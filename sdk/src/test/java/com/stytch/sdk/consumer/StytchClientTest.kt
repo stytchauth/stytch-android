@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.common.DeeplinkHandledStatus
@@ -8,12 +9,16 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
-import com.stytch.sdk.common.stytchError
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.oauth.OAuth
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -37,6 +42,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -60,21 +66,33 @@ internal class StytchClientTest {
     fun before() {
         Dispatchers.setMain(mainThreadSurrogate)
         mockkStatic(KeyStore::class)
-        mockkStatic("com.stytch.sdk.common.extensions.ContextExtKt")
+        mockkStatic(
+            "com.stytch.sdk.common.extensions.ContextExtKt",
+            "com.stytch.sdk.consumer.extensions.StytchResultExtKt",
+        )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        mContextMock = mockk(relaxed = true)
+        val mockApplication: Application = mockk {
+            every { registerActivityLifecycleCallbacks(any()) } just runs
+            every { packageName } returns "Stytch"
+        }
+        mContextMock = mockk(relaxed = true) {
+            every { applicationContext } returns mockApplication
+        }
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
+        mockkObject(StytchApi.Sessions)
         every { StorageHelper.initialize(any()) } just runs
-        every { StorageHelper.loadValue(any()) } returns ""
+        every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
         MockKAnnotations.init(this, true, true)
+        coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+        StytchClient.dfpProvider = mockk()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -86,14 +104,14 @@ internal class StytchClientTest {
         clearAllMocks()
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `assertInitialized throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `assertInitialized throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.assertInitialized()
     }
 
     @Test
-    fun `assertInitialized does not throw IllegalStateException when properly configured`() {
+    fun `assertInitialized does not throw StytchSDKNotConfiguredError when properly configured`() {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
@@ -127,8 +145,52 @@ internal class StytchClientTest {
         }
     }
 
-    @Test(expected = StytchExceptions.Critical::class)
-    fun `an exception in StytchClient configure throws a Critical exception`() {
+    @Test
+    fun `configures DFP when calling StytchClient configure`() {
+        runBlocking {
+            StytchClient.configure(mContextMock, "")
+            verify(exactly = 1) { StytchApi.configureDFP(any(), any(), any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should validate persisted sessions if applicable when calling StytchClient configure`() {
+        runBlocking {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            // no session data == no authentication/updater
+            every { StorageHelper.loadValue(any()) } returns null
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
+            // yes session data == yes authentication/updater
+            every { StorageHelper.loadValue(any()) } returns "some-session-data"
+            StytchClient.configure(mContextMock, "")
+            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `should report the initialization state after configuration and initialization is complete`() {
+        runTest {
+            val mockResponse: StytchResult<AuthData> = mockk {
+                every { launchSessionUpdater(any(), any()) } just runs
+            }
+            coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
+            val callback = spyk<(Boolean) -> Unit>()
+            StytchClient.configure(mContextMock, "", callback)
+            // callback is called with expected value
+            verify(exactly = 1) { callback(true) }
+            // isInitialized has fired
+            assert(StytchClient.isInitialized.value)
+        }
+    }
+
+    @Test(expected = StytchInternalError::class)
+    fun `an exception in StytchClient configure throws a StytchInternalError exception`() {
         every { StorageHelper.initialize(any()) } throws RuntimeException("Test")
         val deviceInfo = DeviceInfo()
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
@@ -136,8 +198,8 @@ internal class StytchClientTest {
         stytchClientObject.configure(mContextMock, "")
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient magicLinks throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient magicLinks throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.magicLinks
     }
@@ -148,8 +210,8 @@ internal class StytchClientTest {
         StytchClient.magicLinks
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient otps throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient otps throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.otps
     }
@@ -160,8 +222,8 @@ internal class StytchClientTest {
         StytchClient.otps
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient passwords throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient passwords throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.passwords
     }
@@ -172,8 +234,8 @@ internal class StytchClientTest {
         StytchClient.passwords
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient sessions throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient sessions throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.sessions
     }
@@ -184,8 +246,8 @@ internal class StytchClientTest {
         StytchClient.sessions
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient biometrics throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient biometrics throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.biometrics
     }
@@ -196,8 +258,8 @@ internal class StytchClientTest {
         StytchClient.biometrics
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient user throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient user throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.user
     }
@@ -208,8 +270,8 @@ internal class StytchClientTest {
         StytchClient.user
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `accessing StytchClient oauth throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient oauth throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
         StytchClient.oauth
     }
@@ -220,8 +282,32 @@ internal class StytchClientTest {
         StytchClient.oauth
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `handle with coroutines throws IllegalStateException when not configured`() {
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient dfp throws StytchSDKNotConfiguredError when not configured`() {
+        every { StytchApi.isInitialized } returns false
+        StytchClient.dfp
+    }
+
+    @Test
+    fun `accessing StytchClient dfp returns instance of DFP when configured`() {
+        every { StytchApi.isInitialized } returns true
+        StytchClient.dfp
+    }
+
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `accessing StytchClient passkeys throws StytchSDKNotConfiguredError when not configured`() {
+        every { StytchApi.isInitialized } returns false
+        StytchClient.passkeys
+    }
+
+    @Test
+    fun `accessing StytchClient passkeys returns instance of Passkeys when configured`() {
+        every { StytchApi.isInitialized } returns true
+        StytchClient.passkeys
+    }
+
+    @Test(expected = StytchSDKNotConfiguredError::class)
+    fun `handle with coroutines throws StytchSDKNotConfiguredError when not configured`() {
         runBlocking {
             every { StytchApi.isInitialized } returns false
             StytchClient.handle(mockk(), 30U)
@@ -237,7 +323,7 @@ internal class StytchClientTest {
             }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+            assert(response.reason is StytchDeeplinkMissingTokenError)
         }
     }
 
@@ -250,7 +336,7 @@ internal class StytchClientTest {
             }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason == StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
     }
 
@@ -295,11 +381,6 @@ internal class StytchClientTest {
         verify { mockCallback.invoke(any()) }
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `stytchError throws IllegalStateException`() {
-        stytchError("Test")
-    }
-
     @Test
     fun `canHandle only returns true for supported token types`() {
         val uri = mockk<Uri>()
@@ -307,7 +388,7 @@ internal class StytchClientTest {
         assert(StytchClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "OAUTH"
         assert(StytchClient.canHandle(uri))
-        every { uri.getQueryParameter(any()) } returns "PASSWORD_RESET"
+        every { uri.getQueryParameter(any()) } returns "RESET_PASSWORD"
         assert(StytchClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
         assert(!StytchClient.canHandle(uri))

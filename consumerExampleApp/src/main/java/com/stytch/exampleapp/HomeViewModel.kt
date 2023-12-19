@@ -19,15 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-
-    init {
-        // Initialize StytchClient
-        StytchClient.configure(
-            context = application.applicationContext,
-            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
-        )
-    }
-
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -56,7 +47,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             _currentResponse.value = when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
-                is DeeplinkHandledStatus.NotHandled -> result.reason
+                is DeeplinkHandledStatus.NotHandled -> result.reason.message
                 is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                 // This only happens for password reset deeplinks
                 is DeeplinkHandledStatus.ManualHandlingRequired ->

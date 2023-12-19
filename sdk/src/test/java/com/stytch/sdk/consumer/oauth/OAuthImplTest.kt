@@ -3,9 +3,9 @@ package com.stytch.sdk.consumer.oauth
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.network.StytchErrorType
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.network.StytchApi
@@ -95,6 +95,7 @@ internal class OAuthImplTest {
             Pair(impl.tiktok, "tiktok"),
             Pair(impl.twitch, "twitch"),
             Pair(impl.twitter, "twitter"),
+            Pair(impl.yahoo, "yahoo"),
         ).forEach {
             assert(it.first.providerName == it.second)
         }
@@ -105,18 +106,18 @@ internal class OAuthImplTest {
         every { mockStorageHelper.retrieveCodeVerifier() } returns null
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception.reason == StytchErrorType.OAUTH_MISSING_PKCE.message)
+        assert(result.exception is StytchMissingPKCEError)
     }
 
     @Test
     fun `authenticate returns correct error if api call fails`() = runTest {
         every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
         coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns StytchResult.Error(
-            StytchExceptions.Response(mockk(relaxed = true))
+            StytchAPIError(errorType = "something_went_wrong", message = "testing")
         )
         val result = impl.authenticate(mockk(relaxed = true))
         require(result is StytchResult.Error)
-        assert(result.exception is StytchExceptions.Response)
+        assert(result.exception is StytchAPIError)
         coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
     }
 

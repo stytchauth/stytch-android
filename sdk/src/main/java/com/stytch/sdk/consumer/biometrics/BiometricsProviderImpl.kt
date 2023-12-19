@@ -9,7 +9,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.CryptoObject
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.R
-import com.stytch.sdk.common.StytchExceptions
+import com.stytch.sdk.common.errors.StytchBiometricAuthenticationFailed
 import java.security.KeyStore
 import java.util.concurrent.Executors
 import javax.crypto.Cipher
@@ -81,14 +81,14 @@ internal class BiometricsProviderImpl : BiometricsProvider {
         val callback = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                continuation.resumeWithException(StytchExceptions.Input(errString.toString()))
+                continuation.resumeWithException(StytchBiometricAuthenticationFailed(errString.toString()))
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
                 result.cryptoObject?.cipher
                     ?.let { continuation.resume(it) }
-                    ?: continuation.resumeWithException(StytchExceptions.Input(AUTHENTICATION_FAILED))
+                    ?: continuation.resumeWithException(StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED))
             }
         }
         val prompt = BiometricPrompt.PromptInfo.Builder().apply {

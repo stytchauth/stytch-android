@@ -100,6 +100,13 @@ internal object ConsumerRequests {
         )
 
         @JsonClass(generateAdapter = true)
+        data class ResetBySessionRequest(
+            val password: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
             val email: String?,
             val password: String,
@@ -211,6 +218,58 @@ internal object ConsumerRequests {
             val name: NameData? = null,
             @Json(name = "untrusted_metadata")
             val untrustedMetadata: Map<String, Any?>? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class SearchRequest(
+            val email: String,
+        )
+    }
+
+    object WebAuthn {
+        @JsonClass(generateAdapter = true)
+        data class RegisterStartRequest(
+            val domain: String,
+            @Json(name = "user_agent")
+            val userAgent: String? = null,
+            @Json(name = "authenticator_type")
+            val authenticatorType: String? = null,
+            @Json(name = "return_passkey_credential_options")
+            val isPasskey: Boolean? = false
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class RegisterRequest(
+            @Json(name = "public_key_credential")
+            val publicKeyCredential: String
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateStartRequest(
+            @Json(name = "user_id")
+            val userId: String? = null,
+            val domain: String,
+            @Json(name = "return_passkey_credential_options")
+            val isPasskey: Boolean? = false
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "public_key_credential")
+            val publicKeyCredential: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "session_custom_claims")
+            val sessionCustomClaims: Map<String, Any>? = null,
+            @Json(name = "session_jwt")
+            val sessionJwt: String? = null,
+            @Json(name = "session_token")
+            val sessionToken: String? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class UpdateRequest(
+            val name: String,
         )
     }
 }

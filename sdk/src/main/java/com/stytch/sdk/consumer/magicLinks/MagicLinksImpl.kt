@@ -3,8 +3,9 @@ package com.stytch.sdk.consumer.magicLinks
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -31,7 +32,7 @@ internal class MagicLinksImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
 
@@ -74,7 +75,7 @@ internal class MagicLinksImpl internal constructor(
                     challengeCodeMethod = challengePair.first
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    result = StytchResult.Error(StytchExceptions.Critical(ex))
+                    result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                     return@withContext
                 }
 
@@ -110,9 +111,9 @@ internal class MagicLinksImpl internal constructor(
                     val challengePair = storageHelper.generateHashedCodeChallenge()
                     challengeCode = challengePair.second
                 } catch (ex: Exception) {
-                    return@withContext StytchResult.Error(StytchExceptions.Critical(ex))
+                    return@withContext StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 }
-                if (sessionStorage.activeSessionExists) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
                     api.sendSecondary(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,

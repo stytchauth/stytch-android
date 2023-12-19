@@ -56,12 +56,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/sms/send/primary")
     suspend fun sendOTPWithSMSPrimary(
         @Body request: ConsumerRequests.OTP.SMS
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/sms/send/secondary")
     suspend fun sendOTPWithSMSSecondary(
         @Body request: ConsumerRequests.OTP.SMS
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/login_or_create")
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
@@ -71,12 +71,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/whatsapp/send/primary")
     suspend fun sendOTPWithWhatsAppPrimary(
         @Body request: ConsumerRequests.OTP.WhatsApp
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/send/secondary")
     suspend fun sendOTPWithWhatsAppSecondary(
         @Body request: ConsumerRequests.OTP.WhatsApp
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/login_or_create")
     suspend fun loginOrCreateUserByOTPWithEmail(
@@ -86,12 +86,12 @@ internal interface StytchApiService : ApiService {
     @POST("otps/email/send/primary")
     suspend fun sendOTPWithEmailPrimary(
         @Body request: ConsumerRequests.OTP.Email
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/send/secondary")
     suspend fun sendOTPWithEmailSecondary(
         @Body request: ConsumerRequests.OTP.Email
-    ): CommonResponses.SendResponse
+    ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
     suspend fun authenticateWithOTP(
@@ -118,6 +118,11 @@ internal interface StytchApiService : ApiService {
     @POST("passwords/email/reset")
     suspend fun resetByEmail(
         @Body request: ConsumerRequests.Passwords.ResetByEmailRequest,
+    ): ConsumerResponses.AuthenticateResponse
+
+    @POST("passwords/session/reset")
+    suspend fun resetBySession(
+        @Body request: ConsumerRequests.Passwords.ResetBySessionRequest,
     ): ConsumerResponses.AuthenticateResponse
 
     @POST("passwords/strength_check")
@@ -172,6 +177,11 @@ internal interface StytchApiService : ApiService {
     suspend fun updateUser(
         @Body request: ConsumerRequests.User.UpdateRequest
     ): ConsumerResponses.User.UpdateUserResponse
+
+    @POST("users/search")
+    suspend fun searchUsers(
+        @Body request: ConsumerRequests.User.SearchRequest
+    ): ConsumerResponses.User.UserSearchResponse
     //endregion User Management
 
     //region OAuth
@@ -192,4 +202,37 @@ internal interface StytchApiService : ApiService {
         @Path(value = "publicToken") publicToken: String
     ): CommonResponses.Bootstrap.BootstrapResponse
     //endregion Bootstrap
+
+    //region WebAuthn
+    @POST("webauthn/register/start")
+    suspend fun webAuthnRegisterStart(
+        @Body request: ConsumerRequests.WebAuthn.RegisterStartRequest
+    ): ConsumerResponses.WebAuthn.RegisterStartResponse
+
+    @POST("webauthn/register")
+    suspend fun webAuthnRegister(
+        @Body request: ConsumerRequests.WebAuthn.RegisterRequest
+    ): ConsumerResponses.WebAuthn.RegisterResponse
+
+    @POST("webauthn/authenticate/start/primary")
+    suspend fun webAuthnAuthenticateStartPrimary(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateStartRequest
+    ): ConsumerResponses.WebAuthn.AuthenticateResponse
+
+    @POST("webauthn/authenticate/start/secondary")
+    suspend fun webAuthnAuthenticateStartSecondary(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateStartRequest
+    ): ConsumerResponses.WebAuthn.AuthenticateResponse
+
+    @POST("webauthn/authenticate")
+    suspend fun webAuthnAuthenticate(
+        @Body request: ConsumerRequests.WebAuthn.AuthenticateRequest
+    ): ConsumerResponses.AuthenticateResponse
+
+    @PUT("webauthn/update/{id}")
+    suspend fun webAuthnUpdate(
+        @Path(value = "id") id: String,
+        @Body request: ConsumerRequests.WebAuthn.UpdateRequest
+    ): ConsumerResponses.WebAuthn.UpdateResponse
+    //endregion WebAuthn
 }

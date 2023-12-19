@@ -1,10 +1,12 @@
 package com.stytch.sdk.consumer.passwords
 
+import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
+import kotlinx.parcelize.Parcelize
 
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
@@ -58,6 +60,7 @@ public interface Passwords {
      * default email template. The template must be a template using our built-in customizations or a custom HTML email
      * for Password Reset.
      */
+    @Parcelize
     public data class ResetByEmailStartParameters(
         val email: String,
         val loginRedirectUrl: String? = null,
@@ -65,7 +68,7 @@ public interface Passwords {
         val resetPasswordRedirectUrl: String? = null,
         val resetPasswordExpirationMinutes: UInt? = null,
         val resetPasswordTemplateId: String? = null
-    )
+    ) : Parcelable
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
@@ -78,6 +81,36 @@ public interface Passwords {
         val password: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
+
+    /**
+     * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
+     * @property password is the new password to set
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     */
+    public data class ResetBySessionParameters(
+        val password: String,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+    )
+
+    /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
+     * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
+     * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
+     * the password is securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset a user's password
+     * @return [AuthResponse]
+     */
+    public suspend fun resetBySession(parameters: ResetBySessionParameters): AuthResponse
+
+    /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
+     * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
+     * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
+     * the password is securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset a user's password
+     * @param callback a callback that receives an [AuthResponse]
+     */
+    public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint

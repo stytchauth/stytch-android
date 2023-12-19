@@ -3,8 +3,9 @@ package com.stytch.sdk.consumer.passwords
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
+import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
@@ -85,7 +86,7 @@ internal class PasswordsImpl internal constructor(
                 challengeCodeMethod = challengePair.first
                 challengeCode = challengePair.second
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 return@withContext
             }
 
@@ -122,7 +123,7 @@ internal class PasswordsImpl internal constructor(
             try {
                 codeVerifier = storageHelper.retrieveCodeVerifier()!!
             } catch (ex: Exception) {
-                result = StytchResult.Error(StytchExceptions.Critical(ex))
+                result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
 
@@ -145,6 +146,27 @@ internal class PasswordsImpl internal constructor(
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetByEmail(parameters)
+            callback(result)
+        }
+    }
+
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse {
+        return withContext(dispatchers.io) {
+            api.resetBySession(
+                password = parameters.password,
+                sessionDurationMinutes = parameters.sessionDurationMinutes
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
+        }
+    }
+
+    override fun resetBySession(
+        parameters: Passwords.ResetBySessionParameters,
+        callback: (AuthResponse) -> Unit
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            val result = resetBySession(parameters)
             callback(result)
         }
     }

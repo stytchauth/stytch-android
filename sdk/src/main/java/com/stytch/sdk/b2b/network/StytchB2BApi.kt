@@ -24,16 +24,19 @@ import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.CaptchaProvider
+import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
+import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.safeApiCall
-import java.lang.RuntimeException
 
 internal object StytchB2BApi {
     internal lateinit var publicToken: String
@@ -45,11 +48,7 @@ internal object StytchB2BApi {
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         if (!isInitialized) {
-            throw StytchExceptions.Critical(
-                RuntimeException(
-                    "StytchB2BApi not configured. You must call 'configure(...)' before using any functionality of the " // ktlint-disable max-line-length
-                )
-            )
+            throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
         StytchAuthHeaderInterceptor(
             deviceInfo,
@@ -60,6 +59,22 @@ internal object StytchB2BApi {
     internal fun configure(publicToken: String, deviceInfo: DeviceInfo) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+    }
+
+    internal fun configureDFP(
+        dfpProvider: DFPProvider,
+        captchaProvider: CaptchaProvider,
+        dfpProtectedAuthEnabled: Boolean,
+        dfpProtectedAuthMode: DFPProtectedAuthMode,
+    ) {
+        StytchB2BClient.assertInitialized()
+        dfpProtectedStytchApiService = ApiService.createApiService(
+            Constants.WEB_URL,
+            authHeaderInterceptor,
+            StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
+            { StytchB2BClient.sessionStorage.revoke() },
+            StytchB2BApiService::class.java
+        )
     }
 
     internal val isInitialized: Boolean
@@ -73,16 +88,28 @@ internal object StytchB2BApi {
             return publicToken.contains("public-token-test")
         }
 
-    @VisibleForTesting
-    internal val apiService: StytchB2BApiService by lazy {
-        StytchB2BClient.assertInitialized()
+    private val regularStytchApiService: StytchB2BApiService by lazy {
         ApiService.createApiService(
             Constants.WEB_URL,
             authHeaderInterceptor,
+            null,
             { StytchB2BClient.sessionStorage.revoke() },
             StytchB2BApiService::class.java
         )
     }
+
+    private lateinit var dfpProtectedStytchApiService: StytchB2BApiService
+
+    @VisibleForTesting
+    internal val apiService: StytchB2BApiService
+        get() {
+            StytchB2BClient.assertInitialized()
+            return if (::dfpProtectedStytchApiService.isInitialized) {
+                dfpProtectedStytchApiService
+            } else {
+                regularStytchApiService
+            }
+        }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(
         apiCall: suspend () -> T
@@ -163,7 +190,7 @@ internal object StytchB2BApi {
 
     internal object Sessions {
         suspend fun authenticate(
-            sessionDurationMinutes: UInt?
+            sessionDurationMinutes: UInt? = null
         ): StytchResult<IB2BAuthData> = safeB2BApiCall {
             apiService.authenticateSessions(
                 CommonRequests.Sessions.AuthenticateRequest(

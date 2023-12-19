@@ -14,11 +14,13 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,12 +37,14 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.HomeViewModel
 import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
+import com.stytch.sdk.consumer.StytchClient
 
 val items = listOf(
     Screen.Main,
     Screen.Passwords,
     Screen.Biometrics,
     Screen.OAuth,
+    Screen.Passkeys
 )
 
 @Composable
@@ -49,6 +53,7 @@ fun AppScreen(
     oAuthViewModel: OAuthViewModel,
 ) {
     val navController = rememberNavController()
+    val stytchIsInitialized = StytchClient.isInitialized.collectAsState()
     Scaffold(
         modifier = Modifier
             .fillMaxHeight()
@@ -84,11 +89,16 @@ fun AppScreen(
             }
         },
         content = { padding ->
-            NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
-                composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
-                composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
-                composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
-                composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+            if (stytchIsInitialized.value) {
+                NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
+                    composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
+                    composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
+                    composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
+                    composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+                    composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+                }
+            } else {
+                // maybe show a loading state while stytch sets up
             }
         }
     )
@@ -116,4 +126,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconV
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
     object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
     object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+    object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
 }

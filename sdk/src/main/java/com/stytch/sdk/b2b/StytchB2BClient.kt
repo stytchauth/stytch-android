@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
@@ -23,14 +25,24 @@ import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchExceptions
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.dfp.ActivityProvider
+import com.stytch.sdk.common.dfp.CaptchaProviderImpl
+import com.stytch.sdk.common.dfp.DFP
+import com.stytch.sdk.common.dfp.DFPImpl
+import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPProviderImpl
+import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
+import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.StytchErrorType
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.stytchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,6 +56,14 @@ public object StytchB2BClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
+    internal lateinit var dfpProvider: DFPProvider
+
+    /**
+     * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
+     * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
+     */
+    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -51,30 +71,51 @@ public object StytchB2BClient {
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
-     * @throws StytchExceptions.Critical - if we failed to generate new encryption keys
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
      */
-    public fun configure(context: Context, publicToken: String) {
+    public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
             val deviceInfo = context.getDeviceInfo()
-            StytchB2BApi.configure(publicToken, deviceInfo)
             StorageHelper.initialize(context)
+            StytchB2BApi.configure(publicToken, deviceInfo)
+            val activityProvider = ActivityProvider(context.applicationContext as Application)
+            dfpProvider = DFPProviderImpl(publicToken, activityProvider)
             externalScope.launch(dispatchers.io) {
                 bootstrapData = when (val res = StytchB2BApi.getBootstrapData()) {
                     is StytchResult.Success -> res.value
                     else -> BootstrapData()
                 }
+                StytchB2BApi.configureDFP(
+                    dfpProvider = dfpProvider,
+                    captchaProvider = CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey
+                    ),
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode
+                )
+                // if there are session identifiers on device start the auto updater to ensure it is still valid
+                if (sessionStorage.persistedSessionIdentifiersExist) {
+                    StytchB2BApi.Sessions.authenticate(null).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
+                }
+                _isInitialized.value = true
+                callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
-            throw StytchExceptions.Critical(ex)
+            throw StytchInternalError(
+                message = "Failed to initialize the SDK",
+                exception = ex
+            )
         }
     }
 
-    @Suppress("MaxLineLength")
     internal fun assertInitialized() {
         if (!StytchB2BApi.isInitialized) {
-            stytchError(
-                "StytchB2BClient not configured. You must call 'StytchB2BClient.configure(...)' before using any functionality of the StytchB2BClient." // ktlint-disable max-line-length
-            )
+            throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
     }
 
@@ -204,6 +245,17 @@ public object StytchB2BClient {
         internal set
 
     /**
+     * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
+     * in DFP lookups on your backend server
+     *
+     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     */
+    public val dfp: DFP by lazy {
+        assertInitialized()
+        DFPImpl(dfpProvider, dispatchers, externalScope)
+    }
+
+    /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: B2B Email Magic Links.
      *
@@ -220,7 +272,7 @@ public object StytchB2BClient {
         return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_MISSING_TOKEN.message)
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
             }
             when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
@@ -257,7 +309,7 @@ public object StytchB2BClient {
                     )
                 }
                 else -> {
-                    DeeplinkHandledStatus.NotHandled(StytchErrorType.DEEPLINK_UNKNOWN_TOKEN.message)
+                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
                 }
             }
         }
