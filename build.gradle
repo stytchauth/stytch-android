@@ -67,7 +67,14 @@ task clean(type: Delete) {
 }
 
 tasks.register("runOnGitHub") {
-    dependsOn(":sdk:lint", ":sdk:ktlintCheck", ":sdk:testDebugUnitTest")
+    dependsOn(
+            ":sdk:lint",
+            ":ui:lint",
+            ":sdk:ktlintCheck",
+            ":ui:ktlintCheck",
+            ":sdk:testDebugUnitTest",
+            // TODO: add unit and UI tests once they are done
+    )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"
 }

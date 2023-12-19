@@ -1,9 +1,9 @@
 package com.stytch.sdk.common
 
 import android.os.Parcelable
+import com.stytch.sdk.common.errors.StytchError
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
-import com.stytch.sdk.common.errors.StytchError
 
 /**
  * Provides a wrapper for responses from the Stytch API
