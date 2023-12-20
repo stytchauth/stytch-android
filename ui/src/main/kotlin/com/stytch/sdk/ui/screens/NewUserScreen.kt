@@ -27,6 +27,7 @@ import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
@@ -35,21 +36,20 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class NewUserScreen(
-    val emailAddress: String,
-) : AndroidScreen(), Parcelable {
+internal object NewUserScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<NewUserScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
-        val uiState = viewModel.uiState.collectAsState()
         val context = LocalContext.current as AuthenticationActivity
         val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
         val hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
             productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+        val viewModel = viewModel<NewUserScreenViewModel>(
+            factory = NewUserScreenViewModel.factory(context.savedStateHandle)
+        )
+        val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
-            viewModel.setInitialState(emailAddress)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -76,7 +76,7 @@ internal class NewUserScreen(
 
 @Composable
 private fun NewUserScreenComposable(
-    uiState: NewUserUiState,
+    uiState: ApplicationUIState,
     onBack: () -> Unit,
     onEmailAddressChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,

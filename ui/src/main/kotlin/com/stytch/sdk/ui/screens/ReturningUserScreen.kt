@@ -26,6 +26,7 @@ import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.StytchProduct
@@ -34,18 +35,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class ReturningUserScreen(
-    val emailAddress: String,
-) : AndroidScreen(), Parcelable {
+internal object ReturningUserScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<ReturningUserScreenViewModel>()
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val navigator = LocalNavigator.currentOrThrow
+        val viewModel = viewModel<ReturningUserScreenViewModel>(
+            factory = ReturningUserScreenViewModel.factory(context.savedStateHandle)
+        )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
-            viewModel.initializeState(emailAddress)
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -74,7 +74,7 @@ internal class ReturningUserScreen(
 
 @Composable
 private fun ReturningUserScreenComposable(
-    uiState: ReturningUserUiState,
+    uiState: ApplicationUIState,
     hasEML: Boolean,
     hasEmailOTP: Boolean,
     onBack: () -> Unit,

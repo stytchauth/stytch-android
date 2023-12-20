@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -21,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
@@ -30,6 +32,7 @@ import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPMethods
 import com.stytch.sdk.ui.data.PasswordResetDetails
@@ -47,10 +50,13 @@ internal data class PasswordResetSentScreen(
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<PasswordResetSentScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
-        val uiState = viewModel.uiState.collectAsState()
         val productConfig = LocalStytchProductConfig.current
+        val context = LocalContext.current as AuthenticationActivity
+        val viewModel = viewModel<PasswordResetSentScreenViewModel>(
+            factory = PasswordResetSentScreenViewModel.factory(context.savedStateHandle)
+        )
+        val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
@@ -78,7 +84,7 @@ internal data class PasswordResetSentScreen(
 
 @Composable
 private fun PasswordResetSentScreenComposable(
-    uiState: PasswordResetUiState,
+    uiState: ApplicationUIState,
     onBack: () -> Unit,
     emailAddress: String,
     onDialogDismiss: () -> Unit,

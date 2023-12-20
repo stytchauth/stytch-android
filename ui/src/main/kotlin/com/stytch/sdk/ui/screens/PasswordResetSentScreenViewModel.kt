@@ -1,12 +1,15 @@
 package com.stytch.sdk.ui.screens
 
-import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EventState
@@ -17,30 +20,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-internal data class PasswordResetUiState(
-    val showResendDialog: Boolean = false,
-    val genericErrorMessage: String? = null,
-    val showLoadingDialog: Boolean = false,
-) : Parcelable
 
 internal class PasswordResetSentScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient,
 ) : ViewModel() {
-    val uiState = savedStateHandle.getStateFlow("PasswordResetUiState", PasswordResetUiState())
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun onDialogDismiss() {
-        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showResendDialog = false)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showResendDialog = true)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = true)
     }
 
     fun onResendPasswordResetStart(
@@ -52,7 +47,7 @@ internal class PasswordResetSentScreenViewModel(
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {} // do nothing
                 is StytchResult.Error -> {
-                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
@@ -64,7 +59,7 @@ internal class PasswordResetSentScreenViewModel(
         emailMagicLinksOptions: EmailMagicLinksOptions,
         scope: CoroutineScope = viewModelScope
     ) {
-        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
             showLoadingDialog = true,
             genericErrorMessage = null,
         )
@@ -72,7 +67,7 @@ internal class PasswordResetSentScreenViewModel(
             val parameters = emailMagicLinksOptions.toParameters(emailAddress)
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.EMLConfirmation(
@@ -82,7 +77,7 @@ internal class PasswordResetSentScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
+                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     showLoadingDialog = false,
                     genericErrorMessage = result.exception.message, // TODO
                 )
@@ -91,7 +86,7 @@ internal class PasswordResetSentScreenViewModel(
     }
 
     fun sendEmailOTP(emailAddress: String, otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
             showLoadingDialog = true,
             genericErrorMessage = null,
         )
@@ -99,7 +94,7 @@ internal class PasswordResetSentScreenViewModel(
             val parameters = otpOptions.toEmailOtpParameters(emailAddress)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    savedStateHandle["PasswordResetUiState"] = uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -109,9 +104,20 @@ internal class PasswordResetSentScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle["PasswordResetUiState"] = uiState.value.copy(
+                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     showLoadingDialog = false,
                     genericErrorMessage = result.exception.message, // TODO
+                )
+            }
+        }
+    }
+
+    companion object {
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PasswordResetSentScreenViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle
                 )
             }
         }

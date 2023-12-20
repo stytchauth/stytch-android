@@ -51,22 +51,10 @@ internal class SetPasswordScreenViewModelTest {
     }
 
     @Test
-    fun `setInitialState sets the initial state correctly`() {
-        viewModel.setInitialState("my@email.com")
-        var expected = EmailState(
-            emailAddress = "my@email.com",
-            validEmail = true,
-            readOnly = true
-        )
-        assert(viewModel.uiState.value.emailState == expected)
-
-        viewModel.setInitialState("bad email address")
-        expected = EmailState(
-            emailAddress = "bad email address",
-            validEmail = false,
-            readOnly = true
-        )
-        assert(viewModel.uiState.value.emailState == expected)
+    fun `setEmailReadOnly sets the initial state correctly`() {
+        assert(!viewModel.uiState.value.emailState.readOnly)
+        viewModel.setEmailReadOnly()
+        assert(viewModel.uiState.value.emailState.readOnly)
     }
 
     @Test

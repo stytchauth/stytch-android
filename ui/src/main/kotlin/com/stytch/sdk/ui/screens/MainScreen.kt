@@ -37,6 +37,7 @@ import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.PhoneEntry
 import com.stytch.sdk.ui.components.SocialLoginButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.OTPMethods
@@ -53,9 +54,9 @@ import kotlinx.parcelize.Parcelize
 internal object MainScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<MainScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current as AuthenticationActivity
+        val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -81,7 +82,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
 
 @Composable
 private fun MainScreenComposable(
-    uiState: MainScreenUiState,
+    uiState: ApplicationUIState,
     onStartOAuthLogin: (OAuthProvider, StytchProductConfig) -> Unit,
     onEmailAddressChanged: (String) -> Unit,
     onEmailAddressSubmit: (StytchProductConfig) -> Unit,

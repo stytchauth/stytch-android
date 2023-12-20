@@ -3,14 +3,20 @@ package com.stytch.sdk.ui
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchSSOError
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.SessionOptions
@@ -20,10 +26,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 internal class AuthenticationViewModel(
-    private val stytchClient: StytchClient
+    private val stytchClient: StytchClient,
+    val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
 
     fun authenticateGoogleOneTapLogin(
         data: Intent,
@@ -83,10 +92,21 @@ internal class AuthenticationViewModel(
                 is DeeplinkHandledStatus.ManualHandlingRequired -> {
                     _eventFlow.emit(
                         EventState.NavigationRequested(
-                            NavigationRoute.SetNewPassword(emailAddress = "", token = result.token)
+                            NavigationRoute.SetNewPassword(token = result.token)
                         )
                     )
                 }
+            }
+        }
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                AuthenticationViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle,
+                )
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -21,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.components.BackButton
 import com.stytch.sdk.ui.components.BodyText
@@ -29,6 +31,7 @@ import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchProduct
@@ -45,10 +48,13 @@ internal data class EMLConfirmationScreen(
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<EMLConfirmationScreenViewModel>()
-        val uiState = viewModel.uiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
+        val context = LocalContext.current as AuthenticationActivity
+        val viewModel = viewModel<EMLConfirmationScreenViewModel>(
+            factory = EMLConfirmationScreenViewModel.factory(context.savedStateHandle)
+        )
+        val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
                 when (it) {
@@ -76,7 +82,7 @@ internal data class EMLConfirmationScreen(
 @Composable
 private fun EMLConfirmationScreenComposable(
     emailAddress: String,
-    uiState: EMLConfirmationUiState,
+    uiState: ApplicationUIState,
     onBack: () -> Unit,
     onDialogDismiss: () -> Unit,
     onShowResendDialog: () -> Unit,

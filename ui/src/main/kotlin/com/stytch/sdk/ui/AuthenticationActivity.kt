@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
@@ -20,8 +21,9 @@ import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.launch
 
 public class AuthenticationActivity : ComponentActivity() {
-    private val viewModel: AuthenticationViewModel by viewModels()
+    private val viewModel: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchUIConfig
+    internal lateinit var savedStateHandle: SavedStateHandle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ public class AuthenticationActivity : ComponentActivity() {
                     }
             }
         }
+        savedStateHandle = viewModel.savedStateHandle
         setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(

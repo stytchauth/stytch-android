@@ -29,19 +29,19 @@ internal sealed class NavigationRoute {
         )
     }
 
-    data class NewUser(val emailAddress: String) : NavigationRoute() {
-        override val screen: NewUserScreen = NewUserScreen(emailAddress = emailAddress)
+    object NewUser : NavigationRoute() {
+        override val screen: NewUserScreen = NewUserScreen
     }
 
-    data class ReturningUser(val emailAddress: String) : NavigationRoute() {
-        override val screen: ReturningUserScreen = ReturningUserScreen(emailAddress = emailAddress)
+    object ReturningUser : NavigationRoute() {
+        override val screen: ReturningUserScreen = ReturningUserScreen
     }
 
     data class PasswordResetSent(val details: PasswordResetDetails) : NavigationRoute() {
         override val screen: PasswordResetSentScreen = PasswordResetSentScreen(details = details)
     }
 
-    data class SetNewPassword(val emailAddress: String, val token: String) : NavigationRoute() {
-        override val screen: SetPasswordScreen = SetPasswordScreen(emailAddress = emailAddress, token = token)
+    data class SetNewPassword(val token: String) : NavigationRoute() {
+        override val screen: SetPasswordScreen = SetPasswordScreen(token = token)
     }
 }

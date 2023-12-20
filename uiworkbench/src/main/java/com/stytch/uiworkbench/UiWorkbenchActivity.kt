@@ -1,6 +1,7 @@
 package com.stytch.uiworkbench
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,7 +49,7 @@ class UiWorkbenchActivity : ComponentActivity() {
                 oAuthOptions = OAuthOptions(
                     loginRedirectURL = "uiworkbench://oauth",
                     signupRedirectURL = "uiworkbench://oauth",
-                    providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE)
+                    providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB)
                 ),
                 otpOptions = OTPOptions(
                     methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
@@ -57,8 +58,12 @@ class UiWorkbenchActivity : ComponentActivity() {
         )
         onAuthenticated {
             when (it) {
-                is StytchResult.Success -> println("Authentication Succeeded: ${it.value}")
-                is StytchResult.Error -> println("Authentication Failed: ${it.exception.message}")
+                is StytchResult.Success -> {
+                    Toast.makeText(this@UiWorkbenchActivity, "Authentication Succeeded", Toast.LENGTH_LONG).show()
+                }
+                is StytchResult.Error -> {
+                    Toast.makeText(this@UiWorkbenchActivity, it.exception.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }.build()

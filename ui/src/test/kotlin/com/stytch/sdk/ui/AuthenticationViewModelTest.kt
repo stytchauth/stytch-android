@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui
 
 import android.app.Activity
+import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchSSOError
@@ -31,6 +32,7 @@ import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class AuthenticationViewModelTest {
+    private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
 
     @MockK
@@ -43,7 +45,7 @@ internal class AuthenticationViewModelTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
-        viewModel = AuthenticationViewModel(mockStytchClient)
+        viewModel = AuthenticationViewModel(savedStateHandle = savedStateHandle, stytchClient = mockStytchClient)
     }
 
     @After
@@ -139,7 +141,7 @@ internal class AuthenticationViewModelTest {
             every { token } returns "test-token"
         }
         expectedEvent = EventState.NavigationRequested(
-            NavigationRoute.SetNewPassword(emailAddress = "", token = "test-token")
+            NavigationRoute.SetNewPassword(token = "test-token")
         )
         viewModel.handleDeepLink(mockk(), mockk(relaxed = true), this)
         coVerify(exactly = 3) { mockStytchClient.handle(any(), any()) }

@@ -1,12 +1,15 @@
 package com.stytch.sdk.ui.screens
 
-import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.PasswordOptions
@@ -16,19 +19,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-internal data class EMLConfirmationUiState(
-    val showResendDialog: Boolean = false,
-    val genericErrorMessage: String? = null,
-) : Parcelable
 
 internal class EMLConfirmationScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val stytchClient: StytchClient = StytchClient
+    private val stytchClient: StytchClient,
 ) : ViewModel() {
-    val uiState = savedStateHandle.getStateFlow("EMLConfirmationUiState", EMLConfirmationUiState())
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -37,13 +33,13 @@ internal class EMLConfirmationScreenViewModel(
         scope.launch {
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showResendDialog = false,
                         genericErrorMessage = null,
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showResendDialog = false,
                         genericErrorMessage = result.exception.message, // TODO
                     )
@@ -53,11 +49,11 @@ internal class EMLConfirmationScreenViewModel(
     }
 
     fun onDialogDismiss() {
-        savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(showResendDialog = false)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = true)
     }
 
     fun sendResetPasswordEmail(
@@ -76,14 +72,25 @@ internal class EMLConfirmationScreenViewModel(
                             ),
                         ),
                     )
-                    is StytchResult.Error -> savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
+                    is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {
                 // this should never happen
-                savedStateHandle["EMLConfirmationUiState"] = uiState.value.copy(
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     genericErrorMessage = "Can't reset password for unknown email address",
+                )
+            }
+        }
+    }
+
+    companion object {
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                EMLConfirmationScreenViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle
                 )
             }
         }
