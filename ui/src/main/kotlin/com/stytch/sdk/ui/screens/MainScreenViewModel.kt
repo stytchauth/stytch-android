@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.screens
 
 import androidx.activity.ComponentActivity
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -74,7 +75,8 @@ internal class MainScreenViewModel(
         }
     }
 
-    private fun onStartThirdPartyOAuth(
+    @VisibleForTesting
+    internal fun onStartThirdPartyOAuth(
         context: ComponentActivity,
         provider: OAuthProvider,
         oAuthOptions: OAuthOptions? = null,
@@ -85,7 +87,26 @@ internal class MainScreenViewModel(
             loginRedirectUrl = oAuthOptions?.loginRedirectURL,
             signupRedirectUrl = oAuthOptions?.signupRedirectURL,
         )
-        provider.handler.start(parameters)
+        when (provider) {
+            OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
+            OAuthProvider.APPLE -> stytchClient.oauth.apple.start(parameters)
+            OAuthProvider.BITBUCKET -> stytchClient.oauth.bitbucket.start(parameters)
+            OAuthProvider.COINBASE -> stytchClient.oauth.coinbase.start(parameters)
+            OAuthProvider.DISCORD -> stytchClient.oauth.discord.start(parameters)
+            OAuthProvider.FACEBOOK -> stytchClient.oauth.facebook.start(parameters)
+            OAuthProvider.FIGMA -> stytchClient.oauth.figma.start(parameters)
+            OAuthProvider.GITLAB -> stytchClient.oauth.gitlab.start(parameters)
+            OAuthProvider.GITHUB -> stytchClient.oauth.github.start(parameters)
+            OAuthProvider.GOOGLE -> stytchClient.oauth.google.start(parameters)
+            OAuthProvider.LINKEDIN -> stytchClient.oauth.linkedin.start(parameters)
+            OAuthProvider.MICROSOFT -> stytchClient.oauth.microsoft.start(parameters)
+            OAuthProvider.SALESFORCE -> stytchClient.oauth.salesforce.start(parameters)
+            OAuthProvider.SLACK -> stytchClient.oauth.slack.start(parameters)
+            OAuthProvider.SNAPCHAT -> stytchClient.oauth.snapchat.start(parameters)
+            OAuthProvider.TIKTOK -> stytchClient.oauth.tiktok.start(parameters)
+            OAuthProvider.TWITCH -> stytchClient.oauth.twitch.start(parameters)
+            OAuthProvider.TWITTER -> stytchClient.oauth.twitter.start(parameters)
+        }
     }
 
     fun onCountryCodeChanged(countryCode: String) {

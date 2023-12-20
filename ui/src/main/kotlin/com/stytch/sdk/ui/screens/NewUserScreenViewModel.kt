@@ -46,8 +46,8 @@ internal class NewUserScreenViewModel(
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
+                        showLoadingDialog = false,
                         emailState = emailState.copy(
                             errorMessage = result.exception.message, // TODO
                         ),
