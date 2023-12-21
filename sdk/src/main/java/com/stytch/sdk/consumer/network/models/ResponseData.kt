@@ -240,7 +240,17 @@ public data class StrengthCheckResponse(
     val statusCode: Int,
     @Json(name = "valid_password")
     val validPassword: Boolean,
+    @Json(name = "strength_policy")
+    val strengthPolicy: StrengthPolicy
 ) : Parcelable
+
+@JsonClass(generateAdapter = false)
+public enum class StrengthPolicy {
+    @Json(name = "zxcvbn")
+    ZXCVBN,
+    @Json(name = "luds")
+    LUDS,
+}
 
 @JsonClass(generateAdapter = true)
 @Parcelize

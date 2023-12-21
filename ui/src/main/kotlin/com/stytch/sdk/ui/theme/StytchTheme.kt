@@ -10,6 +10,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.data.StytchTheme
 import com.stytch.sdk.ui.data.StytchUIConfig
@@ -28,6 +30,7 @@ internal fun StytchTheme(
     val rememberedStytchTheme = remember { stytchTheme }
     val rememberedStytchTypography = remember { StytchTypography() }
     val rememberedStytchProductConfig = remember { config.productConfig }
+    val rememberedStytchBootstrapData = remember { StytchClient.bootstrapData }
 
     if (!view.isInEditMode) {
         SideEffect {
@@ -41,6 +44,7 @@ internal fun StytchTheme(
         LocalStytchTheme provides rememberedStytchTheme,
         LocalStytchTypography provides rememberedStytchTypography,
         LocalStytchProductConfig provides rememberedStytchProductConfig,
+        LocalStytchBootstrapData provides rememberedStytchBootstrapData,
     ) {
         content()
     }
@@ -56,4 +60,8 @@ internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography>
 
 internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchProductConfig> = staticCompositionLocalOf {
     StytchProductConfig()
+}
+
+internal val LocalStytchBootstrapData: ProvidableCompositionLocal<BootstrapData> = staticCompositionLocalOf {
+    BootstrapData()
 }

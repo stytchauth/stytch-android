@@ -1,13 +1,17 @@
 package com.stytch.sdk.ui.screens
 
-import android.os.Parcelable
 import android.text.format.DateUtils
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
@@ -15,40 +19,35 @@ import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
 import com.stytch.sdk.ui.data.PasswordResetType
 import com.stytch.sdk.ui.data.SessionOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-internal data class OTPConfirmationUiState(
-    val expirationTimeFormatted: String = "",
-    val showLoadingDialog: Boolean = false,
-    val showResendDialog: Boolean = false,
-    val genericErrorMessage: String? = null,
-) : Parcelable
 
 internal class OTPConfirmationScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val stytchClient: StytchClient,
 ) : ViewModel() {
-    val uiState = savedStateHandle.getStateFlow("OTPConfirmationUiState", OTPConfirmationUiState())
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var methodId: String = ""
-    private var resendCountdownSeconds: Long = 0
-    private var countdownSeconds: Long = 0
+    @VisibleForTesting
+    internal var methodId: String = ""
+
+    @VisibleForTesting
+    internal var resendCountdownSeconds: Long = 0
+    @VisibleForTesting
+    internal var countdownSeconds: Long = 0
         set(value) {
             field = value
-            savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+            savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                 expirationTimeFormatted = DateUtils.formatElapsedTime(value),
             )
         }
-    fun setInitialState(resendParameters: OTPDetails) {
+    fun setInitialState(resendParameters: OTPDetails, scope: CoroutineScope = viewModelScope) {
         methodId = when (resendParameters) {
             is OTPDetails.EmailOTP -> resendParameters.methodId
             is OTPDetails.SmsOTP -> resendParameters.methodId
@@ -62,7 +61,7 @@ internal class OTPConfirmationScreenViewModel(
             } * 60U
             ).toLong()
         resendCountdownSeconds = countdownSeconds
-        viewModelScope.launch {
+        scope.launch {
             while (countdownSeconds > 0) {
                 delay(1000)
                 countdownSeconds -= 1
@@ -71,17 +70,17 @@ internal class OTPConfirmationScreenViewModel(
     }
 
     fun onDialogDismiss() {
-        savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(showResendDialog = false)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = false)
     }
 
     fun onShowResendDialog() {
-        savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(showResendDialog = true)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showResendDialog = true)
     }
 
-    fun authenticateOTP(token: String, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun authenticateOTP(token: String, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             when (
-                val result = StytchClient.otps.authenticate(
+                val result = stytchClient.otps.authenticate(
                     OTP.AuthParameters(
                         token = token,
                         methodId = methodId,
@@ -90,14 +89,14 @@ internal class OTPConfirmationScreenViewModel(
                 )
             ) {
                 is StytchResult.Success -> {
-                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = null,
                     )
                     _eventFlow.emit(EventState.Authenticated(result))
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = result.exception.message,
                     )
@@ -106,24 +105,24 @@ internal class OTPConfirmationScreenViewModel(
         }
     }
 
-    fun resendOTP(resend: OTPDetails) {
-        viewModelScope.launch {
+    fun resendOTP(resend: OTPDetails, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             val result = when (resend) {
-                is OTPDetails.EmailOTP -> StytchClient.otps.email.loginOrCreate(resend.parameters)
-                is OTPDetails.SmsOTP -> StytchClient.otps.sms.loginOrCreate(resend.parameters)
-                is OTPDetails.WhatsAppOTP -> StytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
+                is OTPDetails.EmailOTP -> stytchClient.otps.email.loginOrCreate(resend.parameters)
+                is OTPDetails.SmsOTP -> stytchClient.otps.sms.loginOrCreate(resend.parameters)
+                is OTPDetails.WhatsAppOTP -> stytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
             }
             when (result) {
                 is StytchResult.Success -> {
                     methodId = result.value.methodId
-                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showLoadingDialog = false,
                         showResendDialog = false,
                     )
                     countdownSeconds = resendCountdownSeconds
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showLoadingDialog = false,
                         showResendDialog = false,
                         genericErrorMessage = result.exception.message,
@@ -133,11 +132,15 @@ internal class OTPConfirmationScreenViewModel(
         }
     }
 
-    fun sendResetPasswordEmail(emailAddress: String?, passwordOptions: PasswordOptions) {
-        viewModelScope.launch {
+    fun sendResetPasswordEmail(
+        emailAddress: String?,
+        passwordOptions: PasswordOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             emailAddress?.let {
                 val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
-                when (val result = StytchClient.passwords.resetByEmailStart(parameters)) {
+                when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.PasswordResetSent(
@@ -145,14 +148,25 @@ internal class OTPConfirmationScreenViewModel(
                             ),
                         ),
                     )
-                    is StytchResult.Error -> savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                    is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         genericErrorMessage = result.exception.message, // TODO
                     )
                 }
             } ?: run {
                 // this should never happen
-                savedStateHandle["OTPConfirmationUiState"] = uiState.value.copy(
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     genericErrorMessage = "Can't reset password for unknown email address",
+                )
+            }
+        }
+    }
+
+    companion object {
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                OTPConfirmationScreenViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle
                 )
             }
         }

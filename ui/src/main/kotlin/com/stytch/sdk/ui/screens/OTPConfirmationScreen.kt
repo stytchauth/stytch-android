@@ -32,6 +32,7 @@ import com.stytch.sdk.ui.components.OTPEntry
 import com.stytch.sdk.ui.components.PageTitle
 import com.stytch.sdk.ui.components.StytchAlertDialog
 import com.stytch.sdk.ui.components.StytchTextButton
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.StytchProduct
@@ -49,7 +50,6 @@ internal data class OTPConfirmationScreen(
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<OTPConfirmationScreenViewModel>()
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val navigator = LocalNavigator.currentOrThrow
@@ -58,6 +58,9 @@ internal data class OTPConfirmationScreen(
             is OTPDetails.SmsOTP -> resendParameters.parameters.phoneNumber
             is OTPDetails.WhatsAppOTP -> resendParameters.parameters.phoneNumber
         }
+        val viewModel = viewModel<OTPConfirmationScreenViewModel>(
+            factory = OTPConfirmationScreenViewModel.factory(context.savedStateHandle)
+        )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.setInitialState(resendParameters)
@@ -86,7 +89,7 @@ internal data class OTPConfirmationScreen(
 
 @Composable
 private fun OTPConfirmationScreenComposable(
-    uiState: OTPConfirmationUiState,
+    uiState: ApplicationUIState,
     productList: List<StytchProduct>,
     recipient: String,
     isReturningUser: Boolean,

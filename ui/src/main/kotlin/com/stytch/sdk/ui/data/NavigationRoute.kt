@@ -15,7 +15,7 @@ internal sealed class NavigationRoute {
         val isReturningUser: Boolean,
         val emailAddress: String? = null,
     ) : NavigationRoute() {
-        override val screen = OTPConfirmationScreen(
+        override val screen: OTPConfirmationScreen = OTPConfirmationScreen(
             resendParameters = details,
             isReturningUser = isReturningUser,
             emailAddress = emailAddress,
@@ -23,25 +23,25 @@ internal sealed class NavigationRoute {
     }
 
     data class EMLConfirmation(val details: EMLDetails, val isReturningUser: Boolean) : NavigationRoute() {
-        override val screen = EMLConfirmationScreen(
+        override val screen: EMLConfirmationScreen = EMLConfirmationScreen(
             details = details,
             isReturningUser = isReturningUser,
         )
     }
 
-    data class NewUser(val emailAddress: String) : NavigationRoute() {
-        override val screen = NewUserScreen(emailAddress = emailAddress)
+    object NewUser : NavigationRoute() {
+        override val screen: NewUserScreen = NewUserScreen
     }
 
-    data class ReturningUser(val emailAddress: String) : NavigationRoute() {
-        override val screen = ReturningUserScreen(emailAddress = emailAddress)
+    object ReturningUser : NavigationRoute() {
+        override val screen: ReturningUserScreen = ReturningUserScreen
     }
 
     data class PasswordResetSent(val details: PasswordResetDetails) : NavigationRoute() {
-        override val screen = PasswordResetSentScreen(details = details)
+        override val screen: PasswordResetSentScreen = PasswordResetSentScreen(details = details)
     }
 
-    data class SetNewPassword(val emailAddress: String, val token: String) : NavigationRoute() {
-        override val screen: AndroidScreen = SetPasswordScreen(emailAddress = emailAddress, token = token)
+    data class SetNewPassword(val token: String) : NavigationRoute() {
+        override val screen: SetPasswordScreen = SetPasswordScreen(token = token)
     }
 }

@@ -3,41 +3,62 @@ package com.stytch.sdk.ui
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchSSOError
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.SessionOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-internal class AuthenticationViewModel : ViewModel() {
+internal class AuthenticationViewModel(
+    private val stytchClient: StytchClient,
+    val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun authenticateGoogleOneTapLogin(data: Intent, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
+
+    fun authenticateGoogleOneTapLogin(
+        data: Intent,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
                 data = data,
                 sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
             )
-            val result = StytchClient.oauth.googleOneTap.authenticate(parameters)
+            val result = stytchClient.oauth.googleOneTap.authenticate(parameters)
             _eventFlow.emit(EventState.Authenticated(result))
         }
     }
 
-    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun authenticateThirdPartyOAuth(
+        resultCode: Int,
+        intent: Intent,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        scope.launch {
             if (resultCode == Activity.RESULT_OK) {
                 intent.data?.let {
-                    when (val result = StytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
+                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
                             _eventFlow.emit(EventState.Authenticated(result.response.result))
                         }
@@ -54,10 +75,10 @@ internal class AuthenticationViewModel : ViewModel() {
         }
     }
 
-    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions) {
-        viewModelScope.launch {
+    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+        scope.launch {
             when (
-                val result = StytchClient.handle(
+                val result = stytchClient.handle(
                     uri = uri,
                     sessionDurationMinutes = sessionOptions.sessionDurationMinutes
                 )
@@ -71,10 +92,21 @@ internal class AuthenticationViewModel : ViewModel() {
                 is DeeplinkHandledStatus.ManualHandlingRequired -> {
                     _eventFlow.emit(
                         EventState.NavigationRequested(
-                            NavigationRoute.SetNewPassword(emailAddress = "", token = result.token)
+                            NavigationRoute.SetNewPassword(token = result.token)
                         )
                     )
                 }
+            }
+        }
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                AuthenticationViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle,
+                )
             }
         }
     }

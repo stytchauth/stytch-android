@@ -1,10 +1,13 @@
 package com.stytch.sdk.ui.screens
 
-import android.os.Parcelable
 import androidx.activity.ComponentActivity
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
@@ -12,6 +15,7 @@ import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
@@ -29,23 +33,16 @@ import com.stytch.sdk.ui.data.PhoneNumberState
 import com.stytch.sdk.ui.data.StytchProduct
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.utils.isValidEmailAddress
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-internal data class MainScreenUiState(
-    val emailState: EmailState = EmailState(),
-    val phoneNumberState: PhoneNumberState = PhoneNumberState(),
-    val genericErrorMessage: String? = null,
-    val showLoadingDialog: Boolean = false,
-) : Parcelable
 
 internal class MainScreenViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val stytchClient: StytchClient,
 ) : ViewModel() {
-    val uiState = savedStateHandle.getStateFlow("MainScreenUiState", MainScreenUiState())
+    val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -54,12 +51,13 @@ internal class MainScreenViewModel(
         context: ComponentActivity,
         provider: OAuthProvider,
         productConfig: StytchProductConfig,
+        scope: CoroutineScope = viewModelScope,
     ) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         if (provider == OAuthProvider.GOOGLE) {
-            viewModelScope.launch {
+            scope.launch {
                 val didStartOneTap = productConfig.googleOauthOptions.clientId?.let { clientId ->
-                    StytchClient.oauth.googleOneTap.start(
+                    stytchClient.oauth.googleOneTap.start(
                         OAuth.GoogleOneTap.StartParameters(
                             context = context,
                             clientId = clientId,
@@ -77,7 +75,8 @@ internal class MainScreenViewModel(
         }
     }
 
-    private fun onStartThirdPartyOAuth(
+    @VisibleForTesting
+    internal fun onStartThirdPartyOAuth(
         context: ComponentActivity,
         provider: OAuthProvider,
         oAuthOptions: OAuthOptions? = null,
@@ -88,11 +87,30 @@ internal class MainScreenViewModel(
             loginRedirectUrl = oAuthOptions?.loginRedirectURL,
             signupRedirectUrl = oAuthOptions?.signupRedirectURL,
         )
-        provider.handler.start(parameters)
+        when (provider) {
+            OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
+            OAuthProvider.APPLE -> stytchClient.oauth.apple.start(parameters)
+            OAuthProvider.BITBUCKET -> stytchClient.oauth.bitbucket.start(parameters)
+            OAuthProvider.COINBASE -> stytchClient.oauth.coinbase.start(parameters)
+            OAuthProvider.DISCORD -> stytchClient.oauth.discord.start(parameters)
+            OAuthProvider.FACEBOOK -> stytchClient.oauth.facebook.start(parameters)
+            OAuthProvider.FIGMA -> stytchClient.oauth.figma.start(parameters)
+            OAuthProvider.GITLAB -> stytchClient.oauth.gitlab.start(parameters)
+            OAuthProvider.GITHUB -> stytchClient.oauth.github.start(parameters)
+            OAuthProvider.GOOGLE -> stytchClient.oauth.google.start(parameters)
+            OAuthProvider.LINKEDIN -> stytchClient.oauth.linkedin.start(parameters)
+            OAuthProvider.MICROSOFT -> stytchClient.oauth.microsoft.start(parameters)
+            OAuthProvider.SALESFORCE -> stytchClient.oauth.salesforce.start(parameters)
+            OAuthProvider.SLACK -> stytchClient.oauth.slack.start(parameters)
+            OAuthProvider.SNAPCHAT -> stytchClient.oauth.snapchat.start(parameters)
+            OAuthProvider.TIKTOK -> stytchClient.oauth.tiktok.start(parameters)
+            OAuthProvider.TWITCH -> stytchClient.oauth.twitch.start(parameters)
+            OAuthProvider.TWITTER -> stytchClient.oauth.twitter.start(parameters)
+        }
     }
 
     fun onCountryCodeChanged(countryCode: String) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
             phoneNumberState = PhoneNumberState(
                 countryCode = countryCode,
                 error = null,
@@ -102,7 +120,7 @@ internal class MainScreenViewModel(
     }
 
     fun onPhoneNumberChanged(phoneNumber: String) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
             phoneNumberState = PhoneNumberState(
                 phoneNumber = phoneNumber,
                 error = null,
@@ -112,7 +130,7 @@ internal class MainScreenViewModel(
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
             emailState = EmailState(
                 emailAddress = emailAddress,
                 validEmail = emailAddress.isValidEmailAddress(),
@@ -121,13 +139,13 @@ internal class MainScreenViewModel(
         )
     }
 
-    fun onEmailAddressSubmit(productConfig: StytchProductConfig) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+    fun onEmailAddressSubmit(productConfig: StytchProductConfig, scope: CoroutineScope = viewModelScope) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
+        scope.launch {
             val emailAddress = uiState.value.emailState.emailAddress
             when (getUserType(emailAddress)) {
-                UserType.NEW -> NavigationRoute.NewUser(emailAddress = emailAddress)
-                UserType.PASSWORD -> NavigationRoute.ReturningUser(emailAddress = emailAddress)
+                UserType.NEW -> NavigationRoute.NewUser
+                UserType.PASSWORD -> NavigationRoute.ReturningUser
                 UserType.PASSWORDLESS -> {
                     if (
                         productConfig.products.contains(StytchProduct.OTP) &&
@@ -153,7 +171,7 @@ internal class MainScreenViewModel(
                     }
                 }
                 else -> {
-                    savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         showLoadingDialog = false,
                         genericErrorMessage = "Failed to get user type",
                     )
@@ -162,12 +180,12 @@ internal class MainScreenViewModel(
             }?.let {
                 _eventFlow.emit(EventState.NavigationRequested(it))
             }
-            savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = false)
+            savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
         }
     }
 
     suspend fun getUserType(emailAddress: String): UserType? {
-        return when (val result = StytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
+        return when (val result = stytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
             is StytchResult.Success -> result.value.userType
             is StytchResult.Error -> null
         }
@@ -178,12 +196,12 @@ internal class MainScreenViewModel(
         emailMagicLinksOptions: EmailMagicLinksOptions,
     ): NavigationRoute? {
         val parameters = emailMagicLinksOptions.toParameters(emailAddress)
-        return when (val result = StytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
+        return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
             is StytchResult.Error -> {
-                savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     genericErrorMessage = result.exception.message
                 ) // TODO
                 null
@@ -196,7 +214,7 @@ internal class MainScreenViewModel(
         otpOptions: OTPOptions,
     ): NavigationRoute? {
         val parameters = otpOptions.toEmailOtpParameters(emailAddress)
-        return when (val result = StytchClient.otps.email.loginOrCreate(parameters)) {
+        return when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.OTPConfirmation(
                     OTPDetails.EmailOTP(
@@ -208,7 +226,7 @@ internal class MainScreenViewModel(
                 )
             }
             is StytchResult.Error -> {
-                savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     genericErrorMessage = result.exception.message
                 ) // TODO
                 null
@@ -221,12 +239,12 @@ internal class MainScreenViewModel(
         passwordOptions: PasswordOptions,
     ): NavigationRoute? {
         val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
-        return when (val result = StytchClient.passwords.resetByEmailStart(parameters = parameters)) {
+        return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
             }
             is StytchResult.Error -> {
-                savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                     genericErrorMessage = result.exception.message
                 ) // TODO
                 null
@@ -234,14 +252,14 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun sendSmsOTP(otpOptions: OTPOptions) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+    fun sendSmsOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
+        scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
             val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164())
-            when (val result = StytchClient.otps.sms.loginOrCreate(parameters)) {
+            when (val result = stytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -255,7 +273,7 @@ internal class MainScreenViewModel(
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         phoneNumberState = phoneNumberState.copy(
                             error = result.exception.message, // TODO
                         ),
@@ -266,14 +284,14 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun sendWhatsAppOTP(otpOptions: OTPOptions) {
-        savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = true)
-        viewModelScope.launch {
+    fun sendWhatsAppOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
+        scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
             val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164())
-            when (val result = StytchClient.otps.whatsapp.loginOrCreate(parameters)) {
+            when (val result = stytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
-                    savedStateHandle["MainScreenUiState"] = uiState.value.copy(showLoadingDialog = false)
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
@@ -287,13 +305,24 @@ internal class MainScreenViewModel(
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle["MainScreenUiState"] = uiState.value.copy(
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
                         phoneNumberState = phoneNumberState.copy(
                             error = result.exception.message, // TODO
                         ),
                         showLoadingDialog = false,
                     )
                 }
+            }
+        }
+    }
+
+    companion object {
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                MainScreenViewModel(
+                    stytchClient = StytchClient,
+                    savedStateHandle = savedStateHandle
+                )
             }
         }
     }

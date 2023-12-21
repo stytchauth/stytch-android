@@ -340,7 +340,18 @@ public data class BootstrapData(
     @Json(name = "dfp_protected_auth_enabled")
     val dfpProtectedAuthEnabled: Boolean = false,
     @Json(name = "dfp_protected_auth_mode")
-    val dfpProtectedAuthMode: DFPProtectedAuthMode = DFPProtectedAuthMode.OBSERVATION
+    val dfpProtectedAuthMode: DFPProtectedAuthMode? = DFPProtectedAuthMode.OBSERVATION,
+    @Json(name = "password_config")
+    val passwordConfig: PasswordConfig? = null
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PasswordConfig(
+    @Json(name = "luds_complexity")
+    val ludsComplexity: Int,
+    @Json(name = "luds_minimum_count")
+    val ludsMinimumCount: Int,
 ) : Parcelable
 
 public enum class DFPProtectedAuthMode {

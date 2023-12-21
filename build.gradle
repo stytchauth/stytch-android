@@ -73,7 +73,8 @@ tasks.register("runOnGitHub") {
             ":sdk:ktlintCheck",
             ":ui:ktlintCheck",
             ":sdk:testDebugUnitTest",
-            // TODO: add unit and UI tests once they are done
+            ":ui:testDebugUnitTest"
+            // TODO: add UI tests once they are done
     )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"

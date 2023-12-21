@@ -22,6 +22,7 @@ import com.stytch.sdk.ui.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.components.FormFieldStatus
 import com.stytch.sdk.ui.components.LoadingDialog
 import com.stytch.sdk.ui.components.PageTitle
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.theme.LocalStytchProductConfig
 import kotlinx.coroutines.flow.collectLatest
@@ -29,18 +30,19 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class SetPasswordScreen(
-    val emailAddress: String,
     val token: String,
 ) : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
-        val viewModel = viewModel<SetPasswordScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
-        val uiState = viewModel.uiState.collectAsState()
         val context = LocalContext.current as AuthenticationActivity
         val productConfig = LocalStytchProductConfig.current
+        val viewModel = viewModel<SetPasswordScreenViewModel>(
+            factory = SetPasswordScreenViewModel.factory(context.savedStateHandle)
+        )
+        val uiState =viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
-            viewModel.setInitialState(emailAddress = emailAddress)
+            viewModel.setEmailReadOnly()
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
@@ -61,7 +63,7 @@ internal data class SetPasswordScreen(
 
 @Composable
 private fun SetPasswordScreenComposable(
-    uiState: SetPasswordScreenUiState,
+    uiState: ApplicationUIState,
     onBack: () -> Unit,
     onEmailAddressChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,

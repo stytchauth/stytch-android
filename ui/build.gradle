@@ -75,4 +75,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
     implementation project(":sdk")
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "io.mockk:mockk:1.13.8"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    testImplementation("org.json:json:20230227")
 }
