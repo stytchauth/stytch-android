@@ -92,4 +92,5 @@
     <string name="semantics_tabs">Tabs</string>
     <string name="semantics_email_input">Email input</string>
     <string name="semantics_email_error">Email error</string>
+    <string name="semantics_phone_input">Phone input</string>
 </resources>

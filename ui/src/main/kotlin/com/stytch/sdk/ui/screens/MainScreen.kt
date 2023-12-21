@@ -167,11 +167,7 @@ private fun MainScreenComposable(
                         Tab(
                             selected = index == selectedTabIndex,
                             onClick = { selectedTabIndex = index },
-                            modifier = Modifier
-                                .height(48.dp)
-                                .semantics {
-                                    contentDescription = semanticTabs
-                                },
+                            modifier = Modifier.height(48.dp),
                         ) {
                             Text(
                                 text = title,

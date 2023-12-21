@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -54,8 +56,13 @@ internal fun PhoneEntry(
     val exampleNumber = PhoneNumberUtil.getInstance().getExampleNumber(region)?.nationalNumber?.toString() ?: ""
     val maxPhoneLengthForRegion = exampleNumber.length
     var expanded by remember { mutableStateOf(false) }
-    Column {
-        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+    val semanticsPhoneInput = stringResource(id = R.string.semantics_phone_input)
+    Column(
+        modifier = Modifier.semantics { contentDescription = semanticsPhoneInput }
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp)) {
             ExposedDropdownMenuBox(
                 modifier = Modifier.fillMaxWidth(0.33f),
                 expanded = expanded,
