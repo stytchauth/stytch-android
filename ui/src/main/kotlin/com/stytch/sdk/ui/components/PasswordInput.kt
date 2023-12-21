@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.stytch.sdk.consumer.network.models.StrengthPolicy
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.data.PasswordState
 
@@ -59,10 +60,22 @@ internal fun PasswordInput(
             },
         )
         if (passwordState.feedback != null) {
-            PasswordStrengthIndicator(
-                feedback = passwordState.feedback,
-                score = passwordState.score,
-            )
+            when (passwordState.strengthPolicy) {
+                StrengthPolicy.ZXCVBN -> {
+                    PasswordStrengthIndicator(
+                        feedback = passwordState.feedback,
+                        score = passwordState.score,
+                    )
+                }
+                StrengthPolicy.LUDS -> {
+                    passwordState.feedback.ludsRequirements?.let {
+                        LUDSIndicator(
+                            requirements = it,
+                            breached = passwordState.breachedPassword
+                        )
+                    }
+                }
+            }
         }
         passwordState.errorMessage?.let {
             FormFieldStatus(

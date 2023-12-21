@@ -52,6 +52,9 @@
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
     <string name="strong_password">Great job! This is a strong password.</string>
+    <string name="breached_password_warning">This password may have been used on a different site that experienced a security issue. Please choose another password.</string>
+    <string name="missing_characters">Must be at least %1$d characters long</string>
+    <string name="missing_complexity"> Must contain %1$d of the following: uppercase letter, lowercase letter, number, symbol</string>
     <string name="create_account">Create Account</string>
     <string name="amazon_logo">Amazon Logo</string>
     <string name="continue_with_amazon">Continue with Amazon</string>

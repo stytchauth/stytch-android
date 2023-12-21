@@ -38,6 +38,7 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,7 +95,7 @@ public object StytchB2BClient {
                         bootstrapData.captchaSettings.siteKey
                     ),
                     bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {

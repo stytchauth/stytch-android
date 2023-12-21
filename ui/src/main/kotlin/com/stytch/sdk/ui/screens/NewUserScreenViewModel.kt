@@ -120,6 +120,7 @@ internal class NewUserScreenViewModel(
                             feedback = result.value.feedback,
                             score = result.value.score,
                             validPassword = result.value.validPassword,
+                            strengthPolicy = result.value.strengthPolicy,
                         ),
                     )
                 }
