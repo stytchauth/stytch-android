@@ -151,10 +151,11 @@ private fun MainScreenComposable(
         }
         if (hasInput && tabTitles.isNotEmpty()) { // sanity check
             if (tabTitles.size > 1) {
+                val semanticTabs = stringResource(id = R.string.semantics_tabs)
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     containerColor = Color(theme.backgroundColor),
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
@@ -163,14 +164,13 @@ private fun MainScreenComposable(
                     },
                 ) {
                     tabTitles.forEachIndexed { index, title ->
-                        val semanticTab = stringResource(id = R.string.semantics_tab, title)
                         Tab(
                             selected = index == selectedTabIndex,
                             onClick = { selectedTabIndex = index },
                             modifier = Modifier
                                 .height(48.dp)
                                 .semantics {
-                                    contentDescription = semanticTab
+                                    contentDescription = semanticTabs
                                 },
                         ) {
                             Text(
