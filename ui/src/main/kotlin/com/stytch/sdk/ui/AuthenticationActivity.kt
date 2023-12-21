@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.Text
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
@@ -38,22 +38,16 @@ public class AuthenticationActivity : ComponentActivity() {
                         when (it) {
                             is EventState.Authenticated -> returnAuthenticationResult(it.result)
                             is EventState.Exit -> exitWithoutAuthenticating()
-                            is EventState.NavigationRequested -> renderApplication(it.navigationRoute.screen)
+                            is EventState.NavigationRequested -> renderApplicationAtScreen(it.navigationRoute.screen)
                         }
                     }
             }
         }
         savedStateHandle = viewModel.savedStateHandle
-        setContent {
-            StytchTheme(config = uiConfig) {
-                StytchAuthenticationApp(
-                    bootstrapData = uiConfig.bootstrapData,
-                )
-            }
-        }
+        renderApplicationAtScreen()
     }
 
-    private fun renderApplication(screen: AndroidScreen) {
+    private fun renderApplicationAtScreen(screen: AndroidScreen? = null) {
         setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
