@@ -10,7 +10,12 @@ internal class MainScreenTest: BaseAndroidComposeTest() {
     @Test
     fun defaultUIRendersAsExpected() {
         mainScreenRobot {
-            headerIsVisible(true)
+            headerIsVisible(shouldBeVisible = true)
+            socialLoginButtonsAreVisible(shouldBeVisible = false)
+            expectedTabsAreVisible(email = true, text = false, whatsapp = false)
+            emailInputIsVisible(shouldBeVisible = true)
+            emailErrorIsVisible(shouldBeVisible = false)
+            watermarkIsVisible(shouldBeVisible = true)
         }
     }
 }
