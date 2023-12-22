@@ -5,25 +5,23 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.BaseAndroidComposeTest
 import com.stytch.sdk.ui.R
+import com.stytch.sdk.ui.screens.MainScreen
 
 internal fun BaseAndroidComposeTest.mainScreenRobot(
-    composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity>,
     func: MainScreenRobot.() -> Unit
-) = MainScreenRobot(composeTestRule).apply(func)
+) = MainScreenRobot(this).apply(func)
 
 internal class MainScreenRobot(
-    composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity>
-): BaseRobotScreen(composeTestRule) {
+    baseAndroidComposeTest: BaseAndroidComposeTest
+): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
     private val header by lazy {
         composeTestRule.onNode(hasText(getString(R.string.sign_up_or_login)))
     }
@@ -64,10 +62,6 @@ internal class MainScreenRobot(
         composeTestRule.onNode(hasContentDescription(getString(R.string.semantics_email_error)))
     }
 
-    private val watermark by lazy {
-        composeTestRule.onNode(hasContentDescription(getString(R.string.powered_by_stytch)))
-    }
-
     private val phoneInput by lazy {
         composeTestRule.onNode(hasContentDescription(getString(R.string.semantics_phone_input)))
     }
@@ -98,8 +92,6 @@ internal class MainScreenRobot(
 
     fun emailErrorExists(shouldBeVisible: Boolean) = nodeExists(emailError, shouldBeVisible)
 
-    fun watermarkExists(shouldBeVisible: Boolean) = nodeExists(watermark, shouldBeVisible)
-
     fun tapEmailTabAndAssertIsShown() {
         emailTab.performClick().assertIsSelected()
         emailInput.assertExists()
@@ -119,5 +111,13 @@ internal class MainScreenRobot(
         continueButton.assertIsEnabled()
     } else {
         continueButton.assertIsNotEnabled()
+    }
+
+    fun enterPhoneNumber(number: String) {
+        phoneInput.performTextInput(number)
+    }
+
+    fun verifyPhoneNumberIs(number: String) {
+        phoneInput.assertTextEquals(number)
     }
 }

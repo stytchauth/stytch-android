@@ -57,9 +57,7 @@ internal fun PhoneEntry(
     val maxPhoneLengthForRegion = exampleNumber.length
     var expanded by remember { mutableStateOf(false) }
     val semanticsPhoneInput = stringResource(id = R.string.semantics_phone_input)
-    Column(
-        modifier = Modifier.semantics { contentDescription = semanticsPhoneInput }
-    ) {
+    Column {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 12.dp)) {
@@ -111,7 +109,7 @@ internal fun PhoneEntry(
             }
             Spacer(modifier = Modifier.width(8.dp))
             StytchInput(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics { contentDescription = semanticsPhoneInput },
                 value = phoneNumber,
                 onValueChange = {
                     if (it.length <= maxPhoneLengthForRegion) onPhoneNumberChanged(it)
