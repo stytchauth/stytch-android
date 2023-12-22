@@ -31,3 +31,27 @@ internal val REALISTIC_STYTCH_UI_CONFIG = StytchUIConfig(
     bootstrapData = BootstrapData(disableSDKWatermark = true),
     publicToken = ""
 )
+
+internal val EML_AND_OTP_ERROR_STYTCH_UI_CONFIG = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = listOf(StytchProduct.EMAIL_MAGIC_LINKS),
+        otpOptions = OTPOptions(
+            methods = listOf(OTPMethods.EMAIL),
+        )
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(),
+    publicToken = "",
+)
+
+internal val NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = emptyList(),
+        otpOptions = OTPOptions(
+            methods = emptyList(),
+        )
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(),
+    publicToken = "",
+)
