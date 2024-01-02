@@ -12,7 +12,7 @@ internal class MainScreenTest: BaseAndroidComposeTest() {
     @Test
     fun defaultUIRendersAsExpected() {
         mainScreenRobot {
-            setContent(DEFAULT_STYTCH_UI_CONFIG)
+            clearAndSetContent(DEFAULT_STYTCH_UI_CONFIG)
             headerExists(shouldBeVisible = true)
             socialLoginButtonsExist(DEFAULT_STYTCH_UI_CONFIG.productConfig.oAuthOptions.providers.size)
             expectedTabsExist(email = false, text = false, whatsapp = false)
@@ -27,7 +27,7 @@ internal class MainScreenTest: BaseAndroidComposeTest() {
     @Test
     fun realisticUIRendersAsExpected() {
         mainScreenRobot {
-            setContent(REALISTIC_STYTCH_UI_CONFIG)
+            clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             headerExists(shouldBeVisible = true)
             socialLoginButtonsExist(REALISTIC_STYTCH_UI_CONFIG.productConfig.oAuthOptions.providers.size)
             expectedTabsExist(email = true, text = true, whatsapp = true)

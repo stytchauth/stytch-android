@@ -14,9 +14,10 @@ internal class StytchAuthenticationAppTest: BaseAndroidComposeTest() {
     fun incompatibleProductsReturnsError() {
         stytchAuthenticationAppRobot {
             var error: StytchUIInvalidConfiguration? = null
-            setContent(EML_AND_OTP_ERROR_STYTCH_UI_CONFIG) {
+            clearAndSetContent(EML_AND_OTP_ERROR_STYTCH_UI_CONFIG) {
                 error = it
             }
+            await()
             isEMLAndOTPError(error!!)
         }
     }
@@ -25,9 +26,10 @@ internal class StytchAuthenticationAppTest: BaseAndroidComposeTest() {
     fun misconfiguredProductsAndOptionsReturnsError() {
         stytchAuthenticationAppRobot {
             var error: StytchUIInvalidConfiguration? = null
-            setContent(NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG) {
+            clearAndSetContent(NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG) {
                 error = it
             }
+            await()
             isMisconfiguredError(error!!)
         }
     }

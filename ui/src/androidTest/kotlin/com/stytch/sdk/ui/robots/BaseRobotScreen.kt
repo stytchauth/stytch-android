@@ -18,7 +18,9 @@ internal abstract class BaseRobotScreen(
     protected fun getString(@StringRes resourceId: Int) =
         composeTestRule.activity.getString(resourceId)
 
-    fun setContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
+    fun clearAndSetContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
+        composeTestRule.activity.setContent {}
+        composeTestRule.waitForIdle()
         composeTestRule.activity.setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
@@ -29,5 +31,9 @@ internal abstract class BaseRobotScreen(
                 )
             }
         }
+    }
+
+    fun await() {
+        composeTestRule.waitForIdle()
     }
 }
