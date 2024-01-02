@@ -7,6 +7,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.StrengthPolicy
 import com.stytch.sdk.ui.data.EmailState
 import com.stytch.sdk.ui.data.EventState
 import io.mockk.MockKAnnotations
@@ -84,6 +85,7 @@ internal class SetPasswordScreenViewModelTest {
             score = 5,
             statusCode = 200,
             validPassword = true,
+            strengthPolicy = StrengthPolicy.ZXCVBN,
         )
         coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns StytchResult.Success(result)
         viewModel.onPasswordChanged("pass strength check", this)
