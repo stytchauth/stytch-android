@@ -32,6 +32,28 @@ internal val REALISTIC_STYTCH_UI_CONFIG = StytchUIConfig(
     publicToken = ""
 )
 
+internal val REALISTIC_STYTCH_UI_CONFIG_NO_PASSWORD = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = listOf(
+            StytchProduct.OAUTH,
+            StytchProduct.EMAIL_MAGIC_LINKS,
+            StytchProduct.OTP,
+        ),
+        emailMagicLinksOptions = EmailMagicLinksOptions(),
+        passwordOptions = PasswordOptions(),
+        googleOauthOptions = GoogleOAuthOptions(),
+        oAuthOptions = OAuthOptions(
+            providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB)
+        ),
+        otpOptions = OTPOptions(
+            methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
+        )
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(disableSDKWatermark = true),
+    publicToken = ""
+)
+
 internal val EML_AND_OTP_ERROR_STYTCH_UI_CONFIG = StytchUIConfig(
     productConfig = StytchProductConfig(
         products = listOf(StytchProduct.EMAIL_MAGIC_LINKS),

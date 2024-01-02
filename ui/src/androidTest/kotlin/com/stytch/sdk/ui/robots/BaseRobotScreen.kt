@@ -8,6 +8,7 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.AuthenticationActivity
 import com.stytch.sdk.ui.StytchAuthenticationApp
+import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
 
@@ -35,5 +36,9 @@ internal abstract class BaseRobotScreen(
 
     fun await() {
         composeTestRule.waitForIdle()
+    }
+
+    fun setState(newState: ApplicationUIState) {
+        composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = newState
     }
 }

@@ -9,6 +9,9 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.stytch.sdk.ui.BaseAndroidComposeTest
@@ -23,11 +26,11 @@ internal class MainScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest
 ): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
     private val header by lazy {
-        composeTestRule.onNode(hasText(getString(R.string.sign_up_or_login)))
+        composeTestRule.onNodeWithText(getString(R.string.sign_up_or_login))
     }
 
     private val socialLoginButtons by lazy {
-        composeTestRule.onAllNodes(hasContentDescription(getString(R.string.semantics_oauth_button)))
+        composeTestRule.onAllNodesWithContentDescription(getString(R.string.semantics_oauth_button))
     }
 
     private val emailTab by lazy {
@@ -55,19 +58,19 @@ internal class MainScreenRobot(
     }
 
     private val emailInput by lazy {
-        composeTestRule.onNode(hasContentDescription(getString(R.string.semantics_email_input)))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_input))
     }
 
     private val emailError by lazy {
-        composeTestRule.onNode(hasContentDescription(getString(R.string.semantics_email_error)))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_error))
     }
 
     private val phoneInput by lazy {
-        composeTestRule.onNode(hasContentDescription(getString(R.string.semantics_phone_input)))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_phone_input))
     }
 
     private val continueButton by lazy {
-        composeTestRule.onNode(hasText(getString(R.string.button_continue)))
+        composeTestRule.onNodeWithText(getString(R.string.button_continue))
     }
 
     private fun nodeExists(node: SemanticsNodeInteraction, shouldBeVisible: Boolean) {
