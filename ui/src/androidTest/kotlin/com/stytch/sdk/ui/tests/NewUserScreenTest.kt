@@ -55,7 +55,7 @@ internal class NewUserScreenTest:  BaseAndroidComposeTest() {
         newUserScreenRobot {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG_EOTP)
             loadingDialogExists(false)
-            setState(ApplicationUIState().copy(showLoadingDialog = true))
+            setLoadingDialog(true)
             loadingDialogExists(true)
         }
     }

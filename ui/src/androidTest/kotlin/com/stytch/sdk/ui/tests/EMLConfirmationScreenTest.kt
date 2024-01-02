@@ -70,9 +70,7 @@ internal class EMLConfirmationScreenTest:  BaseAndroidComposeTest() {
     fun genericErrorMessageStateShowsError() {
         emlConfirmationScreenRobot(details, true) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
-            setState(ApplicationUIState().copy(
-                genericErrorMessage = "My Test Error"
-            ))
+            setGenericErrorMessage("My Test Error")
             genericErrorMessageExists("My Test Error")
         }
     }

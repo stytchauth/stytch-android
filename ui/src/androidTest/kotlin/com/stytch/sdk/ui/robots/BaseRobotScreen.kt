@@ -4,6 +4,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import cafe.adriel.voyager.androidx.AndroidScreen
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
@@ -23,6 +24,10 @@ internal abstract class BaseRobotScreen(
 
     private val backButton by lazy {
         composeTestRule.onNodeWithContentDescription(getString(R.string.back))
+    }
+
+    private val loadingDialog by lazy {
+        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_loading_dialog))
     }
 
     fun clearAndSetContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
@@ -48,5 +53,29 @@ internal abstract class BaseRobotScreen(
         composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = newState
     }
 
+    fun setLoadingDialog(visible: Boolean) {
+        val existingState =
+            composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] ?: ApplicationUIState()
+        setState(existingState.copy(showLoadingDialog = visible))
+    }
+
+    fun setGenericErrorMessage(errorMessage: String) {
+        val existingState =
+            composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] ?: ApplicationUIState()
+        setState(existingState.copy(genericErrorMessage = errorMessage))
+    }
+
     fun backButtonExists() = backButton.assertExists()
+
+    fun genericErrorMessageExists(errorMessage: String) {
+        composeTestRule.onNodeWithText(errorMessage).assertExists()
+    }
+
+    fun loadingDialogExists(shouldExist: Boolean) {
+        if (shouldExist) {
+            loadingDialog.assertExists()
+        } else {
+            loadingDialog.assertDoesNotExist()
+        }
+    }
 }

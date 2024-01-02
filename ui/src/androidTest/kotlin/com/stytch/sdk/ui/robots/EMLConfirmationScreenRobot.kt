@@ -64,8 +64,4 @@ internal class EMLConfirmationScreenRobot(
     fun clickResendLink() {
         resendLinkText.performClick()
     }
-
-    fun genericErrorMessageExists(errorMessage: String) {
-        composeTestRule.onNodeWithText(errorMessage).assertExists()
-    }
 }

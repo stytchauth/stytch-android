@@ -33,10 +33,6 @@ internal class NewUserScreenRobot(
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_password_entry))
     }
 
-    private val loadingDialog by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_loading_dialog))
-    }
-
     fun emlOrOtpTitleExists(shouldExist: Boolean) {
         if (shouldExist) {
             emlOrOtpTitle.assertExists()
@@ -70,12 +66,4 @@ internal class NewUserScreenRobot(
     }
 
     fun emailPasswordEntryExists() = emailAndPasswordEntry.assertExists()
-
-    fun loadingDialogExists(shouldExist: Boolean) {
-        if (shouldExist) {
-            loadingDialog.assertExists()
-        } else {
-            loadingDialog.assertDoesNotExist()
-        }
-    }
 }
