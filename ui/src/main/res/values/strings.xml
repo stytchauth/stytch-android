@@ -94,4 +94,6 @@
     <string name="semantics_email_error">Email error</string>
     <string name="semantics_phone_input">Phone input</string>
     <string name="semantics_alert_dialog">Popup dialog</string>
+    <string name="semantics_loading_dialog">Loading</string>
+    <string name="semantics_email_password_entry">Entry form for email and password</string>
 </resources>

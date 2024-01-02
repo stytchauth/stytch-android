@@ -3,10 +3,12 @@ package com.stytch.sdk.ui.robots
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import cafe.adriel.voyager.androidx.AndroidScreen
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.AuthenticationActivity
+import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.StytchAuthenticationApp
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.StytchUIConfig
@@ -18,6 +20,10 @@ internal abstract class BaseRobotScreen(
 ) {
     protected fun getString(@StringRes resourceId: Int) =
         composeTestRule.activity.getString(resourceId)
+
+    private val backButton by lazy {
+        composeTestRule.onNodeWithContentDescription(getString(R.string.back))
+    }
 
     fun clearAndSetContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
         composeTestRule.activity.setContent {}
@@ -41,4 +47,6 @@ internal abstract class BaseRobotScreen(
     fun setState(newState: ApplicationUIState) {
         composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = newState
     }
+
+    fun backButtonExists() = backButton.assertExists()
 }

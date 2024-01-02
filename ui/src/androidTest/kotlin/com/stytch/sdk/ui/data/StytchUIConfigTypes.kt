@@ -54,6 +54,58 @@ internal val REALISTIC_STYTCH_UI_CONFIG_NO_PASSWORD = StytchUIConfig(
     publicToken = ""
 )
 
+internal val REALISTIC_STYTCH_UI_CONFIG_EML = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = listOf(
+            StytchProduct.EMAIL_MAGIC_LINKS,
+        ),
+        emailMagicLinksOptions = EmailMagicLinksOptions(),
+        passwordOptions = PasswordOptions(),
+        googleOauthOptions = GoogleOAuthOptions(),
+        oAuthOptions = OAuthOptions(),
+        otpOptions = OTPOptions(
+            methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
+        )
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(disableSDKWatermark = true),
+    publicToken = ""
+)
+
+internal val REALISTIC_STYTCH_UI_CONFIG_EOTP = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = listOf(
+            StytchProduct.OTP,
+        ),
+        emailMagicLinksOptions = EmailMagicLinksOptions(),
+        passwordOptions = PasswordOptions(),
+        googleOauthOptions = GoogleOAuthOptions(),
+        oAuthOptions = OAuthOptions(),
+        otpOptions = OTPOptions(
+            methods = listOf(OTPMethods.EMAIL),
+        )
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(disableSDKWatermark = true),
+    publicToken = ""
+)
+
+internal val REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY = StytchUIConfig(
+    productConfig = StytchProductConfig(
+        products = listOf(
+            StytchProduct.PASSWORDS,
+        ),
+        emailMagicLinksOptions = EmailMagicLinksOptions(),
+        passwordOptions = PasswordOptions(),
+        googleOauthOptions = GoogleOAuthOptions(),
+        oAuthOptions = OAuthOptions(),
+        otpOptions = OTPOptions()
+    ),
+    styles = StytchStyles(),
+    bootstrapData = BootstrapData(disableSDKWatermark = true),
+    publicToken = ""
+)
+
 internal val EML_AND_OTP_ERROR_STYTCH_UI_CONFIG = StytchUIConfig(
     productConfig = StytchProductConfig(
         products = listOf(StytchProduct.EMAIL_MAGIC_LINKS),

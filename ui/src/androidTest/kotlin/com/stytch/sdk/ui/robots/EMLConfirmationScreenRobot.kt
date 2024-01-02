@@ -19,10 +19,6 @@ internal class EMLConfirmationScreenRobot(
     isReturningUser: Boolean,
     baseAndroidComposeTest: BaseAndroidComposeTest
 ): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, EMLConfirmationScreen(emlDetails, isReturningUser)) {
-    private val backButton by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.back))
-    }
-
     private val pageTitle by lazy {
         composeTestRule.onNodeWithText(getString(R.string.check_your_email), substring = true)
     }
@@ -42,8 +38,6 @@ internal class EMLConfirmationScreenRobot(
     private val resendDialog by lazy {
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_alert_dialog))
     }
-
-    fun backButtonExists() = backButton.assertExists()
 
     fun pageTitleExists() = pageTitle.assertExists()
 
