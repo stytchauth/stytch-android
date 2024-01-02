@@ -96,4 +96,5 @@
     <string name="semantics_alert_dialog">Popup dialog</string>
     <string name="semantics_loading_dialog">Loading</string>
     <string name="semantics_email_password_entry">Entry form for email and password</string>
+    <string name="semantics_otp_entry">Entry form for One Time Passcode</string>
 </resources>

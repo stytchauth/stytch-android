@@ -23,11 +23,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 
 private const val OTP_LENGTH = 6
@@ -40,15 +44,21 @@ internal fun OTPEntry(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val finalCode = remember { mutableStateListOf("", "", "", "", "", "") }
+    val semantics = stringResource(id = R.string.semantics_otp_entry)
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 32.dp)
+            .semantics { contentDescription = semantics },
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         finalCode.asIterable().forEachIndexed { i, value ->
-            var modifier = Modifier.width(48.dp).height(48.dp)
+            var modifier = Modifier
+                .width(48.dp)
+                .height(48.dp)
             if (i == 0) {
                 modifier = modifier.focusRequester(focusRequester)
             }

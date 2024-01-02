@@ -16,7 +16,7 @@ internal class SetPasswordScreenTest:  BaseAndroidComposeTest() {
             pageTitleExists()
             emailPasswordEntryExists()
             loadingDialogExists(false)
-            setLoadingDialog(true)
+            setLoadingDialogVisible(true)
             loadingDialogExists(true)
             setGenericErrorMessage("My Error Message")
             genericErrorMessageExists("My Error Message")

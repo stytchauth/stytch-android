@@ -30,6 +30,10 @@ internal abstract class BaseRobotScreen(
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_loading_dialog))
     }
 
+    private val resendDialog by lazy {
+        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_alert_dialog))
+    }
+
     fun clearAndSetContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
         composeTestRule.activity.setContent {}
         composeTestRule.waitForIdle()
@@ -53,10 +57,16 @@ internal abstract class BaseRobotScreen(
         composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = newState
     }
 
-    fun setLoadingDialog(visible: Boolean) {
+    fun setLoadingDialogVisible(visible: Boolean) {
         val existingState =
             composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] ?: ApplicationUIState()
         setState(existingState.copy(showLoadingDialog = visible))
+    }
+
+    fun setResendDialogVisible(visible: Boolean) {
+        val existingState =
+            composeTestRule.activity.savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] ?: ApplicationUIState()
+        setState(existingState.copy(showResendDialog = visible))
     }
 
     fun setGenericErrorMessage(errorMessage: String) {
@@ -76,6 +86,14 @@ internal abstract class BaseRobotScreen(
             loadingDialog.assertExists()
         } else {
             loadingDialog.assertDoesNotExist()
+        }
+    }
+
+    fun resendDialogExists(shouldExist: Boolean) {
+        if (shouldExist) {
+            resendDialog.assertExists()
+        } else {
+            resendDialog.assertDoesNotExist()
         }
     }
 }

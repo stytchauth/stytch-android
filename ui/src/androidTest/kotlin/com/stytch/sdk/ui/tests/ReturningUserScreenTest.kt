@@ -55,7 +55,7 @@ internal class ReturningUserScreenTest:  BaseAndroidComposeTest() {
         returningUserScreenRobot {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             loadingDialogExists(false)
-            setLoadingDialog(true)
+            setLoadingDialogVisible(true)
             loadingDialogExists(true)
             setGenericErrorMessage("My error message")
             genericErrorMessageExists("My error message")

@@ -1,7 +1,6 @@
 package com.stytch.sdk.ui.tests
 
 import com.stytch.sdk.ui.BaseAndroidComposeTest
-import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_EML
 import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_EOTP
 import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY
@@ -55,7 +54,7 @@ internal class NewUserScreenTest:  BaseAndroidComposeTest() {
         newUserScreenRobot {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG_EOTP)
             loadingDialogExists(false)
-            setLoadingDialog(true)
+            setLoadingDialogVisible(true)
             loadingDialogExists(true)
         }
     }

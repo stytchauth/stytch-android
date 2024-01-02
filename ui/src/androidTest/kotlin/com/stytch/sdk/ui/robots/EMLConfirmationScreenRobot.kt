@@ -35,10 +35,6 @@ internal class EMLConfirmationScreenRobot(
         composeTestRule.onNodeWithText(getString(R.string.create_password_instead), substring = true)
     }
 
-    private val resendDialog by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_alert_dialog))
-    }
-
     fun pageTitleExists() = pageTitle.assertExists()
 
     fun loginLinkTextExists() = loginLinkText.assertExists()
@@ -50,14 +46,6 @@ internal class EMLConfirmationScreenRobot(
             passwordButton.assertExists()
         } else {
             passwordButton.assertDoesNotExist()
-        }
-    }
-
-    fun resendDialogExists(shouldExist: Boolean) {
-        if (shouldExist) {
-            resendDialog.assertExists()
-        } else {
-            resendDialog.assertDoesNotExist()
         }
     }
 
