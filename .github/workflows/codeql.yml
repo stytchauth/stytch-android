@@ -86,6 +86,7 @@ jobs:
         STYTCH_B2B_ORG_ID: 'abc123'
         PASSKEYS_DOMAIN: 'abc123'
         STYTCH_UI_PUBLIC_TOKEN: 'abc123'
+        UI_GOOGLE_CLIENT_ID: 'abc123'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
