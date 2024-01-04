@@ -75,6 +75,8 @@ android {
 }
 
 tasks.named("dokkaHtml").configure {
+    dependsOn(tasks.named("kaptDebugKotlin"))
+    dependsOn(tasks.named("kaptReleaseKotlin"))
     dependencies {
         dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }

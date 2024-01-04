@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
@@ -59,7 +60,12 @@ internal fun StytchAuthenticationApp(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Navigator(listOfNotNull(MainScreen, screen))
+            Navigator(listOfNotNull(MainScreen, screen)) { navigator ->
+                screen?.let {
+                    navigator.push(it)
+                }
+                CurrentScreen()
+            }
             if (!bootstrapData.disableSDKWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
