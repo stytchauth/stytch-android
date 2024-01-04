@@ -2,7 +2,16 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
+    id "org.jetbrains.dokka"
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'com.stytch.sdk'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'ui'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     namespace 'com.stytch.sdk.ui'
@@ -86,4 +95,36 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     // Needed for createAndroidComposeRule, but not createComposeRule:
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}
+
+tasks.named("dokkaHtml").configure {
+    dependsOn(tasks.named("kaptDebugKotlin"))
+    dependsOn(tasks.named("kaptReleaseKotlin"))
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
+    }
+    moduleName.set("Stytch Android UI")
+    suppressInheritedMembers.set(true)
+    dokkaSourceSets {
+        configureEach {
+            includes.from([
+                "module.md",
+            ])
+            perPackageOption {
+                matchingRegex.set(".*\\.components.*")
+                matchingRegex.set(".*\\.screens.*")
+                matchingRegex.set(".*\\.theme.*")
+                matchingRegex.set(".*\\.utils.*")
+                suppress.set(true)
+            }
+            reportUndocumented.set(true)
+        }
+        // TODO: Switch to KTS files to make this a lot easier/more idiomatic
+        pluginsMapConfiguration.set([
+                "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
+                "version": "$PUBLISH_VERSION",
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/ui"
+            }"""
+        ])
+    }
 }
