@@ -74,7 +74,7 @@ android {
     }
 }
 
-tasks.named("dokkaHtml").configure {
+tasks.named("dokkaHtmlPartial").configure {
     dependsOn(tasks.named("kaptDebugKotlin"))
     dependsOn(tasks.named("kaptReleaseKotlin"))
     dependencies {
@@ -112,7 +112,7 @@ tasks.named("dokkaHtml").configure {
         pluginsMapConfiguration.set([
             "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
                 "version": "$PUBLISH_VERSION",
-                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions"
+                "olderVersionsDir": "$projectDir/../../docs/docs/sdk/olderVersions"
             }"""
         ])
     }
