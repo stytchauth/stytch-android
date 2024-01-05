@@ -67,7 +67,7 @@ jobs:
         STYTCH_UI_PUBLIC_TOKEN: 'abc123'
         UI_GOOGLE_CLIENT_ID: 'abc123'
       working-directory: main
-      run: ./gradlew sdk:dokkaHtml
+      run: ./gradlew sdk:dokkaHtmlMultiModule
 
     - name: Zip docs site
       run: |

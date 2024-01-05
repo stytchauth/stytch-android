@@ -117,12 +117,14 @@ tasks.named("dokkaHtmlPartial").configure {
             }
             reportUndocumented.set(true)
         }
+        /*
         // TODO: Switch to KTS files to make this a lot easier/more idiomatic
         pluginsMapConfiguration.set([
                 "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
                 "version": "$PUBLISH_VERSION",
-                "olderVersionsDir": "$projectDir/../../docs/docs/ui/olderVersions"
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/ui"
             }"""
         ])
+         */
     }
 }

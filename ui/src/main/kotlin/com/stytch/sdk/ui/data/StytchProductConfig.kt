@@ -3,6 +3,16 @@ package com.stytch.sdk.ui.data
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data class representing the overall product configuration that you can pass to the UI SDK
+ * @property products a list of [StytchProduct]s
+ * @property emailMagicLinksOptions an instance of [EmailMagicLinksOptions]
+ * @property oAuthOptions an instance of [OAuthOptions]
+ * @property otpOptions an instance of [OTPOptions]
+ * @property sessionOptions an instance of [SessionOptions]
+ * @property passwordOptions an instance of [PasswordOptions]
+ * @property googleOauthOptions an instance of [GoogleOAuthOptions]
+ */
 @Parcelize
 public data class StytchProductConfig(
     val products: List<StytchProduct> = listOf(

@@ -20,8 +20,33 @@ private val MINT: Int = Color(0xFFFFC6FFE0).toArgb()
 private val PEACH: Int = Color(0xFFFFFFD4CD).toArgb()
 private val INK: Int = Color(0xFFFF354D5A).toArgb()
 
-/*
-    StytchTheme defaults to Light Colors
+/**
+ * A data class used to configure the UI.
+ * @param backgroundColor an Int describing the background color
+ * @param primaryTextColor an Int describing the color of primary text
+ * @param secondaryTextColor an Int describing the color of secondary text
+ * @param disabledTextColor an Int describing the color of text when in a disabled state
+ * @param successColor an Int describing the color of text and fields in a success state
+ * @param errorColor an Int describing the color of text and fields in an error state
+ * @param socialButtonBackgroundColor an Int describing the background color of Social Login buttons
+ * @param socialButtonTextColor an Int describing the text color of Social Login buttons
+ * @param buttonBackgroundColor an Int describing the background color of a button
+ * @param buttonTextColor an Int describing the color of button text
+ * @param buttonBorderColor an Int describing the border color of a button
+ * @param buttonBorderRadius an Int describing the size of a button's border radius
+ * @param disabledButtonBackgroundColor an Int describing the color of a button's background when disabled
+ * @param disabledButtonBorderColor an Int describing the color of a button's border when disabled
+ * @param disabledButtonTextColor an Int describing the color of button text when in a disabled state
+ * @param inputBorderRadius an Int describing the size of an input's border radius
+ * @param inputBorderColor an Int describing the border color of input fields
+ * @param inputBackgroundColor an Int describing the background color of input fields
+ * @param inputTextColor an Int describing the color of input text when editable
+ * @param inputPlaceholderTextColor an Int describing the text color of placeholder text
+ * @param disabledInputBorderColor an Int describing the color of an input fields border when disabled
+ * @param disabledInputBackgroundColor an Int describing the color of an input fields background when disabled
+ * @param disabledInputTextColor an Int describing the color of input text when in a disabled state
+ * @param dialogTextColor an Int describing the color of text within dialogs
+ * @param hideHeaderText a Boolean that determines whether or not to show the header text on the main UI screen.
  */
 @Parcelize
 public data class StytchTheme(
@@ -50,7 +75,6 @@ public data class StytchTheme(
     val disabledInputTextColor: Int = STEEL,
     val dialogTextColor: Int = CHARCOAL,
     val hideHeaderText: Boolean = false,
-    val logoImageUrl: File? = null,
 ) : Parcelable {
     internal companion object {
         fun defaultDarkTheme(): StytchTheme = StytchTheme(

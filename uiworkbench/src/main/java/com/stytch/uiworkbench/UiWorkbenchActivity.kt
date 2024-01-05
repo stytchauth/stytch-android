@@ -26,7 +26,6 @@ import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 class UiWorkbenchActivity : ComponentActivity() {
     private val stytchUi = StytchUI.Builder().apply {
         activity(this@UiWorkbenchActivity)
-        publicToken(BuildConfig.STYTCH_PUBLIC_TOKEN)
         productConfig(
             StytchProductConfig(
                 products = listOf(
@@ -35,14 +34,8 @@ class UiWorkbenchActivity : ComponentActivity() {
                     StytchProduct.OTP,
                     StytchProduct.PASSWORDS,
                 ),
-                emailMagicLinksOptions = EmailMagicLinksOptions(
-                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
-                    signupRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
-                ),
-                passwordOptions = PasswordOptions(
-                    loginRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
-                    resetPasswordRedirectURL = "stytchui-${BuildConfig.STYTCH_PUBLIC_TOKEN}://deeplink",
-                ),
+                emailMagicLinksOptions = EmailMagicLinksOptions(),
+                passwordOptions = PasswordOptions(),
                 googleOauthOptions = GoogleOAuthOptions(
                     clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
                 ),
