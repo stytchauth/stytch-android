@@ -34,7 +34,10 @@ internal class NewUserScreenViewModel(
     fun sendEmailMagicLink(emailMagicLinksOptions: EmailMagicLinksOptions, scope: CoroutineScope = viewModelScope) {
         val emailState = uiState.value.emailState
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
-        val parameters = emailMagicLinksOptions.toParameters(emailState.emailAddress)
+        val parameters = emailMagicLinksOptions.toParameters(
+            emailAddress = emailState.emailAddress,
+            publicToken = stytchClient.publicToken,
+        )
         scope.launch {
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
                 is StytchResult.Success -> {

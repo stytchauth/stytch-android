@@ -2,7 +2,7 @@
 buildscript {
     ext {
         kotlin_version = '1.8.22'
-        dokka_version = '1.7.10'
+        dokka_version = '1.9.10'
         retrofit_version = '2.9.0'
         okhttp_version = '4.11.0'
         compose_version = '1.4.3'
@@ -32,6 +32,7 @@ plugins {
     id "org.jlleitschuh.gradle.ktlint" version "11.0.0"
     id "io.gitlab.arturbosch.detekt" version "1.22.0-RC3"
     //id 'nl.neotech.plugin.rootcoverage' version '1.6.0'
+    id "org.jetbrains.dokka" version "$dokka_version"
 }
 /*
 rootCoverage {
@@ -82,4 +83,8 @@ tasks.register("runOnGitHub") {
     )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+    outputDirectory.set(file("$projectDir/docs"))
 }

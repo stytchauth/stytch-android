@@ -18,7 +18,7 @@ import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.launch
 
-public class AuthenticationActivity : ComponentActivity() {
+internal class AuthenticationActivity : ComponentActivity() {
     private val viewModel: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchUIConfig
     internal lateinit var savedStateHandle: SavedStateHandle

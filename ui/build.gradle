@@ -83,7 +83,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
-    implementation project(":sdk")
+    api project(":sdk")
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.13.8"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
@@ -97,9 +97,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 }
 
-tasks.named("dokkaHtml").configure {
-    dependsOn(tasks.named("kaptDebugKotlin"))
-    dependsOn(tasks.named("kaptReleaseKotlin"))
+tasks.named("dokkaHtmlPartial").configure {
     dependencies {
         dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }
@@ -119,6 +117,7 @@ tasks.named("dokkaHtml").configure {
             }
             reportUndocumented.set(true)
         }
+        /*
         // TODO: Switch to KTS files to make this a lot easier/more idiomatic
         pluginsMapConfiguration.set([
                 "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
@@ -126,5 +125,6 @@ tasks.named("dokkaHtml").configure {
                 "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/ui"
             }"""
         ])
+         */
     }
 }

@@ -4,21 +4,24 @@ import android.os.Parcelable
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data class that defines ptions for configuring Email Magic Links
+ * @property loginExpirationMinutes The number of minutes before a login link expires
+ * @property signupExpirationMinutes The number of minutes before a signup link expires
+ * @property loginTemplateId The ID of an email template (defined in the Stytch Dashboard) for login emails
+ * @property signupTemplateId The ID of an email template (defined in the Stytch Dashboard) for signup emails
+ */
 @Parcelize
 public data class EmailMagicLinksOptions(
-    val loginRedirectURL: String? = null,
     val loginExpirationMinutes: UInt? = null,
-    val signupRedirectURL: String? = null,
     val signupExpirationMinutes: UInt? = null,
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,
-    val createUserAsPending: Boolean = false,
-    val domainHint: String? = null,
 ) : Parcelable {
-    internal fun toParameters(emailAddress: String) = MagicLinks.EmailMagicLinks.Parameters(
+    internal fun toParameters(emailAddress: String, publicToken: String) = MagicLinks.EmailMagicLinks.Parameters(
         email = emailAddress,
-        loginMagicLinkUrl = loginRedirectURL,
-        signupMagicLinkUrl = signupRedirectURL,
+        loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
+        signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
         loginExpirationMinutes = loginExpirationMinutes,
         signupExpirationMinutes = signupExpirationMinutes,
         loginTemplateId = loginTemplateId,
