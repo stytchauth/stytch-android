@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -119,6 +121,7 @@ private fun MainScreenComposable(
     var selectedTabIndex by remember { mutableStateOf(0) }
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
+    val semanticsOAuthButton = stringResource(id = R.string.semantics_oauth_button)
 
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
@@ -128,7 +131,11 @@ private fun MainScreenComposable(
         if (productConfig.products.contains(StytchProduct.OAUTH)) {
             productConfig.oAuthOptions.providers.map {
                 SocialLoginButton(
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .semantics {
+                            contentDescription = semanticsOAuthButton
+                        },
                     onClick = { onStartOAuthLogin(it, productConfig) },
                     iconDrawable = painterResource(id = it.iconDrawable),
                     iconDescription = stringResource(id = it.iconText),
@@ -144,10 +151,11 @@ private fun MainScreenComposable(
         }
         if (hasInput && tabTitles.isNotEmpty()) { // sanity check
             if (tabTitles.size > 1) {
+                val semanticTabs = stringResource(id = R.string.semantics_tabs)
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     containerColor = Color(theme.backgroundColor),
-                    modifier = Modifier.padding(bottom = 12.dp),
+                    modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
                     indicator = { tabPositions ->
                         TabRowDefaults.Indicator(
                             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),

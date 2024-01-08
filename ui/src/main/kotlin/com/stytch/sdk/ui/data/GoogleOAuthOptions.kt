@@ -3,6 +3,10 @@ package com.stytch.sdk.ui.data
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A data class that represents the configuration for Google OAuth
+ * @property clientId the client ID you used to configure Google OAuth
+ */
 @Parcelize
 public data class GoogleOAuthOptions(
     val clientId: String? = null,

@@ -64,7 +64,10 @@ internal class PasswordResetSentScreenViewModel(
             genericErrorMessage = null,
         )
         scope.launch {
-            val parameters = emailMagicLinksOptions.toParameters(emailAddress)
+            val parameters = emailMagicLinksOptions.toParameters(
+                emailAddress = emailAddress,
+                publicToken = stytchClient.publicToken,
+            )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)

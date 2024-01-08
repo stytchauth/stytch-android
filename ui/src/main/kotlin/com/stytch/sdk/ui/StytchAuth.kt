@@ -8,8 +8,9 @@ import androidx.lifecycle.LifecycleOwner
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.StytchUIConfig
 
-public interface StytchAuth {
-    public fun authenticate(options: StytchUIConfig)
+
+internal interface StytchAuth {
+    fun authenticate(options: StytchUIConfig)
 }
 
 internal class StytchAuthHandler(

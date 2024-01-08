@@ -11,6 +11,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.StrengthPolicy
 import com.stytch.sdk.ui.data.EmailState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
@@ -138,6 +139,7 @@ internal class NewUserScreenViewModelTest {
                 every { feedback } returns mockedFeedback
                 every { score } returns 5
                 every { validPassword } returns true
+                every { strengthPolicy } returns StrengthPolicy.ZXCVBN
             }
         )
         val invalidResponse: StytchResult.Error = mockk(relaxed = true) {

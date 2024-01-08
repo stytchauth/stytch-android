@@ -2,7 +2,16 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
+    id "org.jetbrains.dokka"
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'com.stytch.sdk'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'ui'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     namespace 'com.stytch.sdk.ui'
@@ -74,9 +83,48 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
-    implementation project(":sdk")
+    api project(":sdk")
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.13.8"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
     testImplementation("org.json:json:20230227")
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestImplementation "androidx.test:rules:1.5.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
+    // Test rules and transitive dependencies:
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    // Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}
+
+tasks.named("dokkaHtmlPartial").configure {
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
+    }
+    moduleName.set("Stytch Android UI")
+    suppressInheritedMembers.set(true)
+    dokkaSourceSets {
+        configureEach {
+            includes.from([
+                "module.md",
+            ])
+            perPackageOption {
+                matchingRegex.set(".*\\.components.*")
+                matchingRegex.set(".*\\.screens.*")
+                matchingRegex.set(".*\\.theme.*")
+                matchingRegex.set(".*\\.utils.*")
+                suppress.set(true)
+            }
+            reportUndocumented.set(true)
+        }
+        /*
+        // TODO: Switch to KTS files to make this a lot easier/more idiomatic
+        pluginsMapConfiguration.set([
+                "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
+                "version": "$PUBLISH_VERSION",
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/ui"
+            }"""
+        ])
+         */
+    }
 }

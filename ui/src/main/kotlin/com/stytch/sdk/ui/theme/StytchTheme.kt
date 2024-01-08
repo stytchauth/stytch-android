@@ -30,7 +30,7 @@ internal fun StytchTheme(
     val rememberedStytchTheme = remember { stytchTheme }
     val rememberedStytchTypography = remember { StytchTypography() }
     val rememberedStytchProductConfig = remember { config.productConfig }
-    val rememberedStytchBootstrapData = remember { StytchClient.bootstrapData }
+    val rememberedStytchBootstrapData = remember { config.bootstrapData }
 
     if (!view.isInEditMode) {
         SideEffect {

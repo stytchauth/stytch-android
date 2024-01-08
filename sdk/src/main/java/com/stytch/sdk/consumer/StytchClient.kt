@@ -65,6 +65,11 @@ public object StytchClient {
     internal lateinit var dfpProvider: DFPProvider
 
     /**
+     * The public token that the StytchClient is configured to use
+     */
+    public lateinit var publicToken: String
+
+    /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
@@ -82,6 +87,7 @@ public object StytchClient {
      */
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
+            this.publicToken = publicToken
             val deviceInfo = context.getDeviceInfo()
             StorageHelper.initialize(context)
             StytchApi.configure(publicToken, deviceInfo)

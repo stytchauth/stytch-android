@@ -113,7 +113,10 @@ internal class ReturningUserScreenViewModel(
         passwordOptions: PasswordOptions,
     ) {
         // send reset password request and nav appropriately
-        val parameters = passwordOptions.toResetByEmailStartParameters(email)
+        val parameters = passwordOptions.toResetByEmailStartParameters(
+            emailAddress = email,
+            publicToken = stytchClient.publicToken,
+        )
         when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
             is StytchResult.Success -> {
                 _eventFlow.emit(
@@ -140,7 +143,10 @@ internal class ReturningUserScreenViewModel(
             genericErrorMessage = null,
         )
         scope.launch {
-            val parameters = emailMagicLinksOptions.toParameters(uiState.value.emailState.emailAddress)
+            val parameters = emailMagicLinksOptions.toParameters(
+                emailAddress = uiState.value.emailState.emailAddress,
+                publicToken = stytchClient.publicToken,
+            )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -194,7 +200,10 @@ internal class ReturningUserScreenViewModel(
             genericErrorMessage = null,
         )
         scope.launch {
-            val parameters = passwordOptions.toResetByEmailStartParameters(uiState.value.emailState.emailAddress)
+            val parameters = passwordOptions.toResetByEmailStartParameters(
+                emailAddress = uiState.value.emailState.emailAddress,
+                publicToken = stytchClient.publicToken,
+            )
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)

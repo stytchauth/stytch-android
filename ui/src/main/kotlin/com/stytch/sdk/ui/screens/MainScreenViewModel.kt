@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.StytchClient.publicToken
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.userManagement.UserManagement
@@ -195,7 +196,10 @@ internal class MainScreenViewModel(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
     ): NavigationRoute? {
-        val parameters = emailMagicLinksOptions.toParameters(emailAddress)
+        val parameters = emailMagicLinksOptions.toParameters(
+            emailAddress = emailAddress,
+            publicToken = stytchClient.publicToken,
+        )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
@@ -238,7 +242,10 @@ internal class MainScreenViewModel(
         emailAddress: String,
         passwordOptions: PasswordOptions,
     ): NavigationRoute? {
-        val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
+        val parameters = passwordOptions.toResetByEmailStartParameters(
+            emailAddress = emailAddress,
+            publicToken = publicToken
+        )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
@@ -321,7 +328,7 @@ internal class MainScreenViewModel(
             initializer {
                 MainScreenViewModel(
                     stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle
+                    savedStateHandle = savedStateHandle,
                 )
             }
         }

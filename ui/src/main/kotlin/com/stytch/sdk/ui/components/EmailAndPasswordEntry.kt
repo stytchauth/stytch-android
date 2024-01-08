@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.data.EmailState
@@ -23,9 +25,14 @@ internal fun EmailAndPasswordEntry(
     onSubmit: () -> Unit,
 ) {
     val isSubmittable = emailState.validEmail == true && passwordState.validPassword
-    Column {
+    val semantics = stringResource(id = R.string.semantics_email_password_entry)
+    Column(
+        modifier = Modifier.semantics { contentDescription = semantics }
+    ) {
         EmailInput(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
             label = stringResource(id = R.string.email),

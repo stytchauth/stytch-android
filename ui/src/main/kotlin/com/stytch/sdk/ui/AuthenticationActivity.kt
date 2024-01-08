@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.Text
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +15,10 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.StytchUIConfig
-import com.stytch.sdk.ui.screens.MainScreen
 import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.launch
 
-public class AuthenticationActivity : ComponentActivity() {
+internal class AuthenticationActivity : ComponentActivity() {
     private val viewModel: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchUIConfig
     internal lateinit var savedStateHandle: SavedStateHandle
@@ -29,7 +27,12 @@ public class AuthenticationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
             ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
-            ?: throw StytchUIInvalidConfiguration("No UI Configuration Provided")
+            ?: run {
+                returnAuthenticationResult(
+                    StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided"))
+                )
+                return@onCreate
+            }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
@@ -38,27 +41,23 @@ public class AuthenticationActivity : ComponentActivity() {
                         when (it) {
                             is EventState.Authenticated -> returnAuthenticationResult(it.result)
                             is EventState.Exit -> exitWithoutAuthenticating()
-                            is EventState.NavigationRequested -> renderApplication(it.navigationRoute.screen)
+                            is EventState.NavigationRequested -> renderApplicationAtScreen(it.navigationRoute.screen)
                         }
                     }
             }
         }
         savedStateHandle = viewModel.savedStateHandle
-        setContent {
-            StytchTheme(config = uiConfig) {
-                StytchAuthenticationApp(
-                    bootstrapData = uiConfig.bootstrapData,
-                )
-            }
-        }
+        renderApplicationAtScreen()
     }
 
-    private fun renderApplication(screen: AndroidScreen) {
+    private fun renderApplicationAtScreen(screen: AndroidScreen? = null) {
         setContent {
             StytchTheme(config = uiConfig) {
                 StytchAuthenticationApp(
                     bootstrapData = uiConfig.bootstrapData,
                     screen = screen,
+                    productConfig = uiConfig.productConfig,
+                    onInvalidConfig = { returnAuthenticationResult(StytchResult.Error(it)) }
                 )
             }
         }

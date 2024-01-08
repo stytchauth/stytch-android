@@ -63,7 +63,10 @@ internal class EMLConfirmationScreenViewModel(
     ) {
         scope.launch {
             emailAddress?.let {
-                val parameters = passwordOptions.toResetByEmailStartParameters(emailAddress)
+                val parameters = passwordOptions.toResetByEmailStartParameters(
+                    emailAddress = emailAddress,
+                    publicToken = stytchClient.publicToken,
+                )
                 when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> _eventFlow.emit(
                         EventState.NavigationRequested(
