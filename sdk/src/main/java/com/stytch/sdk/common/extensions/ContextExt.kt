@@ -3,6 +3,9 @@ package com.stytch.sdk.common.extensions // ktlint-disable filename
 import android.content.Context
 import android.os.Build
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.EncryptionManager
+import org.bouncycastle.asn1.x500.style.RFC4519Style
+import java.io.File
 
 internal fun Context.getDeviceInfo(): DeviceInfo {
     val deviceInfo = DeviceInfo()
@@ -26,4 +29,14 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
 
     deviceInfo.screenSize = "($width,$height)"
     return deviceInfo
+}
+
+internal fun Context.clearPreferences() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        deleteSharedPreferences(EncryptionManager.PREF_FILE_NAME)
+    } else {
+        getSharedPreferences(EncryptionManager.PREF_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply()
+        val dir = File(applicationInfo.dataDir, "shared_prefs")
+        File(dir, "${RFC4519Style.name}.xml").delete()
+    }
 }
