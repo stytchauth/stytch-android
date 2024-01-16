@@ -1,8 +1,6 @@
 package com.stytch.sdk.common
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.os.Build
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
@@ -17,23 +15,21 @@ import com.stytch.sdk.common.extensions.hexStringToByteArray
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.extensions.toHexString
-import java.io.File
+import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.security.SecureRandom
 import kotlin.random.Random
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 import org.bouncycastle.crypto.Signer
 import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
 import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
-import java.security.InvalidKeyException
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
 
-    internal const val PREF_FILE_NAME = "stytch_secured_pref"
+    private const val PREF_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
     private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
@@ -53,13 +49,13 @@ internal object EncryptionManager {
         } catch (_: InvalidProtocolBufferException) {
             // Possible that the signing key was changed. This causes the preferences file to be unreadable,
             // so we need to destroy and recreate it
-            context.clearPreferences()
-            return getOrGenerateNewAES256KeysetManager(context, keyAlias)
+            context.clearPreferences(PREF_FILE_NAME)
+            getOrGenerateNewAES256KeysetManager(context, keyAlias)
         } catch (_: InvalidKeyException) {
             // Possible that the signing key was changed. This causes the preferences file to be unreadable,
             // so we need to destroy and recreate it
-            context.clearPreferences()
-            return getOrGenerateNewAES256KeysetManager(context, keyAlias)
+            context.clearPreferences(PREF_FILE_NAME)
+            getOrGenerateNewAES256KeysetManager(context, keyAlias)
         }
     }
 

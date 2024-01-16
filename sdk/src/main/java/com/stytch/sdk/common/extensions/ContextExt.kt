@@ -3,7 +3,6 @@ package com.stytch.sdk.common.extensions // ktlint-disable filename
 import android.content.Context
 import android.os.Build
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.EncryptionManager
 import java.io.File
 
 internal fun Context.getDeviceInfo(): DeviceInfo {
@@ -30,12 +29,12 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
     return deviceInfo
 }
 
-internal fun Context.clearPreferences() {
+internal fun Context.clearPreferences(preferencesName: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        deleteSharedPreferences(EncryptionManager.PREF_FILE_NAME)
+        deleteSharedPreferences(preferencesName)
     } else {
-        getSharedPreferences(EncryptionManager.PREF_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply()
+        getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit().clear().apply()
         val dir = File(applicationInfo.dataDir, "shared_prefs")
-        File(dir, "${EncryptionManager.PREF_FILE_NAME}.xml").delete()
+        File(dir, "$preferencesName.xml").delete()
     }
 }
