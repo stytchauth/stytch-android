@@ -72,6 +72,7 @@ internal class EMLConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail delegates to correct method and emits event on success`() = runTest(dispatcher) {
         coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Success(BasicData(200, ""))
+        every { mockStytchClient.publicToken } returns "publicToken"
         val eventFlow = async {
             viewModel.eventFlow.first()
         }
@@ -79,7 +80,7 @@ internal class EMLConfirmationScreenViewModelTest {
         val expectedEvent = EventState.NavigationRequested(
             NavigationRoute.PasswordResetSent(
                 PasswordResetDetails(
-                    mockOptions.toResetByEmailStartParameters("my@email.com"),
+                    mockOptions.toResetByEmailStartParameters("my@email.com", "publicToken"),
                     PasswordResetType.NO_PASSWORD_SET
                 ),
             ),
@@ -91,6 +92,7 @@ internal class EMLConfirmationScreenViewModelTest {
 
     @Test
     fun `sendResetPasswordEmail delegates to correct method and updates state on error`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Error(
             StytchInternalError(message = "Testing error state")
         )

@@ -86,6 +86,7 @@ internal class PasswordResetSentScreenViewModelTest {
     }
     @Test
     fun `sendEML updates state and emits event on success`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
         val eventFlow = async {
             viewModel.eventFlow.first()
@@ -101,6 +102,7 @@ internal class PasswordResetSentScreenViewModelTest {
 
     @Test
     fun `sendEML updates state on failure`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         val result: StytchResult.Error = mockk(relaxed = true) {
             every { exception } returns mockk<StytchInternalError> {
                 every { message } returns "Something bad happened internally"

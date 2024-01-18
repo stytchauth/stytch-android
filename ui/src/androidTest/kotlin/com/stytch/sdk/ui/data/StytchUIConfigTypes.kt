@@ -6,7 +6,6 @@ internal val DEFAULT_STYTCH_UI_CONFIG = StytchUIConfig(
     productConfig = StytchProductConfig(),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(),
-    publicToken = "",
 )
 
 internal val REALISTIC_STYTCH_UI_CONFIG = StytchUIConfig(
@@ -29,7 +28,6 @@ internal val REALISTIC_STYTCH_UI_CONFIG = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(disableSDKWatermark = true),
-    publicToken = ""
 )
 
 internal val REALISTIC_STYTCH_UI_CONFIG_NO_PASSWORD = StytchUIConfig(
@@ -51,7 +49,6 @@ internal val REALISTIC_STYTCH_UI_CONFIG_NO_PASSWORD = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(disableSDKWatermark = true),
-    publicToken = ""
 )
 
 internal val REALISTIC_STYTCH_UI_CONFIG_EML = StytchUIConfig(
@@ -69,7 +66,6 @@ internal val REALISTIC_STYTCH_UI_CONFIG_EML = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(disableSDKWatermark = true),
-    publicToken = ""
 )
 
 internal val REALISTIC_STYTCH_UI_CONFIG_EOTP = StytchUIConfig(
@@ -87,7 +83,6 @@ internal val REALISTIC_STYTCH_UI_CONFIG_EOTP = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(disableSDKWatermark = true),
-    publicToken = ""
 )
 
 internal val REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY = StytchUIConfig(
@@ -103,7 +98,6 @@ internal val REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(disableSDKWatermark = true),
-    publicToken = ""
 )
 
 internal val EML_AND_OTP_ERROR_STYTCH_UI_CONFIG = StytchUIConfig(
@@ -115,7 +109,6 @@ internal val EML_AND_OTP_ERROR_STYTCH_UI_CONFIG = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(),
-    publicToken = "",
 )
 
 internal val NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG = StytchUIConfig(
@@ -127,5 +120,4 @@ internal val NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG = StytchUIConfig(
     ),
     styles = StytchStyles(),
     bootstrapData = BootstrapData(),
-    publicToken = "",
 )

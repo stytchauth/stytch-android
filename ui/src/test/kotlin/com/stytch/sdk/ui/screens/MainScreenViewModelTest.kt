@@ -291,6 +291,7 @@ internal class MainScreenViewModelTest {
 
     @Test
     fun `sendEmailMagicLinkForReturningUserAndGetNavigationRoute returns nav route on success`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Success(mockk())
         val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
         require(route is NavigationRoute.EMLConfirmation)
@@ -300,6 +301,7 @@ internal class MainScreenViewModelTest {
     @Test
     fun `sendEmailMagicLinkForReturningUserAndGetNavigationRoute updates state and returns null on error`() =
         runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Error(
                 StytchAPIError(errorType = "", message = "Something went wrong")
             )
@@ -330,6 +332,7 @@ internal class MainScreenViewModelTest {
 
     @Test
     fun `sendResetPasswordForReturningUserAndGetNavigationRoute returns nav route on success`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         coEvery {
             mockStytchClient.passwords.resetByEmailStart(any())
         } returns StytchResult.Success(mockk(relaxed = true))
@@ -344,6 +347,7 @@ internal class MainScreenViewModelTest {
     @Test
     fun `sendResetPasswordForReturningUserAndGetNavigationRoute updates state and returns null on error`() =
         runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Error(
                 StytchAPIError(errorType = "", message = "Something went wrong")
             )

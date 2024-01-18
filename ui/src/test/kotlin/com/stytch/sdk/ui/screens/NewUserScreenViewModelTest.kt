@@ -60,6 +60,7 @@ internal class NewUserScreenViewModelTest {
 
     @Test
     fun `sendEmailMagicLink updates state and emits correct event on success`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
         val eventFlow = async {
             viewModel.eventFlow.first()
@@ -75,6 +76,7 @@ internal class NewUserScreenViewModelTest {
 
     @Test
     fun `sendEmailMagicLink updates state on error`() = runTest(dispatcher) {
+        every { mockStytchClient.publicToken } returns "publicToken"
         val result: StytchResult.Error = mockk(relaxed = true) {
             every { exception } returns mockk<StytchInternalError> {
                 every { message } returns "Something bad happened internally"
