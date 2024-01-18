@@ -3,6 +3,7 @@ package com.stytch.sdk.common.extensions // ktlint-disable filename
 import android.content.Context
 import android.os.Build
 import com.stytch.sdk.common.DeviceInfo
+import java.io.File
 
 internal fun Context.getDeviceInfo(): DeviceInfo {
     val deviceInfo = DeviceInfo()
@@ -26,4 +27,14 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
 
     deviceInfo.screenSize = "($width,$height)"
     return deviceInfo
+}
+
+internal fun Context.clearPreferences(preferencesName: String) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        deleteSharedPreferences(preferencesName)
+    } else {
+        getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit().clear().apply()
+        val dir = File(applicationInfo.dataDir, "shared_prefs")
+        File(dir, "$preferencesName.xml").delete()
+    }
 }
