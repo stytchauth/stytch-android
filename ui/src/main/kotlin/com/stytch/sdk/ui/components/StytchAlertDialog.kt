@@ -70,7 +70,7 @@ internal fun StytchAlertDialog(
                             Text(
                                 text = cancelText,
                                 style = type.body2.copy(
-                                    color = Color(theme.buttonTextColor),
+                                    color = Color(theme.dialogTextColor),
                                 ),
                             )
                         }
@@ -79,7 +79,7 @@ internal fun StytchAlertDialog(
                         Text(
                             text = acceptText,
                             style = type.body2.copy(
-                                color = Color(theme.buttonTextColor),
+                                color = Color(theme.dialogTextColor),
                             ),
                         )
                     }
