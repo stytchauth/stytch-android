@@ -15,7 +15,9 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
+import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.models.CommonRequests
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,16 +29,23 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class StytchB2BApiTest {
     var mContextMock = mockk<Context>(relaxed = true)
+
+    private val mockDeviceInfo = DeviceInfo(
+        applicationPackageName = "com.stytch.test",
+        applicationVersion = "1.0.0",
+        osName = "Android",
+        osVersion = "14",
+        deviceName = "Test Device",
+        screenSize = ""
+    )
 
     @Before
     fun before() {
@@ -278,6 +287,61 @@ internal class StytchB2BApiTest {
         coEvery { StytchB2BApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
         StytchB2BApi.getBootstrapData()
         coVerify { StytchB2BApi.apiService.getBootstrapData("mock-public-token") }
+    }
+
+    @Test
+    fun `StytchB2BApi Events logEvent calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        every { StytchB2BApi.publicToken } returns "mock-public-token"
+        coEvery { StytchB2BApi.apiService.logEvent(any()) } returns mockk(relaxed = true)
+        val details = mapOf("test-key" to "test value")
+        val header = InfoHeaderModel.fromDeviceInfo(mockDeviceInfo)
+        val result = StytchB2BApi.Events.logEvent(
+            eventId = "event-id",
+            appSessionId = "app-session-id",
+            persistentId = "persistent-id",
+            clientSentAt = "ISO date string",
+            timezone = "Timezone/Identifier",
+            eventName = "event-name",
+            infoHeaderModel = header,
+            details = details,
+        )
+        coVerify(exactly = 1) {
+            StytchB2BApi.apiService.logEvent(
+                listOf(
+                    CommonRequests.Events.Event(
+                        telemetry = CommonRequests.Events.EventTelemetry(
+                            eventId = "event-id",
+                            appSessionId = "app-session-id",
+                            persistentId = "persistent-id",
+                            clientSentAt = "ISO date string",
+                            timezone = "Timezone/Identifier",
+                            app = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.app.identifier,
+                                version = header.app.version
+                            ),
+                            os = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.os.identifier,
+                                version = header.os.version
+                            ),
+                            sdk = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.sdk.identifier,
+                                version = header.sdk.version
+                            ),
+                            device = CommonRequests.Events.DeviceIdentifier(
+                                model = header.device.identifier,
+                                screenSize = header.device.version
+                            ),
+                        ),
+                        event = CommonRequests.Events.EventEvent(
+                            publicToken = "mock-public-token",
+                            eventName = "event-name",
+                            details = details,
+                        ),
+                    )
+                )
+            )
+        }
     }
 
     @Test(expected = StytchSDKNotConfiguredError::class)

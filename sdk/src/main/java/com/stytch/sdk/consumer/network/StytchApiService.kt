@@ -5,6 +5,7 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.ConsumerResponses
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -235,4 +236,12 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.WebAuthn.UpdateRequest
     ): ConsumerResponses.WebAuthn.UpdateResponse
     //endregion WebAuthn
+
+    //region Events
+    @POST("events")
+    suspend fun logEvent(
+        // endpoint expects a list of events because JS SDK batches them
+        @Body request: List<CommonRequests.Events.Event>
+    ): Response<Unit>
+    //endregion Events
 }

@@ -11,9 +11,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.launch
@@ -23,6 +27,7 @@ internal class AuthenticationActivity : ComponentActivity() {
     private lateinit var uiConfig: StytchUIConfig
     internal lateinit var savedStateHandle: SavedStateHandle
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
@@ -33,6 +38,13 @@ internal class AuthenticationActivity : ComponentActivity() {
                 )
                 return@onCreate
             }
+        // log render_login_screen
+        val moshi = Moshi.Builder().build()
+        val options = moshi.adapter<StytchProductConfig>().toJson(uiConfig.productConfig)
+        StytchClient.events.logEvent(
+            eventName = "render_login_screen",
+            details = mapOf("options" to options)
+        )
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel

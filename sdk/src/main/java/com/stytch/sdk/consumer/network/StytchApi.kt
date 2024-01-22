@@ -4,11 +4,14 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.StytchResult.Success
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.ApiService
+import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
@@ -19,6 +22,7 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
+import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
@@ -667,6 +671,56 @@ internal object StytchApi {
 
     suspend fun getBootstrapData(): StytchResult<BootstrapData> = safeConsumerApiCall {
         apiService.getBootstrapData(publicToken = publicToken)
+    }
+
+    internal object Events {
+        suspend fun logEvent(
+            eventId: String,
+            appSessionId: String,
+            persistentId: String,
+            clientSentAt: String,
+            timezone: String,
+            eventName: String,
+            infoHeaderModel: InfoHeaderModel,
+            details: Map<String, Any>? = null,
+        ): NoResponseResponse = safeConsumerApiCall {
+            apiService.logEvent(
+                listOf(
+                    CommonRequests.Events.Event(
+                        telemetry = CommonRequests.Events.EventTelemetry(
+                            eventId = eventId,
+                            appSessionId = appSessionId,
+                            persistentId = persistentId,
+                            clientSentAt = clientSentAt,
+                            timezone = timezone,
+                            app = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.app.identifier,
+                                version = infoHeaderModel.app.version
+                            ),
+                            sdk = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.sdk.identifier,
+                                version = infoHeaderModel.sdk.version
+                            ),
+                            os = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.os.identifier,
+                                version = infoHeaderModel.os.version
+                            ),
+                            device = CommonRequests.Events.DeviceIdentifier(
+                                model = infoHeaderModel.device.identifier,
+                                screenSize = infoHeaderModel.device.version
+                            )
+                        ),
+                        event = CommonRequests.Events.EventEvent(
+                            publicToken = publicToken,
+                            eventName = eventName,
+                            details = details,
+                        )
+                    )
+                )
+            )
+            // Endpoint returns null, but we expect _something_
+            StytchDataResponse(NoResponseData())
+        }
     }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeConsumerApiCall(

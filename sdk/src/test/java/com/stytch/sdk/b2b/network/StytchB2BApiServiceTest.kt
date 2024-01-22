@@ -163,7 +163,7 @@ internal class StytchB2BApiServiceTest {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.revokeSessions()
-            }.verifyPost(expectedPath = "/b2b/sessions/revoke")
+            }.verifyPost(expectedPath = "/b2b/sessions/revoke", emptyMap())
         }
     }
 
@@ -444,6 +444,81 @@ internal class StytchB2BApiServiceTest {
         }
     }
     // endregion Bootstrap
+
+    //region Events
+    @Test
+    fun `check Events logEvent request`() {
+        runBlocking {
+            val parameters: CommonRequests.Events.Event = CommonRequests.Events.Event(
+                telemetry = CommonRequests.Events.EventTelemetry(
+                    eventId = "event-id",
+                    appSessionId = "app-session-id",
+                    persistentId = "persistent-id",
+                    clientSentAt = "client sent at",
+                    timezone = "timezone",
+                    app = CommonRequests.Events.VersionIdentifier(
+                        identifier = "app-id",
+                        version = "app-version"
+                    ),
+                    os = CommonRequests.Events.VersionIdentifier(
+                        identifier = "os-id",
+                        version = "os-version"
+                    ),
+                    sdk = CommonRequests.Events.VersionIdentifier(
+                        identifier = "sdk-id",
+                        version = "sdk-version"
+                    ),
+                    device = CommonRequests.Events.DeviceIdentifier(
+                        model = "device-model",
+                        screenSize = "screen-size"
+                    ),
+                ),
+                event = CommonRequests.Events.EventEvent(
+                    publicToken = "public-token",
+                    eventName = "event name",
+                    details = mapOf("test-key" to "test value"),
+                )
+            )
+            requestIgnoringResponseException {
+                apiService.logEvent(listOf(parameters))
+            }.verifyPost(
+                expectedPath = "/events",
+                expectedBody = listOf(
+                    mapOf(
+                        "telemetry" to mapOf(
+                            "event_id" to parameters.telemetry.eventId,
+                            "app_session_id" to parameters.telemetry.appSessionId,
+                            "persistent_id" to parameters.telemetry.persistentId,
+                            "client_sent_at" to parameters.telemetry.clientSentAt,
+                            "timezone" to parameters.telemetry.timezone,
+                            "app" to mapOf(
+                                "identifier" to parameters.telemetry.app.identifier,
+                                "version" to parameters.telemetry.app.version
+                            ),
+                            "sdk" to mapOf(
+                                "identifier" to parameters.telemetry.sdk.identifier,
+                                "version" to parameters.telemetry.sdk.version
+                            ),
+                            "os" to mapOf(
+                                "identifier" to parameters.telemetry.os.identifier,
+                                "version" to parameters.telemetry.os.version
+                            ),
+                            "device" to mapOf(
+                                "model" to parameters.telemetry.device.model,
+                                "screen_size" to parameters.telemetry.device.screenSize,
+                            )
+                        ),
+                        "event" to mapOf(
+                            "public_token" to parameters.event.publicToken,
+                            "event_name" to parameters.event.eventName,
+                            "details" to parameters.event.details
+                        )
+                    )
+                )
+            )
+        }
+    }
+    //endregion Events
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

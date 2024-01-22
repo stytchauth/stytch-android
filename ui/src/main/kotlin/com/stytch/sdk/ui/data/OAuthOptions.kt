@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -10,6 +11,7 @@ import kotlinx.parcelize.Parcelize
  * @property providers A list of [OAuthProvider]s that you would like to support
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 public data class OAuthOptions(
     val loginRedirectURL: String? = null,
     val signupRedirectURL: String? = null,

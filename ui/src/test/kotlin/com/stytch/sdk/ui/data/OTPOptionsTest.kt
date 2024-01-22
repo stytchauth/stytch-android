@@ -5,7 +5,7 @@ import org.junit.Test
 
 internal class OTPOptionsTest {
     private val defaultOTPOptions = OTPOptions(
-        expirationMinutes = 30U,
+        expirationMinutes = 30,
         loginTemplateId = "login-template-id",
         signupTemplateId = "signup-template-id"
     )
@@ -14,7 +14,7 @@ internal class OTPOptionsTest {
     fun `OTPOptions toEmailOtpParameters produces expected output`() {
         val expected = OTP.EmailOTP.Parameters(
             email = "my@email.com",
-            expirationMinutes = defaultOTPOptions.expirationMinutes,
+            expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
             loginTemplateId = defaultOTPOptions.loginTemplateId,
             signupTemplateId = defaultOTPOptions.signupTemplateId,
         )
@@ -25,7 +25,7 @@ internal class OTPOptionsTest {
     fun `OTPOptions toSMSOtpParameters produces expected output`() {
         val expected = OTP.SmsOTP.Parameters(
             phoneNumber = "123-456-7890",
-            expirationMinutes = defaultOTPOptions.expirationMinutes,
+            expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
         )
         assert(defaultOTPOptions.toSMSOtpParameters("123-456-7890") == expected)
     }
@@ -34,7 +34,7 @@ internal class OTPOptionsTest {
     fun `OTPOptions toWhatsAppOtpParameters produces expected output`() {
         val expected = OTP.WhatsAppOTP.Parameters(
             phoneNumber = "123-456-7890",
-            expirationMinutes = defaultOTPOptions.expirationMinutes,
+            expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
         )
         assert(defaultOTPOptions.toWhatsAppOtpParameters("123-456-7890") == expected)
     }

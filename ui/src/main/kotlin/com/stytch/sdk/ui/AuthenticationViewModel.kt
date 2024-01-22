@@ -42,7 +42,7 @@ internal class AuthenticationViewModel(
         scope.launch {
             val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
                 data = data,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
+                sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
             )
             val result = stytchClient.oauth.googleOneTap.authenticate(parameters)
             _eventFlow.emit(EventState.Authenticated(result))
@@ -58,7 +58,7 @@ internal class AuthenticationViewModel(
         scope.launch {
             if (resultCode == Activity.RESULT_OK) {
                 intent.data?.let {
-                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
+                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes.toUInt())) {
                         is DeeplinkHandledStatus.Handled -> {
                             _eventFlow.emit(EventState.Authenticated(result.response.result))
                         }
@@ -80,7 +80,7 @@ internal class AuthenticationViewModel(
             when (
                 val result = stytchClient.handle(
                     uri = uri,
-                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt()
                 )
             ) {
                 is DeeplinkHandledStatus.Handled -> {

@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
+import com.stytch.sdk.b2b.events.Events
+import com.stytch.sdk.b2b.events.EventsImpl
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
@@ -23,6 +25,7 @@ import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -46,6 +49,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 /**
  * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our
@@ -66,6 +70,9 @@ public object StytchB2BClient {
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
+    private lateinit var deviceInfo: DeviceInfo
+    private lateinit var appSessionId: String
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -77,7 +84,8 @@ public object StytchB2BClient {
      */
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
-            val deviceInfo = context.getDeviceInfo()
+            deviceInfo = context.getDeviceInfo()
+            appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchB2BApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
@@ -255,6 +263,12 @@ public object StytchB2BClient {
         assertInitialized()
         DFPImpl(dfpProvider, dispatchers, externalScope)
     }
+
+    public val events: Events
+        get() {
+            assertInitialized()
+            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
+        }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

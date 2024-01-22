@@ -1,8 +1,6 @@
 package com.stytch.sdk.common.network
 
 import com.google.crypto.tink.subtle.Base64
-import com.stytch.sdk.BuildConfig
-import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -23,26 +21,7 @@ internal class StytchAuthHeaderInterceptor(
             Base64.NO_WRAP
         )
         val infoHeader = Base64.encodeToString(
-            InfoHeaderModel(
-                sdk = InfoHeaderModel.Item(
-                    Constants.AUTH_HEADER_SDK_NAME,
-                    BuildConfig.STYTCH_SDK_VERSION
-                ),
-                app = InfoHeaderModel.Item(
-                    deviceInfo.applicationPackageName ?: "",
-                    deviceInfo.applicationVersion ?: ""
-                ),
-                os = InfoHeaderModel.Item(
-                    deviceInfo.osName ?: "",
-                    deviceInfo.osVersion ?: ""
-                ),
-                device = InfoHeaderModel.Item(
-                    deviceInfo.deviceName ?: "",
-                    deviceInfo.screenSize ?: "",
-                    "model",
-                    "screen_size"
-                )
-            ).json.toByteArray(),
+            InfoHeaderModel.fromDeviceInfo(deviceInfo).json.toByteArray(),
             Base64.NO_WRAP
         )
 

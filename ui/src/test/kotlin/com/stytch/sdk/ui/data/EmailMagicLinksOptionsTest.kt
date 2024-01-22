@@ -8,8 +8,8 @@ internal class EmailMagicLinksOptionsTest {
     @Test
     fun `EmailMagicLinksOptions toParameters produces expected output`() {
         val options = EmailMagicLinksOptions(
-            loginExpirationMinutes = 30U,
-            signupExpirationMinutes = 20U,
+            loginExpirationMinutes = 30,
+            signupExpirationMinutes = 20,
             loginTemplateId = "login-template-id",
             signupTemplateId = "signup-template-id",
         )
@@ -17,8 +17,8 @@ internal class EmailMagicLinksOptionsTest {
             email = "my@email.com",
             loginMagicLinkUrl = "stytchui-publicToken://deeplink",
             signupMagicLinkUrl = "stytchui-publicToken://deeplink",
-            loginExpirationMinutes = options.loginExpirationMinutes,
-            signupExpirationMinutes = options.signupExpirationMinutes,
+            loginExpirationMinutes = options.loginExpirationMinutes?.toUInt(),
+            signupExpirationMinutes = options.signupExpirationMinutes?.toUInt(),
             loginTemplateId = options.loginTemplateId,
             signupTemplateId = options.signupTemplateId,
         )
