@@ -6,6 +6,7 @@ import android.net.Uri
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -25,6 +26,8 @@ import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
+import com.stytch.sdk.consumer.events.Events
+import com.stytch.sdk.consumer.events.EventsImpl
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
@@ -50,6 +53,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 /**
  * The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our
@@ -76,6 +80,9 @@ public object StytchClient {
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
+    private lateinit var deviceInfo: DeviceInfo
+    private lateinit var appSessionId: String
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -88,7 +95,8 @@ public object StytchClient {
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
             this.publicToken = publicToken
-            val deviceInfo = context.getDeviceInfo()
+            deviceInfo = context.getDeviceInfo()
+            appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
@@ -293,6 +301,12 @@ public object StytchClient {
         get() {
             assertInitialized()
             return DFPImpl(dfpProvider, dispatchers, externalScope)
+        }
+
+    public val events: Events
+        get() {
+            assertInitialized()
+            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
         }
 
     /**

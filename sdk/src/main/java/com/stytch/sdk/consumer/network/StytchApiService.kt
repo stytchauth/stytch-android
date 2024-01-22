@@ -235,4 +235,11 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.WebAuthn.UpdateRequest
     ): ConsumerResponses.WebAuthn.UpdateResponse
     //endregion WebAuthn
+
+    //region Events
+    @POST("events")
+    suspend fun logEvent(
+        @Body request: CommonRequests.Events.Event
+    ): CommonResponses.NoResponse
+    //endredion Events
 }

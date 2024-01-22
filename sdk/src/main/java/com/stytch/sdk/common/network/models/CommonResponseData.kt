@@ -365,3 +365,7 @@ public data class CaptchaSettings(
     val enabled: Boolean = false,
     val siteKey: String = ""
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public class NoResponseData : Parcelable

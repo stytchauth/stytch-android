@@ -113,4 +113,11 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "publicToken") publicToken: String
     ): CommonResponses.Bootstrap.BootstrapResponse
     //endregion Bootstrap
+
+    //region Events
+    @POST("events")
+    suspend fun logEvent(
+        @Body request: CommonRequests.Events.Event
+    ): CommonResponses.NoResponse
+    //endredion Events
 }

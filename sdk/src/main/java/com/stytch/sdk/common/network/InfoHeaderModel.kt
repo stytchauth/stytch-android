@@ -1,5 +1,9 @@
 package com.stytch.sdk.common.network
 
+import com.stytch.sdk.BuildConfig
+import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DeviceInfo
+
 internal data class InfoHeaderModel(
     val sdk: Item,
     val app: Item,
@@ -28,5 +32,27 @@ internal data class InfoHeaderModel(
             get() {
                 return "{ \"$identifierName\": \"$identifier\", \"$versionName\": \"$version\" }"
             }
+    }
+    companion object {
+        fun fromDeviceInfo(deviceInfo: DeviceInfo): InfoHeaderModel = InfoHeaderModel(
+            sdk = Item(
+                Constants.AUTH_HEADER_SDK_NAME,
+                BuildConfig.STYTCH_SDK_VERSION
+            ),
+            app = Item(
+                deviceInfo.applicationPackageName ?: "",
+                deviceInfo.applicationVersion ?: ""
+            ),
+            os = Item(
+                deviceInfo.osName ?: "",
+                deviceInfo.osVersion ?: ""
+            ),
+            device = Item(
+                deviceInfo.deviceName ?: "",
+                deviceInfo.screenSize ?: "",
+                "model",
+                "screen_size"
+            )
+        )
     }
 }
