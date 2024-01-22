@@ -30,4 +30,7 @@ internal object CommonResponses {
 
     @JsonClass(generateAdapter = true)
     class SendResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
+
+    @JsonClass(generateAdapter = true)
+    class NoResponse(data: NoResponseData) : StytchDataResponse<NoResponseData>(data)
 }

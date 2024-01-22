@@ -8,7 +8,9 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
+import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import io.mockk.clearAllMocks
@@ -22,16 +24,23 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import java.security.KeyStore
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class StytchApiTest {
     var mContextMock = mockk<Context>(relaxed = true)
+
+    private val mockDeviceInfo = DeviceInfo(
+        applicationPackageName = "com.stytch.test",
+        applicationVersion = "1.0.0",
+        osName = "Android",
+        osVersion = "14",
+        deviceName = "Test Device",
+        screenSize = ""
+    )
 
     @Before
     fun before() {
@@ -376,6 +385,20 @@ internal class StytchApiTest {
     }
 
     @Test
+    fun `StytchApi User searchUsers calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        coEvery { StytchApi.apiService.searchUsers(any()) } returns mockk(relaxed = true)
+        StytchApi.UserManagement.searchUsers("user@domain.com")
+        coVerify {
+            StytchApi.apiService.searchUsers(
+                ConsumerRequests.User.SearchRequest(
+                    email = "user@domain.com"
+                )
+            )
+        }
+    }
+
+    @Test
     fun `StytchApi Webauthn registerStart calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery { StytchApi.apiService.webAuthnRegisterStart(mockk(relaxed = true)) } returns mockk(relaxed = true)
@@ -425,6 +448,61 @@ internal class StytchApiTest {
         coEvery { StytchApi.apiService.webAuthnUpdate(any(), any()) } returns mockk(relaxed = true)
         StytchApi.WebAuthn.update("", "my new name")
         coVerify { StytchApi.apiService.webAuthnUpdate("", any()) }
+    }
+
+    @Test
+    fun `StytchApi Events logEvent calls appropriate apiService method`() = runTest {
+        every { StytchApi.isInitialized } returns true
+        every { StytchApi.publicToken } returns "mock-public-token"
+        coEvery { StytchApi.apiService.logEvent(any()) } returns mockk(relaxed = true)
+        val details = mapOf("test-key" to "test value")
+        val header = InfoHeaderModel.fromDeviceInfo(mockDeviceInfo)
+        val result = StytchApi.Events.logEvent(
+            eventId = "event-id",
+            appSessionId = "app-session-id",
+            persistentId = "persistent-id",
+            clientSentAt = "ISO date string",
+            timezone = "Timezone/Identifier",
+            eventName = "event-name",
+            infoHeaderModel = header,
+            details = details,
+        )
+        coVerify(exactly = 1) {
+            StytchApi.apiService.logEvent(
+                listOf(
+                    CommonRequests.Events.Event(
+                        telemetry = CommonRequests.Events.EventTelemetry(
+                            eventId = "event-id",
+                            appSessionId = "app-session-id",
+                            persistentId = "persistent-id",
+                            clientSentAt = "ISO date string",
+                            timezone = "Timezone/Identifier",
+                            app = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.app.identifier,
+                                version = header.app.version
+                            ),
+                            os = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.os.identifier,
+                                version = header.os.version
+                            ),
+                            sdk = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.sdk.identifier,
+                                version = header.sdk.version
+                            ),
+                            device = CommonRequests.Events.DeviceIdentifier(
+                                model = header.device.identifier,
+                                screenSize = header.device.version
+                            ),
+                        ),
+                        event = CommonRequests.Events.EventEvent(
+                            publicToken = "mock-public-token",
+                            eventName = "event-name",
+                            details = details,
+                        ),
+                    )
+                )
+            )
+        }
     }
 
     @Test(expected = StytchSDKNotConfiguredError::class)

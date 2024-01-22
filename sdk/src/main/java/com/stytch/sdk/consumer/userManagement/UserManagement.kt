@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
@@ -65,4 +66,26 @@ public interface UserManagement {
      * @param callback a callback that receives an [UpdateUserResponse]
      */
     public fun update(params: UpdateParams, callback: (UpdateUserResponse) -> Unit)
+
+    /**
+     * Data class used for wrapping parameters used for searching Users
+     * @property email the email address to search for
+     */
+    public data class SearchParams(
+        val email: String,
+    )
+
+    /**
+     * Searches for the specified user
+     * @param params required for searching users
+     * @return [SearchUserResponse]
+     */
+    public suspend fun search(params: SearchParams): SearchUserResponse
+
+    /**
+     * Searches for the specified user
+     * @param params required for searching users
+     * @param callback a callback that receives a [SearchUserResponse]
+     */
+    public fun search(params: SearchParams, callback: (SearchUserResponse) -> Unit)
 }

@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
+import com.stytch.sdk.b2b.events.Events
+import com.stytch.sdk.b2b.events.EventsImpl
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
@@ -23,6 +25,7 @@ import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -38,6 +41,8 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +61,6 @@ public object StytchB2BClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
-
     internal lateinit var dfpProvider: DFPProvider
 
     /**
@@ -65,6 +69,9 @@ public object StytchB2BClient {
      */
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    private lateinit var deviceInfo: DeviceInfo
+    private lateinit var appSessionId: String
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -77,7 +84,8 @@ public object StytchB2BClient {
      */
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
-            val deviceInfo = context.getDeviceInfo()
+            deviceInfo = context.getDeviceInfo()
+            appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchB2BApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
@@ -95,7 +103,7 @@ public object StytchB2BClient {
                         bootstrapData.captchaSettings.siteKey
                     ),
                     bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -255,6 +263,12 @@ public object StytchB2BClient {
         assertInitialized()
         DFPImpl(dfpProvider, dispatchers, externalScope)
     }
+
+    public val events: Events
+        get() {
+            assertInitialized()
+            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
+        }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

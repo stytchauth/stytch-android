@@ -58,7 +58,7 @@ internal class StytchClientTest {
     @MockK
     private lateinit var mockOAuth: OAuth
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -388,7 +388,7 @@ internal class StytchClientTest {
         assert(StytchClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "OAUTH"
         assert(StytchClient.canHandle(uri))
-        every { uri.getQueryParameter(any()) } returns "PASSWORD_RESET"
+        every { uri.getQueryParameter(any()) } returns "RESET_PASSWORD"
         assert(StytchClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
         assert(!StytchClient.canHandle(uri))

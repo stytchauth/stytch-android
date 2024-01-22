@@ -219,6 +219,11 @@ internal object ConsumerRequests {
             @Json(name = "untrusted_metadata")
             val untrustedMetadata: Map<String, Any?>? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class SearchRequest(
+            val email: String,
+        )
     }
 
     object WebAuthn {

@@ -1,8 +1,10 @@
 package com.stytch.sdk.consumer.magicLinks
 
+import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.consumer.AuthResponse
+import kotlinx.parcelize.Parcelize
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
@@ -65,6 +67,7 @@ public interface MagicLinks {
          * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
          */
+        @Parcelize
         public data class Parameters(
             val email: String,
             val loginMagicLinkUrl: String? = null,
@@ -73,7 +76,7 @@ public interface MagicLinks {
             val signupExpirationMinutes: UInt? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
-        )
+        ) : Parcelable
 
         /**
          * Send either a login or signup magic link to the user based on if the email is associated with a user already.

@@ -6,6 +6,7 @@ import android.net.Uri
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -21,9 +22,12 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
+import com.stytch.sdk.consumer.events.Events
+import com.stytch.sdk.consumer.events.EventsImpl
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
@@ -42,6 +46,7 @@ import com.stytch.sdk.consumer.sessions.SessionsImpl
 import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,11 +69,19 @@ public object StytchClient {
     internal lateinit var dfpProvider: DFPProvider
 
     /**
+     * The public token that the StytchClient is configured to use
+     */
+    public lateinit var publicToken: String
+
+    /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    private lateinit var deviceInfo: DeviceInfo
+    private lateinit var appSessionId: String
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -81,7 +94,9 @@ public object StytchClient {
      */
     public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
         try {
-            val deviceInfo = context.getDeviceInfo()
+            this.publicToken = publicToken
+            deviceInfo = context.getDeviceInfo()
+            appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
@@ -100,7 +115,7 @@ public object StytchClient {
                         bootstrapData.captchaSettings.siteKey
                     ),
                     bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -288,6 +303,12 @@ public object StytchClient {
             return DFPImpl(dfpProvider, dispatchers, externalScope)
         }
 
+    public val events: Events
+        get() {
+            assertInitialized()
+            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
+        }
+
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: Email Magic Links, Third-Party OAuth, and Password resets.
@@ -326,8 +347,8 @@ public object StytchClient {
                         )
                     )
                 }
-                ConsumerTokenType.PASSWORD_RESET -> {
-                    DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.PASSWORD_RESET, token = token)
+                ConsumerTokenType.RESET_PASSWORD -> {
+                    DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.RESET_PASSWORD, token = token)
                 }
                 else -> {
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)

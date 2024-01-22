@@ -151,3 +151,13 @@ public data class StytchBiometricAuthenticationFailed(
 ) : StytchSDKError(
     message = "Biometric authentication failed"
 )
+
+/**
+ * Thrown when we encounter an SSO error
+ */
+public data class StytchSSOError(
+    public override val exception: Throwable? = null
+) : StytchSDKError(
+    message = "",
+    exception = exception
+)

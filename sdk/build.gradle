@@ -3,11 +3,12 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id "org.jetbrains.dokka"
+    id 'kotlin-parcelize'
 }
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.18.2'
+  PUBLISH_VERSION = '0.18.3'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -42,11 +43,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
         freeCompilerArgs += '-Xexplicit-api=strict'
     }
     testOptions {
@@ -73,7 +74,9 @@ android {
     }
 }
 
-tasks.named("dokkaHtml").configure {
+tasks.named("dokkaHtmlPartial").configure {
+    dependsOn(tasks.named("kaptDebugKotlin"))
+    dependsOn(tasks.named("kaptReleaseKotlin"))
     dependencies {
         dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }
@@ -105,13 +108,15 @@ tasks.named("dokkaHtml").configure {
             }
             reportUndocumented.set(true)
         }
+        /*
         // TODO: Switch to KTS files to make this a lot easier/more idiomatic
         pluginsMapConfiguration.set([
             "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
                 "version": "$PUBLISH_VERSION",
-                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions"
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/sdk"
             }"""
         ])
+         */
     }
 }
 
@@ -119,8 +124,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
     implementation "androidx.browser:browser:1.4.0"
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
@@ -135,9 +140,8 @@ dependencies {
 
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.mockito:mockito-core:4.6.1"
-    testImplementation "io.mockk:mockk:1.12.5"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.7.2")
+    testImplementation "io.mockk:mockk:1.13.8"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
     testImplementation("org.json:json:20230227")
 }
