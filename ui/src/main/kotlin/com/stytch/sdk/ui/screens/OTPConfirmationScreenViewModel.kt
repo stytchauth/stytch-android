@@ -84,7 +84,7 @@ internal class OTPConfirmationScreenViewModel(
                     OTP.AuthParameters(
                         token = token,
                         methodId = methodId,
-                        sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
+                        sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
                     ),
                 )
             ) {

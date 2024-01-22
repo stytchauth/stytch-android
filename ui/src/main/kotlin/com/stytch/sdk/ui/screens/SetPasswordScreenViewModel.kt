@@ -87,7 +87,7 @@ internal class SetPasswordScreenViewModel(
             val parameters = Passwords.ResetByEmailParameters(
                 token = token,
                 password = password,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
+                sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
             )
             when (val result = stytchClient.passwords.resetByEmail(parameters)) {
                 is StytchResult.Success -> _eventFlow.emit(

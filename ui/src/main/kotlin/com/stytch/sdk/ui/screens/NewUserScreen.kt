@@ -64,7 +64,7 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
             onEmailAndPasswordSubmitted = {
-                viewModel.createAccountWithPassword(productConfig.sessionOptions.sessionDurationMinutes)
+                viewModel.createAccountWithPassword(productConfig.sessionOptions.sessionDurationMinutes.toUInt())
             },
             hasEML = hasEML,
             hasEmailOTP = hasEmailOTP,

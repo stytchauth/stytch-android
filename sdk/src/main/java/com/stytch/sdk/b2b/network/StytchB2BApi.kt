@@ -38,6 +38,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
 internal object StytchB2BApi {
@@ -402,37 +403,41 @@ internal object StytchB2BApi {
             details: Map<String, Any>? = null,
         ): NoResponseResponse = safeB2BApiCall {
             apiService.logEvent(
-                CommonRequests.Events.Event(
-                    telemetry = CommonRequests.Events.EventTelemetry(
-                        eventId = eventId,
-                        appSessionId = appSessionId,
-                        persistentId = persistentId,
-                        clientSentAt = clientSentAt,
-                        timezone = timezone,
-                        app = CommonRequests.Events.VersionIdentifier(
-                            identifier = infoHeaderModel.app.identifier,
-                            version = infoHeaderModel.app.version
+                listOf(
+                    CommonRequests.Events.Event(
+                        telemetry = CommonRequests.Events.EventTelemetry(
+                            eventId = eventId,
+                            appSessionId = appSessionId,
+                            persistentId = persistentId,
+                            clientSentAt = clientSentAt,
+                            timezone = timezone,
+                            app = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.app.identifier,
+                                version = infoHeaderModel.app.version
+                            ),
+                            sdk = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.sdk.identifier,
+                                version = infoHeaderModel.sdk.version
+                            ),
+                            os = CommonRequests.Events.VersionIdentifier(
+                                identifier = infoHeaderModel.os.identifier,
+                                version = infoHeaderModel.os.version
+                            ),
+                            device = CommonRequests.Events.DeviceIdentifier(
+                                model = infoHeaderModel.device.identifier,
+                                screenSize = infoHeaderModel.device.version
+                            )
                         ),
-                        sdk = CommonRequests.Events.VersionIdentifier(
-                            identifier = infoHeaderModel.sdk.identifier,
-                            version = infoHeaderModel.sdk.version
-                        ),
-                        os = CommonRequests.Events.VersionIdentifier(
-                            identifier = infoHeaderModel.os.identifier,
-                            version = infoHeaderModel.os.version
-                        ),
-                        device = CommonRequests.Events.DeviceIdentifier(
-                            model = infoHeaderModel.device.identifier,
-                            screenSize = infoHeaderModel.device.version
+                        event = CommonRequests.Events.EventEvent(
+                            publicToken = publicToken,
+                            eventName = eventName,
+                            details = details,
                         )
-                    ),
-                    event = CommonRequests.Events.EventEvent(
-                        publicToken = publicToken,
-                        eventName = eventName,
-                        details = details,
                     )
                 )
             )
+            // Endpoint returns null, but we expect _something_
+            StytchDataResponse(NoResponseData())
         }
     }
 

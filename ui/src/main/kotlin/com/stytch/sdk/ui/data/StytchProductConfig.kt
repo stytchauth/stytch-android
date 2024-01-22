@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -14,6 +15,7 @@ import kotlinx.parcelize.Parcelize
  * @property googleOauthOptions an instance of [GoogleOAuthOptions]
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 public data class StytchProductConfig(
     val products: List<StytchProduct> = listOf(
         StytchProduct.EMAIL_MAGIC_LINKS,

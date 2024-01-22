@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import com.squareup.moshi.JsonClass
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import kotlinx.parcelize.Parcelize
 
@@ -12,9 +13,10 @@ import kotlinx.parcelize.Parcelize
  * @property signupTemplateId The ID of an email template (defined in the Stytch Dashboard) for signup emails
  */
 @Parcelize
+@JsonClass(generateAdapter = true)
 public data class EmailMagicLinksOptions(
-    val loginExpirationMinutes: UInt? = null,
-    val signupExpirationMinutes: UInt? = null,
+    val loginExpirationMinutes: Int? = null,
+    val signupExpirationMinutes: Int? = null,
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,
 ) : Parcelable {
@@ -22,8 +24,8 @@ public data class EmailMagicLinksOptions(
         email = emailAddress,
         loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
         signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
-        loginExpirationMinutes = loginExpirationMinutes,
-        signupExpirationMinutes = signupExpirationMinutes,
+        loginExpirationMinutes = loginExpirationMinutes?.toUInt(),
+        signupExpirationMinutes = signupExpirationMinutes?.toUInt(),
         loginTemplateId = loginTemplateId,
         signupTemplateId = signupTemplateId,
     )

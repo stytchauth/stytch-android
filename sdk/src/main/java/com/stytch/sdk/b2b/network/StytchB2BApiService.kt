@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.network.models.B2BResponses
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -117,7 +118,8 @@ internal interface StytchB2BApiService : ApiService {
     //region Events
     @POST("events")
     suspend fun logEvent(
-        @Body request: CommonRequests.Events.Event
-    ): CommonResponses.NoResponse
+        // endpoint expects a list of events because JS SDK batches them
+        @Body request: List<CommonRequests.Events.Event>
+    ): Response<Unit>
     //endredion Events
 }
