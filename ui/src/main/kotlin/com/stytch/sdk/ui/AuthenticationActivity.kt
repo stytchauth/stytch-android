@@ -41,6 +41,12 @@ internal class AuthenticationActivity : ComponentActivity() {
         // log render_login_screen
         val moshi = Moshi.Builder().build()
         val options = moshi.adapter<StytchProductConfig>().toJson(uiConfig.productConfig)
+        if (StytchClient.isInitialized.value) {
+            StytchClient.events.logEvent(
+                eventName = "render_login_screen",
+                details = mapOf("options" to options)
+            )
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
@@ -52,14 +58,6 @@ internal class AuthenticationActivity : ComponentActivity() {
                             is EventState.NavigationRequested -> renderApplicationAtScreen(it.navigationRoute.screen)
                         }
                     }
-            }
-            StytchClient.isInitialized.collect { isInitialized ->
-                if (isInitialized) {
-                    StytchClient.events.logEvent(
-                        eventName = "render_login_screen",
-                        details = mapOf("options" to options)
-                    )
-                }
             }
         }
         savedStateHandle = viewModel.savedStateHandle
