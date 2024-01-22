@@ -2,7 +2,6 @@ package com.stytch.sdk.b2b.network
 
 import android.app.Application
 import android.content.Context
-import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
@@ -309,35 +308,37 @@ internal class StytchB2BApiTest {
         )
         coVerify(exactly = 1) {
             StytchB2BApi.apiService.logEvent(
-                CommonRequests.Events.Event(
-                    telemetry = CommonRequests.Events.EventTelemetry(
-                        eventId = "event-id",
-                        appSessionId = "app-session-id",
-                        persistentId = "persistent-id",
-                        clientSentAt = "ISO date string",
-                        timezone = "Timezone/Identifier",
-                        app = CommonRequests.Events.VersionIdentifier(
-                            identifier = header.app.identifier,
-                            version = header.app.version
+                listOf(
+                    CommonRequests.Events.Event(
+                        telemetry = CommonRequests.Events.EventTelemetry(
+                            eventId = "event-id",
+                            appSessionId = "app-session-id",
+                            persistentId = "persistent-id",
+                            clientSentAt = "ISO date string",
+                            timezone = "Timezone/Identifier",
+                            app = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.app.identifier,
+                                version = header.app.version
+                            ),
+                            os = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.os.identifier,
+                                version = header.os.version
+                            ),
+                            sdk = CommonRequests.Events.VersionIdentifier(
+                                identifier = header.sdk.identifier,
+                                version = header.sdk.version
+                            ),
+                            device = CommonRequests.Events.DeviceIdentifier(
+                                model = header.device.identifier,
+                                screenSize = header.device.version
+                            ),
                         ),
-                        os = CommonRequests.Events.VersionIdentifier(
-                            identifier = header.os.identifier,
-                            version = header.os.version
+                        event = CommonRequests.Events.EventEvent(
+                            publicToken = "mock-public-token",
+                            eventName = "event-name",
+                            details = details,
                         ),
-                        sdk = CommonRequests.Events.VersionIdentifier(
-                            identifier = header.sdk.identifier,
-                            version = header.sdk.version
-                        ),
-                        device = CommonRequests.Events.DeviceIdentifier(
-                            model = header.device.identifier,
-                            screenSize = header.device.version
-                        ),
-                    ),
-                    event = CommonRequests.Events.EventEvent(
-                        publicToken = "mock-public-token",
-                        eventName = "event-name",
-                        details = details,
-                    ),
+                    )
                 )
             )
         }

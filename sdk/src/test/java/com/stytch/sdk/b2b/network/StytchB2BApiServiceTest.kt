@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b.network
 
-import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
@@ -164,7 +163,7 @@ internal class StytchB2BApiServiceTest {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.revokeSessions()
-            }.verifyPost(expectedPath = "/b2b/sessions/revoke")
+            }.verifyPost(expectedPath = "/b2b/sessions/revoke", emptyMap())
         }
     }
 
@@ -481,37 +480,39 @@ internal class StytchB2BApiServiceTest {
                 )
             )
             requestIgnoringResponseException {
-                apiService.logEvent(parameters)
+                apiService.logEvent(listOf(parameters))
             }.verifyPost(
                 expectedPath = "/events",
-                expectedBody = mapOf(
-                    "telemetry" to mapOf(
-                        "event_id" to parameters.telemetry.eventId,
-                        "app_session_id" to parameters.telemetry.appSessionId,
-                        "persistent_id" to parameters.telemetry.persistentId,
-                        "client_sent_at" to parameters.telemetry.clientSentAt,
-                        "timezone" to parameters.telemetry.timezone,
-                        "app" to mapOf(
-                            "identifier" to parameters.telemetry.app.identifier,
-                            "version" to parameters.telemetry.app.version
+                expectedBody = listOf(
+                    mapOf(
+                        "telemetry" to mapOf(
+                            "event_id" to parameters.telemetry.eventId,
+                            "app_session_id" to parameters.telemetry.appSessionId,
+                            "persistent_id" to parameters.telemetry.persistentId,
+                            "client_sent_at" to parameters.telemetry.clientSentAt,
+                            "timezone" to parameters.telemetry.timezone,
+                            "app" to mapOf(
+                                "identifier" to parameters.telemetry.app.identifier,
+                                "version" to parameters.telemetry.app.version
+                            ),
+                            "sdk" to mapOf(
+                                "identifier" to parameters.telemetry.sdk.identifier,
+                                "version" to parameters.telemetry.sdk.version
+                            ),
+                            "os" to mapOf(
+                                "identifier" to parameters.telemetry.os.identifier,
+                                "version" to parameters.telemetry.os.version
+                            ),
+                            "device" to mapOf(
+                                "model" to parameters.telemetry.device.model,
+                                "screen_size" to parameters.telemetry.device.screenSize,
+                            )
                         ),
-                        "sdk" to mapOf(
-                            "identifier" to parameters.telemetry.sdk.identifier,
-                            "version" to parameters.telemetry.sdk.version
-                        ),
-                        "os" to mapOf(
-                            "identifier" to parameters.telemetry.os.identifier,
-                            "version" to parameters.telemetry.os.version
-                        ),
-                        "device" to mapOf(
-                            "model" to parameters.telemetry.device.model,
-                            "screen_size" to parameters.telemetry.device.screenSize,
+                        "event" to mapOf(
+                            "public_token" to parameters.event.publicToken,
+                            "event_name" to parameters.event.eventName,
+                            "details" to parameters.event.details
                         )
-                    ),
-                    "event" to mapOf(
-                        "public_token" to parameters.event.publicToken,
-                        "event_name" to parameters.event.eventName,
-                        "details" to parameters.event.details
                     )
                 )
             )

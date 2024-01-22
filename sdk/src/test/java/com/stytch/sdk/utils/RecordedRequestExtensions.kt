@@ -50,7 +50,7 @@ private fun compare(key: String, requestValue: JsonElement, expectedValue: Any?)
 private fun RecordedRequest.verify(
     expectedMethod: String,
     expectedPath: String,
-    expectedBody: Map<String, Any?>,
+    expectedBody: List<Map<String, Any?>>,
 ) {
     assert(method == expectedMethod)
     assert(path == expectedPath)
@@ -58,8 +58,16 @@ private fun RecordedRequest.verify(
     if (bodyString.isEmpty()) {
         bodyString = "{}"
     }
-    val bodyJson = JsonParser.parseString(bodyString).asJsonObject
-    expectedBody.forEach { (key, expectedValue) ->
+    // The below assumes that every list is ALWAYS only 1 element large, because the only request we ever make as a list
+    // is an event log, which is the only one that _has_ to be a list. Everything else is just a map that we wrap
+    // in a list for testing purposes. This helper will fail if we ever test sending multiple events, but we'll
+    // cross that bridge when we get to it.
+    val bodyJson = try {
+        JsonParser.parseString(bodyString).asJsonObject
+    } catch (_: IllegalStateException) {
+        JsonParser.parseString(bodyString).asJsonArray[0].asJsonObject
+    }
+    expectedBody[0].forEach { (key, expectedValue) ->
         val requestValue = bodyJson.get(key)
         try {
             compare(key, requestValue, expectedValue)
@@ -80,17 +88,22 @@ private fun RecordedRequest.verify(
 internal fun RecordedRequest.verifyPost(
     expectedPath: String,
     expectedBody: Map<String, Any?> = emptyMap()
+) = verify("POST", expectedPath, listOf(expectedBody))
+
+internal fun RecordedRequest.verifyPost(
+    expectedPath: String,
+    expectedBody: List<Map<String, Any?>> = emptyList()
 ) = verify("POST", expectedPath, expectedBody)
 
 internal fun RecordedRequest.verifyGet(
     expectedPath: String
-) = verify("GET", expectedPath, emptyMap())
+) = verify("GET", expectedPath, listOf(emptyMap()))
 
 internal fun RecordedRequest.verifyDelete(
     expectedPath: String,
-) = verify("DELETE", expectedPath, emptyMap())
+) = verify("DELETE", expectedPath, listOf(emptyMap()))
 
 internal fun RecordedRequest.verifyPut(
     expectedPath: String,
     expectedBody: Map<String, Any?> = emptyMap()
-) = verify("PUT", expectedPath, expectedBody)
+) = verify("PUT", expectedPath, listOf(expectedBody))

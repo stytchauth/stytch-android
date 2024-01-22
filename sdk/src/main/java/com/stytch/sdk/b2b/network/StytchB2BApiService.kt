@@ -121,5 +121,5 @@ internal interface StytchB2BApiService : ApiService {
         // endpoint expects a list of events because JS SDK batches them
         @Body request: List<CommonRequests.Events.Event>
     ): Response<Unit>
-    //endredion Events
+    //endregion Events
 }
