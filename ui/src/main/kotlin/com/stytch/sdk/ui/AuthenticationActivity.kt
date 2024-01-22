@@ -11,22 +11,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonReader
-import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import com.squareup.moshi.adapter
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.OAuthProvider
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.RawValue
 
 internal class AuthenticationActivity : ComponentActivity() {
     private val viewModel: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
