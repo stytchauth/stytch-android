@@ -29,7 +29,8 @@ internal class EventsImpl(
                 timezone = TimeZone.getDefault().id,
                 eventName = eventName,
                 infoHeaderModel = infoHeaderModel,
-                details = details
+                details = details,
+                error = error,
             )
         }
     }

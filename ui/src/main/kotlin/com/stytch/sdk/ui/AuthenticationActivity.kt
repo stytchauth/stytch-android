@@ -92,6 +92,16 @@ internal class AuthenticationActivity : ComponentActivity() {
     }
 
     internal fun returnAuthenticationResult(result: StytchResult<*>) {
+        if (StytchClient.isInitialized.value) {
+            when (result) {
+                is StytchResult.Success -> StytchClient.events.logEvent("ui_authentication_success")
+                is StytchResult.Error -> StytchClient.events.logEvent(
+                    eventName = "ui_authentication_failure",
+                    details = null,
+                    error = result.exception
+                )
+            }
+        }
         val data = Intent().apply {
             putExtra(STYTCH_RESULT_KEY, result)
         }

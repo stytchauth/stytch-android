@@ -112,9 +112,11 @@ public object StytchB2BClient {
                     }
                 }
                 _isInitialized.value = true
+                events.logEvent("client_initialization_success")
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
+            events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",
                 exception = ex
@@ -291,6 +293,7 @@ public object StytchB2BClient {
             }
             when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
                             magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
@@ -298,6 +301,7 @@ public object StytchB2BClient {
                     )
                 }
                 B2BTokenType.DISCOVERY -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Discovery(
                             magicLinks.discoveryAuthenticate(
@@ -309,9 +313,11 @@ public object StytchB2BClient {
                     )
                 }
                 B2BTokenType.MULTI_TENANT_PASSWORDS -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
                 }
                 B2BTokenType.SSO -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
                             sso.authenticate(
@@ -324,6 +330,7 @@ public object StytchB2BClient {
                     )
                 }
                 else -> {
+                    events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
                 }
             }
