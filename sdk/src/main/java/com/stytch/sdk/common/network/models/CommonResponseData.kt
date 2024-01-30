@@ -112,6 +112,9 @@ public data class Provider(
     // The type of the provider.
     @Json(name = "provider_type")
     val providerType: String,
+    // The profile picture url, if available
+    @Json(name = "profile_picture_url")
+    val profilePictureUrl: String? = null,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
