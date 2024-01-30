@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.sso.GoogleOneTapProviderImpl
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -50,12 +51,19 @@ internal class OAuthImpl(
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {
             val pkce = storageHelper.retrieveCodeVerifier()
-                ?: return@withContext StytchResult.Error(StytchMissingPKCEError(null))
+                ?: run {
+                    StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
+                    return@withContext StytchResult.Error(StytchMissingPKCEError(null))
+                }
             api.authenticateWithThirdPartyToken(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
                 codeVerifier = pkce
             ).apply {
+                when (this) {
+                    is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
+                    is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
+                }
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
         }

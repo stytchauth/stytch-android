@@ -300,7 +300,9 @@ internal class StytchB2BClientTest {
     @Test
     fun `handle with coroutines returns NotHandled with correct error when token is missing`() {
         runBlocking {
-            every { StytchB2BApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchB2BClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns null
             }
@@ -313,7 +315,9 @@ internal class StytchB2BClientTest {
     @Test
     fun `handle with coroutines returns NotHandled with correct error when token is unknown`() {
         runBlocking {
-            every { StytchB2BApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchB2BClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "something unexpected"
             }
@@ -326,7 +330,9 @@ internal class StytchB2BClientTest {
     @Test
     fun `handle with coroutines delegates to magiclinks when token is DISCOVERY`() {
         runBlocking {
-            every { StytchB2BApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchB2BClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "DISCOVERY"
             }
@@ -341,7 +347,9 @@ internal class StytchB2BClientTest {
     @Test
     fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
         runBlocking {
-            every { StytchB2BApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchB2BClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
             }
@@ -356,7 +364,9 @@ internal class StytchB2BClientTest {
     @Test
     fun `handle with coroutines returns NotHandled with correct error  when token is OAUTH`() {
         runBlocking {
-            every { StytchB2BApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchB2BClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "OAUTH"
             }

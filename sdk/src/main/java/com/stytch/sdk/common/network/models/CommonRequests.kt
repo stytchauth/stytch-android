@@ -56,6 +56,8 @@ internal object CommonRequests {
             @Json(name = "event_name")
             val eventName: String,
             val details: Map<String, Any>? = null,
+            @Json(name = "error_description")
+            val errorDescription: String? = null,
         )
     }
 }

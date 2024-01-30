@@ -317,7 +317,9 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines returns NotHandled with correct error when token is missing`() {
         runBlocking {
-            every { StytchApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns null
             }
@@ -330,7 +332,9 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines returns NotHandled with correct error when token is unknown`() {
         runBlocking {
-            every { StytchApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "something unexpected"
             }
@@ -343,7 +347,9 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
         runBlocking {
-            every { StytchApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "MAGIC_LINKS"
             }
@@ -358,7 +364,9 @@ internal class StytchClientTest {
     @Test
     fun `handle with coroutines delegates to oauth when token is OAUTH`() {
         runBlocking {
-            every { StytchApi.isInitialized } returns true
+            val deviceInfo = DeviceInfo()
+            every { mContextMock.getDeviceInfo() } returns deviceInfo
+            StytchClient.configure(mContextMock, "")
             val mockUri = mockk<Uri> {
                 every { getQueryParameter(any()) } returns "OAUTH"
             }

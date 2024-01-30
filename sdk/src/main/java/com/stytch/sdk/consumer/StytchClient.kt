@@ -124,9 +124,11 @@ public object StytchClient {
                     }
                 }
                 _isInitialized.value = true
+                events.logEvent("client_initialization_success")
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
+            events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",
                 exception = ex,
@@ -332,8 +334,9 @@ public object StytchClient {
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
             }
-            when (ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (val tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 ConsumerTokenType.MAGIC_LINKS -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
                             magicLinks.authenticate(MagicLinks.AuthParameters(token, sessionDurationMinutes))
@@ -341,6 +344,7 @@ public object StytchClient {
                     )
                 }
                 ConsumerTokenType.OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
                             oauth.authenticate(OAuth.ThirdParty.AuthenticateParameters(token, sessionDurationMinutes))
@@ -348,9 +352,11 @@ public object StytchClient {
                     )
                 }
                 ConsumerTokenType.RESET_PASSWORD -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.RESET_PASSWORD, token = token)
                 }
                 else -> {
+                    events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
                 }
             }

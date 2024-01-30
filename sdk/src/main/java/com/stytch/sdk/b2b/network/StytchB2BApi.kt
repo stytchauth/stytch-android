@@ -401,6 +401,7 @@ internal object StytchB2BApi {
             eventName: String,
             infoHeaderModel: InfoHeaderModel,
             details: Map<String, Any>? = null,
+            error: Exception? = null
         ): NoResponseResponse = safeB2BApiCall {
             apiService.logEvent(
                 listOf(
@@ -432,6 +433,7 @@ internal object StytchB2BApi {
                             publicToken = publicToken,
                             eventName = eventName,
                             details = details,
+                            errorDescription = error?.message
                         )
                     )
                 )
