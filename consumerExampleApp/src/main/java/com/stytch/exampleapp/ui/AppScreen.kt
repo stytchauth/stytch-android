@@ -90,12 +90,14 @@ fun AppScreen(
         },
         content = { padding ->
             if (stytchIsInitialized.value) {
-                NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
+                val startDestination = StytchClient.sessions.sessionToken?.let { "account" } ?: Screen.Main.route
+                NavHost(navController, startDestination = startDestination, Modifier.padding(padding)) {
                     composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
                     composable(Screen.Passwords.route) { PasswordsScreen(navController = navController) }
                     composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                     composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
                     composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+                    composable("account") { AccountScreen(navController = navController) }
                 }
             } else {
                 // maybe show a loading state while stytch sets up
