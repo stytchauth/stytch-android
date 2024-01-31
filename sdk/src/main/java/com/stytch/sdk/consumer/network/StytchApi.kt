@@ -682,6 +682,7 @@ internal object StytchApi {
             eventName: String,
             infoHeaderModel: InfoHeaderModel,
             details: Map<String, Any>? = null,
+            error: Exception? = null
         ): NoResponseResponse = safeConsumerApiCall {
             apiService.logEvent(
                 listOf(
@@ -713,6 +714,7 @@ internal object StytchApi {
                             publicToken = publicToken,
                             eventName = eventName,
                             details = details,
+                            errorDescription = error?.message
                         )
                     )
                 )
