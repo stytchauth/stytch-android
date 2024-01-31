@@ -50,8 +50,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 is DeeplinkHandledStatus.NotHandled -> result.reason.message
                 is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                 // This only happens for password reset deeplinks
-                is DeeplinkHandledStatus.ManualHandlingRequired ->
-                    "Password reset token retrieved, initiate password reset flow"
+                is DeeplinkHandledStatus.ManualHandlingRequired -> result.token
             }
         }.invokeOnCompletion {
             _loadingState.value = false
@@ -65,7 +64,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch {
                 _loadingState.value = true
                 val result = StytchClient.magicLinks.email.loginOrCreate(
-                    MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text)
+                    MagicLinks.EmailMagicLinks.Parameters(
+                        email = emailTextState.text,
+                        loginMagicLinkUrl = "app://exampleapp.com/",
+                        signupMagicLinkUrl = "app://exampleapp.com/"
+                    )
                 )
                 _currentResponse.value = result.toFriendlyDisplay()
             }.invokeOnCompletion {

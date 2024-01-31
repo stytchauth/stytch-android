@@ -96,7 +96,9 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                 _loadingState.value = true
                 val result = StytchClient.passwords.resetByEmailStart(
                     Passwords.ResetByEmailStartParameters(
-                        emailTextState.text
+                        email = emailTextState.text,
+                        loginRedirectUrl = "app://exampleapp.com/",
+                        resetPasswordRedirectUrl = "app://exampleapp.com/",
                     )
                 )
                 _currentResponse.value = result.toFriendlyDisplay()
