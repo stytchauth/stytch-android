@@ -48,6 +48,9 @@ internal class StytchDFPInterceptorTest {
     fun `get requests do not inject DFP`() {
         val request: Request = mockk {
             every { method } returns "GET"
+            every { url } returns mockk {
+                every { toUrl() } returns mockk(relaxed = true)
+            }
         }
         val chain: Interceptor.Chain = mockk {
             every { request() } returns request
@@ -61,6 +64,27 @@ internal class StytchDFPInterceptorTest {
     fun `delete requests do not inject DFP`() {
         val request: Request = mockk {
             every { method } returns "DELETE"
+            every { url } returns mockk {
+                every { toUrl() } returns mockk(relaxed = true)
+            }
+        }
+        val chain: Interceptor.Chain = mockk {
+            every { request() } returns request
+            every { proceed(any()) } returns mockk()
+        }
+        interceptor.intercept(chain)
+        verify(exactly = 0) { request.toNewRequestWithParams(any()) }
+    }
+
+    @Test
+    fun `event logs do not inject DFP or CAPTCHA`() {
+        val request: Request = mockk {
+            every { method } returns "POST"
+            every { url } returns mockk {
+                every { toUrl() } returns mockk {
+                    every { path } returns "/events"
+                }
+            }
         }
         val chain: Interceptor.Chain = mockk {
             every { request() } returns request
@@ -74,6 +98,9 @@ internal class StytchDFPInterceptorTest {
     fun `intercept calls the appropriate method based on the DFPProtectedAuth type`() {
         val request: Request = mockk {
             every { method } returns "POST"
+            every { url } returns mockk {
+                every { toUrl() } returns mockk(relaxed = true)
+            }
             every { body } returns "".toRequestBody("application/json".toMediaTypeOrNull())
         }
         val chain: Interceptor.Chain = mockk {

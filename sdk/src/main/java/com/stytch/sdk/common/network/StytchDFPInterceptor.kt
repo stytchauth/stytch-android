@@ -29,7 +29,8 @@ internal class StytchDFPInterceptor(
 ) : DFPInterceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        if (request.method == "GET" || request.method == "DELETE") return chain.proceed(request)
+        val isEventLogging = request.url.toUrl().path.contains("/events")
+        if (request.method == "GET" || request.method == "DELETE" || isEventLogging) return chain.proceed(request)
         if (!dfpProtectedAuthEnabled) return handleDisabledDFPStatus(chain)
         return when (dfpProtectedAuthMode) {
             DFPProtectedAuthMode.DECISIONING -> handleDFPDecisioningMode(chain)
