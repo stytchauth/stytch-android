@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sessions
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -94,4 +95,6 @@ internal class B2BSessionsImpl internal constructor(
             throw StytchInternalError(ex)
         }
     }
+
+    override fun getSync(): B2BSessionData? = sessionStorage.memberSession
 }

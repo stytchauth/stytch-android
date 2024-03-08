@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 
@@ -72,4 +73,10 @@ public interface B2BSessions {
      * @param sessionJwt
      */
     public fun updateSession(sessionToken: String?, sessionJwt: String?)
+
+    /**
+     * Get session from memory without network call
+     * @return locally stored [B2BSessionData]
+     */
+    public fun getSync(): B2BSessionData?
 }

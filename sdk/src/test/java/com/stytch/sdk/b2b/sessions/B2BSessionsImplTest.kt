@@ -3,7 +3,9 @@ package com.stytch.sdk.b2b.sessions
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
@@ -162,5 +164,14 @@ internal class B2BSessionsImplTest {
     fun `SessionsImpl updateSession throws StytchInternalError when sessionstorage fails`() {
         every { mockSessionStorage.updateSession(any(), any()) } throws RuntimeException("Test")
         impl.updateSession("token", "jwt")
+    }
+
+    @Test
+    fun `SessionsImpl getSync delegates to sessionStorage`() {
+        val mockSession: B2BSessionData = mockk()
+        every { mockSessionStorage.memberSession } returns mockSession
+        val session = impl.getSync()
+        assert(session == mockSession)
+        verify { mockSessionStorage.memberSession }
     }
 }
