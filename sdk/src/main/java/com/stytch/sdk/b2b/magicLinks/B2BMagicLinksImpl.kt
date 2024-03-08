@@ -15,7 +15,6 @@ import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal class B2BMagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,

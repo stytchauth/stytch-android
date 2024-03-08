@@ -32,7 +32,10 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .weight(1F, false),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
@@ -84,12 +87,20 @@ fun MainScreen(
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.send_invite_magic_link),
+                onClick = viewModel::sendInviteMagicLink
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.revoke_session),
                 onClick = { viewModel.revokeSession() }
             )
         }
         Column(
-            modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .weight(1F, false),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (loading.value) {

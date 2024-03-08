@@ -5,7 +5,6 @@ import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
-import kotlinx.parcelize.RawValue
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
