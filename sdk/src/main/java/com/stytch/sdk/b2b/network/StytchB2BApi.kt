@@ -40,7 +40,6 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal object StytchB2BApi {
     internal lateinit var publicToken: String
