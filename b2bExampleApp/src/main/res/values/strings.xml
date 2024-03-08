@@ -3,6 +3,7 @@
     <string name="home">Home</string>
     <string name="test_email_magic_link_flow">Test Email Magic Link Flow</string>
     <string name="revoke_session">Revoke Session</string>
+    <string name="exchange_session">Exchange Session</string>
     <string name="deep_link_title">Deep links</string>
     <string name="host">b2bexampleapp.com</string>
     <string name="deeplink_received_toast">Deeplink received</string>

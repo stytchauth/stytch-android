@@ -1,8 +1,10 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -92,6 +94,27 @@ internal class B2BSessionsImpl internal constructor(
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {
             throw StytchInternalError(ex)
+        }
+    }
+
+    override fun getSync(): B2BSessionData? = sessionStorage.memberSession
+    override suspend fun exchange(parameters: B2BSessions.ExchangeParameters): SessionExchangeResponse {
+        return withContext(dispatchers.io) {
+            api.exchange(
+                organizationId = parameters.organizationId,
+                locale = parameters.locale,
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
+        }
+    }
+
+    override fun exchange(parameters: B2BSessions.ExchangeParameters, callback: (SessionExchangeResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = exchange(parameters)
+            // change to main thread to call callback
+            callback(result)
         }
     }
 }

@@ -147,6 +147,14 @@ internal class StytchB2BApiTest {
     }
 
     @Test
+    fun `StytchB2BApi Sessions exchange calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.exchangeSession(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Sessions.exchange(organizationId = "test-123", sessionDurationMinutes = 30U)
+        coVerify { StytchB2BApi.apiService.exchangeSession(any()) }
+    }
+
+    @Test
     fun `StytchB2BApi Organizations getOrganization calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.getOrganization() } returns mockk(relaxed = true)

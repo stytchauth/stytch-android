@@ -361,3 +361,24 @@ public data class SSOAuthenticateResponseData(
     val resetSession: Boolean,
     override val organization: Organization
 ) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SessionExchangeResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val member: MemberData,
+    override val organization: Organization,
+    @Json(name = "member_authenticated")
+    val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+) : IB2BAuthData, Parcelable
