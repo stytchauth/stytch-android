@@ -18,6 +18,11 @@ internal object B2BResponses {
     object Sessions {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class ExchangeResponse(
+            data: SessionExchangeResponseData
+        ) : StytchDataResponse<SessionExchangeResponseData>(data)
     }
 
     object Organizations {

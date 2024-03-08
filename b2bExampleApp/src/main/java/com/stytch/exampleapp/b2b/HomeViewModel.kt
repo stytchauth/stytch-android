@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StytchResult
@@ -96,6 +97,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             _currentResponse.value = StytchB2BClient.sessions.revoke().toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun exchangeSession() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            _currentResponse.value = StytchB2BClient.sessions.exchange(
+                B2BSessions.ExchangeParameters(
+                    organizationId = orgIdState.text,
+                    sessionDurationMinutes = 30U
+                )
+            ).toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
