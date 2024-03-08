@@ -179,17 +179,23 @@ internal class B2BSessionsImplTest {
 
     @Test
     fun `SessionsImpl exchange delegates to the api`() = runTest {
-        coEvery { mockApi.exchange(any()) } returns successfulExchangeResponse
-        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123"))
-        coVerify(exactly = 1) { mockApi.exchange(any())}
+        coEvery { mockApi.exchange(any(), any()) } returns successfulExchangeResponse
+        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123", sessionDurationMinutes = 30U))
+        coVerify(exactly = 1) { mockApi.exchange(any(), any()) }
         verify { successfulExchangeResponse.launchSessionUpdater(any(), any()) }
     }
 
     @Test
     fun `SessionsImpl exchange with callback calls callback method`() {
-        coEvery { mockApi.exchange(any()) } returns successfulExchangeResponse
+        coEvery { mockApi.exchange(any(), any()) } returns successfulExchangeResponse
         val mockCallback = spyk<(SessionExchangeResponse) -> Unit>()
-        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123"), callback = mockCallback)
+        impl.exchange(
+            B2BSessions.ExchangeParameters(
+                organizationId = "test-123",
+                sessionDurationMinutes = 30U
+            ),
+            callback = mockCallback
+        )
         verify { mockCallback.invoke(any()) }
     }
 }
