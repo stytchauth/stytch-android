@@ -77,6 +77,34 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+    @Test
+    fun `check magic links email invite request`() {
+        runBlocking {
+            val parameters = B2BRequests.MagicLinks.Invite.InviteRequest(
+                emailAddress = EMAIL,
+                inviteRedirectUrl = "invite-redirect-url",
+                inviteTemplateId = "invite-template-id",
+                name = "member name",
+                untrustedMetadata = mapOf("someMetadataKey" to "someMetadataValue"),
+                locale = "en",
+                roles = listOf("role1", "role2")
+            )
+            requestIgnoringResponseException {
+                apiService.sendInviteMagicLink(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/magic_links/email/invite",
+                expectedBody = mapOf(
+                    "email_address" to parameters.emailAddress,
+                    "invite_redirect_url" to parameters.inviteRedirectUrl,
+                    "invite_template_id" to parameters.inviteTemplateId,
+                    "name" to parameters.name,
+                    "untrusted_metadata" to parameters.untrustedMetadata,
+                    "locale" to parameters.locale,
+                    "roles" to parameters.roles,
+                )
+            )
+        }
+    }
 
     @Test
     fun `check magic links authenticate request`() {

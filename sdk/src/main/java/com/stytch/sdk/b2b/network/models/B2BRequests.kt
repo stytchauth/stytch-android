@@ -47,6 +47,23 @@ internal object B2BRequests {
             )
         }
 
+        object Invite {
+            @JsonClass(generateAdapter = true)
+            data class InviteRequest(
+                @Json(name = "email_address")
+                val emailAddress: String,
+                @Json(name = "invite_redirect_url")
+                val inviteRedirectUrl: String? = null,
+                @Json(name = "invite_template_id")
+                val inviteTemplateId: String? = null,
+                val name: String? = null,
+                @Json(name = "untrusted_metadata")
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val locale: String? = null,
+                val roles: List<String>? = null,
+            )
+        }
+
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "magic_links_token")

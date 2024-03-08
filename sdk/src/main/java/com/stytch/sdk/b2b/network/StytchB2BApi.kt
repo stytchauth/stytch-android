@@ -159,6 +159,28 @@ internal object StytchB2BApi {
                     )
                 )
             }
+
+            suspend fun invite(
+                emailAddress: String,
+                inviteRedirectUrl: String? = null,
+                inviteTemplateId: String? = null,
+                name: String? = null,
+                untrustedMetadata: Map<String, Any?>? = null,
+                locale: String? = null,
+                roles: List<String>? = null,
+            ): StytchResult<MemberResponseData> = safeB2BApiCall {
+                apiService.sendInviteMagicLink(
+                    B2BRequests.MagicLinks.Invite.InviteRequest(
+                        emailAddress = emailAddress,
+                        inviteRedirectUrl = inviteRedirectUrl,
+                        inviteTemplateId = inviteTemplateId,
+                        name = name,
+                        untrustedMetadata = untrustedMetadata,
+                        locale = locale,
+                        roles = roles,
+                    )
+                )
+            }
         }
 
         object Discovery {

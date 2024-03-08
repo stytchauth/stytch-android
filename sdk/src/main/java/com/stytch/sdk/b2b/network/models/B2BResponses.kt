@@ -13,6 +13,9 @@ internal object B2BResponses {
         class DiscoveryAuthenticateResponse(
             data: DiscoveryAuthenticateResponseData
         ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class InviteResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
     }
 
     object Sessions {

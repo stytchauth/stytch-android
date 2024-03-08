@@ -107,6 +107,14 @@ internal class StytchB2BApiTest {
     }
 
     @Test
+    fun `StytchB2BApi MagicLinks Email invite calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.sendInviteMagicLink(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.MagicLinks.Email.invite("email@address.com")
+        coVerify { StytchB2BApi.apiService.sendInviteMagicLink(any()) }
+    }
+
+    @Test
     fun `StytchB2BApi MagicLinks Discovery send calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) } returns mockk(relaxed = true)

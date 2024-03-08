@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
@@ -54,7 +55,9 @@ internal class B2BMagicLinksImplTest {
     private val successfulAuthResponse = StytchResult.Success<B2BEMLAuthenticateData>(mockk(relaxed = true))
     private val authParameters = mockk<B2BMagicLinks.AuthParameters>(relaxed = true)
     private val emailMagicLinkParameters = mockk<B2BMagicLinks.EmailMagicLinks.Parameters>(relaxed = true)
+    private val emailInviteParameters = mockk<B2BMagicLinks.EmailMagicLinks.InviteParameters>(relaxed = true)
     private val mockBaseResponse = mockk<BaseResponse>()
+    private val mockMemberResponse = mockk<MemberResponse>()
 
     @Before
     fun before() {
@@ -128,6 +131,25 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl email loginOrCreate with callback calls callback method`() {
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.email.loginOrSignup(emailMagicLinkParameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `MagicLinksImpl email invite delegates to api`() = runTest {
+        coEvery {
+            mockEmailApi.invite(any(), any(), any(), any(), any(), any(), any())
+        } returns mockMemberResponse
+        impl.email.invite(emailInviteParameters)
+        coVerify { mockEmailApi.invite(any(), any(), any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `MagicLinksImpl email invite with callback calls callback method`() {
+        coEvery {
+            mockEmailApi.invite(any(), any(), any(), any(), any(), any(), any())
+        } returns mockMemberResponse
+        val mockCallback = spyk<(MemberResponse) -> Unit>()
+        impl.email.invite(emailInviteParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
