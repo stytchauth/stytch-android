@@ -19,6 +19,7 @@ import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
@@ -204,6 +205,20 @@ internal object StytchB2BApi {
 
         suspend fun revoke(): StytchResult<BasicData> = safeB2BApiCall {
             apiService.revokeSessions()
+        }
+
+        suspend fun exchange(
+            organizationId: String,
+            locale: String? = null,
+            sessionDurationMinutes: UInt? = null,
+        ): StytchResult<SessionExchangeResponseData> = safeB2BApiCall {
+            apiService.exchangeSession(
+                B2BRequests.Session.ExchangeRequest(
+                    organizationId = organizationId,
+                    locale = locale,
+                    sessionDurationMinutes = sessionDurationMinutes?.toInt()
+                )
+            )
         }
     }
 

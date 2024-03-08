@@ -166,6 +166,26 @@ internal class StytchB2BApiServiceTest {
             }.verifyPost(expectedPath = "/b2b/sessions/revoke", emptyMap())
         }
     }
+    @Test
+    fun `check Sessions exchange request`() {
+        runBlocking {
+            val parameters = B2BRequests.Session.ExchangeRequest(
+                organizationId = "test-123",
+                locale = "en",
+                sessionDurationMinutes = 30,
+            )
+            requestIgnoringResponseException {
+                apiService.exchangeSession(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/sessions/exchange",
+                expectedBody = mapOf(
+                    "organization_id" to parameters.organizationId,
+                    "locale" to parameters.locale,
+                    "session_duration_minutes" to parameters.sessionDurationMinutes
+                )
+            )
+        }
+    }
 
     // endregion Sessions
 

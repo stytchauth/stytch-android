@@ -9,4 +9,15 @@ internal class B2BSessionsTest {
         val expected = B2BSessions.AuthParams(sessionDurationMinutes = null)
         assert(params == expected)
     }
+
+    @Test
+    fun `Sessions ExchangeParameters have correct default values`() {
+        val params = B2BSessions.ExchangeParameters(organizationId = "test-123")
+        val expected = B2BSessions.ExchangeParameters(
+            organizationId = "test-123",
+            locale = null,
+            sessionDurationMinutes = null,
+        )
+        assert(params == expected)
+    }
 }

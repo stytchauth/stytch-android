@@ -181,4 +181,15 @@ internal object B2BRequests {
             val codeVerifier: String,
         )
     }
+
+    object Session {
+        @JsonClass(generateAdapter = true)
+        data class ExchangeRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            val locale: String? = null,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int? = null,
+        )
+    }
 }

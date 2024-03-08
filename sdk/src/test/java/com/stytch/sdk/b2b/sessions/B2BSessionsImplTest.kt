@@ -1,11 +1,12 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
-import com.stytch.sdk.b2b.network.models.MemberData
+import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
@@ -49,6 +50,7 @@ internal class B2BSessionsImplTest {
 
     private val successfulAuthResponse = StytchResult.Success<IB2BAuthData>(mockk(relaxed = true))
     private val authParameters = B2BSessions.AuthParams(sessionDurationMinutes = 30U)
+    private val successfulExchangeResponse = StytchResult.Success<SessionExchangeResponseData>(mockk(relaxed = true))
 
     @Before
     fun before() {
@@ -173,5 +175,21 @@ internal class B2BSessionsImplTest {
         val session = impl.getSync()
         assert(session == mockSession)
         verify { mockSessionStorage.memberSession }
+    }
+
+    @Test
+    fun `SessionsImpl exchange delegates to the api`() = runTest {
+        coEvery { mockApi.exchange(any()) } returns successfulExchangeResponse
+        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123"))
+        coVerify(exactly = 1) { mockApi.exchange(any())}
+        verify { successfulExchangeResponse.launchSessionUpdater(any(), any()) }
+    }
+
+    @Test
+    fun `SessionsImpl exchange with callback calls callback method`() {
+        coEvery { mockApi.exchange(any()) } returns successfulExchangeResponse
+        val mockCallback = spyk<(SessionExchangeResponse) -> Unit>()
+        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123"), callback = mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 }

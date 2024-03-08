@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
@@ -79,4 +80,32 @@ public interface B2BSessions {
      * @return locally stored [B2BSessionData]
      */
     public fun getSync(): B2BSessionData?
+
+    /**
+     * Data class used for wrapping parameters used with Sessions exchange
+     * @property organizationId The ID of the organization that the new session should belong to.
+     * @property locale The locale will be used if an OTP code is sent to the member's phone number as part of a
+     * secondary authentication requirement.
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     */
+    public data class ExchangeParameters(
+        val organizationId: String,
+        val locale: String? = null,
+        val sessionDurationMinutes: UInt? = null,
+    )
+
+    /**
+     * Exchanges an existing session for one in a different organization
+     * @param parameters required for exchanging a session between organizations
+     * @return [SessionExchangeResponse]
+     */
+    public suspend fun exchange(parameters: ExchangeParameters): SessionExchangeResponse
+
+    /**
+     * Exchanges an existing session for one in a different organization
+     * @param parameters required for exchanging a session between organizations
+     * @param callback a callback that receives a [SessionExchangeResponse]
+     * @return [SessionExchangeResponse]
+     */
+    public fun exchange(parameters: ExchangeParameters, callback: (SessionExchangeResponse) -> Unit)
 }
