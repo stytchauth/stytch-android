@@ -209,14 +209,14 @@ internal object StytchB2BApi {
 
         suspend fun exchange(
             organizationId: String,
+            sessionDurationMinutes: UInt,
             locale: String? = null,
-            sessionDurationMinutes: UInt? = null,
         ): StytchResult<SessionExchangeResponseData> = safeB2BApiCall {
             apiService.exchangeSession(
                 B2BRequests.Session.ExchangeRequest(
                     organizationId = organizationId,
                     locale = locale,
-                    sessionDurationMinutes = sessionDurationMinutes?.toInt()
+                    sessionDurationMinutes = sessionDurationMinutes.toInt()
                 )
             )
         }

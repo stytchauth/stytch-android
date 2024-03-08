@@ -90,8 +90,8 @@ public interface B2BSessions {
      */
     public data class ExchangeParameters(
         val organizationId: String,
+        val sessionDurationMinutes: UInt,
         val locale: String? = null,
-        val sessionDurationMinutes: UInt? = null,
     )
 
     /**
