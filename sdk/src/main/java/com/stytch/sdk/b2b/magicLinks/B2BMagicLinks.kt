@@ -2,8 +2,10 @@ package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
+import kotlinx.parcelize.RawValue
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
@@ -152,21 +154,68 @@ public interface B2BMagicLinks {
         )
 
         /**
-         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
-         * status until they successfully authenticate. Sending invites to pending Members will update their status to
-         * invited. Sending invites to already active Members will return an error.
+         * Send a discovery magic link to an email address
          * @param parameters required to send a discovery magic link
          * @return [BaseResponse]
          */
         public suspend fun discoverySend(parameters: DiscoverySendParameters): BaseResponse
 
         /**
-         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
-         * status until they successfully authenticate. Sending invites to pending Members will update their status to
-         * invited. Sending invites to already active Members will return an error.
+         * Send a discovery magic link to an email address
          * @param parameters required to send a discovery magic link
          * @param callback a callback that receives a [BaseResponse]
          */
         public fun discoverySend(parameters: DiscoverySendParameters, callback: (BaseResponse) -> Unit)
+
+        /**
+         * A data class used for wrapping paramaters used for sending an invite magic link
+         * @property emailAddress is the account identifier for the account in the form of an Email address where you
+         * wish to receive a magic link to authenticate
+         * @property inviteRedirectUrl The URL that the Member clicks from the invite Email Magic Link. This URL should
+         * be an endpoint in the backend server that verifies the request by querying Stytch's authenticate endpoint and
+         * finishes the invite flow. If this value is not passed, the default `invite_redirect_url` that you set in your
+         * Dashboard is used. If you have not set a default `invite_redirect_url`, an error is returned.
+         * @property inviteTemplateId Use a custom template for invite emails. By default, it will use your default
+         * email template. The template must be a template using our built-in customizations or a custom HTML email for
+         * Magic Links - Invite.
+         * @property name The name of the Member.
+         * @property untrustedMetadata A map containing application-specific metadata. Use it to store fields that a
+         * member can be allowed to edit directly without backend validation - such as `display_theme` or
+         * `preferred_locale`. See our [metadata reference](https://stytch.com/docs/api/metadata) for complete details.
+         * @property locale The locale is used to determine which language to use in the email. Parameter is a
+         * [IETF BCP 47 language tag](https://www.w3.org/International/articles/language-tags/), e.g. "en". Currently
+         * supported languages are English ("en"), Spanish ("es"), and Brazilian Portuguese ("pt-br"); if no value is
+         * provided, the copy defaults to English.
+         * @property roles Roles to explicitly assign to this Member. See our
+         * [RBAC guide](https://stytch.com/docs/b2b/guides/rbac/role-assignment) for more information about role
+         * assignment.
+         */
+        public data class InviteParameters(
+            val emailAddress: String,
+            val inviteRedirectUrl: String? = null,
+            val inviteTemplateId: String? = null,
+            val name: String? = null,
+            val untrustedMetadata: Map<String, Any?>? = null,
+            val locale: String? = null,
+            val roles: List<String>? = null,
+        )
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send an invite magic link
+         * @return [MemberResponse]
+         */
+        public suspend fun invite(parameters: InviteParameters): MemberResponse
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send a discovery magic link
+         * @param callback a callback that receives a [MemberResponse]
+         */
+        public fun invite(parameters: InviteParameters, callback: (MemberResponse) -> Unit)
     }
 }

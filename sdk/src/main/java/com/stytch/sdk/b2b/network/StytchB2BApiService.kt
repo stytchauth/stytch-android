@@ -32,6 +32,11 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun authenticateDiscoveryMagicLink(
         @Body request: B2BRequests.MagicLinks.Discovery.AuthenticateRequest
     ): B2BResponses.MagicLinks.DiscoveryAuthenticateResponse
+
+    @POST("b2b/magic_links/email/invite")
+    suspend fun sendInviteMagicLink(
+        @Body request: B2BRequests.MagicLinks.Invite.InviteRequest
+    ): B2BResponses.MagicLinks.InviteResponse
     //endregion Magic Links
 
     //region Sessions

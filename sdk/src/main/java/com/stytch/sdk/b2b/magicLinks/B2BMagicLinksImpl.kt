@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.magicLinks
 
 import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -14,6 +15,7 @@ import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal class B2BMagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -164,6 +166,30 @@ internal class B2BMagicLinksImpl internal constructor(
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = discoverySend(parameters)
+                callback(result)
+            }
+        }
+
+        override suspend fun invite(parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters): MemberResponse {
+            return withContext(dispatchers.io) {
+                emailApi.invite(
+                    emailAddress = parameters.emailAddress,
+                    inviteRedirectUrl = parameters.inviteRedirectUrl,
+                    inviteTemplateId = parameters.inviteTemplateId,
+                    name = parameters.name,
+                    untrustedMetadata = parameters.untrustedMetadata,
+                    locale = parameters.locale,
+                    roles = parameters.roles,
+                )
+            }
+        }
+
+        override fun invite(
+            parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters,
+            callback: (MemberResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                val result = invite(parameters)
                 callback(result)
             }
         }

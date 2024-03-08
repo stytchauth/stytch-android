@@ -40,6 +40,7 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal object StytchB2BApi {
     internal lateinit var publicToken: String
@@ -155,6 +156,28 @@ internal object StytchB2BApi {
                         token = token,
                         codeVerifier = codeVerifier,
                         sessionDurationMinutes = sessionDurationMinutes.toInt()
+                    )
+                )
+            }
+
+            suspend fun invite(
+                emailAddress: String,
+                inviteRedirectUrl: String? = null,
+                inviteTemplateId: String? = null,
+                name: String? = null,
+                untrustedMetadata: Map<String, Any?>? = null,
+                locale: String? = null,
+                roles: List<String>? = null,
+            ): StytchResult<MemberResponseData> = safeB2BApiCall {
+                apiService.sendInviteMagicLink(
+                    B2BRequests.MagicLinks.Invite.InviteRequest(
+                        emailAddress = emailAddress,
+                        inviteRedirectUrl = inviteRedirectUrl,
+                        inviteTemplateId = inviteTemplateId,
+                        name = name,
+                        untrustedMetadata = untrustedMetadata,
+                        locale = locale,
+                        roles = roles,
                     )
                 )
             }
