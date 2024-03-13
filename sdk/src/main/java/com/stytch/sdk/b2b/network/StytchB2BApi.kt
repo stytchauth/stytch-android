@@ -15,6 +15,7 @@ import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
@@ -23,6 +24,7 @@ import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.NoResponseResponse
@@ -39,6 +41,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
@@ -254,6 +257,25 @@ internal object StytchB2BApi {
         suspend fun getMember(): StytchResult<MemberResponseData> = safeB2BApiCall {
             apiService.getMember()
         }
+
+        suspend fun updateUser(
+            name: String?,
+            untrustedMetadata: Map<String, Any?>?,
+            mfaEnrolled: Boolean?,
+            mfaPhoneNumber: String?,
+            defaultMfaMethod: MfaMethod?,
+        ): StytchResult<UpdateMemberResponseData> =
+            safeB2BApiCall {
+                apiService.updateMember(
+                    B2BRequests.Member.UpdateRequest(
+                        name = name,
+                        untrustedMetadata = untrustedMetadata,
+                        mfaEnrolled = mfaEnrolled,
+                        mfaPhoneNumber = mfaPhoneNumber,
+                        defaultMfaMethod = defaultMfaMethod,
+                    )
+                )
+            }
     }
 
     internal object Passwords {

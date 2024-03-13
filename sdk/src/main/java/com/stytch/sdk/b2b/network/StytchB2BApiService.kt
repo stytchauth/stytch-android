@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 internal interface StytchB2BApiService : ApiService {
@@ -60,6 +61,11 @@ internal interface StytchB2BApiService : ApiService {
 
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
+
+    @PUT("b2b/organizations/members/update")
+    suspend fun updateMember(
+        @Body request: B2BRequests.Member.UpdateRequest
+    ): B2BResponses.Organizations.UpdateMemberResponse
     //endregion Organizations
 
     //region Passwords

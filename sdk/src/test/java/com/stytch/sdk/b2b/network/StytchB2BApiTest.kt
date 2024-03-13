@@ -8,6 +8,7 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -168,6 +169,14 @@ internal class StytchB2BApiTest {
         coEvery { StytchB2BApi.apiService.getMember() } returns mockk(relaxed = true)
         StytchB2BApi.Member.getMember()
         coVerify { StytchB2BApi.apiService.getMember() }
+    }
+
+    @Test
+    fun `StytchB2BApi Member update calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.updateMember(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Member.updateUser(mockk(relaxed = true), mockk(relaxed = true), false, "", MfaMethod.SMS)
+        coVerify { StytchB2BApi.apiService.updateMember(any()) }
     }
 
     @Test

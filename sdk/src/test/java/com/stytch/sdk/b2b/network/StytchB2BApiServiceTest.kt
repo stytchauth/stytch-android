@@ -5,11 +5,14 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
+import com.stytch.sdk.utils.verifyPut
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -234,6 +237,31 @@ internal class StytchB2BApiServiceTest {
             requestIgnoringResponseException {
                 apiService.getMember()
             }.verifyGet("/b2b/organizations/members/me")
+        }
+    }
+
+    @Test
+    fun `check Organizations updateMember request`() {
+        runBlocking {
+            val params = B2BRequests.Member.UpdateRequest(
+                name = "Stytch Robot",
+                untrustedMetadata = mapOf("a key" to "a value"),
+                mfaEnrolled = true,
+                mfaPhoneNumber = "+15005550006",
+                defaultMfaMethod = MfaMethod.SMS,
+            )
+            requestIgnoringResponseException {
+                apiService.updateMember(params)
+            }.verifyPut(
+                expectedPath = "/b2b/organizations/members/update",
+                expectedBody = mapOf(
+                    "name" to params.name,
+                    "untrusted_metadata" to params.untrustedMetadata,
+                    "mfa_enrolled" to params.mfaEnrolled,
+                    "mfa_phone_number" to params.mfaPhoneNumber,
+                    "default_mfa_method" to params.defaultMfaMethod?.jsonName
+                )
+            )
         }
     }
 

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.member
 
 import com.stytch.sdk.b2b.MemberResponse
+import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -28,4 +29,21 @@ internal class MemberImpl(
     }
 
     override fun getSync(): MemberData? = sessionStorage.member
+    override suspend fun update(params: Member.UpdateParams): UpdateMemberResponse =
+        withContext(dispatchers.io) {
+            api.updateUser(
+                name = params.name,
+                untrustedMetadata = params.untrustedMetadata,
+                mfaEnrolled = params.mfaEnrolled,
+                mfaPhoneNumber = params.mfaPhoneNumber,
+                defaultMfaMethod = params.defaultMfaMethod,
+            )
+        }
+
+    override fun update(params: Member.UpdateParams, callback: (UpdateMemberResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = update(params)
+            callback(result)
+        }
+    }
 }

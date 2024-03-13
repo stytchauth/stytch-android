@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.StytchResult
 
 /**
@@ -74,3 +75,9 @@ public typealias SSOAuthenticateResponse = StytchResult<SSOAuthenticateResponseD
  * Type alias for StytchResult<SessionExchangeResponseData> used for session.exchange() responses
  */
 public typealias SessionExchangeResponse = StytchResult<SessionExchangeResponseData>
+
+
+/**
+ * Type alias for StytchResult<UpdateMemberResponseData> used for UpdateUser responses
+ */
+public typealias UpdateMemberResponse = StytchResult<UpdateMemberResponseData>

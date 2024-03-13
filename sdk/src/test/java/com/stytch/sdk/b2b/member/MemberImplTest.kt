@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.member
 
 import com.stytch.sdk.b2b.MemberResponse
+import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
@@ -77,5 +78,20 @@ internal class MemberImplTest {
         val member = impl.getSync()
         assert(member == mockMember)
         verify { mockSessionStorage.member }
+    }
+
+    @Test
+    fun `Member update delegates to api`() = runTest {
+        coEvery { mockApi.updateUser(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        impl.update(mockk(relaxed = true))
+        coVerify { mockApi.updateUser(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Member update with callback calls callback method`() {
+        coEvery { mockApi.updateUser(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(UpdateMemberResponse) -> Unit>()
+        impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 }

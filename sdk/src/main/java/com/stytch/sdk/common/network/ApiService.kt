@@ -2,6 +2,7 @@ package com.stytch.sdk.common.network
 
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.common.utils.createEnumJsonAdapter
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
@@ -58,6 +59,7 @@ internal interface ApiService {
         ): T {
             val moshi = Moshi.Builder()
                 .add(createEnumJsonAdapter<AllowedAuthMethods>())
+                .add(createEnumJsonAdapter<MfaMethod>())
                 .build()
             return Retrofit.Builder()
                 .baseUrl(hostUrl)
