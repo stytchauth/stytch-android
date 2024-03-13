@@ -14,6 +14,7 @@ import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
+import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
@@ -41,7 +42,6 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
-import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
@@ -275,6 +275,21 @@ internal object StytchB2BApi {
                         defaultMfaMethod = defaultMfaMethod,
                     )
                 )
+            }
+
+        suspend fun deleteMFAPhoneNumber(): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deleteMFAPhoneNumber()
+            }
+
+        suspend fun deleteMFATOTP(): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deleteMFATOTP()
+            }
+
+        suspend fun deletePassword(id: String): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deletePassword(id = id)
             }
     }
 

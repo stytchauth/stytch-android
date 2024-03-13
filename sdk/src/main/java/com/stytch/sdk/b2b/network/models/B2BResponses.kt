@@ -41,6 +41,11 @@ internal object B2BResponses {
         class UpdateMemberResponse(
             data: UpdateMemberResponseData
         ) : StytchDataResponse<UpdateMemberResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DeleteMemberAuthenticationFactorResponse(
+            data: MemberDeleteAuthenticationFactorData
+        ) : StytchDataResponse<MemberDeleteAuthenticationFactorData>(data)
     }
 
     object Passwords {

@@ -175,8 +175,32 @@ internal class StytchB2BApiTest {
     fun `StytchB2BApi Member update calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.updateMember(any()) } returns mockk(relaxed = true)
-        StytchB2BApi.Member.updateUser(mockk(relaxed = true), mockk(relaxed = true), false, "", MfaMethod.SMS)
+        StytchB2BApi.Member.updateUser("", emptyMap(), false, "", MfaMethod.SMS)
         coVerify { StytchB2BApi.apiService.updateMember(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deleteMFAPhoneNumber calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deleteMFAPhoneNumber() } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deleteMFAPhoneNumber()
+        coVerify { StytchB2BApi.apiService.deleteMFAPhoneNumber() }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deleteMFATOTP calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deleteMFATOTP() } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deleteMFATOTP()
+        coVerify { StytchB2BApi.apiService.deleteMFATOTP() }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deletePassword calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deletePassword("passwordId") } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deletePassword("passwordId")
+        coVerify { StytchB2BApi.apiService.deletePassword("passwordId") }
     }
 
     @Test

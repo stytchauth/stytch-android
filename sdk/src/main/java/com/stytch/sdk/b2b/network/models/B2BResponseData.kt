@@ -392,3 +392,13 @@ public data class UpdateMemberResponseData(
     val requestId: String,
     val member: MemberData,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class MemberDeleteAuthenticationFactorData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val member: MemberData
+) : Parcelable

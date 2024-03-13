@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.NameData
+import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
 import com.stytch.sdk.utils.verifyPut
@@ -265,6 +266,32 @@ internal class StytchB2BApiServiceTest {
         }
     }
 
+    @Test
+    fun `check deleteMFAPhoneNumber request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteMFAPhoneNumber()
+            }.verifyDelete("/b2b/organizations/members/deletePhoneNumber")
+        }
+    }
+
+    @Test
+    fun `check deleteMFATOTP request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteMFATOTP()
+            }.verifyDelete("/b2b/organizations/members/deleteTOTP")
+        }
+    }
+
+    @Test
+    fun `check deletePassword request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deletePassword("passwordId")
+            }.verifyDelete("/b2b/organizations/members/passwords/passwordId")
+        }
+    }
     // endregion Organizations
 
     //region Passwords

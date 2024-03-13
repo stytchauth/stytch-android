@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.member
 
+import com.stytch.sdk.b2b.DeleteMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
@@ -54,4 +55,19 @@ public interface Member {
      * @param callback a callback that receives an [UpdateMemberResponse]
     */
     public fun update(params: UpdateParams, callback: (UpdateMemberResponse) -> Unit)
+
+    /**
+     * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+     * @return [DeleteMemberAuthenticationFactorResponse]
+     */
+    public suspend fun deleteFactor(factor: MemberAuthenticationFactor): DeleteMemberAuthenticationFactorResponse
+
+    /**
+     * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+     * @param callback A callback that receives a [DeleteMemberAuthenticationFactorResponse]
+     */
+    public fun deleteFactor(
+        factor: MemberAuthenticationFactor,
+        callback: (DeleteMemberAuthenticationFactorResponse) -> Unit,
+    )
 }
