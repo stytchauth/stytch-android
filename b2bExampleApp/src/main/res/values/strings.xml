@@ -27,4 +27,8 @@
     <string name="sso">SSO</string>
     <string name="sso_connection_id">Connection ID</string>
     <string name="sso_start">Start SSO Flow</string>
+    <string name="member">Member</string>
+    <string name="member_name">Member Name</string>
+    <string name="update_name">Update Member Name</string>
+    <string name="delete_mfa_phone_number">Delete MFA Phone Number</string>
 </resources>
