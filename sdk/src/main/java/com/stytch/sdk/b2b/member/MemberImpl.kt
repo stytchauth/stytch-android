@@ -49,7 +49,7 @@ internal class MemberImpl(
         }
     }
 
-    override suspend fun deleteFactor(factor: MemberAuthenticationFactor): DeleteMemberAuthenticationFactorResponse  =
+    override suspend fun deleteFactor(factor: MemberAuthenticationFactor): DeleteMemberAuthenticationFactorResponse =
         withContext(dispatchers.io) {
             when (factor) {
                 is MemberAuthenticationFactor.MfaPhoneNumber -> api.deleteMFAPhoneNumber()

@@ -33,7 +33,7 @@ public interface Member {
      * Data class used for wrapping parameters used with Member updates
      * @property name the name of the member
      * @property untrustedMetadata a map of untrusted metadata to assign to the member
-    */
+     */
     public data class UpdateParams(
         val name: String? = null,
         val untrustedMetadata: Map<String, Any>? = null,
@@ -46,14 +46,14 @@ public interface Member {
      * Updates the currently authenticated member
      * @param params required to update the member
      * @return [UpdateMemberResponse]
-    */
+     */
     public suspend fun update(params: UpdateParams): UpdateMemberResponse
 
     /**
      * Updates the currently authenticated member
      * @param params required to update the member
      * @param callback a callback that receives an [UpdateMemberResponse]
-    */
+     */
     public fun update(params: UpdateParams, callback: (UpdateMemberResponse) -> Unit)
 
     /**

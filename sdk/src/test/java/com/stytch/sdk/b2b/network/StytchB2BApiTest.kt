@@ -345,7 +345,7 @@ internal class StytchB2BApiTest {
         coEvery { StytchB2BApi.apiService.logEvent(any()) } returns mockk(relaxed = true)
         val details = mapOf("test-key" to "test value")
         val header = InfoHeaderModel.fromDeviceInfo(mockDeviceInfo)
-        val result = StytchB2BApi.Events.logEvent(
+        StytchB2BApi.Events.logEvent(
             eventId = "event-id",
             appSessionId = "app-session-id",
             persistentId = "persistent-id",
