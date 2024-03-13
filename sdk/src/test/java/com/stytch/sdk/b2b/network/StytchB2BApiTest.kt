@@ -175,7 +175,7 @@ internal class StytchB2BApiTest {
     fun `StytchB2BApi Member update calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.updateMember(any()) } returns mockk(relaxed = true)
-        StytchB2BApi.Member.updateUser("", emptyMap(), false, "", MfaMethod.SMS)
+        StytchB2BApi.Member.updateMember("", emptyMap(), false, "", MfaMethod.SMS)
         coVerify { StytchB2BApi.apiService.updateMember(any()) }
     }
 

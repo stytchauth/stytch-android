@@ -78,7 +78,7 @@ public typealias SSOAuthenticateResponse = StytchResult<SSOAuthenticateResponseD
 public typealias SessionExchangeResponse = StytchResult<SessionExchangeResponseData>
 
 /**
- * Type alias for StytchResult<UpdateMemberResponseData> used for UpdateUser responses
+ * Type alias for StytchResult<UpdateMemberResponseData> used for UpdateMember responses
  */
 public typealias UpdateMemberResponse = StytchResult<UpdateMemberResponseData>
 

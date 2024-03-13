@@ -33,7 +33,7 @@ internal class MemberImpl(
     override fun getSync(): MemberData? = sessionStorage.member
     override suspend fun update(params: Member.UpdateParams): UpdateMemberResponse =
         withContext(dispatchers.io) {
-            api.updateUser(
+            api.updateMember(
                 name = params.name,
                 untrustedMetadata = params.untrustedMetadata,
                 mfaEnrolled = params.mfaEnrolled,

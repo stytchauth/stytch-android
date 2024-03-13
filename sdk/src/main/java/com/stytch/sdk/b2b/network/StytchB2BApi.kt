@@ -258,7 +258,7 @@ internal object StytchB2BApi {
             apiService.getMember()
         }
 
-        suspend fun updateUser(
+        suspend fun updateMember(
             name: String?,
             untrustedMetadata: Map<String, Any?>?,
             mfaEnrolled: Boolean?,

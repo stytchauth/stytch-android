@@ -16,7 +16,7 @@ public sealed class MemberAuthenticationFactor(public open val id: String? = nul
     public object MfaTOTP : MemberAuthenticationFactor()
 
     /**
-     * Represents a phone number associated with a Stytch User
+     * Represents a Password associated with a Stytch Member
      */
     public data class Password(override val id: String) : MemberAuthenticationFactor(id)
 }

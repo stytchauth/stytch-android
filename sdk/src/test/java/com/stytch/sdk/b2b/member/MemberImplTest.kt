@@ -86,9 +86,9 @@ internal class MemberImplTest {
 
     @Test
     fun `Member update delegates to api`() = runTest {
-        coEvery { mockApi.updateUser(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.updateMember(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
         impl.update(mockk(relaxed = true))
-        coVerify { mockApi.updateUser(any(), any(), any(), any(), any()) }
+        coVerify { mockApi.updateMember(any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -116,7 +116,7 @@ internal class MemberImplTest {
 
     @Test
     fun `Member update with callback calls callback method`() {
-        coEvery { mockApi.updateUser(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.updateMember(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(UpdateMemberResponse) -> Unit>()
         impl.update(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
