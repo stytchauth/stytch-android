@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
+import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
@@ -12,6 +13,7 @@ import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.StytchResult
 
 /**
@@ -74,3 +76,13 @@ public typealias SSOAuthenticateResponse = StytchResult<SSOAuthenticateResponseD
  * Type alias for StytchResult<SessionExchangeResponseData> used for session.exchange() responses
  */
 public typealias SessionExchangeResponse = StytchResult<SessionExchangeResponseData>
+
+/**
+ * Type alias for StytchResult<UpdateMemberResponseData> used for UpdateMember responses
+ */
+public typealias UpdateMemberResponse = StytchResult<UpdateMemberResponseData>
+
+/**
+ * Type alias for StytchResult<MemberDeleteAuthenticationFactorData> used for MemberDeleteAuthenticationFactor responses
+ */
+public typealias DeleteMemberAuthenticationFactorResponse = StytchResult<MemberDeleteAuthenticationFactorData>

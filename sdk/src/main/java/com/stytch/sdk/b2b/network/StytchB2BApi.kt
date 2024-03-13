@@ -14,7 +14,9 @@ import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
+import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
@@ -23,6 +25,7 @@ import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.NoResponseResponse
@@ -254,6 +257,40 @@ internal object StytchB2BApi {
         suspend fun getMember(): StytchResult<MemberResponseData> = safeB2BApiCall {
             apiService.getMember()
         }
+
+        suspend fun updateMember(
+            name: String?,
+            untrustedMetadata: Map<String, Any?>?,
+            mfaEnrolled: Boolean?,
+            mfaPhoneNumber: String?,
+            defaultMfaMethod: MfaMethod?,
+        ): StytchResult<UpdateMemberResponseData> =
+            safeB2BApiCall {
+                apiService.updateMember(
+                    B2BRequests.Member.UpdateRequest(
+                        name = name,
+                        untrustedMetadata = untrustedMetadata,
+                        mfaEnrolled = mfaEnrolled,
+                        mfaPhoneNumber = mfaPhoneNumber,
+                        defaultMfaMethod = defaultMfaMethod,
+                    )
+                )
+            }
+
+        suspend fun deleteMFAPhoneNumber(): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deleteMFAPhoneNumber()
+            }
+
+        suspend fun deleteMFATOTP(): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deleteMFATOTP()
+            }
+
+        suspend fun deletePassword(id: String): StytchResult<MemberDeleteAuthenticationFactorData> =
+            safeB2BApiCall {
+                apiService.deletePassword(id = id)
+            }
     }
 
     internal object Passwords {

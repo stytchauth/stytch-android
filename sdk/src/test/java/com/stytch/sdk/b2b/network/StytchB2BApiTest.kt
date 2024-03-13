@@ -8,6 +8,7 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -171,6 +172,38 @@ internal class StytchB2BApiTest {
     }
 
     @Test
+    fun `StytchB2BApi Member update calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.updateMember(any()) } returns mockk(relaxed = true)
+        StytchB2BApi.Member.updateMember("", emptyMap(), false, "", MfaMethod.SMS)
+        coVerify { StytchB2BApi.apiService.updateMember(any()) }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deleteMFAPhoneNumber calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deleteMFAPhoneNumber() } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deleteMFAPhoneNumber()
+        coVerify { StytchB2BApi.apiService.deleteMFAPhoneNumber() }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deleteMFATOTP calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deleteMFATOTP() } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deleteMFATOTP()
+        coVerify { StytchB2BApi.apiService.deleteMFATOTP() }
+    }
+
+    @Test
+    fun `StytchB2BApi Member deletePassword calls appropriate apiService method`() = runTest {
+        every { StytchB2BApi.isInitialized } returns true
+        coEvery { StytchB2BApi.apiService.deletePassword("passwordId") } returns mockk(relaxed = true)
+        StytchB2BApi.Member.deletePassword("passwordId")
+        coVerify { StytchB2BApi.apiService.deletePassword("passwordId") }
+    }
+
+    @Test
     fun `StytchB2BApi Passwords authenticate calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         coEvery { StytchB2BApi.apiService.authenticatePassword(any()) } returns mockk(relaxed = true)
@@ -312,7 +345,7 @@ internal class StytchB2BApiTest {
         coEvery { StytchB2BApi.apiService.logEvent(any()) } returns mockk(relaxed = true)
         val details = mapOf("test-key" to "test value")
         val header = InfoHeaderModel.fromDeviceInfo(mockDeviceInfo)
-        val result = StytchB2BApi.Events.logEvent(
+        StytchB2BApi.Events.logEvent(
             eventId = "event-id",
             appSessionId = "app-session-id",
             persistentId = "persistent-id",

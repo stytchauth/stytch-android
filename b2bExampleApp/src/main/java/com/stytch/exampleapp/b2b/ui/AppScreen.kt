@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
@@ -35,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.b2b.DiscoveryViewModel
 import com.stytch.exampleapp.b2b.HomeViewModel
+import com.stytch.exampleapp.b2b.MemberViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
 import com.stytch.exampleapp.b2b.SSOViewModel
@@ -44,6 +46,7 @@ val items = listOf(
     Screen.Passwords,
     Screen.Discovery,
     Screen.SSO,
+    Screen.Member
 )
 
 @Composable
@@ -52,6 +55,7 @@ fun AppScreen(
     passwordsViewModel: PasswordsViewModel,
     discoveryViewModel: DiscoveryViewModel,
     ssoViewModel: SSOViewModel,
+    memberViewModel: MemberViewModel,
 ) {
     val navController = rememberNavController()
     val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
@@ -100,6 +104,7 @@ fun AppScreen(
                     )
                 }
                 composable(Screen.SSO.route) { SSOScreen(viewModel = ssoViewModel) }
+                composable(Screen.Member.route) { MemberScreen(viewModel = memberViewModel) }
             }
         }
     )
@@ -127,4 +132,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconV
     object Passwords : Screen("passwords", R.string.passwords, Icons.Filled.AccountBox)
     object Discovery : Screen("discovery", R.string.discovery, Icons.Filled.Build)
     object SSO : Screen("sso", R.string.sso, Icons.Filled.Add)
+    object Member : Screen("member", R.string.member, Icons.Filled.AccountCircle)
 }

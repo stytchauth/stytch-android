@@ -382,3 +382,23 @@ public data class SessionExchangeResponseData(
     @Json(name = "intermediate_session_token")
     val intermediateSessionToken: String,
 ) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class UpdateMemberResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val member: MemberData,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class MemberDeleteAuthenticationFactorData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val member: MemberData
+) : Parcelable

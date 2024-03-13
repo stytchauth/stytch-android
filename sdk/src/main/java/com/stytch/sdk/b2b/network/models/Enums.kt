@@ -29,3 +29,8 @@ public enum class AllowedAuthMethods(override val jsonName: String) : IEnumValue
     MAGIC_LINK("magic_link"),
     PASSWORD("password"),
 }
+
+public enum class MfaMethod(override val jsonName: String) : IEnumValue {
+    SMS("sms_otp"),
+    TOTP("totp")
+}

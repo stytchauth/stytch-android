@@ -7,8 +7,10 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 internal interface StytchB2BApiService : ApiService {
@@ -60,6 +62,22 @@ internal interface StytchB2BApiService : ApiService {
 
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
+
+    @PUT("b2b/organizations/members/update")
+    suspend fun updateMember(
+        @Body request: B2BRequests.Member.UpdateRequest
+    ): B2BResponses.Organizations.UpdateMemberResponse
+
+    @DELETE("b2b/organizations/members/deletePhoneNumber")
+    suspend fun deleteMFAPhoneNumber(): B2BResponses.Organizations.DeleteMemberAuthenticationFactorResponse
+
+    @DELETE("b2b/organizations/members/deleteTOTP")
+    suspend fun deleteMFATOTP(): B2BResponses.Organizations.DeleteMemberAuthenticationFactorResponse
+
+    @DELETE("b2b/organizations/members/passwords/{id}")
+    suspend fun deletePassword(
+        @Path(value = "id") id: String
+    ): B2BResponses.Organizations.DeleteMemberAuthenticationFactorResponse
     //endregion Organizations
 
     //region Passwords

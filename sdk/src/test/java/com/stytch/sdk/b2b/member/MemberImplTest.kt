@@ -1,6 +1,8 @@
 package com.stytch.sdk.b2b.member
 
+import com.stytch.sdk.b2b.DeleteMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.MemberResponse
+import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
@@ -13,7 +15,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -40,6 +44,7 @@ internal class MemberImplTest {
     @Before
     fun before() {
         MockKAnnotations.init(this, true, true)
+        every { mockSessionStorage.member = any() } just runs
         impl = MemberImpl(
             externalScope = TestScope(),
             dispatchers = StytchDispatchers(dispatcher, dispatcher),
@@ -77,5 +82,43 @@ internal class MemberImplTest {
         val member = impl.getSync()
         assert(member == mockMember)
         verify { mockSessionStorage.member }
+    }
+
+    @Test
+    fun `Member update delegates to api`() = runTest {
+        coEvery { mockApi.updateMember(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        impl.update(mockk(relaxed = true))
+        coVerify { mockApi.updateMember(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Member deleteFactor with callback calls callback method`() {
+        coEvery { mockApi.deleteMFAPhoneNumber() } returns StytchResult.Success(mockk(relaxed = true))
+        val mockCallback = spyk<(DeleteMemberAuthenticationFactorResponse) -> Unit>()
+        impl.deleteFactor(MemberAuthenticationFactor.MfaPhoneNumber, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `Member deleteFactor delegates to api for all supported factors`() = runTest {
+        coEvery { mockApi.deleteMFAPhoneNumber() } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deleteMFATOTP() } returns StytchResult.Success(mockk(relaxed = true))
+        coEvery { mockApi.deletePassword(any()) } returns StytchResult.Success(mockk(relaxed = true))
+        listOf(
+            MemberAuthenticationFactor.MfaPhoneNumber,
+            MemberAuthenticationFactor.MfaTOTP,
+            MemberAuthenticationFactor.Password("passwordId")
+        ).forEach { impl.deleteFactor(it) }
+        coVerify { mockApi.deleteMFAPhoneNumber() }
+        coVerify { mockApi.deleteMFATOTP() }
+        coVerify { mockApi.deletePassword("passwordId") }
+    }
+
+    @Test
+    fun `Member update with callback calls callback method`() {
+        coEvery { mockApi.updateMember(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(UpdateMemberResponse) -> Unit>()
+        impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 }

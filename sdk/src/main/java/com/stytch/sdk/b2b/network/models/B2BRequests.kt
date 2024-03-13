@@ -209,4 +209,19 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int? = null,
         )
     }
+
+    object Member {
+        @JsonClass(generateAdapter = true)
+        data class UpdateRequest(
+            val name: String? = null,
+            @Json(name = "untrusted_metadata")
+            val untrustedMetadata: Map<String, Any?>? = null,
+            @Json(name = "mfa_enrolled")
+            val mfaEnrolled: Boolean? = null,
+            @Json(name = "mfa_phone_number")
+            val mfaPhoneNumber: String? = null,
+            @Json(name = "default_mfa_method")
+            val defaultMfaMethod: MfaMethod? = null
+        )
+    }
 }
