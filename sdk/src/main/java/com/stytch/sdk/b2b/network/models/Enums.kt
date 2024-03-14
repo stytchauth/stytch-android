@@ -24,13 +24,25 @@ public enum class AuthMethods {
     RESTRICTED,
 }
 
+public enum class MfaMethods {
+    ALL_ALLOWED,
+    RESTRICTED,
+}
+
+public enum class MfaPolicy {
+    REQUIRED_FOR_ALL,
+    OPTIONAL,
+}
+
 public enum class AllowedAuthMethods(override val jsonName: String) : IEnumValue {
     SSO("sso"),
     MAGIC_LINK("magic_link"),
     PASSWORD("password"),
+    GOOGLE_OAUTH("google_oauth"),
+    MICROSOFT_OAUTH("microsoft_oauth"),
 }
 
 public enum class MfaMethod(override val jsonName: String) : IEnumValue {
     SMS("sms_otp"),
-    TOTP("totp")
+    TOTP("totp"),
 }

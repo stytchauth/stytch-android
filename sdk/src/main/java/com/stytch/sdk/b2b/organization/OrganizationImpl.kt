@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.organization
 
 import com.stytch.sdk.b2b.OrganizationResponse
+import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -33,4 +34,39 @@ internal class OrganizationImpl(
     }
 
     override fun getSync(): OrganizationData? = sessionStorage.organization
+
+    override suspend fun update(parameters: Organization.UpdateOrganizationParameters): UpdateOrganizationResponse =
+        withContext(dispatchers.io) {
+            api.updateOrganization(
+                organizationName = parameters.organizationName,
+                organizationSlug = parameters.organizationSlug,
+                organizationLogoUrl = parameters.organizationLogoUrl,
+                ssoDefaultConnectionId = parameters.ssoDefaultConnectionId,
+                ssoJitProvisioning = parameters.ssoJitProvisioning,
+                ssoJitProvisioningAllowedConnections = parameters.ssoJitProvisioningAllowedConnections,
+                emailAllowedDomains = parameters.emailAllowedDomains,
+                emailJitProvisioning = parameters.emailJitProvisioning,
+                emailInvites = parameters.emailInvites,
+                authMethods = parameters.authMethods,
+                allowedAuthMethods = parameters.allowedAuthMethods,
+                mfaMethods = parameters.mfaMethods,
+                allowedMfaMethods = parameters.allowedMfaMethods,
+                mfaPolicy = parameters.mfaPolicy,
+                rbacEmailImplicitRoleAssignments = parameters.rbacEmailImplicitRoleAssignments,
+            ).apply {
+                if (this is StytchResult.Success) {
+                    sessionStorage.organization = this.value.organization
+                }
+            }
+        }
+
+    override fun update(
+        parameters: Organization.UpdateOrganizationParameters,
+        callback: (UpdateOrganizationResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            val result = update(parameters)
+            callback(result)
+        }
+    }
 }

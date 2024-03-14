@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b.organization
 
 import com.stytch.sdk.b2b.OrganizationResponse
+import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
@@ -88,5 +90,60 @@ internal class OrganizationImplTest {
         val member = impl.getSync()
         assert(member == mockOrganization)
         verify { spiedSessionStorage.organization }
+    }
+
+    @Test
+    fun `Organizations update delegates to api and caches the updated organization`() =
+        runTest {
+            val mockResponse = StytchResult.Success<OrganizationUpdateResponseData>(mockk(relaxed = true))
+            coEvery {
+                mockApi.updateOrganization(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns mockResponse
+            val response = impl.update(Organization.UpdateOrganizationParameters())
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.updateOrganization() }
+            assert(spiedSessionStorage.organization == mockResponse.value.organization)
+        }
+
+    @Test
+    fun `Organizations update with callback calls callback method`() {
+        coEvery {
+            mockApi.updateOrganization(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+            )
+        } returns StytchResult.Success(mockk(relaxed = true))
+        val mockCallback = spyk<(UpdateOrganizationResponse) -> Unit>()
+        impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
     }
 }

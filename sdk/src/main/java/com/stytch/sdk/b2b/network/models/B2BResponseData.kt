@@ -30,7 +30,7 @@ public data class B2BAuthData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val member: MemberData,
-    override val organization: OrganizationData
+    override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -49,7 +49,7 @@ public data class B2BEMLAuthenticateData(
     override val memberSession: B2BSessionData,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean,
-    override val organization: OrganizationData
+    override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -99,7 +99,7 @@ public data class MemberData(
     @Json(name = "untrusted_metadata")
     val untrustedMetadata: @RawValue Map<String, Any?>?,
     @Json(name = "sso_registrations")
-    val ssoRegistrations: List<SSORegistration>
+    val ssoRegistrations: List<SSORegistration>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -274,7 +274,7 @@ public data class DiscoveredOrganizationsResponseData(
     @Json(name = "email_address")
     val emailAddress: String,
     @Json(name = "discovered_organizations")
-    val discoveredOrganizations: List<DiscoveredOrganization>
+    val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -338,7 +338,7 @@ public data class DiscoveryAuthenticateResponseData(
     @Json(name = "email_address")
     val emailAddress: String,
     @Json(name = "discovered_organizations")
-    val discoveredOrganizations: List<DiscoveredOrganization>
+    val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -359,7 +359,7 @@ public data class SSOAuthenticateResponseData(
     override val memberSession: B2BSessionData,
     @Json(name = "reset_session")
     val resetSession: Boolean,
-    override val organization: OrganizationData
+    override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -400,5 +400,15 @@ public data class MemberDeleteAuthenticationFactorData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    val member: MemberData
+    val member: MemberData,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OrganizationUpdateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val organization: OrganizationData,
 ) : Parcelable

@@ -17,34 +17,34 @@ internal interface StytchB2BApiService : ApiService {
     //region Magic Links
     @POST("b2b/magic_links/email/login_or_signup")
     suspend fun loginOrSignupByEmail(
-        @Body request: B2BRequests.MagicLinks.Email.LoginOrSignupRequest
+        @Body request: B2BRequests.MagicLinks.Email.LoginOrSignupRequest,
     ): CommonResponses.BasicResponse
 
     @POST("b2b/magic_links/authenticate")
     suspend fun authenticate(
-        @Body request: B2BRequests.MagicLinks.AuthenticateRequest
+        @Body request: B2BRequests.MagicLinks.AuthenticateRequest,
     ): B2BResponses.MagicLinks.AuthenticateResponse
 
     @POST("b2b/magic_links/email/discovery/send")
     suspend fun sendDiscoveryMagicLink(
-        @Body request: B2BRequests.MagicLinks.Discovery.SendRequest
+        @Body request: B2BRequests.MagicLinks.Discovery.SendRequest,
     ): CommonResponses.BasicResponse
 
     @POST("b2b/magic_links/discovery/authenticate")
     suspend fun authenticateDiscoveryMagicLink(
-        @Body request: B2BRequests.MagicLinks.Discovery.AuthenticateRequest
+        @Body request: B2BRequests.MagicLinks.Discovery.AuthenticateRequest,
     ): B2BResponses.MagicLinks.DiscoveryAuthenticateResponse
 
     @POST("b2b/magic_links/email/invite")
     suspend fun sendInviteMagicLink(
-        @Body request: B2BRequests.MagicLinks.Invite.InviteRequest
+        @Body request: B2BRequests.MagicLinks.Invite.InviteRequest,
     ): B2BResponses.MagicLinks.InviteResponse
     //endregion Magic Links
 
     //region Sessions
     @POST("b2b/sessions/authenticate")
     suspend fun authenticateSessions(
-        @Body request: CommonRequests.Sessions.AuthenticateRequest
+        @Body request: CommonRequests.Sessions.AuthenticateRequest,
     ): B2BResponses.Sessions.AuthenticateResponse
 
     @POST("b2b/sessions/revoke")
@@ -52,7 +52,7 @@ internal interface StytchB2BApiService : ApiService {
 
     @POST("b2b/sessions/exchange")
     suspend fun exchangeSession(
-        @Body request: B2BRequests.Session.ExchangeRequest
+        @Body request: B2BRequests.Session.ExchangeRequest,
     ): B2BResponses.Sessions.ExchangeResponse
     //endregion Sessions
 
@@ -60,12 +60,17 @@ internal interface StytchB2BApiService : ApiService {
     @GET("b2b/organizations/me")
     suspend fun getOrganization(): B2BResponses.Organizations.GetOrganizationResponse
 
+    @PUT("b2b/organizations/me")
+    suspend fun updateOrganization(
+        @Body request: B2BRequests.Organization.UpdateRequest,
+    ): B2BResponses.Organizations.UpdateOrganizationResponse
+
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 
     @PUT("b2b/organizations/members/update")
     suspend fun updateMember(
-        @Body request: B2BRequests.Member.UpdateRequest
+        @Body request: B2BRequests.Member.UpdateRequest,
     ): B2BResponses.Organizations.UpdateMemberResponse
 
     @DELETE("b2b/organizations/members/deletePhoneNumber")
@@ -76,70 +81,70 @@ internal interface StytchB2BApiService : ApiService {
 
     @DELETE("b2b/organizations/members/passwords/{id}")
     suspend fun deletePassword(
-        @Path(value = "id") id: String
+        @Path(value = "id") id: String,
     ): B2BResponses.Organizations.DeleteMemberAuthenticationFactorResponse
     //endregion Organizations
 
     //region Passwords
     @POST("b2b/passwords/authenticate")
     suspend fun authenticatePassword(
-        @Body request: B2BRequests.Passwords.AuthenticateRequest
+        @Body request: B2BRequests.Passwords.AuthenticateRequest,
     ): B2BResponses.Passwords.AuthenticateResponse
 
     @POST("b2b/passwords/email/reset/start")
     suspend fun resetPasswordByEmailStart(
-        @Body request: B2BRequests.Passwords.ResetByEmailStartRequest
+        @Body request: B2BRequests.Passwords.ResetByEmailStartRequest,
     ): B2BResponses.Passwords.ResetByEmailStartResponse
 
     @POST("b2b/passwords/email/reset")
     suspend fun resetPasswordByEmail(
-        @Body request: B2BRequests.Passwords.ResetByEmailRequest
+        @Body request: B2BRequests.Passwords.ResetByEmailRequest,
     ): B2BResponses.Passwords.ResetByEmailResponse
 
     @POST("b2b/passwords/existing_password/reset")
     suspend fun resetPasswordByExisting(
-        @Body request: B2BRequests.Passwords.ResetByExistingPasswordRequest
+        @Body request: B2BRequests.Passwords.ResetByExistingPasswordRequest,
     ): B2BResponses.Passwords.ResetByExistingPasswordResponse
 
     @POST("b2b/passwords/session/reset")
     suspend fun resetPasswordBySession(
-        @Body request: B2BRequests.Passwords.ResetBySessionRequest
+        @Body request: B2BRequests.Passwords.ResetBySessionRequest,
     ): B2BResponses.Passwords.ResetBySessionResponse
 
     @POST("b2b/passwords/strength_check")
     suspend fun passwordStrengthCheck(
-        @Body request: B2BRequests.Passwords.StrengthCheckRequest
+        @Body request: B2BRequests.Passwords.StrengthCheckRequest,
     ): B2BResponses.Passwords.StrengthCheckResponse
     //endregion Passwords
 
     //region Discovery
     @POST("b2b/discovery/organizations")
     suspend fun discoverOrganizations(
-        @Body request: B2BRequests.Discovery.MembershipsRequest
+        @Body request: B2BRequests.Discovery.MembershipsRequest,
     ): B2BResponses.Discovery.DiscoverOrganizationsResponse
 
     @POST("b2b/discovery/intermediate_sessions/exchange")
     suspend fun intermediateSessionExchange(
-        @Body request: B2BRequests.Discovery.SessionExchangeRequest
+        @Body request: B2BRequests.Discovery.SessionExchangeRequest,
     ): B2BResponses.Discovery.SessionExchangeResponse
 
     @POST("b2b/discovery/organizations/create")
     suspend fun createOrganization(
-        @Body request: B2BRequests.Discovery.CreateRequest
+        @Body request: B2BRequests.Discovery.CreateRequest,
     ): B2BResponses.Discovery.CreateOrganizationResponse
     //endregion Discovery
 
     //region SSO
     @POST("b2b/sso/authenticate")
     suspend fun ssoAuthenticate(
-        @Body request: B2BRequests.SSO.AuthenticateRequest
+        @Body request: B2BRequests.SSO.AuthenticateRequest,
     ): B2BResponses.SSO.AuthenticateResponse
     //endregion SSO
 
     //region Bootstrap
     @GET("projects/bootstrap/{publicToken}")
     suspend fun getBootstrapData(
-        @Path(value = "publicToken") publicToken: String
+        @Path(value = "publicToken") publicToken: String,
     ): CommonResponses.Bootstrap.BootstrapResponse
     //endregion Bootstrap
 
@@ -147,7 +152,7 @@ internal interface StytchB2BApiService : ApiService {
     @POST("events")
     suspend fun logEvent(
         // endpoint expects a list of events because JS SDK batches them
-        @Body request: List<CommonRequests.Events.Event>
+        @Body request: List<CommonRequests.Events.Event>,
     ): Response<Unit>
     //endregion Events
 }
