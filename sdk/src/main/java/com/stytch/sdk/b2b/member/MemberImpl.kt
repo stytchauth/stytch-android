@@ -20,7 +20,11 @@ internal class MemberImpl(
 ) : Member {
     override suspend fun get(): MemberResponse =
         withContext(dispatchers.io) {
-            api.getMember()
+            api.getMember().apply {
+                if (this is StytchResult.Success) {
+                    sessionStorage.member = this.value.member
+                }
+            }
         }
 
     override fun get(callback: (MemberResponse) -> Unit) {
@@ -31,6 +35,7 @@ internal class MemberImpl(
     }
 
     override fun getSync(): MemberData? = sessionStorage.member
+
     override suspend fun update(params: Member.UpdateParams): UpdateMemberResponse =
         withContext(dispatchers.io) {
             api.updateMember(
@@ -42,7 +47,10 @@ internal class MemberImpl(
             )
         }
 
-    override fun update(params: Member.UpdateParams, callback: (UpdateMemberResponse) -> Unit) {
+    override fun update(
+        params: Member.UpdateParams,
+        callback: (UpdateMemberResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = update(params)
             callback(result)

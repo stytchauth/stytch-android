@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
+import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 
@@ -31,19 +32,13 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
         }
 
     var memberSession: B2BSessionData? = null
-        private set
+        internal set
 
     var member: MemberData? = null
-        set(value) {
-            synchronized(this) {
-                field = value
-            }
-        }
-        get() {
-            synchronized(this) {
-                return field
-            }
-        }
+        internal set
+
+    var organization: OrganizationData? = null
+        internal set
 
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
@@ -51,7 +46,11 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
     /**
      * @throws Exception if failed to save data
      */
-    fun updateSession(sessionToken: String?, sessionJwt: String?, session: B2BSessionData? = null) {
+    fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+        session: B2BSessionData? = null,
+    ) {
         synchronized(this) {
             this.sessionToken = sessionToken
             this.sessionJwt = sessionJwt
