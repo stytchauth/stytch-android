@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.organization
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
+import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.OrganizationData
@@ -105,6 +106,20 @@ internal class OrganizationImpl(
             externalScope.launch(dispatchers.ui) {
                 val result = members.delete(memberId)
                 callback(result)
+            }
+        }
+
+        override suspend fun reactivate(memberId: String): ReactivateMemberResponse =
+            withContext(dispatchers.io) {
+                api.reactivateOrganizationMember(memberId = memberId)
+            }
+
+        override fun reactivate(
+            memberId: String,
+            callback: (ReactivateMemberResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(members.reactivate(memberId))
             }
         }
     }

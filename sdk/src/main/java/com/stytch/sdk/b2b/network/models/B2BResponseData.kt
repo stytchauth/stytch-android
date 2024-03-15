@@ -434,3 +434,16 @@ public data class OrganizationMemberDeleteResponseData(
     @Json(name = "member_id")
     val memberId: String,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class MemberResponseCommonData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_id")
+    val memberId: String,
+    val member: MemberData,
+    val organization: OrganizationData,
+) : Parcelable

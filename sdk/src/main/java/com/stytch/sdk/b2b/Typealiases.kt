@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
+import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
@@ -95,3 +96,5 @@ public typealias UpdateOrganizationResponse = StytchResult<OrganizationUpdateRes
 public typealias DeleteOrganizationResponse = StytchResult<OrganizationDeleteResponseData>
 
 public typealias DeleteMemberResponse = StytchResult<OrganizationMemberDeleteResponseData>
+
+public typealias ReactivateMemberResponse = StytchResult<MemberResponseCommonData>

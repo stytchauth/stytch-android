@@ -203,6 +203,15 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi Organizations member reactivate calls appropriate apiService method()`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.reactivateOrganizationMember(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.reactivateOrganizationMember("my-member-id")
+            coVerify { StytchB2BApi.apiService.reactivateOrganizationMember(any()) }
+        }
+
+    @Test
     fun `StytchB2BApi Member get calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

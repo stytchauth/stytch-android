@@ -15,6 +15,7 @@ import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
+import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
@@ -314,6 +315,11 @@ internal object StytchB2BApi {
         suspend fun deleteOrganizationMember(memberId: String): StytchResult<OrganizationMemberDeleteResponseData> =
             safeB2BApiCall {
                 apiService.deleteOrganizationMember(memberId = memberId)
+            }
+
+        suspend fun reactivateOrganizationMember(memberId: String): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.reactivateOrganizationMember(memberId = memberId)
             }
     }
 

@@ -313,6 +313,17 @@ internal class StytchB2BApiServiceTest {
     }
 
     @Test
+    fun `Check organization member reactivate request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.reactivateOrganizationMember("my-member-id")
+            }.verifyPut(
+                expectedPath = "/b2b/organizations/members/my-member-id/reactivate",
+            )
+        }
+    }
+
+    @Test
     fun `check Organizations getMember request`() {
         runBlocking {
             requestIgnoringResponseException {

@@ -73,6 +73,11 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "memberId") memberId: String,
     ): B2BResponses.Organizations.DeleteMemberResponse
 
+    @PUT("b2b/organizations/members/{memberId}/reactivate")
+    suspend fun reactivateOrganizationMember(
+        @Path(value = "memberId") memberId: String,
+    ): B2BResponses.Organizations.ReactivateMemberResponse
+
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 

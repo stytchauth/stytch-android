@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.organization
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
+import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
@@ -144,6 +145,25 @@ public interface Organization {
         public fun delete(
             memberId: String,
             callback: (DeleteMemberResponse) -> Unit,
+        )
+
+        /**
+         * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be reactivated
+         * @return [ReactivateMemberResponse]
+         */
+        public suspend fun reactivate(memberId: String): ReactivateMemberResponse
+
+        /**
+         * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be reactivated
+         * @param callback a callback that receives a [ReactivateMemberResponse]
+         */
+        public fun reactivate(
+            memberId: String,
+            callback: (ReactivateMemberResponse) -> Unit,
         )
     }
 }
