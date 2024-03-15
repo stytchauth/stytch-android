@@ -17,6 +17,7 @@ import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.MemberSearchResponseData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
@@ -392,6 +393,21 @@ internal object StytchB2BApi {
                             preserveExistingSessions = preserveExistingSessions,
                             defaultMfaMethod = defaultMfaMethod,
                         ),
+                )
+            }
+
+        suspend fun search(
+            cursor: String? = null,
+            limit: Int? = null,
+            query: B2BRequests.SearchQuery? = null,
+        ): StytchResult<MemberSearchResponseData> =
+            safeB2BApiCall {
+                apiService.searchMembers(
+                    B2BRequests.Organization.SearchMembersRequest(
+                        cursor = cursor,
+                        limit = limit,
+                        query = query,
+                    ),
                 )
             }
     }

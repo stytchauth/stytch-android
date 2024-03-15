@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b.organization
 
+import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
+import com.stytch.sdk.b2b.MemberSearchResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationMemberResponse
@@ -17,6 +19,7 @@ import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
 import com.stytch.sdk.b2b.network.models.OrganizationData
+import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 
 /**
@@ -292,6 +295,67 @@ public interface Organization {
         public fun update(
             parameters: UpdateMemberParameters,
             callback: (UpdateOrganizationMemberResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters necessary to search members
+         * @property cursor The cursor field allows you to paginate through your results.
+         * Each result array is limited to 1000 results.
+         * If your query returns more than 1000 results, you will need to paginate the responses using the cursor.
+         * If you receive a response that includes a non-null next_cursor in the results_metadata object, repeat the
+         * search call with the next_cursor value set to the cursor field to retrieve the next page of results.
+         * Continue to make search calls until the next_cursor in the response is null.
+         * @property limit The number of search results to return per page.
+         * The default limit is 100. A maximum of 1000 results can be returned by a single search request.
+         * If the total size of your result set is greater than one page size, you must paginate the response.
+         * See the cursor field.
+         * @property query The optional query object contains the operator, i.e. AND or OR, and the operands that will
+         * filter your results.
+         * Only an operator is required. If you include no operands, no filtering will be applied.
+         * If you include no query object, it will return all Members with no filtering applied.
+         */
+        public data class SearchParameters(
+            val cursor: String? = null,
+            val limit: Int? = null,
+            val query: SearchQuery? = null,
+        )
+
+        /**
+         *The action to perform on the operands. The accepted value are:
+         * `AND` – all the operand values provided must match.
+         * `OR` – the operator will return any matches to at least one of the operand values you supply.
+         */
+        public data class SearchQuery(
+            val operator: SearchOperator,
+            val operands: List<SearchQueryOperand>,
+        )
+
+        public data class SearchQueryOperand(
+            @Json(name = "filter_name")
+            val filterName: String,
+            @Json(name = "filter_value")
+            val filterValue: Any,
+        )
+
+        /**
+         * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
+         * All fuzzy search filters require a minimum of three characters.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters for searching
+         * @return [MemberSearchResponse]
+         */
+        public suspend fun search(parameters: SearchParameters): MemberSearchResponse
+
+        /**
+         * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
+         * All fuzzy search filters require a minimum of three characters.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters for searching
+         * @param callback a callback that receives a [MemberSearchResponse]
+         */
+        public fun search(
+            parameters: SearchParameters,
+            callback: (MemberSearchResponse) -> Unit,
         )
     }
 }

@@ -4,12 +4,14 @@ import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
+import com.stytch.sdk.b2b.MemberSearchResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
@@ -203,6 +205,38 @@ internal class OrganizationImpl(
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(update(parameters))
+            }
+        }
+
+        override suspend fun search(
+            parameters: Organization.OrganizationMembers.SearchParameters,
+        ): MemberSearchResponse =
+            withContext(dispatchers.ui) {
+                api.search(
+                    cursor = parameters.cursor,
+                    limit = parameters.limit,
+                    query =
+                        parameters.query?.let {
+                            B2BRequests.SearchQuery(
+                                operator = it.operator,
+                                operands =
+                                    it.operands.map { operand ->
+                                        B2BRequests.SearchQueryOperand(
+                                            filterName = operand.filterName,
+                                            filterValue = operand.filterValue,
+                                        )
+                                    },
+                            )
+                        },
+                )
+            }
+
+        override fun search(
+            parameters: Organization.OrganizationMembers.SearchParameters,
+            callback: (MemberSearchResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(members.search(parameters))
             }
         }
     }

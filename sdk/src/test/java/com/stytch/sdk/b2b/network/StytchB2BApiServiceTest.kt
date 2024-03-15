@@ -8,6 +8,7 @@ import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
+import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
@@ -413,6 +414,49 @@ internal class StytchB2BApiServiceTest {
                         "roles" to parameters.roles,
                         "preserve_existing_sessions" to parameters.preserveExistingSessions,
                         "default_mfa_method" to parameters.defaultMfaMethod?.jsonName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check organization member search request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Organization.SearchMembersRequest(
+                    cursor = "1234",
+                    limit = 500,
+                    query =
+                        B2BRequests.SearchQuery(
+                            operator = SearchOperator.AND,
+                            operands =
+                                listOf(
+                                    B2BRequests.SearchQueryOperand(
+                                        filterName = "member_ids",
+                                        filterValue = listOf("member-id"),
+                                    ),
+                                ),
+                        ),
+                )
+            requestIgnoringResponseException {
+                apiService.searchMembers(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/organizations/me/members/search",
+                expectedBody =
+                    mapOf(
+                        "cursor" to parameters.cursor,
+                        "limit" to parameters.limit,
+                        "query" to
+                            mapOf(
+                                "operator" to "AND",
+                                "operands" to
+                                    listOf(
+                                        mapOf(
+                                            "filter_name" to parameters.query?.operands?.get(0)?.filterName,
+                                            "filter_value" to parameters.query?.operands?.get(0)?.filterValue,
+                                        ),
+                                    ),
+                            ),
                     ),
             )
         }

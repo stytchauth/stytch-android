@@ -123,6 +123,12 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "memberId") memberId: String,
         @Body request: B2BRequests.Organization.UpdateMemberRequest,
     ): B2BResponses.Organizations.UpdateOrganizationMemberResponse
+
+    @POST("b2b/organizations/me/members/search")
+    suspend fun searchMembers(
+        @Body request: B2BRequests.Organization.SearchMembersRequest,
+    ): B2BResponses.Organizations.MemberSearchResponse
+
     //endregion Organizations
 
     //region Passwords

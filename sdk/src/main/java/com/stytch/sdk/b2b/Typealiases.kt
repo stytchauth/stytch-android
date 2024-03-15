@@ -8,6 +8,7 @@ import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.MemberSearchResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
@@ -104,3 +105,5 @@ public typealias DeleteOrganizationMemberAuthenticationFactorResponse = StytchRe
 public typealias CreateMemberResponse = StytchResult<MemberResponseCommonData>
 
 public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias MemberSearchResponse = StytchResult<MemberSearchResponseData>

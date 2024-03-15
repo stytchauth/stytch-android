@@ -46,3 +46,8 @@ public enum class MfaMethod(override val jsonName: String) : IEnumValue {
     SMS("sms_otp"),
     TOTP("totp"),
 }
+
+public enum class SearchOperator {
+    AND,
+    OR,
+}

@@ -447,3 +447,20 @@ public data class MemberResponseCommonData(
     val member: MemberData,
     val organization: OrganizationData,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class MemberSearchResponseData(
+    val members: List<MemberData>,
+    val organizations: Map<String, OrganizationData>,
+    @Json(name = "results_metadata")
+    val resultsMetadata: ResultsMetadata,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class ResultsMetadata(
+    val total: Int,
+    @Json(name = "next_cursor")
+    val nextCursor: String? = null,
+) : Parcelable

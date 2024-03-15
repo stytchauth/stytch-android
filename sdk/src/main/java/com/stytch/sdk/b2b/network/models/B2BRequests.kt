@@ -303,5 +303,26 @@ internal object B2BRequests {
             @Json(name = "default_mfa_method")
             val defaultMfaMethod: MfaMethod? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class SearchMembersRequest(
+            val cursor: String? = null,
+            val limit: Int? = null,
+            val query: SearchQuery? = null,
+        )
     }
+
+    @JsonClass(generateAdapter = true)
+    data class SearchQuery(
+        val operator: SearchOperator,
+        val operands: List<SearchQueryOperand>,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class SearchQueryOperand(
+        @Json(name = "filter_name")
+        val filterName: String,
+        @Json(name = "filter_value")
+        val filterValue: Any,
+    )
 }
