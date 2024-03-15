@@ -65,6 +65,9 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.Organization.UpdateRequest,
     ): B2BResponses.Organizations.UpdateOrganizationResponse
 
+    @DELETE("b2b/organizations/me")
+    suspend fun deleteOrganization(): B2BResponses.Organizations.DeleteOrganizationResponse
+
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 

@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.OrganizationData
+import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -41,6 +43,7 @@ internal class OrganizationImplTest {
     private lateinit var impl: OrganizationImpl
     private val dispatcher = Dispatchers.Unconfined
     private val successfulOrgResponse = StytchResult.Success<OrganizationResponseData>(mockk(relaxed = true))
+    private val successfulDeleteResponse = StytchResult.Success<OrganizationDeleteResponseData>(mockk(relaxed = true))
 
     @Before
     fun before() {
@@ -144,6 +147,28 @@ internal class OrganizationImplTest {
         } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(UpdateOrganizationResponse) -> Unit>()
         impl.update(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `Organizations delete delegates to api and clears all cached data`() =
+        runTest {
+            coEvery { mockApi.deleteOrganization() } returns successfulDeleteResponse
+            val response = impl.delete()
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.deleteOrganization() }
+            assert(spiedSessionStorage.organization == null)
+            assert(spiedSessionStorage.member == null)
+            assert(spiedSessionStorage.memberSession == null)
+            assert(spiedSessionStorage.sessionJwt == null)
+            assert(spiedSessionStorage.sessionToken == null)
+        }
+
+    @Test
+    fun `Organizations delete with callback calls callback method`() {
+        coEvery { mockApi.deleteOrganization() } returns successfulDeleteResponse
+        val mockCallback = spyk<(DeleteOrganizationResponse) -> Unit>()
+        impl.delete(mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

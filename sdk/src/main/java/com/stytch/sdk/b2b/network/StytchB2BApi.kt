@@ -20,6 +20,7 @@ import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
@@ -302,6 +303,11 @@ internal object StytchB2BApi {
                         rbacEmailImplicitRoleAssignments = rbacEmailImplicitRoleAssignments,
                     ),
                 )
+            }
+
+        suspend fun deleteOrganization(): StytchResult<OrganizationDeleteResponseData> =
+            safeB2BApiCall {
+                apiService.deleteOrganization()
             }
     }
 

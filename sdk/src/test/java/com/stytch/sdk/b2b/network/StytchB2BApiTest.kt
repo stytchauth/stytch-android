@@ -185,6 +185,15 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi Organizations delete calls appropriate apiService method()`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.deleteOrganization() } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.deleteOrganization()
+            coVerify { StytchB2BApi.apiService.deleteOrganization() }
+        }
+
+    @Test
     fun `StytchB2BApi Member get calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

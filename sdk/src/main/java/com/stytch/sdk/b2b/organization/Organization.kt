@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
@@ -102,4 +103,20 @@ public interface Organization {
         parameters: UpdateOrganizationParameters,
         callback: (UpdateOrganizationResponse) -> Unit,
     )
+
+    /**
+     * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * Note: This endpoint will log out the current member, as they will also be deleted
+     * @return [DeleteOrganizationResponse]
+     */
+    public suspend fun delete(): DeleteOrganizationResponse
+
+    /**
+     * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * Note: This endpoint will log out the current member, as they will also be deleted
+     * @param callback a callback that receives a [DeleteOrganizationResponse]
+     */
+    public fun delete(callback: (DeleteOrganizationResponse) -> Unit)
 }

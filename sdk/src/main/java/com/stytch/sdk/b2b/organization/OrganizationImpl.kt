@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -66,6 +67,24 @@ internal class OrganizationImpl(
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = update(parameters)
+            callback(result)
+        }
+    }
+
+    override suspend fun delete(): DeleteOrganizationResponse =
+        withContext(dispatchers.io) {
+            api.deleteOrganization().apply {
+                if (this is StytchResult.Success) {
+                    sessionStorage.organization = null
+                    sessionStorage.member = null
+                    sessionStorage.updateSession(null, null, null)
+                }
+            }
+        }
+
+    override fun delete(callback: (DeleteOrganizationResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            val result = delete()
             callback(result)
         }
     }
