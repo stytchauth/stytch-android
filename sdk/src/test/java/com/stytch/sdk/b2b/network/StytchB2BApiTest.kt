@@ -212,6 +212,42 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi Organization deleteOrganizationMemberMFAPhoneNumber calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery {
+                StytchB2BApi.apiService.deleteOrganizationMemberMFAPhoneNumber(
+                    any(),
+                )
+            } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.deleteOrganizationMemberMFAPhoneNumber("my-member-id")
+            coVerify { StytchB2BApi.apiService.deleteOrganizationMemberMFAPhoneNumber("my-member-id") }
+        }
+
+    @Test
+    fun `StytchB2BApi Organization deleteOrganizationMemberMFATOTP calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.deleteOrganizationMemberMFATOTP(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.deleteOrganizationMemberMFATOTP("my-member-id")
+            coVerify { StytchB2BApi.apiService.deleteOrganizationMemberMFATOTP("my-member-id") }
+        }
+
+    @Test
+    fun `StytchB2BApi Organization deleteOrganizationMemberPassword calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery {
+                StytchB2BApi.apiService.deleteOrganizationMemberPassword(
+                    any(),
+                    any(),
+                )
+            } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.deleteOrganizationMemberPassword("my-member-id", "password-id")
+            coVerify { StytchB2BApi.apiService.deleteOrganizationMemberPassword("my-member-id", "password-id") }
+        }
+
+    @Test
     fun `StytchB2BApi Member get calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

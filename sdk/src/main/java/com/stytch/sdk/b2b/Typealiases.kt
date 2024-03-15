@@ -98,3 +98,5 @@ public typealias DeleteOrganizationResponse = StytchResult<OrganizationDeleteRes
 public typealias DeleteMemberResponse = StytchResult<OrganizationMemberDeleteResponseData>
 
 public typealias ReactivateMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias DeleteOrganizationMemberAuthenticationFactorResponse = StytchResult<MemberResponseCommonData>

@@ -1,10 +1,12 @@
 package com.stytch.sdk.b2b.organization
 
 import com.stytch.sdk.b2b.DeleteMemberResponse
+import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
+import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.EmailInvites
@@ -164,6 +166,27 @@ public interface Organization {
         public fun reactivate(
             memberId: String,
             callback: (ReactivateMemberResponse) -> Unit,
+        )
+
+        /**
+         * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+         * @param authenticationFactor the authentication factor to delete
+         * @return [DeleteOrganizationMemberAuthenticationFactorResponse]
+         */
+        public suspend fun deleteMemberAuthenticationFactor(
+            memberId: String,
+            authenticationFactor: MemberAuthenticationFactor,
+        ): DeleteOrganizationMemberAuthenticationFactorResponse
+
+        /**
+         * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+         * @param authenticationFactor the authentication factor to delete
+         * @param callback a callback that receives a [DeleteOrganizationMemberAuthenticationFactorResponse]
+         */
+        public fun deleteMemberAuthenticationFactor(
+            memberId: String,
+            authenticationFactor: MemberAuthenticationFactor,
+            callback: (DeleteOrganizationMemberAuthenticationFactorResponse) -> Unit,
         )
     }
 }

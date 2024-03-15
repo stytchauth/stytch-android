@@ -78,6 +78,22 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "memberId") memberId: String,
     ): B2BResponses.Organizations.ReactivateMemberResponse
 
+    @DELETE("b2b/organizations/members/{memberId}/deletePhoneNumber")
+    suspend fun deleteOrganizationMemberMFAPhoneNumber(
+        @Path(value = "memberId") memberId: String,
+    ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
+
+    @DELETE("b2b/organizations/members/{memberId}/deleteTOTP")
+    suspend fun deleteOrganizationMemberMFATOTP(
+        @Path(value = "memberId") memberId: String,
+    ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
+
+    @DELETE("b2b/organizations/members/{memberId}/passwords/{passwordId}")
+    suspend fun deleteOrganizationMemberPassword(
+        @Path(value = "memberId") memberId: String,
+        @Path(value = "passwordId") passwordId: String,
+    ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
+
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 

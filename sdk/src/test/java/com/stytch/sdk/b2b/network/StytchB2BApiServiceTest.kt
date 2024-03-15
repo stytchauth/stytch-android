@@ -324,6 +324,33 @@ internal class StytchB2BApiServiceTest {
     }
 
     @Test
+    fun `check organization member deleteOrganizationMemberMFAPhoneNumber request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteOrganizationMemberMFAPhoneNumber("my-member-id")
+            }.verifyDelete("/b2b/organizations/members/my-member-id/deletePhoneNumber")
+        }
+    }
+
+    @Test
+    fun `check organization member deleteOrganizationMemberMFATOTP request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteOrganizationMemberMFATOTP("my-member-id")
+            }.verifyDelete("/b2b/organizations/members/my-member-id/deleteTOTP")
+        }
+    }
+
+    @Test
+    fun `check organization member deleteOrganizationMemberPassword request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteOrganizationMemberPassword("my-member-id", "passwordId")
+            }.verifyDelete("/b2b/organizations/members/my-member-id/passwords/passwordId")
+        }
+    }
+
+    @Test
     fun `check Organizations getMember request`() {
         runBlocking {
             requestIgnoringResponseException {

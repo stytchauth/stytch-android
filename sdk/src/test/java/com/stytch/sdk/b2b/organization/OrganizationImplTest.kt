@@ -1,10 +1,12 @@
 package com.stytch.sdk.b2b.organization
 
 import com.stytch.sdk.b2b.DeleteMemberResponse
+import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
+import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
@@ -205,4 +207,45 @@ internal class OrganizationImplTest {
         impl.members.reactivate("my-member-id", callback)
         coVerify { callback.invoke(any()) }
     }
+
+    @Test
+    fun `Organization Member deleteFactor with callback calls callback method`() {
+        coEvery {
+            mockApi.deleteOrganizationMemberMFAPhoneNumber(
+                any(),
+            )
+        } returns StytchResult.Success(mockk(relaxed = true))
+        val mockCallback = spyk<(DeleteOrganizationMemberAuthenticationFactorResponse) -> Unit>()
+        impl.members.deleteMemberAuthenticationFactor("", MemberAuthenticationFactor.MfaPhoneNumber, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `Organization Member deleteFactor delegates to api for all supported factors`() =
+        runTest {
+            coEvery {
+                mockApi.deleteOrganizationMemberMFAPhoneNumber(
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery {
+                mockApi.deleteOrganizationMemberMFATOTP(
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery {
+                mockApi.deleteOrganizationMemberPassword(
+                    any(),
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
+            listOf(
+                MemberAuthenticationFactor.MfaPhoneNumber,
+                MemberAuthenticationFactor.MfaTOTP,
+                MemberAuthenticationFactor.Password("passwordId"),
+            ).forEach { impl.members.deleteMemberAuthenticationFactor("my-member-id", it) }
+            coVerify { mockApi.deleteOrganizationMemberMFAPhoneNumber("my-member-id") }
+            coVerify { mockApi.deleteOrganizationMemberMFATOTP("my-member-id") }
+            coVerify { mockApi.deleteOrganizationMemberPassword("my-member-id", "passwordId") }
+        }
 }

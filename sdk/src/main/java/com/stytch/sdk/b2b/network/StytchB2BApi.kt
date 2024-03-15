@@ -321,6 +321,24 @@ internal object StytchB2BApi {
             safeB2BApiCall {
                 apiService.reactivateOrganizationMember(memberId = memberId)
             }
+
+        suspend fun deleteOrganizationMemberMFAPhoneNumber(memberId: String): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.deleteOrganizationMemberMFAPhoneNumber(memberId = memberId)
+            }
+
+        suspend fun deleteOrganizationMemberMFATOTP(memberId: String): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.deleteOrganizationMemberMFATOTP(memberId = memberId)
+            }
+
+        suspend fun deleteOrganizationMemberPassword(
+            memberId: String,
+            passwordId: String,
+        ): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.deleteOrganizationMemberPassword(memberId = memberId, passwordId = passwordId)
+            }
     }
 
     internal object Member {
