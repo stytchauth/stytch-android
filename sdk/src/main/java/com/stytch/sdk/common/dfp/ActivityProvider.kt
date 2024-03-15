@@ -11,6 +11,8 @@ internal class ActivityProvider(application: Application) : Application.Activity
     internal val currentActivity: Activity?
         get() = _currentActivity.get()
 
+    private var lastResumedActivityName: String? = null
+
     init {
         application.registerActivityLifecycleCallbacks(this)
     }
@@ -24,14 +26,17 @@ internal class ActivityProvider(application: Application) : Application.Activity
     }
 
     override fun onActivityResumed(activity: Activity) {
+        lastResumedActivityName = activity.localClassName
         _currentActivity = WeakReference(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {
+        if (lastResumedActivityName != activity.localClassName) return
         _currentActivity = WeakReference(null)
     }
 
     override fun onActivityStopped(activity: Activity) {
+        if (lastResumedActivityName != activity.localClassName) return
         _currentActivity = WeakReference(null)
     }
 
@@ -40,6 +45,7 @@ internal class ActivityProvider(application: Application) : Application.Activity
     }
 
     override fun onActivityDestroyed(activity: Activity) {
+        if (lastResumedActivityName != activity.localClassName) return
         _currentActivity = WeakReference(null)
     }
 }
