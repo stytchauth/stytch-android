@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
@@ -119,4 +120,30 @@ public interface Organization {
      * @param callback a callback that receives a [DeleteOrganizationResponse]
      */
     public fun delete(callback: (DeleteOrganizationResponse) -> Unit)
+
+    /**
+     * Public variable that exposes an instance of Organization.Members
+     */
+    public val members: OrganizationMembers
+
+    public interface OrganizationMembers {
+        /**
+         * Deletes a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be deleted
+         * @return [DeleteMemberResponse]
+         */
+        public suspend fun delete(memberId: String): DeleteMemberResponse
+
+        /**
+         * Deletes a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be deleted
+         * @param callback a callback that receives a [DeleteMemberResponse]
+         */
+        public fun delete(
+            memberId: String,
+            callback: (DeleteMemberResponse) -> Unit,
+        )
+    }
 }

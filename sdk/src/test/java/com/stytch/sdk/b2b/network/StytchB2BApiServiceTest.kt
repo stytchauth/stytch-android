@@ -304,6 +304,15 @@ internal class StytchB2BApiServiceTest {
     }
 
     @Test
+    fun `Check Organization member delete request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteOrganizationMember("my-member-id")
+            }.verifyDelete("/b2b/organizations/members/my-member-id")
+        }
+    }
+
+    @Test
     fun `check Organizations getMember request`() {
         runBlocking {
             requestIgnoringResponseException {

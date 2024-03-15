@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
@@ -170,5 +171,21 @@ internal class OrganizationImplTest {
         val mockCallback = spyk<(DeleteOrganizationResponse) -> Unit>()
         impl.delete(mockCallback)
         verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `Organization member delete delegates to api`() =
+        runTest {
+            coEvery { mockApi.deleteOrganizationMember(any()) } returns mockk(relaxed = true)
+            impl.members.delete("my-member-id")
+            coVerify { mockApi.deleteOrganizationMember("my-member-id") }
+        }
+
+    @Test
+    fun `Organization member delete with callback calls callback method`() {
+        coEvery { mockApi.deleteOrganizationMember(any()) } returns mockk(relaxed = true)
+        val callback = spyk<(DeleteMemberResponse) -> Unit>()
+        impl.members.delete("my-member-id", callback)
+        coVerify { callback.invoke(any()) }
     }
 }

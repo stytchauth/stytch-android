@@ -45,6 +45,11 @@ internal object B2BResponses {
         ) : StytchDataResponse<OrganizationDeleteResponseData>(data)
 
         @JsonClass(generateAdapter = true)
+        class DeleteMemberResponse(
+            data: OrganizationMemberDeleteResponseData,
+        ) : StytchDataResponse<OrganizationMemberDeleteResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
         class GetMemberResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
 
         @JsonClass(generateAdapter = true)

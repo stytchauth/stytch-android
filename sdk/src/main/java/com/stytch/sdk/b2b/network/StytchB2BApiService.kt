@@ -68,6 +68,11 @@ internal interface StytchB2BApiService : ApiService {
     @DELETE("b2b/organizations/me")
     suspend fun deleteOrganization(): B2BResponses.Organizations.DeleteOrganizationResponse
 
+    @DELETE("b2b/organizations/members/{memberId}")
+    suspend fun deleteOrganizationMember(
+        @Path(value = "memberId") memberId: String,
+    ): B2BResponses.Organizations.DeleteMemberResponse
+
     @GET("b2b/organizations/members/me")
     suspend fun getMember(): B2BResponses.Organizations.GetMemberResponse
 
