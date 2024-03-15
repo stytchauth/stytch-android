@@ -259,6 +259,7 @@ internal object B2BRequests {
             val mfaPolicy: MfaPolicy? = null,
             @Json(name = "rbac_email_implicit_role_assignments")
             val rbacEmailImplicitRoleAssignments: List<String>? = null,
+            val defaultMfaMethod: MfaMethod? = null,
         )
     }
 }
