@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
@@ -248,4 +249,20 @@ internal class OrganizationImplTest {
             coVerify { mockApi.deleteOrganizationMemberMFATOTP("my-member-id") }
             coVerify { mockApi.deleteOrganizationMemberPassword("my-member-id", "passwordId") }
         }
+
+    @Test
+    fun `Organization member create delegates to api`() =
+        runTest {
+            coEvery { mockApi.createOrganizationMember(any()) } returns mockk(relaxed = true)
+            impl.members.create(Organization.OrganizationMembers.CreateMemberParameters("robot@stytch.com"))
+            coVerify { mockApi.createOrganizationMember("robot@stytch.com") }
+        }
+
+    @Test
+    fun `Organization member create with callback calls callback method`() {
+        coEvery { mockApi.createOrganizationMember(any()) } returns mockk(relaxed = true)
+        val callback = spyk<(CreateMemberResponse) -> Unit>()
+        impl.members.create(Organization.OrganizationMembers.CreateMemberParameters("robot@stytch.com"), callback)
+        coVerify { callback.invoke(any()) }
+    }
 }

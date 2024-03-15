@@ -339,6 +339,31 @@ internal object StytchB2BApi {
             safeB2BApiCall {
                 apiService.deleteOrganizationMemberPassword(memberId = memberId, passwordId = passwordId)
             }
+
+        suspend fun createOrganizationMember(
+            emailAddress: String,
+            name: String? = null,
+            isBreakGlass: Boolean? = null,
+            mfaEnrolled: Boolean? = null,
+            mfaPhoneNumber: String? = null,
+            untrustedMetadata: Map<String, Any?>? = null,
+            createMemberAsPending: Boolean? = null,
+            roles: List<String>? = null,
+        ): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.createMember(
+                    B2BRequests.Organization.CreateMemberRequest(
+                        emailAddress = emailAddress,
+                        name = name,
+                        isBreakGlass = isBreakGlass,
+                        mfaEnrolled = mfaEnrolled,
+                        mfaPhoneNumber = mfaPhoneNumber,
+                        untrustedMetadata = untrustedMetadata,
+                        createMemberAsPending = createMemberAsPending,
+                        roles = roles,
+                    ),
+                )
+            }
     }
 
     internal object Member {

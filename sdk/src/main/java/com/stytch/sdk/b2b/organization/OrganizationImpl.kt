@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
@@ -148,6 +149,32 @@ internal class OrganizationImpl(
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(members.deleteMemberAuthenticationFactor(memberId, authenticationFactor))
+            }
+        }
+
+        override suspend fun create(
+            parameters: Organization.OrganizationMembers.CreateMemberParameters,
+        ): CreateMemberResponse =
+            withContext(dispatchers.io) {
+                api.createOrganizationMember(
+                    emailAddress = parameters.emailAddress,
+                    name = parameters.name,
+                    isBreakGlass = parameters.isBreakGlass,
+                    mfaEnrolled = parameters.mfaEnrolled,
+                    mfaPhoneNumber = parameters.mfaPhoneNumber,
+                    untrustedMetadata = parameters.untrustedMetadata,
+                    createMemberAsPending = parameters.createMemberAsPending,
+                    roles = parameters.roles,
+                )
+            }
+
+        override fun create(
+            parameters: Organization.OrganizationMembers.CreateMemberParameters,
+            callback: (CreateMemberResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                val result = members.create(parameters)
+                callback(result)
             }
         }
     }

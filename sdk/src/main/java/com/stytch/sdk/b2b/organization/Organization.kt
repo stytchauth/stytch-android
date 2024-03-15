@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.organization
 
+import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
@@ -187,6 +188,39 @@ public interface Organization {
             memberId: String,
             authenticationFactor: MemberAuthenticationFactor,
             callback: (DeleteOrganizationMemberAuthenticationFactorResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters necessary for creating a user
+         */
+        public data class CreateMemberParameters(
+            val emailAddress: String,
+            val name: String? = null,
+            val isBreakGlass: Boolean? = null,
+            val mfaEnrolled: Boolean? = null,
+            val mfaPhoneNumber: String? = null,
+            val untrustedMetadata: Map<String, Any?>? = null,
+            val createMemberAsPending: Boolean? = null,
+            val roles: List<String>? = null,
+        )
+
+        /**
+         * Creates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for creating a user
+         * @return [CreateMemberResponse]
+         */
+        public suspend fun create(parameters: CreateMemberParameters): CreateMemberResponse
+
+        /**
+         * Creates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for creating a user
+         * @param callback a callback that receives a [CreateMemberResponse]
+         */
+        public fun create(
+            parameters: CreateMemberParameters,
+            callback: (CreateMemberResponse) -> Unit,
         )
     }
 }

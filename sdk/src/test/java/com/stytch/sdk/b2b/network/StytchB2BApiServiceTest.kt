@@ -20,6 +20,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -347,6 +348,39 @@ internal class StytchB2BApiServiceTest {
             requestIgnoringResponseException {
                 apiService.deleteOrganizationMemberPassword("my-member-id", "passwordId")
             }.verifyDelete("/b2b/organizations/members/my-member-id/passwords/passwordId")
+        }
+    }
+
+    @Test
+    fun `check organization member create request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Organization.CreateMemberRequest(
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    createMemberAsPending = true,
+                    roles = listOf("my-role", "my-other-role"),
+                )
+            requestIgnoringResponseException {
+                apiService.createMember(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/organizations/members",
+                expectedBody =
+                    mapOf(
+                        "email_address" to parameters.emailAddress,
+                        "name" to parameters.name,
+                        "is_breakglass" to parameters.isBreakGlass,
+                        "mfa_enrolled" to parameters.mfaEnrolled,
+                        "mfa_phone_number" to parameters.mfaPhoneNumber,
+                        "untrusted_metadata" to parameters.untrustedMetadata,
+                        "create_member_as_pending" to parameters.createMemberAsPending,
+                        "roles" to parameters.roles,
+                    ),
+            )
         }
     }
 

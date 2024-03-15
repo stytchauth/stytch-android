@@ -112,6 +112,11 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun deletePassword(
         @Path(value = "id") id: String,
     ): B2BResponses.Organizations.DeleteMemberAuthenticationFactorResponse
+
+    @POST("b2b/organizations/members")
+    suspend fun createMember(
+        @Body request: B2BRequests.Organization.CreateMemberRequest,
+    ): B2BResponses.Organizations.CreateMemberResponse
     //endregion Organizations
 
     //region Passwords

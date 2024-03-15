@@ -248,6 +248,24 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi Organization createOrganizationMember calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.createMember(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Organization.createOrganizationMember(
+                emailAddress = "robot@stytch.com",
+                name = "Stytch Robot",
+                isBreakGlass = true,
+                mfaEnrolled = true,
+                mfaPhoneNumber = "+15551235555",
+                untrustedMetadata = mapOf("key 1" to "value 1"),
+                createMemberAsPending = true,
+                roles = listOf("my-role", "my-other-role"),
+            )
+            coVerify { StytchB2BApi.apiService.createMember(any()) }
+        }
+
+    @Test
     fun `StytchB2BApi Member get calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true
