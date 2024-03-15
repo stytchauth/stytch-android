@@ -364,6 +364,36 @@ internal object StytchB2BApi {
                     ),
                 )
             }
+
+        suspend fun updateOrganizationMember(
+            memberId: String,
+            emailAddress: String? = null,
+            name: String? = null,
+            isBreakGlass: Boolean? = null,
+            mfaEnrolled: Boolean? = null,
+            mfaPhoneNumber: String? = null,
+            untrustedMetadata: Map<String, Any?>? = null,
+            roles: List<String>? = null,
+            preserveExistingSessions: Boolean? = null,
+            defaultMfaMethod: MfaMethod? = null,
+        ): StytchResult<MemberResponseCommonData> =
+            safeB2BApiCall {
+                apiService.updateOrganizationMember(
+                    memberId = memberId,
+                    request =
+                        B2BRequests.Organization.UpdateMemberRequest(
+                            emailAddress = emailAddress,
+                            name = name,
+                            isBreakGlass = isBreakGlass,
+                            mfaEnrolled = mfaEnrolled,
+                            mfaPhoneNumber = mfaPhoneNumber,
+                            untrustedMetadata = untrustedMetadata,
+                            roles = roles,
+                            preserveExistingSessions = preserveExistingSessions,
+                            defaultMfaMethod = defaultMfaMethod,
+                        ),
+                )
+            }
     }
 
     internal object Member {

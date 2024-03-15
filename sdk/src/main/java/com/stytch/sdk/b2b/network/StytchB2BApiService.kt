@@ -117,6 +117,12 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun createMember(
         @Body request: B2BRequests.Organization.CreateMemberRequest,
     ): B2BResponses.Organizations.CreateMemberResponse
+
+    @POST("b2b/organizations/members/{memberId}")
+    suspend fun updateOrganizationMember(
+        @Path(value = "memberId") memberId: String,
+        @Body request: B2BRequests.Organization.UpdateMemberRequest,
+    ): B2BResponses.Organizations.UpdateOrganizationMemberResponse
     //endregion Organizations
 
     //region Passwords

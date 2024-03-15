@@ -76,6 +76,11 @@ internal object B2BResponses {
         class CreateMemberResponse(
             data: MemberResponseCommonData,
         ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UpdateOrganizationMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
     }
 
     object Passwords {

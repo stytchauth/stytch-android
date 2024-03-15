@@ -102,3 +102,5 @@ public typealias ReactivateMemberResponse = StytchResult<MemberResponseCommonDat
 public typealias DeleteOrganizationMemberAuthenticationFactorResponse = StytchResult<MemberResponseCommonData>
 
 public typealias CreateMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseCommonData>

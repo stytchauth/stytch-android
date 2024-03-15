@@ -20,7 +20,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -379,6 +378,41 @@ internal class StytchB2BApiServiceTest {
                         "untrusted_metadata" to parameters.untrustedMetadata,
                         "create_member_as_pending" to parameters.createMemberAsPending,
                         "roles" to parameters.roles,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check organization member update request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Organization.UpdateMemberRequest(
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    roles = listOf("my-role", "my-other-role"),
+                    preserveExistingSessions = true,
+                    defaultMfaMethod = MfaMethod.SMS,
+                )
+            requestIgnoringResponseException {
+                apiService.updateOrganizationMember("my-member-id", parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/organizations/members/my-member-id",
+                expectedBody =
+                    mapOf(
+                        "email_address" to parameters.emailAddress,
+                        "name" to parameters.name,
+                        "is_breakglass" to parameters.isBreakGlass,
+                        "mfa_enrolled" to parameters.mfaEnrolled,
+                        "mfa_phone_number" to parameters.mfaPhoneNumber,
+                        "untrusted_metadata" to parameters.untrustedMetadata,
+                        "roles" to parameters.roles,
+                        "preserve_existing_sessions" to parameters.preserveExistingSessions,
+                        "default_mfa_method" to parameters.defaultMfaMethod?.jsonName,
                     ),
             )
         }

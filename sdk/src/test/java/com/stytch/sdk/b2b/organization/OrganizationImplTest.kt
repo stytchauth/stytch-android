@@ -6,9 +6,11 @@ import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
+import com.stytch.sdk.b2b.UpdateOrganizationMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
@@ -253,9 +255,33 @@ internal class OrganizationImplTest {
     @Test
     fun `Organization member create delegates to api`() =
         runTest {
-            coEvery { mockApi.createOrganizationMember(any()) } returns mockk(relaxed = true)
-            impl.members.create(Organization.OrganizationMembers.CreateMemberParameters("robot@stytch.com"))
-            coVerify { mockApi.createOrganizationMember("robot@stytch.com") }
+            coEvery {
+                mockApi.createOrganizationMember(any(), any(), any(), any(), any(), any(), any(), any())
+            } returns mockk(relaxed = true)
+            impl.members.create(
+                Organization.OrganizationMembers.CreateMemberParameters(
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    createMemberAsPending = true,
+                    roles = listOf("my-role", "my-other-role"),
+                ),
+            )
+            coVerify {
+                mockApi.createOrganizationMember(
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    createMemberAsPending = true,
+                    roles = listOf("my-role", "my-other-role"),
+                )
+            }
         }
 
     @Test
@@ -263,6 +289,50 @@ internal class OrganizationImplTest {
         coEvery { mockApi.createOrganizationMember(any()) } returns mockk(relaxed = true)
         val callback = spyk<(CreateMemberResponse) -> Unit>()
         impl.members.create(Organization.OrganizationMembers.CreateMemberParameters("robot@stytch.com"), callback)
+        coVerify { callback.invoke(any()) }
+    }
+
+    @Test
+    fun `Organization member update delegates to api`() =
+        runTest {
+            coEvery {
+                mockApi.updateOrganizationMember(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+            } returns mockk(relaxed = true)
+            impl.members.update(
+                Organization.OrganizationMembers.UpdateMemberParameters(
+                    memberId = "my-member-id",
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    roles = listOf("my-role", "my-other-role"),
+                    preserveExistingSessions = true,
+                    defaultMfaMethod = MfaMethod.SMS,
+                ),
+            )
+            coVerify {
+                mockApi.updateOrganizationMember(
+                    memberId = "my-member-id",
+                    emailAddress = "robot@stytch.com",
+                    name = "Stytch Robot",
+                    isBreakGlass = true,
+                    mfaEnrolled = true,
+                    mfaPhoneNumber = "+15551235555",
+                    untrustedMetadata = mapOf("key 1" to "value 1"),
+                    roles = listOf("my-role", "my-other-role"),
+                    preserveExistingSessions = true,
+                    defaultMfaMethod = MfaMethod.SMS,
+                )
+            }
+        }
+
+    @Test
+    fun `Organization member update with callback calls callback method`() {
+        coEvery { mockApi.updateOrganizationMember("my-member-id") } returns mockk(relaxed = true)
+        val callback = spyk<(UpdateOrganizationMemberResponse) -> Unit>()
+        impl.members.update(Organization.OrganizationMembers.UpdateMemberParameters("my-member-id"), callback)
         coVerify { callback.invoke(any()) }
     }
 }

@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.DeleteOrganizationResponse
 import com.stytch.sdk.b2b.OrganizationResponse
 import com.stytch.sdk.b2b.ReactivateMemberResponse
+import com.stytch.sdk.b2b.UpdateOrganizationMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -175,6 +176,33 @@ internal class OrganizationImpl(
             externalScope.launch(dispatchers.ui) {
                 val result = members.create(parameters)
                 callback(result)
+            }
+        }
+
+        override suspend fun update(
+            parameters: Organization.OrganizationMembers.UpdateMemberParameters,
+        ): UpdateOrganizationMemberResponse =
+            withContext(dispatchers.io) {
+                api.updateOrganizationMember(
+                    memberId = parameters.memberId,
+                    emailAddress = parameters.emailAddress,
+                    name = parameters.name,
+                    isBreakGlass = parameters.isBreakGlass,
+                    mfaEnrolled = parameters.mfaEnrolled,
+                    mfaPhoneNumber = parameters.mfaPhoneNumber,
+                    untrustedMetadata = parameters.untrustedMetadata,
+                    roles = parameters.roles,
+                    preserveExistingSessions = parameters.preserveExistingSessions,
+                    defaultMfaMethod = parameters.defaultMfaMethod,
+                )
+            }
+
+        override fun update(
+            parameters: Organization.OrganizationMembers.UpdateMemberParameters,
+            callback: (UpdateOrganizationMemberResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(update(parameters))
             }
         }
     }

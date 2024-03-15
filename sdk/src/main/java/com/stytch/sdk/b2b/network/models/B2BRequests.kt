@@ -281,5 +281,27 @@ internal object B2BRequests {
             @Json(name = "roles")
             val roles: List<String>? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class UpdateMemberRequest(
+            @Json(name = "email_address")
+            val emailAddress: String? = null,
+            @Json(name = "name")
+            val name: String? = null,
+            @Json(name = "is_breakglass")
+            val isBreakGlass: Boolean? = null,
+            @Json(name = "mfa_enrolled")
+            val mfaEnrolled: Boolean? = null,
+            @Json(name = "mfa_phone_number")
+            val mfaPhoneNumber: String? = null,
+            @Json(name = "untrusted_metadata")
+            val untrustedMetadata: Map<String, Any?>? = null,
+            @Json(name = "roles")
+            val roles: List<String>? = null,
+            @Json(name = "preserve_existing_sessions")
+            val preserveExistingSessions: Boolean? = null,
+            @Json(name = "default_mfa_method")
+            val defaultMfaMethod: MfaMethod? = null,
+        )
     }
 }
