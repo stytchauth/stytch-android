@@ -23,7 +23,8 @@ public sealed class StytchResult<out T> : Parcelable {
     public data class Error(val exception: StytchError) : StytchResult<Nothing>()
 }
 
-internal fun <T> StytchResult<T>.getValueOrThrow(): T = when (this) {
-    is StytchResult.Success -> value
-    is StytchResult.Error -> throw exception
-}
+internal fun <T> StytchResult<T>.getValueOrThrow(): T =
+    when (this) {
+        is StytchResult.Success -> value
+        is StytchResult.Error -> throw exception
+    }

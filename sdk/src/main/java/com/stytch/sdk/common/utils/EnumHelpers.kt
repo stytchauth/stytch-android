@@ -29,7 +29,10 @@ internal inline fun <reified T> createEnumJsonAdapter(): JsonAdapter<T> where T 
         }
 
         @ToJson
-        override fun toJson(writer: JsonWriter, value: T?) {
+        override fun toJson(
+            writer: JsonWriter,
+            value: T?,
+        ) {
             writer.value(value?.jsonName)
         }
     }

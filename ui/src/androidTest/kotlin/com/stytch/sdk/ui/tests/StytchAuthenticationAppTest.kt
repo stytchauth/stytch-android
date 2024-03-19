@@ -7,7 +7,7 @@ import com.stytch.sdk.ui.data.NO_PASSWORD_EML_OR_OTP_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.robots.stytchAuthenticationAppRobot
 import org.junit.Test
 
-internal class StytchAuthenticationAppTest: BaseAndroidComposeTest() {
+internal class StytchAuthenticationAppTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
 
     @Test

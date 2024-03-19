@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import kotlinx.parcelize.Parcelize
-import java.io.File
 
 private val CHARCOAL: Int = Color(0xFF19303D).toArgb()
 private val BLACK: Int = Color(0xFF000000).toArgb()
@@ -77,23 +76,25 @@ public data class StytchTheme(
     val hideHeaderText: Boolean = false,
 ) : Parcelable {
     internal companion object {
-        fun defaultDarkTheme(): StytchTheme = StytchTheme(
-            backgroundColor = CHARCOAL,
-            primaryTextColor = WHITE,
-            secondaryTextColor = CEMENT,
-            successColor = MINT,
-            errorColor = PEACH,
-            buttonBackgroundColor = WHITE,
-            buttonTextColor = CHARCOAL,
-            buttonBorderColor = WHITE,
-            disabledButtonBackgroundColor = INK,
-            disabledButtonBorderColor = INK,
-            inputBorderColor = SLATE,
-            inputBackgroundColor = CHARCOAL,
-            inputTextColor = WHITE,
-            disabledInputBorderColor = INK,
-            disabledInputBackgroundColor = INK,
-        )
+        fun defaultDarkTheme(): StytchTheme =
+            StytchTheme(
+                backgroundColor = CHARCOAL,
+                primaryTextColor = WHITE,
+                secondaryTextColor = CEMENT,
+                successColor = MINT,
+                errorColor = PEACH,
+                buttonBackgroundColor = WHITE,
+                buttonTextColor = CHARCOAL,
+                buttonBorderColor = WHITE,
+                disabledButtonBackgroundColor = INK,
+                disabledButtonBorderColor = INK,
+                inputBorderColor = SLATE,
+                inputBackgroundColor = CHARCOAL,
+                inputTextColor = WHITE,
+                disabledInputBorderColor = INK,
+                disabledInputBackgroundColor = INK,
+            )
+
         fun defaultLightTheme(): StytchTheme = StytchTheme()
     }
 }

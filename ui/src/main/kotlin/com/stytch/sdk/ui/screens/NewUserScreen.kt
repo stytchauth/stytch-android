@@ -43,11 +43,13 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
-        val hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
-            productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
-        val viewModel = viewModel<NewUserScreenViewModel>(
-            factory = NewUserScreenViewModel.factory(context.savedStateHandle)
-        )
+        val hasEmailOTP =
+            productConfig.products.contains(StytchProduct.OTP) &&
+                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+        val viewModel =
+            viewModel<NewUserScreenViewModel>(
+                factory = NewUserScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -95,11 +97,12 @@ private fun NewUserScreenComposable(
             )
             StytchButton(
                 enabled = true,
-                text = if (hasEML) {
-                    stringResource(id = R.string.email_me_a_login_link)
-                } else {
-                    stringResource(id = R.string.email_me_a_login_code)
-                },
+                text =
+                    if (hasEML) {
+                        stringResource(id = R.string.email_me_a_login_link)
+                    } else {
+                        stringResource(id = R.string.email_me_a_login_code)
+                    },
                 onClick = { if (hasEML) onSendEML() else onSendEmailOTP() },
             )
             Spacer(modifier = Modifier.height(24.dp))

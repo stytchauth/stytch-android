@@ -7,7 +7,6 @@ import androidx.biometric.BiometricManager
  * @property message A string explaining the BiometricAvailability status
  */
 public sealed class BiometricAvailability {
-
     /**
      * Status indicating that biometrics are not available on this device for some reason
      * @param reason a reason why biometrics are unavailable
@@ -41,14 +40,14 @@ public sealed class BiometricAvailability {
              * Status indicating that a security vulnerability has been discovered with one or more hardware sensors.
              */
             BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED(
-                "A security vulnerability has been discovered with one or more hardware sensors."
+                "A security vulnerability has been discovered with one or more hardware sensors.",
             ),
 
             /**
              * Status indicating that the requested options are incompatible with the current Android version.
              */
             BIOMETRIC_ERROR_UNSUPPORTED(
-                "The requested biometrics options are incompatible with the current Android version."
+                "The requested biometrics options are incompatible with the current Android version.",
             ),
 
             /**
@@ -58,24 +57,25 @@ public sealed class BiometricAvailability {
         }
 
         internal companion object {
-            fun fromReason(reason: Int) = Unavailable(
-                when (reason) {
-                    BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
-                        Reason.BIOMETRIC_ERROR_NO_HARDWARE
-                    BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                        Reason.BIOMETRIC_ERROR_HW_UNAVAILABLE
-                    BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
-                        Reason.BIOMETRIC_ERROR_NONE_ENROLLED
-                    BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
-                        Reason.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED
-                    BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
-                        Reason.BIOMETRIC_ERROR_UNSUPPORTED
-                    BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
-                        Reason.BIOMETRIC_STATUS_UNKNOWN
-                    else ->
-                        Reason.BIOMETRIC_STATUS_UNKNOWN
-                }
-            )
+            fun fromReason(reason: Int) =
+                Unavailable(
+                    when (reason) {
+                        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
+                            Reason.BIOMETRIC_ERROR_NO_HARDWARE
+                        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
+                            Reason.BIOMETRIC_ERROR_HW_UNAVAILABLE
+                        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
+                            Reason.BIOMETRIC_ERROR_NONE_ENROLLED
+                        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
+                            Reason.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED
+                        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
+                            Reason.BIOMETRIC_ERROR_UNSUPPORTED
+                        BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
+                            Reason.BIOMETRIC_STATUS_UNKNOWN
+                        else ->
+                            Reason.BIOMETRIC_STATUS_UNKNOWN
+                    },
+                )
         }
     }
 

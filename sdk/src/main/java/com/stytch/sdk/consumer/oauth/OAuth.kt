@@ -156,7 +156,10 @@ public interface OAuth {
          * @param parameters required to begin the OneTap flow
          * @param callback a callback that receives a Boolean
          */
-        public fun start(parameters: StartParameters, callback: (Boolean) -> Unit)
+        public fun start(
+            parameters: StartParameters,
+            callback: (Boolean) -> Unit,
+        )
 
         /**
          * Authenticate a Google OneTap login
@@ -170,7 +173,10 @@ public interface OAuth {
          * @param parameters required to authenticate the Google OneTap login
          * @param callback a callback that receives an [AuthResponse]
          */
-        public fun authenticate(parameters: AuthenticateParameters, callback: (NativeOAuthResponse) -> Unit)
+        public fun authenticate(
+            parameters: AuthenticateParameters,
+            callback: (NativeOAuthResponse) -> Unit,
+        )
 
         /**
          * Sign a user out of Google Play Services
@@ -206,7 +212,7 @@ public interface OAuth {
             val oAuthRequestIdentifier: Int,
             val loginRedirectUrl: String? = null,
             val signupRedirectUrl: String? = null,
-            val customScopes: List<String>? = null
+            val customScopes: List<String>? = null,
         )
 
         /**
@@ -240,6 +246,6 @@ public interface OAuth {
      */
     public fun authenticate(
         parameters: ThirdParty.AuthenticateParameters,
-        callback: (OAuthAuthenticatedResponse) -> Unit
+        callback: (OAuthAuthenticatedResponse) -> Unit,
     )
 }

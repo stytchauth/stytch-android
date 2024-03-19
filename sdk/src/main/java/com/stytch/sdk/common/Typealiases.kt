@@ -1,4 +1,6 @@
-// ktlint-disable filename
+
+@file:Suppress("ktlint:standard:filename")
+
 package com.stytch.sdk.common
 
 import com.stytch.sdk.common.network.models.BasicData

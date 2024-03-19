@@ -12,7 +12,6 @@ import com.stytch.sdk.consumer.network.models.UserData
  * factors from an authenticated user.
  */
 public interface UserManagement {
-
     /**
      * Fetches a user from the current session
      * @return [UserResponse]
@@ -41,7 +40,10 @@ public interface UserManagement {
      * Deletes a [UserAuthenticationFactor] from the currently authenticated user
      * @param callback A callback that receives a [DeleteFactorResponse]
      */
-    public fun deleteFactor(factor: UserAuthenticationFactor, callback: (DeleteFactorResponse) -> Unit)
+    public fun deleteFactor(
+        factor: UserAuthenticationFactor,
+        callback: (DeleteFactorResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with User updates
@@ -50,7 +52,7 @@ public interface UserManagement {
      */
     public data class UpdateParams(
         val name: NameData? = null,
-        val untrustedMetadata: Map<String, Any>? = null
+        val untrustedMetadata: Map<String, Any>? = null,
     )
 
     /**
@@ -65,7 +67,10 @@ public interface UserManagement {
      * @param params required to udpate the user
      * @param callback a callback that receives an [UpdateUserResponse]
      */
-    public fun update(params: UpdateParams, callback: (UpdateUserResponse) -> Unit)
+    public fun update(
+        params: UpdateParams,
+        callback: (UpdateUserResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used for searching Users
@@ -87,5 +92,8 @@ public interface UserManagement {
      * @param params required for searching users
      * @param callback a callback that receives a [SearchUserResponse]
      */
-    public fun search(params: SearchParams, callback: (SearchUserResponse) -> Unit)
+    public fun search(
+        params: SearchParams,
+        callback: (SearchUserResponse) -> Unit,
+    )
 }

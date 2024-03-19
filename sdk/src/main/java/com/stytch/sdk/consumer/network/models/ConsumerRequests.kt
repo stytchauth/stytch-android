@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.NameData
 
 internal object ConsumerRequests {
-
     object MagicLinks {
         object Email {
             @JsonClass(generateAdapter = true)
@@ -194,6 +193,7 @@ internal object ConsumerRequests {
                 val sessionDurationMinutes: Int,
             )
         }
+
         object ThirdParty {
             @JsonClass(generateAdapter = true)
             data class AuthenticateRequest(
@@ -207,7 +207,7 @@ internal object ConsumerRequests {
                 @Json(name = "session_token")
                 val sessionToken: String? = null,
                 @Json(name = "code_verifier")
-                val codeVerifier: String
+                val codeVerifier: String,
             )
         }
     }
@@ -235,13 +235,13 @@ internal object ConsumerRequests {
             @Json(name = "authenticator_type")
             val authenticatorType: String? = null,
             @Json(name = "return_passkey_credential_options")
-            val isPasskey: Boolean? = false
+            val isPasskey: Boolean? = false,
         )
 
         @JsonClass(generateAdapter = true)
         data class RegisterRequest(
             @Json(name = "public_key_credential")
-            val publicKeyCredential: String
+            val publicKeyCredential: String,
         )
 
         @JsonClass(generateAdapter = true)
@@ -250,7 +250,7 @@ internal object ConsumerRequests {
             val userId: String? = null,
             val domain: String,
             @Json(name = "return_passkey_credential_options")
-            val isPasskey: Boolean? = false
+            val isPasskey: Boolean? = false,
         )
 
         @JsonClass(generateAdapter = true)

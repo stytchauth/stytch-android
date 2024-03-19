@@ -53,14 +53,16 @@ internal data class OTPConfirmationScreen(
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val navigator = LocalNavigator.currentOrThrow
-        val recipient = when (resendParameters) {
-            is OTPDetails.EmailOTP -> resendParameters.parameters.email
-            is OTPDetails.SmsOTP -> resendParameters.parameters.phoneNumber
-            is OTPDetails.WhatsAppOTP -> resendParameters.parameters.phoneNumber
-        }
-        val viewModel = viewModel<OTPConfirmationScreenViewModel>(
-            factory = OTPConfirmationScreenViewModel.factory(context.savedStateHandle)
-        )
+        val recipient =
+            when (resendParameters) {
+                is OTPDetails.EmailOTP -> resendParameters.parameters.email
+                is OTPDetails.SmsOTP -> resendParameters.parameters.phoneNumber
+                is OTPDetails.WhatsAppOTP -> resendParameters.parameters.phoneNumber
+            }
+        val viewModel =
+            viewModel<OTPConfirmationScreenViewModel>(
+                factory = OTPConfirmationScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.setInitialState(resendParameters)
@@ -102,10 +104,11 @@ private fun OTPConfirmationScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted = AnnotatedString(
-        text = " $recipient",
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-    )
+    val recipientFormatted =
+        AnnotatedString(
+            text = " $recipient",
+            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+        )
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
@@ -113,10 +116,11 @@ private fun OTPConfirmationScreenComposable(
             textAlign = TextAlign.Start,
         )
         BodyText(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.passcode_sent_to))
-                append(recipientFormatted)
-            },
+            text =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.passcode_sent_to))
+                    append(recipientFormatted)
+                },
         )
         OTPEntry(
             errorMessage = uiState.genericErrorMessage,
@@ -125,9 +129,10 @@ private fun OTPConfirmationScreenComposable(
         Text(
             text = stringResource(id = R.string.code_expires_in, uiState.expirationTimeFormatted),
             textAlign = TextAlign.Start,
-            style = type.caption.copy(
-                color = Color(theme.secondaryTextColor),
-            ),
+            style =
+                type.caption.copy(
+                    color = Color(theme.secondaryTextColor),
+                ),
             modifier = Modifier.clickable { onShowResendDialog() },
         )
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
@@ -148,10 +153,11 @@ private fun OTPConfirmationScreenComposable(
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.resend_code),
-            body = buildAnnotatedString {
-                append(stringResource(id = R.string.new_code_will_be_sent_to))
-                append(recipientFormatted)
-            },
+            body =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.new_code_will_be_sent_to))
+                    append(recipientFormatted)
+                },
             cancelText = stringResource(id = R.string.cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.send_code),

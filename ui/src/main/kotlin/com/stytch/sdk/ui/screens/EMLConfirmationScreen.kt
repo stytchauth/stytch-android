@@ -51,9 +51,10 @@ internal data class EMLConfirmationScreen(
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
-        val viewModel = viewModel<EMLConfirmationScreenViewModel>(
-            factory = EMLConfirmationScreenViewModel.factory(context.savedStateHandle)
-        )
+        val viewModel =
+            viewModel<EMLConfirmationScreenViewModel>(
+                factory = EMLConfirmationScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -93,14 +94,16 @@ private fun EMLConfirmationScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted = AnnotatedString(
-        text = " $emailAddress",
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-    )
-    val resendLinkFormatted = AnnotatedString(
-        text = stringResource(id = R.string.resend_link),
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-    )
+    val recipientFormatted =
+        AnnotatedString(
+            text = " $emailAddress",
+            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+        )
+    val resendLinkFormatted =
+        AnnotatedString(
+            text = stringResource(id = R.string.resend_link),
+            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+        )
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
@@ -108,21 +111,24 @@ private fun EMLConfirmationScreenComposable(
             textAlign = TextAlign.Start,
         )
         BodyText(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.login_link_sent))
-                append(recipientFormatted)
-            },
+            text =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.login_link_sent))
+                    append(recipientFormatted)
+                },
         )
         Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.didnt_get_it))
-                append(" ")
-                append(resendLinkFormatted)
-            },
+            text =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.didnt_get_it))
+                    append(" ")
+                    append(resendLinkFormatted)
+                },
             textAlign = TextAlign.Start,
-            style = type.caption.copy(
-                color = Color(theme.secondaryTextColor),
-            ),
+            style =
+                type.caption.copy(
+                    color = Color(theme.secondaryTextColor),
+                ),
             modifier = Modifier.clickable { onShowResendDialog() },
         )
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
@@ -143,10 +149,11 @@ private fun EMLConfirmationScreenComposable(
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.resend_link),
-            body = buildAnnotatedString {
-                append(stringResource(id = R.string.new_link_will_be_sent_to))
-                append(recipientFormatted)
-            },
+            body =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.new_link_will_be_sent_to))
+                    append(recipientFormatted)
+                },
             cancelText = stringResource(id = R.string.cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.send_link),

@@ -41,16 +41,20 @@ internal class SessionsImpl internal constructor(
         withContext(dispatchers.io) {
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
-            result = api.authenticate(
-                authParams.sessionDurationMinutes
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticate(
+                    authParams.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
-    override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(
+        authParams: Sessions.AuthParams,
+        callback: (AuthResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)
@@ -75,7 +79,10 @@ internal class SessionsImpl internal constructor(
         return result
     }
 
-    override fun revoke(params: Sessions.RevokeParams, callback: (BaseResponse) -> Unit) {
+    override fun revoke(
+        params: Sessions.RevokeParams,
+        callback: (BaseResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = revoke(params)
@@ -87,7 +94,10 @@ internal class SessionsImpl internal constructor(
     /**
      * @throws StytchInternalError if failed to save data
      */
-    override fun updateSession(sessionToken: String?, sessionJwt: String?) {
+    override fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    ) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {

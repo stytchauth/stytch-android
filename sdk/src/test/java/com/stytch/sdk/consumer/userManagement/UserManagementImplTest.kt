@@ -26,7 +26,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -34,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class UserManagementImplTest {
@@ -58,12 +58,13 @@ internal class UserManagementImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         every { mockSessionStorage.user = any() } just runs
-        impl = UserManagementImpl(
-            externalScope = TestScope(),
-            dispatchers = StytchDispatchers(dispatcher, dispatcher),
-            sessionStorage = mockSessionStorage,
-            api = mockApi
-        )
+        impl =
+            UserManagementImpl(
+                externalScope = TestScope(),
+                dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockSessionStorage,
+                api = mockApi,
+            )
     }
 
     @After
@@ -73,12 +74,13 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl getUser delegates to api`() = runTest {
-        coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.getUser()
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.getUser() }
-    }
+    fun `UserManagementImpl getUser delegates to api`() =
+        runTest {
+            coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
+            val response = impl.getUser()
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.getUser() }
+        }
 
     @Test
     fun `UserManagementImpl getUser with callback calls callback method`() {
@@ -107,33 +109,39 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl deleteFactor delegates to api for all supported factors`() = runTest {
-        coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        coEvery { mockApi.deleteBiometricRegistrationById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        listOf(
-            UserAuthenticationFactor.Email("emailAddressId"),
-            UserAuthenticationFactor.PhoneNumber("phoneNumberId"),
-            UserAuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
-            UserAuthenticationFactor.CryptoWallet("cryptoWalletId"),
-            UserAuthenticationFactor.WebAuthn("webAuthnId"),
-        ).forEach { impl.deleteFactor(it) }
-        coVerify { mockApi.deleteEmailById("emailAddressId") }
-        coVerify { mockApi.deletePhoneNumberById("phoneNumberId") }
-        coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
-        coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
-        coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
-    }
+    fun `UserManagementImpl deleteFactor delegates to api for all supported factors`() =
+        runTest {
+            coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery {
+                mockApi.deleteBiometricRegistrationById(
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            listOf(
+                UserAuthenticationFactor.Email("emailAddressId"),
+                UserAuthenticationFactor.PhoneNumber("phoneNumberId"),
+                UserAuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
+                UserAuthenticationFactor.CryptoWallet("cryptoWalletId"),
+                UserAuthenticationFactor.WebAuthn("webAuthnId"),
+            ).forEach { impl.deleteFactor(it) }
+            coVerify { mockApi.deleteEmailById("emailAddressId") }
+            coVerify { mockApi.deletePhoneNumberById("phoneNumberId") }
+            coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
+            coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
+            coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
+        }
 
     @Test
-    fun `UserManagementImpl updateUser delegates to api`() = runTest {
-        coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.update(mockk(relaxed = true))
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.updateUser(any(), any()) }
-    }
+    fun `UserManagementImpl updateUser delegates to api`() =
+        runTest {
+            coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
+            val response = impl.update(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.updateUser(any(), any()) }
+        }
 
     @Test
     fun `UserManagementImpl updateUser with callback calls callback method`() {
@@ -144,12 +152,13 @@ internal class UserManagementImplTest {
     }
 
     @Test
-    fun `UserManagementImpl searchUsers delegates to api`() = runTest {
-        coEvery { mockApi.searchUsers(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val response = impl.search(mockk(relaxed = true))
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.searchUsers(any()) }
-    }
+    fun `UserManagementImpl searchUsers delegates to api`() =
+        runTest {
+            coEvery { mockApi.searchUsers(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            val response = impl.search(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.searchUsers(any()) }
+        }
 
     @Test
     fun `UserManagementImpl searchUsers with callback calls callback method`() {

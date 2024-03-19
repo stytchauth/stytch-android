@@ -143,6 +143,7 @@ internal object B2BRequests {
             val password: String,
         )
     }
+
     object Discovery {
         @JsonClass(generateAdapter = true)
         data class MembershipsRequest(
@@ -221,7 +222,107 @@ internal object B2BRequests {
             @Json(name = "mfa_phone_number")
             val mfaPhoneNumber: String? = null,
             @Json(name = "default_mfa_method")
-            val defaultMfaMethod: MfaMethod? = null
+            val defaultMfaMethod: MfaMethod? = null,
         )
     }
+
+    object Organization {
+        @JsonClass(generateAdapter = true)
+        data class UpdateRequest(
+            @Json(name = "organization_name")
+            val organizationName: String? = null,
+            @Json(name = "organization_slug")
+            val organizationSlug: String? = null,
+            @Json(name = "organization_logo_url")
+            val organizationLogoUrl: String? = null,
+            @Json(name = "sso_default_connection_id")
+            val ssoDefaultConnectionId: String? = null,
+            @Json(name = "sso_jit_provisioning")
+            val ssoJitProvisioning: SsoJitProvisioning? = null,
+            @Json(name = "sso_jit_provisioning_allowed_connections")
+            val ssoJitProvisioningAllowedConnections: List<String>? = null,
+            @Json(name = "email_allowed_domains")
+            val emailAllowedDomains: List<String>? = null,
+            @Json(name = "email_jit_provisioning")
+            val emailJitProvisioning: EmailJitProvisioning? = null,
+            @Json(name = "email_invites")
+            val emailInvites: EmailInvites? = null,
+            @Json(name = "auth_methods")
+            val authMethods: AuthMethods? = null,
+            @Json(name = "allowed_auth_methods")
+            val allowedAuthMethods: List<AllowedAuthMethods>? = null,
+            @Json(name = "mfa_methods")
+            val mfaMethods: MfaMethods? = null,
+            @Json(name = "allowed_mfa_methods")
+            val allowedMfaMethods: List<MfaMethod>? = null,
+            @Json(name = "mfa_policy")
+            val mfaPolicy: MfaPolicy? = null,
+            @Json(name = "rbac_email_implicit_role_assignments")
+            val rbacEmailImplicitRoleAssignments: List<String>? = null,
+            val defaultMfaMethod: MfaMethod? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class CreateMemberRequest(
+            @Json(name = "email_address")
+            val emailAddress: String,
+            @Json(name = "name")
+            val name: String? = null,
+            @Json(name = "is_breakglass")
+            val isBreakGlass: Boolean? = null,
+            @Json(name = "mfa_enrolled")
+            val mfaEnrolled: Boolean? = null,
+            @Json(name = "mfa_phone_number")
+            val mfaPhoneNumber: String? = null,
+            @Json(name = "untrusted_metadata")
+            val untrustedMetadata: Map<String, Any?>? = null,
+            @Json(name = "create_member_as_pending")
+            val createMemberAsPending: Boolean? = null,
+            @Json(name = "roles")
+            val roles: List<String>? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class UpdateMemberRequest(
+            @Json(name = "email_address")
+            val emailAddress: String? = null,
+            @Json(name = "name")
+            val name: String? = null,
+            @Json(name = "is_breakglass")
+            val isBreakGlass: Boolean? = null,
+            @Json(name = "mfa_enrolled")
+            val mfaEnrolled: Boolean? = null,
+            @Json(name = "mfa_phone_number")
+            val mfaPhoneNumber: String? = null,
+            @Json(name = "untrusted_metadata")
+            val untrustedMetadata: Map<String, Any?>? = null,
+            @Json(name = "roles")
+            val roles: List<String>? = null,
+            @Json(name = "preserve_existing_sessions")
+            val preserveExistingSessions: Boolean? = null,
+            @Json(name = "default_mfa_method")
+            val defaultMfaMethod: MfaMethod? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class SearchMembersRequest(
+            val cursor: String? = null,
+            val limit: Int? = null,
+            val query: SearchQuery? = null,
+        )
+    }
+
+    @JsonClass(generateAdapter = true)
+    data class SearchQuery(
+        val operator: SearchOperator,
+        val operands: List<SearchQueryOperand>,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class SearchQueryOperand(
+        @Json(name = "filter_name")
+        val filterName: String,
+        @Json(name = "filter_value")
+        val filterValue: Any,
+    )
 }

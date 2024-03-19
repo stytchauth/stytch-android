@@ -4,7 +4,6 @@ import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 
 internal object CommonResponses {
-
     object Biometrics {
         @JsonClass(generateAdapter = true)
         class RegisterStartResponse(data: BiometricsStartResponse) :

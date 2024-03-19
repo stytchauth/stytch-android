@@ -24,7 +24,6 @@ internal class B2BMagicLinksImpl internal constructor(
     private val emailApi: StytchB2BApi.MagicLinks.Email,
     private val discoveryApi: StytchB2BApi.MagicLinks.Discovery,
 ) : B2BMagicLinks {
-
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): AuthResponse {
@@ -40,13 +39,14 @@ internal class B2BMagicLinksImpl internal constructor(
             }
 
             // call backend endpoint
-            result = emailApi.authenticate(
-                parameters.token,
-                parameters.sessionDurationMinutes,
-                codeVerifier
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                emailApi.authenticate(
+                    parameters.token,
+                    parameters.sessionDurationMinutes,
+                    codeVerifier,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
         return result
@@ -64,7 +64,7 @@ internal class B2BMagicLinksImpl internal constructor(
     }
 
     override suspend fun discoveryAuthenticate(
-        parameters: B2BMagicLinks.DiscoveryAuthenticateParameters
+        parameters: B2BMagicLinks.DiscoveryAuthenticateParameters,
     ): DiscoveryEMLAuthResponse {
         var result: DiscoveryEMLAuthResponse
         withContext(dispatchers.io) {
@@ -75,10 +75,11 @@ internal class B2BMagicLinksImpl internal constructor(
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
-            result = discoveryApi.authenticate(
-                token = parameters.token,
-                codeVerifier = codeVerifier
-            )
+            result =
+                discoveryApi.authenticate(
+                    token = parameters.token,
+                    codeVerifier = codeVerifier,
+                )
         }
         return result
     }
@@ -94,10 +95,7 @@ internal class B2BMagicLinksImpl internal constructor(
     }
 
     private inner class EmailMagicLinksImpl : B2BMagicLinks.EmailMagicLinks {
-
-        override suspend fun loginOrSignup(
-            parameters: B2BMagicLinks.EmailMagicLinks.Parameters
-        ): BaseResponse {
+        override suspend fun loginOrSignup(parameters: B2BMagicLinks.EmailMagicLinks.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
                 val challengeCode: String
@@ -109,15 +107,16 @@ internal class B2BMagicLinksImpl internal constructor(
                     return@withContext
                 }
 
-                result = emailApi.loginOrSignupByEmail(
-                    email = parameters.email,
-                    organizationId = parameters.organizationId,
-                    loginRedirectUrl = parameters.loginRedirectUrl,
-                    signupRedirectUrl = parameters.signupRedirectUrl,
-                    codeChallenge = challengeCode,
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                )
+                result =
+                    emailApi.loginOrSignupByEmail(
+                        email = parameters.email,
+                        organizationId = parameters.organizationId,
+                        loginRedirectUrl = parameters.loginRedirectUrl,
+                        signupRedirectUrl = parameters.signupRedirectUrl,
+                        codeChallenge = challengeCode,
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                    )
             }
 
             return result
@@ -136,7 +135,7 @@ internal class B2BMagicLinksImpl internal constructor(
         }
 
         override suspend fun discoverySend(
-            parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters
+            parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters,
         ): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
@@ -149,12 +148,13 @@ internal class B2BMagicLinksImpl internal constructor(
                     return@withContext
                 }
 
-                result = discoveryApi.send(
-                    email = parameters.emailAddress,
-                    codeChallenge = challengeCode,
-                    loginTemplateId = parameters.loginTemplateId,
-                    discoveryRedirectUrl = parameters.discoveryRedirectUrl
-                )
+                result =
+                    discoveryApi.send(
+                        email = parameters.emailAddress,
+                        codeChallenge = challengeCode,
+                        loginTemplateId = parameters.loginTemplateId,
+                        discoveryRedirectUrl = parameters.discoveryRedirectUrl,
+                    )
             }
             return result
         }

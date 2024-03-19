@@ -150,7 +150,7 @@ public data class DeleteAuthenticationFactorData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    val user: UserData
+    val user: UserData,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -173,7 +173,7 @@ public data class OAuthData(
     @Json(name = "provider_type")
     val providerType: String,
     @Json(name = "provider_values")
-    val providerValues: OAuthProviderValues
+    val providerValues: OAuthProviderValues,
 ) : IAuthData, Parcelable {
     @JsonClass(generateAdapter = true)
     @Parcelize
@@ -198,7 +198,7 @@ public data class NativeOAuthData(
     override val sessionToken: String,
     override val user: UserData,
     @Json(name = "user_created")
-    override val userCreated: Boolean
+    override val userCreated: Boolean,
 ) : INativeOAuthData, Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -207,7 +207,7 @@ public data class Feedback(
     val suggestions: List<String>,
     val warning: String,
     @Json(name = "luds_requirements")
-    val ludsRequirements: LUDSRequirements?
+    val ludsRequirements: LUDSRequirements?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -241,13 +241,14 @@ public data class StrengthCheckResponse(
     @Json(name = "valid_password")
     val validPassword: Boolean,
     @Json(name = "strength_policy")
-    val strengthPolicy: StrengthPolicy
+    val strengthPolicy: StrengthPolicy,
 ) : Parcelable
 
 @JsonClass(generateAdapter = false)
 public enum class StrengthPolicy {
     @Json(name = "zxcvbn")
     ZXCVBN,
+
     @Json(name = "luds")
     LUDS,
 }
@@ -259,13 +260,13 @@ public data class UpdateUserResponseData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    val user: UserData
+    val user: UserData,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UserSearchResponseData(
-    val userType: UserType
+    val userType: UserType,
 ) : Parcelable
 
 @JsonClass(generateAdapter = false)
@@ -273,8 +274,10 @@ public data class UserSearchResponseData(
 public enum class UserType : Parcelable {
     @Json(name = "new")
     NEW,
+
     @Json(name = "password")
     PASSWORD,
+
     @Json(name = "passwordless")
     PASSWORDLESS,
 }

@@ -7,7 +7,6 @@ import com.stytch.sdk.common.network.models.OTPSendResponseData
 
 internal object ConsumerResponses {
     object Passwords {
-
         @JsonClass(generateAdapter = true)
         class PasswordsCreateResponse(data: CreateResponse) : StytchDataResponse<CreateResponse>(data)
 
@@ -53,6 +52,7 @@ internal object ConsumerResponses {
         @JsonClass(generateAdapter = true)
         class RegisterStartResponse(data: WebAuthnRegisterStartData) :
             StytchDataResponse<WebAuthnRegisterStartData>(data)
+
         @JsonClass(generateAdapter = true)
         class RegisterResponse(data: WebAuthnRegisterData) : StytchDataResponse<WebAuthnRegisterData>(data)
 

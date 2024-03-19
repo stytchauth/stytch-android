@@ -11,7 +11,7 @@ internal object B2BResponses {
 
         @JsonClass(generateAdapter = true)
         class DiscoveryAuthenticateResponse(
-            data: DiscoveryAuthenticateResponseData
+            data: DiscoveryAuthenticateResponseData,
         ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
 
         @JsonClass(generateAdapter = true)
@@ -24,34 +24,74 @@ internal object B2BResponses {
 
         @JsonClass(generateAdapter = true)
         class ExchangeResponse(
-            data: SessionExchangeResponseData
+            data: SessionExchangeResponseData,
         ) : StytchDataResponse<SessionExchangeResponseData>(data)
     }
 
     object Organizations {
         @JsonClass(generateAdapter = true)
         class GetOrganizationResponse(
-            data: OrganizationResponseData
+            data: OrganizationResponseData,
         ) : StytchDataResponse<OrganizationResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UpdateOrganizationResponse(
+            data: OrganizationUpdateResponseData,
+        ) : StytchDataResponse<OrganizationUpdateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DeleteOrganizationResponse(
+            data: OrganizationDeleteResponseData,
+        ) : StytchDataResponse<OrganizationDeleteResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DeleteMemberResponse(
+            data: OrganizationMemberDeleteResponseData,
+        ) : StytchDataResponse<OrganizationMemberDeleteResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class ReactivateMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DeleteOrganizationMemberAuthenticationFactorResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
 
         @JsonClass(generateAdapter = true)
         class GetMemberResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class UpdateMemberResponse(
-            data: UpdateMemberResponseData
+            data: UpdateMemberResponseData,
         ) : StytchDataResponse<UpdateMemberResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class DeleteMemberAuthenticationFactorResponse(
-            data: MemberDeleteAuthenticationFactorData
+            data: MemberDeleteAuthenticationFactorData,
         ) : StytchDataResponse<MemberDeleteAuthenticationFactorData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class CreateMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class UpdateOrganizationMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class MemberSearchResponse(
+            data: MemberSearchResponseData,
+        ) : StytchDataResponse<MemberSearchResponseData>(data)
     }
 
     object Passwords {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(
-            data: PasswordsAuthenticateResponseData
+            data: PasswordsAuthenticateResponseData,
         ) : StytchDataResponse<PasswordsAuthenticateResponseData>(data)
 
         @JsonClass(generateAdapter = true)
@@ -65,36 +105,36 @@ internal object B2BResponses {
 
         @JsonClass(generateAdapter = true)
         class ResetBySessionResponse(
-            data: SessionResetResponseData
+            data: SessionResetResponseData,
         ) : StytchDataResponse<SessionResetResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class StrengthCheckResponse(
-            data: StrengthCheckResponseData
+            data: StrengthCheckResponseData,
         ) : StytchDataResponse<StrengthCheckResponseData>(data)
     }
 
     object Discovery {
         @JsonClass(generateAdapter = true)
         class DiscoverOrganizationsResponse(
-            data: DiscoveredOrganizationsResponseData
+            data: DiscoveredOrganizationsResponseData,
         ) : StytchDataResponse<DiscoveredOrganizationsResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class SessionExchangeResponse(
-            data: IntermediateSessionExchangeResponseData
+            data: IntermediateSessionExchangeResponseData,
         ) : StytchDataResponse<IntermediateSessionExchangeResponseData>(data)
 
         @JsonClass(generateAdapter = true)
         class CreateOrganizationResponse(
-            data: OrganizationCreateResponseData
+            data: OrganizationCreateResponseData,
         ) : StytchDataResponse<OrganizationCreateResponseData>(data)
     }
 
     object SSO {
         @JsonClass(generateAdapter = true)
         class AuthenticateResponse(
-            data: SSOAuthenticateResponseData
+            data: SSOAuthenticateResponseData,
         ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
     }
 }

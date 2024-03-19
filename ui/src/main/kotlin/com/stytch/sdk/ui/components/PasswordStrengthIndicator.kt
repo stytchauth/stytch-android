@@ -45,11 +45,12 @@ internal fun PasswordStrengthIndicator(
         ) {
             repeat(MAX_SCORE + 1) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1F)
-                        .height(4.dp)
-                        .background(if (score >= it) filledColor else emptyColor),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1F)
+                            .height(4.dp)
+                            .background(if (score >= it) filledColor else emptyColor),
                 )
                 if (it < MAX_SCORE) {
                     Spacer(modifier = Modifier.width(4.dp))
@@ -57,15 +58,17 @@ internal fun PasswordStrengthIndicator(
             }
         }
         Text(
-            text = if (score < 3) {
-                feedback.suggestions.joinToString()
-            } else {
-                stringResource(id = R.string.strong_password)
-            },
-            style = type.caption.copy(
-                color = filledColor,
-                textAlign = TextAlign.Start,
-            ),
+            text =
+                if (score < 3) {
+                    feedback.suggestions.joinToString()
+                } else {
+                    stringResource(id = R.string.strong_password)
+                },
+            style =
+                type.caption.copy(
+                    color = filledColor,
+                    textAlign = TextAlign.Start,
+                ),
         )
     }
 }
@@ -73,20 +76,22 @@ internal fun PasswordStrengthIndicator(
 @Preview
 @Composable
 private fun PreviewPasswordStrengthIndicator() {
-    val mockFeedback = Feedback(
-        suggestions = listOf("A suggested improvement"),
-        warning = "",
-        ludsRequirements = null,
-    )
+    val mockFeedback =
+        Feedback(
+            suggestions = listOf("A suggested improvement"),
+            warning = "",
+            ludsRequirements = null,
+        )
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             PasswordStrengthIndicator(feedback = mockFeedback, score = 2)
         }

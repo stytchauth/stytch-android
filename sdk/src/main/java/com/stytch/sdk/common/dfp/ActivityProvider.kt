@@ -6,7 +6,6 @@ import android.os.Bundle
 import java.lang.ref.WeakReference
 
 internal class ActivityProvider(application: Application) : Application.ActivityLifecycleCallbacks {
-
     private var _currentActivity = WeakReference<Activity>(null)
     internal val currentActivity: Activity?
         get() = _currentActivity.get()
@@ -17,7 +16,10 @@ internal class ActivityProvider(application: Application) : Application.Activity
         application.registerActivityLifecycleCallbacks(this)
     }
 
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+    override fun onActivityCreated(
+        activity: Activity,
+        bundle: Bundle?,
+    ) {
         _currentActivity = WeakReference(activity)
     }
 
@@ -40,7 +42,10 @@ internal class ActivityProvider(application: Application) : Application.Activity
         _currentActivity = WeakReference(null)
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    override fun onActivitySaveInstanceState(
+        activity: Activity,
+        outState: Bundle,
+    ) {
         // noop
     }
 

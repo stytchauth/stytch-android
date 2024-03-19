@@ -13,19 +13,19 @@ public sealed class StytchUIError(
  * Thrown when the UI Activity failed
  */
 public data class StytchUIActivityFailed(public val code: Int) : StytchUIError(
-    message = "Activity failed with resultCode = $code"
+    message = "Activity failed with resultCode = $code",
 )
 
 /**
  * Thrown when there was an error parsing the activity intent
  */
 public object StytchUINoDataFromIntent : StytchUIError(
-    message = "Failed to retrieve data from intent"
+    message = "Failed to retrieve data from intent",
 )
 
 /**
  * Thrown when your Stytch UI configuration is invalid
  */
 public data class StytchUIInvalidConfiguration(
-    public override val message: String
+    public override val message: String,
 ) : StytchUIError(message = message)

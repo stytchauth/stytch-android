@@ -18,13 +18,15 @@ public data class PasswordOptions(
     val resetPasswordExpirationMinutes: Int? = null,
     val resetPasswordTemplateId: String? = null,
 ) : Parcelable {
-    internal fun toResetByEmailStartParameters(emailAddress: String, publicToken: String) =
-        Passwords.ResetByEmailStartParameters(
-            email = emailAddress,
-            loginRedirectUrl = "stytchui-$publicToken://deeplink",
-            loginExpirationMinutes = loginExpirationMinutes?.toUInt(),
-            resetPasswordRedirectUrl = "stytchui-$publicToken://deeplink",
-            resetPasswordExpirationMinutes = resetPasswordExpirationMinutes?.toUInt(),
-            resetPasswordTemplateId = resetPasswordTemplateId,
-        )
+    internal fun toResetByEmailStartParameters(
+        emailAddress: String,
+        publicToken: String,
+    ) = Passwords.ResetByEmailStartParameters(
+        email = emailAddress,
+        loginRedirectUrl = "stytchui-$publicToken://deeplink",
+        loginExpirationMinutes = loginExpirationMinutes?.toUInt(),
+        resetPasswordRedirectUrl = "stytchui-$publicToken://deeplink",
+        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes?.toUInt(),
+        resetPasswordTemplateId = resetPasswordTemplateId,
+    )
 }

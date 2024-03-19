@@ -9,12 +9,14 @@ import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY
 import com.stytch.sdk.ui.robots.otpConfirmationScreenRobot
 import org.junit.Test
 
-internal class OTPConfirmationScreenTest:  BaseAndroidComposeTest() {
+internal class OTPConfirmationScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
-    private val resendParameters = OTPDetails.EmailOTP(
-        methodId = "",
-        parameters = OTP.EmailOTP.Parameters(email = "robot@stytch.com")
-    )
+
+    private val resendParameters =
+        OTPDetails.EmailOTP(
+            methodId = "",
+            parameters = OTP.EmailOTP.Parameters(email = "robot@stytch.com"),
+        )
 
     @Test
     fun defaultDisplaysAsExpected() {

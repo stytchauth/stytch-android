@@ -47,27 +47,31 @@ internal class PasswordResetSentScreenViewModel(
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {} // do nothing
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        genericErrorMessage = result.exception.message, // TODO
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            genericErrorMessage = result.exception.message,
+                        )
                 }
             }
         }
     }
+
     fun sendEML(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
-        scope: CoroutineScope = viewModelScope
+        scope: CoroutineScope = viewModelScope,
     ) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
-        scope.launch {
-            val parameters = emailMagicLinksOptions.toParameters(
-                emailAddress = emailAddress,
-                publicToken = stytchClient.publicToken,
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
             )
+        scope.launch {
+            val parameters =
+                emailMagicLinksOptions.toParameters(
+                    emailAddress = emailAddress,
+                    publicToken = stytchClient.publicToken,
+                )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -80,19 +84,26 @@ internal class PasswordResetSentScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.message, // TODO
-                )
+                is StytchResult.Error ->
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = result.exception.message,
+                        )
             }
         }
     }
 
-    fun sendEmailOTP(emailAddress: String, otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
+    fun sendEmailOTP(
+        emailAddress: String,
+        otpOptions: OTPOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
+            )
         scope.launch {
             val parameters = otpOptions.toEmailOtpParameters(emailAddress)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
@@ -107,22 +118,25 @@ internal class PasswordResetSentScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.message, // TODO
-                )
+                is StytchResult.Error ->
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = result.exception.message,
+                        )
             }
         }
     }
 
     companion object {
-        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PasswordResetSentScreenViewModel(
-                    stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle
-                )
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    PasswordResetSentScreenViewModel(
+                        stytchClient = StytchClient,
+                        savedStateHandle = savedStateHandle,
+                    )
+                }
             }
-        }
     }
 }

@@ -13,10 +13,10 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 internal class B2BSessionStorageTest {
     @MockK
@@ -59,7 +59,7 @@ internal class B2BSessionStorageTest {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         storage.updateSession(
             sessionToken = "mySessionToken",
-            sessionJwt = "mySessionJwt"
+            sessionJwt = "mySessionJwt",
         )
         verify {
             mockStorageHelper.saveValue(eq(Constants.PREFERENCES_NAME_SESSION_TOKEN), eq("mySessionToken"))

@@ -18,11 +18,12 @@ internal object BrowserSelector {
     private const val HTTPS = "https"
 
     // An HTTP intent to use for querying for supported browsers
-    private val BROWSER_INTENT = Intent().apply {
-        action = Intent.ACTION_VIEW
-        addCategory(Intent.CATEGORY_BROWSABLE)
-        data = Uri.parse("http://test.test/test")
-    }
+    private val BROWSER_INTENT =
+        Intent().apply {
+            action = Intent.ACTION_VIEW
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            data = Uri.parse("http://test.test/test")
+        }
 
     fun getBestBrowser(context: Context): Browser? =
         getAllBrowsers(context).firstOrNull { it.supportsCustomTabs } ?: allBrowsers.firstOrNull()
@@ -30,29 +31,31 @@ internal object BrowserSelector {
     /**
      * Produces a list of all capable browsers found on device, with the users default browser first
      */
-    private fun getAllBrowsers(context: Context): List<Browser> = allBrowsers.ifEmpty {
-        val browsers = mutableListOf<Browser>()
-        val pm = context.packageManager
-        val queryFlag = PackageManager.GET_RESOLVED_FILTER or PackageManager.MATCH_ALL
-        val defaultBrowserPackage: String? = pm.resolveActivity(BROWSER_INTENT, 0)?.activityInfo?.packageName
-        pm.queryIntentActivities(BROWSER_INTENT, queryFlag).forEach { info ->
-            // ignore handlers which are not browsers
-            if (!info.filter.isRealBrowser()) return@forEach
-            try {
-                val packageInfo = pm.getPackageInfo(info.activityInfo.packageName, 0)
-                val browser = Browser(packageInfo.packageName, supportsCustomTabs(pm, info.activityInfo.packageName))
-                if (info.activityInfo.packageName == defaultBrowserPackage) {
-                    // if this is the default browser, add it to the beginning of the list
-                    browsers.add(0, browser)
-                } else {
-                    browsers.add(browser)
+    private fun getAllBrowsers(context: Context): List<Browser> =
+        allBrowsers.ifEmpty {
+            val browsers = mutableListOf<Browser>()
+            val pm = context.packageManager
+            val queryFlag = PackageManager.GET_RESOLVED_FILTER or PackageManager.MATCH_ALL
+            val defaultBrowserPackage: String? = pm.resolveActivity(BROWSER_INTENT, 0)?.activityInfo?.packageName
+            pm.queryIntentActivities(BROWSER_INTENT, queryFlag).forEach { info ->
+                // ignore handlers which are not browsers
+                if (!info.filter.isRealBrowser()) return@forEach
+                try {
+                    val packageInfo = pm.getPackageInfo(info.activityInfo.packageName, 0)
+                    val browser =
+                        Browser(packageInfo.packageName, supportsCustomTabs(pm, info.activityInfo.packageName))
+                    if (info.activityInfo.packageName == defaultBrowserPackage) {
+                        // if this is the default browser, add it to the beginning of the list
+                        browsers.add(0, browser)
+                    } else {
+                        browsers.add(browser)
+                    }
+                } catch (_: PackageManager.NameNotFoundException) {
+                    // a descriptor cannot be generated without the package info
                 }
-            } catch (_: PackageManager.NameNotFoundException) {
-                // a descriptor cannot be generated without the package info
             }
+            browsers.also { allBrowsers = it }
         }
-        browsers.also { allBrowsers = it }
-    }
 
     private fun IntentFilter.isRealBrowser(): Boolean {
         return when {
@@ -82,11 +85,15 @@ internal object BrowserSelector {
         return supportsHttp && supportsHttps
     }
 
-    private fun supportsCustomTabs(pm: PackageManager, packageName: String): Boolean {
-        val intent = Intent().apply {
-            action = CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION
-            setPackage(packageName)
-        }
+    private fun supportsCustomTabs(
+        pm: PackageManager,
+        packageName: String,
+    ): Boolean {
+        val intent =
+            Intent().apply {
+                action = CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION
+                setPackage(packageName)
+            }
         return pm.resolveService(intent, 0) != null
     }
 }

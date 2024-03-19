@@ -37,23 +37,26 @@ internal fun PasswordInput(
             modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
             value = passwordState.password,
             onValueChange = onPasswordChanged,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done,
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                ),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             label = label,
             trailingIcon = {
-                val icon = if (passwordVisible) {
-                    Icons.Outlined.Visibility
-                } else {
-                    Icons.Outlined.VisibilityOff
-                }
-                val description = if (passwordVisible) {
-                    stringResource(id = R.string.hide_password)
-                } else {
-                    stringResource(id = R.string.show_password)
-                }
+                val icon =
+                    if (passwordVisible) {
+                        Icons.Outlined.Visibility
+                    } else {
+                        Icons.Outlined.VisibilityOff
+                    }
+                val description =
+                    if (passwordVisible) {
+                        stringResource(id = R.string.hide_password)
+                    } else {
+                        stringResource(id = R.string.show_password)
+                    }
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(imageVector = icon, contentDescription = description)
                 }
@@ -71,7 +74,7 @@ internal fun PasswordInput(
                     passwordState.feedback.ludsRequirements?.let {
                         LUDSIndicator(
                             requirements = it,
-                            breached = passwordState.breachedPassword
+                            breached = passwordState.breachedPassword,
                         )
                     }
                 }

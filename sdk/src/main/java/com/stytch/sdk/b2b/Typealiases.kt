@@ -6,9 +6,14 @@ import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
+import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
+import com.stytch.sdk.b2b.network.models.MemberSearchResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
+import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
@@ -86,3 +91,19 @@ public typealias UpdateMemberResponse = StytchResult<UpdateMemberResponseData>
  * Type alias for StytchResult<MemberDeleteAuthenticationFactorData> used for MemberDeleteAuthenticationFactor responses
  */
 public typealias DeleteMemberAuthenticationFactorResponse = StytchResult<MemberDeleteAuthenticationFactorData>
+
+public typealias UpdateOrganizationResponse = StytchResult<OrganizationUpdateResponseData>
+
+public typealias DeleteOrganizationResponse = StytchResult<OrganizationDeleteResponseData>
+
+public typealias DeleteMemberResponse = StytchResult<OrganizationMemberDeleteResponseData>
+
+public typealias ReactivateMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias DeleteOrganizationMemberAuthenticationFactorResponse = StytchResult<MemberResponseCommonData>
+
+public typealias CreateMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseCommonData>
+
+public typealias MemberSearchResponse = StytchResult<MemberSearchResponseData>

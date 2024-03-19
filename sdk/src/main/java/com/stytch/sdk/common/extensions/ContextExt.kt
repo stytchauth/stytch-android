@@ -1,4 +1,6 @@
-package com.stytch.sdk.common.extensions // ktlint-disable filename
+@file:Suppress("ktlint:standard:filename")
+
+package com.stytch.sdk.common.extensions
 
 import android.content.Context
 import android.os.Build
@@ -14,10 +16,11 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
 
     try {
         // throw exceptions if packageName not found
-        deviceInfo.applicationVersion = applicationContext
-            .packageManager
-            .getPackageInfo(deviceInfo.applicationPackageName!!, 0)
-            .versionName
+        deviceInfo.applicationVersion =
+            applicationContext
+                .packageManager
+                .getPackageInfo(deviceInfo.applicationPackageName!!, 0)
+                .versionName
     } catch (ex: Exception) {
         deviceInfo.applicationVersion = ""
     }

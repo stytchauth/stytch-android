@@ -14,7 +14,6 @@ import kotlinx.parcelize.Parcelize
  * Email.
  */
 public interface OTP {
-
     /**
      * Data class used for wrapping parameters used with OTP authentication
      * @property token the value sent to the user via the otp delivery method
@@ -69,7 +68,6 @@ public interface OTP {
      * Provides all possible ways to call SMS OTP endpoints
      */
     public interface SmsOTP {
-
         /**
          * Data class used for wrapping parameters used with SMS OTP
          * @property phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
@@ -114,14 +112,16 @@ public interface OTP {
          * @param parameters required to send OTP
          * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
+        public fun send(
+            parameters: Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        )
     }
 
     /**
      * Provides all possible ways to call WhatsApp OTP endpoints
      */
     public interface WhatsAppOTP {
-
         /**
          * Data class used for wrapping parameters used with WhatsApp OTP
          * @property phoneNumber the number the OTP code should be sent to via WhatsApp, in E.164 format
@@ -167,14 +167,16 @@ public interface OTP {
          * @param parameters required to send OTP
          * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
+        public fun send(
+            parameters: Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        )
     }
 
     /**
      * Provides all possible ways to call Email OTP endpoints
      */
     public interface EmailOTP {
-
         /**
          * Data class used for wrapping parameters used with Email OTP
          * @property email the address the OTP code would be sent to via Email
@@ -227,6 +229,9 @@ public interface OTP {
          * @param parameters required to send OTP
          * @param callback a callback that receives a [OTPSendResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: OTPSendResponse) -> Unit)
+        public fun send(
+            parameters: Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        )
     }
 }

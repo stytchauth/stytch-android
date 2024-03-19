@@ -66,5 +66,8 @@ public interface SSO {
      * @param params required for making an authenticate call
      * @param callback a callback that receives a [SSOAuthenticateResponse]
      */
-    public fun authenticate(params: AuthenticateParams, callback: (SSOAuthenticateResponse) -> Unit)
+    public fun authenticate(
+        params: AuthenticateParams,
+        callback: (SSOAuthenticateResponse) -> Unit,
+    )
 }

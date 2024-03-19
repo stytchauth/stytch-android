@@ -39,7 +39,7 @@ internal object CommonRequests {
         @JsonClass(generateAdapter = true)
         data class VersionIdentifier(
             val identifier: String,
-            val version: String? = null
+            val version: String? = null,
         )
 
         @JsonClass(generateAdapter = true)

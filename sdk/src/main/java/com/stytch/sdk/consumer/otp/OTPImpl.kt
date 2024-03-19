@@ -17,7 +17,6 @@ internal class OTPImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.OTP,
 ) : OTP {
-
     override val sms: OTP.SmsOTP = SmsOTPImpl()
     override val whatsapp: OTP.WhatsAppOTP = WhatsAppOTPImpl()
     override val email: OTP.EmailOTP = EmailOTPImpl()
@@ -26,20 +25,21 @@ internal class OTPImpl internal constructor(
         val result: AuthResponse
         withContext(dispatchers.io) {
             // call backend endpoint
-            result = api.authenticateWithOTP(
-                token = parameters.token,
-                methodId = parameters.methodId,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticateWithOTP(
+                    token = parameters.token,
+                    methodId = parameters.methodId,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
     override fun authenticate(
         parameters: OTP.AuthParameters,
-        callback: (response: AuthResponse) -> Unit
+        callback: (response: AuthResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
@@ -51,10 +51,11 @@ internal class OTPImpl internal constructor(
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
-                result = api.loginOrCreateByOTPWithSMS(
-                    phoneNumber = parameters.phoneNumber,
-                    expirationMinutes = parameters.expirationMinutes
-                )
+                result =
+                    api.loginOrCreateByOTPWithSMS(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
             }
 
             return result
@@ -62,7 +63,7 @@ internal class OTPImpl internal constructor(
 
         override fun loginOrCreate(
             parameters: OTP.SmsOTP.Parameters,
-            callback: (response: LoginOrCreateOTPResponse) -> Unit
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
@@ -85,7 +86,10 @@ internal class OTPImpl internal constructor(
                 }
             }
 
-        override fun send(parameters: OTP.SmsOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
+        override fun send(
+            parameters: OTP.SmsOTP.Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        ) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)
@@ -94,15 +98,14 @@ internal class OTPImpl internal constructor(
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
-        override suspend fun loginOrCreate(
-            parameters: OTP.WhatsAppOTP.Parameters
-        ): LoginOrCreateOTPResponse {
+        override suspend fun loginOrCreate(parameters: OTP.WhatsAppOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
-                result = api.loginOrCreateUserByOTPWithWhatsApp(
-                    phoneNumber = parameters.phoneNumber,
-                    expirationMinutes = parameters.expirationMinutes
-                )
+                result =
+                    api.loginOrCreateUserByOTPWithWhatsApp(
+                        phoneNumber = parameters.phoneNumber,
+                        expirationMinutes = parameters.expirationMinutes,
+                    )
             }
 
             return result
@@ -110,7 +113,7 @@ internal class OTPImpl internal constructor(
 
         override fun loginOrCreate(
             parameters: OTP.WhatsAppOTP.Parameters,
-            callback: (response: LoginOrCreateOTPResponse) -> Unit
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
@@ -133,7 +136,10 @@ internal class OTPImpl internal constructor(
                 }
             }
 
-        override fun send(parameters: OTP.WhatsAppOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
+        override fun send(
+            parameters: OTP.WhatsAppOTP.Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        ) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)
@@ -145,12 +151,13 @@ internal class OTPImpl internal constructor(
         override suspend fun loginOrCreate(parameters: OTP.EmailOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             withContext(dispatchers.io) {
-                result = api.loginOrCreateUserByOTPWithEmail(
-                    email = parameters.email,
-                    expirationMinutes = parameters.expirationMinutes,
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                )
+                result =
+                    api.loginOrCreateUserByOTPWithEmail(
+                        email = parameters.email,
+                        expirationMinutes = parameters.expirationMinutes,
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                    )
             }
 
             return result
@@ -158,7 +165,7 @@ internal class OTPImpl internal constructor(
 
         override fun loginOrCreate(
             parameters: OTP.EmailOTP.Parameters,
-            callback: (response: LoginOrCreateOTPResponse) -> Unit
+            callback: (response: LoginOrCreateOTPResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
                 val result = loginOrCreate(parameters)
@@ -166,25 +173,29 @@ internal class OTPImpl internal constructor(
             }
         }
 
-        override suspend fun send(parameters: OTP.EmailOTP.Parameters): OTPSendResponse = withContext(dispatchers.io) {
-            if (sessionStorage.persistedSessionIdentifiersExist) {
-                api.sendOTPWithEmailSecondary(
-                    email = parameters.email,
-                    expirationMinutes = parameters.expirationMinutes,
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                )
-            } else {
-                api.sendOTPWithEmailPrimary(
-                    email = parameters.email,
-                    expirationMinutes = parameters.expirationMinutes,
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                )
+        override suspend fun send(parameters: OTP.EmailOTP.Parameters): OTPSendResponse =
+            withContext(dispatchers.io) {
+                if (sessionStorage.persistedSessionIdentifiersExist) {
+                    api.sendOTPWithEmailSecondary(
+                        email = parameters.email,
+                        expirationMinutes = parameters.expirationMinutes,
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                    )
+                } else {
+                    api.sendOTPWithEmailPrimary(
+                        email = parameters.email,
+                        expirationMinutes = parameters.expirationMinutes,
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                    )
+                }
             }
-        }
 
-        override fun send(parameters: OTP.EmailOTP.Parameters, callback: (response: OTPSendResponse) -> Unit) {
+        override fun send(
+            parameters: OTP.EmailOTP.Parameters,
+            callback: (response: OTPSendResponse) -> Unit,
+        ) {
             externalScope.launch(dispatchers.ui) {
                 val result = send(parameters)
                 callback(result)

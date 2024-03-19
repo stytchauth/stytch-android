@@ -16,11 +16,12 @@ import com.stytch.sdk.ui.data.StytchUIConfig
 import com.stytch.sdk.ui.theme.StytchTheme
 
 internal abstract class BaseRobotScreen(
-    protected val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity>,
-    private val screen: AndroidScreen?
+    val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity>,
+    private val screen: AndroidScreen?,
 ) {
-    protected fun getString(@StringRes resourceId: Int) =
-        composeTestRule.activity.getString(resourceId)
+    protected fun getString(
+        @StringRes resourceId: Int,
+    ) = composeTestRule.activity.getString(resourceId)
 
     private val backButton by lazy {
         composeTestRule.onNodeWithContentDescription(getString(R.string.back))
@@ -34,7 +35,10 @@ internal abstract class BaseRobotScreen(
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_alert_dialog))
     }
 
-    fun clearAndSetContent(uiConfig: StytchUIConfig, onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {}) {
+    fun clearAndSetContent(
+        uiConfig: StytchUIConfig,
+        onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit = {},
+    ) {
         composeTestRule.activity.setContent {}
         composeTestRule.waitForIdle()
         composeTestRule.activity.setContent {
@@ -43,7 +47,7 @@ internal abstract class BaseRobotScreen(
                     bootstrapData = uiConfig.bootstrapData,
                     screen = screen,
                     productConfig = uiConfig.productConfig,
-                    onInvalidConfig = onInvalidConfig
+                    onInvalidConfig = onInvalidConfig,
                 )
             }
         }

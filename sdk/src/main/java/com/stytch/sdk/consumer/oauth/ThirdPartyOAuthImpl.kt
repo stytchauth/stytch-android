@@ -11,7 +11,12 @@ internal class ThirdPartyOAuthImpl(
     private val storageHelper: StorageHelper,
     override val providerName: String,
 ) : OAuth.ThirdParty {
-    internal fun buildUri(host: String, parameters: Map<String, String?>, pkce: String, token: String): Uri =
+    internal fun buildUri(
+        host: String,
+        parameters: Map<String, String?>,
+        pkce: String,
+        token: String,
+    ): Uri =
         Uri.parse("${host}public/oauth/$providerName/start")
             .buildUpon()
             .apply {
@@ -29,11 +34,12 @@ internal class ThirdPartyOAuthImpl(
         val pkce = storageHelper.generateHashedCodeChallenge().second
         val token = StytchApi.publicToken
         val host = if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
-        val potentialParameters = mapOf(
-            "login_redirect_url" to parameters.loginRedirectUrl,
-            "signup_redirect_url" to parameters.signupRedirectUrl,
-            "custom_scopes" to parameters.customScopes?.joinToString(" ")
-        )
+        val potentialParameters =
+            mapOf(
+                "login_redirect_url" to parameters.loginRedirectUrl,
+                "signup_redirect_url" to parameters.signupRedirectUrl,
+                "custom_scopes" to parameters.customScopes?.joinToString(" "),
+            )
         val requestUri = buildUri(host, potentialParameters, pkce, token)
         val intent = SSOManagerActivity.createBaseIntent(parameters.context)
         intent.putExtra(URI_KEY, requestUri.toString())

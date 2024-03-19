@@ -15,7 +15,7 @@ internal class DiscoveryImpl(
     private val api: StytchB2BApi.Discovery,
 ) : Discovery {
     override suspend fun listOrganizations(
-        parameters: Discovery.DiscoverOrganizationsParameters
+        parameters: Discovery.DiscoverOrganizationsParameters,
     ): DiscoverOrganizationsResponse {
         return withContext(dispatchers.io) {
             api.discoverOrganizations(parameters.intermediateSessionToken)
@@ -33,13 +33,13 @@ internal class DiscoveryImpl(
     }
 
     override suspend fun exchangeIntermediateSession(
-        parameters: Discovery.SessionExchangeParameters
+        parameters: Discovery.SessionExchangeParameters,
     ): IntermediateSessionExchangeResponse {
         return withContext(dispatchers.io) {
             api.exchangeSession(
                 intermediateSessionToken = parameters.intermediateSessionToken,
                 organizationId = parameters.organizationId,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
             )
         }
     }
@@ -55,7 +55,7 @@ internal class DiscoveryImpl(
     }
 
     override suspend fun createOrganization(
-        parameters: Discovery.CreateOrganizationParameters
+        parameters: Discovery.CreateOrganizationParameters,
     ): OrganizationCreateResponse {
         return withContext(dispatchers.io) {
             api.createOrganization(
@@ -69,7 +69,7 @@ internal class DiscoveryImpl(
                 emailInvites = parameters.emailInvites,
                 emailJitProvisioning = parameters.emailJitProvisioning,
                 authMethods = parameters.authMethods,
-                allowedAuthMethods = parameters.allowedAuthMethods
+                allowedAuthMethods = parameters.allowedAuthMethods,
             )
         }
     }
