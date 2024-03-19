@@ -139,7 +139,6 @@ internal class OrganizationImpl(
                     is MemberAuthenticationFactor.MfaTOTP -> api.deleteOrganizationMemberMFATOTP(memberId)
                     is MemberAuthenticationFactor.Password ->
                         api.deleteOrganizationMemberPassword(
-                            memberId,
                             authenticationFactor.id,
                         )
                 }

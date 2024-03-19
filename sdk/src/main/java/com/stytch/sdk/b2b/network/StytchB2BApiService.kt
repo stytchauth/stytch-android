@@ -78,19 +78,18 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "memberId") memberId: String,
     ): B2BResponses.Organizations.ReactivateMemberResponse
 
-    @DELETE("b2b/organizations/members/{memberId}/deletePhoneNumber")
+    @DELETE("b2b/organizations/members/mfa_phone_numbers/{memberId}")
     suspend fun deleteOrganizationMemberMFAPhoneNumber(
         @Path(value = "memberId") memberId: String,
     ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
 
-    @DELETE("b2b/organizations/members/{memberId}/deleteTOTP")
+    @DELETE("b2b/organizations/members/totp/{memberId}")
     suspend fun deleteOrganizationMemberMFATOTP(
         @Path(value = "memberId") memberId: String,
     ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
 
-    @DELETE("b2b/organizations/members/{memberId}/passwords/{passwordId}")
+    @DELETE("b2b/organizations/members/passwords/{passwordId}")
     suspend fun deleteOrganizationMemberPassword(
-        @Path(value = "memberId") memberId: String,
         @Path(value = "passwordId") passwordId: String,
     ): B2BResponses.Organizations.DeleteOrganizationMemberAuthenticationFactorResponse
 
@@ -118,7 +117,7 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.Organization.CreateMemberRequest,
     ): B2BResponses.Organizations.CreateMemberResponse
 
-    @POST("b2b/organizations/members/{memberId}")
+    @PUT("b2b/organizations/members/{memberId}")
     suspend fun updateOrganizationMember(
         @Path(value = "memberId") memberId: String,
         @Body request: B2BRequests.Organization.UpdateMemberRequest,

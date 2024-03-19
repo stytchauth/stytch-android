@@ -333,12 +333,9 @@ internal object StytchB2BApi {
                 apiService.deleteOrganizationMemberMFATOTP(memberId = memberId)
             }
 
-        suspend fun deleteOrganizationMemberPassword(
-            memberId: String,
-            passwordId: String,
-        ): StytchResult<MemberResponseCommonData> =
+        suspend fun deleteOrganizationMemberPassword(passwordId: String): StytchResult<MemberResponseCommonData> =
             safeB2BApiCall {
-                apiService.deleteOrganizationMemberPassword(memberId = memberId, passwordId = passwordId)
+                apiService.deleteOrganizationMemberPassword(passwordId = passwordId)
             }
 
         suspend fun createOrganizationMember(

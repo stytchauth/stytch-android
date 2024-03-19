@@ -329,7 +329,7 @@ internal class StytchB2BApiServiceTest {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteOrganizationMemberMFAPhoneNumber("my-member-id")
-            }.verifyDelete("/b2b/organizations/members/my-member-id/deletePhoneNumber")
+            }.verifyDelete("/b2b/organizations/members/mfa_phone_numbers/my-member-id")
         }
     }
 
@@ -338,7 +338,7 @@ internal class StytchB2BApiServiceTest {
         runBlocking {
             requestIgnoringResponseException {
                 apiService.deleteOrganizationMemberMFATOTP("my-member-id")
-            }.verifyDelete("/b2b/organizations/members/my-member-id/deleteTOTP")
+            }.verifyDelete("/b2b/organizations/members/totp/my-member-id")
         }
     }
 
@@ -346,8 +346,8 @@ internal class StytchB2BApiServiceTest {
     fun `check organization member deleteOrganizationMemberPassword request`() {
         runBlocking {
             requestIgnoringResponseException {
-                apiService.deleteOrganizationMemberPassword("my-member-id", "passwordId")
-            }.verifyDelete("/b2b/organizations/members/my-member-id/passwords/passwordId")
+                apiService.deleteOrganizationMemberPassword("passwordId")
+            }.verifyDelete("/b2b/organizations/members/passwords/passwordId")
         }
     }
 
@@ -401,7 +401,7 @@ internal class StytchB2BApiServiceTest {
                 )
             requestIgnoringResponseException {
                 apiService.updateOrganizationMember("my-member-id", parameters)
-            }.verifyPost(
+            }.verifyPut(
                 expectedPath = "/b2b/organizations/members/my-member-id",
                 expectedBody =
                     mapOf(

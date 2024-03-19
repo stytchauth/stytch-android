@@ -240,11 +240,10 @@ internal class StytchB2BApiTest {
             coEvery {
                 StytchB2BApi.apiService.deleteOrganizationMemberPassword(
                     any(),
-                    any(),
                 )
             } returns mockk(relaxed = true)
-            StytchB2BApi.Organization.deleteOrganizationMemberPassword("my-member-id", "password-id")
-            coVerify { StytchB2BApi.apiService.deleteOrganizationMemberPassword("my-member-id", "password-id") }
+            StytchB2BApi.Organization.deleteOrganizationMemberPassword("password-id")
+            coVerify { StytchB2BApi.apiService.deleteOrganizationMemberPassword("password-id") }
         }
 
     @Test

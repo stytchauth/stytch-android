@@ -239,7 +239,6 @@ internal class OrganizationImplTest {
             coEvery {
                 mockApi.deleteOrganizationMemberPassword(
                     any(),
-                    any(),
                 )
             } returns StytchResult.Success(mockk(relaxed = true))
             listOf(
@@ -249,7 +248,7 @@ internal class OrganizationImplTest {
             ).forEach { impl.members.deleteMemberAuthenticationFactor("my-member-id", it) }
             coVerify { mockApi.deleteOrganizationMemberMFAPhoneNumber("my-member-id") }
             coVerify { mockApi.deleteOrganizationMemberMFATOTP("my-member-id") }
-            coVerify { mockApi.deleteOrganizationMemberPassword("my-member-id", "passwordId") }
+            coVerify { mockApi.deleteOrganizationMemberPassword("passwordId") }
         }
 
     @Test
