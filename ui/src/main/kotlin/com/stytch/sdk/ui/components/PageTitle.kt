@@ -22,10 +22,11 @@ internal fun PageTitle(
     val type = LocalStytchTypography.current
     Text(
         text = text,
-        style = type.title.copy(
-            textAlign = textAlign,
-            color = color ?: Color(theme.primaryTextColor),
-        ),
+        style =
+            type.title.copy(
+                textAlign = textAlign,
+                color = color ?: Color(theme.primaryTextColor),
+            ),
         modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
     )
 }

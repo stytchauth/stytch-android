@@ -20,9 +20,12 @@ internal class SSOImpl(
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
     private val storageHelper: StorageHelper,
-    private val api: StytchB2BApi.SSO
+    private val api: StytchB2BApi.SSO,
 ) : SSO {
-    internal fun buildUri(host: String, parameters: Map<String, String?>): Uri =
+    internal fun buildUri(
+        host: String,
+        parameters: Map<String, String?>,
+    ): Uri =
         Uri.parse("${host}public/sso/start")
             .buildUpon()
             .apply {
@@ -36,13 +39,14 @@ internal class SSOImpl(
 
     override fun start(params: SSO.StartParams) {
         val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
-        val potentialParameters = mapOf(
-            "connection_id" to params.connectionId,
-            "public_token" to StytchB2BApi.publicToken,
-            "pkce_code_challenge" to storageHelper.generateHashedCodeChallenge().second,
-            "login_redirect_url" to params.loginRedirectUrl,
-            "signup_redirect_url" to params.signupRedirectUrl,
-        )
+        val potentialParameters =
+            mapOf(
+                "connection_id" to params.connectionId,
+                "public_token" to StytchB2BApi.publicToken,
+                "pkce_code_challenge" to storageHelper.generateHashedCodeChallenge().second,
+                "login_redirect_url" to params.loginRedirectUrl,
+                "signup_redirect_url" to params.signupRedirectUrl,
+            )
         val requestUri = buildUri(host, potentialParameters)
         val intent = SSOManagerActivity.createBaseIntent(params.context)
         intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
@@ -59,18 +63,22 @@ internal class SSOImpl(
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
-            result = api.authenticate(
-                ssoToken = params.ssoToken,
-                sessionDurationMinutes = params.sessionDurationMinutes,
-                codeVerifier = codeVerifier
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticate(
+                    ssoToken = params.ssoToken,
+                    sessionDurationMinutes = params.sessionDurationMinutes,
+                    codeVerifier = codeVerifier,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
-    override fun authenticate(params: SSO.AuthenticateParams, callback: (SSOAuthenticateResponse) -> Unit) {
+    override fun authenticate(
+        params: SSO.AuthenticateParams,
+        callback: (SSOAuthenticateResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(params)
             callback(result)

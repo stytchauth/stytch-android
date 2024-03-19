@@ -21,7 +21,6 @@ import kotlinx.parcelize.Parcelize
  * passwords that are easy for humans to remember but difficult for computers to crack.
  */
 public interface Passwords {
-
     /**
      * Data class used for wrapping parameters used with Passwords authentication
      * @property email is the account identifier for the account in the form of an Email address
@@ -67,7 +66,7 @@ public interface Passwords {
         val loginExpirationMinutes: UInt? = null,
         val resetPasswordRedirectUrl: String? = null,
         val resetPasswordExpirationMinutes: UInt? = null,
-        val resetPasswordTemplateId: String? = null
+        val resetPasswordTemplateId: String? = null,
     ) : Parcelable
 
     /**
@@ -110,7 +109,10 @@ public interface Passwords {
      * @param parameters required to reset a user's password
      * @param callback a callback that receives an [AuthResponse]
      */
-    public fun resetBySession(parameters: ResetBySessionParameters, callback: (AuthResponse) -> Unit)
+    public fun resetBySession(
+        parameters: ResetBySessionParameters,
+        callback: (AuthResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint

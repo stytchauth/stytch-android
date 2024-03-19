@@ -23,10 +23,11 @@ internal fun StytchTextButton(
     ) {
         Text(
             text = text,
-            style = type.buttonLabel.copy(
-                color = Color(theme.primaryTextColor),
-                textAlign = TextAlign.Center,
-            ),
+            style =
+                type.buttonLabel.copy(
+                    color = Color(theme.primaryTextColor),
+                    textAlign = TextAlign.Center,
+                ),
         )
     }
 }

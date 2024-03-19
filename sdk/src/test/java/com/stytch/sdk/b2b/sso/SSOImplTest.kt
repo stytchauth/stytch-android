@@ -24,7 +24,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -32,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class SSOImplTest {
@@ -58,13 +58,14 @@ internal class SSOImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        impl = SSOImpl(
-            externalScope = TestScope(),
-            dispatchers = StytchDispatchers(dispatcher, dispatcher),
-            sessionStorage = mockB2BSessionStorage,
-            storageHelper = mockStorageHelper,
-            api = mockApi,
-        )
+        impl =
+            SSOImpl(
+                externalScope = TestScope(),
+                dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockB2BSessionStorage,
+                storageHelper = mockStorageHelper,
+                api = mockApi,
+            )
     }
 
     @After
@@ -74,22 +75,24 @@ internal class SSOImplTest {
     }
 
     @Test
-    fun `SSO authenticate returns error if codeverifier fails`() = runTest {
-        every { mockStorageHelper.loadValue(any()) } returns null
-        val response = impl.authenticate(mockk(relaxed = true))
-        assert(response is StytchResult.Error)
-    }
+    fun `SSO authenticate returns error if codeverifier fails`() =
+        runTest {
+            every { mockStorageHelper.loadValue(any()) } returns null
+            val response = impl.authenticate(mockk(relaxed = true))
+            assert(response is StytchResult.Error)
+        }
 
     @Test
-    fun `SSO authenticate delegates to api`() = runTest {
-        every { mockStorageHelper.retrieveCodeVerifier() } returns ""
-        val mockResponse = StytchResult.Success<SSOAuthenticateResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.authenticate(any(), any(), any()) } returns mockResponse
-        val response = impl.authenticate(SSO.AuthenticateParams(""))
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.authenticate(any(), any(), any()) }
-        verify { mockResponse.launchSessionUpdater(any(), any()) }
-    }
+    fun `SSO authenticate delegates to api`() =
+        runTest {
+            every { mockStorageHelper.retrieveCodeVerifier() } returns ""
+            val mockResponse = StytchResult.Success<SSOAuthenticateResponseData>(mockk(relaxed = true))
+            coEvery { mockApi.authenticate(any(), any(), any()) } returns mockResponse
+            val response = impl.authenticate(SSO.AuthenticateParams(""))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.authenticate(any(), any(), any()) }
+            verify { mockResponse.launchSessionUpdater(any(), any()) }
+        }
 
     @Test
     fun `SSO authenticate with callback calls callback method`() {

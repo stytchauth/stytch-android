@@ -6,7 +6,7 @@ import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.robots.mainScreenRobot
 import org.junit.Test
 
-internal class MainScreenTest: BaseAndroidComposeTest() {
+internal class MainScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
 
     @Test

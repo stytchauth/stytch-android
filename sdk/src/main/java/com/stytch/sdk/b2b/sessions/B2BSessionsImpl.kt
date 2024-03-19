@@ -43,16 +43,20 @@ internal class B2BSessionsImpl internal constructor(
         withContext(dispatchers.io) {
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
-            result = api.authenticate(
-                authParams.sessionDurationMinutes
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticate(
+                    authParams.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
-    override fun authenticate(authParams: B2BSessions.AuthParams, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(
+        authParams: B2BSessions.AuthParams,
+        callback: (AuthResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)
@@ -77,7 +81,10 @@ internal class B2BSessionsImpl internal constructor(
         return result
     }
 
-    override fun revoke(params: B2BSessions.RevokeParams, callback: (BaseResponse) -> Unit) {
+    override fun revoke(
+        params: B2BSessions.RevokeParams,
+        callback: (BaseResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = revoke(params)
@@ -89,7 +96,10 @@ internal class B2BSessionsImpl internal constructor(
     /**
      * @throws StytchInternalError if failed to save data
      */
-    override fun updateSession(sessionToken: String?, sessionJwt: String?) {
+    override fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    ) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {
@@ -98,6 +108,7 @@ internal class B2BSessionsImpl internal constructor(
     }
 
     override fun getSync(): B2BSessionData? = sessionStorage.memberSession
+
     override suspend fun exchange(parameters: B2BSessions.ExchangeParameters): SessionExchangeResponse {
         return withContext(dispatchers.io) {
             api.exchange(
@@ -110,7 +121,10 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
-    override fun exchange(parameters: B2BSessions.ExchangeParameters, callback: (SessionExchangeResponse) -> Unit) {
+    override fun exchange(
+        parameters: B2BSessions.ExchangeParameters,
+        callback: (SessionExchangeResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = exchange(parameters)
             // change to main thread to call callback

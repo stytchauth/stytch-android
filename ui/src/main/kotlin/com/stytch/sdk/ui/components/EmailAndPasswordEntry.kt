@@ -27,12 +27,13 @@ internal fun EmailAndPasswordEntry(
     val isSubmittable = emailState.validEmail == true && passwordState.validPassword
     val semantics = stringResource(id = R.string.semantics_email_password_entry)
     Column(
-        modifier = Modifier.semantics { contentDescription = semantics }
+        modifier = Modifier.semantics { contentDescription = semantics },
     ) {
         EmailInput(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
             label = stringResource(id = R.string.email),

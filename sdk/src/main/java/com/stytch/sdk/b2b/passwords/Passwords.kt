@@ -69,7 +69,10 @@ public interface Passwords {
      * @param parameters required to authenticate
      * @param callback a callback that receives an [AuthResponse]
      */
-    public fun authenticate(parameters: AuthParameters, callback: (AuthResponse) -> Unit)
+    public fun authenticate(
+        parameters: AuthParameters,
+        callback: (AuthResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint
@@ -105,7 +108,10 @@ public interface Passwords {
      * @param parameters required to reset an account password
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun resetByEmailStart(parameters: ResetByEmailStartParameters, callback: (BaseResponse) -> Unit)
+    public fun resetByEmailStart(
+        parameters: ResetByEmailStartParameters,
+        callback: (BaseResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
@@ -137,7 +143,10 @@ public interface Passwords {
      * @param parameters required to reset an account password
      * @param callback a callback that receives an [EmailResetResponse]
      */
-    public fun resetByEmail(parameters: ResetByEmailParameters, callback: (EmailResetResponse) -> Unit)
+    public fun resetByEmail(
+        parameters: ResetByEmailParameters,
+        callback: (EmailResetResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -173,7 +182,10 @@ public interface Passwords {
      * @param parameters required to reset a member's password
      * @param callback a callback that receives an [AuthResponse]
      */
-    public fun resetByExisting(parameters: ResetByExistingPasswordParameters, callback: (AuthResponse) -> Unit)
+    public fun resetByExisting(
+        parameters: ResetByExistingPasswordParameters,
+        callback: (AuthResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -203,7 +215,10 @@ public interface Passwords {
      * @param parameters required to reset a member's password
      * @param callback a callback that receives an [SessionResetResponse]
      */
-    public fun resetBySession(parameters: ResetBySessionParameters, callback: (SessionResetResponse) -> Unit)
+    public fun resetBySession(
+        parameters: ResetBySessionParameters,
+        callback: (SessionResetResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -230,5 +245,8 @@ public interface Passwords {
      * @param parameters required to advise on password strength
      * @param callback a callback that receives a [PasswordStrengthCheckResponse]
      */
-    public fun strengthCheck(parameters: StrengthCheckParameters, callback: (PasswordStrengthCheckResponse) -> Unit)
+    public fun strengthCheck(
+        parameters: StrengthCheckParameters,
+        callback: (PasswordStrengthCheckResponse) -> Unit,
+    )
 }

@@ -9,7 +9,6 @@ import com.stytch.sdk.consumer.AuthResponse
  * retrieve the existing session token (opaque or JWT).
  */
 public interface Sessions {
-
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
@@ -50,7 +49,10 @@ public interface Sessions {
      * @param authParams required to authenticate
      * @param callback a callback that receives an [AuthResponse]
      */
-    public fun authenticate(authParams: AuthParams, callback: (AuthResponse) -> Unit)
+    public fun authenticate(
+        authParams: AuthParams,
+        callback: (AuthResponse) -> Unit,
+    )
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
@@ -64,12 +66,18 @@ public interface Sessions {
      * @param params required for revoking a session
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun revoke(params: RevokeParams = RevokeParams(), callback: (BaseResponse) -> Unit)
+    public fun revoke(
+        params: RevokeParams = RevokeParams(),
+        callback: (BaseResponse) -> Unit,
+    )
 
     /**
      * Updates the current session with a sessionToken and/or sessionJwt
      * @param sessionToken
      * @param sessionJwt
      */
-    public fun updateSession(sessionToken: String?, sessionJwt: String?)
+    public fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    )
 }

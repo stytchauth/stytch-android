@@ -98,26 +98,29 @@ private fun MainScreenComposable(
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
     val hasButtons = productConfig.products.contains(StytchProduct.OAUTH)
-    val hasInput = productConfig.products.any {
-        listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
-    }
-    val hasEmail = productConfig.products.any {
-        listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
-    } || productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+    val hasInput =
+        productConfig.products.any {
+            listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
+        }
+    val hasEmail =
+        productConfig.products.any {
+            listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
+        } || productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
     val hasDivider = hasButtons && hasInput
-    val tabTitles = mutableListOf<String>().apply {
-        if (hasEmail) {
-            add(stringResource(id = R.string.email))
-        }
-        if (productConfig.products.contains(StytchProduct.OTP)) {
-            if (productConfig.otpOptions.methods.contains(OTPMethods.SMS)) {
-                add(stringResource(id = R.string.text))
+    val tabTitles =
+        mutableListOf<String>().apply {
+            if (hasEmail) {
+                add(stringResource(id = R.string.email))
             }
-            if (productConfig.otpOptions.methods.contains(OTPMethods.WHATSAPP)) {
-                add(stringResource(id = R.string.whatsapp))
+            if (productConfig.products.contains(StytchProduct.OTP)) {
+                if (productConfig.otpOptions.methods.contains(OTPMethods.SMS)) {
+                    add(stringResource(id = R.string.text))
+                }
+                if (productConfig.otpOptions.methods.contains(OTPMethods.WHATSAPP)) {
+                    add(stringResource(id = R.string.whatsapp))
+                }
             }
         }
-    }
     var selectedTabIndex by remember { mutableStateOf(0) }
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
@@ -131,11 +134,12 @@ private fun MainScreenComposable(
         if (productConfig.products.contains(StytchProduct.OAUTH)) {
             productConfig.oAuthOptions.providers.map {
                 SocialLoginButton(
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .semantics {
-                            contentDescription = semanticsOAuthButton
-                        },
+                    modifier =
+                        Modifier
+                            .padding(bottom = 12.dp)
+                            .semantics {
+                                contentDescription = semanticsOAuthButton
+                            },
                     onClick = { onStartOAuthLogin(it, productConfig) },
                     iconDrawable = painterResource(id = it.iconDrawable),
                     iconDescription = stringResource(id = it.iconText),
@@ -171,37 +175,41 @@ private fun MainScreenComposable(
                         ) {
                             Text(
                                 text = title,
-                                style = type.body2.copy(
-                                    color = Color(theme.primaryTextColor),
-                                    lineHeight = 48.sp,
-                                ),
+                                style =
+                                    type.body2.copy(
+                                        color = Color(theme.primaryTextColor),
+                                        lineHeight = 48.sp,
+                                    ),
                             )
                         }
                     }
                 }
             }
             when (tabTitles[selectedTabIndex]) {
-                stringResource(id = R.string.email) -> EmailEntry(
-                    emailState = emailState,
-                    onEmailAddressChanged = onEmailAddressChanged,
-                    onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
-                )
-                stringResource(id = R.string.text) -> PhoneEntry(
-                    countryCode = phoneState.countryCode,
-                    onCountryCodeChanged = onCountryCodeChanged,
-                    phoneNumber = phoneState.phoneNumber,
-                    onPhoneNumberChanged = onPhoneNumberChanged,
-                    onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
-                    statusText = phoneState.error,
-                )
-                stringResource(id = R.string.whatsapp) -> PhoneEntry(
-                    countryCode = phoneState.countryCode,
-                    onCountryCodeChanged = onCountryCodeChanged,
-                    phoneNumber = phoneState.phoneNumber,
-                    onPhoneNumberChanged = onPhoneNumberChanged,
-                    onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
-                    statusText = phoneState.error,
-                )
+                stringResource(id = R.string.email) ->
+                    EmailEntry(
+                        emailState = emailState,
+                        onEmailAddressChanged = onEmailAddressChanged,
+                        onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
+                    )
+                stringResource(id = R.string.text) ->
+                    PhoneEntry(
+                        countryCode = phoneState.countryCode,
+                        onCountryCodeChanged = onCountryCodeChanged,
+                        phoneNumber = phoneState.phoneNumber,
+                        onPhoneNumberChanged = onPhoneNumberChanged,
+                        onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
+                        statusText = phoneState.error,
+                    )
+                stringResource(id = R.string.whatsapp) ->
+                    PhoneEntry(
+                        countryCode = phoneState.countryCode,
+                        onCountryCodeChanged = onCountryCodeChanged,
+                        phoneNumber = phoneState.phoneNumber,
+                        onPhoneNumberChanged = onPhoneNumberChanged,
+                        onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
+                        statusText = phoneState.error,
+                    )
                 else -> Text(stringResource(id = R.string.misconfigured_otp))
             }
         }

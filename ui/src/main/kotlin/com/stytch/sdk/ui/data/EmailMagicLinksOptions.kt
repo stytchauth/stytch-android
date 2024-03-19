@@ -20,7 +20,10 @@ public data class EmailMagicLinksOptions(
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,
 ) : Parcelable {
-    internal fun toParameters(emailAddress: String, publicToken: String) = MagicLinks.EmailMagicLinks.Parameters(
+    internal fun toParameters(
+        emailAddress: String,
+        publicToken: String,
+    ) = MagicLinks.EmailMagicLinks.Parameters(
         email = emailAddress,
         loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
         signupMagicLinkUrl = "stytchui-$publicToken://deeplink",

@@ -26,11 +26,12 @@ internal class DFPImplTest {
     fun before() {
         MockKAnnotations.init(this, true, true)
         coEvery { dfpProvider.getTelemetryId() } returns "dfp-telemetry-id"
-        impl = DFPImpl(
-            dfpProvider = dfpProvider,
-            dispatchers = StytchDispatchers(Dispatchers.Unconfined, Dispatchers.Unconfined),
-            externalScope = TestScope(),
-        )
+        impl =
+            DFPImpl(
+                dfpProvider = dfpProvider,
+                dispatchers = StytchDispatchers(Dispatchers.Unconfined, Dispatchers.Unconfined),
+                externalScope = TestScope(),
+            )
     }
 
     @After
@@ -40,10 +41,11 @@ internal class DFPImplTest {
     }
 
     @Test
-    fun `getTelemetryId delegates to provider`() = runTest {
-        impl.getTelemetryId()
-        coVerify(exactly = 1) { dfpProvider.getTelemetryId() }
-    }
+    fun `getTelemetryId delegates to provider`() =
+        runTest {
+            impl.getTelemetryId()
+            coVerify(exactly = 1) { dfpProvider.getTelemetryId() }
+        }
 
     @Test
     fun `getTelemetryId with callback calls callback`() {

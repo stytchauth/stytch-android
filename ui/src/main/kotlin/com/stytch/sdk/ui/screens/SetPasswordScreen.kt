@@ -37,10 +37,11 @@ internal data class SetPasswordScreen(
         val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current as AuthenticationActivity
         val productConfig = LocalStytchProductConfig.current
-        val viewModel = viewModel<SetPasswordScreenViewModel>(
-            factory = SetPasswordScreenViewModel.factory(context.savedStateHandle)
-        )
-        val uiState =viewModel.uiState.collectAsState()
+        val viewModel =
+            viewModel<SetPasswordScreenViewModel>(
+                factory = SetPasswordScreenViewModel.factory(context.savedStateHandle),
+            )
+        val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.setEmailReadOnly()
             viewModel.eventFlow.collectLatest {

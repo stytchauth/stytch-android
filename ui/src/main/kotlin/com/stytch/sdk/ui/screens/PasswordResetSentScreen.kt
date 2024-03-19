@@ -53,9 +53,10 @@ internal data class PasswordResetSentScreen(
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
-        val viewModel = viewModel<PasswordResetSentScreenViewModel>(
-            factory = PasswordResetSentScreenViewModel.factory(context.savedStateHandle)
-        )
+        val viewModel =
+            viewModel<PasswordResetSentScreenViewModel>(
+                factory = PasswordResetSentScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -74,8 +75,9 @@ internal data class PasswordResetSentScreen(
             onResendPasswordResetStart = { viewModel.onResendPasswordResetStart(details.parameters) },
             resetType = details.resetType,
             hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS),
-            hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
-                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
+            hasEmailOTP =
+                productConfig.products.contains(StytchProduct.OTP) &&
+                    productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
             sendEML = { viewModel.sendEML(details.parameters.email, productConfig.emailMagicLinksOptions) },
             sendEmailOTP = { viewModel.sendEmailOTP(details.parameters.email, productConfig.otpOptions) },
         )
@@ -98,49 +100,57 @@ private fun PasswordResetSentScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted = AnnotatedString(
-        text = " $emailAddress",
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-    )
-    val resendLinkFormatted = AnnotatedString(
-        text = stringResource(id = R.string.resend_link),
-        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-    )
-    val pageTitleResource = when (resetType) {
-        PasswordResetType.FORGOT_PASSWORD -> R.string.forgot_password
-        PasswordResetType.NO_PASSWORD_SET,
-        PasswordResetType.BREACHED,
-        PasswordResetType.DEDUPE,
-        -> R.string.check_email_new_password
-    }
-    val bodyTextString = when (resetType) {
-        PasswordResetType.FORGOT_PASSWORD -> buildAnnotatedString {
-            append(stringResource(id = R.string.reset_password_link_sent))
-            append(" ")
-            append(recipientFormatted)
-            append(".")
+    val recipientFormatted =
+        AnnotatedString(
+            text = " $emailAddress",
+            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+        )
+    val resendLinkFormatted =
+        AnnotatedString(
+            text = stringResource(id = R.string.resend_link),
+            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+        )
+    val pageTitleResource =
+        when (resetType) {
+            PasswordResetType.FORGOT_PASSWORD -> R.string.forgot_password
+            PasswordResetType.NO_PASSWORD_SET,
+            PasswordResetType.BREACHED,
+            PasswordResetType.DEDUPE,
+            -> R.string.check_email_new_password
         }
-        PasswordResetType.NO_PASSWORD_SET -> buildAnnotatedString {
-            append(stringResource(id = R.string.login_link_sent))
-            append(" ")
-            append(recipientFormatted)
-            append(" ")
-            append(stringResource(id = R.string.create_password_for_account))
+    val bodyTextString =
+        when (resetType) {
+            PasswordResetType.FORGOT_PASSWORD ->
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.reset_password_link_sent))
+                    append(" ")
+                    append(recipientFormatted)
+                    append(".")
+                }
+            PasswordResetType.NO_PASSWORD_SET ->
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.login_link_sent))
+                    append(" ")
+                    append(recipientFormatted)
+                    append(" ")
+                    append(stringResource(id = R.string.create_password_for_account))
+                }
+            PasswordResetType.BREACHED ->
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.breached_password))
+                    append(" ")
+                    append(recipientFormatted)
+                    append(" ")
+                    append(stringResource(id = R.string.breached_password_2))
+                }
+            PasswordResetType.DEDUPE ->
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.secure_your_account, recipientFormatted))
+                    append(" ")
+                    append(recipientFormatted)
+                    append(".")
+                }
         }
-        PasswordResetType.BREACHED -> buildAnnotatedString {
-            append(stringResource(id = R.string.breached_password))
-            append(" ")
-            append(recipientFormatted)
-            append(" ")
-            append(stringResource(id = R.string.breached_password_2))
-        }
-        PasswordResetType.DEDUPE -> buildAnnotatedString {
-            append(stringResource(id = R.string.secure_your_account, recipientFormatted))
-            append(" ")
-            append(recipientFormatted)
-            append(".")
-        }
-    }
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
@@ -149,15 +159,17 @@ private fun PasswordResetSentScreenComposable(
         )
         BodyText(text = bodyTextString)
         Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.didnt_get_it))
-                append(" ")
-                append(resendLinkFormatted)
-            },
+            text =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.didnt_get_it))
+                    append(" ")
+                    append(resendLinkFormatted)
+                },
             textAlign = TextAlign.Start,
-            style = type.caption.copy(
-                color = Color(theme.secondaryTextColor),
-            ),
+            style =
+                type.caption.copy(
+                    color = Color(theme.secondaryTextColor),
+                ),
             modifier = Modifier.clickable { onShowResendDialog() },
         )
         uiState.genericErrorMessage?.let {
@@ -169,13 +181,15 @@ private fun PasswordResetSentScreenComposable(
                 text = stringResource(id = R.string.or),
             )
             StytchTextButton(
-                text = stringResource(
-                    id = if (hasEML) {
-                        R.string.email_me_a_login_link
-                    } else {
-                        R.string.email_me_a_login_code
-                    },
-                ),
+                text =
+                    stringResource(
+                        id =
+                            if (hasEML) {
+                                R.string.email_me_a_login_link
+                            } else {
+                                R.string.email_me_a_login_code
+                            },
+                    ),
                 onClick = { if (hasEML) sendEML() else sendEmailOTP() },
             )
         }
@@ -187,10 +201,11 @@ private fun PasswordResetSentScreenComposable(
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.resend_link),
-            body = buildAnnotatedString {
-                append(stringResource(id = R.string.new_link_will_be_sent_to))
-                append(recipientFormatted)
-            },
+            body =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.new_link_will_be_sent_to))
+                    append(recipientFormatted)
+                },
             cancelText = stringResource(id = R.string.cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.send_link),

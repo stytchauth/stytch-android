@@ -28,88 +28,110 @@ internal class SetPasswordScreenViewModel(
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun setEmailReadOnly() {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            emailState = uiState.value.emailState.copy(
-                readOnly = true,
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                emailState =
+                    uiState.value.emailState.copy(
+                        readOnly = true,
+                    ),
             )
-        )
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            emailState = uiState.value.emailState.copy(
-                emailAddress = emailAddress,
-                validEmail = emailAddress.isValidEmailAddress(),
-            ),
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                emailState =
+                    uiState.value.emailState.copy(
+                        emailAddress = emailAddress,
+                        validEmail = emailAddress.isValidEmailAddress(),
+                    ),
+            )
     }
 
-    fun onPasswordChanged(password: String, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            passwordState = uiState.value.passwordState.copy(
-                password = password,
-            ),
-        )
-        scope.launch {
-            when (
-                val result = stytchClient.passwords.strengthCheck(
-                    Passwords.StrengthCheckParameters(
-                        email = uiState.value.emailState.emailAddress,
+    fun onPasswordChanged(
+        password: String,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                passwordState =
+                    uiState.value.passwordState.copy(
                         password = password,
                     ),
-                )
-            ) {
-                is StytchResult.Success -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        passwordState = uiState.value.passwordState.copy(
-                            breachedPassword = result.value.breachedPassword,
-                            feedback = result.value.feedback,
-                            score = result.value.score,
-                            validPassword = result.value.validPassword,
+            )
+        scope.launch {
+            when (
+                val result =
+                    stytchClient.passwords.strengthCheck(
+                        Passwords.StrengthCheckParameters(
+                            email = uiState.value.emailState.emailAddress,
+                            password = password,
                         ),
                     )
+            ) {
+                is StytchResult.Success -> {
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            passwordState =
+                                uiState.value.passwordState.copy(
+                                    breachedPassword = result.value.breachedPassword,
+                                    feedback = result.value.feedback,
+                                    score = result.value.score,
+                                    validPassword = result.value.validPassword,
+                                ),
+                        )
                 }
 
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        passwordState = uiState.value.passwordState.copy(
-                            errorMessage = result.exception.message, // TODO
-                        ),
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            passwordState =
+                                uiState.value.passwordState.copy(
+                                    errorMessage = result.exception.message,
+                                ),
+                        )
                 }
             }
         }
     }
 
-    fun onSubmit(token: String, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+    fun onSubmit(
+        token: String,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
         val password = uiState.value.passwordState.password
         scope.launch {
-            val parameters = Passwords.ResetByEmailParameters(
-                token = token,
-                password = password,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
-            )
-            when (val result = stytchClient.passwords.resetByEmail(parameters)) {
-                is StytchResult.Success -> _eventFlow.emit(
-                    EventState.Authenticated(result)
+            val parameters =
+                Passwords.ResetByEmailParameters(
+                    token = token,
+                    password = password,
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
                 )
-                is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        genericErrorMessage = result.exception.message, // TODO
+            when (val result = stytchClient.passwords.resetByEmail(parameters)) {
+                is StytchResult.Success ->
+                    _eventFlow.emit(
+                        EventState.Authenticated(result),
                     )
+                is StytchResult.Error -> {
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            genericErrorMessage = result.exception.message,
+                        )
                 }
             }
         }
     }
 
     companion object {
-        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SetPasswordScreenViewModel(
-                    stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle
-                )
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    SetPasswordScreenViewModel(
+                        stytchClient = StytchClient,
+                        savedStateHandle = savedStateHandle,
+                    )
+                }
             }
-        }
     }
 }

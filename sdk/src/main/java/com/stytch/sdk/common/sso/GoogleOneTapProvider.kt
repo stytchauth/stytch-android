@@ -8,8 +8,14 @@ import com.google.android.gms.auth.api.identity.SignInClient
 
 internal interface GoogleOneTapProvider {
     fun getSignInClient(context: Context): SignInClient
+
     fun getSignInClient(context: Activity): SignInClient
-    fun getSignInRequest(clientId: String, nonce: String, autoSelectEnabled: Boolean): BeginSignInRequest
+
+    fun getSignInRequest(
+        clientId: String,
+        nonce: String,
+        autoSelectEnabled: Boolean,
+    ): BeginSignInRequest
 }
 
 internal class GoogleOneTapProviderImpl : GoogleOneTapProvider {
@@ -17,7 +23,11 @@ internal class GoogleOneTapProviderImpl : GoogleOneTapProvider {
 
     override fun getSignInClient(context: Activity): SignInClient = Identity.getSignInClient(context)
 
-    override fun getSignInRequest(clientId: String, nonce: String, autoSelectEnabled: Boolean): BeginSignInRequest =
+    override fun getSignInRequest(
+        clientId: String,
+        nonce: String,
+        autoSelectEnabled: Boolean,
+    ): BeginSignInRequest =
         BeginSignInRequest.builder().apply {
             setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -25,7 +35,7 @@ internal class GoogleOneTapProviderImpl : GoogleOneTapProvider {
                     .setServerClientId(clientId)
                     .setFilterByAuthorizedAccounts(false)
                     .setNonce(nonce)
-                    .build()
+                    .build(),
             )
             setAutoSelectEnabled(autoSelectEnabled)
         }.build()

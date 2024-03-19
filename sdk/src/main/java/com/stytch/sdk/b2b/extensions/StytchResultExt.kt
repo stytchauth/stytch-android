@@ -1,4 +1,6 @@
-// ktlint-disable filename
+
+@file:Suppress("ktlint:standard:filename")
+
 package com.stytch.sdk.b2b.extensions
 
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -9,7 +11,10 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import kotlinx.coroutines.withContext
 
-private fun <T : IB2BAuthData> saveSession(result: T, sessionStorage: B2BSessionStorage) {
+private fun <T : IB2BAuthData> saveSession(
+    result: T,
+    sessionStorage: B2BSessionStorage,
+) {
     result.apply {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt, memberSession)
@@ -24,7 +29,7 @@ private fun <T : IB2BAuthData> saveSession(result: T, sessionStorage: B2BSession
  */
 internal fun <T : IB2BAuthData> StytchResult<T>.launchSessionUpdater(
     dispatchers: StytchDispatchers,
-    sessionStorage: B2BSessionStorage
+    sessionStorage: B2BSessionStorage,
 ) {
     if (this is StytchResult.Success) {
         // save session data
@@ -41,7 +46,7 @@ internal fun <T : IB2BAuthData> StytchResult<T>.launchSessionUpdater(
                 if (result is IB2BAuthData) {
                     saveSession(result, sessionStorage)
                 }
-            }
+            },
         )
     }
 }

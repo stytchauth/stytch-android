@@ -9,12 +9,11 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
-import java.security.KeyStore
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 internal class ConsumerSessionStorageTest {
-
     private lateinit var impl: ConsumerSessionStorage
 
     @Before

@@ -21,20 +21,23 @@ public data class OTPOptions(
     val loginTemplateId: String? = null,
     val signupTemplateId: String? = null,
 ) : Parcelable {
-    internal fun toEmailOtpParameters(emailAddress: String) = OTP.EmailOTP.Parameters(
-        email = emailAddress,
-        expirationMinutes = expirationMinutes.toUInt(),
-        loginTemplateId = loginTemplateId,
-        signupTemplateId = signupTemplateId,
-    )
+    internal fun toEmailOtpParameters(emailAddress: String) =
+        OTP.EmailOTP.Parameters(
+            email = emailAddress,
+            expirationMinutes = expirationMinutes.toUInt(),
+            loginTemplateId = loginTemplateId,
+            signupTemplateId = signupTemplateId,
+        )
 
-    internal fun toSMSOtpParameters(phoneNumber: String) = OTP.SmsOTP.Parameters(
-        phoneNumber = phoneNumber,
-        expirationMinutes = expirationMinutes.toUInt(),
-    )
+    internal fun toSMSOtpParameters(phoneNumber: String) =
+        OTP.SmsOTP.Parameters(
+            phoneNumber = phoneNumber,
+            expirationMinutes = expirationMinutes.toUInt(),
+        )
 
-    internal fun toWhatsAppOtpParameters(phoneNumber: String) = OTP.WhatsAppOTP.Parameters(
-        phoneNumber = phoneNumber,
-        expirationMinutes = expirationMinutes.toUInt(),
-    )
+    internal fun toWhatsAppOtpParameters(phoneNumber: String) =
+        OTP.WhatsAppOTP.Parameters(
+            phoneNumber = phoneNumber,
+            expirationMinutes = expirationMinutes.toUInt(),
+        )
 }

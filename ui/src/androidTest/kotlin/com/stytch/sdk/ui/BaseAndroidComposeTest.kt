@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Rule
 
 internal abstract class BaseAndroidComposeTest {
-
     @get:Rule
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity> =
         createAndroidIntentComposeRule {

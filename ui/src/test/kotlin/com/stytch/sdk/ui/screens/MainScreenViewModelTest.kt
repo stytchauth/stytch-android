@@ -59,58 +59,70 @@ internal class MainScreenViewModelTest {
     }
 
     @Test
-    fun `onStartOAuthLogin delegates to OneTap if configured`() = runTest(dispatcher) {
-        val mockProductConfig: StytchProductConfig = mockk {
-            every { googleOauthOptions } returns mockk {
-                every { clientId } returns "google-client-id"
-            }
+    fun `onStartOAuthLogin delegates to OneTap if configured`() =
+        runTest(dispatcher) {
+            val mockProductConfig: StytchProductConfig =
+                mockk {
+                    every { googleOauthOptions } returns
+                        mockk {
+                            every { clientId } returns "google-client-id"
+                        }
+                }
+            coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns true
+            every { mockStytchClient.oauth.google.start(any()) } throws Exception("THIS SHOULD NOT BE CALLED")
+            viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
+            coVerify { mockStytchClient.oauth.googleOneTap.start(any()) }
         }
-        coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns true
-        every { mockStytchClient.oauth.google.start(any()) } throws Exception("THIS SHOULD NOT BE CALLED")
-        viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
-        coVerify { mockStytchClient.oauth.googleOneTap.start(any()) }
-    }
 
     @Test
-    fun `onStartOAuthLogin delegates to third party if fails to start`() = runTest(dispatcher) {
-        val mockProductConfig: StytchProductConfig = mockk {
-            every { googleOauthOptions } returns mockk {
-                every { clientId } returns "my-client-id"
-            }
-            every { oAuthOptions } returns mockk(relaxed = true)
+    fun `onStartOAuthLogin delegates to third party if fails to start`() =
+        runTest(dispatcher) {
+            val mockProductConfig: StytchProductConfig =
+                mockk {
+                    every { googleOauthOptions } returns
+                        mockk {
+                            every { clientId } returns "my-client-id"
+                        }
+                    every { oAuthOptions } returns mockk(relaxed = true)
+                }
+            coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns false
+            every { mockStytchClient.oauth.google.start(any()) } just runs
+            viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
+            coVerify { mockStytchClient.oauth.google.start(any()) }
         }
-        coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns false
-        every { mockStytchClient.oauth.google.start(any()) } just runs
-        viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
-        coVerify { mockStytchClient.oauth.google.start(any()) }
-    }
 
     @Test
-    fun `onStartOAuthLogin delegates to third party if not configured`() = runTest(dispatcher) {
-        val mockProductConfig: StytchProductConfig = mockk {
-            every { googleOauthOptions } returns mockk {
-                every { clientId } returns null
-            }
-            every { oAuthOptions } returns mockk(relaxed = true)
+    fun `onStartOAuthLogin delegates to third party if not configured`() =
+        runTest(dispatcher) {
+            val mockProductConfig: StytchProductConfig =
+                mockk {
+                    every { googleOauthOptions } returns
+                        mockk {
+                            every { clientId } returns null
+                        }
+                    every { oAuthOptions } returns mockk(relaxed = true)
+                }
+            coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } throws Exception("THIS SHOULD NOT BE CALLED")
+            every { mockStytchClient.oauth.google.start(any()) } just runs
+            viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
+            coVerify { mockStytchClient.oauth.google.start(any()) }
         }
-        coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } throws Exception("THIS SHOULD NOT BE CALLED")
-        every { mockStytchClient.oauth.google.start(any()) } just runs
-        viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
-        coVerify { mockStytchClient.oauth.google.start(any()) }
-    }
 
     @Test
-    fun `onStartOAuthLogin delegates to third party if not Google`() = runTest(dispatcher) {
-        val mockProductConfig: StytchProductConfig = mockk {
-            every { googleOauthOptions } returns mockk {
-                every { clientId } returns null
-            }
-            every { oAuthOptions } returns mockk(relaxed = true)
+    fun `onStartOAuthLogin delegates to third party if not Google`() =
+        runTest(dispatcher) {
+            val mockProductConfig: StytchProductConfig =
+                mockk {
+                    every { googleOauthOptions } returns
+                        mockk {
+                            every { clientId } returns null
+                        }
+                    every { oAuthOptions } returns mockk(relaxed = true)
+                }
+            every { mockStytchClient.oauth.amazon.start(any()) } just runs
+            viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.AMAZON, mockProductConfig, this)
+            coVerify { mockStytchClient.oauth.amazon.start(any()) }
         }
-        every { mockStytchClient.oauth.amazon.start(any()) } just runs
-        viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.AMAZON, mockProductConfig, this)
-        coVerify { mockStytchClient.oauth.amazon.start(any()) }
-    }
 
     @Test
     fun `onStartThirdPartyOAuth maps to the correct handler`() {
@@ -196,227 +208,271 @@ internal class MainScreenViewModelTest {
     }
 
     @Test
-    fun `onEmailAddressSubmit delegates and sends events for new users`() = runTest(dispatcher){
-        coEvery { viewModel.getUserType(any()) } returns UserType.NEW
-        val eventFlow = async {
-            viewModel.eventFlow.first()
+    fun `onEmailAddressSubmit delegates and sends events for new users`() =
+        runTest(dispatcher) {
+            coEvery { viewModel.getUserType(any()) } returns UserType.NEW
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.NewUser))
         }
-        viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
-        assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.NewUser))
-    }
 
     @Test
-    fun `onEmailAddressSubmit delegates and sends events for password users`() = runTest(dispatcher){
-        coEvery { viewModel.getUserType(any()) } returns UserType.PASSWORD
-        val eventFlow = async {
-            viewModel.eventFlow.first()
+    fun `onEmailAddressSubmit delegates and sends events for password users`() =
+        runTest(dispatcher) {
+            coEvery { viewModel.getUserType(any()) } returns UserType.PASSWORD
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.ReturningUser))
         }
-        viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
-        assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.ReturningUser))
-    }
 
     @Test
-    fun `onEmailAddressSubmit delegates and sends events for passwordless users`() = runTest(dispatcher){
-        coEvery { viewModel.getUserType(any()) } returns UserType.PASSWORDLESS
-        coEvery {
-            viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(any(), any())
-        } returns NavigationRoute.OTPConfirmation(mockk(), true, "")
-        coEvery {
-            viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(any(), any())
-        } returns NavigationRoute.EMLConfirmation(mockk(), true)
-        coEvery {
-            viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(any(), any())
-        } returns NavigationRoute.PasswordResetSent(mockk())
+    fun `onEmailAddressSubmit delegates and sends events for passwordless users`() =
+        runTest(dispatcher) {
+            coEvery { viewModel.getUserType(any()) } returns UserType.PASSWORDLESS
+            coEvery {
+                viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(any(), any())
+            } returns NavigationRoute.OTPConfirmation(mockk(), true, "")
+            coEvery {
+                viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(any(), any())
+            } returns NavigationRoute.EMLConfirmation(mockk(), true)
+            coEvery {
+                viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(any(), any())
+            } returns NavigationRoute.PasswordResetSent(mockk())
 
-        // should send Email OTP
-        var eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        val configShouldSendEmailOTP: StytchProductConfig = mockk {
-            every { products } returns listOf(StytchProduct.OTP)
-            every { otpOptions } returns mockk {
-                every { methods } returns listOf(OTPMethods.EMAIL)
-            }
-        }
-        viewModel.onEmailAddressSubmit(configShouldSendEmailOTP, this)
-        var event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.OTPConfirmation)
+            // should send Email OTP
+            var eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            val configShouldSendEmailOTP: StytchProductConfig =
+                mockk {
+                    every { products } returns listOf(StytchProduct.OTP)
+                    every { otpOptions } returns
+                        mockk {
+                            every { methods } returns listOf(OTPMethods.EMAIL)
+                        }
+                }
+            viewModel.onEmailAddressSubmit(configShouldSendEmailOTP, this)
+            var event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.OTPConfirmation)
 
-        // should send EML
-        eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        val configShouldSendEml: StytchProductConfig = mockk {
-            every { products } returns listOf(StytchProduct.EMAIL_MAGIC_LINKS)
-            every { emailMagicLinksOptions } returns mockk(relaxed = true)
-        }
-        viewModel.onEmailAddressSubmit(configShouldSendEml, this)
-        event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.EMLConfirmation)
+            // should send EML
+            eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            val configShouldSendEml: StytchProductConfig =
+                mockk {
+                    every { products } returns listOf(StytchProduct.EMAIL_MAGIC_LINKS)
+                    every { emailMagicLinksOptions } returns mockk(relaxed = true)
+                }
+            viewModel.onEmailAddressSubmit(configShouldSendEml, this)
+            event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.EMLConfirmation)
 
-        // should send password reset
-        eventFlow = async {
-            viewModel.eventFlow.first()
+            // should send password reset
+            eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            val configShouldSendPasswordReset: StytchProductConfig =
+                mockk {
+                    every { products } returns listOf()
+                    every { passwordOptions } returns mockk(relaxed = true)
+                }
+            viewModel.onEmailAddressSubmit(configShouldSendPasswordReset, this)
+            event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.PasswordResetSent)
         }
-        val configShouldSendPasswordReset: StytchProductConfig = mockk {
-            every { products } returns listOf()
-            every { passwordOptions } returns mockk(relaxed = true)
-        }
-        viewModel.onEmailAddressSubmit(configShouldSendPasswordReset, this)
-        event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.PasswordResetSent)
-    }
-
-    @Test
-    fun `onEmailAddressSubmit delegates and updates state for unknown users`() = runTest(dispatcher){
-        coEvery { viewModel.getUserType(any()) } returns null
-        viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
-        assert(viewModel.uiState.value.genericErrorMessage == "Failed to get user type")
-    }
-
-    @Test
-    fun `getUserType returns as expected`() = runTest(dispatcher){
-        coEvery { mockStytchClient.user.search(any()) } returns StytchResult.Success(
-            mockk {
-                every { userType } returns UserType.NEW
-            }
-        )
-        assert(viewModel.getUserType("") == UserType.NEW)
-        coEvery { mockStytchClient.user.search(any()) } returns StytchResult.Error(mockk())
-        assert(viewModel.getUserType("") == null)
-    }
 
     @Test
-    fun `sendEmailMagicLinkForReturningUserAndGetNavigationRoute returns nav route on success`() = runTest(dispatcher) {
-        every { mockStytchClient.publicToken } returns "publicToken"
-        coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Success(mockk())
-        val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
-        require(route is NavigationRoute.EMLConfirmation)
-        require(route.isReturningUser)
-    }
+    fun `onEmailAddressSubmit delegates and updates state for unknown users`() =
+        runTest(dispatcher) {
+            coEvery { viewModel.getUserType(any()) } returns null
+            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            assert(viewModel.uiState.value.genericErrorMessage == "Failed to get user type")
+        }
+
+    @Test
+    fun `getUserType returns as expected`() =
+        runTest(dispatcher) {
+            coEvery { mockStytchClient.user.search(any()) } returns
+                StytchResult.Success(
+                    mockk {
+                        every { userType } returns UserType.NEW
+                    },
+                )
+            assert(viewModel.getUserType("") == UserType.NEW)
+            coEvery { mockStytchClient.user.search(any()) } returns StytchResult.Error(mockk())
+            assert(viewModel.getUserType("") == null)
+        }
+
+    @Test
+    fun `sendEmailMagicLinkForReturningUserAndGetNavigationRoute returns nav route on success`() =
+        runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
+            coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Success(mockk())
+            val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
+            require(route is NavigationRoute.EMLConfirmation)
+            require(route.isReturningUser)
+        }
 
     @Test
     fun `sendEmailMagicLinkForReturningUserAndGetNavigationRoute updates state and returns null on error`() =
         runTest(dispatcher) {
             every { mockStytchClient.publicToken } returns "publicToken"
-            coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Error(
-                StytchAPIError(errorType = "", message = "Something went wrong")
-            )
+            coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns
+                StytchResult.Error(
+                    StytchAPIError(errorType = "", message = "Something went wrong"),
+                )
             val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
 
     @Test
-    fun `sendEmailOTPForReturningUserAndGetNavigationRoute returns nav route on success`() = runTest(dispatcher) {
-        coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns StytchResult.Success(mockk(relaxed = true))
-        val route = viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute("my@email.com", mockk(relaxed = true))
-        require(route is NavigationRoute.OTPConfirmation)
-        require(route.isReturningUser)
-        require(route.emailAddress == "my@email.com")
-    }
+    fun `sendEmailOTPForReturningUserAndGetNavigationRoute returns nav route on success`() =
+        runTest(dispatcher) {
+            coEvery {
+                mockStytchClient.otps.email.loginOrCreate(
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
+            val route =
+                viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(
+                    "my@email.com",
+                    mockk(relaxed = true),
+                )
+            require(route is NavigationRoute.OTPConfirmation)
+            require(route.isReturningUser)
+            require(route.emailAddress == "my@email.com")
+        }
 
     @Test
     fun `sendEmailOTPForReturningUserAndGetNavigationRoute updates state and returns null on error`() =
         runTest(dispatcher) {
-            coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns StytchResult.Error(
-                StytchAPIError(errorType = "", message = "Something went wrong")
-            )
+            coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns
+                StytchResult.Error(
+                    StytchAPIError(errorType = "", message = "Something went wrong"),
+                )
             val route = viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
 
     @Test
-    fun `sendResetPasswordForReturningUserAndGetNavigationRoute returns nav route on success`() = runTest(dispatcher) {
-        every { mockStytchClient.publicToken } returns "publicToken"
-        coEvery {
-            mockStytchClient.passwords.resetByEmailStart(any())
-        } returns StytchResult.Success(mockk(relaxed = true))
-        val route = viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(
-            "my@email.com",
-            mockk(relaxed = true)
-        )
-        require(route is NavigationRoute.PasswordResetSent)
-        require(route.details.resetType == PasswordResetType.NO_PASSWORD_SET)
-    }
+    fun `sendResetPasswordForReturningUserAndGetNavigationRoute returns nav route on success`() =
+        runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
+            coEvery {
+                mockStytchClient.passwords.resetByEmailStart(any())
+            } returns StytchResult.Success(mockk(relaxed = true))
+            val route =
+                viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(
+                    "my@email.com",
+                    mockk(relaxed = true),
+                )
+            require(route is NavigationRoute.PasswordResetSent)
+            require(route.details.resetType == PasswordResetType.NO_PASSWORD_SET)
+        }
 
     @Test
     fun `sendResetPasswordForReturningUserAndGetNavigationRoute updates state and returns null on error`() =
         runTest(dispatcher) {
             every { mockStytchClient.publicToken } returns "publicToken"
-            coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Error(
-                StytchAPIError(errorType = "", message = "Something went wrong")
-            )
+            coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns
+                StytchResult.Error(
+                    StytchAPIError(errorType = "", message = "Something went wrong"),
+                )
             val route = viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
 
     @Test
-    fun `sendSmsOTP updates state and emits events as expected`() = runTest(dispatcher) {
-        // set a phone number first
-        viewModel.onCountryCodeChanged("+1")
-        viewModel.onPhoneNumberChanged("5555555555")
-        val mockOptions: OTPOptions = mockk {
-            every { toSMSOtpParameters(any()) } returns mockk()
-        }
-        coEvery {mockStytchClient.otps.sms.loginOrCreate(any()) } returns StytchResult.Success(mockk {
-            every { methodId } returns "my-method-id"
-        })
-        val eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        viewModel.sendSmsOTP(mockOptions, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        val event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.OTPConfirmation)
-        require(event.navigationRoute.details is OTPDetails.SmsOTP)
-        require(event.navigationRoute.details.methodId == "my-method-id")
-        require(!event.navigationRoute.isReturningUser)
+    fun `sendSmsOTP updates state and emits events as expected`() =
+        runTest(dispatcher) {
+            // set a phone number first
+            viewModel.onCountryCodeChanged("+1")
+            viewModel.onPhoneNumberChanged("5555555555")
+            val mockOptions: OTPOptions =
+                mockk {
+                    every { toSMSOtpParameters(any()) } returns mockk()
+                }
+            coEvery { mockStytchClient.otps.sms.loginOrCreate(any()) } returns
+                StytchResult.Success(
+                    mockk {
+                        every { methodId } returns "my-method-id"
+                    },
+                )
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            viewModel.sendSmsOTP(mockOptions, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            val event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.OTPConfirmation)
+            require(event.navigationRoute.details is OTPDetails.SmsOTP)
+            require(event.navigationRoute.details.methodId == "my-method-id")
+            require(!event.navigationRoute.isReturningUser)
 
-        // error state
-        coEvery {mockStytchClient.otps.sms.loginOrCreate(any()) } returns StytchResult.Error(
-            StytchAPIError(errorType = "", message = "Something went wrong")
-        )
-        viewModel.sendSmsOTP(mockOptions, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
-    }
+            // error state
+            coEvery { mockStytchClient.otps.sms.loginOrCreate(any()) } returns
+                StytchResult.Error(
+                    StytchAPIError(errorType = "", message = "Something went wrong"),
+                )
+            viewModel.sendSmsOTP(mockOptions, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
+        }
 
     @Test
-    fun `sendWhatsAppOTP updates state and emits events as expected`() = runTest(dispatcher) {
-        // set a phone number first
-        viewModel.onCountryCodeChanged("+1")
-        viewModel.onPhoneNumberChanged("5555555555")
-        val mockOptions: OTPOptions = mockk {
-            every { toWhatsAppOtpParameters(any()) } returns mockk()
-        }
-        coEvery {mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns StytchResult.Success(mockk {
-            every { methodId } returns "my-method-id"
-        })
-        val eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        viewModel.sendWhatsAppOTP(mockOptions, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        val event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.OTPConfirmation)
-        require(event.navigationRoute.details is OTPDetails.WhatsAppOTP)
-        require(event.navigationRoute.details.methodId == "my-method-id")
-        require(!event.navigationRoute.isReturningUser)
+    fun `sendWhatsAppOTP updates state and emits events as expected`() =
+        runTest(dispatcher) {
+            // set a phone number first
+            viewModel.onCountryCodeChanged("+1")
+            viewModel.onPhoneNumberChanged("5555555555")
+            val mockOptions: OTPOptions =
+                mockk {
+                    every { toWhatsAppOtpParameters(any()) } returns mockk()
+                }
+            coEvery { mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns
+                StytchResult.Success(
+                    mockk {
+                        every { methodId } returns "my-method-id"
+                    },
+                )
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            viewModel.sendWhatsAppOTP(mockOptions, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            val event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.OTPConfirmation)
+            require(event.navigationRoute.details is OTPDetails.WhatsAppOTP)
+            require(event.navigationRoute.details.methodId == "my-method-id")
+            require(!event.navigationRoute.isReturningUser)
 
-        // error state
-        coEvery {mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns StytchResult.Error(
-            StytchAPIError(errorType = "", message = "Something went wrong")
-        )
-        viewModel.sendWhatsAppOTP(mockOptions, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
-    }
+            // error state
+            coEvery { mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns
+                StytchResult.Error(
+                    StytchAPIError(errorType = "", message = "Something went wrong"),
+                )
+            viewModel.sendWhatsAppOTP(mockOptions, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
+        }
 }

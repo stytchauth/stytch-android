@@ -41,9 +41,10 @@ internal object ReturningUserScreen : AndroidScreen(), Parcelable {
         val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<ReturningUserScreenViewModel>(
-            factory = ReturningUserScreenViewModel.factory(context.savedStateHandle)
-        )
+        val viewModel =
+            viewModel<ReturningUserScreenViewModel>(
+                factory = ReturningUserScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -57,8 +58,9 @@ internal object ReturningUserScreen : AndroidScreen(), Parcelable {
         ReturningUserScreenComposable(
             uiState = uiState.value,
             hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS),
-            hasEmailOTP = productConfig.products.contains(StytchProduct.OTP) &&
-                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
+            hasEmailOTP =
+                productConfig.products.contains(StytchProduct.OTP) &&
+                    productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
             onBack = navigator::pop,
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
@@ -112,13 +114,15 @@ private fun ReturningUserScreenComposable(
                 text = stringResource(id = R.string.or),
             )
             StytchTextButton(
-                text = stringResource(
-                    id = if (hasEML) {
-                        R.string.email_me_a_login_link
-                    } else {
-                        R.string.email_me_a_login_code
-                    },
-                ),
+                text =
+                    stringResource(
+                        id =
+                            if (hasEML) {
+                                R.string.email_me_a_login_link
+                            } else {
+                                R.string.email_me_a_login_code
+                            },
+                    ),
                 onClick = { if (hasEML) sendEML() else sendEmailOTP() },
             )
         }

@@ -8,13 +8,13 @@ import com.stytch.sdk.ui.screens.PasswordResetSentScreen
 
 internal fun BaseAndroidComposeTest.passwordResetSentScreenRobot(
     details: PasswordResetDetails,
-    func: PasswordResetSentScreenRobot.() -> Unit
+    func: PasswordResetSentScreenRobot.() -> Unit,
 ) = PasswordResetSentScreenRobot(details, this).apply(func)
 
 internal class PasswordResetSentScreenRobot(
     details: PasswordResetDetails,
-    baseAndroidComposeTest: BaseAndroidComposeTest
-): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, PasswordResetSentScreen(details)) {
+    baseAndroidComposeTest: BaseAndroidComposeTest,
+) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, PasswordResetSentScreen(details)) {
     private val forgotPasswordTitle by lazy {
         composeTestRule.onNodeWithText(getString(R.string.forgot_password))
     }
@@ -29,7 +29,7 @@ internal class PasswordResetSentScreenRobot(
 
     private val noPasswordText by lazy {
         composeTestRule.onNodeWithText(
-            getString(R.string.login_link_sent) + "   " + getString(R.string.create_password_for_account)
+            getString(R.string.login_link_sent) + "   " + getString(R.string.create_password_for_account),
         )
     }
 

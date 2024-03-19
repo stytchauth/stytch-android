@@ -11,22 +11,22 @@ internal fun BaseAndroidComposeTest.otpConfirmationScreenRobot(
     resendParameters: OTPDetails,
     isReturningUser: Boolean,
     emailAddress: String?,
-    func: OTPConfirmationScreenRobot.() -> Unit
+    func: OTPConfirmationScreenRobot.() -> Unit,
 ) = OTPConfirmationScreenRobot(resendParameters, isReturningUser, emailAddress, this).apply(func)
 
 internal class OTPConfirmationScreenRobot(
     resendParameters: OTPDetails,
     isReturningUser: Boolean,
     emailAddress: String?,
-    baseAndroidComposeTest: BaseAndroidComposeTest
-): BaseRobotScreen(
-    baseAndroidComposeTest.composeTestRule,
-    OTPConfirmationScreen(
-        resendParameters = resendParameters,
-        isReturningUser = isReturningUser,
-        emailAddress = emailAddress
-    )
-) {
+    baseAndroidComposeTest: BaseAndroidComposeTest,
+) : BaseRobotScreen(
+        baseAndroidComposeTest.composeTestRule,
+        OTPConfirmationScreen(
+            resendParameters = resendParameters,
+            isReturningUser = isReturningUser,
+            emailAddress = emailAddress,
+        ),
+    ) {
     private val pageTitle by lazy {
         composeTestRule.onNodeWithText(getString(R.string.enter_passcode))
     }

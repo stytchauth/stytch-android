@@ -13,36 +13,40 @@ internal class DiscoveryTest {
 
     @Test
     fun `Discovery SessionExchangeParameters have correct default values`() {
-        val params = Discovery.SessionExchangeParameters(
-            intermediateSessionToken = "intermediate-session-token",
-            organizationId = "organization-id"
-        )
-        val expected = Discovery.SessionExchangeParameters(
-            intermediateSessionToken = "intermediate-session-token",
-            organizationId = "organization-id",
-            sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES
-        )
+        val params =
+            Discovery.SessionExchangeParameters(
+                intermediateSessionToken = "intermediate-session-token",
+                organizationId = "organization-id",
+            )
+        val expected =
+            Discovery.SessionExchangeParameters(
+                intermediateSessionToken = "intermediate-session-token",
+                organizationId = "organization-id",
+                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            )
         assert(params == expected)
     }
 
     @Test
     fun `Discovery CreateOrganizationParameters have correct default values`() {
-        val params = Discovery.CreateOrganizationParameters(
-            intermediateSessionToken = "intermediate-session-token",
-        )
-        val expected = Discovery.CreateOrganizationParameters(
-            intermediateSessionToken = "intermediate-session-token",
-            organizationName = null,
-            organizationSlug = null,
-            organizationLogoUrl = null,
-            sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
-            ssoJitProvisioning = null,
-            emailAllowedDomains = null,
-            emailJitProvisioning = null,
-            emailInvites = null,
-            authMethods = null,
-            allowedAuthMethods = null,
-        )
+        val params =
+            Discovery.CreateOrganizationParameters(
+                intermediateSessionToken = "intermediate-session-token",
+            )
+        val expected =
+            Discovery.CreateOrganizationParameters(
+                intermediateSessionToken = "intermediate-session-token",
+                organizationName = null,
+                organizationSlug = null,
+                organizationLogoUrl = null,
+                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                ssoJitProvisioning = null,
+                emailAllowedDomains = null,
+                emailJitProvisioning = null,
+                emailInvites = null,
+                authMethods = null,
+                allowedAuthMethods = null,
+            )
         assert(params == expected)
     }
 }

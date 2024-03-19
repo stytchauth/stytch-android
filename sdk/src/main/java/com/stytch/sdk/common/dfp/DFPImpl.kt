@@ -10,9 +10,10 @@ internal class DFPImpl(
     private val dispatchers: StytchDispatchers,
     private val externalScope: CoroutineScope,
 ) : DFP {
-    override suspend fun getTelemetryId(): String = withContext(dispatchers.io) {
-        dfpProvider.getTelemetryId()
-    }
+    override suspend fun getTelemetryId(): String =
+        withContext(dispatchers.io) {
+            dfpProvider.getTelemetryId()
+        }
 
     override fun getTelemetryId(callback: (String) -> Unit) {
         externalScope.launch(dispatchers.ui) {

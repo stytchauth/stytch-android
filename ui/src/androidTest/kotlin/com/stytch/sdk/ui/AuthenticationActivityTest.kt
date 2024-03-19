@@ -17,8 +17,9 @@ internal class AuthenticationActivityTest {
         val result = ActivityScenario.launchActivityForResult(AuthenticationActivity::class.java).result
         assert(result.resultCode == ComponentActivity.RESULT_OK)
         result.resultData.setExtrasClassLoader(AuthenticationActivity::class.java.classLoader)
-        val error = result.resultData.extras
-            ?.getParcelable(AuthenticationActivity.STYTCH_RESULT_KEY, StytchResult.Error::class.java)
+        val error =
+            result.resultData.extras
+                ?.getParcelable(AuthenticationActivity.STYTCH_RESULT_KEY, StytchResult.Error::class.java)
         val expected = StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided"))
         assert(error == expected)
     }

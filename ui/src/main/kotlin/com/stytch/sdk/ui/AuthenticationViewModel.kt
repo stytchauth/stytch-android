@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 internal class AuthenticationViewModel(
     private val stytchClient: StytchClient,
-    val savedStateHandle: SavedStateHandle
+    val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -40,10 +40,11 @@ internal class AuthenticationViewModel(
         scope: CoroutineScope = viewModelScope,
     ) {
         scope.launch {
-            val parameters = OAuth.GoogleOneTap.AuthenticateParameters(
-                data = data,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
-            )
+            val parameters =
+                OAuth.GoogleOneTap.AuthenticateParameters(
+                    data = data,
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                )
             val result = stytchClient.oauth.googleOneTap.authenticate(parameters)
             _eventFlow.emit(EventState.Authenticated(result))
         }
@@ -75,13 +76,18 @@ internal class AuthenticationViewModel(
         }
     }
 
-    fun handleDeepLink(uri: Uri, sessionOptions: SessionOptions, scope: CoroutineScope = viewModelScope) {
+    fun handleDeepLink(
+        uri: Uri,
+        sessionOptions: SessionOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
         scope.launch {
             when (
-                val result = stytchClient.handle(
-                    uri = uri,
-                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt()
-                )
+                val result =
+                    stytchClient.handle(
+                        uri = uri,
+                        sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                    )
             ) {
                 is DeeplinkHandledStatus.Handled -> {
                     _eventFlow.emit(EventState.Authenticated(result.response.result))
@@ -92,22 +98,24 @@ internal class AuthenticationViewModel(
                 is DeeplinkHandledStatus.ManualHandlingRequired -> {
                     _eventFlow.emit(
                         EventState.NavigationRequested(
-                            NavigationRoute.SetNewPassword(token = result.token)
-                        )
+                            NavigationRoute.SetNewPassword(token = result.token),
+                        ),
                     )
                 }
             }
         }
     }
+
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val savedStateHandle = createSavedStateHandle()
-                AuthenticationViewModel(
-                    stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle,
-                )
+        val Factory: ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    val savedStateHandle = createSavedStateHandle()
+                    AuthenticationViewModel(
+                        stytchClient = StytchClient,
+                        savedStateHandle = savedStateHandle,
+                    )
+                }
             }
-        }
     }
 }

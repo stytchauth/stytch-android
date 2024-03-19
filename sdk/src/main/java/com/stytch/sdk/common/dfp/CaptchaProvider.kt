@@ -19,7 +19,6 @@ internal class CaptchaProviderImpl(
     scope: CoroutineScope,
     siteKey: String,
 ) : CaptchaProvider {
-
     private lateinit var recaptchaClient: RecaptchaClient
 
     override val captchaIsConfigured: Boolean

@@ -36,7 +36,7 @@ public interface Discovery {
      * is not provided the existing session token will be used.
      */
     public data class DiscoverOrganizationsParameters(
-        val intermediateSessionToken: String? = null
+        val intermediateSessionToken: String? = null,
     )
 
     /**
@@ -53,7 +53,7 @@ public interface Discovery {
      */
     public fun listOrganizations(
         parameters: DiscoverOrganizationsParameters,
-        callback: (DiscoverOrganizationsResponse) -> Unit
+        callback: (DiscoverOrganizationsResponse) -> Unit,
     )
 
     /**
@@ -76,7 +76,7 @@ public interface Discovery {
      * @return [IntermediateSessionExchangeResponse]
      */
     public suspend fun exchangeIntermediateSession(
-        parameters: SessionExchangeParameters
+        parameters: SessionExchangeParameters,
     ): IntermediateSessionExchangeResponse
 
     /**
@@ -88,7 +88,7 @@ public interface Discovery {
      */
     public fun exchangeIntermediateSession(
         parameters: SessionExchangeParameters,
-        callback: (IntermediateSessionExchangeResponse) -> Unit
+        callback: (IntermediateSessionExchangeResponse) -> Unit,
     )
 
     /**
@@ -160,6 +160,6 @@ public interface Discovery {
      */
     public fun createOrganization(
         parameters: CreateOrganizationParameters,
-        callback: (OrganizationCreateResponse) -> Unit
+        callback: (OrganizationCreateResponse) -> Unit,
     )
 }
