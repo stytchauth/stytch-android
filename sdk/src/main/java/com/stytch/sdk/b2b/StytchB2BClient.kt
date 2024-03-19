@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.b2b.StytchB2BClient.sso
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.events.Events
@@ -15,6 +16,8 @@ import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.organization.Organization
 import com.stytch.sdk.b2b.organization.OrganizationImpl
+import com.stytch.sdk.b2b.otp.OTP
+import com.stytch.sdk.b2b.otp.OTPImpl
 import com.stytch.sdk.b2b.passwords.Passwords
 import com.stytch.sdk.b2b.passwords.PasswordsImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -285,6 +288,16 @@ public object StytchB2BClient {
             assertInitialized()
             return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
         }
+
+    /**
+     * TODO
+     */
+    public var otp: OTP = OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

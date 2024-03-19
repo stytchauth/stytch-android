@@ -51,3 +51,8 @@ public enum class SearchOperator {
     AND,
     OR,
 }
+
+public enum class SetMFAEnrollment(override val jsonName: String) : IEnumValue {
+    ENROLL("enroll"),
+    UNENROLL("unenroll"),
+}

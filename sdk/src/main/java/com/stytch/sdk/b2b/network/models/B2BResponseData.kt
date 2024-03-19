@@ -464,3 +464,24 @@ public data class ResultsMetadata(
     @Json(name = "next_cursor")
     val nextCursor: String? = null,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OTPAuthenticateResponse(
+    @Json(name = "member_id")
+    val memberId: String,
+    override val member: MemberData,
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "reset_session")
+    val resetSession: Boolean,
+    override val organization: OrganizationData,
+) : IB2BAuthData, Parcelable

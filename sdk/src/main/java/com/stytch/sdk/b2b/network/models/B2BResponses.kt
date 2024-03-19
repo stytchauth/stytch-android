@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.network.models
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.OTPSendResponseData
 
 internal object B2BResponses {
     object MagicLinks {
@@ -136,5 +137,19 @@ internal object B2BResponses {
         class AuthenticateResponse(
             data: SSOAuthenticateResponseData,
         ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
+    }
+
+    object OTP {
+        object SMS {
+            @JsonClass(generateAdapter = true)
+            class SendResponse(
+                data: OTPSendResponseData,
+            ) : StytchDataResponse<OTPSendResponseData>(data)
+
+            @JsonClass(generateAdapter = true)
+            class AuthenticateResponse(
+                data: B2BAuthData,
+            ) : StytchDataResponse<B2BAuthData>(data)
+        }
     }
 }

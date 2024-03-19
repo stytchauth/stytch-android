@@ -20,6 +20,7 @@ import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.BasicData
 
 /**
  * Type alias for StytchResult<IB2BAuthData> used for authentication responses
@@ -107,3 +108,5 @@ public typealias CreateMemberResponse = StytchResult<MemberResponseCommonData>
 public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseCommonData>
 
 public typealias MemberSearchResponse = StytchResult<MemberSearchResponseData>
+
+public typealias BasicResponse = StytchResult<BasicData>
