@@ -20,6 +20,7 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
                 override fun originalToTransformed(offset: Int): Int {
                     return transformation.originalToTransformed[offset]
                 }
+
                 override fun transformedToOriginal(offset: Int): Int {
                     return transformation.transformedToOriginal[offset]
                 }
@@ -27,7 +28,10 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
         )
     }
 
-    private fun reformat(s: CharSequence, cursor: Int): Transformation {
+    private fun reformat(
+        s: CharSequence,
+        cursor: Int,
+    ): Transformation {
         phoneNumberFormatter.clear()
 
         val curIndex = cursor - 1
@@ -68,7 +72,10 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
         return Transformation(formatted, originalToTransformed, transformedToOriginal)
     }
 
-    private fun getFormattedNumber(lastNonSeparator: Char, hasCursor: Boolean): String? {
+    private fun getFormattedNumber(
+        lastNonSeparator: Char,
+        hasCursor: Boolean,
+    ): String? {
         return if (hasCursor) {
             phoneNumberFormatter.inputDigitAndRememberPosition(lastNonSeparator)
         } else {

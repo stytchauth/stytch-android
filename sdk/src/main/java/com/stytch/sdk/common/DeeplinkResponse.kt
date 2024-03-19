@@ -13,7 +13,7 @@ public sealed class DeeplinkResponse(public open val result: StytchResult<Any>) 
      * @property result A [StytchResult] representing either the authenticated response or an error.
      */
     public data class Auth(
-        override val result: StytchResult<CommonAuthenticationData>
+        override val result: StytchResult<CommonAuthenticationData>,
     ) : DeeplinkResponse(result)
 
     /**
@@ -21,6 +21,6 @@ public sealed class DeeplinkResponse(public open val result: StytchResult<Any>) 
      * @property result A [StytchResult] representing either the authenticated intermediate session or an error.
      */
     public data class Discovery(
-        override val result: StytchResult<DiscoveryAuthenticateResponseData>
+        override val result: StytchResult<DiscoveryAuthenticateResponseData>,
     ) : DeeplinkResponse(result)
 }

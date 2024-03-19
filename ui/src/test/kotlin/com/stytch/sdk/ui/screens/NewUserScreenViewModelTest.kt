@@ -6,17 +6,14 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
-import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.StrengthPolicy
-import com.stytch.sdk.ui.data.EmailState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
-import dalvik.annotation.TestTarget
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -59,68 +56,80 @@ internal class NewUserScreenViewModelTest {
     }
 
     @Test
-    fun `sendEmailMagicLink updates state and emits correct event on success`() = runTest(dispatcher) {
-        every { mockStytchClient.publicToken } returns "publicToken"
-        val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
-        val eventFlow = async {
-            viewModel.eventFlow.first()
+    fun `sendEmailMagicLink updates state and emits correct event on success`() =
+        runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
+            val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
+            viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            val event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.EMLConfirmation)
+            require(!event.navigationRoute.isReturningUser)
         }
-        coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-        viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        val event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.EMLConfirmation)
-        require(!event.navigationRoute.isReturningUser)
-    }
 
     @Test
-    fun `sendEmailMagicLink updates state on error`() = runTest(dispatcher) {
-        every { mockStytchClient.publicToken } returns "publicToken"
-        val result: StytchResult.Error = mockk(relaxed = true) {
-            every { exception } returns mockk<StytchInternalError> {
-                every { message } returns "Something bad happened internally"
-            }
+    fun `sendEmailMagicLink updates state on error`() =
+        runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
+            val result: StytchResult.Error =
+                mockk(relaxed = true) {
+                    every { exception } returns
+                        mockk<StytchInternalError> {
+                            every { message } returns "Something bad happened internally"
+                        }
+                }
+            coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
+            viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
         }
-        coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-        viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
-    }
 
     @Test
-    fun `sendEmailOTP updates state and emits correct event on success`() = runTest(dispatcher) {
-        val result: StytchResult.Success<LoginOrCreateOTPData> = mockk {
-            every { value } returns mockk {
-                every { methodId } returns "my-method-id"
-            }
+    fun `sendEmailOTP updates state and emits correct event on success`() =
+        runTest(dispatcher) {
+            val result: StytchResult.Success<LoginOrCreateOTPData> =
+                mockk {
+                    every { value } returns
+                        mockk {
+                            every { methodId } returns "my-method-id"
+                        }
+                }
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
+            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            val event = eventFlow.await()
+            require(event is EventState.NavigationRequested)
+            require(event.navigationRoute is NavigationRoute.OTPConfirmation)
+            require(!event.navigationRoute.isReturningUser)
+            require(event.navigationRoute.details is OTPDetails.EmailOTP)
+            require(event.navigationRoute.details.methodId == "my-method-id")
         }
-        val eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-        viewModel.sendEmailOTP(mockk(relaxed = true), this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        val event = eventFlow.await()
-        require(event is EventState.NavigationRequested)
-        require(event.navigationRoute is NavigationRoute.OTPConfirmation)
-        require(!event.navigationRoute.isReturningUser)
-        require(event.navigationRoute.details is OTPDetails.EmailOTP)
-        require(event.navigationRoute.details.methodId == "my-method-id")
-    }
 
     @Test
-    fun `sendEmailOTP updates state on error`() = runTest(dispatcher) {
-        val result: StytchResult.Error = mockk(relaxed = true) {
-            every { exception } returns mockk<StytchInternalError> {
-                every { message } returns "Something bad happened internally"
-            }
+    fun `sendEmailOTP updates state on error`() =
+        runTest(dispatcher) {
+            val result: StytchResult.Error =
+                mockk(relaxed = true) {
+                    every { exception } returns
+                        mockk<StytchInternalError> {
+                            every { message } returns "Something bad happened internally"
+                        }
+                }
+            coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
+            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
         }
-        coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-        viewModel.sendEmailOTP(mockk(relaxed = true), this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
-    }
 
     @Test
     fun `onEmailAddressChanged updates the state as expected`() {
@@ -133,58 +142,66 @@ internal class NewUserScreenViewModelTest {
     }
 
     @Test
-    fun `onPasswordChanged calls strengthcheck and updates state accordingly`() = runTest(dispatcher) {
-        val mockedFeedback: Feedback = mockk(relaxed = true)
-        val validResponse = StytchResult.Success<StrengthCheckResponse>(
-            mockk {
-                every { breachedPassword } returns false
-                every { feedback } returns mockedFeedback
-                every { score } returns 5
-                every { validPassword } returns true
-                every { strengthPolicy } returns StrengthPolicy.ZXCVBN
-            }
-        )
-        val invalidResponse: StytchResult.Error = mockk(relaxed = true) {
-            every { exception } returns mockk<StytchInternalError> {
-                every { message } returns "Something bad happened internally"
-            }
-        }
-        coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns validResponse
-        viewModel.onPasswordChanged("", this)
-        coVerify(exactly = 1) { mockStytchClient.passwords.strengthCheck(any()) }
-        assert(viewModel.uiState.value.passwordState.breachedPassword == validResponse.value.breachedPassword)
-        assert(viewModel.uiState.value.passwordState.feedback == validResponse.value.feedback)
-        assert(viewModel.uiState.value.passwordState.score == validResponse.value.score)
-        assert(viewModel.uiState.value.passwordState.validPassword == validResponse.value.validPassword)
+    fun `onPasswordChanged calls strengthcheck and updates state accordingly`() =
+        runTest(dispatcher) {
+            val mockedFeedback: Feedback = mockk(relaxed = true)
+            val validResponse =
+                StytchResult.Success<StrengthCheckResponse>(
+                    mockk {
+                        every { breachedPassword } returns false
+                        every { feedback } returns mockedFeedback
+                        every { score } returns 5
+                        every { validPassword } returns true
+                        every { strengthPolicy } returns StrengthPolicy.ZXCVBN
+                    },
+                )
+            val invalidResponse: StytchResult.Error =
+                mockk(relaxed = true) {
+                    every { exception } returns
+                        mockk<StytchInternalError> {
+                            every { message } returns "Something bad happened internally"
+                        }
+                }
+            coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns validResponse
+            viewModel.onPasswordChanged("", this)
+            coVerify(exactly = 1) { mockStytchClient.passwords.strengthCheck(any()) }
+            assert(viewModel.uiState.value.passwordState.breachedPassword == validResponse.value.breachedPassword)
+            assert(viewModel.uiState.value.passwordState.feedback == validResponse.value.feedback)
+            assert(viewModel.uiState.value.passwordState.score == validResponse.value.score)
+            assert(viewModel.uiState.value.passwordState.validPassword == validResponse.value.validPassword)
 
-        coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns invalidResponse
-        viewModel.onPasswordChanged("", this)
-        coVerify(exactly = 2) { mockStytchClient.passwords.strengthCheck(any()) }
-        assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
-    }
+            coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns invalidResponse
+            viewModel.onPasswordChanged("", this)
+            coVerify(exactly = 2) { mockStytchClient.passwords.strengthCheck(any()) }
+            assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
+        }
 
     @Test
-    fun `createAccountWithPassword calls password create and updates state and events`() = runTest(dispatcher) {
-        val validCreateResponse: CreateResponse = mockk(relaxed = true)
-        val eventFlow = async {
-            viewModel.eventFlow.first()
-        }
-        coEvery { mockStytchClient.passwords.create(any()) } returns StytchResult.Success(validCreateResponse)
-        viewModel.createAccountWithPassword(30U, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        val event = eventFlow.await()
-        require(event is EventState.Authenticated)
-        require(event.result is StytchResult.Success)
-        require(event.result.value == validCreateResponse)
+    fun `createAccountWithPassword calls password create and updates state and events`() =
+        runTest(dispatcher) {
+            val validCreateResponse: CreateResponse = mockk(relaxed = true)
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            coEvery { mockStytchClient.passwords.create(any()) } returns StytchResult.Success(validCreateResponse)
+            viewModel.createAccountWithPassword(30U, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            val event = eventFlow.await()
+            require(event is EventState.Authenticated)
+            require(event.result is StytchResult.Success)
+            require(event.result.value == validCreateResponse)
 
-        val invalidResponse: StytchResult.Error = mockk(relaxed = true) {
-            every { exception } returns mockk<StytchInternalError> {
-                every { message } returns "Something bad happened internally"
-            }
+            val invalidResponse: StytchResult.Error =
+                mockk(relaxed = true) {
+                    every { exception } returns
+                        mockk<StytchInternalError> {
+                            every { message } returns "Something bad happened internally"
+                        }
+                }
+            coEvery { mockStytchClient.passwords.create(any()) } returns invalidResponse
+            viewModel.createAccountWithPassword(30U, this)
+            assert(!viewModel.uiState.value.showLoadingDialog)
+            assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
         }
-        coEvery { mockStytchClient.passwords.create(any()) } returns invalidResponse
-        viewModel.createAccountWithPassword(30U, this)
-        assert(!viewModel.uiState.value.showLoadingDialog)
-        assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
-    }
 }

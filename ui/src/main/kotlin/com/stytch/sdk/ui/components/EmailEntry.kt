@@ -46,10 +46,11 @@ private fun PreviewStytchInput() {
         color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             EmailEntry(
                 onEmailAddressChanged = {},

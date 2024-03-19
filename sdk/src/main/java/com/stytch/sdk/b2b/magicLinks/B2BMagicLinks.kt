@@ -26,7 +26,6 @@ import com.stytch.sdk.common.Constants
  * Call the `StytchB2BClient.magicLinks.discovery.authenticate()` method to authenticate a Member with a Magic Link.
  */
 public interface B2BMagicLinks {
-
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
      * @property token is the unique sequence of characters used to log in
@@ -87,14 +86,13 @@ public interface B2BMagicLinks {
      */
     public fun discoveryAuthenticate(
         parameters: DiscoveryAuthenticateParameters,
-        callback: (DiscoveryEMLAuthResponse) -> Unit
+        callback: (DiscoveryEMLAuthResponse) -> Unit,
     )
 
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
     public interface EmailMagicLinks {
-
         /**
          * Data class used for wrapping parameters used with requesting an email magic link
          * @property email is the account identifier for the account in the form of an Email address where you wish to
@@ -164,7 +162,10 @@ public interface B2BMagicLinks {
          * @param parameters required to send a discovery magic link
          * @param callback a callback that receives a [BaseResponse]
          */
-        public fun discoverySend(parameters: DiscoverySendParameters, callback: (BaseResponse) -> Unit)
+        public fun discoverySend(
+            parameters: DiscoverySendParameters,
+            callback: (BaseResponse) -> Unit,
+        )
 
         /**
          * A data class used for wrapping paramaters used for sending an invite magic link
@@ -215,6 +216,9 @@ public interface B2BMagicLinks {
          * @param parameters required to send a discovery magic link
          * @param callback a callback that receives a [MemberResponse]
          */
-        public fun invite(parameters: InviteParameters, callback: (MemberResponse) -> Unit)
+        public fun invite(
+            parameters: InviteParameters,
+            callback: (MemberResponse) -> Unit,
+        )
     }
 }

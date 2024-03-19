@@ -31,10 +31,11 @@ internal fun DividerWithText(
         Text(
             text = text,
             modifier = Modifier.weight(0.5f),
-            style = type.body.copy(
-                textAlign = TextAlign.Center,
-                color = Color(theme.disabledTextColor),
-            ),
+            style =
+                type.body.copy(
+                    textAlign = TextAlign.Center,
+                    color = Color(theme.disabledTextColor),
+                ),
         )
         Divider(color = Color(theme.disabledTextColor), thickness = 1.dp, modifier = Modifier.weight(1f))
     }

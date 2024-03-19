@@ -21,13 +21,14 @@ internal class OAuthImpl(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.OAuth,
 ) : OAuth {
-    override val googleOneTap: OAuth.GoogleOneTap = GoogleOneTapImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        api,
-        GoogleOneTapProviderImpl()
-    )
+    override val googleOneTap: OAuth.GoogleOneTap =
+        GoogleOneTapImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            api,
+            GoogleOneTapProviderImpl(),
+        )
     override val apple: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "apple")
     override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "amazon")
     override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "bitbucket")
@@ -50,15 +51,16 @@ internal class OAuthImpl(
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {
-            val pkce = storageHelper.retrieveCodeVerifier()
-                ?: run {
-                    StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
-                    return@withContext StytchResult.Error(StytchMissingPKCEError(null))
-                }
+            val pkce =
+                storageHelper.retrieveCodeVerifier()
+                    ?: run {
+                        StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
+                        return@withContext StytchResult.Error(StytchMissingPKCEError(null))
+                    }
             api.authenticateWithThirdPartyToken(
                 token = parameters.token,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
-                codeVerifier = pkce
+                codeVerifier = pkce,
             ).apply {
                 when (this) {
                     is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")

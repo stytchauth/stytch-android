@@ -8,7 +8,7 @@ import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY
 import com.stytch.sdk.ui.robots.returningUserScreenRobot
 import org.junit.Test
 
-internal class ReturningUserScreenTest:  BaseAndroidComposeTest() {
+internal class ReturningUserScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
 
     @Test

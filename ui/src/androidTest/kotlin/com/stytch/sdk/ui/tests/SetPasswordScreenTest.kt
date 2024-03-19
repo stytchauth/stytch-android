@@ -5,7 +5,7 @@ import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.robots.setPasswordScreenRobot
 import org.junit.Test
 
-internal class SetPasswordScreenTest:  BaseAndroidComposeTest() {
+internal class SetPasswordScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
 
     @Test

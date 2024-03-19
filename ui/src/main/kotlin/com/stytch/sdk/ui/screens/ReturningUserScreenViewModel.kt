@@ -38,44 +38,52 @@ internal class ReturningUserScreenViewModel(
     val eventFlow = _eventFlow.asSharedFlow()
 
     fun initializeState(emailAddress: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            emailState = EmailState(emailAddress = emailAddress, validEmail = true),
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                emailState = EmailState(emailAddress = emailAddress, validEmail = true),
+            )
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            emailState = uiState.value.emailState.copy(
-                emailAddress = emailAddress,
-                validEmail = emailAddress.isValidEmailAddress(),
-            ),
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                emailState =
+                    uiState.value.emailState.copy(
+                        emailAddress = emailAddress,
+                        validEmail = emailAddress.isValidEmailAddress(),
+                    ),
+            )
     }
 
     fun onPasswordChanged(password: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            passwordState = uiState.value.passwordState.copy(
-                password = password,
-                validPassword = true, // always valid for login
-            ),
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                passwordState =
+                    uiState.value.passwordState.copy(
+                        password = password,
+                        // always valid for login
+                        validPassword = true,
+                    ),
+            )
     }
 
     fun authenticate(
         sessionOptions: SessionOptions,
         passwordOptions: PasswordOptions,
-        scope: CoroutineScope = viewModelScope
+        scope: CoroutineScope = viewModelScope,
     ) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
-        scope.launch {
-            val parameters = Passwords.AuthParameters(
-                email = uiState.value.emailState.emailAddress,
-                password = uiState.value.passwordState.password,
-                sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
             )
+        scope.launch {
+            val parameters =
+                Passwords.AuthParameters(
+                    email = uiState.value.emailState.emailAddress,
+                    password = uiState.value.passwordState.password,
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                )
             when (val result = stytchClient.passwords.authenticate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -85,22 +93,24 @@ internal class ReturningUserScreenViewModel(
                     when (val exception = result.exception) {
                         is StytchAPIError -> {
                             if (exception.errorType.contains("reset_password")) {
-                               sendPasswordResetAndNavigateAppropriately(
-                                   email = uiState.value.emailState.emailAddress,
-                                   passwordOptions = passwordOptions,
-                               )
-                            } else {
-                                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                                    showLoadingDialog = false,
-                                    genericErrorMessage = result.exception.message, // TODO
+                                sendPasswordResetAndNavigateAppropriately(
+                                    email = uiState.value.emailState.emailAddress,
+                                    passwordOptions = passwordOptions,
                                 )
+                            } else {
+                                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                                    uiState.value.copy(
+                                        showLoadingDialog = false,
+                                        genericErrorMessage = result.exception.message,
+                                    )
                             }
                         }
                         else -> {
-                            savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                                showLoadingDialog = false,
-                                genericErrorMessage = result.exception.message, // TODO
-                            )
+                            savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                                uiState.value.copy(
+                                    showLoadingDialog = false,
+                                    genericErrorMessage = result.exception.message,
+                                )
                         }
                     }
                 }
@@ -113,40 +123,50 @@ internal class ReturningUserScreenViewModel(
         passwordOptions: PasswordOptions,
     ) {
         // send reset password request and nav appropriately
-        val parameters = passwordOptions.toResetByEmailStartParameters(
-            emailAddress = email,
-            publicToken = stytchClient.publicToken,
-        )
+        val parameters =
+            passwordOptions.toResetByEmailStartParameters(
+                emailAddress = email,
+                publicToken = stytchClient.publicToken,
+            )
         when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
             is StytchResult.Success -> {
                 _eventFlow.emit(
-                    EventState.NavigationRequested(NavigationRoute.PasswordResetSent(
-                        details = PasswordResetDetails(
-                            parameters = parameters,
-                            resetType = PasswordResetType.DEDUPE
-                        )
-                    ))
+                    EventState.NavigationRequested(
+                        NavigationRoute.PasswordResetSent(
+                            details =
+                                PasswordResetDetails(
+                                    parameters = parameters,
+                                    resetType = PasswordResetType.DEDUPE,
+                                ),
+                        ),
+                    ),
                 )
             }
             is StytchResult.Error -> {
-                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.message, // TODO
-                )
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                    uiState.value.copy(
+                        showLoadingDialog = false,
+                        genericErrorMessage = result.exception.message,
+                    )
             }
         }
     }
 
-    fun sendEML(emailMagicLinksOptions: EmailMagicLinksOptions, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
-        scope.launch {
-            val parameters = emailMagicLinksOptions.toParameters(
-                emailAddress = uiState.value.emailState.emailAddress,
-                publicToken = stytchClient.publicToken,
+    fun sendEML(
+        emailMagicLinksOptions: EmailMagicLinksOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
             )
+        scope.launch {
+            val parameters =
+                emailMagicLinksOptions.toParameters(
+                    emailAddress = uiState.value.emailState.emailAddress,
+                    publicToken = stytchClient.publicToken,
+                )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -159,19 +179,25 @@ internal class ReturningUserScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.message, // TODO
-                )
+                is StytchResult.Error ->
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = result.exception.message,
+                        )
             }
         }
     }
 
-    fun sendEmailOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
+    fun sendEmailOTP(
+        otpOptions: OTPOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
+            )
         scope.launch {
             val parameters = otpOptions.toEmailOtpParameters(uiState.value.emailState.emailAddress)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
@@ -186,24 +212,31 @@ internal class ReturningUserScreenViewModel(
                         ),
                     )
                 }
-                is StytchResult.Error -> savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    showLoadingDialog = false,
-                    genericErrorMessage = result.exception.message, // TODO
-                )
+                is StytchResult.Error ->
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = result.exception.message,
+                        )
             }
         }
     }
 
-    fun onForgotPasswordClicked(passwordOptions: PasswordOptions, scope: CoroutineScope = viewModelScope) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            showLoadingDialog = true,
-            genericErrorMessage = null,
-        )
-        scope.launch {
-            val parameters = passwordOptions.toResetByEmailStartParameters(
-                emailAddress = uiState.value.emailState.emailAddress,
-                publicToken = stytchClient.publicToken,
+    fun onForgotPasswordClicked(
+        passwordOptions: PasswordOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                showLoadingDialog = true,
+                genericErrorMessage = null,
             )
+        scope.launch {
+            val parameters =
+                passwordOptions.toResetByEmailStartParameters(
+                    emailAddress = uiState.value.emailState.emailAddress,
+                    publicToken = stytchClient.publicToken,
+                )
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -216,23 +249,25 @@ internal class ReturningUserScreenViewModel(
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        showLoadingDialog = false,
-                        genericErrorMessage = result.exception.message, // TODO
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = result.exception.message,
+                        )
                 }
             }
         }
     }
 
     companion object {
-        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                ReturningUserScreenViewModel(
-                    stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle
-                )
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    ReturningUserScreenViewModel(
+                        stytchClient = StytchClient,
+                        savedStateHandle = savedStateHandle,
+                    )
+                }
             }
-        }
     }
 }

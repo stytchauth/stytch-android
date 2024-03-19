@@ -16,16 +16,15 @@ import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.theme.LocalStytchTheme
 
 @Composable
-internal fun BackButton(
-    onClick: () -> Unit,
-) {
+internal fun BackButton(onClick: () -> Unit) {
     val theme = LocalStytchTheme.current
     val backButtonText = stringResource(id = R.string.back)
     IconButton(
         modifier = Modifier.padding(bottom = 24.dp).semantics { contentDescription = backButtonText },
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = Color(theme.primaryTextColor),
-        ),
+        colors =
+            IconButtonDefaults.iconButtonColors(
+                contentColor = Color(theme.primaryTextColor),
+            ),
         onClick = onClick,
     ) {
         Icon(

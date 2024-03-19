@@ -45,9 +45,10 @@ internal fun StytchAlertDialog(
         onDismissRequest = onDismissRequest,
     ) {
         Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+            modifier =
+                Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
             shape = RoundedCornerShape(size = 28.dp),
             tonalElevation = AlertDialogDefaults.TonalElevation,
             color = Color.White,
@@ -69,18 +70,20 @@ internal fun StytchAlertDialog(
                         TextButton(onClick = onCancelClick) {
                             Text(
                                 text = cancelText,
-                                style = type.body2.copy(
-                                    color = Color(theme.dialogTextColor),
-                                ),
+                                style =
+                                    type.body2.copy(
+                                        color = Color(theme.dialogTextColor),
+                                    ),
                             )
                         }
                     }
                     TextButton(onClick = onAcceptClick) {
                         Text(
                             text = acceptText,
-                            style = type.body2.copy(
-                                color = Color(theme.dialogTextColor),
-                            ),
+                            style =
+                                type.body2.copy(
+                                    color = Color(theme.dialogTextColor),
+                                ),
                         )
                     }
                 }

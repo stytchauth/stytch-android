@@ -10,53 +10,59 @@ import androidx.compose.ui.unit.sp
 import com.stytch.sdk.ui.R
 
 internal data class StytchTypography(
-    val title: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W600,
-        fontSize = 24.sp,
-        lineHeight = 30.sp,
-        textAlign = TextAlign.Start,
-        color = Color.Black,
-    ),
-    val body: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W400,
-        fontSize = 18.sp,
-        lineHeight = 25.sp,
-        textAlign = TextAlign.Start,
-        color = Color.Black,
-    ),
-    val buttonLabel: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W600,
-        fontSize = 18.sp,
-        lineHeight = 31.5.sp,
-        textAlign = TextAlign.Center,
-        color = Color.Black,
-    ),
-    val caption: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
-        fontWeight = FontWeight.W400,
-        fontSize = 16.sp,
-        lineHeight = 20.sp,
-        textAlign = TextAlign.Start,
-        color = Color.Black,
-    ),
-    val body2: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        textAlign = TextAlign.Center,
-        color = Color.Black,
-        letterSpacing = 0.1.sp,
-    ),
-    val labelText: TextStyle = TextStyle(
-        fontFamily = FontFamily(Font(R.font.roboto_regular)),
-        fontWeight = FontWeight.W400,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        textAlign = TextAlign.Start,
-        color = Color.Black,
-    ),
+    val title: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
+            fontWeight = FontWeight.W600,
+            fontSize = 24.sp,
+            lineHeight = 30.sp,
+            textAlign = TextAlign.Start,
+            color = Color.Black,
+        ),
+    val body: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
+            fontWeight = FontWeight.W400,
+            fontSize = 18.sp,
+            lineHeight = 25.sp,
+            textAlign = TextAlign.Start,
+            color = Color.Black,
+        ),
+    val buttonLabel: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
+            fontWeight = FontWeight.W600,
+            fontSize = 18.sp,
+            lineHeight = 31.5.sp,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+        ),
+    val caption: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.ibm_plex_sans_regular)),
+            fontWeight = FontWeight.W400,
+            fontSize = 16.sp,
+            lineHeight = 20.sp,
+            textAlign = TextAlign.Start,
+            color = Color.Black,
+        ),
+    val body2: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+            fontWeight = FontWeight.W500,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+            letterSpacing = 0.1.sp,
+        ),
+    val labelText: TextStyle =
+        TextStyle(
+            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+            fontWeight = FontWeight.W400,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            textAlign = TextAlign.Start,
+            color = Color.Black,
+        ),
 )

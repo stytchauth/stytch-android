@@ -17,12 +17,15 @@ internal const val SCHEMA_ERROR_RESPONSE_STRING = """{
 
 internal const val EMPTY_ERROR_RESPONSE_STRING = ""
 
-internal fun createHttpExceptionReturningString(string: String): HttpException = mockk {
-    every { code() } returns 400
-    every { message } returns "Something went wrong"
-    every { response() } returns mockk {
-        every { errorBody() } returns mockk {
-            every { string() } returns string
-        }
+internal fun createHttpExceptionReturningString(string: String): HttpException =
+    mockk {
+        every { code() } returns 400
+        every { message } returns "Something went wrong"
+        every { response() } returns
+            mockk {
+                every { errorBody() } returns
+                    mockk {
+                        every { string() } returns string
+                    }
+            }
     }
-}

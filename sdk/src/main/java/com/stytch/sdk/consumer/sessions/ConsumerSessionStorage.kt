@@ -52,7 +52,11 @@ internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) 
     /**
      * @throws Exception if failed to save data
      */
-    fun updateSession(sessionToken: String?, sessionJwt: String?, session: SessionData? = null) {
+    fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+        session: SessionData? = null,
+    ) {
         synchronized(this) {
             this.sessionToken = sessionToken
             this.sessionJwt = sessionJwt

@@ -30,7 +30,9 @@ public enum class B2BTokenType : TokenType {
     /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method
      */
-    UNKNOWN;
+    UNKNOWN,
+
+    ;
 
     internal companion object {
         fun fromString(typeString: String?): B2BTokenType {

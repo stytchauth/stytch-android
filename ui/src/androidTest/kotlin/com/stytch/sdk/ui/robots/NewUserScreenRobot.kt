@@ -6,13 +6,12 @@ import com.stytch.sdk.ui.BaseAndroidComposeTest
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.screens.NewUserScreen
 
-internal fun BaseAndroidComposeTest.newUserScreenRobot(
-    func: NewUserScreenRobot.() -> Unit
-) = NewUserScreenRobot(this).apply(func)
+internal fun BaseAndroidComposeTest.newUserScreenRobot(func: NewUserScreenRobot.() -> Unit) =
+    NewUserScreenRobot(this).apply(func)
 
 internal class NewUserScreenRobot(
-    baseAndroidComposeTest: BaseAndroidComposeTest
-): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, NewUserScreen) {
+    baseAndroidComposeTest: BaseAndroidComposeTest,
+) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, NewUserScreen) {
     private val emlOrOtpTitle by lazy {
         composeTestRule.onNodeWithText(getString(R.string.choose_how))
     }

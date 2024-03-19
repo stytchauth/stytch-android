@@ -99,14 +99,18 @@ internal class SSOManagerActivity : Activity() {
         }
     }
 
-    private fun generateIntentForUri(browser: Browser, uri: Uri): Intent = if (browser.supportsCustomTabs) {
-        CustomTabsIntent.Builder().build().intent
-    } else {
-        Intent(Intent.ACTION_VIEW)
-    }.apply {
-        setPackage(browser.packageName)
-        data = uri
-    }
+    private fun generateIntentForUri(
+        browser: Browser,
+        uri: Uri,
+    ): Intent =
+        if (browser.supportsCustomTabs) {
+            CustomTabsIntent.Builder().build().intent
+        } else {
+            Intent(Intent.ACTION_VIEW)
+        }.apply {
+            setPackage(browser.packageName)
+            data = uri
+        }
 
     private fun authorizationComplete(uri: Uri) {
         val response = Intent().apply { data = uri }
@@ -132,7 +136,10 @@ internal class SSOManagerActivity : Activity() {
     }
 
     internal companion object {
-        internal fun createResponseHandlingIntent(context: Context, responseUri: Uri?): Intent {
+        internal fun createResponseHandlingIntent(
+            context: Context,
+            responseUri: Uri?,
+        ): Intent {
             val intent = createBaseIntent(context)
             intent.data = responseUri
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -142,6 +149,7 @@ internal class SSOManagerActivity : Activity() {
         internal fun createBaseIntent(context: Context): Intent {
             return Intent(context, SSOManagerActivity::class.java)
         }
+
         internal const val URI_KEY = "uri"
         private const val KEY_AUTHORIZATION_STARTED = "authStarted"
     }

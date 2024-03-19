@@ -10,7 +10,6 @@ import com.stytch.sdk.b2b.network.models.MfaMethod
  * The Member interface provides methods for retrieving and updating the current authenticated member.
  */
 public interface Member {
-
     /**
      * Wraps Stytch’s organization/members/me endpoint.
      * @return [MemberResponse]
@@ -54,7 +53,10 @@ public interface Member {
      * @param params required to update the member
      * @param callback a callback that receives an [UpdateMemberResponse]
      */
-    public fun update(params: UpdateParams, callback: (UpdateMemberResponse) -> Unit)
+    public fun update(
+        params: UpdateParams,
+        callback: (UpdateMemberResponse) -> Unit,
+    )
 
     /**
      * Deletes a [MemberAuthenticationFactor] from the currently authenticated member

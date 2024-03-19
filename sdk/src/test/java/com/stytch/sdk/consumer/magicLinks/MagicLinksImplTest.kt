@@ -26,7 +26,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -34,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class MagicLinksImplTest {
@@ -65,13 +65,14 @@ internal class MagicLinksImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        impl = MagicLinksImpl(
-            externalScope = TestScope(),
-            dispatchers = StytchDispatchers(dispatcher, dispatcher),
-            sessionStorage = mockSessionStorage,
-            storageHelper = mockStorageHelper,
-            api = mockApi
-        )
+        impl =
+            MagicLinksImpl(
+                externalScope = TestScope(),
+                dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockSessionStorage,
+                storageHelper = mockStorageHelper,
+                api = mockApi,
+            )
     }
 
     @After
@@ -81,21 +82,23 @@ internal class MagicLinksImplTest {
     }
 
     @Test
-    fun `MagicLinksImpl authenticate returns error if codeverifier fails`() = runTest {
-        every { mockStorageHelper.loadValue(any()) } returns null
-        val response = impl.authenticate(authParameters)
-        assert(response is StytchResult.Error)
-    }
+    fun `MagicLinksImpl authenticate returns error if codeverifier fails`() =
+        runTest {
+            every { mockStorageHelper.loadValue(any()) } returns null
+            val response = impl.authenticate(authParameters)
+            assert(response is StytchResult.Error)
+        }
 
     @Test
-    fun `MagicLinksImpl authenticate delegates to api`() = runTest {
-        every { mockStorageHelper.retrieveCodeVerifier() } returns ""
-        coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
-        val response = impl.authenticate(authParameters)
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.authenticate(any(), any(), any()) }
-        verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
-    }
+    fun `MagicLinksImpl authenticate delegates to api`() =
+        runTest {
+            every { mockStorageHelper.retrieveCodeVerifier() } returns ""
+            coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
+            val response = impl.authenticate(authParameters)
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.authenticate(any(), any(), any()) }
+            verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+        }
 
     @Test
     fun `MagicLinksImpl authenticate with callback calls callback method`() {
@@ -105,21 +108,23 @@ internal class MagicLinksImplTest {
     }
 
     @Test
-    fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() = runTest {
-        every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
-        val response = impl.email.loginOrCreate(emailMagicLinkParameters)
-        assert(response is StytchResult.Error)
-    }
+    fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() =
+        runTest {
+            every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
+            val response = impl.email.loginOrCreate(emailMagicLinkParameters)
+            assert(response is StytchResult.Error)
+        }
 
     @Test
-    fun `MagicLinksImpl email loginOrCreate delegates to api`() = runTest {
-        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        coEvery {
-            mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
-        } returns successfulLoginOrCreateResponse
-        impl.email.loginOrCreate(emailMagicLinkParameters)
-        coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
-    }
+    fun `MagicLinksImpl email loginOrCreate delegates to api`() =
+        runTest {
+            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            coEvery {
+                mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
+            } returns successfulLoginOrCreateResponse
+            impl.email.loginOrCreate(emailMagicLinkParameters)
+            coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
+        }
 
     @Test
     fun `MagicLinksImpl email loginOrCreate with callback calls callback method`() {
@@ -129,36 +134,40 @@ internal class MagicLinksImplTest {
     }
 
     @Test
-    fun `MagicLinksImpl email send with active session delegates to api`() = runTest {
-        every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
-        coEvery {
-            mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
-        } returns successfulBaseResponse
-        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        val response = impl.email.send(
-            MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress")
-        )
-        assert(response is StytchResult.Success)
-        coVerify {
-            mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
+    fun `MagicLinksImpl email send with active session delegates to api`() =
+        runTest {
+            every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
+            coEvery {
+                mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
+            } returns successfulBaseResponse
+            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            val response =
+                impl.email.send(
+                    MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"),
+                )
+            assert(response is StytchResult.Success)
+            coVerify {
+                mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
+            }
         }
-    }
 
     @Test
-    fun `MagicLinksImpl email send with no active session delegates to api`() = runTest {
-        every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
-        coEvery {
-            mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
-        } returns successfulBaseResponse
-        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        val response = impl.email.send(
-            MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress")
-        )
-        assert(response is StytchResult.Success)
-        coVerify {
-            mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+    fun `MagicLinksImpl email send with no active session delegates to api`() =
+        runTest {
+            every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
+            coEvery {
+                mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+            } returns successfulBaseResponse
+            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            val response =
+                impl.email.send(
+                    MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"),
+                )
+            assert(response is StytchResult.Success)
+            coVerify {
+                mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
+            }
         }
-    }
 
     @Test
     fun `MagicLinksImpl email send with callback calls callback method`() {

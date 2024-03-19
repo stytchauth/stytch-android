@@ -28,7 +28,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -36,6 +35,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class B2BSessionsImplTest {
@@ -62,12 +62,13 @@ internal class B2BSessionsImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        impl = B2BSessionsImpl(
-            externalScope = TestScope(),
-            dispatchers = StytchDispatchers(dispatcher, dispatcher),
-            sessionStorage = mockSessionStorage,
-            api = mockApi
-        )
+        impl =
+            B2BSessionsImpl(
+                externalScope = TestScope(),
+                dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockSessionStorage,
+                api = mockApi,
+            )
     }
 
     @After
@@ -99,13 +100,14 @@ internal class B2BSessionsImplTest {
     }
 
     @Test
-    fun `SessionsImpl authenticate delegates to api`() = runTest {
-        coEvery { mockApi.authenticate(any()) } returns successfulAuthResponse
-        val response = impl.authenticate(authParameters)
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.authenticate(any()) }
-        verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
-    }
+    fun `SessionsImpl authenticate delegates to api`() =
+        runTest {
+            coEvery { mockApi.authenticate(any()) } returns successfulAuthResponse
+            val response = impl.authenticate(authParameters)
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.authenticate(any()) }
+            verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+        }
 
     @Test
     fun `SessionsImpl authenticate with callback calls callback method`() {
@@ -116,11 +118,12 @@ internal class B2BSessionsImplTest {
     }
 
     @Test
-    fun `SessionsImpl revoke delegates to api`() = runTest {
-        coEvery { mockApi.revoke() } returns mockk()
-        impl.revoke()
-        coVerify { mockApi.revoke() }
-    }
+    fun `SessionsImpl revoke delegates to api`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns mockk()
+            impl.revoke()
+            coVerify { mockApi.revoke() }
+        }
 
     @Test
     fun `SessionsImpl revoke does not revoke a local session if a network error occurs and forceClear is not true`() =
@@ -139,13 +142,14 @@ internal class B2BSessionsImplTest {
         }
 
     @Test
-    fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() = runTest {
-        coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
-        every { mockSessionStorage.revoke() } throws RuntimeException("Test")
-        val result = impl.revoke(B2BSessions.RevokeParams(true))
-        verify(exactly = 1) { mockSessionStorage.revoke() }
-        assert(result is StytchResult.Error)
-    }
+    fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
+            every { mockSessionStorage.revoke() } throws RuntimeException("Test")
+            val result = impl.revoke(B2BSessions.RevokeParams(true))
+            verify(exactly = 1) { mockSessionStorage.revoke() }
+            assert(result is StytchResult.Error)
+        }
 
     @Test
     fun `SessionsImpl revoke with callback calls callback method`() {
@@ -178,12 +182,13 @@ internal class B2BSessionsImplTest {
     }
 
     @Test
-    fun `SessionsImpl exchange delegates to the api`() = runTest {
-        coEvery { mockApi.exchange(any(), any()) } returns successfulExchangeResponse
-        impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123", sessionDurationMinutes = 30U))
-        coVerify(exactly = 1) { mockApi.exchange(any(), any()) }
-        verify { successfulExchangeResponse.launchSessionUpdater(any(), any()) }
-    }
+    fun `SessionsImpl exchange delegates to the api`() =
+        runTest {
+            coEvery { mockApi.exchange(any(), any()) } returns successfulExchangeResponse
+            impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123", sessionDurationMinutes = 30U))
+            coVerify(exactly = 1) { mockApi.exchange(any(), any()) }
+            verify { successfulExchangeResponse.launchSessionUpdater(any(), any()) }
+        }
 
     @Test
     fun `SessionsImpl exchange with callback calls callback method`() {
@@ -192,9 +197,9 @@ internal class B2BSessionsImplTest {
         impl.exchange(
             B2BSessions.ExchangeParameters(
                 organizationId = "test-123",
-                sessionDurationMinutes = 30U
+                sessionDurationMinutes = 30U,
             ),
-            callback = mockCallback
+            callback = mockCallback,
         )
         verify { mockCallback.invoke(any()) }
     }

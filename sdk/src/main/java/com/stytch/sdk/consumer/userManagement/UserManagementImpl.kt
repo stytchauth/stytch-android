@@ -19,9 +19,10 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {
-        api.getUser()
-    }
+    override suspend fun getUser(): UserResponse =
+        withContext(dispatchers.io) {
+            api.getUser()
+        }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -47,7 +48,10 @@ internal class UserManagementImpl(
             }
         }
 
-    override fun deleteFactor(factor: UserAuthenticationFactor, callback: (DeleteFactorResponse) -> Unit) {
+    override fun deleteFactor(
+        factor: UserAuthenticationFactor,
+        callback: (DeleteFactorResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = deleteFactor(factor)
             callback(result)
@@ -58,11 +62,14 @@ internal class UserManagementImpl(
         withContext(dispatchers.io) {
             api.updateUser(
                 name = params.name,
-                untrustedMetadata = params.untrustedMetadata
+                untrustedMetadata = params.untrustedMetadata,
             )
         }
 
-    override fun update(params: UserManagement.UpdateParams, callback: (UpdateUserResponse) -> Unit) {
+    override fun update(
+        params: UserManagement.UpdateParams,
+        callback: (UpdateUserResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = update(params)
             callback(result)
@@ -74,7 +81,10 @@ internal class UserManagementImpl(
             api.searchUsers(email = params.email)
         }
 
-    override fun search(params: UserManagement.SearchParams, callback: (SearchUserResponse) -> Unit) {
+    override fun search(
+        params: UserManagement.SearchParams,
+        callback: (SearchUserResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             callback(search(params))
         }

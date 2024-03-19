@@ -11,16 +11,17 @@ import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY
 import com.stytch.sdk.ui.robots.passwordResetSentScreenRobot
 import org.junit.Test
 
-internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
+internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
 
     @Test
     fun forgotPasswordDisplaysAsExpected() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.FORGOT_PASSWORD
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.FORGOT_PASSWORD,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             forgotPasswordTitleExists(true)
@@ -32,13 +33,15 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
             resendTextExists()
         }
     }
+
     @Test
     fun noPasswordDisplaysAsExpected() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.NO_PASSWORD_SET
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.NO_PASSWORD_SET,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             forgotPasswordTitleExists(false)
@@ -50,13 +53,15 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
             resendTextExists()
         }
     }
+
     @Test
     fun breachedPasswordDisplaysAsExpected() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.BREACHED
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.BREACHED,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             forgotPasswordTitleExists(false)
@@ -68,13 +73,15 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
             resendTextExists()
         }
     }
+
     @Test
     fun dedupePasswordDisplaysAsExpected() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.DEDUPE
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.DEDUPE,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             forgotPasswordTitleExists(false)
@@ -90,10 +97,11 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
     @Test
     fun noEMLAndNoOTPDoesntShowButton() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.FORGOT_PASSWORD
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.FORGOT_PASSWORD,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG_PASSWORD_ONLY)
             emlButtonExists(false)
@@ -104,10 +112,11 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
     @Test
     fun emlShowsCorrectButton() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.FORGOT_PASSWORD
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.FORGOT_PASSWORD,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG_EML)
             emlButtonExists(true)
@@ -118,10 +127,11 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
     @Test
     fun otpShowsCorrectButton() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.FORGOT_PASSWORD
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.FORGOT_PASSWORD,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG_EOTP)
             emlButtonExists(false)
@@ -132,10 +142,11 @@ internal class PasswordResetSentScreenTest:  BaseAndroidComposeTest() {
     @Test
     fun uiUpdatesWithStateChangeAsExpected() {
         passwordResetSentScreenRobot(
-            details = PasswordResetDetails(
-                parameters = Passwords.ResetByEmailStartParameters(""),
-                resetType = PasswordResetType.NO_PASSWORD_SET
-            )
+            details =
+                PasswordResetDetails(
+                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    resetType = PasswordResetType.NO_PASSWORD_SET,
+                ),
         ) {
             clearAndSetContent(REALISTIC_STYTCH_UI_CONFIG)
             loadingDialogExists(false)
