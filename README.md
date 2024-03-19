@@ -284,7 +284,7 @@ A. Yes! There is a Demo App included in this repo, available [here (consumer app
 
 ### Questions?
 
-Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://join.slack.com/t/stytch/shared_invite/zt-nil4wo92-jApJ9Cl32cJbEd9esKkvyg), or our [forums](https://forum.stytch.com/).
+Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://stytch.slack.com/join/shared_invite/zt-2f0fi1ruu-ub~HGouWRmPARM1MTwPESA), or our [Forum](https://forum.stytch.com/).
 
 ## License
 
