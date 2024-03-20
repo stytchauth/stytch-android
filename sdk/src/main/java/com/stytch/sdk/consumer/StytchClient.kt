@@ -152,7 +152,8 @@ public object StytchClient {
      * Exposes an instance of the [MagicLinks] interface whicih provides methods for sending and authenticating users
      * with Email Magic Links.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var magicLinks: MagicLinks =
         MagicLinksImpl(
@@ -172,7 +173,8 @@ public object StytchClient {
      * Exposes an instance of the [OTP] interface which provides methods for sending and authenticating
      * One-Time Passcodes (OTP) via SMS, WhatsApp, and Email.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var otps: OTP =
         OTPImpl(
@@ -191,7 +193,8 @@ public object StytchClient {
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating, creating, resetting,
      * and performing strength checks of passwords.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var passwords: Passwords =
         PasswordsImpl(
@@ -211,7 +214,8 @@ public object StytchClient {
      * Exposes an instance of the [Sessions] interface which provides methods for authenticating, updating, or revoking
      * sessions, and properties to retrieve the existing session token (opaque or JWT).
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var sessions: Sessions =
         SessionsImpl(
@@ -230,7 +234,8 @@ public object StytchClient {
      * Exposes an instance of the [Biometrics] interface which provides methods for detecting biometric availability,
      * registering, authenticating, and removing biometrics identifiers.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var biometrics: Biometrics =
         BiometricsImpl(
@@ -253,7 +258,8 @@ public object StytchClient {
      * Exposes an instance of the [UserManagement] interface which provides methods for retrieving an authenticated
      * user and deleting authentication factors from an authenticated user.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var user: UserManagement =
         UserManagementImpl(
@@ -272,7 +278,8 @@ public object StytchClient {
      * Exposes an instance of the [OAuth] interface which provides methods for authenticating a user via a native
      * Google OneTap prompt or any of our supported third-party OAuth providers
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var oauth: OAuth =
         OAuthImpl(
@@ -292,7 +299,8 @@ public object StytchClient {
      * Exposes an instance of the [Passkeys] interface which provides methods for registering and authenticating
      * with Passkeys.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public var passkeys: Passkeys =
         PasskeysImpl(
@@ -311,7 +319,8 @@ public object StytchClient {
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
      * in DFP lookups on your backend server
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
      */
     public val dfp: DFP
         get() {

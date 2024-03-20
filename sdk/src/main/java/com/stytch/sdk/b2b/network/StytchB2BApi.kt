@@ -30,6 +30,7 @@ import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
+import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
@@ -695,4 +696,42 @@ internal object StytchB2BApi {
         safeB2BApiCall {
             apiService.getBootstrapData(publicToken = publicToken)
         }
+
+    internal object OTP {
+        suspend fun sendSMSOTP(
+            organizationId: String,
+            memberId: String,
+            mfaPhoneNumber: String? = null,
+            locale: String? = null,
+        ): StytchResult<BasicData> =
+            safeB2BApiCall {
+                apiService.sendSMSOTP(
+                    B2BRequests.OTP.SMS.SendRequest(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        mfaPhoneNumber = mfaPhoneNumber,
+                        locale = locale,
+                    ),
+                )
+            }
+
+        suspend fun authenticateSMSOTP(
+            organizationId: String,
+            memberId: String,
+            code: String,
+            setMFAEnrollment: SetMFAEnrollment? = null,
+            sessionDurationMinutes: Int,
+        ): StytchResult<B2BAuthData> =
+            safeB2BApiCall {
+                apiService.authenticateSMSOTP(
+                    B2BRequests.OTP.SMS.AuthenticateRequest(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        code = code,
+                        setMFAEnrollment = setMFAEnrollment,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+    }
 }

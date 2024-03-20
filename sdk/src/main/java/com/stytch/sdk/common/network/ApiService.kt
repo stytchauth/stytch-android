@@ -3,6 +3,7 @@ package com.stytch.sdk.common.network
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.utils.createEnumJsonAdapter
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -62,6 +63,7 @@ internal interface ApiService {
                 Moshi.Builder()
                     .add(createEnumJsonAdapter<AllowedAuthMethods>())
                     .add(createEnumJsonAdapter<MfaMethod>())
+                    .add(createEnumJsonAdapter<SetMFAEnrollment>())
                     .build()
             return Retrofit.Builder()
                 .baseUrl(hostUrl)

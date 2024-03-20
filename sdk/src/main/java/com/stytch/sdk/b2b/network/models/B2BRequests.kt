@@ -325,4 +325,32 @@ internal object B2BRequests {
         @Json(name = "filter_value")
         val filterValue: Any,
     )
+
+    object OTP {
+        object SMS {
+            @JsonClass(generateAdapter = true)
+            data class SendRequest(
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "member_id")
+                val memberId: String,
+                @Json(name = "mfa_phone_number")
+                val mfaPhoneNumber: String? = null,
+                val locale: String? = null,
+            )
+
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "member_id")
+                val memberId: String,
+                val code: String,
+                @Json(name = "set_mfa_enrollment")
+                val setMFAEnrollment: SetMFAEnrollment? = null,
+                @Json(name = "session_duration_minutes")
+                val sessionDurationMinutes: Int,
+            )
+        }
+    }
 }

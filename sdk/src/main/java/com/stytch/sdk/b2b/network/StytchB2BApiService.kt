@@ -200,4 +200,16 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: List<CommonRequests.Events.Event>,
     ): Response<Unit>
     //endregion Events
+
+    //region OTP
+    @POST("b2b/otps/sms/send")
+    suspend fun sendSMSOTP(
+        @Body request: B2BRequests.OTP.SMS.SendRequest,
+    ): CommonResponses.BasicResponse
+
+    @POST("b2b/otps/sms/authenticate")
+    suspend fun authenticateSMSOTP(
+        @Body request: B2BRequests.OTP.SMS.AuthenticateRequest,
+    ): B2BResponses.OTP.SMS.AuthenticateResponse
+    //endregion OTP
 }

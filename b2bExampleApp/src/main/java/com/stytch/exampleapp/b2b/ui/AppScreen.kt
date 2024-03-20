@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.b2b.DiscoveryViewModel
 import com.stytch.exampleapp.b2b.HomeViewModel
 import com.stytch.exampleapp.b2b.MemberViewModel
+import com.stytch.exampleapp.b2b.OTPViewModel
 import com.stytch.exampleapp.b2b.OrganizationViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
@@ -51,6 +53,7 @@ val items =
         Screen.SSO,
         Screen.Member,
         Screen.Organization,
+        Screen.OTP,
     )
 
 @Composable
@@ -61,6 +64,7 @@ fun AppScreen(
     ssoViewModel: SSOViewModel,
     memberViewModel: MemberViewModel,
     organizationViewModel: OrganizationViewModel,
+    otpViewModel: OTPViewModel,
 ) {
     val navController = rememberNavController()
     val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
@@ -112,6 +116,7 @@ fun AppScreen(
                 composable(Screen.SSO.route) { SSOScreen(viewModel = ssoViewModel) }
                 composable(Screen.Member.route) { MemberScreen(viewModel = memberViewModel) }
                 composable(Screen.Organization.route) { OrganizationScreen(viewModel = organizationViewModel) }
+                composable(Screen.OTP.route) { OTPScreen(viewModel = otpViewModel) }
             }
         },
     )
@@ -151,4 +156,6 @@ sealed class Screen(
     object Member : Screen("member", R.string.member, Icons.Filled.AccountCircle)
 
     object Organization : Screen("organization", R.string.organization, Icons.Filled.Share)
+
+    object OTP : Screen("otp", R.string.otp, Icons.Default.MailOutline)
 }
