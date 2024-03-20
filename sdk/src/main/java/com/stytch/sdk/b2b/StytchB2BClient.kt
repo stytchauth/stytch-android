@@ -3,7 +3,6 @@ package com.stytch.sdk.b2b
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import com.stytch.sdk.b2b.StytchB2BClient.sso
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.events.Events
@@ -143,7 +142,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [B2BMagicLinks] interface whicih provides methods for sending and authenticating
      * users with Email Magic Links.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var magicLinks: B2BMagicLinks =
         B2BMagicLinksImpl(
@@ -164,7 +164,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [B2BSessions] interface which provides methods for authenticating, updating, or
      * revoking sessions, and properties to retrieve the existing session token (opaque or JWT).
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var sessions: B2BSessions =
         B2BSessionsImpl(
@@ -183,7 +184,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [Organization] interface which provides methods for retrieving the current
      * authenticated user's organization.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var organization: Organization =
         OrganizationImpl(
@@ -202,7 +204,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [Member] interface which provides methods for retrieving the current authenticated
      * user.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var member: Member =
         MemberImpl(
@@ -221,7 +224,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating passwords, resetting
      * passwords, and checking the strength of passwords
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var passwords: Passwords =
         PasswordsImpl(
@@ -241,7 +245,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [Discovery] interface which provides methods for creating and discovering
      * Organizations and exchanging sessions between organizations
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var discovery: Discovery =
         DiscoveryImpl(
@@ -276,7 +281,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
      * in DFP lookups on your backend server
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public val dfp: DFP by lazy {
         assertInitialized()
@@ -290,7 +296,10 @@ public object StytchB2BClient {
         }
 
     /**
-     * TODO
+     * Exposes an instance of the [OTP] interface which provides a method for sending and authenticating OTP codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public var otp: OTP = OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
         get() {
