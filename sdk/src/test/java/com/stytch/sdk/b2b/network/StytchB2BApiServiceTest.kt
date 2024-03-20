@@ -890,6 +890,58 @@ internal class StytchB2BApiServiceTest {
     }
     //endregion Events
 
+    //region OTP
+    @Test
+    fun `check OTP SMS send request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.SMS.SendRequest(
+                    organizationId = "my-organization-id",
+                    memberId = "my-member-id",
+                    mfaPhoneNumber = "+15555550123",
+                    locale = "en",
+                )
+            requestIgnoringResponseException {
+                apiService.sendSMSOTP(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/sms/send",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to parameters.organizationId,
+                        "member_id" to parameters.memberId,
+                        "mfa_phone_number" to parameters.mfaPhoneNumber,
+                        "locale" to parameters.locale,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP SMS authenticate request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.SMS.AuthenticateRequest(
+                    organizationId = "my-organization-id",
+                    memberId = "my-member-id",
+                    code = "012345",
+                    sessionDurationMinutes = 30,
+                )
+            requestIgnoringResponseException {
+                apiService.authenticateSMSOTP(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/sms/authenticate",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to parameters.organizationId,
+                        "member_id" to parameters.memberId,
+                        "code" to parameters.code,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+    //endregion OTP
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
