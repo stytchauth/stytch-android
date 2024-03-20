@@ -212,4 +212,16 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.OTP.SMS.AuthenticateRequest,
     ): B2BResponses.OTP.SMS.AuthenticateResponse
     //endregion OTP
+
+    //region TOTP
+    @POST("b2b/totp")
+    suspend fun createTOTP(
+        @Body request: B2BRequests.TOTP.CreateRequest,
+    ): B2BResponses.TOTP.CreateResponse
+
+    @POST("b2b/totp/authenticate")
+    suspend fun authenticateTOTP(
+        @Body request: B2BRequests.TOTP.AuthenticateRequest,
+    ): B2BResponses.TOTP.AuthenticateResponse
+    //endregion TOTP
 }

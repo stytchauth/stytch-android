@@ -485,3 +485,40 @@ public data class OTPAuthenticateResponse(
     val resetSession: Boolean,
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPCreateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "totp_id")
+    val totpId: String,
+    val secret: String,
+    @Json(name = "qr_code")
+    val qrCode: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPAuthenticateResponseData(
+    @Json(name = "member_id")
+    val memberId: String,
+    override val member: MemberData,
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "method_id")
+    val methodId: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "reset_session")
+    val resetSession: Boolean,
+    override val organization: OrganizationData,
+) : IB2BAuthData, Parcelable

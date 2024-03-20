@@ -18,6 +18,8 @@ import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.TOTPAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BasicData
@@ -110,3 +112,7 @@ public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseC
 public typealias MemberSearchResponse = StytchResult<MemberSearchResponseData>
 
 public typealias BasicResponse = StytchResult<BasicData>
+
+public typealias TOTPCreateResponse = StytchResult<TOTPCreateResponseData>
+
+public typealias TOTPAuthenticateResponse = StytchResult<TOTPAuthenticateResponseData>

@@ -33,6 +33,8 @@ import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
+import com.stytch.sdk.b2b.network.models.TOTPAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeviceInfo
@@ -729,6 +731,44 @@ internal object StytchB2BApi {
                         memberId = memberId,
                         code = code,
                         setMFAEnrollment = setMFAEnrollment,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+    }
+
+    internal object TOTP {
+        suspend fun create(
+            organizationId: String,
+            memberId: String,
+            expirationMinutes: Int? = null,
+        ): StytchResult<TOTPCreateResponseData> =
+            safeB2BApiCall {
+                apiService.createTOTP(
+                    B2BRequests.TOTP.CreateRequest(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        expirationMinutes = expirationMinutes,
+                    ),
+                )
+            }
+
+        suspend fun authenticate(
+            organizationId: String,
+            memberId: String,
+            code: String,
+            setMFAEnrollment: SetMFAEnrollment? = null,
+            setDefaultMfaMethod: Boolean? = null,
+            sessionDurationMinutes: Int,
+        ): StytchResult<TOTPAuthenticateResponseData> =
+            safeB2BApiCall {
+                apiService.authenticateTOTP(
+                    B2BRequests.TOTP.AuthenticateRequest(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        code = code,
+                        setMFAEnrollment = setMFAEnrollment,
+                        setDefaultMfaMethod = setDefaultMfaMethod,
                         sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )

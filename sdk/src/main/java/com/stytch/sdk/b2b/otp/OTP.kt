@@ -59,6 +59,7 @@ public interface OTP {
          * @property setMFAEnrollment If set to 'enroll', enrolls the member in MFA by setting the "mfa_enrolled"
          * boolean to true. If set to 'unenroll', unenrolls the member in MFA by setting the "mfa_enrolled" boolean to
          * false. If not set, does not affect the member's MFA enrollment.
+         * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
         public data class AuthenticateParameters(
             val organizationId: String,

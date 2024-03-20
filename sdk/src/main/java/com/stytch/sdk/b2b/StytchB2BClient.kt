@@ -24,6 +24,8 @@ import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
 import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
+import com.stytch.sdk.b2b.totp.TOTP
+import com.stytch.sdk.b2b.totp.TOTPImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
@@ -302,6 +304,19 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     public var otp: OTP = OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [TOTP] interface which provides a method for creating and authenticating TOTP codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var totp: TOTP = TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
         get() {
             assertInitialized()
             return field
