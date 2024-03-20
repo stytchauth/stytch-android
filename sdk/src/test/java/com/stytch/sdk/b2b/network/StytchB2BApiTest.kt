@@ -572,6 +572,24 @@ internal class StytchB2BApiTest {
             coVerify { StytchB2BApi.apiService.authenticateSMSOTP(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi TOTP create calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.createTOTP(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.TOTP.create("", "")
+            coVerify { StytchB2BApi.apiService.createTOTP(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi TOTP authenticate calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.authenticateTOTP(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.TOTP.authenticate("", "", "", null, null, 30)
+            coVerify { StytchB2BApi.apiService.authenticateTOTP(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() =
         runTest {

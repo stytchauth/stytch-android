@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
 import com.stytch.sdk.b2b.network.models.SearchOperator
+import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
@@ -941,6 +942,60 @@ internal class StytchB2BApiServiceTest {
         }
     }
     //endregion OTP
+
+    //region TOTP
+    @Test
+    fun `check TOTP create request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.TOTP.CreateRequest(
+                    organizationId = "my-organization-id",
+                    memberId = "my-member-id",
+                    expirationMinutes = 30,
+                )
+            requestIgnoringResponseException {
+                apiService.createTOTP(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/totp",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to parameters.organizationId,
+                        "member_id" to parameters.memberId,
+                        "expiration_minutes" to parameters.expirationMinutes,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check TOTP authenticate request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.TOTP.AuthenticateRequest(
+                    organizationId = "my-organization-id",
+                    memberId = "my-member-id",
+                    code = "code",
+                    setMFAEnrollment = SetMFAEnrollment.ENROLL,
+                    setDefaultMfaMethod = true,
+                    sessionDurationMinutes = 30,
+                )
+            requestIgnoringResponseException {
+                apiService.authenticateTOTP(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/totp/authenticate",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to parameters.organizationId,
+                        "member_id" to parameters.memberId,
+                        "code" to parameters.code,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                        "set_mfa_enrollment" to parameters.setMFAEnrollment?.jsonName,
+                        "set_default_mfa" to parameters.setDefaultMfaMethod,
+                    ),
+            )
+        }
+    }
+    //endregion TOTP
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

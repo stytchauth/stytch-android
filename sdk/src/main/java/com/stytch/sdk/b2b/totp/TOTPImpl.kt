@@ -29,7 +29,7 @@ internal class TOTPImpl(
         parameters: TOTP.CreateParameters,
         callback: (TOTPCreateResponse) -> Unit,
     ) {
-        externalScope.launch {
+        externalScope.launch(dispatchers.ui) {
             callback(create(parameters))
         }
     }
@@ -52,7 +52,7 @@ internal class TOTPImpl(
         parameters: TOTP.AuthenticateParameters,
         callback: (TOTPAuthenticateResponse) -> Unit,
     ) {
-        externalScope.launch {
+        externalScope.launch(dispatchers.ui) {
             callback(authenticate(parameters))
         }
     }
