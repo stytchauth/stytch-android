@@ -44,4 +44,8 @@
     <string name="create_org_member">Create Org Member</string>
     <string name="update_org_member_phone">Update Org Member Phone</string>
     <string name="search_org_member_by_email">Search Org Member By Email</string>
+    <string name="otp">OTP</string>
+    <string name="otp_sms_send">Send SMS OTP</string>
+    <string name="otp_sms_authenticate">Auth SMS OTP</string>
+    <string name="code">Code</string>
 </resources>
