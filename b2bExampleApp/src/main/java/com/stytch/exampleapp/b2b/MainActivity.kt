@@ -20,6 +20,7 @@ class MainActivity : FragmentActivity() {
     private val organizationViewModel: OrganizationViewModel by viewModels()
     private val otpViewModel: OTPViewModel by viewModels()
     private val totpViewModel: TOTPViewModel by viewModels()
+    private val recoveryCodesViewModel: RecoveryCodesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,7 @@ class MainActivity : FragmentActivity() {
                     organizationViewModel,
                     otpViewModel,
                     totpViewModel,
+                    recoveryCodesViewModel,
                 )
             }
         }

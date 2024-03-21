@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
@@ -44,6 +45,7 @@ import com.stytch.exampleapp.b2b.OTPViewModel
 import com.stytch.exampleapp.b2b.OrganizationViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
+import com.stytch.exampleapp.b2b.RecoveryCodesViewModel
 import com.stytch.exampleapp.b2b.SSOViewModel
 import com.stytch.exampleapp.b2b.TOTPViewModel
 
@@ -57,6 +59,7 @@ val items =
         Screen.Organization,
         Screen.OTP,
         Screen.TOTP,
+        Screen.RecoveryCodes,
     )
 
 @Composable
@@ -69,6 +72,7 @@ fun AppScreen(
     organizationViewModel: OrganizationViewModel,
     otpViewModel: OTPViewModel,
     totpViewModel: TOTPViewModel,
+    recoveryCodesViewModel: RecoveryCodesViewModel,
 ) {
     val navController = rememberNavController()
     val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
@@ -122,6 +126,7 @@ fun AppScreen(
                 composable(Screen.Organization.route) { OrganizationScreen(viewModel = organizationViewModel) }
                 composable(Screen.OTP.route) { OTPScreen(viewModel = otpViewModel) }
                 composable(Screen.TOTP.route) { TOTPScreen(viewModel = totpViewModel) }
+                composable(Screen.RecoveryCodes.route) { RecoveryCodesScreen(viewModel = recoveryCodesViewModel) }
             }
         },
     )
@@ -165,4 +170,6 @@ sealed class Screen(
     object OTP : Screen("otp", R.string.otp, Icons.Default.MailOutline)
 
     object TOTP : Screen("totp", R.string.totp, Icons.Default.Refresh)
+
+    object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes, Icons.Default.List)
 }
