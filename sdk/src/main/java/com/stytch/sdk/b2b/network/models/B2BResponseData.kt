@@ -485,3 +485,79 @@ public data class OTPAuthenticateResponse(
     val resetSession: Boolean,
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPCreateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    val secret: String,
+    @Json(name = "qr_code")
+    val qrCode: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPAuthenticateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RecoveryCodeGetResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RecoveryCodeRotateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RecoveryCodeRecoverResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "recovery_codes_remaining")
+    val recoveryCodesRemaining: Int,
+) : IB2BAuthData, Parcelable

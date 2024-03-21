@@ -152,4 +152,33 @@ internal object B2BResponses {
             ) : StytchDataResponse<B2BAuthData>(data)
         }
     }
+
+    object TOTP {
+        @JsonClass(generateAdapter = true)
+        class CreateResponse(
+            data: TOTPCreateResponseData,
+        ) : StytchDataResponse<TOTPCreateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: TOTPAuthenticateResponseData,
+        ) : StytchDataResponse<TOTPAuthenticateResponseData>(data)
+    }
+
+    object RecoveryCodes {
+        @JsonClass(generateAdapter = true)
+        class GetResponse(
+            data: RecoveryCodeGetResponseData,
+        ) : StytchDataResponse<RecoveryCodeGetResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RotateResponse(
+            data: RecoveryCodeRotateResponseData,
+        ) : StytchDataResponse<RecoveryCodeRotateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RecoverResponse(
+            data: RecoveryCodeRecoverResponseData,
+        ) : StytchDataResponse<RecoveryCodeRecoverResponseData>(data)
+    }
 }

@@ -48,4 +48,11 @@
     <string name="otp_sms_send">Send SMS OTP</string>
     <string name="otp_sms_authenticate">Auth SMS OTP</string>
     <string name="code">Code</string>
+    <string name="totp">TOTP</string>
+    <string name="create_totp">Create TOTP</string>
+    <string name="authenticate_totp">Auth TOTP</string>
+    <string name="recovery_codes">Recovery Codes</string>
+    <string name="get">Get</string>
+    <string name="rotate">Rotate</string>
+    <string name="recover">Recover</string>
 </resources>

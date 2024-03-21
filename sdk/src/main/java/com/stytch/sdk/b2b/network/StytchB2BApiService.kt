@@ -212,4 +212,29 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.OTP.SMS.AuthenticateRequest,
     ): B2BResponses.OTP.SMS.AuthenticateResponse
     //endregion OTP
+
+    //region TOTP
+    @POST("b2b/totp")
+    suspend fun createTOTP(
+        @Body request: B2BRequests.TOTP.CreateRequest,
+    ): B2BResponses.TOTP.CreateResponse
+
+    @POST("b2b/totp/authenticate")
+    suspend fun authenticateTOTP(
+        @Body request: B2BRequests.TOTP.AuthenticateRequest,
+    ): B2BResponses.TOTP.AuthenticateResponse
+    //endregion TOTP
+
+    //region RecoveryCodes
+    @GET("b2b/recovery_codes")
+    suspend fun getRecoveryCodes(): B2BResponses.RecoveryCodes.GetResponse
+
+    @POST("b2b/recovery_codes/rotate")
+    suspend fun rotateRecoveryCodes(): B2BResponses.RecoveryCodes.RotateResponse
+
+    @POST("b2b/recovery_codes/recover")
+    suspend fun recoverRecoveryCodes(
+        @Body request: B2BRequests.RecoveryCodes.RecoverRequest,
+    ): B2BResponses.RecoveryCodes.RecoverResponse
+    //endregion RecoveryCodes
 }

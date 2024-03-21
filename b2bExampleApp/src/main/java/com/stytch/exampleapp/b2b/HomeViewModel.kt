@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -42,7 +41,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         // Initialize StytchB2BClient
         StytchB2BClient.configure(
             context = application.applicationContext,
-            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN
+            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
         )
     }
 
@@ -61,12 +60,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                _currentResponse.value = StytchB2BClient.magicLinks.email.loginOrSignup(
-                    B2BMagicLinks.EmailMagicLinks.Parameters(
-                        email = emailState.text,
-                        organizationId = orgIdState.text
-                    )
-                ).toFriendlyDisplay()
+                _currentResponse.value =
+                    StytchB2BClient.magicLinks.email.loginOrSignup(
+                        B2BMagicLinks.EmailMagicLinks.Parameters(
+                            email = emailState.text,
+                            organizationId = orgIdState.text,
+                            loginRedirectUrl = "app://b2bexampleapp.com",
+                            signupRedirectUrl = "app://b2bexampleapp.com",
+                        ),
+                    ).toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -80,11 +82,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                _currentResponse.value = StytchB2BClient.magicLinks.email.discoverySend(
-                    B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
-                        emailAddress = emailState.text,
-                    )
-                ).toFriendlyDisplay()
+                _currentResponse.value =
+                    StytchB2BClient.magicLinks.email.discoverySend(
+                        B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
+                            emailAddress = emailState.text,
+                        ),
+                    ).toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -98,11 +101,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showEmailError = false
             viewModelScope.launch {
                 _loadingState.value = true
-                _currentResponse.value = StytchB2BClient.magicLinks.email.invite(
-                    B2BMagicLinks.EmailMagicLinks.InviteParameters(
-                        emailAddress = emailState.text,
-                    )
-                ).toFriendlyDisplay()
+                _currentResponse.value =
+                    StytchB2BClient.magicLinks.email.invite(
+                        B2BMagicLinks.EmailMagicLinks.InviteParameters(
+                            emailAddress = emailState.text,
+                        ),
+                    ).toFriendlyDisplay()
             }.invokeOnCompletion {
                 _loadingState.value = false
             }
@@ -123,12 +127,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun exchangeSession() {
         viewModelScope.launch {
             _loadingState.value = true
-            _currentResponse.value = StytchB2BClient.sessions.exchange(
-                B2BSessions.ExchangeParameters(
-                    organizationId = orgIdState.text,
-                    sessionDurationMinutes = 30U
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.sessions.exchange(
+                    B2BSessions.ExchangeParameters(
+                        organizationId = orgIdState.text,
+                        sessionDurationMinutes = 30U,
+                    ),
+                ).toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -138,22 +143,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _loadingState.value = true
             val result = StytchB2BClient.handle(uri = uri, sessionDurationMinutes = 60u)
-            _currentResponse.value = when (result) {
-                is DeeplinkHandledStatus.NotHandled -> result.reason.message
-                is DeeplinkHandledStatus.Handled -> {
-                    // Hacking this in for organization discovery stuff
-                    (result.response as? DeeplinkResponse.Discovery)
-                        ?.let {
-                            (it.result as? StytchResult.Success)?.value?.let { response ->
-                                _intermediateSessionToken.value = response.intermediateSessionToken
+            _currentResponse.value =
+                when (result) {
+                    is DeeplinkHandledStatus.NotHandled -> result.reason.message
+                    is DeeplinkHandledStatus.Handled -> {
+                        // Hacking this in for organization discovery stuff
+                        (result.response as? DeeplinkResponse.Discovery)
+                            ?.let {
+                                (it.result as? StytchResult.Success)?.value?.let { response ->
+                                    _intermediateSessionToken.value = response.intermediateSessionToken
+                                }
                             }
-                        }
-                    result.response.result.toFriendlyDisplay()
+                        result.response.result.toFriendlyDisplay()
+                    }
+                    // This only happens for password reset deeplinks
+                    is DeeplinkHandledStatus.ManualHandlingRequired ->
+                        "Password reset token retrieved, initiate password reset flow"
                 }
-                // This only happens for password reset deeplinks
-                is DeeplinkHandledStatus.ManualHandlingRequired ->
-                    "Password reset token retrieved, initiate password reset flow"
-            }
         }.invokeOnCompletion {
             _loadingState.value = false
         }

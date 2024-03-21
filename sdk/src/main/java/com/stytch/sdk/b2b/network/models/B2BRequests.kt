@@ -353,4 +353,45 @@ internal object B2BRequests {
             )
         }
     }
+
+    object TOTP {
+        @JsonClass(generateAdapter = true)
+        data class CreateRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "member_id")
+            val memberId: String,
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "member_id")
+            val memberId: String,
+            val code: String,
+            @Json(name = "set_mfa_enrollment")
+            val setMFAEnrollment: SetMFAEnrollment? = null,
+            @Json(name = "set_default_mfa")
+            val setDefaultMfaMethod: Boolean? = null,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+    }
+
+    object RecoveryCodes {
+        @JsonClass(generateAdapter = true)
+        data class RecoverRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "member_id")
+            val memberId: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "recovery_code")
+            val recoveryCode: String,
+        )
+    }
 }
