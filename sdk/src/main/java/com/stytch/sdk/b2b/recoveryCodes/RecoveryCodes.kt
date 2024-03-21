@@ -5,31 +5,39 @@ import com.stytch.sdk.b2b.RecoveryCodesRecoverResponse
 import com.stytch.sdk.b2b.RecoveryCodesRotateResponse
 
 /**
- * TODO
+ * The RecoveryCodes interface provides methods for getting, rotating, and using recovery codes for a member
  */
 public interface RecoveryCodes {
     /**
-     * TODO
+     * Get the recovery codes for an authenticated member
+     * @return [RecoveryCodesGetResponse]
      */
     public suspend fun get(): RecoveryCodesGetResponse
 
     /**
-     * TODO
+     * Get the recovery codes for an authenticated member
+     * @param callback a callback that receives a [RecoveryCodesGetResponse]
      */
     public fun get(callback: (RecoveryCodesGetResponse) -> Unit)
 
     /**
-     * TODO
+     * Rotate the recovery codes for an authenticated member
+     * @return [RecoveryCodesRotateResponse]
      */
     public suspend fun rotate(): RecoveryCodesRotateResponse
 
     /**
-     * TODO
+     * Rotate the recovery codes for an authenticated member
+     * @param callback a callback that receives a [RecoveryCodesRotateResponse]
      */
     public fun rotate(callback: (RecoveryCodesRotateResponse) -> Unit)
 
     /**
-     * TODO
+     * A data class wrapping the parameters needed to consume a recovery code
+     * @property organizationId The ID of the organization the member belongs
+     * @property memberId The ID of the member to create the TOTP for
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property recoveryCode The recovery code to authenticate.
      */
     public data class RecoverParameters(
         val organizationId: String,
@@ -39,12 +47,16 @@ public interface RecoveryCodes {
     )
 
     /**
-     * TODO
+     * Consume a recovery code for a member
+     * @param parameters the parameters needed to consume a recovery code
+     * @return [RecoveryCodesRecoverResponse]
      */
     public suspend fun recover(parameters: RecoverParameters): RecoveryCodesRecoverResponse
 
     /**
-     * TODO
+     * Consume a recovery code for a member
+     * @param parameters the parameters needed to consume a recovery code
+     * @param callback a callback that receives a [RecoveryCodesRecoverResponse]
      */
     public fun recover(
         parameters: RecoverParameters,
