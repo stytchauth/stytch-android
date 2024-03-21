@@ -23,7 +23,8 @@ import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 
 /**
- * The Organization interface provides methods for retrieving the current authenticated user's organization.
+ * The Organization interface provides methods for retrieving, updating, and deleting the current authenticated user's
+ * organization and creating, updating, deleting, reactivating, and searching an organizations members
  */
 public interface Organization {
     /**

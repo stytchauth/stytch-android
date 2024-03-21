@@ -164,4 +164,21 @@ internal object B2BResponses {
             data: TOTPAuthenticateResponseData,
         ) : StytchDataResponse<TOTPAuthenticateResponseData>(data)
     }
+
+    object RecoveryCodes {
+        @JsonClass(generateAdapter = true)
+        class GetResponse(
+            data: RecoveryCodeGetResponseData,
+        ) : StytchDataResponse<RecoveryCodeGetResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RotateResponse(
+            data: RecoveryCodeRotateResponseData,
+        ) : StytchDataResponse<RecoveryCodeRotateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class RecoverResponse(
+            data: RecoveryCodeRecoverResponseData,
+        ) : StytchDataResponse<RecoveryCodeRecoverResponseData>(data)
+    }
 }

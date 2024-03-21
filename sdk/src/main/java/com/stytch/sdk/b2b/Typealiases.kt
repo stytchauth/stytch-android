@@ -14,6 +14,9 @@ import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
@@ -116,3 +119,9 @@ public typealias BasicResponse = StytchResult<BasicData>
 public typealias TOTPCreateResponse = StytchResult<TOTPCreateResponseData>
 
 public typealias TOTPAuthenticateResponse = StytchResult<TOTPAuthenticateResponseData>
+
+public typealias RecoveryCodesGetResponse = StytchResult<RecoveryCodeGetResponseData>
+
+public typealias RecoveryCodesRotateResponse = StytchResult<RecoveryCodeRotateResponseData>
+
+public typealias RecoveryCodesRecoverResponse = StytchResult<RecoveryCodeRecoverResponseData>

@@ -380,4 +380,18 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object RecoveryCodes {
+        @JsonClass(generateAdapter = true)
+        data class RecoverRequest(
+            @Json(name = "organization_id")
+            val organizationId: String,
+            @Json(name = "member_id")
+            val memberId: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "recovery_code")
+            val recoveryCode: String,
+        )
+    }
 }
