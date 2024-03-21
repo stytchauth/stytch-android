@@ -19,6 +19,8 @@ import com.stytch.sdk.b2b.otp.OTP
 import com.stytch.sdk.b2b.otp.OTPImpl
 import com.stytch.sdk.b2b.passwords.Passwords
 import com.stytch.sdk.b2b.passwords.PasswordsImpl
+import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodes
+import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodesImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
@@ -317,6 +319,21 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     public var totp: TOTP = TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [RecoveryCodes] interface which provides a method for getting, rotating, and
+     * recovering recovery codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var recoveryCodes: RecoveryCodes =
+        RecoveryCodesImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.RecoveryCodes)
         get() {
             assertInitialized()
             return field

@@ -27,6 +27,9 @@ import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
+import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
@@ -770,6 +773,35 @@ internal object StytchB2BApi {
                         setMFAEnrollment = setMFAEnrollment,
                         setDefaultMfaMethod = setDefaultMfaMethod,
                         sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+    }
+
+    internal object RecoveryCodes {
+        suspend fun get(): StytchResult<RecoveryCodeGetResponseData> =
+            safeB2BApiCall {
+                apiService.getRecoveryCodes()
+            }
+
+        suspend fun rotate(): StytchResult<RecoveryCodeRotateResponseData> =
+            safeB2BApiCall {
+                apiService.rotateRecoveryCodes()
+            }
+
+        suspend fun recover(
+            organizationId: String,
+            memberId: String,
+            sessionDurationMinutes: Int,
+            recoveryCode: String,
+        ): StytchResult<RecoveryCodeRecoverResponseData> =
+            safeB2BApiCall {
+                apiService.recoverRecoveryCodes(
+                    B2BRequests.RecoveryCodes.RecoverRequest(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                        recoveryCode = recoveryCode,
                     ),
                 )
             }
