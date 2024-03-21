@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.events
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.network.InfoHeaderModel
+import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
 import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ internal class EventsImpl(
                 eventId = "event-id-${UUID.randomUUID()}",
                 appSessionId = appSessionId,
                 persistentId = "persistent-id-${UUID.randomUUID()}",
-                clientSentAt = Date().toString(),
+                clientSentAt = ISO_DATE_FORMATTER.format(Date()),
                 timezone = TimeZone.getDefault().id,
                 eventName = eventName,
                 infoHeaderModel = infoHeaderModel,
