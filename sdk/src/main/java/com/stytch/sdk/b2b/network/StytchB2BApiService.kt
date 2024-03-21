@@ -226,13 +226,13 @@ internal interface StytchB2BApiService : ApiService {
     //endregion TOTP
 
     //region RecoveryCodes
-    @GET("/b2b/recovery_codes")
+    @GET("b2b/recovery_codes")
     suspend fun getRecoveryCodes(): B2BResponses.RecoveryCodes.GetResponse
 
-    @POST("/b2b/recovery_codes/rotate")
+    @POST("b2b/recovery_codes/rotate")
     suspend fun rotateRecoveryCodes(): B2BResponses.RecoveryCodes.RotateResponse
 
-    @POST("/b2b/recovery_codes/recover")
+    @POST("b2b/recovery_codes/recover")
     suspend fun recoverRecoveryCodes(
         @Body request: B2BRequests.RecoveryCodes.RecoverRequest,
     ): B2BResponses.RecoveryCodes.RecoverResponse

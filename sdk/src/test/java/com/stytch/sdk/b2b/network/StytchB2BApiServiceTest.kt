@@ -997,6 +997,54 @@ internal class StytchB2BApiServiceTest {
     }
     //endregion TOTP
 
+    //region RecoveryCodes
+    @Test
+    fun `check RecoveryCodes get request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.getRecoveryCodes()
+            }.verifyGet("/b2b/recovery_codes")
+        }
+    }
+
+    @Test
+    fun `check RecoveryCodes rotate request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.rotateRecoveryCodes()
+            }.verifyPost(
+                expectedPath = "/b2b/recovery_codes/rotate",
+                expectedBody = emptyMap(),
+            )
+        }
+    }
+
+    @Test
+    fun `check RecoveryCodes recover request`() {
+        runBlocking {
+            val params =
+                B2BRequests.RecoveryCodes.RecoverRequest(
+                    organizationId = "my-organization-id",
+                    memberId = "my-member-id",
+                    sessionDurationMinutes = 30,
+                    recoveryCode = "my-recovery-code",
+                )
+            requestIgnoringResponseException {
+                apiService.recoverRecoveryCodes(params)
+            }.verifyPost(
+                expectedPath = "/b2b/recovery_codes/recover",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to params.organizationId,
+                        "member_id" to params.memberId,
+                        "session_duration_minutes" to params.sessionDurationMinutes,
+                        "recovery_code" to params.recoveryCode,
+                    ),
+            )
+        }
+    }
+    //endregion RecoveryCodes
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
