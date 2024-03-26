@@ -13,6 +13,8 @@ import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
 import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.oauth.OAuth
+import com.stytch.sdk.b2b.oauth.OAuthImpl
 import com.stytch.sdk.b2b.organization.Organization
 import com.stytch.sdk.b2b.organization.OrganizationImpl
 import com.stytch.sdk.b2b.otp.OTP
@@ -334,6 +336,21 @@ public object StytchB2BClient {
      */
     public var recoveryCodes: RecoveryCodes =
         RecoveryCodesImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.RecoveryCodes)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [OAuth] interface which provides a method for starting and authenticating OAuth and
+     * OAuth Discovery flows
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var oauth: OAuth =
+        OAuthImpl(externalScope, dispatchers, sessionStorage, StorageHelper, StytchB2BApi.OAuth)
         get() {
             assertInitialized()
             return field

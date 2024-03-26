@@ -30,6 +30,17 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
             }
             return value
         }
+    var intermediateSessionToken: String?
+        private set(value) {
+            storageHelper.saveValue(Constants.PREFERENCES_NAME_IST, value)
+        }
+        get() {
+            val value: String?
+            synchronized(this) {
+                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_IST)
+            }
+            return value
+        }
 
     var memberSession: B2BSessionData? = null
         internal set

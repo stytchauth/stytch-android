@@ -237,4 +237,16 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.RecoveryCodes.RecoverRequest,
     ): B2BResponses.RecoveryCodes.RecoverResponse
     //endregion RecoveryCodes
+
+    //region OAuth
+    @POST("b2b/oauth/authenticate")
+    suspend fun oauthAuthenticate(
+        @Body request: B2BRequests.OAuth.AuthenticateRequest,
+    ): B2BResponses.OAuth.AuthenticateResponse
+
+    @POST("b2b/oauth/discovery/authenticate")
+    suspend fun oauthDiscoveryAuthenticate(
+        @Body request: B2BRequests.OAuth.DiscoveryAuthenticateRequest,
+    ): B2BResponses.OAuth.DiscoveryAuthenticateResponse
+    //endregion OAuth
 }

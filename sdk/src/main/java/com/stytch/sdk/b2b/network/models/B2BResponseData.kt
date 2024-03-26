@@ -561,3 +561,47 @@ public data class RecoveryCodeRecoverResponseData(
     @Json(name = "recovery_codes_remaining")
     val recoveryCodesRemaining: Int,
 ) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OAuthAuthenticateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_id")
+    val memberId: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "provider_values")
+    val providerValues: OAuthProviderValues,
+) : IB2BAuthData, Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OAuthProviderValues(
+    @Json(name = "access_token")
+    val accessToken: String,
+    @Json(name = "id_token")
+    val idToken: String,
+    @Json(name = "refresh_token")
+    val refreshToken: String,
+    val scopes: List<String> = emptyList(),
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OAuthDiscoveryAuthenticateResponseData(
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>,
+) : Parcelable

@@ -21,6 +21,8 @@ import com.stytch.sdk.b2b.network.models.MemberSearchResponseData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
+import com.stytch.sdk.b2b.network.models.OAuthAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.OAuthDiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
@@ -802,6 +804,40 @@ internal object StytchB2BApi {
                         memberId = memberId,
                         sessionDurationMinutes = sessionDurationMinutes,
                         recoveryCode = recoveryCode,
+                    ),
+                )
+            }
+    }
+
+    internal object OAuth {
+        suspend fun authenticate(
+            oauthToken: String,
+            locale: String? = null,
+            sessionDurationMinutes: Int,
+            pkceCodeVerifier: String,
+            intermediateSessionToken: String? = null,
+        ): StytchResult<OAuthAuthenticateResponseData> =
+            safeB2BApiCall {
+                apiService.oauthAuthenticate(
+                    B2BRequests.OAuth.AuthenticateRequest(
+                        oauthToken = oauthToken,
+                        locale = locale,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                        pkceCodeVerifier = pkceCodeVerifier,
+                        intermediateSessionToken = intermediateSessionToken,
+                    ),
+                )
+            }
+
+        suspend fun discoveryAuthenticate(
+            discoveryOauthToken: String,
+            pkceCodeVerifier: String,
+        ): StytchResult<OAuthDiscoveryAuthenticateResponseData> =
+            safeB2BApiCall {
+                apiService.oauthDiscoveryAuthenticate(
+                    B2BRequests.OAuth.DiscoveryAuthenticateRequest(
+                        discoveryOauthToken = discoveryOauthToken,
+                        pkceCodeVerifier = pkceCodeVerifier,
                     ),
                 )
             }
