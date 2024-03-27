@@ -10,6 +10,7 @@ import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
 
 internal const val SSO_REQUEST_ID = 2
+const val B2B_OAUTH_REQUEST = 3
 
 class MainActivity : FragmentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
@@ -21,6 +22,7 @@ class MainActivity : FragmentActivity() {
     private val otpViewModel: OTPViewModel by viewModels()
     private val totpViewModel: TOTPViewModel by viewModels()
     private val recoveryCodesViewModel: RecoveryCodesViewModel by viewModels()
+    private val oAuthViewModel: OAuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class MainActivity : FragmentActivity() {
                     otpViewModel,
                     totpViewModel,
                     recoveryCodesViewModel,
+                    oAuthViewModel,
                 )
             }
         }

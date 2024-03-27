@@ -594,14 +594,3 @@ public data class OAuthProviderValues(
     val refreshToken: String,
     val scopes: List<String> = emptyList(),
 ) : Parcelable
-
-@JsonClass(generateAdapter = true)
-@Parcelize
-public data class OAuthDiscoveryAuthenticateResponseData(
-    @Json(name = "intermediate_session_token")
-    val intermediateSessionToken: String,
-    @Json(name = "email_address")
-    val emailAddress: String,
-    @Json(name = "discovered_organizations")
-    val discoveredOrganizations: List<DiscoveredOrganization>,
-) : Parcelable

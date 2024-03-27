@@ -190,7 +190,7 @@ internal object B2BResponses {
 
         @JsonClass(generateAdapter = true)
         class DiscoveryAuthenticateResponse(
-            data: OAuthDiscoveryAuthenticateResponseData,
-        ) : StytchDataResponse<OAuthDiscoveryAuthenticateResponseData>(data)
+            data: DiscoveryAuthenticateResponseData,
+        ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
     }
 }

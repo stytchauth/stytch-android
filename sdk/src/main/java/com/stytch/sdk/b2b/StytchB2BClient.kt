@@ -421,6 +421,31 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+                B2BTokenType.OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Auth(
+                            oauth.authenticate(
+                                OAuth.AuthenticateParameters(
+                                    oauthToken = token,
+                                    sessionDurationMinutes = sessionDurationMinutes,
+                                ),
+                            ),
+                        ),
+                    )
+                }
+                B2BTokenType.DISCOVERY_OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Discovery(
+                            oauth.discovery.authenticate(
+                                OAuth.Discovery.DiscoveryAuthenticateParameters(
+                                    discoveryOauthToken = token,
+                                ),
+                            ),
+                        ),
+                    )
+                }
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)

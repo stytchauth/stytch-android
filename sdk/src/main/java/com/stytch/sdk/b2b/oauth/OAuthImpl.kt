@@ -159,7 +159,10 @@ internal class OAuthImpl(
             .apply {
                 parameters.forEach {
                     if (it.value != null) {
-                        appendQueryParameter(it.key, JsonParser.parseString(it.value.toString()).asString)
+                        when (it.value) {
+                            is String -> appendQueryParameter(it.key, it.value.toString())
+                            else -> appendQueryParameter(it.key, JsonParser.parseString(it.value.toString()).asString)
+                        }
                     }
                 }
             }

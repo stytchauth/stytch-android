@@ -16,7 +16,7 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
             synchronized(this) {
                 value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN)
             }
-            return value
+            return if (value?.isEmpty() == true) null else value
         }
 
     var sessionJwt: String?

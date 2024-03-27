@@ -10,7 +10,6 @@ import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.network.models.MemberSearchResponseData
 import com.stytch.sdk.b2b.network.models.OAuthAuthenticateResponseData
-import com.stytch.sdk.b2b.network.models.OAuthDiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationCreateResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
@@ -130,4 +129,4 @@ public typealias RecoveryCodesRecoverResponse = StytchResult<RecoveryCodeRecover
 
 public typealias OAuthAuthenticateResponse = StytchResult<OAuthAuthenticateResponseData>
 
-public typealias OAuthDiscoveryAuthenticateResponse = StytchResult<OAuthDiscoveryAuthenticateResponseData>
+public typealias OAuthDiscoveryAuthenticateResponse = StytchResult<DiscoveryAuthenticateResponseData>
