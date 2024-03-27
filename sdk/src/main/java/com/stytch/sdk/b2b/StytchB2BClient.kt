@@ -57,6 +57,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.VisibleForTesting
 import java.util.UUID
 
 /**
@@ -78,8 +79,11 @@ public object StytchB2BClient {
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
-    private lateinit var deviceInfo: DeviceInfo
-    private lateinit var appSessionId: String
+    @VisibleForTesting
+    internal lateinit var deviceInfo: DeviceInfo
+
+    @VisibleForTesting
+    internal lateinit var appSessionId: String
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data

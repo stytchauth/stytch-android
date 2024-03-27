@@ -1,5 +1,9 @@
-package com.stytch.sdk.consumer.oauth
+package com.stytch.sdk.b2b.oauth
 
+import com.stytch.sdk.b2b.OAuthAuthenticateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
@@ -7,10 +11,6 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
-import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
-import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -35,10 +35,10 @@ import java.security.KeyStore
 
 internal class OAuthImplTest {
     @MockK
-    private lateinit var mockApi: StytchApi.OAuth
+    private lateinit var mockApi: StytchB2BApi.OAuth
 
     @MockK
-    private lateinit var mockSessionStorage: ConsumerSessionStorage
+    private lateinit var mockSessionStorage: B2BSessionStorage
 
     @MockK
     private lateinit var mockStorageHelper: StorageHelper
@@ -58,10 +58,11 @@ internal class OAuthImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.saveValue(any(), any()) } just runs
-        mockkObject(StytchApi)
-        every { StytchApi.isInitialized } returns true
-        StytchClient.deviceInfo = mockk(relaxed = true)
-        StytchClient.appSessionId = "app-session-id"
+        mockkObject(StytchB2BApi)
+        every { StytchB2BApi.isInitialized } returns true
+        every { mockSessionStorage.intermediateSessionToken } returns null
+        StytchB2BClient.deviceInfo = mockk(relaxed = true)
+        StytchB2BClient.appSessionId = "app-session-id"
         impl =
             OAuthImpl(
                 externalScope = TestScope(),
@@ -79,33 +80,6 @@ internal class OAuthImplTest {
     }
 
     @Test
-    fun `Every ThirdParty provider class has the correct provider name`() {
-        listOf(
-            Pair(impl.apple, "apple"),
-            Pair(impl.amazon, "amazon"),
-            Pair(impl.bitbucket, "bitbucket"),
-            Pair(impl.coinbase, "coinbase"),
-            Pair(impl.discord, "discord"),
-            Pair(impl.facebook, "facebook"),
-            Pair(impl.figma, "figma"),
-            Pair(impl.github, "github"),
-            Pair(impl.gitlab, "gitlab"),
-            Pair(impl.google, "google"),
-            Pair(impl.linkedin, "linkedin"),
-            Pair(impl.microsoft, "microsoft"),
-            Pair(impl.salesforce, "salesforce"),
-            Pair(impl.slack, "slack"),
-            Pair(impl.snapchat, "snapchat"),
-            Pair(impl.tiktok, "tiktok"),
-            Pair(impl.twitch, "twitch"),
-            Pair(impl.twitter, "twitter"),
-            Pair(impl.yahoo, "yahoo"),
-        ).forEach {
-            assert(it.first.providerName == it.second)
-        }
-    }
-
-    @Test
     fun `authenticate returns correct error if PKCE is missing`() =
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns null
@@ -118,33 +92,33 @@ internal class OAuthImplTest {
     fun `authenticate returns correct error if api call fails`() =
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
-            coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
+            coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Error(
                     StytchAPIError(errorType = "something_went_wrong", message = "testing"),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
             assert(result.exception is StytchAPIError)
-            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+            coVerify { mockApi.authenticate(any(), any(), any(), "code-challenge", any()) }
         }
 
     @Test
     fun `authenticate returns success if api call succeeds`() =
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
-            coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
+            coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Success(
                     mockk(relaxed = true),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Success)
-            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+            coVerify { mockApi.authenticate(any(), any(), any(), "code-challenge", any()) }
         }
 
     @Test
     fun `authenticate with callback calls callback method`() {
         every { mockStorageHelper.retrieveCodeVerifier() } returns null
-        val spy = spyk<(OAuthAuthenticatedResponse) -> Unit>()
+        val spy = spyk<(OAuthAuthenticateResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), spy)
         verify { spy.invoke(any()) }
     }

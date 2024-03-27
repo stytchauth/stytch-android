@@ -62,7 +62,7 @@ internal class OAuthImpl(
     }
 
     private inner class ProviderImpl(private val providerName: String) : OAuth.Provider {
-        override suspend fun start(parameters: OAuth.Provider.StartParameters) {
+        override fun start(parameters: OAuth.Provider.StartParameters) {
             val pkce = storageHelper.generateHashedCodeChallenge().second
             val host =
                 StytchB2BClient.bootstrapData.cnameDomain?.let {
@@ -86,20 +86,11 @@ internal class OAuthImpl(
             parameters.context.startActivityForResult(intent, parameters.oAuthRequestIdentifier)
         }
 
-        override fun start(
-            parameters: OAuth.Provider.StartParameters,
-            callback: (Unit) -> Unit,
-        ) {
-            externalScope.launch(dispatchers.ui) {
-                callback(start(parameters))
-            }
-        }
-
         override val discovery: OAuth.ProviderDiscovery = ProviderDiscoveryImpl(providerName)
     }
 
     private inner class ProviderDiscoveryImpl(private val providerName: String) : OAuth.ProviderDiscovery {
-        override suspend fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
+        override fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
             val pkce = storageHelper.generateHashedCodeChallenge().second
             val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
@@ -115,15 +106,6 @@ internal class OAuthImpl(
             val intent = SSOManagerActivity.createBaseIntent(parameters.context)
             intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
             parameters.context.startActivityForResult(intent, parameters.oAuthRequestIdentifier)
-        }
-
-        override fun start(
-            parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters,
-            callback: (Unit) -> Unit,
-        ) {
-            externalScope.launch(dispatchers.ui) {
-                callback(start(parameters))
-            }
         }
     }
 
