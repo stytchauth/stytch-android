@@ -181,4 +181,16 @@ internal object B2BResponses {
             data: RecoveryCodeRecoverResponseData,
         ) : StytchDataResponse<RecoveryCodeRecoverResponseData>(data)
     }
+
+    object OAuth {
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: OAuthAuthenticateResponseData,
+        ) : StytchDataResponse<OAuthAuthenticateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class DiscoveryAuthenticateResponse(
+            data: DiscoveryAuthenticateResponseData,
+        ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
+    }
 }

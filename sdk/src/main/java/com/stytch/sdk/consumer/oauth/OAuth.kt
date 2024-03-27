@@ -201,7 +201,8 @@ public interface OAuth {
          * provider. This should be a url that redirects back to your app. If this value is not passed, the default
          * login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL,
          * an error is returned.
-         * @property signupRedirectUrl The url a new user is redirected to after authenticating with the identity provider.
+         * @property signupRedirectUrl The url a new user is redirected to after authenticating with the identity
+         * provider.
          * This should be a url that redirects back to your app. If this value is not passed, the default sign-up
          * redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an
          * error is returned.

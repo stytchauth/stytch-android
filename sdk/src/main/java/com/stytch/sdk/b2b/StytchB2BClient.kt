@@ -13,6 +13,8 @@ import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
 import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.oauth.OAuth
+import com.stytch.sdk.b2b.oauth.OAuthImpl
 import com.stytch.sdk.b2b.organization.Organization
 import com.stytch.sdk.b2b.organization.OrganizationImpl
 import com.stytch.sdk.b2b.otp.OTP
@@ -55,6 +57,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.VisibleForTesting
 import java.util.UUID
 
 /**
@@ -76,8 +79,11 @@ public object StytchB2BClient {
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
-    private lateinit var deviceInfo: DeviceInfo
-    private lateinit var appSessionId: String
+    @VisibleForTesting
+    internal lateinit var deviceInfo: DeviceInfo
+
+    @VisibleForTesting
+    internal lateinit var appSessionId: String
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -341,6 +347,21 @@ public object StytchB2BClient {
         internal set
 
     /**
+     * Exposes an instance of the [OAuth] interface which provides a method for starting and authenticating OAuth and
+     * OAuth Discovery flows
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var oauth: OAuth =
+        OAuthImpl(externalScope, dispatchers, sessionStorage, StorageHelper, StytchB2BApi.OAuth)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: B2B Email Magic Links.
      *
@@ -395,6 +416,31 @@ public object StytchB2BClient {
                                 SSO.AuthenticateParams(
                                     ssoToken = token,
                                     sessionDurationMinutes = sessionDurationMinutes,
+                                ),
+                            ),
+                        ),
+                    )
+                }
+                B2BTokenType.OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Auth(
+                            oauth.authenticate(
+                                OAuth.AuthenticateParameters(
+                                    oauthToken = token,
+                                    sessionDurationMinutes = sessionDurationMinutes,
+                                ),
+                            ),
+                        ),
+                    )
+                }
+                B2BTokenType.DISCOVERY_OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Discovery(
+                            oauth.discovery.authenticate(
+                                OAuth.Discovery.DiscoveryAuthenticateParameters(
+                                    discoveryOauthToken = token,
                                 ),
                             ),
                         ),

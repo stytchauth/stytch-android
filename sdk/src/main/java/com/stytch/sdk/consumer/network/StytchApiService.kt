@@ -93,7 +93,7 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.OTP.Email,
     ): ConsumerResponses.OTPSendResponse
 
-    @POST("otps/authenticate") // TODO Need to create a proper name to differentiate fom magiclinks authenticate
+    @POST("otps/authenticate")
     suspend fun authenticateWithOTP(
         @Body request: ConsumerRequests.OTP.Authenticate,
     ): ConsumerResponses.AuthenticateResponse

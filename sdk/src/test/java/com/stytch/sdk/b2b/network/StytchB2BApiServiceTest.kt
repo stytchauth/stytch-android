@@ -1045,6 +1045,56 @@ internal class StytchB2BApiServiceTest {
     }
     //endregion RecoveryCodes
 
+    //region OAuth
+    @Test
+    fun `check OAuth authenticate request`() {
+        runBlocking {
+            val params =
+                B2BRequests.OAuth.AuthenticateRequest(
+                    oauthToken = "my-oauth-token",
+                    locale = "en-us",
+                    sessionDurationMinutes = 30,
+                    pkceCodeVerifier = "pkce-code-verifier",
+                    intermediateSessionToken = "intermediate-session-token",
+                )
+            requestIgnoringResponseException {
+                apiService.oauthAuthenticate(params)
+            }.verifyPost(
+                expectedPath = "/b2b/oauth/authenticate",
+                expectedBody =
+                    mapOf(
+                        "oauth_token" to params.oauthToken,
+                        "locale" to params.locale,
+                        "session_duration_minutes" to params.sessionDurationMinutes,
+                        "pkce_code_verifier" to params.pkceCodeVerifier,
+                        "intermediate_session_token" to params.intermediateSessionToken,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check OAuth disocveryAuthenticate request`() {
+        runBlocking {
+            val params =
+                B2BRequests.OAuth.DiscoveryAuthenticateRequest(
+                    discoveryOauthToken = "discovery-oauth-token",
+                    pkceCodeVerifier = "pkce-code-verifier",
+                )
+            requestIgnoringResponseException {
+                apiService.oauthDiscoveryAuthenticate(params)
+            }.verifyPost(
+                expectedPath = "/b2b/oauth/discovery/authenticate",
+                expectedBody =
+                    mapOf(
+                        "discovery_oauth_token" to params.discoveryOauthToken,
+                        "pkce_code_verifier" to params.pkceCodeVerifier,
+                    ),
+            )
+        }
+    }
+    //endregion OAuth
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
