@@ -617,6 +617,24 @@ internal class StytchB2BApiTest {
             coVerify { StytchB2BApi.apiService.recoverRecoveryCodes(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi OAuth authenticate calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.oauthAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OAuth.authenticate("", "", 30, "", "")
+            coVerify { StytchB2BApi.apiService.oauthAuthenticate(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OAuth discoveryAuthenticate calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.oauthDiscoveryAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OAuth.discoveryAuthenticate("", "")
+            coVerify { StytchB2BApi.apiService.oauthDiscoveryAuthenticate(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() =
         runTest {

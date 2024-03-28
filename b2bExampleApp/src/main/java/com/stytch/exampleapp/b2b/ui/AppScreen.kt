@@ -8,27 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.b2b.DiscoveryViewModel
 import com.stytch.exampleapp.b2b.HomeViewModel
 import com.stytch.exampleapp.b2b.MemberViewModel
+import com.stytch.exampleapp.b2b.OAuthViewModel
 import com.stytch.exampleapp.b2b.OTPViewModel
 import com.stytch.exampleapp.b2b.OrganizationViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
@@ -60,6 +49,7 @@ val items =
         Screen.OTP,
         Screen.TOTP,
         Screen.RecoveryCodes,
+        Screen.OAuth,
     )
 
 @Composable
@@ -73,6 +63,7 @@ fun AppScreen(
     otpViewModel: OTPViewModel,
     totpViewModel: TOTPViewModel,
     recoveryCodesViewModel: RecoveryCodesViewModel,
+    oAuthViewModel: OAuthViewModel,
 ) {
     val navController = rememberNavController()
     val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
@@ -89,7 +80,7 @@ fun AppScreen(
                 val currentDestination = navBackStackEntry?.destination
                 items.forEach { screen ->
                     BottomNavigationItem(
-                        icon = { Icon(screen.iconVector, contentDescription = null) },
+                        icon = { },
                         label = { Text(stringResource(screen.resourceId)) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
@@ -127,6 +118,7 @@ fun AppScreen(
                 composable(Screen.OTP.route) { OTPScreen(viewModel = otpViewModel) }
                 composable(Screen.TOTP.route) { TOTPScreen(viewModel = totpViewModel) }
                 composable(Screen.RecoveryCodes.route) { RecoveryCodesScreen(viewModel = recoveryCodesViewModel) }
+                composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
             }
         },
     )
@@ -153,23 +145,24 @@ fun Toolbar(toolbarText: String) {
 sealed class Screen(
     val route: String,
     @StringRes val resourceId: Int,
-    val iconVector: ImageVector,
 ) {
-    object Main : Screen("main", R.string.home, Icons.Filled.Home)
+    object Main : Screen("main", R.string.home)
 
-    object Passwords : Screen("passwords", R.string.passwords, Icons.Filled.AccountBox)
+    object Passwords : Screen("passwords", R.string.passwords)
 
-    object Discovery : Screen("discovery", R.string.discovery, Icons.Filled.Build)
+    object Discovery : Screen("discovery", R.string.discovery)
 
-    object SSO : Screen("sso", R.string.sso, Icons.Filled.Add)
+    object SSO : Screen("sso", R.string.sso)
 
-    object Member : Screen("member", R.string.member, Icons.Filled.AccountCircle)
+    object Member : Screen("member", R.string.member)
 
-    object Organization : Screen("organization", R.string.organization, Icons.Filled.Share)
+    object Organization : Screen("organization", R.string.organization)
 
-    object OTP : Screen("otp", R.string.otp, Icons.Default.MailOutline)
+    object OTP : Screen("otp", R.string.otp)
 
-    object TOTP : Screen("totp", R.string.totp, Icons.Default.Refresh)
+    object TOTP : Screen("totp", R.string.totp)
 
-    object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes, Icons.Default.List)
+    object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes)
+
+    object OAuth : Screen("oauth", R.string.oauth)
 }

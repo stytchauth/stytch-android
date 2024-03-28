@@ -394,4 +394,27 @@ internal object B2BRequests {
             val recoveryCode: String,
         )
     }
+
+    object OAuth {
+        @JsonClass(generateAdapter = true)
+        data class AuthenticateRequest(
+            @Json(name = "oauth_token")
+            val oauthToken: String,
+            val locale: String? = null,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+            @Json(name = "pkce_code_verifier")
+            val pkceCodeVerifier: String,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class DiscoveryAuthenticateRequest(
+            @Json(name = "discovery_oauth_token")
+            val discoveryOauthToken: String,
+            @Json(name = "pkce_code_verifier")
+            val pkceCodeVerifier: String,
+        )
+    }
 }

@@ -55,4 +55,7 @@
     <string name="get">Get</string>
     <string name="rotate">Rotate</string>
     <string name="recover">Recover</string>
+    <string name="oauth">OAuth</string>
+    <string name="oauth_start">Start Google OAuth flow</string>
+    <string name="oauth_discovery_start">Start Google Discovery OAuth flow</string>
 </resources>
