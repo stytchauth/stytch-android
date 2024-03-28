@@ -44,7 +44,6 @@ public data class CryptoWalletData(
     // The id of the crypto wallet.
     @Json(name = "crypto_wallet_id")
     val id: String,
-
     // The address of the cryptowallet.
     @Json(name = "crypto_wallet_address")
     val address: String,
@@ -121,7 +120,7 @@ public data class Provider(
 @Parcelize
 public data class TOTP(
     // The id of the TOTP.
-    @Json(name = "totpId")
+    @Json(name = "totp_id")
     var id: String,
     // The verification status of the TOTP.
     val verified: Boolean,
@@ -345,7 +344,7 @@ public data class BootstrapData(
     @Json(name = "dfp_protected_auth_mode")
     val dfpProtectedAuthMode: DFPProtectedAuthMode? = DFPProtectedAuthMode.OBSERVATION,
     @Json(name = "password_config")
-    val passwordConfig: PasswordConfig? = null
+    val passwordConfig: PasswordConfig? = null,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -366,7 +365,7 @@ public enum class DFPProtectedAuthMode {
 @Parcelize
 public data class CaptchaSettings(
     val enabled: Boolean = false,
-    val siteKey: String = ""
+    val siteKey: String = "",
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
