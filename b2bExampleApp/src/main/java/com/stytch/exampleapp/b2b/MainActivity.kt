@@ -10,7 +10,7 @@ import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
 
 internal const val SSO_REQUEST_ID = 2
-const val B2B_OAUTH_REQUEST = 3
+internal const val B2B_OAUTH_REQUEST = 3
 
 class MainActivity : FragmentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
