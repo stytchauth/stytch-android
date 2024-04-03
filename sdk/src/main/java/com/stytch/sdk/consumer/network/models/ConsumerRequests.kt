@@ -1,13 +1,14 @@
 package com.stytch.sdk.consumer.network.models
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.NameData
 
 internal object ConsumerRequests {
-
     object MagicLinks {
         object Email {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class LoginOrCreateUserRequest(
                 val email: String,
@@ -24,6 +25,7 @@ internal object ConsumerRequests {
             )
         }
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             val token: String,
@@ -33,6 +35,7 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SendRequest(
             val email: String,
@@ -54,6 +57,7 @@ internal object ConsumerRequests {
     }
 
     object Passwords {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class CreateRequest(
             val email: String,
@@ -62,6 +66,7 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             val email: String,
@@ -70,6 +75,7 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetByEmailStartRequest(
             val email: String,
@@ -89,6 +95,7 @@ internal object ConsumerRequests {
             val resetPasswordTemplateId: String?,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetByEmailRequest(
             val token: String,
@@ -99,6 +106,7 @@ internal object ConsumerRequests {
             val codeVerifier: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetBySessionRequest(
             val password: String,
@@ -106,6 +114,7 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
             val email: String?,
@@ -114,6 +123,7 @@ internal object ConsumerRequests {
     }
 
     object OTP {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SMS(
             @Json(name = "phone_number")
@@ -122,6 +132,7 @@ internal object ConsumerRequests {
             val expirationMinutes: Int?,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class WhatsApp(
             @Json(name = "phone_number")
@@ -130,6 +141,7 @@ internal object ConsumerRequests {
             val expirationMinutes: Int?,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class Email(
             val email: String,
@@ -141,6 +153,7 @@ internal object ConsumerRequests {
             val signupTemplateId: String?,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class Authenticate(
             val token: String,
@@ -152,12 +165,14 @@ internal object ConsumerRequests {
     }
 
     object Biometrics {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class RegisterStartRequest(
             @Json(name = "public_key")
             val publicKey: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class RegisterRequest(
             val signature: String,
@@ -167,12 +182,14 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateStartRequest(
             @Json(name = "public_key")
             val publicKey: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             val signature: String,
@@ -185,6 +202,7 @@ internal object ConsumerRequests {
 
     object OAuth {
         object Google {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class AuthenticateRequest(
                 @Json(name = "id_token")
@@ -194,7 +212,9 @@ internal object ConsumerRequests {
                 val sessionDurationMinutes: Int,
             )
         }
+
         object ThirdParty {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class AuthenticateRequest(
                 val token: String,
@@ -207,12 +227,13 @@ internal object ConsumerRequests {
                 @Json(name = "session_token")
                 val sessionToken: String? = null,
                 @Json(name = "code_verifier")
-                val codeVerifier: String
+                val codeVerifier: String,
             )
         }
     }
 
     object User {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class UpdateRequest(
             val name: NameData? = null,
@@ -220,6 +241,7 @@ internal object ConsumerRequests {
             val untrustedMetadata: Map<String, Any?>? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SearchRequest(
             val email: String,
@@ -227,6 +249,7 @@ internal object ConsumerRequests {
     }
 
     object WebAuthn {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class RegisterStartRequest(
             val domain: String,
@@ -235,24 +258,27 @@ internal object ConsumerRequests {
             @Json(name = "authenticator_type")
             val authenticatorType: String? = null,
             @Json(name = "return_passkey_credential_options")
-            val isPasskey: Boolean? = false
+            val isPasskey: Boolean? = false,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class RegisterRequest(
             @Json(name = "public_key_credential")
-            val publicKeyCredential: String
+            val publicKeyCredential: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateStartRequest(
             @Json(name = "user_id")
             val userId: String? = null,
             val domain: String,
             @Json(name = "return_passkey_credential_options")
-            val isPasskey: Boolean? = false
+            val isPasskey: Boolean? = false,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "public_key_credential")
@@ -267,6 +293,7 @@ internal object ConsumerRequests {
             val sessionToken: String? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class UpdateRequest(
             val name: String,

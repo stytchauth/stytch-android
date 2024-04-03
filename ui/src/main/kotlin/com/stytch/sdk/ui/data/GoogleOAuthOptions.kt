@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
  * @property clientId the client ID you used to configure Google OAuth
  */
 @Parcelize
+@Keep
 @JsonClass(generateAdapter = true)
 public data class GoogleOAuthOptions(
     val clientId: String? = null,

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.network.models
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.AuthenticationFactor
@@ -16,6 +17,7 @@ public interface IB2BAuthData : CommonAuthenticationData {
     public val organization: Organization
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BAuthData(
@@ -30,9 +32,10 @@ public data class B2BAuthData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val member: MemberData,
-    override val organization: Organization
+    override val organization: Organization,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BEMLAuthenticateData(
@@ -49,9 +52,10 @@ public data class B2BEMLAuthenticateData(
     override val memberSession: B2BSessionData,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean,
-    override val organization: Organization
+    override val organization: Organization,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSessionData(
@@ -73,6 +77,7 @@ public data class B2BSessionData(
     val customClaims: @RawValue Map<String, Any?>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberResponseData(
@@ -83,6 +88,7 @@ public data class MemberResponseData(
     val member: MemberData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberData(
@@ -99,9 +105,10 @@ public data class MemberData(
     @Json(name = "untrusted_metadata")
     val untrustedMetadata: @RawValue Map<String, Any?>?,
     @Json(name = "sso_registrations")
-    val ssoRegistrations: List<SSORegistration>
+    val ssoRegistrations: List<SSORegistration>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSORegistration(
@@ -115,6 +122,7 @@ public data class SSORegistration(
     val ssoAttributes: @RawValue Map<String, Any?>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationResponseData(
@@ -125,6 +133,7 @@ public data class OrganizationResponseData(
     val organization: Organization,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Organization(
@@ -158,6 +167,7 @@ public data class Organization(
     val allowedAuthMethods: List<AllowedAuthMethods>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSOActiveConnection(
@@ -167,6 +177,7 @@ public data class SSOActiveConnection(
     val displayName: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class PasswordsAuthenticateResponseData(
@@ -188,6 +199,7 @@ public data class PasswordsAuthenticateResponseData(
     val organizationId: String,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class EmailResetResponseData(
@@ -211,6 +223,7 @@ public data class EmailResetResponseData(
     val memberEmailId: String,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SessionResetResponseData(
@@ -226,6 +239,7 @@ public data class SessionResetResponseData(
     val organization: Organization,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StrengthCheckResponseData(
@@ -243,6 +257,7 @@ public data class StrengthCheckResponseData(
     @Json(name = "luds_feedback")
     val ludsFeedback: LUDSFeedback,
 ) : Parcelable {
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class ZXCVBNFeedback(
@@ -250,6 +265,7 @@ public data class StrengthCheckResponseData(
         val warning: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class LUDSFeedback(
@@ -268,15 +284,17 @@ public data class StrengthCheckResponseData(
     ) : Parcelable
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveredOrganizationsResponseData(
     @Json(name = "email_address")
     val emailAddress: String,
     @Json(name = "discovered_organizations")
-    val discoveredOrganizations: List<DiscoveredOrganization>
+    val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveredOrganization(
@@ -286,6 +304,7 @@ public data class DiscoveredOrganization(
     val memberAuthenticated: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Membership(
@@ -294,12 +313,14 @@ public data class Membership(
     val member: MemberData?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MembershipDetails(
     val domain: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class IntermediateSessionExchangeResponseData(
@@ -315,6 +336,7 @@ public data class IntermediateSessionExchangeResponseData(
     val sessionToken: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationCreateResponseData(
@@ -330,6 +352,7 @@ public data class OrganizationCreateResponseData(
     val sessionToken: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveryAuthenticateResponseData(
@@ -338,9 +361,10 @@ public data class DiscoveryAuthenticateResponseData(
     @Json(name = "email_address")
     val emailAddress: String,
     @Json(name = "discovered_organizations")
-    val discoveredOrganizations: List<DiscoveredOrganization>
+    val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSOAuthenticateResponseData(
@@ -359,5 +383,5 @@ public data class SSOAuthenticateResponseData(
     override val memberSession: B2BSessionData,
     @Json(name = "reset_session")
     val resetSession: Boolean,
-    override val organization: Organization
+    override val organization: Organization,
 ) : IB2BAuthData, Parcelable
