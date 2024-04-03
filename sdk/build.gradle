@@ -8,7 +8,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.20.2'
+  PUBLISH_VERSION = '0.20.3'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -30,7 +30,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DEBUG_MODE", "false"
             buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""

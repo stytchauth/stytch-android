@@ -28,3 +28,4 @@
 -keep class androidx.credentials.playservices.** {
   *;
 }
+-dontwarn java.lang.invoke.StringConcatFactory
