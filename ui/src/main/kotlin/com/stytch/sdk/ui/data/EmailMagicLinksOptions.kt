@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import kotlinx.parcelize.Parcelize
