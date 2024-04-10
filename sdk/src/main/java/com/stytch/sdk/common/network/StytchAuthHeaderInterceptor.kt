@@ -13,17 +13,26 @@ import okhttp3.Response
 internal class StytchAuthHeaderInterceptor(
     var deviceInfo: DeviceInfo,
     var publicToken: String,
-    val getSessionToken: () -> String?
+    val getSessionToken: () -> String?,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val authHeader = Base64.encodeToString(
-            "$publicToken:${ getSessionToken() ?: publicToken}".toByteArray(),
-            Base64.NO_WRAP
-        )
-        val infoHeader = Base64.encodeToString(
-            InfoHeaderModel.fromDeviceInfo(deviceInfo).json.toByteArray(),
-            Base64.NO_WRAP
-        )
+        val sessionToken = getSessionToken()
+        val authorizationToken =
+            if (sessionToken.isNullOrEmpty()) {
+                publicToken
+            } else {
+                sessionToken
+            }
+        val authHeader =
+            Base64.encodeToString(
+                "$publicToken:$authorizationToken".toByteArray(),
+                Base64.NO_WRAP,
+            )
+        val infoHeader =
+            Base64.encodeToString(
+                InfoHeaderModel.fromDeviceInfo(deviceInfo).json.toByteArray(),
+                Base64.NO_WRAP,
+            )
 
         return chain.proceed(
             chain.request()
@@ -31,7 +40,7 @@ internal class StytchAuthHeaderInterceptor(
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Basic $authHeader")
                 .addHeader("X-SDK-Client", infoHeader)
-                .build()
+                .build(),
         )
     }
 }

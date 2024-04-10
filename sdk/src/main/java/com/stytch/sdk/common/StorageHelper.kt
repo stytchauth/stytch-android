@@ -9,7 +9,6 @@ private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 private const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 
 internal object StorageHelper {
-
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -23,10 +22,13 @@ internal object StorageHelper {
      * Encrypt and save value to SharedPreferences
      * @throws Exception if failed to encrypt string
      */
-    internal fun saveValue(name: String, value: String?) {
-        if (value == null) {
+    internal fun saveValue(
+        name: String,
+        value: String?,
+    ) {
+        if (value.isNullOrEmpty()) {
             with(sharedPreferences.edit()) {
-                putString(name, value)
+                putString(name, null)
                 apply()
             }
             return
@@ -39,7 +41,10 @@ internal object StorageHelper {
         }
     }
 
-    internal fun saveBoolean(name: String, value: Boolean) {
+    internal fun saveBoolean(
+        name: String,
+        value: Boolean,
+    ) {
         with(sharedPreferences.edit()) {
             putBoolean(name, value)
             apply()
@@ -55,6 +60,9 @@ internal object StorageHelper {
     internal fun loadValue(name: String): String? {
         return try {
             val encryptedString = sharedPreferences.getString(name, null)
+            if (encryptedString.isNullOrEmpty()) {
+                return null
+            }
             EncryptionManager.decryptString(encryptedString)
         } catch (ex: Exception) {
             null
@@ -79,33 +87,36 @@ internal object StorageHelper {
     /**
      * Delete an existing ED25519 key from shared preferences
      */
-    internal fun deletePreference(keyAlias: String): Boolean = try {
-        with(sharedPreferences.edit()) {
-            remove(keyAlias)
-            apply()
-            true
+    internal fun deletePreference(keyAlias: String): Boolean =
+        try {
+            with(sharedPreferences.edit()) {
+                remove(keyAlias)
+                apply()
+                true
+            }
+        } catch (e: Exception) {
+            false
         }
-    } catch (e: Exception) {
-        false
-    }
 
     /**
      * Check if the ED25519 key exists in shared preferences
      * @return Boolean
      */
-    internal fun preferenceExists(keyAlias: String): Boolean = try {
-        sharedPreferences.contains(keyAlias)
-    } catch (e: Exception) {
-        false
-    }
+    internal fun preferenceExists(keyAlias: String): Boolean =
+        try {
+            sharedPreferences.contains(keyAlias)
+        } catch (e: Exception) {
+            false
+        }
 
     /**
      * Check if the keyset is using the Android KeyStore
      * @return Boolean
      */
-    internal fun checkIfKeysetIsUsingKeystore(): Boolean = try {
-        EncryptionManager.isKeysetUsingKeystore()
-    } catch (e: Exception) {
-        false
-    }
+    internal fun checkIfKeysetIsUsingKeystore(): Boolean =
+        try {
+            EncryptionManager.isKeysetUsingKeystore()
+        } catch (e: Exception) {
+            false
+        }
 }
