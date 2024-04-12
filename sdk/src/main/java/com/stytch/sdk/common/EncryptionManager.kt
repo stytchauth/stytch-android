@@ -15,15 +15,15 @@ import com.stytch.sdk.common.extensions.hexStringToByteArray
 import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.extensions.toHexString
+import java.security.InvalidKeyException
+import java.security.MessageDigest
+import java.security.SecureRandom
 import org.bouncycastle.crypto.Signer
 import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
 import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
-import java.security.InvalidKeyException
-import java.security.MessageDigest
-import java.security.SecureRandom
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
