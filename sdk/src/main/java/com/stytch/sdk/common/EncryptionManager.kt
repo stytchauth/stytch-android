@@ -18,7 +18,6 @@ import com.stytch.sdk.common.extensions.toHexString
 import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.security.SecureRandom
-import kotlin.random.Random
 import org.bouncycastle.crypto.Signer
 import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
 import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
@@ -28,7 +27,6 @@ import org.bouncycastle.crypto.signers.Ed25519Signer
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
-
     private const val PREF_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
     private var keysetManager: AndroidKeysetManager? = null
@@ -39,7 +37,10 @@ internal object EncryptionManager {
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetManager(context: Context, keyAlias: String): AndroidKeysetManager {
+    private fun getOrGenerateNewAES256KeysetManager(
+        context: Context,
+        keyAlias: String,
+    ): AndroidKeysetManager {
         return try {
             AndroidKeysetManager.Builder()
                 .withSharedPref(context, keyAlias, PREF_FILE_NAME)
@@ -93,15 +94,18 @@ internal object EncryptionManager {
     /**
      * @throws Exception - if failed to generate keys
      */
-    fun createNewKeys(context: Context, rsaKeyAlias: String) {
+    fun createNewKeys(
+        context: Context,
+        rsaKeyAlias: String,
+    ) {
         val ksm = getOrGenerateNewAES256KeysetManager(context, rsaKeyAlias)
         keysetManager = ksm
         aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
 
     fun generateCodeChallenge(): String {
-        val randomGenerator = Random(System.currentTimeMillis())
-        val randomBytes: ByteArray = randomGenerator.nextBytes(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        val randomBytes = ByteArray(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        SecureRandom().nextBytes(randomBytes)
         return randomBytes.toHexString()
     }
 
@@ -128,34 +132,40 @@ internal object EncryptionManager {
 
     fun isKeysetUsingKeystore(): Boolean = keysetManager?.isUsingKeystore == true
 
-    fun generateEd25519KeyPair(): Pair<String, String> = try {
-        val gen = Ed25519KeyPairGenerator()
-        gen.init(Ed25519KeyGenerationParameters(SecureRandom()))
-        val keyPair = gen.generateKeyPair()
-        val publicKey = keyPair.public as Ed25519PublicKeyParameters
-        val privateKey = keyPair.private as Ed25519PrivateKeyParameters
-        Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
-    } catch (e: Exception) {
-        throw StytchMissingPublicKeyError(e)
-    }
+    fun generateEd25519KeyPair(): Pair<String, String> =
+        try {
+            val gen = Ed25519KeyPairGenerator()
+            gen.init(Ed25519KeyGenerationParameters(SecureRandom()))
+            val keyPair = gen.generateKeyPair()
+            val publicKey = keyPair.public as Ed25519PublicKeyParameters
+            val privateKey = keyPair.private as Ed25519PrivateKeyParameters
+            Pair(publicKey.encoded.toBase64EncodedString(), privateKey.encoded.toBase64EncodedString())
+        } catch (e: Exception) {
+            throw StytchMissingPublicKeyError(e)
+        }
 
-    fun signEd25519Challenge(challengeString: String, privateKeyString: String): String = try {
-        val signer: Signer = Ed25519Signer()
-        val challenge = challengeString.toBase64DecodedByteArray()
-        val privateKey = Ed25519PrivateKeyParameters(privateKeyString.toBase64DecodedByteArray())
-        signer.init(true, privateKey)
-        signer.update(challenge, 0, challenge.size)
-        val signature: ByteArray = signer.generateSignature()
-        signature.toBase64EncodedString()
-    } catch (e: Exception) {
-        throw StytchChallengeSigningFailed(e)
-    }
+    fun signEd25519Challenge(
+        challengeString: String,
+        privateKeyString: String,
+    ): String =
+        try {
+            val signer: Signer = Ed25519Signer()
+            val challenge = challengeString.toBase64DecodedByteArray()
+            val privateKey = Ed25519PrivateKeyParameters(privateKeyString.toBase64DecodedByteArray())
+            signer.init(true, privateKey)
+            signer.update(challenge, 0, challenge.size)
+            val signature: ByteArray = signer.generateSignature()
+            signature.toBase64EncodedString()
+        } catch (e: Exception) {
+            throw StytchChallengeSigningFailed(e)
+        }
 
-    fun deriveEd25519PublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String = try {
-        val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
-        val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
-        publicKeyRebuild.encoded.toBase64EncodedString()
-    } catch (e: Exception) {
-        throw StytchMissingPublicKeyError(e)
-    }
+    fun deriveEd25519PublicKeyFromPrivateKeyBytes(privateKeyBytes: ByteArray): String =
+        try {
+            val privateKeyRebuild = Ed25519PrivateKeyParameters(privateKeyBytes, 0)
+            val publicKeyRebuild = privateKeyRebuild.generatePublicKey()
+            publicKeyRebuild.encoded.toBase64EncodedString()
+        } catch (e: Exception) {
+            throw StytchMissingPublicKeyError(e)
+        }
 }
