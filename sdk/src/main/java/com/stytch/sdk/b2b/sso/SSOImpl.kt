@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.net.Uri
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -115,6 +116,8 @@ internal class SSOImpl(
 
     override val saml: SSO.SAML = SAMLImpl()
 
+    override val oidc: SSO.OIDC = OIDCImpl()
+
     internal inner class SAMLImpl : SSO.SAML {
         override suspend fun createConnection(
             parameters: SSO.SAML.CreateParameters,
@@ -126,6 +129,24 @@ internal class SSOImpl(
         override fun createConnection(
             parameters: SSO.SAML.CreateParameters,
             callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(createConnection(parameters))
+            }
+        }
+    }
+
+    internal inner class OIDCImpl : SSO.OIDC {
+        override suspend fun createConnection(
+            parameters: SSO.OIDC.CreateParameters,
+        ): B2BSSOOIDCCreateConnectionResponse =
+            withContext(dispatchers.io) {
+                api.oidcCreateConnection(displayName = parameters.displayName)
+            }
+
+        override fun createConnection(
+            parameters: SSO.OIDC.CreateParameters,
+            callback: (B2BSSOOIDCCreateConnectionResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(createConnection(parameters))

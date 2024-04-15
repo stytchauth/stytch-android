@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.sso
 
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -151,6 +152,23 @@ internal class SSOImplTest {
         coEvery { mockApi.samlCreateConnection(any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(B2BSSOSAMLCreateConnectionResponse) -> Unit>()
         impl.saml.createConnection(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO oidc create delegates to api`() =
+        runTest {
+            coEvery { mockApi.oidcCreateConnection(any()) } returns mockk(relaxed = true)
+            val parameters = SSO.OIDC.CreateParameters(displayName = "my cool display name")
+            impl.oidc.createConnection(parameters)
+            coVerify { mockApi.oidcCreateConnection(displayName = parameters.displayName) }
+        }
+
+    @Test
+    fun `SSO oidc create with callback calls callback method`() {
+        coEvery { mockApi.oidcCreateConnection(any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(B2BSSOOIDCCreateConnectionResponse) -> Unit>()
+        impl.oidc.createConnection(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

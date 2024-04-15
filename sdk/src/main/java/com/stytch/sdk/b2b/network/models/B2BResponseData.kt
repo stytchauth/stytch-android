@@ -703,3 +703,9 @@ public data class B2BSSODeleteConnectionResponseData(
 public data class B2BSSOSAMLCreateConnectionResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOOIDCCreateConnectionResponseData(
+    val connection: OIDCConnection,
+) : Parcelable

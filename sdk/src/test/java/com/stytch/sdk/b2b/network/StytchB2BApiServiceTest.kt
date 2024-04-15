@@ -832,6 +832,26 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check SSO OIDC createConnection request`() {
+        runBlocking {
+            val displayName = "my cool oidc connection name"
+            requestIgnoringResponseException {
+                apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }.verifyPost(
+                expectedPath = "/b2b/sso/oidc",
+                expectedBody =
+                    mapOf(
+                        "display_name" to displayName,
+                    ),
+            )
+        }
+    }
     //endregion
 
     // region Bootstrap

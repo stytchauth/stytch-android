@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
@@ -657,6 +658,17 @@ internal object StytchB2BApi {
             safeB2BApiCall {
                 apiService.ssoSamlCreate(
                     B2BRequests.SSO.SAMLCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }
+
+        suspend fun oidcCreateConnection(
+            displayName: String? = null,
+        ): StytchResult<B2BSSOOIDCCreateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(
                         displayName = displayName,
                     ),
                 )

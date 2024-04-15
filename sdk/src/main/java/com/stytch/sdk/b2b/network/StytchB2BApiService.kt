@@ -197,6 +197,11 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun ssoSamlCreate(
         @Body request: B2BRequests.SSO.SAMLCreateRequest,
     ): B2BResponses.SSO.B2BSSOSAMLCreateConnectionResponse
+
+    @POST("b2b/sso/oidc")
+    suspend fun ssoOidcCreate(
+        @Body request: B2BRequests.SSO.OIDCCreateRequest,
+    ): B2BResponses.SSO.B2BSSOOIDCCreateConnectionResponse
     //endregion SSO
 
     //region Bootstrap

@@ -516,6 +516,20 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO OIDC createConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoOidcCreate(any()) } returns mockk(relaxed = true)
+            val displayName = "my cool oidc connection"
+            StytchB2BApi.SSO.oidcCreateConnection(displayName = displayName)
+            coVerify {
+                StytchB2BApi.apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(displayName = displayName),
+                )
+            }
+        }
+
+    @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

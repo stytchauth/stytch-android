@@ -204,6 +204,12 @@ internal object B2BRequests {
             @Json(name = "display_name")
             val displayName: String? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class OIDCCreateRequest(
+            @Json(name = "display_name")
+            val displayName: String? = null,
+        )
     }
 
     object Session {

@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.app.Activity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.common.Constants
@@ -111,9 +112,11 @@ public interface SSO {
 
     public val saml: SAML
 
+    public val oidc: OIDC
+
     public interface SAML {
         /**
-         * Data class used for wrapping the parameters for an SSO SAML creation request
+         * Data class used for wrapping the parameters for a SAML creation request
          * @property displayName A human-readable display name for the connection.
          */
         public data class CreateParameters(
@@ -135,6 +138,33 @@ public interface SSO {
         public fun createConnection(
             parameters: CreateParameters,
             callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
+        )
+    }
+
+    public interface OIDC {
+        /**
+         * Data class used for wrapping the parameters for an OIDC creation request
+         * @property displayName A human-readable display name for the connection.
+         */
+        public data class CreateParameters(
+            val displayName: String? = null,
+        )
+
+        /**
+         * Create a new OIDC Connection.
+         * @param parameters The parameters required to create a new OIDC connection
+         * @return [B2BSSOOIDCCreateConnectionResponse]
+         */
+        public suspend fun createConnection(parameters: CreateParameters): B2BSSOOIDCCreateConnectionResponse
+
+        /**
+         * Create a new OIDC Connection.
+         * @param parameters The parameters required to create a new OIDC connection
+         * @param callback a callback that receives a [B2BSSOOIDCCreateConnectionResponse]
+         */
+        public fun createConnection(
+            parameters: CreateParameters,
+            callback: (B2BSSOOIDCCreateConnectionResponse) -> Unit,
         )
     }
 }
