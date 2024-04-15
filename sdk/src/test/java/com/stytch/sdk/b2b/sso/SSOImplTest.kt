@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLDeleteVerificationCertificateResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
@@ -200,6 +201,37 @@ internal class SSOImplTest {
         val parameters = SSO.SAML.UpdateByURLParameters(connectionId = "connection-id", metadataUrl = "metadata.url")
         val mockCallback = spyk<(B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit>()
         impl.saml.updateConnectionByUrl(parameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO saml deleteVerificationCertificate delegates to api`() =
+        runTest {
+            coEvery { mockApi.samlDeleteVerificationCertificate(any(), any()) } returns mockk(relaxed = true)
+            val parameters =
+                SSO.SAML.DeleteVerificationCertificateParameters(
+                    connectionId = "connection-id",
+                    certificateId = "certificate-id",
+                )
+            impl.saml.deleteVerificationCertificate(parameters)
+            coVerify {
+                mockApi.samlDeleteVerificationCertificate(
+                    connectionId = parameters.connectionId,
+                    certificateId = parameters.certificateId,
+                )
+            }
+        }
+
+    @Test
+    fun `SSO saml deleteVerificationCertificate with callback calls callback method`() {
+        coEvery { mockApi.samlDeleteVerificationCertificate(any(), any()) } returns mockk(relaxed = true)
+        val parameters =
+            SSO.SAML.DeleteVerificationCertificateParameters(
+                connectionId = "connection-id",
+                certificateId = "certificate-id",
+            )
+        val mockCallback = spyk<(B2BSSOSAMLDeleteVerificationCertificateResponse) -> Unit>()
+        impl.saml.deleteVerificationCertificate(parameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

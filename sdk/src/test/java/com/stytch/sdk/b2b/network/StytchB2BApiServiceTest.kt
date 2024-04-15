@@ -905,6 +905,22 @@ internal class StytchB2BApiServiceTest {
     }
 
     @Test
+    fun `check SSO SAML ssoSamlDeleteVerificationCertificate request`() {
+        runBlocking {
+            val connectionId = "my-connection-id"
+            val certificateId = "my-certificate-id"
+            requestIgnoringResponseException {
+                apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
+                )
+            }.verifyDelete(
+                expectedPath = "/b2b/sso/saml/$connectionId/verification_certificates/$certificateId",
+            )
+        }
+    }
+
+    @Test
     fun `check SSO OIDC createConnection request`() {
         runBlocking {
             val displayName = "my cool oidc connection name"

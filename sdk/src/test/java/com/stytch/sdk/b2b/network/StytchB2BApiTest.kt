@@ -541,6 +541,30 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO SAML samlDeleteVerificationCertificate calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery {
+                StytchB2BApi.apiService.ssoSamlDeleteVerificationCertificate(
+                    any(),
+                    any(),
+                )
+            } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            val certificateId = "mt-certificate-id"
+            StytchB2BApi.SSO.samlDeleteVerificationCertificate(
+                connectionId = connectionId,
+                certificateId = certificateId,
+            )
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
+                )
+            }
+        }
+
+    @Test
     fun `StytchB2BApi SSO OIDC createConnection calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

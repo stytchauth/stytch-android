@@ -728,3 +728,10 @@ public data class B2BSSOOIDCUpdateConnectionResponseData(
 public data class B2BSSOSAMLUpdateConnectionByURLResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLDeleteVerificationCertificateResponseData(
+    @Json(name = "certificate_id")
+    val certificateId: String,
+) : Parcelable

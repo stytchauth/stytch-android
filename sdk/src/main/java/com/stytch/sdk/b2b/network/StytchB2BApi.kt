@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLDeleteVerificationCertificateResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
@@ -707,6 +708,17 @@ internal object StytchB2BApi {
                             connectionId = connectionId,
                             metadataUrl = metadataUrl,
                         ),
+                )
+            }
+
+        suspend fun samlDeleteVerificationCertificate(
+            connectionId: String,
+            certificateId: String,
+        ): StytchResult<B2BSSOSAMLDeleteVerificationCertificateResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
                 )
             }
 

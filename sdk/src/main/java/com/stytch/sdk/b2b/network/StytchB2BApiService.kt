@@ -210,6 +210,12 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest,
     ): B2BResponses.SSO.B2BSSOSAMLUpdateConnectionByURLResponse
 
+    @DELETE("b2b/sso/saml/{connectionId}/verification_certificates/{certificateId}")
+    suspend fun ssoSamlDeleteVerificationCertificate(
+        @Path(value = "connectionId") connectionId: String,
+        @Path(value = "certificateId") certificateId: String,
+    ): B2BResponses.SSO.B2BSSOSAMLDeleteVerificationCertificateResponse
+
     @POST("b2b/sso/oidc")
     suspend fun ssoOidcCreate(
         @Body request: B2BRequests.SSO.OIDCCreateRequest,

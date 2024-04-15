@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLDeleteVerificationCertificateResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
@@ -219,6 +220,39 @@ public interface SSO {
         public fun updateConnectionByUrl(
             parameters: UpdateByURLParameters,
             callback: (B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters to delete a SAML verification certificate
+         * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
+         * @property certificateId The ID of the certificate to be deleted.
+         */
+        public data class DeleteVerificationCertificateParameters(
+            val connectionId: String,
+            val certificateId: String,
+        )
+
+        /**
+         * Delete a SAML verification certificate.
+         * You may need to do this when rotating certificates from your IdP, since Stytch allows a maximum of 5
+         * certificates per connection. There must always be at least one certificate per active connection.
+         * @param parameters The parameters required to delete a SAML verification certificate.
+         * @return [B2BSSOSAMLDeleteVerificationCertificateResponse]
+         */
+        public suspend fun deleteVerificationCertificate(
+            parameters: DeleteVerificationCertificateParameters,
+        ): B2BSSOSAMLDeleteVerificationCertificateResponse
+
+        /**
+         * Delete a SAML verification certificate.
+         * You may need to do this when rotating certificates from your IdP, since Stytch allows a maximum of 5
+         * certificates per connection. There must always be at least one certificate per active connection.
+         * @param parameters The parameters required to delete a SAML verification certificate.
+         * @param callback a callback that receives a [B2BSSOSAMLDeleteVerificationCertificateResponse]
+         */
+        public fun deleteVerificationCertificate(
+            parameters: DeleteVerificationCertificateParameters,
+            callback: (B2BSSOSAMLDeleteVerificationCertificateResponse) -> Unit,
         )
     }
 

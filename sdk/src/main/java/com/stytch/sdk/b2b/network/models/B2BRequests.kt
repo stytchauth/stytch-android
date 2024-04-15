@@ -234,6 +234,14 @@ internal object B2BRequests {
         )
 
         @JsonClass(generateAdapter = true)
+        data class B2BSSOSAMLDeleteVerificationCertificateRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "certificate_id")
+            val certificateId: String,
+        )
+
+        @JsonClass(generateAdapter = true)
         data class OIDCCreateRequest(
             @Json(name = "display_name")
             val displayName: String? = null,
