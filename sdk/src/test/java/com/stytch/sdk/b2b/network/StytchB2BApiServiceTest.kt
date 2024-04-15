@@ -884,6 +884,27 @@ internal class StytchB2BApiServiceTest {
     }
 
     @Test
+    fun `check SSO Saml updateConnectionByUrl request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest(
+                    connectionId = "my-connection-id",
+                    metadataUrl = "metadata.url",
+                )
+            requestIgnoringResponseException {
+                apiService.ssoSamlUpdateByUrl(connectionId = parameters.connectionId, request = parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/saml/${parameters.connectionId}/url",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "metadata_url" to parameters.metadataUrl,
+                    ),
+            )
+        }
+    }
+
+    @Test
     fun `check SSO OIDC createConnection request`() {
         runBlocking {
             val displayName = "my cool oidc connection name"

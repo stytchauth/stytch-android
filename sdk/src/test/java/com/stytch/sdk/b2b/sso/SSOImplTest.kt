@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -172,6 +173,33 @@ internal class SSOImplTest {
         val parameters = SSO.SAML.UpdateParameters(connectionId = "connection-id")
         val mockCallback = spyk<(B2BSSOSAMLUpdateConnectionResponse) -> Unit>()
         impl.saml.updateConnection(parameters, mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO saml updateConnectionByUrl delegates to api`() =
+        runTest {
+            coEvery { mockApi.samlUpdateByUrl(any(), any()) } returns mockk(relaxed = true)
+            val parameters =
+                SSO.SAML.UpdateByURLParameters(
+                    connectionId = "connection-id",
+                    metadataUrl = "metadata.url",
+                )
+            impl.saml.updateConnectionByUrl(parameters)
+            coVerify {
+                mockApi.samlUpdateByUrl(
+                    connectionId = parameters.connectionId,
+                    metadataUrl = parameters.metadataUrl,
+                )
+            }
+        }
+
+    @Test
+    fun `SSO saml updateByUrl with callback calls callback method`() {
+        coEvery { mockApi.samlUpdateByUrl(any(), any()) } returns mockk(relaxed = true)
+        val parameters = SSO.SAML.UpdateByURLParameters(connectionId = "connection-id", metadataUrl = "metadata.url")
+        val mockCallback = spyk<(B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit>()
+        impl.saml.updateConnectionByUrl(parameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

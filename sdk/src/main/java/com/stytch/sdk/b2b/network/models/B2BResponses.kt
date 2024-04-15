@@ -167,6 +167,11 @@ internal object B2BResponses {
         class B2BSSOOIDCUpdateConnectionResponse(
             data: B2BSSOOIDCUpdateConnectionResponseData,
         ) : StytchDataResponse<B2BSSOOIDCUpdateConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLUpdateConnectionByURLResponse(
+            data: B2BSSOSAMLUpdateConnectionByURLResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLUpdateConnectionByURLResponseData>(data)
     }
 
     object OTP {

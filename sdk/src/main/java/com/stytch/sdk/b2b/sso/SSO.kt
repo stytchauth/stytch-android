@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
@@ -189,6 +190,35 @@ public interface SSO {
         public fun updateConnection(
             parameters: UpdateParameters,
             callback: (B2BSSOSAMLUpdateConnectionResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters for a SAML update by URL request
+         * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
+         * @property metadataUrl A URL that points to the IdP metadata. This will be provided by the IdP.
+         */
+        public data class UpdateByURLParameters(
+            val connectionId: String,
+            val metadataUrl: String,
+        )
+
+        /**
+         * Update a SAML Connection by URL.
+         * @param parameters The parameters required to update a SAML connection by URL
+         * @return [B2BSSOSAMLUpdateConnectionByURLResponse]
+         */
+        public suspend fun updateConnectionByUrl(
+            parameters: UpdateByURLParameters,
+        ): B2BSSOSAMLUpdateConnectionByURLResponse
+
+        /**
+         * Update a SAML Connection by URL.
+         * @param parameters The parameters required to update a SAML connection by URL
+         * @param callback a callback that receives a [B2BSSOSAMLUpdateConnectionByURLResponse]
+         */
+        public fun updateConnectionByUrl(
+            parameters: UpdateByURLParameters,
+            callback: (B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit,
         )
     }
 

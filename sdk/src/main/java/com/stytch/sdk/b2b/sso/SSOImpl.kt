@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -158,6 +159,25 @@ internal class SSOImpl(
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(updateConnection(parameters))
+            }
+        }
+
+        override suspend fun updateConnectionByUrl(
+            parameters: SSO.SAML.UpdateByURLParameters,
+        ): B2BSSOSAMLUpdateConnectionByURLResponse =
+            withContext(dispatchers.io) {
+                api.samlUpdateByUrl(
+                    connectionId = parameters.connectionId,
+                    metadataUrl = parameters.metadataUrl,
+                )
+            }
+
+        override fun updateConnectionByUrl(
+            parameters: SSO.SAML.UpdateByURLParameters,
+            callback: (B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(updateConnectionByUrl(parameters))
             }
         }
     }

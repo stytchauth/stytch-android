@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
@@ -690,6 +691,21 @@ internal object StytchB2BApi {
                             x509Certificate = x509Certificate,
                             samlConnectionImplicitRoleAssignment = samlConnectionImplicitRoleAssignment,
                             samlGroupImplicitRoleAssignment = samlGroupImplicitRoleAssignment,
+                        ),
+                )
+            }
+
+        suspend fun samlUpdateByUrl(
+            connectionId: String,
+            metadataUrl: String,
+        ): StytchResult<B2BSSOSAMLUpdateConnectionByURLResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlUpdateByUrl(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest(
+                            connectionId = connectionId,
+                            metadataUrl = metadataUrl,
                         ),
                 )
             }
