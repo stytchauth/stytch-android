@@ -11,11 +11,14 @@ import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
+import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
@@ -659,6 +662,32 @@ internal object StytchB2BApi {
                 apiService.ssoSamlCreate(
                     B2BRequests.SSO.SAMLCreateRequest(
                         displayName = displayName,
+                    ),
+                )
+            }
+
+        suspend fun samlUpdateConnection(
+            connectionId: String,
+            idpEntityId: String? = null,
+            displayName: String? = null,
+            attributeMapping: Map<String, String>? = null,
+            idpSsoUrl: String? = null,
+            x509Certificate: String? = null,
+            samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+            samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+        ): StytchResult<B2BSSOSAMLUpdateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlUpdate(
+                    connectionId = connectionId,
+                    B2BRequests.SSO.SAMLUpdateRequest(
+                        connectionId = connectionId,
+                        idpEntityId = idpEntityId,
+                        displayName = displayName,
+                        attributeMapping = attributeMapping,
+                        idpSsoUrl = idpSsoUrl,
+                        x509Certificate = x509Certificate,
+                        samlConnectionImplicitRoleAssignment = samlConnectionImplicitRoleAssignment,
+                        samlGroupImplicitRoleAssignment = samlGroupImplicitRoleAssignment,
                     ),
                 )
             }

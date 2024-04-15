@@ -198,6 +198,12 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.SSO.SAMLCreateRequest,
     ): B2BResponses.SSO.B2BSSOSAMLCreateConnectionResponse
 
+    @PUT("b2b/sso/saml/{connectionId}")
+    suspend fun ssoSamlUpdate(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SSO.SAMLUpdateRequest,
+    ): B2BResponses.SSO.B2BSSOSAMLUpdateConnectionResponse
+
     @POST("b2b/sso/oidc")
     suspend fun ssoOidcCreate(
         @Body request: B2BRequests.SSO.OIDCCreateRequest,

@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -18,6 +19,7 @@ import com.stytch.sdk.common.sso.SSOManagerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.x509Certificate
 
 internal class SSOImpl(
     private val externalScope: CoroutineScope,
@@ -132,6 +134,31 @@ internal class SSOImpl(
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(createConnection(parameters))
+            }
+        }
+
+        override suspend fun updateConnection(
+            parameters: SSO.SAML.UpdateParameters,
+        ): B2BSSOSAMLUpdateConnectionResponse =
+            withContext(dispatchers.ui) {
+                api.samlUpdateConnection(
+                    connectionId = parameters.connectionId,
+                    idpEntityId = parameters.idpEntityId,
+                    displayName = parameters.displayName,
+                    attributeMapping = parameters.attributeMapping,
+                    idpSsoUrl = parameters.idpSsoUrl,
+                    x509Certificate = parameters.x509Certificate,
+                    samlConnectionImplicitRoleAssignment = parameters.samlConnectionImplicitRoleAssignment,
+                    samlGroupImplicitRoleAssignment = parameters.samlGroupImplicitRoleAssignment,
+                )
+            }
+
+        override fun updateConnection(
+            parameters: SSO.SAML.UpdateParameters,
+            callback: (B2BSSOSAMLUpdateConnectionResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(updateConnection(parameters))
             }
         }
     }

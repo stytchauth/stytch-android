@@ -3,8 +3,10 @@ package com.stytch.sdk.b2b.network
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
@@ -22,6 +24,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.x509Certificate
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -828,6 +831,53 @@ internal class StytchB2BApiServiceTest {
                 expectedBody =
                     mapOf(
                         "display_name" to displayName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO SAML updateConnection request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.SAMLUpdateRequest(
+                    connectionId = "my-connection-id",
+                    idpEntityId = "idp-entity-id",
+                    displayName = "display-name",
+                    attributeMapping = mapOf("email" to "robot@stytch.com"),
+                    idpSsoUrl = "idp-sso-url",
+                    x509Certificate = "x509-certificate-pem",
+                    samlConnectionImplicitRoleAssignment = listOf(ConnectionRoleAssignment(roleId = "my-cool-role")),
+                    samlGroupImplicitRoleAssignment =
+                        listOf(
+                            GroupRoleAssignment(roleId = "my-cool-role", group = "my group"),
+                        ),
+                )
+            requestIgnoringResponseException {
+                apiService.ssoSamlUpdate(parameters.connectionId, parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/saml/${parameters.connectionId}",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "idp_entity_id" to parameters.idpEntityId,
+                        "display_name" to parameters.displayName,
+                        "attribute_mapping" to parameters.attributeMapping,
+                        "idp_sso_url" to parameters.idpSsoUrl,
+                        "x509_certificate" to parameters.x509Certificate,
+                        "saml_connection_implicit_role_assignments" to
+                            parameters.samlConnectionImplicitRoleAssignment?.map {
+                                mapOf(
+                                    "role_id" to it.roleId,
+                                )
+                            },
+                        "saml_group_implicit_role_assignments" to
+                            parameters.samlGroupImplicitRoleAssignment?.map {
+                                mapOf(
+                                    "role_id" to it.roleId,
+                                    "group" to it.group,
+                                )
+                            },
                     ),
             )
         }

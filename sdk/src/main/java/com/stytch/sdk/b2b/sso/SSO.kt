@@ -5,7 +5,10 @@ import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
+import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
+import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.Constants
 
 /**
@@ -138,6 +141,53 @@ public interface SSO {
         public fun createConnection(
             parameters: CreateParameters,
             callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters for a SAML update request
+         * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
+         * @property idpEntityId A globally unique name for the IdP. This will be provided by the IdP.
+         * @property displayName A human-readable display name for the connection.
+         * @property attributeMapping An object that represents the attributes used to identify a Member. This object
+         * will map the IdP-defined User attributes to Stytch-specific values. Required attributes: `email` and one of
+         * `full_name` or `first_name` and `last_name`
+         * @property idpSsoUrl The URL for which assertions for login requests will be sent. This will be provided by
+         * the IdP.
+         * @property x509Certificate A certificate that Stytch will use to verify the sign-in assertion sent by the IdP,
+         * in {@link https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail PEM} format.
+         * @property samlConnectionImplicitRoleAssignment An array of implicit role assignments granted to members in
+         * this organization who log in with this SAML connection.
+         * @property samlGroupImplicitRoleAssignment An array of implicit role assignments granted to members in this
+         * organization who log in with this SAML connection and belong to the specified group. Before adding any group
+         * implicit role assignments, you must add a "groups" key to your SAML connection's attribute_mapping. Make sure
+         * that your IdP is configured to correctly send the group information.
+         */
+        public data class UpdateParameters(
+            val connectionId: String,
+            val idpEntityId: String? = null,
+            val displayName: String? = null,
+            val attributeMapping: Map<String, String>? = null,
+            val idpSsoUrl: String? = null,
+            val x509Certificate: String? = null,
+            val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+            val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+        )
+
+        /**
+         * Update a SAML Connection.
+         * @param parameters The parameters required to update SAML connection
+         * @return [B2BSSOSAMLUpdateConnectionResponse]
+         */
+        public suspend fun updateConnection(parameters: UpdateParameters): B2BSSOSAMLUpdateConnectionResponse
+
+        /**
+         * Update a SAML Connection.
+         * @param parameters The parameters required to update SAML connection
+         * @param callback a callback that receives a [B2BSSOSAMLUpdateConnectionResponse]
+         */
+        public fun updateConnection(
+            parameters: UpdateParameters,
+            callback: (B2BSSOSAMLUpdateConnectionResponse) -> Unit,
         )
     }
 

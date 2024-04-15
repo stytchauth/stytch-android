@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -152,6 +153,24 @@ internal class SSOImplTest {
         coEvery { mockApi.samlCreateConnection(any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(B2BSSOSAMLCreateConnectionResponse) -> Unit>()
         impl.saml.createConnection(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO saml update delegates to api`() =
+        runTest {
+            coEvery { mockApi.samlUpdateConnection(any()) } returns mockk(relaxed = true)
+            val parameters = SSO.SAML.UpdateParameters(connectionId = "connection-id")
+            impl.saml.updateConnection(parameters)
+            coVerify { mockApi.samlUpdateConnection(connectionId = parameters.connectionId) }
+        }
+
+    @Test
+    fun `SSO saml update with callback calls callback method`() {
+        coEvery { mockApi.samlUpdateConnection(any()) } returns mockk(relaxed = true)
+        val parameters = SSO.SAML.UpdateParameters(connectionId = "connection-id")
+        val mockCallback = spyk<(B2BSSOSAMLUpdateConnectionResponse) -> Unit>()
+        impl.saml.updateConnection(parameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
