@@ -492,6 +492,16 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO deleteConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoDeleteConnection(any()) } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            StytchB2BApi.SSO.deleteConnection(connectionId = connectionId)
+            coVerify { StytchB2BApi.apiService.ssoDeleteConnection(connectionId) }
+        }
+
+    @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

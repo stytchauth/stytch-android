@@ -187,6 +187,11 @@ internal interface StytchB2BApiService : ApiService {
 
     @GET("b2b/sso")
     suspend fun ssoGetConnections(): B2BResponses.SSO.B2BSSOGetConnectionsResponse
+
+    @DELETE("b2b/sso/{connectionId}")
+    suspend fun ssoDeleteConnection(
+        @Path(value = "connectionId") connectionId: String,
+    ): B2BResponses.SSO.B2BSSODeleteConnectionResponse
     //endregion SSO
 
     //region Bootstrap

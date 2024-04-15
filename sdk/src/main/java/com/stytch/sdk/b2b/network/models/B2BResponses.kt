@@ -142,6 +142,11 @@ internal object B2BResponses {
         class B2BSSOGetConnectionsResponse(
             data: B2BSSOGetConnectionsResponseData,
         ) : StytchDataResponse<B2BSSOGetConnectionsResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSODeleteConnectionResponse(
+            data: B2BSSODeleteConnectionResponseData,
+        ) : StytchDataResponse<B2BSSODeleteConnectionResponseData>(data)
     }
 
     object OTP {

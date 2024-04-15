@@ -800,6 +800,18 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check SSO deleteConnection request`() {
+        runBlocking {
+            val connectionId = "my-connection-id"
+            requestIgnoringResponseException {
+                apiService.ssoDeleteConnection(connectionId = connectionId)
+            }.verifyDelete(
+                expectedPath = "/b2b/sso/$connectionId",
+            )
+        }
+    }
     //endregion
 
     // region Bootstrap

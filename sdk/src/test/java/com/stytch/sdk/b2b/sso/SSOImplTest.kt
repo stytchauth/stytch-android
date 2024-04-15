@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sso
 
+import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -115,6 +116,23 @@ internal class SSOImplTest {
         coEvery { mockApi.getConnections() } returns mockk(relaxed = true)
         val mockCallback = spyk<(B2BSSOGetConnectionsResponse) -> Unit>()
         impl.getConnections(mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO deleteConnection delegates to api`() =
+        runTest {
+            coEvery { mockApi.deleteConnection(any()) } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            impl.deleteConnection(connectionId)
+            coVerify { mockApi.deleteConnection(connectionId) }
+        }
+
+    @Test
+    fun `SSO deleteConnection with callback calls callback method`() {
+        coEvery { mockApi.deleteConnection(any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(B2BSSODeleteConnectionResponse) -> Unit>()
+        impl.deleteConnection("", mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.app.Activity
+import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.common.Constants
@@ -89,4 +90,21 @@ public interface SSO {
      *  @param callback a callback that receives a [B2BSSOGetConnectionsResponse]
      */
     public fun getConnections(callback: (B2BSSOGetConnectionsResponse) -> Unit)
+
+    /**
+     * Delete an existing SSO connection.
+     * @param connectionId The ID of the connection to delete
+     * @return [B2BSSODeleteConnectionResponse]
+     */
+    public suspend fun deleteConnection(connectionId: String): B2BSSODeleteConnectionResponse
+
+    /**
+     * Delete an existing SSO connection.
+     * @param connectionId The ID of the connection to delete
+     * @param callback a callback that receives a [B2BSSODeleteConnectionResponse]
+     */
+    public fun deleteConnection(
+        connectionId: String,
+        callback: (B2BSSODeleteConnectionResponse) -> Unit,
+    )
 }

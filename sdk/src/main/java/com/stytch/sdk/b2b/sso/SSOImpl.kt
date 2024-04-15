@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.net.Uri
+import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -94,6 +95,20 @@ internal class SSOImpl(
     override fun getConnections(callback: (B2BSSOGetConnectionsResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
             callback(getConnections())
+        }
+    }
+
+    override suspend fun deleteConnection(connectionId: String): B2BSSODeleteConnectionResponse =
+        withContext(dispatchers.io) {
+            api.deleteConnection(connectionId = connectionId)
+        }
+
+    override fun deleteConnection(
+        connectionId: String,
+        callback: (B2BSSODeleteConnectionResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            callback(deleteConnection(connectionId))
         }
     }
 }
