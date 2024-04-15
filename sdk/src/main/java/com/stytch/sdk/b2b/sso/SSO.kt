@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.app.Activity
+import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.common.Constants
 
@@ -70,4 +71,22 @@ public interface SSO {
         params: AuthenticateParams,
         callback: (SSOAuthenticateResponse) -> Unit,
     )
+
+    /**
+     *  Get all SSO Connections owned by the organization.
+     *  This method wraps the {@link https://stytch.com/docs/b2b/api/get-sso-connections Get SSO Connections} API
+     *  endpoint.
+     *  The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     *  @return [B2BSSOGetConnectionsResponse]
+     */
+    public suspend fun getConnections(): B2BSSOGetConnectionsResponse
+
+    /**
+     *  Get all SSO Connections owned by the organization.
+     *  This method wraps the {@link https://stytch.com/docs/b2b/api/get-sso-connections Get SSO Connections} API
+     *  endpoint.
+     *  The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     *  @param callback a callback that receives a [B2BSSOGetConnectionsResponse]
+     */
+    public fun getConnections(callback: (B2BSSOGetConnectionsResponse) -> Unit)
 }

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.net.Uri
+import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -82,6 +83,17 @@ internal class SSOImpl(
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(params)
             callback(result)
+        }
+    }
+
+    override suspend fun getConnections(): B2BSSOGetConnectionsResponse =
+        withContext(dispatchers.io) {
+            api.getConnections()
+        }
+
+    override fun getConnections(callback: (B2BSSOGetConnectionsResponse) -> Unit) {
+        externalScope.launch(dispatchers.ui) {
+            callback(getConnections())
         }
     }
 }

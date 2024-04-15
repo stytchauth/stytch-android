@@ -483,6 +483,15 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO getConnections calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoGetConnections() } returns mockk(relaxed = true)
+            StytchB2BApi.SSO.getConnections()
+            coVerify { StytchB2BApi.apiService.ssoGetConnections() }
+        }
+
+    @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

@@ -184,6 +184,9 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun ssoAuthenticate(
         @Body request: B2BRequests.SSO.AuthenticateRequest,
     ): B2BResponses.SSO.AuthenticateResponse
+
+    @GET("b2b/sso")
+    suspend fun ssoGetConnections(): B2BResponses.SSO.B2BSSOGetConnectionsResponse
     //endregion SSO
 
     //region Bootstrap

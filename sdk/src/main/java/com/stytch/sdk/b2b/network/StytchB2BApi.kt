@@ -7,6 +7,7 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailInvites
@@ -636,6 +637,11 @@ internal object StytchB2BApi {
                         codeVerifier = codeVerifier,
                     ),
                 )
+            }
+
+        suspend fun getConnections(): StytchResult<B2BSSOGetConnectionsResponseData> =
+            safeB2BApiCall {
+                apiService.ssoGetConnections()
             }
     }
 

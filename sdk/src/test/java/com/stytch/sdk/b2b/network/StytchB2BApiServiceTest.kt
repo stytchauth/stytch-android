@@ -789,6 +789,17 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check SSO getConnections request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.ssoGetConnections()
+            }.verifyGet(
+                expectedPath = "/b2b/sso",
+            )
+        }
+    }
     //endregion
 
     // region Bootstrap

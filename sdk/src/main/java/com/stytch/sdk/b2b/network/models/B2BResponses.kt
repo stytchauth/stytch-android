@@ -137,6 +137,11 @@ internal object B2BResponses {
         class AuthenticateResponse(
             data: SSOAuthenticateResponseData,
         ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOGetConnectionsResponse(
+            data: B2BSSOGetConnectionsResponseData,
+        ) : StytchDataResponse<B2BSSOGetConnectionsResponseData>(data)
     }
 
     object OTP {
