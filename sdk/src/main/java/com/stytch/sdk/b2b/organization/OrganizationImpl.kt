@@ -210,7 +210,7 @@ internal class OrganizationImpl(
         override suspend fun search(
             parameters: Organization.OrganizationMembers.SearchParameters,
         ): MemberSearchResponse =
-            withContext(dispatchers.ui) {
+            withContext(dispatchers.io) {
                 api.search(
                     cursor = parameters.cursor,
                     limit = parameters.limit,

@@ -30,7 +30,7 @@ internal class OAuthImpl(
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
     override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse =
-        withContext(dispatchers.ui) {
+        withContext(dispatchers.io) {
             val pkce =
                 storageHelper.retrieveCodeVerifier()
                     ?: run {
@@ -113,7 +113,7 @@ internal class OAuthImpl(
         override suspend fun authenticate(
             parameters: OAuth.Discovery.DiscoveryAuthenticateParameters,
         ): OAuthDiscoveryAuthenticateResponse =
-            withContext(dispatchers.ui) {
+            withContext(dispatchers.io) {
                 val pkce =
                     storageHelper.retrieveCodeVerifier()
                         ?: run {

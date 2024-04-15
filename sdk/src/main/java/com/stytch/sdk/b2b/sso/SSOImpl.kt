@@ -141,7 +141,7 @@ internal class SSOImpl(
         override suspend fun updateConnection(
             parameters: SSO.SAML.UpdateParameters,
         ): B2BSSOSAMLUpdateConnectionResponse =
-            withContext(dispatchers.ui) {
+            withContext(dispatchers.io) {
                 api.samlUpdateConnection(
                     connectionId = parameters.connectionId,
                     idpEntityId = parameters.idpEntityId,
@@ -185,7 +185,7 @@ internal class SSOImpl(
         override suspend fun deleteVerificationCertificate(
             parameters: SSO.SAML.DeleteVerificationCertificateParameters,
         ): B2BSSOSAMLDeleteVerificationCertificateResponse =
-            withContext(dispatchers.ui) {
+            withContext(dispatchers.io) {
                 api.samlDeleteVerificationCertificate(
                     connectionId = parameters.connectionId,
                     certificateId = parameters.certificateId,
