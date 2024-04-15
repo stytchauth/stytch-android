@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.sso
 
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -133,6 +134,23 @@ internal class SSOImplTest {
         coEvery { mockApi.deleteConnection(any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(B2BSSODeleteConnectionResponse) -> Unit>()
         impl.deleteConnection("", mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO saml create delegates to api`() =
+        runTest {
+            coEvery { mockApi.samlCreateConnection(any()) } returns mockk(relaxed = true)
+            val parameters = SSO.SAML.CreateParameters(displayName = "my cool display name")
+            impl.saml.createConnection(parameters)
+            coVerify { mockApi.samlCreateConnection(displayName = parameters.displayName) }
+        }
+
+    @Test
+    fun `SSO saml create with callback calls callback method`() {
+        coEvery { mockApi.samlCreateConnection(any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(B2BSSOSAMLCreateConnectionResponse) -> Unit>()
+        impl.saml.createConnection(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

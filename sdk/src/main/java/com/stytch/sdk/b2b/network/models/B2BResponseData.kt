@@ -697,3 +697,9 @@ public data class B2BSSODeleteConnectionResponseData(
     @Json(name = "connection_id")
     val connectionId: String,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLCreateConnectionResponseData(
+    val connection: SAMLConnection,
+) : Parcelable

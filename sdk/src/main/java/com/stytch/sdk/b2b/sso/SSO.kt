@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.app.Activity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.common.Constants
 
@@ -107,4 +108,33 @@ public interface SSO {
         connectionId: String,
         callback: (B2BSSODeleteConnectionResponse) -> Unit,
     )
+
+    public val saml: SAML
+
+    public interface SAML {
+        /**
+         * Data class used for wrapping the parameters for an SSO SAML creation request
+         * @property displayName A human-readable display name for the connection.
+         */
+        public data class CreateParameters(
+            val displayName: String? = null,
+        )
+
+        /**
+         * Create a new SAML Connection.
+         * @param parameters The parameters required to create a new SAML connection
+         * @return [B2BSSOSAMLCreateConnectionResponse]
+         */
+        public suspend fun createConnection(parameters: CreateParameters): B2BSSOSAMLCreateConnectionResponse
+
+        /**
+         * Create a new SAML Connection.
+         * @param parameters The parameters required to create a new SAML connection
+         * @param callback a callback that receives a [B2BSSOSAMLCreateConnectionResponse]
+         */
+        public fun createConnection(
+            parameters: CreateParameters,
+            callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
+        )
+    }
 }

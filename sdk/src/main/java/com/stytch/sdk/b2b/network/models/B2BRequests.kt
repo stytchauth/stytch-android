@@ -198,6 +198,12 @@ internal object B2BRequests {
             @Json(name = "pkce_code_verifier")
             val codeVerifier: String,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class SAMLCreateRequest(
+            @Json(name = "display_name")
+            val displayName: String? = null,
+        )
     }
 
     object Session {

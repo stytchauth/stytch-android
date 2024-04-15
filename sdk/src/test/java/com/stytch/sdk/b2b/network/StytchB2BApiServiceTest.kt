@@ -812,6 +812,26 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check SSO SAML createConnection request`() {
+        runBlocking {
+            val displayName = "my cool saml connection name"
+            requestIgnoringResponseException {
+                apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }.verifyPost(
+                expectedPath = "/b2b/sso/saml",
+                expectedBody =
+                    mapOf(
+                        "display_name" to displayName,
+                    ),
+            )
+        }
+    }
     //endregion
 
     // region Bootstrap

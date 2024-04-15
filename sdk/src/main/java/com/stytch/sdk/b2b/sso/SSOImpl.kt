@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.net.Uri
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
+import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -109,6 +110,26 @@ internal class SSOImpl(
     ) {
         externalScope.launch(dispatchers.ui) {
             callback(deleteConnection(connectionId))
+        }
+    }
+
+    override val saml: SSO.SAML = SAMLImpl()
+
+    internal inner class SAMLImpl : SSO.SAML {
+        override suspend fun createConnection(
+            parameters: SSO.SAML.CreateParameters,
+        ): B2BSSOSAMLCreateConnectionResponse =
+            withContext(dispatchers.io) {
+                api.samlCreateConnection(displayName = parameters.displayName)
+            }
+
+        override fun createConnection(
+            parameters: SSO.SAML.CreateParameters,
+            callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(createConnection(parameters))
+            }
         }
     }
 }

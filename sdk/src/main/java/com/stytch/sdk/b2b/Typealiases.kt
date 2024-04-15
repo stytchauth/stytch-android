@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b
 
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
@@ -136,3 +137,5 @@ public typealias OAuthDiscoveryAuthenticateResponse = StytchResult<DiscoveryAuth
 public typealias B2BSSOGetConnectionsResponse = StytchResult<B2BSSOGetConnectionsResponseData>
 
 public typealias B2BSSODeleteConnectionResponse = StytchResult<B2BSSODeleteConnectionResponseData>
+
+public typealias B2BSSOSAMLCreateConnectionResponse = StytchResult<B2BSSOSAMLCreateConnectionResponseData>

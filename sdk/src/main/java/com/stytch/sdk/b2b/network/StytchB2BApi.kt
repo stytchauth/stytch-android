@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailInvites
@@ -648,6 +649,17 @@ internal object StytchB2BApi {
         suspend fun deleteConnection(connectionId: String): StytchResult<B2BSSODeleteConnectionResponseData> =
             safeB2BApiCall {
                 apiService.ssoDeleteConnection(connectionId = connectionId)
+            }
+
+        suspend fun samlCreateConnection(
+            displayName: String? = null,
+        ): StytchResult<B2BSSOSAMLCreateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
             }
     }
 

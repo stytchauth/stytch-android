@@ -502,6 +502,20 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO SAML createConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoSamlCreate(any()) } returns mockk(relaxed = true)
+            val displayName = "my cool saml connection"
+            StytchB2BApi.SSO.samlCreateConnection(displayName = displayName)
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(displayName = displayName),
+                )
+            }
+        }
+
+    @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true
