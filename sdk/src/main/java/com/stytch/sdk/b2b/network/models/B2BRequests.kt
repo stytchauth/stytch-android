@@ -230,6 +230,27 @@ internal object B2BRequests {
             @Json(name = "display_name")
             val displayName: String? = null,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class OIDCUpdateRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "display_name")
+            val displayName: String? = null,
+            val issuer: String? = null,
+            @Json(name = "client_id")
+            val clientId: String? = null,
+            @Json(name = "client_secret")
+            val clientSecret: String? = null,
+            @Json(name = "authorization_url")
+            val authorizationUrl: String? = null,
+            @Json(name = "token_url")
+            val tokenUrl: String? = null,
+            @Json(name = "userinfo_url")
+            val userInfoUrl: String? = null,
+            @Json(name = "jwks_url")
+            val jwksUrl: String? = null,
+        )
     }
 
     object Session {

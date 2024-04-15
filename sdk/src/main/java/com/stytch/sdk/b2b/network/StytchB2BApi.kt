@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
@@ -679,16 +680,17 @@ internal object StytchB2BApi {
             safeB2BApiCall {
                 apiService.ssoSamlUpdate(
                     connectionId = connectionId,
-                    B2BRequests.SSO.SAMLUpdateRequest(
-                        connectionId = connectionId,
-                        idpEntityId = idpEntityId,
-                        displayName = displayName,
-                        attributeMapping = attributeMapping,
-                        idpSsoUrl = idpSsoUrl,
-                        x509Certificate = x509Certificate,
-                        samlConnectionImplicitRoleAssignment = samlConnectionImplicitRoleAssignment,
-                        samlGroupImplicitRoleAssignment = samlGroupImplicitRoleAssignment,
-                    ),
+                    request =
+                        B2BRequests.SSO.SAMLUpdateRequest(
+                            connectionId = connectionId,
+                            idpEntityId = idpEntityId,
+                            displayName = displayName,
+                            attributeMapping = attributeMapping,
+                            idpSsoUrl = idpSsoUrl,
+                            x509Certificate = x509Certificate,
+                            samlConnectionImplicitRoleAssignment = samlConnectionImplicitRoleAssignment,
+                            samlGroupImplicitRoleAssignment = samlGroupImplicitRoleAssignment,
+                        ),
                 )
             }
 
@@ -700,6 +702,35 @@ internal object StytchB2BApi {
                     B2BRequests.SSO.OIDCCreateRequest(
                         displayName = displayName,
                     ),
+                )
+            }
+
+        suspend fun oidcUpdateConnection(
+            connectionId: String,
+            displayName: String? = null,
+            issuer: String? = null,
+            clientId: String? = null,
+            clientSecret: String? = null,
+            authorizationUrl: String? = null,
+            tokenUrl: String? = null,
+            userInfoUrl: String? = null,
+            jwksUrl: String? = null,
+        ): StytchResult<B2BSSOOIDCUpdateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoOidcUpdate(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SSO.OIDCUpdateRequest(
+                            connectionId = connectionId,
+                            displayName = displayName,
+                            issuer = issuer,
+                            clientId = clientId,
+                            clientSecret = clientSecret,
+                            authorizationUrl = authorizationUrl,
+                            tokenUrl = tokenUrl,
+                            userInfoUrl = userInfoUrl,
+                            jwksUrl = jwksUrl,
+                        ),
                 )
             }
     }

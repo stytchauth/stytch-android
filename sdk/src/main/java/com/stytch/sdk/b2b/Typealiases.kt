@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
@@ -145,3 +146,5 @@ public typealias B2BSSOSAMLCreateConnectionResponse = StytchResult<B2BSSOSAMLCre
 public typealias B2BSSOSAMLUpdateConnectionResponse = StytchResult<B2BSSOSAMLUpdateConnectionResponseData>
 
 public typealias B2BSSOOIDCCreateConnectionResponse = StytchResult<B2BSSOOIDCCreateConnectionResponseData>
+
+public typealias B2BSSOOIDCUpdateConnectionResponse = StytchResult<B2BSSOOIDCUpdateConnectionResponseData>

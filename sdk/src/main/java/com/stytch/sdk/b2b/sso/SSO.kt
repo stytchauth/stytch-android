@@ -4,6 +4,7 @@ import android.app.Activity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
@@ -215,6 +216,53 @@ public interface SSO {
         public fun createConnection(
             parameters: CreateParameters,
             callback: (B2BSSOOIDCCreateConnectionResponse) -> Unit,
+        )
+
+        /**
+         * Data class used for wrapping the parameters for an OIDC update request
+         * @property connectionId Globally unique UUID that identifies a specific OIDC Connection.
+         * @property displayName  A human-readable display name for the connection.
+         * @property issuer A case-sensitive `https://` URL that uniquely identifies the IdP. This will be provided by
+         * the IdP.
+         * @property clientId The OAuth2.0 client ID used to authenticate login attempts. This will be provided by the
+         * IdP.
+         * @property clientSecret The secret belonging to the OAuth2.0 client used to authenticate login attempts. This
+         * will be provided by the IdP.
+         * @property authorizationUrl The location of the URL that starts an OAuth login at the IdP. This will be
+         * provided by the IdP.
+         * @property tokenUrl The location of the URL that issues OAuth2.0 access tokens and OIDC ID tokens. This will
+         * be provided by the IdP.
+         * @property userInfoUrl The location of the IDP's UserInfo Endpoint. This will be provided by the IdP.
+         * @property jwksUrl The location of the IdP's JSON Web Key Set, used to verify credentials issued by the IdP.
+         * This will be provided by the IdP.
+         */
+        public data class UpdateParameters(
+            val connectionId: String,
+            val displayName: String? = null,
+            val issuer: String? = null,
+            val clientId: String? = null,
+            val clientSecret: String? = null,
+            val authorizationUrl: String? = null,
+            val tokenUrl: String? = null,
+            val userInfoUrl: String? = null,
+            val jwksUrl: String? = null,
+        )
+
+        /**
+         * Update an OIDC Connection.
+         * @param parameters The parameters required to update an OIDC connection
+         * @return [B2BSSOOIDCUpdateConnectionResponse]
+         */
+        public suspend fun updateConnection(parameters: UpdateParameters): B2BSSOOIDCUpdateConnectionResponse
+
+        /**
+         * Update an OIDC Connection.
+         * @param parameters The parameters required to update an OIDC connection
+         * @param callback a callback that receives a [B2BSSOOIDCUpdateConnectionResponse]
+         */
+        public fun updateConnection(
+            parameters: UpdateParameters,
+            callback: (B2BSSOOIDCUpdateConnectionResponse) -> Unit,
         )
     }
 }

@@ -208,6 +208,12 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun ssoOidcCreate(
         @Body request: B2BRequests.SSO.OIDCCreateRequest,
     ): B2BResponses.SSO.B2BSSOOIDCCreateConnectionResponse
+
+    @PUT("b2b/sso/oidc/{connectionId}")
+    suspend fun ssoOidcUpdate(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SSO.OIDCUpdateRequest,
+    ): B2BResponses.SSO.B2BSSOOIDCUpdateConnectionResponse
     //endregion SSO
 
     //region Bootstrap

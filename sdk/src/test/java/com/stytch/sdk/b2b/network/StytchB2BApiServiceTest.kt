@@ -902,6 +902,41 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check SSO OIDC updateConnection request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.OIDCUpdateRequest(
+                    connectionId = "my-connection-id",
+                    displayName = "display name",
+                    issuer = "issuer",
+                    clientId = "client-id",
+                    clientSecret = "client-secret",
+                    authorizationUrl = "authorization.url",
+                    tokenUrl = "token.url",
+                    userInfoUrl = "userInfo.url",
+                    jwksUrl = "jwks.url",
+                )
+            requestIgnoringResponseException {
+                apiService.ssoOidcUpdate(parameters.connectionId, parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/oidc/${parameters.connectionId}",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "display_name" to parameters.displayName,
+                        "issuer" to parameters.issuer,
+                        "client_id" to parameters.clientId,
+                        "client_secret" to parameters.clientSecret,
+                        "authorization_url" to parameters.authorizationUrl,
+                        "token_url" to parameters.tokenUrl,
+                        "userinfo_url" to parameters.userInfoUrl,
+                        "jwks_url" to parameters.jwksUrl,
+                    ),
+            )
+        }
+    }
     //endregion
 
     // region Bootstrap

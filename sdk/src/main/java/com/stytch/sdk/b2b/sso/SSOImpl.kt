@@ -4,6 +4,7 @@ import android.net.Uri
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
+import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
@@ -118,8 +119,6 @@ internal class SSOImpl(
 
     override val saml: SSO.SAML = SAMLImpl()
 
-    override val oidc: SSO.OIDC = OIDCImpl()
-
     internal inner class SAMLImpl : SSO.SAML {
         override suspend fun createConnection(
             parameters: SSO.SAML.CreateParameters,
@@ -163,6 +162,8 @@ internal class SSOImpl(
         }
     }
 
+    override val oidc: SSO.OIDC = OIDCImpl()
+
     internal inner class OIDCImpl : SSO.OIDC {
         override suspend fun createConnection(
             parameters: SSO.OIDC.CreateParameters,
@@ -177,6 +178,32 @@ internal class SSOImpl(
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(createConnection(parameters))
+            }
+        }
+
+        override suspend fun updateConnection(
+            parameters: SSO.OIDC.UpdateParameters,
+        ): B2BSSOOIDCUpdateConnectionResponse =
+            withContext(dispatchers.io) {
+                api.oidcUpdateConnection(
+                    connectionId = parameters.connectionId,
+                    displayName = parameters.displayName,
+                    issuer = parameters.issuer,
+                    clientId = parameters.clientId,
+                    clientSecret = parameters.clientSecret,
+                    authorizationUrl = parameters.authorizationUrl,
+                    tokenUrl = parameters.tokenUrl,
+                    userInfoUrl = parameters.userInfoUrl,
+                    jwksUrl = parameters.jwksUrl,
+                )
+            }
+
+        override fun updateConnection(
+            parameters: SSO.OIDC.UpdateParameters,
+            callback: (B2BSSOOIDCUpdateConnectionResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(updateConnection(parameters))
             }
         }
     }

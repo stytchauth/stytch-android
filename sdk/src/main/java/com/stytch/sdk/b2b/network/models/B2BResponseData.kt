@@ -715,3 +715,10 @@ public data class B2BSSOOIDCCreateConnectionResponseData(
 public data class B2BSSOSAMLUpdateConnectionResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOOIDCUpdateConnectionResponseData(
+    val connection: OIDCConnection,
+    val warning: String? = null,
+) : Parcelable
