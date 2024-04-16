@@ -354,7 +354,44 @@ public data class BootstrapData(
 public data class RBACPolicy(
     val roles: List<RBACPolicyRole>,
     val resources: List<RBACPolicyResource>,
-) : Parcelable
+) : Parcelable {
+    private val rolesByID: Map<String, RBACPolicyRole>
+        get() {
+            val map = mutableMapOf<String, RBACPolicyRole>()
+            roles.forEach { role ->
+                map[role.roleId] = role
+            }
+            return map
+        }
+
+    public fun callerIsAuthorized(
+        memberRoles: List<String>,
+        resourceId: String,
+        action: String,
+    ): Boolean {
+        val permission =
+            memberRoles
+                .mapNotNull { roleId -> rolesByID[roleId] }
+                .flatMap { role -> role.permissions }
+                .filter { permission -> permission.resourceId == resourceId }
+                .find { permission ->
+                    permission.actions.contains(action) || permission.actions.contains("*")
+                }
+        return permission != null
+    }
+
+    public fun allPermissionsForCaller(memberRoles: List<String>): Map<String, Map<String, Boolean>> {
+        val allPermissionsMap = mutableMapOf<String, Map<String, Boolean>>()
+        resources.forEach { resource ->
+            val actionMap = mutableMapOf<String, Boolean>()
+            resource.actions.forEach { action ->
+                actionMap[action] = callerIsAuthorized(memberRoles, resource.resourceId, action)
+            }
+            allPermissionsMap[resource.resourceId] = actionMap
+        }
+        return allPermissionsMap
+    }
+}
 
 @JsonClass(generateAdapter = true)
 @Parcelize

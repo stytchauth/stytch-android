@@ -71,6 +71,7 @@ public data class B2BSessionData(
     val authenticationFactors: List<AuthenticationFactor>,
     @Json(name = "custom_claims")
     val customClaims: @RawValue Map<String, Any?>?,
+    val roles: List<String>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
