@@ -7,6 +7,7 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.oauth.OAuth
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
@@ -54,6 +55,9 @@ internal class StytchB2BClientTest {
     @MockK
     private lateinit var mockMagicLinks: B2BMagicLinks
 
+    @MockK
+    private lateinit var mockOAuth: OAuth
+
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
@@ -87,6 +91,7 @@ internal class StytchB2BClientTest {
         MockKAnnotations.init(this, true, true)
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchB2BClient.magicLinks = mockMagicLinks
+        StytchB2BClient.oauth = mockOAuth
         StytchB2BClient.externalScope = TestScope()
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchB2BClient.dfpProvider = mockk()
@@ -370,7 +375,7 @@ internal class StytchB2BClientTest {
     }
 
     @Test
-    fun `handle with coroutines returns NotHandled with correct error  when token is OAUTH`() {
+    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
         runBlocking {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
@@ -379,9 +384,10 @@ internal class StytchB2BClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns "OAUTH"
                 }
+            val mockAuthResponse = mockk<OAuthAuthenticateResponse>()
+            coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
-            require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 

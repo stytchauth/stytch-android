@@ -1,5 +1,13 @@
 package com.stytch.sdk.b2b
 
+import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLDeleteVerificationCertificateResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
@@ -130,3 +138,20 @@ public typealias RecoveryCodesRecoverResponse = StytchResult<RecoveryCodeRecover
 public typealias OAuthAuthenticateResponse = StytchResult<OAuthAuthenticateResponseData>
 
 public typealias OAuthDiscoveryAuthenticateResponse = StytchResult<DiscoveryAuthenticateResponseData>
+
+public typealias B2BSSOGetConnectionsResponse = StytchResult<B2BSSOGetConnectionsResponseData>
+
+public typealias B2BSSODeleteConnectionResponse = StytchResult<B2BSSODeleteConnectionResponseData>
+
+public typealias B2BSSOSAMLCreateConnectionResponse = StytchResult<B2BSSOSAMLCreateConnectionResponseData>
+
+public typealias B2BSSOSAMLUpdateConnectionResponse = StytchResult<B2BSSOSAMLUpdateConnectionResponseData>
+
+public typealias B2BSSOSAMLUpdateConnectionByURLResponse = StytchResult<B2BSSOSAMLUpdateConnectionByURLResponseData>
+
+public typealias B2BSSOSAMLDeleteVerificationCertificateResponse =
+    StytchResult<B2BSSOSAMLDeleteVerificationCertificateResponseData>
+
+public typealias B2BSSOOIDCCreateConnectionResponse = StytchResult<B2BSSOOIDCCreateConnectionResponseData>
+
+public typealias B2BSSOOIDCUpdateConnectionResponse = StytchResult<B2BSSOOIDCUpdateConnectionResponseData>

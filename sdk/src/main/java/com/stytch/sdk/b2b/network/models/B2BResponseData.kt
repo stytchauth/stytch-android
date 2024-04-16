@@ -131,7 +131,7 @@ public data class OrganizationData(
     @Json(name = "organization_id")
     val organizationId: String,
     @Json(name = "organization_name")
-    val organizatioName: String,
+    val organizationName: String,
     @Json(name = "organization_slug")
     val organizationSlug: String,
     @Json(name = "organization_logo_url")
@@ -591,6 +591,147 @@ public data class OAuthProviderValues(
     @Json(name = "id_token")
     val idToken: String,
     @Json(name = "refresh_token")
-    val refreshToken: String,
+    val refreshToken: String? = null,
     val scopes: List<String> = emptyList(),
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOGetConnectionsResponseData(
+    @Json(name = "saml_connections")
+    val samlConnections: List<SAMLConnection>,
+    @Json(name = "oidc_connections")
+    val oidcConnections: List<OIDCConnection>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SAMLConnection(
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "connection_id")
+    val connectionId: String,
+    val status: String,
+    @Json(name = "attribute_mapping")
+    val attributeMapping: Map<String, String>,
+    @Json(name = "idp_entity_id")
+    val idpEntityId: String,
+    @Json(name = "display_name")
+    val displayName: String,
+    @Json(name = "idp_sso_url")
+    val idpSSOUrl: String,
+    @Json(name = "acs_url")
+    val acsUrl: String,
+    @Json(name = "audience_uri")
+    val audienceUri: String,
+    @Json(name = "signing_certificates")
+    val signingCertificate: List<X509Certificate>,
+    @Json(name = "verification_certificates")
+    val verificationCertificates: List<X509Certificate>,
+    @Json(name = "saml_connection_implicit_role_assignments")
+    val samlConnectionImplicitRoleAssignments: List<ConnectionRoleAssignment>,
+    @Json(name = "saml_group_implicit_role_assignments")
+    val samlGroupImplicitRoleAssignments: List<GroupRoleAssignment>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class X509Certificate(
+    @Json(name = "certificate_id")
+    val certificateId: String,
+    @Json(name = "certificate")
+    val certificate: String,
+    @Json(name = "issuer")
+    val issuer: String,
+    @Json(name = "created_at")
+    val createdAt: String? = null,
+    @Json(name = "expires_at")
+    val expiresAt: String? = null,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class ConnectionRoleAssignment(
+    @Json(name = "role_id")
+    val roleId: String,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class GroupRoleAssignment(
+    @Json(name = "role_id")
+    val roleId: String,
+    val group: String,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OIDCConnection(
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "connection_id")
+    val connectionId: String,
+    val status: String,
+    @Json(name = "display_name")
+    val displayName: String,
+    @Json(name = "redirect_url")
+    val redirectUrl: String,
+    val issuer: String,
+    @Json(name = "client_id")
+    val clientId: String,
+    @Json(name = "client_secret")
+    val clientSecret: String,
+    @Json(name = "authorization_url")
+    val authorizationUrl: String,
+    @Json(name = "token_url")
+    val tokenUrl: String,
+    @Json(name = "userinfo_url")
+    val userInfoUrl: String,
+    @Json(name = "jwks_url")
+    val jwksUrl: String,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSODeleteConnectionResponseData(
+    @Json(name = "connection_id")
+    val connectionId: String,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLCreateConnectionResponseData(
+    val connection: SAMLConnection,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOOIDCCreateConnectionResponseData(
+    val connection: OIDCConnection,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLUpdateConnectionResponseData(
+    val connection: SAMLConnection,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOOIDCUpdateConnectionResponseData(
+    val connection: OIDCConnection,
+    val warning: String? = null,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLUpdateConnectionByURLResponseData(
+    val connection: SAMLConnection,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSSOSAMLDeleteVerificationCertificateResponseData(
+    @Json(name = "certificate_id")
+    val certificateId: String,
 ) : Parcelable

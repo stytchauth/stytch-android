@@ -1,5 +1,6 @@
 package com.stytch.sdk.utils
 
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
@@ -39,7 +40,9 @@ private fun compare(
             JsonArray(expectedValue.size).apply {
                 expectedValue.forEach {
                     if (it is Map<*, *>) {
-                        add(JsonParser.parseString(it.toString()))
+                        val gson = GsonBuilder().create()
+                        val json = gson.toJson(it)
+                        add(JsonParser.parseString(json))
                     } else {
                         add(it.toString())
                     }

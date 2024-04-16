@@ -27,6 +27,16 @@
     <string name="sso">SSO</string>
     <string name="sso_connection_id">Connection ID</string>
     <string name="sso_start">Start SSO Flow</string>
+    <string name="sso_metadata_url">Metadata URL</string>
+    <string name="sso_certificate_id">Certificate ID</string>
+    <string name="sso_get_connections">Get Connections</string>
+    <string name="sso_delete_connection">Delete Connection</string>
+    <string name="sso_saml_create">Create SAML Connection</string>
+    <string name="sso_saml_update">Update SAML Connection</string>
+    <string name="sso_saml_update_url">Update SAML URL</string>
+    <string name="sso_saml_delete_certificate">SAML Delete Certificate</string>
+    <string name="sso_oidc_create">Create OIDC Connection</string>
+    <string name="sso_oidc_update">Update OIDC Connection</string>
     <string name="member">Member</string>
     <string name="member_name">Member Name</string>
     <string name="update_name">Update Member Name</string>

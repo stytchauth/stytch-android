@@ -137,6 +137,46 @@ internal object B2BResponses {
         class AuthenticateResponse(
             data: SSOAuthenticateResponseData,
         ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOGetConnectionsResponse(
+            data: B2BSSOGetConnectionsResponseData,
+        ) : StytchDataResponse<B2BSSOGetConnectionsResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSODeleteConnectionResponse(
+            data: B2BSSODeleteConnectionResponseData,
+        ) : StytchDataResponse<B2BSSODeleteConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLCreateConnectionResponse(
+            data: B2BSSOSAMLCreateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLCreateConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOOIDCCreateConnectionResponse(
+            data: B2BSSOOIDCCreateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOOIDCCreateConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLUpdateConnectionResponse(
+            data: B2BSSOSAMLUpdateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLUpdateConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOOIDCUpdateConnectionResponse(
+            data: B2BSSOOIDCUpdateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOOIDCUpdateConnectionResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLUpdateConnectionByURLResponse(
+            data: B2BSSOSAMLUpdateConnectionByURLResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLUpdateConnectionByURLResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLDeleteVerificationCertificateResponse(
+            data: B2BSSOSAMLDeleteVerificationCertificateResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLDeleteVerificationCertificateResponseData>(data)
     }
 
     object OTP {

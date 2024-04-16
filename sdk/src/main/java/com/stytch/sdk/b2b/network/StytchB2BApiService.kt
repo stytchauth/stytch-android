@@ -184,6 +184,48 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun ssoAuthenticate(
         @Body request: B2BRequests.SSO.AuthenticateRequest,
     ): B2BResponses.SSO.AuthenticateResponse
+
+    @GET("b2b/sso")
+    suspend fun ssoGetConnections(): B2BResponses.SSO.B2BSSOGetConnectionsResponse
+
+    @DELETE("b2b/sso/{connectionId}")
+    suspend fun ssoDeleteConnection(
+        @Path(value = "connectionId") connectionId: String,
+    ): B2BResponses.SSO.B2BSSODeleteConnectionResponse
+
+    @POST("b2b/sso/saml")
+    suspend fun ssoSamlCreate(
+        @Body request: B2BRequests.SSO.SAMLCreateRequest,
+    ): B2BResponses.SSO.B2BSSOSAMLCreateConnectionResponse
+
+    @PUT("b2b/sso/saml/{connectionId}")
+    suspend fun ssoSamlUpdate(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SSO.SAMLUpdateRequest,
+    ): B2BResponses.SSO.B2BSSOSAMLUpdateConnectionResponse
+
+    @PUT("b2b/sso/saml/{connectionId}/url")
+    suspend fun ssoSamlUpdateByUrl(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest,
+    ): B2BResponses.SSO.B2BSSOSAMLUpdateConnectionByURLResponse
+
+    @DELETE("b2b/sso/saml/{connectionId}/verification_certificates/{certificateId}")
+    suspend fun ssoSamlDeleteVerificationCertificate(
+        @Path(value = "connectionId") connectionId: String,
+        @Path(value = "certificateId") certificateId: String,
+    ): B2BResponses.SSO.B2BSSOSAMLDeleteVerificationCertificateResponse
+
+    @POST("b2b/sso/oidc")
+    suspend fun ssoOidcCreate(
+        @Body request: B2BRequests.SSO.OIDCCreateRequest,
+    ): B2BResponses.SSO.B2BSSOOIDCCreateConnectionResponse
+
+    @PUT("b2b/sso/oidc/{connectionId}")
+    suspend fun ssoOidcUpdate(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SSO.OIDCUpdateRequest,
+    ): B2BResponses.SSO.B2BSSOOIDCUpdateConnectionResponse
     //endregion SSO
 
     //region Bootstrap

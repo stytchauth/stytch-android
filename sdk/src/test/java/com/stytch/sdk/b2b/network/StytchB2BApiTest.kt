@@ -483,6 +483,117 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchB2BApi SSO getConnections calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoGetConnections() } returns mockk(relaxed = true)
+            StytchB2BApi.SSO.getConnections()
+            coVerify { StytchB2BApi.apiService.ssoGetConnections() }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO deleteConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoDeleteConnection(any()) } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            StytchB2BApi.SSO.deleteConnection(connectionId = connectionId)
+            coVerify { StytchB2BApi.apiService.ssoDeleteConnection(connectionId) }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO SAML createConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoSamlCreate(any()) } returns mockk(relaxed = true)
+            val displayName = "my cool saml connection"
+            StytchB2BApi.SSO.samlCreateConnection(displayName = displayName)
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(displayName = displayName),
+                )
+            }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO SAML updateConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoSamlUpdate(any(), any()) } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            StytchB2BApi.SSO.samlUpdateConnection(connectionId = connectionId)
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlUpdate(connectionId = connectionId, any())
+            }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO SAML updateConnectionByUrl calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoSamlUpdateByUrl(any(), any()) } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            val metadataUrl = "metadata.url"
+            StytchB2BApi.SSO.samlUpdateByUrl(connectionId = connectionId, metadataUrl = metadataUrl)
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlUpdateByUrl(connectionId = connectionId, any())
+            }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO SAML samlDeleteVerificationCertificate calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery {
+                StytchB2BApi.apiService.ssoSamlDeleteVerificationCertificate(
+                    any(),
+                    any(),
+                )
+            } returns mockk(relaxed = true)
+            val connectionId = "my-connection-id"
+            val certificateId = "mt-certificate-id"
+            StytchB2BApi.SSO.samlDeleteVerificationCertificate(
+                connectionId = connectionId,
+                certificateId = certificateId,
+            )
+            coVerify {
+                StytchB2BApi.apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
+                )
+            }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO OIDC createConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoOidcCreate(any()) } returns mockk(relaxed = true)
+            val displayName = "my cool oidc connection"
+            StytchB2BApi.SSO.oidcCreateConnection(displayName = displayName)
+            coVerify {
+                StytchB2BApi.apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(displayName = displayName),
+                )
+            }
+        }
+
+    @Test
+    fun `StytchB2BApi SSO OIDC updateConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.ssoOidcUpdate(any(), any()) } returns mockk(relaxed = true)
+            val connectionId = "my-cool-oidc-connection"
+            StytchB2BApi.SSO.oidcUpdateConnection(connectionId = connectionId)
+            coVerify {
+                StytchB2BApi.apiService.ssoOidcUpdate(
+                    connectionId = connectionId,
+                    request = B2BRequests.SSO.OIDCUpdateRequest(connectionId = connectionId),
+                )
+            }
+        }
+
+    @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
         runTest {
             every { StytchB2BApi.isInitialized } returns true

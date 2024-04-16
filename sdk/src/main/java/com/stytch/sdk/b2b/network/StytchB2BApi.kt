@@ -7,11 +7,21 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLDeleteVerificationCertificateResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
+import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
@@ -635,6 +645,120 @@ internal object StytchB2BApi {
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         codeVerifier = codeVerifier,
                     ),
+                )
+            }
+
+        suspend fun getConnections(): StytchResult<B2BSSOGetConnectionsResponseData> =
+            safeB2BApiCall {
+                apiService.ssoGetConnections()
+            }
+
+        suspend fun deleteConnection(connectionId: String): StytchResult<B2BSSODeleteConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoDeleteConnection(connectionId = connectionId)
+            }
+
+        suspend fun samlCreateConnection(
+            displayName: String? = null,
+        ): StytchResult<B2BSSOSAMLCreateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }
+
+        suspend fun samlUpdateConnection(
+            connectionId: String,
+            idpEntityId: String? = null,
+            displayName: String? = null,
+            attributeMapping: Map<String, String>? = null,
+            idpSsoUrl: String? = null,
+            x509Certificate: String? = null,
+            samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+            samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+        ): StytchResult<B2BSSOSAMLUpdateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlUpdate(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SSO.SAMLUpdateRequest(
+                            connectionId = connectionId,
+                            idpEntityId = idpEntityId,
+                            displayName = displayName,
+                            attributeMapping = attributeMapping,
+                            idpSsoUrl = idpSsoUrl,
+                            x509Certificate = x509Certificate,
+                            samlConnectionImplicitRoleAssignment = samlConnectionImplicitRoleAssignment,
+                            samlGroupImplicitRoleAssignment = samlGroupImplicitRoleAssignment,
+                        ),
+                )
+            }
+
+        suspend fun samlUpdateByUrl(
+            connectionId: String,
+            metadataUrl: String,
+        ): StytchResult<B2BSSOSAMLUpdateConnectionByURLResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlUpdateByUrl(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest(
+                            connectionId = connectionId,
+                            metadataUrl = metadataUrl,
+                        ),
+                )
+            }
+
+        suspend fun samlDeleteVerificationCertificate(
+            connectionId: String,
+            certificateId: String,
+        ): StytchResult<B2BSSOSAMLDeleteVerificationCertificateResponseData> =
+            safeB2BApiCall {
+                apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
+                )
+            }
+
+        suspend fun oidcCreateConnection(
+            displayName: String? = null,
+        ): StytchResult<B2BSSOOIDCCreateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }
+
+        suspend fun oidcUpdateConnection(
+            connectionId: String,
+            displayName: String? = null,
+            issuer: String? = null,
+            clientId: String? = null,
+            clientSecret: String? = null,
+            authorizationUrl: String? = null,
+            tokenUrl: String? = null,
+            userInfoUrl: String? = null,
+            jwksUrl: String? = null,
+        ): StytchResult<B2BSSOOIDCUpdateConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoOidcUpdate(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SSO.OIDCUpdateRequest(
+                            connectionId = connectionId,
+                            displayName = displayName,
+                            issuer = issuer,
+                            clientId = clientId,
+                            clientSecret = clientSecret,
+                            authorizationUrl = authorizationUrl,
+                            tokenUrl = tokenUrl,
+                            userInfoUrl = userInfoUrl,
+                            jwksUrl = jwksUrl,
+                        ),
                 )
             }
     }

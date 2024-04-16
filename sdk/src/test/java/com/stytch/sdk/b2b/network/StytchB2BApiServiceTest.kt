@@ -3,8 +3,10 @@ package com.stytch.sdk.b2b.network
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BRequests
+import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
+import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
@@ -22,6 +24,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.x509Certificate
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -785,6 +788,188 @@ internal class StytchB2BApiServiceTest {
                         "sso_token" to parameters.ssoToken,
                         "session_duration_minutes" to parameters.sessionDurationMinutes,
                         "pkce_code_verifier" to parameters.codeVerifier,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO getConnections request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.ssoGetConnections()
+            }.verifyGet(
+                expectedPath = "/b2b/sso",
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO deleteConnection request`() {
+        runBlocking {
+            val connectionId = "my-connection-id"
+            requestIgnoringResponseException {
+                apiService.ssoDeleteConnection(connectionId = connectionId)
+            }.verifyDelete(
+                expectedPath = "/b2b/sso/$connectionId",
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO SAML createConnection request`() {
+        runBlocking {
+            val displayName = "my cool saml connection name"
+            requestIgnoringResponseException {
+                apiService.ssoSamlCreate(
+                    B2BRequests.SSO.SAMLCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }.verifyPost(
+                expectedPath = "/b2b/sso/saml",
+                expectedBody =
+                    mapOf(
+                        "display_name" to displayName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO SAML updateConnection request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.SAMLUpdateRequest(
+                    connectionId = "my-connection-id",
+                    idpEntityId = "idp-entity-id",
+                    displayName = "display-name",
+                    attributeMapping = mapOf("email" to "robot@stytch.com"),
+                    idpSsoUrl = "idp-sso-url",
+                    x509Certificate = "x509-certificate-pem",
+                    samlConnectionImplicitRoleAssignment = listOf(ConnectionRoleAssignment(roleId = "my-cool-role")),
+                    samlGroupImplicitRoleAssignment =
+                        listOf(
+                            GroupRoleAssignment(roleId = "my-cool-role", group = "my group"),
+                        ),
+                )
+            requestIgnoringResponseException {
+                apiService.ssoSamlUpdate(parameters.connectionId, parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/saml/${parameters.connectionId}",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "idp_entity_id" to parameters.idpEntityId,
+                        "display_name" to parameters.displayName,
+                        "attribute_mapping" to parameters.attributeMapping,
+                        "idp_sso_url" to parameters.idpSsoUrl,
+                        "x509_certificate" to parameters.x509Certificate,
+                        "saml_connection_implicit_role_assignments" to
+                            parameters.samlConnectionImplicitRoleAssignment?.map {
+                                mapOf(
+                                    "role_id" to it.roleId,
+                                )
+                            },
+                        "saml_group_implicit_role_assignments" to
+                            parameters.samlGroupImplicitRoleAssignment?.map {
+                                mapOf(
+                                    "role_id" to it.roleId,
+                                    "group" to it.group,
+                                )
+                            },
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO Saml updateConnectionByUrl request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.B2BSSOSAMLUpdateConnectionByURLRequest(
+                    connectionId = "my-connection-id",
+                    metadataUrl = "metadata.url",
+                )
+            requestIgnoringResponseException {
+                apiService.ssoSamlUpdateByUrl(connectionId = parameters.connectionId, request = parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/saml/${parameters.connectionId}/url",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "metadata_url" to parameters.metadataUrl,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO SAML ssoSamlDeleteVerificationCertificate request`() {
+        runBlocking {
+            val connectionId = "my-connection-id"
+            val certificateId = "my-certificate-id"
+            requestIgnoringResponseException {
+                apiService.ssoSamlDeleteVerificationCertificate(
+                    connectionId = connectionId,
+                    certificateId = certificateId,
+                )
+            }.verifyDelete(
+                expectedPath = "/b2b/sso/saml/$connectionId/verification_certificates/$certificateId",
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO OIDC createConnection request`() {
+        runBlocking {
+            val displayName = "my cool oidc connection name"
+            requestIgnoringResponseException {
+                apiService.ssoOidcCreate(
+                    B2BRequests.SSO.OIDCCreateRequest(
+                        displayName = displayName,
+                    ),
+                )
+            }.verifyPost(
+                expectedPath = "/b2b/sso/oidc",
+                expectedBody =
+                    mapOf(
+                        "display_name" to displayName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SSO OIDC updateConnection request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.SSO.OIDCUpdateRequest(
+                    connectionId = "my-connection-id",
+                    displayName = "display name",
+                    issuer = "issuer",
+                    clientId = "client-id",
+                    clientSecret = "client-secret",
+                    authorizationUrl = "authorization.url",
+                    tokenUrl = "token.url",
+                    userInfoUrl = "userInfo.url",
+                    jwksUrl = "jwks.url",
+                )
+            requestIgnoringResponseException {
+                apiService.ssoOidcUpdate(parameters.connectionId, parameters)
+            }.verifyPut(
+                expectedPath = "/b2b/sso/oidc/${parameters.connectionId}",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "display_name" to parameters.displayName,
+                        "issuer" to parameters.issuer,
+                        "client_id" to parameters.clientId,
+                        "client_secret" to parameters.clientSecret,
+                        "authorization_url" to parameters.authorizationUrl,
+                        "token_url" to parameters.tokenUrl,
+                        "userinfo_url" to parameters.userInfoUrl,
+                        "jwks_url" to parameters.jwksUrl,
                     ),
             )
         }

@@ -198,6 +198,75 @@ internal object B2BRequests {
             @Json(name = "pkce_code_verifier")
             val codeVerifier: String,
         )
+
+        @JsonClass(generateAdapter = true)
+        data class SAMLCreateRequest(
+            @Json(name = "display_name")
+            val displayName: String? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class SAMLUpdateRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "idp_entity_id")
+            val idpEntityId: String? = null,
+            @Json(name = "display_name")
+            val displayName: String? = null,
+            @Json(name = "attribute_mapping")
+            val attributeMapping: Map<String, String>? = null,
+            @Json(name = "idp_sso_url")
+            val idpSsoUrl: String? = null,
+            @Json(name = "x509_certificate")
+            val x509Certificate: String? = null,
+            @Json(name = "saml_connection_implicit_role_assignments")
+            val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+            @Json(name = "saml_group_implicit_role_assignments")
+            val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class B2BSSOSAMLUpdateConnectionByURLRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "metadata_url")
+            val metadataUrl: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class B2BSSOSAMLDeleteVerificationCertificateRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "certificate_id")
+            val certificateId: String,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class OIDCCreateRequest(
+            @Json(name = "display_name")
+            val displayName: String? = null,
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class OIDCUpdateRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "display_name")
+            val displayName: String? = null,
+            val issuer: String? = null,
+            @Json(name = "client_id")
+            val clientId: String? = null,
+            @Json(name = "client_secret")
+            val clientSecret: String? = null,
+            @Json(name = "authorization_url")
+            val authorizationUrl: String? = null,
+            @Json(name = "token_url")
+            val tokenUrl: String? = null,
+            @Json(name = "userinfo_url")
+            val userInfoUrl: String? = null,
+            @Json(name = "jwks_url")
+            val jwksUrl: String? = null,
+        )
     }
 
     object Session {
