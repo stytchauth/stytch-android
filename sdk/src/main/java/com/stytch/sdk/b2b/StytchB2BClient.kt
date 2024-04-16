@@ -21,6 +21,8 @@ import com.stytch.sdk.b2b.otp.OTP
 import com.stytch.sdk.b2b.otp.OTPImpl
 import com.stytch.sdk.b2b.passwords.Passwords
 import com.stytch.sdk.b2b.passwords.PasswordsImpl
+import com.stytch.sdk.b2b.rbac.RBAC
+import com.stytch.sdk.b2b.rbac.RBACImpl
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodes
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodesImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -107,11 +109,7 @@ public object StytchB2BClient {
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider = DFPProviderImpl(publicToken, activityProvider)
             externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchB2BApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
+                refreshBootstrapData()
                 StytchB2BApi.configureDFP(
                     dfpProvider = dfpProvider,
                     captchaProvider =
@@ -140,6 +138,14 @@ public object StytchB2BClient {
                 exception = ex,
             )
         }
+    }
+
+    public suspend fun refreshBootstrapData() {
+        bootstrapData =
+            when (val res = StytchB2BApi.getBootstrapData()) {
+                is StytchResult.Success -> res.value
+                else -> BootstrapData()
+            }
     }
 
     internal fun assertInitialized() {
@@ -332,7 +338,7 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of the [RecoveryCodes] interface which provides a method for getting, rotating, and
+     * Exposes an instance of the [RecoveryCodes] interface which provides methods for getting, rotating, and
      * recovering recovery codes
      *
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
@@ -355,6 +361,18 @@ public object StytchB2BClient {
      */
     public var oauth: OAuth =
         OAuthImpl(externalScope, dispatchers, sessionStorage, StorageHelper, StytchB2BApi.OAuth)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [RBAC] interface which provides methods for checking a member's permissions
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var rbac: RBAC = RBACImpl(externalScope, dispatchers, sessionStorage)
         get() {
             assertInitialized()
             return field
