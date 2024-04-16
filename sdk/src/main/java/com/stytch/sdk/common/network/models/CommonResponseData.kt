@@ -345,6 +345,41 @@ public data class BootstrapData(
     val dfpProtectedAuthMode: DFPProtectedAuthMode? = DFPProtectedAuthMode.OBSERVATION,
     @Json(name = "password_config")
     val passwordConfig: PasswordConfig? = null,
+    @Json(name = "rbac_policy")
+    val rbacPolicy: RBACPolicy? = null,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicy(
+    val roles: List<RBACPolicyRole>,
+    val resources: List<RBACPolicyResource>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicyRole(
+    @Json(name = "role_id")
+    val roleId: String,
+    val description: String,
+    val permissions: List<RBACPermission>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPermission(
+    @Json(name = "resource_id")
+    val resourceId: String,
+    val actions: List<String>,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicyResource(
+    @Json(name = "resource_id")
+    val resourceId: String,
+    val description: String,
+    val actions: List<String>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)

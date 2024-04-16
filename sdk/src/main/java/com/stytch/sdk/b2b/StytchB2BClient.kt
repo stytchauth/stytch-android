@@ -107,11 +107,7 @@ public object StytchB2BClient {
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider = DFPProviderImpl(publicToken, activityProvider)
             externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchB2BApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
+                refreshBootstrapData()
                 StytchB2BApi.configureDFP(
                     dfpProvider = dfpProvider,
                     captchaProvider =
@@ -140,6 +136,14 @@ public object StytchB2BClient {
                 exception = ex,
             )
         }
+    }
+
+    public suspend fun refreshBootstrapData() {
+        bootstrapData =
+            when (val res = StytchB2BApi.getBootstrapData()) {
+                is StytchResult.Success -> res.value
+                else -> BootstrapData()
+            }
     }
 
     internal fun assertInitialized() {
