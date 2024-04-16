@@ -591,7 +591,7 @@ public data class OAuthProviderValues(
     @Json(name = "id_token")
     val idToken: String,
     @Json(name = "refresh_token")
-    val refreshToken: String,
+    val refreshToken: String? = null,
     val scopes: List<String> = emptyList(),
 ) : Parcelable
 
