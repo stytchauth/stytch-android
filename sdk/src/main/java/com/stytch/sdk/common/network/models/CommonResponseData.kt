@@ -355,7 +355,7 @@ public data class RBACPolicy(
     val roles: List<RBACPolicyRole>,
     val resources: List<RBACPolicyResource>,
 ) : Parcelable {
-    private val rolesByID: Map<String, RBACPolicyRole>
+    public val rolesByID: Map<String, RBACPolicyRole>
         get() {
             val map = mutableMapOf<String, RBACPolicyRole>()
             roles.forEach { role ->
