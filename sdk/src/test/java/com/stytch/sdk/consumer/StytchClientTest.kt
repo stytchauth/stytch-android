@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
@@ -83,6 +84,8 @@ internal class StytchClientTest {
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
         mockkObject(StytchApi.Sessions)
+        mockkObject(Recaptcha)
+        coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
