@@ -26,9 +26,9 @@ internal object StorageHelper {
         name: String,
         value: String?,
     ) {
-        if (value == null) {
+        if (value.isNullOrEmpty()) {
             with(sharedPreferences.edit()) {
-                putString(name, value)
+                putString(name, null)
                 apply()
             }
             return
@@ -60,6 +60,9 @@ internal object StorageHelper {
     internal fun loadValue(name: String): String? {
         return try {
             val encryptedString = sharedPreferences.getString(name, null)
+            if (encryptedString.isNullOrEmpty()) {
+                return null
+            }
             EncryptionManager.decryptString(encryptedString)
         } catch (ex: Exception) {
             null

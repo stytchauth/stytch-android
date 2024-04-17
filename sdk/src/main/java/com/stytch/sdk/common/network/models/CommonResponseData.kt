@@ -1,11 +1,13 @@
 package com.stytch.sdk.common.network.models
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BasicData(
@@ -15,6 +17,7 @@ public data class BasicData(
     val requestId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StytchErrorResponse(
@@ -30,6 +33,7 @@ public data class StytchErrorResponse(
     val errorUrl: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StytchSchemaError(
@@ -38,6 +42,7 @@ public data class StytchSchemaError(
     val query: @RawValue Any?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CryptoWalletData(
@@ -53,6 +58,7 @@ public data class CryptoWalletData(
     val verified: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class EmailData(
@@ -62,6 +68,7 @@ public data class EmailData(
     public val verified: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class NameData(
@@ -73,6 +80,7 @@ public data class NameData(
     val middleName: String?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class WebAuthNRegistrations(
@@ -89,6 +97,7 @@ public data class WebAuthNRegistrations(
     val name: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class PhoneNumber(
@@ -102,6 +111,7 @@ public data class PhoneNumber(
     val verified: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Provider(
@@ -116,16 +126,18 @@ public data class Provider(
     val profilePictureUrl: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTP(
     // The id of the TOTP.
-    @Json(name = "totpId")
+    @Json(name = "totp_id")
     var id: String,
     // The verification status of the TOTP.
     val verified: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BiometricRegistrations(
@@ -136,6 +148,7 @@ public data class BiometricRegistrations(
     val verified: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Password(
@@ -145,6 +158,7 @@ public data class Password(
     val requiresReset: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BiometricsStartResponse(
@@ -157,6 +171,7 @@ public data class BiometricsStartResponse(
     val challenge: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class LoginOrCreateOTPData(
@@ -168,6 +183,7 @@ public data class LoginOrCreateOTPData(
     val methodId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OTPSendResponseData(
@@ -179,6 +195,7 @@ public data class OTPSendResponseData(
     val methodId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class AuthenticationFactor(
@@ -240,6 +257,7 @@ public data class AuthenticationFactor(
     @Json(name = "crypto_wallet_factor")
     val cryptoWalletFactor: CryptoWalletFactor?,
 ) : Parcelable {
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class EmailFactor(
@@ -249,6 +267,7 @@ public data class AuthenticationFactor(
         val emailAddress: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class PhoneFactor(
@@ -258,6 +277,7 @@ public data class AuthenticationFactor(
         val phoneNumber: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class OAuthFactor(
@@ -268,6 +288,7 @@ public data class AuthenticationFactor(
         val providerSubject: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class WebAuthnFactor(
@@ -278,6 +299,7 @@ public data class AuthenticationFactor(
         val userAgent: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class BiometricFactor(
@@ -285,6 +307,7 @@ public data class AuthenticationFactor(
         val biometricRegistrationId: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class AuthenticatorAppFactor(
@@ -292,6 +315,7 @@ public data class AuthenticationFactor(
         val totpId: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class RecoveryCodeFactor(
@@ -299,6 +323,7 @@ public data class AuthenticationFactor(
         val totpRecoveryCodeId: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class CryptoWalletFactor(
@@ -311,11 +336,13 @@ public data class AuthenticationFactor(
     ) : Parcelable
 }
 
+@Keep
 public interface CommonAuthenticationData {
     public val sessionJwt: String
     public val sessionToken: String
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BootstrapData(
@@ -349,6 +376,7 @@ public data class BootstrapData(
     val rbacPolicy: RBACPolicy? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RBACPolicy(
@@ -393,6 +421,7 @@ public data class RBACPolicy(
     }
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RBACPolicyRole(
@@ -402,6 +431,7 @@ public data class RBACPolicyRole(
     val permissions: List<RBACPermission>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RBACPermission(
@@ -410,6 +440,7 @@ public data class RBACPermission(
     val actions: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RBACPolicyResource(
@@ -419,6 +450,7 @@ public data class RBACPolicyResource(
     val actions: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class PasswordConfig(
@@ -428,11 +460,13 @@ public data class PasswordConfig(
     val ludsMinimumCount: Int,
 ) : Parcelable
 
+@Keep
 public enum class DFPProtectedAuthMode {
     OBSERVATION,
     DECISIONING,
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CaptchaSettings(
@@ -440,6 +474,7 @@ public data class CaptchaSettings(
     val siteKey: String = "",
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public class NoResponseData : Parcelable

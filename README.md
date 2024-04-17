@@ -66,6 +66,8 @@ the near future! The full list of currently supported products is as follows:
 - [OAuth](sdk/src/main/java/com/stytch/sdk/consumer/oauth/README.md)
     - Register/authenticate with native Google OneTap
     - Register/authenticate with our supported third-party OAuth providers (Amazon, BitBucket, Coinbase, Discord, Facebook, Github, GitLab, Google, LinkedIn, Microsoft, Salesforce, Slack, Twitch, or Yahoo)
+- [Passkeys](passkeys)
+  - Register/authenticate with Passkeys
 - [User Management](sdk/src/main/java/com/stytch/sdk/consumer/userManagement/README.md)
     - Get or fetch the current user object (sync/cached or async options available)
     - Delete factors by id from the current user
@@ -282,7 +284,7 @@ A. Yes! There is a Demo App included in this repo, available [here (consumer app
 
 ### Questions?
 
-Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://join.slack.com/t/stytch/shared_invite/zt-nil4wo92-jApJ9Cl32cJbEd9esKkvyg), or our [forums](https://forum.stytch.com/).
+Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://stytch.slack.com/join/shared_invite/zt-2f0fi1ruu-ub~HGouWRmPARM1MTwPESA), or our [Forum](https://forum.stytch.com/).
 
 ## License
 

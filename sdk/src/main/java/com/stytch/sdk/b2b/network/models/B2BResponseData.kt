@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.network.models
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.AuthenticationFactor
@@ -16,6 +17,7 @@ public interface IB2BAuthData : CommonAuthenticationData {
     public val organization: OrganizationData
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BAuthData(
@@ -33,6 +35,7 @@ public data class B2BAuthData(
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BEMLAuthenticateData(
@@ -52,6 +55,7 @@ public data class B2BEMLAuthenticateData(
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSessionData(
@@ -74,6 +78,7 @@ public data class B2BSessionData(
     val roles: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberResponseData(
@@ -84,6 +89,7 @@ public data class MemberResponseData(
     val member: MemberData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberData(
@@ -103,6 +109,7 @@ public data class MemberData(
     val ssoRegistrations: List<SSORegistration>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSORegistration(
@@ -116,6 +123,7 @@ public data class SSORegistration(
     val ssoAttributes: @RawValue Map<String, Any?>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationResponseData(
@@ -126,6 +134,7 @@ public data class OrganizationResponseData(
     val organization: OrganizationData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationData(
@@ -159,6 +168,7 @@ public data class OrganizationData(
     val allowedAuthMethods: List<AllowedAuthMethods>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSOActiveConnection(
@@ -168,6 +178,7 @@ public data class SSOActiveConnection(
     val displayName: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class PasswordsAuthenticateResponseData(
@@ -189,6 +200,7 @@ public data class PasswordsAuthenticateResponseData(
     val organizationId: String,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class EmailResetResponseData(
@@ -212,6 +224,7 @@ public data class EmailResetResponseData(
     val memberEmailId: String,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SessionResetResponseData(
@@ -227,6 +240,7 @@ public data class SessionResetResponseData(
     val organization: OrganizationData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StrengthCheckResponseData(
@@ -244,6 +258,7 @@ public data class StrengthCheckResponseData(
     @Json(name = "luds_feedback")
     val ludsFeedback: LUDSFeedback,
 ) : Parcelable {
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class ZXCVBNFeedback(
@@ -251,6 +266,7 @@ public data class StrengthCheckResponseData(
         val warning: String,
     ) : Parcelable
 
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class LUDSFeedback(
@@ -269,6 +285,7 @@ public data class StrengthCheckResponseData(
     ) : Parcelable
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveredOrganizationsResponseData(
@@ -278,6 +295,7 @@ public data class DiscoveredOrganizationsResponseData(
     val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveredOrganization(
@@ -287,6 +305,7 @@ public data class DiscoveredOrganization(
     val memberAuthenticated: Boolean,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Membership(
@@ -295,12 +314,14 @@ public data class Membership(
     val member: MemberData?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MembershipDetails(
     val domain: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class IntermediateSessionExchangeResponseData(
@@ -316,6 +337,7 @@ public data class IntermediateSessionExchangeResponseData(
     val sessionToken: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationCreateResponseData(
@@ -331,6 +353,7 @@ public data class OrganizationCreateResponseData(
     val sessionToken: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DiscoveryAuthenticateResponseData(
@@ -342,6 +365,7 @@ public data class DiscoveryAuthenticateResponseData(
     val discoveredOrganizations: List<DiscoveredOrganization>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSOAuthenticateResponseData(
@@ -363,6 +387,7 @@ public data class SSOAuthenticateResponseData(
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SessionExchangeResponseData(
@@ -384,6 +409,7 @@ public data class SessionExchangeResponseData(
     val intermediateSessionToken: String,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UpdateMemberResponseData(
@@ -394,6 +420,7 @@ public data class UpdateMemberResponseData(
     val member: MemberData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberDeleteAuthenticationFactorData(
@@ -404,6 +431,7 @@ public data class MemberDeleteAuthenticationFactorData(
     val member: MemberData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationUpdateResponseData(
@@ -414,6 +442,7 @@ public data class OrganizationUpdateResponseData(
     val organization: OrganizationData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationDeleteResponseData(
@@ -425,6 +454,7 @@ public data class OrganizationDeleteResponseData(
     val organizationId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OrganizationMemberDeleteResponseData(
@@ -436,6 +466,7 @@ public data class OrganizationMemberDeleteResponseData(
     val memberId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberResponseCommonData(
@@ -449,6 +480,7 @@ public data class MemberResponseCommonData(
     val organization: OrganizationData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class MemberSearchResponseData(
@@ -458,6 +490,7 @@ public data class MemberSearchResponseData(
     val resultsMetadata: ResultsMetadata,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class ResultsMetadata(
@@ -466,6 +499,7 @@ public data class ResultsMetadata(
     val nextCursor: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OTPAuthenticateResponse(
@@ -487,6 +521,7 @@ public data class OTPAuthenticateResponse(
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPCreateResponseData(
@@ -501,6 +536,7 @@ public data class TOTPCreateResponseData(
     val recoveryCodes: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPAuthenticateResponseData(
@@ -520,6 +556,7 @@ public data class TOTPAuthenticateResponseData(
     override val organization: OrganizationData,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RecoveryCodeGetResponseData(
@@ -531,6 +568,7 @@ public data class RecoveryCodeGetResponseData(
     val recoveryCodes: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RecoveryCodeRotateResponseData(
@@ -542,6 +580,7 @@ public data class RecoveryCodeRotateResponseData(
     val recoveryCodes: List<String>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class RecoveryCodeRecoverResponseData(
@@ -563,6 +602,7 @@ public data class RecoveryCodeRecoverResponseData(
     val recoveryCodesRemaining: Int,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OAuthAuthenticateResponseData(
@@ -584,6 +624,7 @@ public data class OAuthAuthenticateResponseData(
     val providerValues: OAuthProviderValues,
 ) : IB2BAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OAuthProviderValues(
@@ -596,6 +637,7 @@ public data class OAuthProviderValues(
     val scopes: List<String> = emptyList(),
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOGetConnectionsResponseData(
@@ -605,6 +647,7 @@ public data class B2BSSOGetConnectionsResponseData(
     val oidcConnections: List<OIDCConnection>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SAMLConnection(
@@ -635,6 +678,7 @@ public data class SAMLConnection(
     val samlGroupImplicitRoleAssignments: List<GroupRoleAssignment>,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class X509Certificate(
@@ -650,6 +694,7 @@ public data class X509Certificate(
     val expiresAt: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class ConnectionRoleAssignment(
@@ -657,6 +702,7 @@ public data class ConnectionRoleAssignment(
     val roleId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class GroupRoleAssignment(
@@ -665,6 +711,7 @@ public data class GroupRoleAssignment(
     val group: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OIDCConnection(
@@ -692,6 +739,7 @@ public data class OIDCConnection(
     val jwksUrl: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSODeleteConnectionResponseData(
@@ -699,24 +747,28 @@ public data class B2BSSODeleteConnectionResponseData(
     val connectionId: String,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOSAMLCreateConnectionResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOOIDCCreateConnectionResponseData(
     val connection: OIDCConnection,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOSAMLUpdateConnectionResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOOIDCUpdateConnectionResponseData(
@@ -724,12 +776,14 @@ public data class B2BSSOOIDCUpdateConnectionResponseData(
     val warning: String? = null,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOSAMLUpdateConnectionByURLResponseData(
     val connection: SAMLConnection,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSSOSAMLDeleteVerificationCertificateResponseData(

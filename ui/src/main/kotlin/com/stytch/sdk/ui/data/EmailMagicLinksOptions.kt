@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import kotlinx.parcelize.Parcelize
@@ -13,6 +14,7 @@ import kotlinx.parcelize.Parcelize
  * @property signupTemplateId The ID of an email template (defined in the Stytch Dashboard) for signup emails
  */
 @Parcelize
+@Keep
 @JsonClass(generateAdapter = true)
 public data class EmailMagicLinksOptions(
     val loginExpirationMinutes: Int? = null,

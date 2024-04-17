@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.B2BSSOSAMLDeleteVerificationCertificateResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -22,7 +23,6 @@ import com.stytch.sdk.common.sso.SSOManagerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.x509Certificate
 
 internal class SSOImpl(
     private val externalScope: CoroutineScope,
@@ -47,7 +47,10 @@ internal class SSOImpl(
             .build()
 
     override fun start(params: SSO.StartParams) {
-        val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+        val host =
+            StytchB2BClient.bootstrapData.cnameDomain?.let {
+                "https://$it/v1/"
+            } ?: if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
         val potentialParameters =
             mapOf(
                 "connection_id" to params.connectionId,

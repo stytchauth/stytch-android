@@ -5,6 +5,7 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.StytchApi
 
 internal class ThirdPartyOAuthImpl(
@@ -33,7 +34,10 @@ internal class ThirdPartyOAuthImpl(
     override fun start(parameters: OAuth.ThirdParty.StartParameters) {
         val pkce = storageHelper.generateHashedCodeChallenge().second
         val token = StytchApi.publicToken
-        val host = if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+        val host =
+            StytchClient.bootstrapData.cnameDomain?.let {
+                "https://$it/v1/"
+            } ?: if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
         val potentialParameters =
             mapOf(
                 "login_redirect_url" to parameters.loginRedirectUrl,

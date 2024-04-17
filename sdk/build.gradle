@@ -8,7 +8,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.20.1'
+  PUBLISH_VERSION = '0.21.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -30,7 +30,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "Boolean", "DEBUG_MODE", "false"
             buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
@@ -105,6 +105,7 @@ tasks.named("dokkaHtmlPartial").configure {
                 "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
                 "src/main/java/com/stytch/sdk/consumer/oauth/README.md",
                 "src/main/java/com/stytch/sdk/consumer/otp/README.md",
+                "src/main/java/com/stytch/sdk/consumer/passkeys/README.md",
                 "src/main/java/com/stytch/sdk/consumer/passwords/README.md",
                 "src/main/java/com/stytch/sdk/consumer/sessions/README.md",
                 "src/main/java/com/stytch/sdk/consumer/userManagement/README.md",

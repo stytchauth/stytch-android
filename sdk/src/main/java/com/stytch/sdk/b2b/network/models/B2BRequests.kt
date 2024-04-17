@@ -1,11 +1,13 @@
 package com.stytch.sdk.b2b.network.models
 
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 internal object B2BRequests {
     object MagicLinks {
         object Email {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class LoginOrSignupRequest(
                 @Json(name = "email_address")
@@ -26,6 +28,7 @@ internal object B2BRequests {
         }
 
         object Discovery {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class SendRequest(
                 @Json(name = "email_address")
@@ -38,6 +41,7 @@ internal object B2BRequests {
                 val loginTemplateId: String? = null,
             )
 
+            @Keep
             @JsonClass(generateAdapter = true)
             data class AuthenticateRequest(
                 @Json(name = "discovery_magic_links_token")
@@ -48,6 +52,7 @@ internal object B2BRequests {
         }
 
         object Invite {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class InviteRequest(
                 @Json(name = "email_address")
@@ -64,6 +69,7 @@ internal object B2BRequests {
             )
         }
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "magic_links_token")
@@ -76,6 +82,7 @@ internal object B2BRequests {
     }
 
     object Passwords {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "organization_id")
@@ -87,6 +94,7 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetByEmailStartRequest(
             @Json(name = "organization_id")
@@ -105,6 +113,7 @@ internal object B2BRequests {
             val codeChallenge: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetByEmailRequest(
             @Json(name = "password_reset_token")
@@ -116,6 +125,7 @@ internal object B2BRequests {
             val codeVerifier: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetByExistingPasswordRequest(
             @Json(name = "organization_id")
@@ -130,6 +140,7 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ResetBySessionRequest(
             @Json(name = "organization_id")
@@ -137,6 +148,7 @@ internal object B2BRequests {
             val password: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
             val email: String?,
@@ -145,12 +157,14 @@ internal object B2BRequests {
     }
 
     object Discovery {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class MembershipsRequest(
             @Json(name = "intermediate_session_token")
             val intermediateSessionToken: String? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SessionExchangeRequest(
             @Json(name = "intermediate_session_token")
@@ -161,6 +175,7 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class CreateRequest(
             @Json(name = "intermediate_session_token")
@@ -189,6 +204,7 @@ internal object B2BRequests {
     }
 
     object SSO {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "sso_token")
@@ -199,12 +215,14 @@ internal object B2BRequests {
             val codeVerifier: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SAMLCreateRequest(
             @Json(name = "display_name")
             val displayName: String? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SAMLUpdateRequest(
             @Json(name = "connection_id")
@@ -225,6 +243,7 @@ internal object B2BRequests {
             val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class B2BSSOSAMLUpdateConnectionByURLRequest(
             @Json(name = "connection_id")
@@ -233,6 +252,7 @@ internal object B2BRequests {
             val metadataUrl: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class B2BSSOSAMLDeleteVerificationCertificateRequest(
             @Json(name = "connection_id")
@@ -241,12 +261,14 @@ internal object B2BRequests {
             val certificateId: String,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class OIDCCreateRequest(
             @Json(name = "display_name")
             val displayName: String? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class OIDCUpdateRequest(
             @Json(name = "connection_id")
@@ -270,6 +292,7 @@ internal object B2BRequests {
     }
 
     object Session {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class ExchangeRequest(
             @Json(name = "organization_id")
@@ -281,6 +304,7 @@ internal object B2BRequests {
     }
 
     object Member {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class UpdateRequest(
             val name: String? = null,
@@ -296,6 +320,7 @@ internal object B2BRequests {
     }
 
     object Organization {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class UpdateRequest(
             @Json(name = "organization_name")
@@ -331,6 +356,7 @@ internal object B2BRequests {
             val defaultMfaMethod: MfaMethod? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class CreateMemberRequest(
             @Json(name = "email_address")
@@ -351,6 +377,7 @@ internal object B2BRequests {
             val roles: List<String>? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class UpdateMemberRequest(
             @Json(name = "email_address")
@@ -373,6 +400,7 @@ internal object B2BRequests {
             val defaultMfaMethod: MfaMethod? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class SearchMembersRequest(
             val cursor: String? = null,
@@ -381,12 +409,14 @@ internal object B2BRequests {
         )
     }
 
+    @Keep
     @JsonClass(generateAdapter = true)
     data class SearchQuery(
         val operator: SearchOperator,
         val operands: List<SearchQueryOperand>,
     )
 
+    @Keep
     @JsonClass(generateAdapter = true)
     data class SearchQueryOperand(
         @Json(name = "filter_name")
@@ -397,6 +427,7 @@ internal object B2BRequests {
 
     object OTP {
         object SMS {
+            @Keep
             @JsonClass(generateAdapter = true)
             data class SendRequest(
                 @Json(name = "organization_id")
@@ -408,6 +439,7 @@ internal object B2BRequests {
                 val locale: String? = null,
             )
 
+            @Keep
             @JsonClass(generateAdapter = true)
             data class AuthenticateRequest(
                 @Json(name = "organization_id")
@@ -424,6 +456,7 @@ internal object B2BRequests {
     }
 
     object TOTP {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class CreateRequest(
             @Json(name = "organization_id")
@@ -434,6 +467,7 @@ internal object B2BRequests {
             val expirationMinutes: Int? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "organization_id")
@@ -451,6 +485,7 @@ internal object B2BRequests {
     }
 
     object RecoveryCodes {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class RecoverRequest(
             @Json(name = "organization_id")
@@ -465,6 +500,7 @@ internal object B2BRequests {
     }
 
     object OAuth {
+        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "oauth_token")
@@ -478,6 +514,7 @@ internal object B2BRequests {
             val intermediateSessionToken: String? = null,
         )
 
+        @Keep
         @JsonClass(generateAdapter = true)
         data class DiscoveryAuthenticateRequest(
             @Json(name = "discovery_oauth_token")

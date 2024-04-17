@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.consumer.otp.OTP
@@ -14,6 +15,7 @@ import kotlinx.parcelize.Parcelize
  * @property signupTemplateId The ID of an OTP template (defined in the Stytch Dashboard) for signup requests
  */
 @Parcelize
+@Keep
 @JsonClass(generateAdapter = true)
 public data class OTPOptions(
     val methods: List<OTPMethods> = emptyList(),

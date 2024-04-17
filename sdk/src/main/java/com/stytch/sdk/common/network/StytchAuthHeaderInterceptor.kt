@@ -16,9 +16,16 @@ internal class StytchAuthHeaderInterceptor(
     val getSessionToken: () -> String?,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        val sessionToken = getSessionToken()
+        val authorizationToken =
+            if (sessionToken.isNullOrEmpty()) {
+                publicToken
+            } else {
+                sessionToken
+            }
         val authHeader =
             Base64.encodeToString(
-                "$publicToken:${ getSessionToken() ?: publicToken}".toByteArray(),
+                "$publicToken:$authorizationToken".toByteArray(),
                 Base64.NO_WRAP,
             )
         val infoHeader =

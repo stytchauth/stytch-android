@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
@@ -9,6 +10,7 @@ import kotlinx.parcelize.Parcelize
  * @property clientId the client ID you used to configure Google OAuth
  */
 @Parcelize
+@Keep
 @JsonClass(generateAdapter = true)
 public data class GoogleOAuthOptions(
     val clientId: String? = null,

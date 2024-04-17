@@ -24,7 +24,6 @@ import org.bouncycastle.crypto.signers.Ed25519Signer
 import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.security.SecureRandom
-import kotlin.random.Random
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
@@ -105,8 +104,8 @@ internal object EncryptionManager {
     }
 
     fun generateCodeChallenge(): String {
-        val randomGenerator = Random(System.currentTimeMillis())
-        val randomBytes: ByteArray = randomGenerator.nextBytes(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        val randomBytes = ByteArray(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        SecureRandom().nextBytes(randomBytes)
         return randomBytes.toHexString()
     }
 

@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.network.models
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.AuthenticationFactor
@@ -28,6 +29,7 @@ public interface INativeOAuthData : IAuthData {
     public val userCreated: Boolean
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class AuthData(
@@ -43,6 +45,7 @@ public data class AuthData(
     override val user: UserData,
 ) : IAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SessionData(
@@ -62,6 +65,7 @@ public data class SessionData(
     @Json(name = "authentication_factors")
     val authenticationFactors: List<AuthenticationFactor>,
 ) : Parcelable {
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class AttributesData(
@@ -72,6 +76,7 @@ public data class SessionData(
     ) : Parcelable
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UserData(
@@ -103,6 +108,7 @@ public data class UserData(
     val untrustedMetadata: @RawValue Map<String, Any?>?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CreateResponse(
@@ -126,6 +132,7 @@ public data class CreateResponse(
     val userId: String,
 ) : IAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BiometricsAuthData(
@@ -143,6 +150,7 @@ public data class BiometricsAuthData(
     val biometricRegistrationId: String,
 ) : IAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DeleteAuthenticationFactorData(
@@ -153,6 +161,7 @@ public data class DeleteAuthenticationFactorData(
     val user: UserData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OAuthData(
@@ -175,6 +184,7 @@ public data class OAuthData(
     @Json(name = "provider_values")
     val providerValues: OAuthProviderValues,
 ) : IAuthData, Parcelable {
+    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class OAuthProviderValues(
@@ -188,6 +198,7 @@ public data class OAuthData(
     ) : Parcelable
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class NativeOAuthData(
@@ -201,6 +212,7 @@ public data class NativeOAuthData(
     override val userCreated: Boolean,
 ) : INativeOAuthData, Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class Feedback(
@@ -210,6 +222,7 @@ public data class Feedback(
     val ludsRequirements: LUDSRequirements?,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class LUDSRequirements(
@@ -227,6 +240,7 @@ public data class LUDSRequirements(
     val missingCharacters: Int,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StrengthCheckResponse(
@@ -253,6 +267,7 @@ public enum class StrengthPolicy {
     LUDS,
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UpdateUserResponseData(
@@ -263,6 +278,7 @@ public data class UpdateUserResponseData(
     val user: UserData,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UserSearchResponseData(
@@ -282,6 +298,7 @@ public enum class UserType : Parcelable {
     PASSWORDLESS,
 }
 
+@Keep
 @JsonClass(generateAdapter = true)
 public data class WebAuthnRegisterStartData(
     @Json(name = "user_id")
@@ -290,6 +307,7 @@ public data class WebAuthnRegisterStartData(
     val publicKeyCredentialCreationOptions: String,
 )
 
+@Keep
 @JsonClass(generateAdapter = true)
 public data class WebAuthnRegisterData(
     @Json(name = "status_code")
@@ -306,12 +324,14 @@ public data class WebAuthnRegisterData(
     val webauthnRegistrationId: String,
 ) : IAuthData
 
+@Keep
 @JsonClass(generateAdapter = true)
 public data class WebAuthnAuthenticateStartData(
     @Json(name = "public_key_credential_request_options")
     val publicKeyCredentialRequestOptions: String,
 )
 
+@Keep
 @JsonClass(generateAdapter = true)
 public data class WebAuthnUpdateResponseData(
     @Json(name = "status_code")
