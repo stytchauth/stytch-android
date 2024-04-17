@@ -81,11 +81,3 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
-
-tasks.withType(Test).configureEach {
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        showStackTraces = true
-        showStandardStreams = true
-    }
-}

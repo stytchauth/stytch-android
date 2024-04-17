@@ -304,7 +304,7 @@ internal class StytchApiTest {
     @Test
     fun `StytchApi User deleteEmailById calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
-        coEvery { StytchApi.apiService.deleteEmailById("emailAddressId") } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.deleteEmailById(any()) } returns mockk(relaxed = true)
         StytchApi.UserManagement.deleteEmailById("emailAddressId")
         coVerify { StytchApi.apiService.deleteEmailById("emailAddressId") }
     }
@@ -312,7 +312,7 @@ internal class StytchApiTest {
     @Test
     fun `StytchApi User deletePhoneNumberById calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
-        coEvery { StytchApi.apiService.deletePhoneNumberById("phoneNumberId") } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.deletePhoneNumberById(any()) } returns mockk(relaxed = true)
         StytchApi.UserManagement.deletePhoneNumberById("phoneNumberId")
         coVerify { StytchApi.apiService.deletePhoneNumberById("phoneNumberId") }
     }
@@ -321,7 +321,7 @@ internal class StytchApiTest {
     fun `StytchApi User deleteBiometricRegistrationById calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery {
-            StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId")
+            StytchApi.apiService.deleteBiometricRegistrationById(any())
         } returns mockk(relaxed = true)
         StytchApi.UserManagement.deleteBiometricRegistrationById("biometricsRegistrationId")
         coVerify { StytchApi.apiService.deleteBiometricRegistrationById("biometricsRegistrationId") }
@@ -379,7 +379,7 @@ internal class StytchApiTest {
     fun `StytchApi Bootstrap getBootstrapData calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         every { StytchApi.publicToken } returns "mock-public-token"
-        coEvery { StytchApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.getBootstrapData(any()) } returns mockk(relaxed = true)
         StytchApi.getBootstrapData()
         coVerify { StytchApi.apiService.getBootstrapData("mock-public-token") }
     }
@@ -401,7 +401,7 @@ internal class StytchApiTest {
     @Test
     fun `StytchApi Webauthn registerStart calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
-        coEvery { StytchApi.apiService.webAuthnRegisterStart(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.webAuthnRegisterStart(any()) } returns mockk(relaxed = true)
         StytchApi.WebAuthn.registerStart("")
         coVerify { StytchApi.apiService.webAuthnRegisterStart(any()) }
     }
@@ -409,7 +409,7 @@ internal class StytchApiTest {
     @Test
     fun `StytchApi Webauthn register calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
-        coEvery { StytchApi.apiService.webAuthnRegister(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.webAuthnRegister(any()) } returns mockk(relaxed = true)
         StytchApi.WebAuthn.register("")
         coVerify { StytchApi.apiService.webAuthnRegister(any()) }
     }
@@ -418,7 +418,7 @@ internal class StytchApiTest {
     fun `StytchApi Webauthn webAuthnAuthenticateStartPrimary calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery {
-            StytchApi.apiService.webAuthnAuthenticateStartPrimary(mockk(relaxed = true))
+            StytchApi.apiService.webAuthnAuthenticateStartPrimary(any())
         } returns mockk(relaxed = true)
         StytchApi.WebAuthn.authenticateStartPrimary("", false)
         coVerify { StytchApi.apiService.webAuthnAuthenticateStartPrimary(any()) }
@@ -428,7 +428,7 @@ internal class StytchApiTest {
     fun `StytchApi Webauthn webAuthnAuthenticateStartSecondary calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
         coEvery {
-            StytchApi.apiService.webAuthnAuthenticateStartSecondary(mockk(relaxed = true))
+            StytchApi.apiService.webAuthnAuthenticateStartSecondary(any())
         } returns mockk(relaxed = true)
         StytchApi.WebAuthn.authenticateStartSecondary("", true)
         coVerify { StytchApi.apiService.webAuthnAuthenticateStartSecondary(any()) }
@@ -437,7 +437,7 @@ internal class StytchApiTest {
     @Test
     fun `StytchApi Webauthn webAuthnAuthenticate calls appropriate apiService method`() = runTest {
         every { StytchApi.isInitialized } returns true
-        coEvery { StytchApi.apiService.webAuthnAuthenticate(mockk(relaxed = true)) } returns mockk(relaxed = true)
+        coEvery { StytchApi.apiService.webAuthnAuthenticate(any()) } returns mockk(relaxed = true)
         StytchApi.WebAuthn.authenticate("", 30U)
         coVerify { StytchApi.apiService.webAuthnAuthenticate(any()) }
     }

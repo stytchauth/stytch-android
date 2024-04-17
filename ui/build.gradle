@@ -138,6 +138,5 @@ tasks.withType(Test).configureEach {
     testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         showStackTraces = true
-        showStandardStreams = true
     }
 }
