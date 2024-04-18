@@ -284,7 +284,7 @@ internal class StytchB2BApiTest {
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() = runTest {
         every { StytchB2BApi.isInitialized } returns true
         every { StytchB2BApi.publicToken } returns "mock-public-token"
-        coEvery { StytchB2BApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
+        coEvery { StytchB2BApi.apiService.getBootstrapData(any()) } returns mockk(relaxed = true)
         StytchB2BApi.getBootstrapData()
         coVerify { StytchB2BApi.apiService.getBootstrapData("mock-public-token") }
     }

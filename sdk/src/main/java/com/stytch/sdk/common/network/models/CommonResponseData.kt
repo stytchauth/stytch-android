@@ -336,6 +336,7 @@ public data class AuthenticationFactor(
     ) : Parcelable
 }
 
+@Keep
 public interface CommonAuthenticationData {
     public val sessionJwt: String
     public val sessionToken: String
@@ -383,6 +384,8 @@ public data class PasswordConfig(
     val ludsMinimumCount: Int,
 ) : Parcelable
 
+@Keep
+@JsonClass(generateAdapter = false)
 public enum class DFPProtectedAuthMode {
     OBSERVATION,
     DECISIONING,

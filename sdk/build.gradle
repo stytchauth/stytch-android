@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
@@ -8,7 +10,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.21.0'
+  PUBLISH_VERSION = '0.21.1'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -145,4 +147,11 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
     testImplementation("org.json:json:20230227")
+}
+
+tasks.withType(Test).configureEach {
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        showStackTraces = true
+    }
 }
