@@ -291,4 +291,16 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.OAuth.DiscoveryAuthenticateRequest,
     ): B2BResponses.OAuth.DiscoveryAuthenticateResponse
     //endregion OAuth
+
+    //region SearchManager
+    @POST("b2b/organizations/search")
+    suspend fun searchOrganizations(
+        @Body request: B2BRequests.SearchManager.SearchOrganization,
+    ): B2BResponses.SearchManager.SearchOrganizationResponse
+
+    @POST("b2b/organizations/members/search")
+    suspend fun searchOrganizationMembers(
+        @Body request: B2BRequests.SearchManager.SearchMember,
+    ): B2BResponses.SearchManager.SearchMemberResponse
+    //endregion SearchManager
 }

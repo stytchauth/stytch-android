@@ -523,4 +523,22 @@ internal object B2BRequests {
             val pkceCodeVerifier: String,
         )
     }
+
+    object SearchManager {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class SearchOrganization(
+            @Json(name = "organization_slug")
+            val organizationSlug: String,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class SearchMember(
+            @Json(name = "email_address")
+            val emailAddress: String,
+            @Json(name = "organization_id")
+            val organizationId: String,
+        )
+    }
 }

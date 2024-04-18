@@ -25,6 +25,8 @@ import com.stytch.sdk.b2b.rbac.RBAC
 import com.stytch.sdk.b2b.rbac.RBACImpl
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodes
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodesImpl
+import com.stytch.sdk.b2b.searchManager.SearchManager
+import com.stytch.sdk.b2b.searchManager.SearchManagerImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
@@ -373,6 +375,18 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     public var rbac: RBAC = RBACImpl(externalScope, dispatchers, sessionStorage)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [SearchManager] interface which provides methods for search organizations and members
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var searchManager: SearchManager = SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
         get() {
             assertInitialized()
             return field

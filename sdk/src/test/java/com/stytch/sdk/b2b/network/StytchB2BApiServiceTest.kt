@@ -1280,6 +1280,48 @@ internal class StytchB2BApiServiceTest {
     }
     //endregion OAuth
 
+    //region SearchManager
+    @Test
+    fun `check SearchManager searchOrganizations request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SearchManager.SearchOrganization(
+                    organizationSlug = "my-organization-slug",
+                )
+            requestIgnoringResponseException {
+                apiService.searchOrganizations(params)
+            }.verifyPost(
+                expectedPath = "/b2b/organizations/search",
+                expectedBody =
+                    mapOf(
+                        "organization_slug" to params.organizationSlug,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check SearchManager searchOrganizationMembers request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SearchManager.SearchMember(
+                    emailAddress = "email@example.com",
+                    organizationId = "my-organization-id",
+                )
+            requestIgnoringResponseException {
+                apiService.searchOrganizationMembers(params)
+            }.verifyPost(
+                expectedPath = "/b2b/organizations/members/search",
+                expectedBody =
+                    mapOf(
+                        "email_address" to params.emailAddress,
+                        "organization_id" to params.organizationId,
+                    ),
+            )
+        }
+    }
+    //endregion SearchManager
+
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {
             block()
