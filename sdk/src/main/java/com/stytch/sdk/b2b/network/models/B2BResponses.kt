@@ -277,4 +277,18 @@ internal object B2BResponses {
             data: DiscoveryAuthenticateResponseData,
         ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
     }
+
+    object SearchManager {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class SearchOrganizationResponse(
+            data: B2BSearchOrganizationResponseData,
+        ) : StytchDataResponse<B2BSearchOrganizationResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class SearchMemberResponse(
+            data: B2BSearchMemberResponseData,
+        ) : StytchDataResponse<B2BSearchMemberResponseData>(data)
+    }
 }

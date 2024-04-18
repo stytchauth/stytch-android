@@ -790,3 +790,17 @@ public data class B2BSSOSAMLDeleteVerificationCertificateResponseData(
     @Json(name = "certificate_id")
     val certificateId: String,
 ) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSearchOrganizationResponseData(
+    val organization: OrganizationData,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSearchMemberResponseData(
+    val member: MemberData,
+) : Parcelable

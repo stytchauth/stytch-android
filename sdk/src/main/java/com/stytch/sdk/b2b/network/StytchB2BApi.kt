@@ -15,6 +15,8 @@ import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLDeleteVerificationCertificateResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSearchMemberResponseData
+import com.stytch.sdk.b2b.network.models.B2BSearchOrganizationResponseData
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
@@ -961,6 +963,30 @@ internal object StytchB2BApi {
                     B2BRequests.OAuth.DiscoveryAuthenticateRequest(
                         discoveryOauthToken = discoveryOauthToken,
                         pkceCodeVerifier = pkceCodeVerifier,
+                    ),
+                )
+            }
+    }
+
+    internal object SearchManager {
+        suspend fun searchOrganizations(organizationSlug: String): StytchResult<B2BSearchOrganizationResponseData> =
+            safeB2BApiCall {
+                apiService.searchOrganizations(
+                    B2BRequests.SearchManager.SearchOrganization(
+                        organizationSlug = organizationSlug,
+                    ),
+                )
+            }
+
+        suspend fun searchMembers(
+            emailAddress: String,
+            organizationId: String,
+        ): StytchResult<B2BSearchMemberResponseData> =
+            safeB2BApiCall {
+                apiService.searchOrganizationMembers(
+                    B2BRequests.SearchManager.SearchMember(
+                        emailAddress = emailAddress,
+                        organizationId = organizationId,
                     ),
                 )
             }

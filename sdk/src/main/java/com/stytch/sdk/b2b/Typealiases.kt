@@ -8,6 +8,8 @@ import com.stytch.sdk.b2b.network.models.B2BSSOSAMLCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLDeleteVerificationCertificateResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSearchMemberResponseData
+import com.stytch.sdk.b2b.network.models.B2BSearchOrganizationResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
@@ -155,3 +157,7 @@ public typealias B2BSSOSAMLDeleteVerificationCertificateResponse =
 public typealias B2BSSOOIDCCreateConnectionResponse = StytchResult<B2BSSOOIDCCreateConnectionResponseData>
 
 public typealias B2BSSOOIDCUpdateConnectionResponse = StytchResult<B2BSSOOIDCUpdateConnectionResponseData>
+
+public typealias B2BSearchOrganizationResponse = StytchResult<B2BSearchOrganizationResponseData>
+
+public typealias B2BSearchMemberResponse = StytchResult<B2BSearchMemberResponseData>

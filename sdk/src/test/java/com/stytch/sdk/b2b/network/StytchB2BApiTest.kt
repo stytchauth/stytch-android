@@ -746,6 +746,24 @@ internal class StytchB2BApiTest {
             coVerify { StytchB2BApi.apiService.oauthDiscoveryAuthenticate(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi SearchManager searchOrganizations calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.searchOrganizations(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SearchManager.searchOrganizations("organization-slug")
+            coVerify { StytchB2BApi.apiService.searchOrganizations(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SearchManager searchOrganizationMembers calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.searchOrganizationMembers(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SearchManager.searchMembers("email@example.com", "organization-id")
+            coVerify { StytchB2BApi.apiService.searchOrganizationMembers(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() =
         runTest {
