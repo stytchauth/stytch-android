@@ -12,7 +12,7 @@ class App : Application() {
         Timber.plant(Timber.DebugTree())
         StytchClient.configure(
             context = this,
-            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN
+            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
         ) {
             println("Stytch has been initialized and configured and is ready for use")
         }

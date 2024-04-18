@@ -29,7 +29,7 @@ class MemberViewModel : ViewModel() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
                 StytchB2BClient.member.update(
-                    Member.UpdateParams(name = nameState.text)
+                    Member.UpdateParams(name = nameState.text),
                 ).toFriendlyDisplay()
         }
     }
@@ -38,7 +38,7 @@ class MemberViewModel : ViewModel() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
                 StytchB2BClient.member.deleteFactor(
-                    MemberAuthenticationFactor.MfaPhoneNumber
+                    MemberAuthenticationFactor.MfaPhoneNumber,
                 ).toFriendlyDisplay()
         }
     }

@@ -8,7 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StytchButton(modifier: Modifier = Modifier, text: String = "", onClick: () -> Unit = { }) {
+fun StytchButton(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    onClick: () -> Unit = { },
+) {
     Button(modifier = modifier.padding(horizontal = 10.dp, vertical = 4.dp), onClick = onClick) {
         Text(text = text)
     }

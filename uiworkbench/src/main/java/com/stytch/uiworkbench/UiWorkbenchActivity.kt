@@ -24,42 +24,47 @@ import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 
 class UiWorkbenchActivity : ComponentActivity() {
-    private val stytchUi = StytchUI.Builder().apply {
-        activity(this@UiWorkbenchActivity)
-        productConfig(
-            StytchProductConfig(
-                products = listOf(
-                    StytchProduct.OAUTH,
-                    StytchProduct.EMAIL_MAGIC_LINKS,
-                    StytchProduct.OTP,
-                    StytchProduct.PASSWORDS,
+    private val stytchUi =
+        StytchUI.Builder().apply {
+            activity(this@UiWorkbenchActivity)
+            productConfig(
+                StytchProductConfig(
+                    products =
+                        listOf(
+                            StytchProduct.OAUTH,
+                            StytchProduct.EMAIL_MAGIC_LINKS,
+                            StytchProduct.OTP,
+                            StytchProduct.PASSWORDS,
+                        ),
+                    emailMagicLinksOptions = EmailMagicLinksOptions(),
+                    passwordOptions = PasswordOptions(),
+                    googleOauthOptions =
+                        GoogleOAuthOptions(
+                            clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                        ),
+                    oAuthOptions =
+                        OAuthOptions(
+                            loginRedirectURL = "uiworkbench://oauth",
+                            signupRedirectURL = "uiworkbench://oauth",
+                            providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB),
+                        ),
+                    otpOptions =
+                        OTPOptions(
+                            methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
+                        ),
                 ),
-                emailMagicLinksOptions = EmailMagicLinksOptions(),
-                passwordOptions = PasswordOptions(),
-                googleOauthOptions = GoogleOAuthOptions(
-                    clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
-                ),
-                oAuthOptions = OAuthOptions(
-                    loginRedirectURL = "uiworkbench://oauth",
-                    signupRedirectURL = "uiworkbench://oauth",
-                    providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB)
-                ),
-                otpOptions = OTPOptions(
-                    methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
-                )
             )
-        )
-        onAuthenticated {
-            when (it) {
-                is StytchResult.Success -> {
-                    Toast.makeText(this@UiWorkbenchActivity, "Authentication Succeeded", Toast.LENGTH_LONG).show()
-                }
-                is StytchResult.Error -> {
-                    Toast.makeText(this@UiWorkbenchActivity, it.exception.message, Toast.LENGTH_LONG).show()
+            onAuthenticated {
+                when (it) {
+                    is StytchResult.Success -> {
+                        Toast.makeText(this@UiWorkbenchActivity, "Authentication Succeeded", Toast.LENGTH_LONG).show()
+                    }
+                    is StytchResult.Error -> {
+                        Toast.makeText(this@UiWorkbenchActivity, it.exception.message, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
-        }
-    }.build()
+        }.build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

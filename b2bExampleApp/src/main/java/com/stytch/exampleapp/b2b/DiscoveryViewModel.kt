@@ -28,7 +28,7 @@ class DiscoveryViewModel : ViewModel() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
                 StytchB2BClient.discovery.listOrganizations(
-                    Discovery.DiscoverOrganizationsParameters()
+                    Discovery.DiscoverOrganizationsParameters(),
                 ).toFriendlyDisplay()
         }
     }
@@ -44,11 +44,12 @@ class DiscoveryViewModel : ViewModel() {
                         emailInvites = EmailInvites.ALL_ALLOWED,
                         emailAllowedDomains = listOf("stytch.com"),
                         authMethods = AuthMethods.ALL_ALLOWED,
-                        allowedAuthMethods = listOf(AllowedAuthMethods.MAGIC_LINK, AllowedAuthMethods.PASSWORD)
-                    )
+                        allowedAuthMethods = listOf(AllowedAuthMethods.MAGIC_LINK, AllowedAuthMethods.PASSWORD),
+                    ),
                 ).toFriendlyDisplay()
         }
     }
+
     private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
         return launch {
             _loadingState.value = true

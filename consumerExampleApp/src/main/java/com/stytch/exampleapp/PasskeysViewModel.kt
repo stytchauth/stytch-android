@@ -37,9 +37,10 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
             when (val user = StytchClient.user.getUser()) {
                 is StytchResult.Success -> {
                     user.value.webauthnRegistrations.forEach {
-                        val response = StytchClient.user.deleteFactor(
-                            factor = UserAuthenticationFactor.WebAuthn(id = it.id)
-                        )
+                        val response =
+                            StytchClient.user.deleteFactor(
+                                factor = UserAuthenticationFactor.WebAuthn(id = it.id),
+                            )
                         println(response)
                     }
                 }
@@ -54,17 +55,19 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
     fun registerPasskey(activity: FragmentActivity) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.passkeys.register(
-                Passkeys.RegisterParameters(
-                    activity = activity,
-                    domain = BuildConfig.PASSKEYS_DOMAIN
+            val result =
+                StytchClient.passkeys.register(
+                    Passkeys.RegisterParameters(
+                        activity = activity,
+                        domain = BuildConfig.PASSKEYS_DOMAIN,
+                    ),
                 )
-            )
             _currentResponse.value = result.toFriendlyDisplay()
-            _currentPasskeyRegistrationId.value = when (result) {
-                is StytchResult.Success -> result.value.webauthnRegistrationId
-                else -> ""
-            }
+            _currentPasskeyRegistrationId.value =
+                when (result) {
+                    is StytchResult.Success -> result.value.webauthnRegistrationId
+                    else -> ""
+                }
         }.invokeOnCompletion {
             _loadingState.value = false
         }
@@ -73,16 +76,18 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
     fun authenticatePasskey(activity: FragmentActivity) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.passkeys.authenticate(
-                Passkeys.AuthenticateParameters(
-                    activity = activity,
-                    domain = BuildConfig.PASSKEYS_DOMAIN
+            val result =
+                StytchClient.passkeys.authenticate(
+                    Passkeys.AuthenticateParameters(
+                        activity = activity,
+                        domain = BuildConfig.PASSKEYS_DOMAIN,
+                    ),
                 )
-            )
-            _currentPasskeyRegistrationId.value = when (result) {
-                is StytchResult.Success -> result.value.user.webauthnRegistrations[0].id
-                else -> ""
-            }
+            _currentPasskeyRegistrationId.value =
+                when (result) {
+                    is StytchResult.Success -> result.value.user.webauthnRegistrations[0].id
+                    else -> ""
+                }
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
@@ -92,12 +97,13 @@ class PasskeysViewModel(application: Application) : AndroidViewModel(application
     fun updatePasskey() {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.passkeys.update(
-                Passkeys.UpdateParameters(
-                    id = _currentPasskeyRegistrationId.value,
-                    name = passkeyNameState.text,
+            val result =
+                StytchClient.passkeys.update(
+                    Passkeys.UpdateParameters(
+                        id = _currentPasskeyRegistrationId.value,
+                        name = passkeyNameState.text,
+                    ),
                 )
-            )
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false

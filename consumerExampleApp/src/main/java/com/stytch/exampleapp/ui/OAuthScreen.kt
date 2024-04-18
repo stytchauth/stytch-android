@@ -26,96 +26,96 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
     val context = LocalContext.current as FragmentActivity
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_apple),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.APPLE) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.APPLE) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_amazon),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.AMAZON) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.AMAZON) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_bitbucket),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.BITBUCKET) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.BITBUCKET) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_coinbase),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.COINBASE) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.COINBASE) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_discord),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.DISCORD) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.DISCORD) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_facebook),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.FACEBOOK) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.FACEBOOK) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_google_onetap),
-                onClick = { viewModel.loginWithGoogleOneTap(context) }
+                onClick = { viewModel.loginWithGoogleOneTap(context) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_google_thirdparty),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GOOGLE) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GOOGLE) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_github),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITHUB) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITHUB) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_gitlab),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITLAB) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITLAB) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_linkedin),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.LINKEDIN) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.LINKEDIN) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_microsoft),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.MICROSOFT) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.MICROSOFT) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_salesforce),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SALESFORCE) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SALESFORCE) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_slack),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SLACK) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.SLACK) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_twitch),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.TWITCH) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.TWITCH) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_twitch),
-                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.YAHOO) }
+                onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.YAHOO) },
             )
         }
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (loading.value) {
                 CircularProgressIndicator()

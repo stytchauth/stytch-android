@@ -19,29 +19,37 @@ class BiometricsViewModel(application: Application) : AndroidViewModel(applicati
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    fun registerBiometrics(context: FragmentActivity, promptData: Biometrics.PromptData? = null) {
+    fun registerBiometrics(
+        context: FragmentActivity,
+        promptData: Biometrics.PromptData? = null,
+    ) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.biometrics.register(
-                Biometrics.RegisterParameters(
-                    context = context,
-                    promptData = promptData,
-                    allowFallbackToCleartext = false,
-                    allowDeviceCredentials = true,
+            val result =
+                StytchClient.biometrics.register(
+                    Biometrics.RegisterParameters(
+                        context = context,
+                        promptData = promptData,
+                        allowFallbackToCleartext = false,
+                        allowDeviceCredentials = true,
+                    ),
                 )
-            )
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
     }
 
-    fun authenticateBiometrics(context: FragmentActivity, promptData: Biometrics.PromptData? = null) {
+    fun authenticateBiometrics(
+        context: FragmentActivity,
+        promptData: Biometrics.PromptData? = null,
+    ) {
         viewModelScope.launch {
             _loadingState.value = true
-            val result = StytchClient.biometrics.authenticate(
-                Biometrics.AuthenticateParameters(context = context, promptData = promptData)
-            )
+            val result =
+                StytchClient.biometrics.authenticate(
+                    Biometrics.AuthenticateParameters(context = context, promptData = promptData),
+                )
             _currentResponse.value = result.toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false

@@ -158,7 +158,7 @@ internal class GoogleOneTapImplTest {
             every { mockGoogleOneTapProvider.getSignInRequest(any(), any(), any()) } returns mockk(relaxed = true)
             every {
                 mockActivity.startIntentSenderForResult(any(), any(), any(), any(), any(), any(), any())
-            } throws(IntentSender.SendIntentException())
+            } throws (IntentSender.SendIntentException())
             val result = impl.start(startParameters)
             assert(!result)
         }

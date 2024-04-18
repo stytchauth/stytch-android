@@ -22,21 +22,20 @@ import com.stytch.exampleapp.b2b.R
 import com.stytch.exampleapp.b2b.theme.Red300
 
 @Composable
-fun MainScreen(
-    viewModel: HomeViewModel,
-) {
+fun MainScreen(viewModel: HomeViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .weight(1F, false),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -48,7 +47,7 @@ fun MainScreen(
                 onValueChange = {
                     viewModel.orgIdState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,7 +60,7 @@ fun MainScreen(
                 onValueChange = {
                     viewModel.emailState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             if (viewModel.showEmailError) {
                 Text(
@@ -73,40 +72,41 @@ fun MainScreen(
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.b2b_org_details),
-                onClick = { viewModel.getOrganizationDetails() }
+                onClick = { viewModel.getOrganizationDetails() },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.test_email_magic_link_flow),
-                onClick = { viewModel.sendEmailMagicLink() }
+                onClick = { viewModel.sendEmailMagicLink() },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.send_discovery_magic_link),
-                onClick = viewModel::sendDiscoveryMagicLink
+                onClick = viewModel::sendDiscoveryMagicLink,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.send_invite_magic_link),
-                onClick = viewModel::sendInviteMagicLink
+                onClick = viewModel::sendInviteMagicLink,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.exchange_session),
-                onClick = viewModel::exchangeSession
+                onClick = viewModel::exchangeSession,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.revoke_session),
-                onClick = { viewModel.revokeSession() }
+                onClick = { viewModel.revokeSession() },
             )
         }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .weight(1F, false),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (loading.value) {
                 CircularProgressIndicator()
