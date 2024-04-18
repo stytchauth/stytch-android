@@ -51,6 +51,18 @@ fun MainScreen(viewModel: HomeViewModel) {
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
+                value = viewModel.orgSlugState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.organization_slug))
+                },
+                onValueChange = {
+                    viewModel.orgSlugState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = viewModel.emailState,
                 isError = viewModel.showEmailError,
                 singleLine = true,
@@ -98,6 +110,16 @@ fun MainScreen(viewModel: HomeViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.revoke_session),
                 onClick = { viewModel.revokeSession() },
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.organization_search),
+                onClick = viewModel::searchOrganizationBySlug,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.organization_member_search),
+                onClick = viewModel::searchOrganizationMembers,
             )
         }
         Column(

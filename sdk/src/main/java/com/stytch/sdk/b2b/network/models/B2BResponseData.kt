@@ -795,12 +795,48 @@ public data class B2BSSOSAMLDeleteVerificationCertificateResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSearchOrganizationResponseData(
-    val organization: OrganizationData,
+    val organization: InternalOrganizationData? = null,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class InternalOrganizationData(
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "organization_name")
+    val organizationName: String,
+    @Json(name = "organization_logo_url")
+    val organizationLogoUrl: String?,
+    @Json(name = "sso_active_connections")
+    val ssoActiveConnections: List<SSOActiveConnection>?,
+    @Json(name = "sso_default_connection_id")
+    val ssoDefaultConnectionId: String?,
+    @Json(name = "email_allowed_domains")
+    val emailAllowedDomains: List<String>?,
+    @Json(name = "email_jit_provisioning")
+    val emailJitProvisioning: EmailJitProvisioning?,
+    @Json(name = "email_invites")
+    val emailInvites: EmailInvites?,
+    @Json(name = "auth_methods")
+    val authMethods: AuthMethods?,
+    @Json(name = "allowed_auth_methods")
+    val allowedAuthMethods: List<AllowedAuthMethods>?,
 ) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSearchMemberResponseData(
-    val member: MemberData,
+    val member: InternalMemberData? = null,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class InternalMemberData(
+    val status: String,
+    val name: String,
+    @Json(name = "member_password_id")
+    val memberPasswordId: String,
 ) : Parcelable

@@ -10,10 +10,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
+import com.stytch.sdk.b2b.searchManager.SearchManager
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.StytchResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -33,6 +36,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
     var emailState by mutableStateOf(TextFieldValue(""))
+    var orgSlugState by mutableStateOf(TextFieldValue(""))
     var showEmailError by mutableStateOf(false)
     val emailIsValid
         get() = isValidEmail(emailState.text)
@@ -160,6 +164,38 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     is DeeplinkHandledStatus.ManualHandlingRequired ->
                         "Password reset token retrieved, initiate password reset flow"
                 }
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun searchOrganizationBySlug() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.searchManager.searchOrganization(
+                    SearchManager.SearchOrganizationParameters(
+                        organizationSlug = orgSlugState.text,
+                    ),
+                ).toFriendlyDisplay()
+        }
+    }
+
+    fun searchOrganizationMembers() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.searchManager.searchMember(
+                    SearchManager.SearchMemberParameters(
+                        emailAddress = emailState.text,
+                        organizationId = orgIdState.text,
+                    ),
+                ).toFriendlyDisplay()
+        }
+    }
+
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
+        return launch {
+            _loadingState.value = true
+            block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
