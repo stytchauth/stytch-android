@@ -1,12 +1,12 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
+import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
-import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -32,6 +32,8 @@ internal interface GoogleCredentialManagerProvider {
         autoSelectEnabled: Boolean,
         nonce: String,
     ): GetCredentialResponse
+
+    fun createTokenCredential(credentialData: Bundle): GoogleIdTokenCredential
 }
 
 internal class GoogleCredentialManagerProviderImpl : GoogleCredentialManagerProvider {
@@ -60,6 +62,9 @@ internal class GoogleCredentialManagerProviderImpl : GoogleCredentialManagerProv
             credentialManager.getCredential(activity, request)
         }
     }
+
+    override fun createTokenCredential(credentialData: Bundle): GoogleIdTokenCredential =
+        GoogleIdTokenCredential.createFrom(credentialData)
 }
 
 internal class GoogleOneTapImpl(
@@ -88,7 +93,7 @@ internal class GoogleOneTapImpl(
                 if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     return@withContext StytchResult.Error(UnexpectedCredentialType(credentialType = credential.type))
                 }
-                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                val googleIdTokenCredential = credentialManagerProvider.createTokenCredential(credential.data)
                 return@withContext api.authenticateWithGoogleIdToken(
                     idToken = googleIdTokenCredential.idToken,
                     nonce = nonce,
@@ -99,9 +104,6 @@ internal class GoogleOneTapImpl(
             }
         } catch (e: GoogleIdTokenParsingException) {
             StytchLog.e("Received an invalid google id token response: $e")
-            StytchResult.Error(StytchInternalError(e))
-        } catch (e: ApiException) {
-            StytchLog.e("")
             StytchResult.Error(StytchInternalError(e))
         } catch (e: Exception) {
             StytchResult.Error(StytchInternalError(e))
