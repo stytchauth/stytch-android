@@ -14,7 +14,6 @@ import com.stytch.sdk.consumer.StytchClient.publicToken
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.userManagement.UserManagement
-import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
@@ -57,19 +56,17 @@ internal class MainScreenViewModel(
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         if (provider == OAuthProvider.GOOGLE) {
             scope.launch {
-                val didStartOneTap = productConfig.googleOauthOptions.clientId?.let { clientId ->
-                    stytchClient.oauth.googleOneTap.start(
-                        OAuth.GoogleOneTap.StartParameters(
-                            context = context,
-                            clientId = clientId,
-                            oAuthRequestIdentifier = STYTCH_GOOGLE_OAUTH_REQUEST_ID,
-                        ),
-                    )
-                } ?: false
-                if (!didStartOneTap) {
-                    // Google OneTap is unavailable, fallback to traditional OAuth
-                    onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
-                }
+                val clientId = productConfig.googleOauthOptions.clientId
+                clientId?.let {
+                    val result =
+                        stytchClient.oauth.googleOneTap.start(
+                            OAuth.GoogleOneTap.StartParameters(
+                                context = context,
+                                clientId = clientId,
+                            ),
+                        )
+                    _eventFlow.emit(EventState.Authenticated(result))
+                } ?: onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
             }
         } else {
             onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
@@ -82,12 +79,13 @@ internal class MainScreenViewModel(
         provider: OAuthProvider,
         oAuthOptions: OAuthOptions? = null,
     ) {
-        val parameters = OAuth.ThirdParty.StartParameters(
-            context = context,
-            oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-            loginRedirectUrl = oAuthOptions?.loginRedirectURL,
-            signupRedirectUrl = oAuthOptions?.signupRedirectURL,
-        )
+        val parameters =
+            OAuth.ThirdParty.StartParameters(
+                context = context,
+                oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
+                loginRedirectUrl = oAuthOptions?.loginRedirectURL,
+                signupRedirectUrl = oAuthOptions?.signupRedirectURL,
+            )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
             OAuthProvider.APPLE -> stytchClient.oauth.apple.start(parameters)
@@ -111,36 +109,45 @@ internal class MainScreenViewModel(
     }
 
     fun onCountryCodeChanged(countryCode: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            phoneNumberState = PhoneNumberState(
-                countryCode = countryCode,
-                error = null,
-            ),
-            genericErrorMessage = null,
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                phoneNumberState =
+                    PhoneNumberState(
+                        countryCode = countryCode,
+                        error = null,
+                    ),
+                genericErrorMessage = null,
+            )
     }
 
     fun onPhoneNumberChanged(phoneNumber: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            phoneNumberState = PhoneNumberState(
-                phoneNumber = phoneNumber,
-                error = null,
-            ),
-            genericErrorMessage = null,
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                phoneNumberState =
+                    PhoneNumberState(
+                        phoneNumber = phoneNumber,
+                        error = null,
+                    ),
+                genericErrorMessage = null,
+            )
     }
 
     fun onEmailAddressChanged(emailAddress: String) {
-        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-            emailState = EmailState(
-                emailAddress = emailAddress,
-                validEmail = emailAddress.isValidEmailAddress(),
-            ),
-            genericErrorMessage = null,
-        )
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(
+                emailState =
+                    EmailState(
+                        emailAddress = emailAddress,
+                        validEmail = emailAddress.isValidEmailAddress(),
+                    ),
+                genericErrorMessage = null,
+            )
     }
 
-    fun onEmailAddressSubmit(productConfig: StytchProductConfig, scope: CoroutineScope = viewModelScope) {
+    fun onEmailAddressSubmit(
+        productConfig: StytchProductConfig,
+        scope: CoroutineScope = viewModelScope,
+    ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val emailAddress = uiState.value.emailState.emailAddress
@@ -172,10 +179,11 @@ internal class MainScreenViewModel(
                     }
                 }
                 else -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        showLoadingDialog = false,
-                        genericErrorMessage = "Failed to get user type",
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            showLoadingDialog = false,
+                            genericErrorMessage = "Failed to get user type",
+                        )
                     null
                 }
             }?.let {
@@ -196,18 +204,20 @@ internal class MainScreenViewModel(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
     ): NavigationRoute? {
-        val parameters = emailMagicLinksOptions.toParameters(
-            emailAddress = emailAddress,
-            publicToken = stytchClient.publicToken,
-        )
+        val parameters =
+            emailMagicLinksOptions.toParameters(
+                emailAddress = emailAddress,
+                publicToken = stytchClient.publicToken,
+            )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
             is StytchResult.Error -> {
-                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    genericErrorMessage = result.exception.message
-                ) // TODO
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                    uiState.value.copy(
+                        genericErrorMessage = result.exception.message,
+                    ) // TODO
                 null
             }
         }
@@ -230,9 +240,10 @@ internal class MainScreenViewModel(
                 )
             }
             is StytchResult.Error -> {
-                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    genericErrorMessage = result.exception.message
-                ) // TODO
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                    uiState.value.copy(
+                        genericErrorMessage = result.exception.message,
+                    ) // TODO
                 null
             }
         }
@@ -242,24 +253,29 @@ internal class MainScreenViewModel(
         emailAddress: String,
         passwordOptions: PasswordOptions,
     ): NavigationRoute? {
-        val parameters = passwordOptions.toResetByEmailStartParameters(
-            emailAddress = emailAddress,
-            publicToken = publicToken
-        )
+        val parameters =
+            passwordOptions.toResetByEmailStartParameters(
+                emailAddress = emailAddress,
+                publicToken = publicToken,
+            )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
             }
             is StytchResult.Error -> {
-                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                    genericErrorMessage = result.exception.message
-                ) // TODO
+                savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                    uiState.value.copy(
+                        genericErrorMessage = result.exception.message,
+                    ) // TODO
                 null
             }
         }
     }
 
-    fun sendSmsOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
+    fun sendSmsOTP(
+        otpOptions: OTPOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
@@ -275,23 +291,28 @@ internal class MainScreenViewModel(
                                     methodId = result.value.methodId,
                                 ),
                                 isReturningUser = false,
-                            )
+                            ),
                         ),
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        phoneNumberState = phoneNumberState.copy(
-                            error = result.exception.message, // TODO
-                        ),
-                        showLoadingDialog = false,
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            phoneNumberState =
+                                phoneNumberState.copy(
+                                    error = result.exception.message, // TODO
+                                ),
+                            showLoadingDialog = false,
+                        )
                 }
             }
         }
     }
 
-    fun sendWhatsAppOTP(otpOptions: OTPOptions, scope: CoroutineScope = viewModelScope) {
+    fun sendWhatsAppOTP(
+        otpOptions: OTPOptions,
+        scope: CoroutineScope = viewModelScope,
+    ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
@@ -307,30 +328,33 @@ internal class MainScreenViewModel(
                                     methodId = result.value.methodId,
                                 ),
                                 isReturningUser = false,
-                            )
+                            ),
                         ),
                     )
                 }
                 is StytchResult.Error -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(
-                        phoneNumberState = phoneNumberState.copy(
-                            error = result.exception.message, // TODO
-                        ),
-                        showLoadingDialog = false,
-                    )
+                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                        uiState.value.copy(
+                            phoneNumberState =
+                                phoneNumberState.copy(
+                                    error = result.exception.message, // TODO
+                                ),
+                            showLoadingDialog = false,
+                        )
                 }
             }
         }
     }
 
     companion object {
-        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MainScreenViewModel(
-                    stytchClient = StytchClient,
-                    savedStateHandle = savedStateHandle,
-                )
+        fun factory(savedStateHandle: SavedStateHandle): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    MainScreenViewModel(
+                        stytchClient = StytchClient,
+                        savedStateHandle = savedStateHandle,
+                    )
+                }
             }
-        }
     }
 }
