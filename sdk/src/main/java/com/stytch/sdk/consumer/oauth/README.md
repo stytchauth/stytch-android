@@ -16,35 +16,16 @@ The [OAuth](OAuth.kt) interface provides methods for authenticating a user via a
 - Yahoo
 
 ## Google OneTap
-In order to use Google OneTap, you must register an activity result listener in your activity to listen for the intent returned by Google, which you will use to authenticate the request with Stytch.
+Google OneTap has been deprecated in favor of Google Credential Manager. To use it, you can call the `StytchClient.oauth.googleOneTap.start()` method, which will handle the entire authentication flow.
 
-First, define a unique identifier for the activity result, which you will use to both start the Google OneTap flow and listen for the activity result:
-```kotlin
-const val GOOGLE_OAUTH_REQUEST=123
-```
-
-Second, in your activity, add a listener for that unique identifier in `onActivityResult`, like so:
-```kotlin
-class MyActivity : AppCompatActivity() {
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            GOOGLE_OAUTH_REQUEST -> data?.let { viewModel.authenticateGoogleOneTapLogin(it) }
-        }
-    }
-}
-```
-
-Third, begin the Google OneTap flow by calling the `StytchClient.oauth.googleOneTap.start()` method making sure to provide the unique identifier created above.
-
-Lastly, in your viewmodel for this example, you can authenticate the request by calling the `StytchClient.oauth.googleOneTap.authenticate()` method.
+If this method returns an Error, it probably means your app is not configured for Google OneTap or there are no credentials available. You can fallback to a redirect-based OAuth flow by calling the `StytchClient.oauth.google.start()` method. 
 
 ## Third Party OAuth
 In order to use Third-party OAuth flows, there are a few settings you need to configure in your application.
 
 First, ensure you have added the relevant manifest placeholders in your application's `build.gradle` file (as explained in the [top-level README](/README.md)).
 
-Second, similar to the Google OneTap configuration, you must specify a unique identifier for the activity result:
+Second, you must specify a unique identifier for the activity result:
 ```kotlin
 const val THIRD_PARTY_OAUTH_REQUEST = 456
 ```

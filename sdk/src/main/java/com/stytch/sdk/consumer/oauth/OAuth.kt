@@ -1,9 +1,7 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
-import android.content.Intent
 import com.stytch.sdk.common.Constants
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 
@@ -120,62 +118,41 @@ public interface OAuth {
          * Data class used for wrapping parameters to start a Google OneTap flow
          * @property context is the calling Activity
          * @property clientId is the Google Cloud OAuth Client Id
-         * @property oAuthRequestIdentifier is an ID associated with the Google Sign In intent
          * @property autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
+         * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
         public data class StartParameters(
             val context: Activity,
             val clientId: String,
-            val oAuthRequestIdentifier: Int,
             val autoSelectEnabled: Boolean = false,
-        )
-
-        /**
-         * Data class used for wrapping parameters to authenticate a Google OneTap flow
-         * @property data is the resulting intent returned by the Google OneTap flow
-         * @property sessionDurationMinutes indicates how long the session should last before it expires
-         */
-        public data class AuthenticateParameters(
-            val data: Intent,
             val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**
-         * Begin a Google OneTap login flow. Returns true if the flow was successfully initiated, false if not.
-         * If this returns false, it means the Google OneTap flow is not available (no play services on device
+         * Begin a Google OneTap login flow. Returns an authenticated session if the flow was successfully initiated.
+         * If this returns an error, it means the Google OneTap flow is not available (no play services on device
          * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
          * @param parameters required to begin the OneTap flow
-         * @return Boolean
+         * @return NativeOAuthResponse
          */
-        public suspend fun start(parameters: StartParameters): Boolean
+        public suspend fun start(parameters: StartParameters): NativeOAuthResponse
 
         /**
-         * Begin a Google OneTap login flow. Returns true if the flow was successfully initiated, false if not.
-         * If this returns false, it means the Google OneTap flow is not available (no play services on device
+         * Begin a Google OneTap login flow. Returns an authenticated session if the flow was successfully initiated.
+         * If this returns an error, it means the Google OneTap flow is not available (no play services on device
          * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
          * @param parameters required to begin the OneTap flow
-         * @param callback a callback that receives a Boolean
+         * @param callback a callback that receives a NativeOAuthResponse
          */
-        public fun start(parameters: StartParameters, callback: (Boolean) -> Unit)
-
-        /**
-         * Authenticate a Google OneTap login
-         * @param parameters required to authenticate the Google OneTap login
-         * @return [AuthResponse]
-         */
-        public suspend fun authenticate(parameters: AuthenticateParameters): NativeOAuthResponse
-
-        /**
-         * Authenticate a Google OneTap login
-         * @param parameters required to authenticate the Google OneTap login
-         * @param callback a callback that receives an [AuthResponse]
-         */
-        public fun authenticate(parameters: AuthenticateParameters, callback: (NativeOAuthResponse) -> Unit)
+        public fun start(
+            parameters: StartParameters,
+            callback: (NativeOAuthResponse) -> Unit,
+        )
 
         /**
          * Sign a user out of Google Play Services
          */
-        public fun signOut()
+        public fun signOut(activity: Activity)
     }
 
     /**
@@ -206,7 +183,7 @@ public interface OAuth {
             val oAuthRequestIdentifier: Int,
             val loginRedirectUrl: String? = null,
             val signupRedirectUrl: String? = null,
-            val customScopes: List<String>? = null
+            val customScopes: List<String>? = null,
         )
 
         /**
@@ -240,6 +217,6 @@ public interface OAuth {
      */
     public fun authenticate(
         parameters: ThirdParty.AuthenticateParameters,
-        callback: (OAuthAuthenticatedResponse) -> Unit
+        callback: (OAuthAuthenticatedResponse) -> Unit,
     )
 }

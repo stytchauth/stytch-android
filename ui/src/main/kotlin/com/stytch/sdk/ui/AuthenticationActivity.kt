@@ -30,7 +30,7 @@ internal class AuthenticationActivity : ComponentActivity() {
             ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
             ?: run {
                 returnAuthenticationResult(
-                    StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided"))
+                    StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided")),
                 )
                 return@onCreate
             }
@@ -38,7 +38,7 @@ internal class AuthenticationActivity : ComponentActivity() {
         if (StytchClient.isInitialized.value) {
             StytchClient.events.logEvent(
                 eventName = "render_login_screen",
-                details = mapOf("options" to uiConfig.productConfig)
+                details = mapOf("options" to uiConfig.productConfig),
             )
         }
         lifecycleScope.launch {
@@ -65,7 +65,7 @@ internal class AuthenticationActivity : ComponentActivity() {
                     bootstrapData = uiConfig.bootstrapData,
                     screen = screen,
                     productConfig = uiConfig.productConfig,
-                    onInvalidConfig = { returnAuthenticationResult(StytchResult.Error(it)) }
+                    onInvalidConfig = { returnAuthenticationResult(StytchResult.Error(it)) },
                 )
             }
         }
@@ -89,16 +89,18 @@ internal class AuthenticationActivity : ComponentActivity() {
         if (StytchClient.isInitialized.value) {
             when (result) {
                 is StytchResult.Success -> StytchClient.events.logEvent("ui_authentication_success")
-                is StytchResult.Error -> StytchClient.events.logEvent(
-                    eventName = "ui_authentication_failure",
-                    details = null,
-                    error = result.exception
-                )
+                is StytchResult.Error ->
+                    StytchClient.events.logEvent(
+                        eventName = "ui_authentication_failure",
+                        details = null,
+                        error = result.exception,
+                    )
             }
         }
-        val data = Intent().apply {
-            putExtra(STYTCH_RESULT_KEY, result)
-        }
+        val data =
+            Intent().apply {
+                putExtra(STYTCH_RESULT_KEY, result)
+            }
         setResult(RESULT_OK, data)
         finish()
     }
@@ -108,26 +110,30 @@ internal class AuthenticationActivity : ComponentActivity() {
         finish()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        intent: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, intent)
         when (requestCode) {
-            STYTCH_GOOGLE_OAUTH_REQUEST_ID -> intent?.let {
-                viewModel.authenticateGoogleOneTapLogin(it, uiConfig.productConfig.sessionOptions)
-            }
-            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID -> intent?.let {
-                viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
-            }
+            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID ->
+                intent?.let {
+                    viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
+                }
         }
     }
 
     internal companion object {
         internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_UI_CONFIG"
         internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
-        internal const val STYTCH_GOOGLE_OAUTH_REQUEST_ID = 5551
         internal const val STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID = 5552
-        internal fun createIntent(context: Context, uiConfig: StytchUIConfig) =
-            Intent(context, AuthenticationActivity::class.java).apply {
-                putExtra(STYTCH_UI_CONFIG_KEY, uiConfig)
-            }
+
+        internal fun createIntent(
+            context: Context,
+            uiConfig: StytchUIConfig,
+        ) = Intent(context, AuthenticationActivity::class.java).apply {
+            putExtra(STYTCH_UI_CONFIG_KEY, uiConfig)
+        }
     }
 }

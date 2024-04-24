@@ -1,5 +1,4 @@
-@file:Suppress("MaxLineLength")
-/* ktlint-disable max-line-length */
+@file:Suppress("MaxLineLength", "ktlint:standard:max-line-length")
 
 package com.stytch.sdk.common.errors
 
@@ -16,7 +15,7 @@ public sealed class StytchSDKError(
  * Thrown when you try to use the SDK before it has been configured
  */
 public data class StytchSDKNotConfiguredError(val clientName: String) : StytchSDKError(
-    message = "$clientName not configured. You must call `$clientName.configure(...)` before using any functionality of the SDK."
+    message = "$clientName not configured. You must call `$clientName.configure(...)` before using any functionality of the SDK.", // ktlint-disable max-line-length
 )
 
 /**
@@ -34,9 +33,9 @@ public data class StytchInternalError(
  * Thrown when we couldn't find a code verifier on device
  */
 public data class StytchMissingPKCEError(
-    public override val exception: Throwable?
+    public override val exception: Throwable?,
 ) : StytchSDKError(
-    message = "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.",
+    message = "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.", // ktlint-disable max-line-length
     exception = exception,
 )
 
@@ -47,7 +46,7 @@ public data class StytchFailedToCreateCodeChallengeError(
     public override val exception: Throwable,
 ) : StytchSDKError(
     message = "Failed to generate a PKCE code challenge",
-    exception = exception
+    exception = exception,
 )
 
 /**
@@ -82,7 +81,7 @@ public object StytchNoCurrentSessionError : StytchSDKError(
  * Thrown when there are no biometric registrations present on the device
  */
 public object StytchNoBiometricsRegistrationError : StytchSDKError(
-    message = "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
+    message = "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.", // ktlint-disable max-line-length
 )
 
 /**
@@ -96,7 +95,7 @@ public object StytchKeystoreUnavailableError : StytchSDKError(
  * Thrown when we are unable to retrieve a biometric key
  */
 public data class StytchMissingPublicKeyError(
-    override val exception: Throwable?
+    override val exception: Throwable?,
 ) : StytchSDKError(
     message = "Failed to retrieve the public key. Add a new biometric registration.",
     exception = exception,
@@ -106,7 +105,7 @@ public data class StytchMissingPublicKeyError(
  * Thrown when a challenge signing (biometrics, passkeys) has failed
  */
 public data class StytchChallengeSigningFailed(
-    public override val exception: Throwable?
+    public override val exception: Throwable?,
 ) : StytchSDKError(
     message = "Failed to sign the challenge with the key.",
     exception = exception,
@@ -149,15 +148,24 @@ public data class StytchFailedToDecryptDataError(
 public data class StytchBiometricAuthenticationFailed(
     val reason: String,
 ) : StytchSDKError(
-    message = "Biometric authentication failed"
+    message = "Biometric authentication failed",
 )
 
 /**
  * Thrown when we encounter an SSO error
  */
 public data class StytchSSOError(
-    public override val exception: Throwable? = null
+    public override val exception: Throwable? = null,
 ) : StytchSDKError(
     message = "",
-    exception = exception
+    exception = exception,
+)
+
+/**
+ * Thrown when we received an unexpected token type from Sign In With Google
+ */
+public data class UnexpectedCredentialType(
+    val credentialType: String,
+) : StytchSDKError(
+    message = "Unexpected type of credential: $credentialType",
 )
