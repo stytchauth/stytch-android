@@ -43,36 +43,29 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loginWithGoogleOneTap(context: Activity) {
         viewModelScope.launch {
-            val didStart = StytchClient.oauth.googleOneTap.start(
-                OAuth.GoogleOneTap.StartParameters(
-                    context = context,
-                    clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
-                    oAuthRequestIdentifier = GOOGLE_OAUTH_REQUEST
-                )
+            _currentResponse.value =
+                StytchClient.oauth.googleOneTap.start(
+                    OAuth.GoogleOneTap.StartParameters(
+                        context = context,
+                        clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                    ),
+                ).toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun loginWithThirdPartyOAuth(
+        context: Activity,
+        provider: OAuthProvider,
+    ) {
+        val startParameters =
+            OAuth.ThirdParty.StartParameters(
+                context = context,
+                oAuthRequestIdentifier = THIRD_PARTY_OAUTH_REQUEST,
+                loginRedirectUrl = "app://oauth",
+                signupRedirectUrl = "app://oauth",
             )
-            _currentResponse.value = if (didStart) "Starting Google OneTap" else "Google OneTap not available"
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
-    }
-
-    fun authenticateGoogleOneTapLogin(data: Intent) {
-        viewModelScope.launch {
-            _currentResponse.value = "Authenticating Google OneTap login"
-            val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
-            _currentResponse.value = result.toFriendlyDisplay()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
-    }
-
-    fun loginWithThirdPartyOAuth(context: Activity, provider: OAuthProvider) {
-        val startParameters = OAuth.ThirdParty.StartParameters(
-            context = context,
-            oAuthRequestIdentifier = THIRD_PARTY_OAUTH_REQUEST,
-            loginRedirectUrl = "app://oauth",
-            signupRedirectUrl = "app://oauth",
-        )
         when (provider) {
             OAuthProvider.APPLE -> StytchClient.oauth.apple.start(startParameters)
             OAuthProvider.AMAZON -> StytchClient.oauth.amazon.start(startParameters)
@@ -92,25 +85,30 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun authenticateThirdPartyOAuth(resultCode: Int, intent: Intent) {
+    fun authenticateThirdPartyOAuth(
+        resultCode: Int,
+        intent: Intent,
+    ) {
         viewModelScope.launch {
             _loadingState.value = true
             if (resultCode == RESULT_OK) {
                 intent.data?.let {
                     val result = StytchClient.handle(it, 60U)
-                    _currentResponse.value = when (result) {
-                        is DeeplinkHandledStatus.NotHandled -> result.reason.message
-                        is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
-                        // This only happens for password reset deeplinks
-                        is DeeplinkHandledStatus.ManualHandlingRequired -> ""
-                    }
+                    _currentResponse.value =
+                        when (result) {
+                            is DeeplinkHandledStatus.NotHandled -> result.reason.message
+                            is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
+                            // This only happens for password reset deeplinks
+                            is DeeplinkHandledStatus.ManualHandlingRequired -> ""
+                        }
                 }
             } else {
                 intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
                     when (it as SSOError) {
                         is SSOError.UserCanceled -> {} // do nothing
                         is SSOError.NoBrowserFound,
-                        is SSOError.NoURIFound -> _currentResponse.value = it.message
+                        is SSOError.NoURIFound,
+                        -> _currentResponse.value = it.message
                     }
                 }
             }

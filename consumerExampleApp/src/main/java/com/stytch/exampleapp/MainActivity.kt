@@ -22,36 +22,40 @@ import com.stytch.exampleapp.ui.AppScreen
 private const val SMS_CONSENT_REQUEST = 2
 const val GOOGLE_OAUTH_REQUEST = 3
 const val THIRD_PARTY_OAUTH_REQUEST = 4
-class MainActivity : FragmentActivity() {
 
+class MainActivity : FragmentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val oauthViewModel: OAuthViewModel by viewModels()
 
-    private val smsVerificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
-                val extras = intent.extras
-                val smsRetrieverStatus = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
+    private val smsVerificationReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context,
+                intent: Intent,
+            ) {
+                if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
+                    val extras = intent.extras
+                    val smsRetrieverStatus = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
 
-                when (smsRetrieverStatus.statusCode) {
-                    CommonStatusCodes.SUCCESS -> {
-                        try {
-                            // Get consent intent and start activity to show consent dialog to user, activity must be started in
-                            // 5 minutes, otherwise you'll receive another TIMEOUT intent
-                            extras.getParcelable<Intent>(SmsRetriever.EXTRA_CONSENT_INTENT)?.let {
-                                startActivityForResult(it, SMS_CONSENT_REQUEST)
+                    when (smsRetrieverStatus.statusCode) {
+                        CommonStatusCodes.SUCCESS -> {
+                            try {
+                                // Get consent intent and start activity to show consent dialog to user, activity must be started in
+                                // 5 minutes, otherwise you'll receive another TIMEOUT intent
+                                extras.getParcelable<Intent>(SmsRetriever.EXTRA_CONSENT_INTENT)?.let {
+                                    startActivityForResult(it, SMS_CONSENT_REQUEST)
+                                }
+                            } catch (e: ActivityNotFoundException) {
+                                // Handle the exception ...
                             }
-                        } catch (e: ActivityNotFoundException) {
-                            // Handle the exception ...
                         }
-                    }
-                    CommonStatusCodes.TIMEOUT -> {
-                        // Time out occurred, do nothing
+                        CommonStatusCodes.TIMEOUT -> {
+                            // Time out occurred, do nothing
+                        }
                     }
                 }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +81,11 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    public override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             SMS_CONSENT_REQUEST ->
@@ -87,7 +95,6 @@ class MainActivity : FragmentActivity() {
                 } else {
                     // Consent denied. User can type OTC manually.
                 }
-            GOOGLE_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateGoogleOneTapLogin(it) }
             THIRD_PARTY_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateThirdPartyOAuth(resultCode, it) }
         }
     }

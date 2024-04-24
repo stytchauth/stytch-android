@@ -128,7 +128,6 @@ dependencies {
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
     implementation "androidx.browser:browser:1.4.0"
     implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'com.google.android.gms:play-services-auth:20.6.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
@@ -138,8 +137,9 @@ dependencies {
     implementation 'com.google.crypto.tink:tink-android:1.8.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.72'
     implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
-    implementation "androidx.credentials:credentials:1.2.0-rc01"
-    implementation "androidx.credentials:credentials-play-services-auth:1.2.0-rc01"
+    implementation "androidx.credentials:credentials:1.2.2"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
 
 
     testImplementation 'junit:junit:4.13.2'
