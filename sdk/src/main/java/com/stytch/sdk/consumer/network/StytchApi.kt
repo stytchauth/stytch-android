@@ -562,6 +562,16 @@ internal object StytchApi {
                 apiService.deleteWebAuthnById(id)
             }
 
+        suspend fun deleteTotpById(id: String): StytchResult<DeleteAuthenticationFactorData> =
+            safeConsumerApiCall {
+                apiService.deleteTOTPById(id)
+            }
+
+        suspend fun deleteOAuthById(id: String): StytchResult<DeleteAuthenticationFactorData> =
+            safeConsumerApiCall {
+                apiService.deleteOAuthById(id)
+            }
+
         suspend fun updateUser(
             name: NameData?,
             untrustedMetadata: Map<String, Any?>?,

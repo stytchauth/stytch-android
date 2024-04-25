@@ -700,6 +700,24 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check deleteTOTPById request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteTOTPById(id = "totp-id")
+            }.verifyDelete("/users/totps/totp-id")
+        }
+    }
+
+    @Test
+    fun `check deleteOAuthById request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.deleteOAuthById(id = "oauth-id")
+            }.verifyDelete("/users/oauth/oauth-id")
+        }
+    }
+
+    @Test
     fun `check updateUser request`() {
         val parameters =
             ConsumerRequests.User.UpdateRequest(

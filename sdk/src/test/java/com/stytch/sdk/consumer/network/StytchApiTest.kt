@@ -361,6 +361,50 @@ internal class StytchApiTest {
         }
 
     @Test
+    fun `StytchApi User deleteCryptoWalletById calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery {
+                StytchApi.apiService.deleteCryptoWalletById(any())
+            } returns mockk(relaxed = true)
+            StytchApi.UserManagement.deleteCryptoWalletById("crypto-registration-id")
+            coVerify { StytchApi.apiService.deleteCryptoWalletById("crypto-registration-id") }
+        }
+
+    @Test
+    fun `StytchApi User deleteWebAuthnById calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery {
+                StytchApi.apiService.deleteWebAuthnById(any())
+            } returns mockk(relaxed = true)
+            StytchApi.UserManagement.deleteWebAuthnById("webauthn-registration-id")
+            coVerify { StytchApi.apiService.deleteWebAuthnById("webauthn-registration-id") }
+        }
+
+    @Test
+    fun `StytchApi User deleteTOTPById calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery {
+                StytchApi.apiService.deleteTOTPById(any())
+            } returns mockk(relaxed = true)
+            StytchApi.UserManagement.deleteTotpById("totp-registration-id")
+            coVerify { StytchApi.apiService.deleteTOTPById("totp-registration-id") }
+        }
+
+    @Test
+    fun `StytchApi User deleteOAuthById calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery {
+                StytchApi.apiService.deleteOAuthById(any())
+            } returns mockk(relaxed = true)
+            StytchApi.UserManagement.deleteOAuthById("oauth-registration-id")
+            coVerify { StytchApi.apiService.deleteOAuthById("oauth-registration-id") }
+        }
+
+    @Test
     fun `StytchApi User updateUser calls appropriate apiService method`() =
         runTest {
             every { StytchApi.isInitialized } returns true
