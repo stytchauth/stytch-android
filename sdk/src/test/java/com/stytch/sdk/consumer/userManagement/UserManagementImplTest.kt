@@ -120,18 +120,24 @@ internal class UserManagementImplTest {
             } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deleteTotpByIp(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deleteOAuthById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             listOf(
                 UserAuthenticationFactor.Email("emailAddressId"),
                 UserAuthenticationFactor.PhoneNumber("phoneNumberId"),
                 UserAuthenticationFactor.BiometricRegistration("biometricsRegistrationId"),
                 UserAuthenticationFactor.CryptoWallet("cryptoWalletId"),
                 UserAuthenticationFactor.WebAuthn("webAuthnId"),
+                UserAuthenticationFactor.TOTP("totpId"),
+                UserAuthenticationFactor.OAuth("oauthId"),
             ).forEach { impl.deleteFactor(it) }
             coVerify { mockApi.deleteEmailById("emailAddressId") }
             coVerify { mockApi.deletePhoneNumberById("phoneNumberId") }
             coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
             coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
             coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
+            coVerify { mockApi.deleteTotpByIp("totpId") }
+            coVerify { mockApi.deleteOAuthById("oauthId") }
         }
 
     @Test

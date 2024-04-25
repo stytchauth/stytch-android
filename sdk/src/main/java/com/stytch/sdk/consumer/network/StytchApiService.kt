@@ -182,6 +182,16 @@ internal interface StytchApiService : ApiService {
         @Path(value = "id") id: String,
     ): ConsumerResponses.User.DeleteFactorResponse
 
+    @DELETE("users/totps/{id}")
+    suspend fun deleteTOTPById(
+        @Path(value = "id") id: String,
+    ): ConsumerResponses.User.DeleteFactorResponse
+
+    @DELETE("users/oauth/{id}")
+    suspend fun deleteOAuthById(
+        @Path(value = "id") id: String,
+    ): ConsumerResponses.User.DeleteFactorResponse
+
     @PUT("users/me")
     suspend fun updateUser(
         @Body request: ConsumerRequests.User.UpdateRequest,

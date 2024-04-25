@@ -23,8 +23,6 @@ import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 internal interface GoogleCredentialManagerProvider {
     suspend fun getSignInWithGoogleCredential(
