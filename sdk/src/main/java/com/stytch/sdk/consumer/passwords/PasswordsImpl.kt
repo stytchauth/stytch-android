@@ -159,7 +159,7 @@ internal class PasswordsImpl internal constructor(
                 email = parameters.email,
                 existingPassword = parameters.existingPassword,
                 newPassword = parameters.newPassword,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
