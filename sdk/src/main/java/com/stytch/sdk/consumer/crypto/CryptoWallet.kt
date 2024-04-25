@@ -7,7 +7,9 @@ import com.stytch.sdk.consumer.network.models.CryptoWalletType
 
 public interface CryptoWallet {
     /**
-     * TODO
+     * A data class wrapping the parameters needed to begin a crypto wallet authentication flow
+     * @property cryptoWalletAddress The address to authenticate.
+     * @property cryptoWalletType The type of wallet to authenticate. Currently `ethereum` and `solana` are supported.
      */
     public data class AuthenticateStartParameters(
         val cryptoWalletAddress: String,
@@ -15,7 +17,11 @@ public interface CryptoWallet {
     )
 
     /**
-     * TODO
+     * A data class wrapping the parameters needed to complete a crypto wallet authentication flow
+     * @property cryptoWalletAddress The address to authenticate.
+     * @property cryptoWalletType The type of wallet to authenticate. Currently `ethereum` and `solana` are supported.
+     * @property signature The signature from the message.
+     * @property sessionDurationMinutes the length of time in minutes that a session should be minted for
      */
     public data class AuthenticateParameters(
         val cryptoWalletAddress: String,
@@ -25,12 +31,16 @@ public interface CryptoWallet {
     )
 
     /**
-     * TODO
+     * Begin a crypto wallet authentication flow
+     * @param parameters the parameters required to begin a crypto wallet authentication flow
+     * @return [CryptoWalletAuthenticateStartResponse]
      */
     public suspend fun authenticateStart(parameters: AuthenticateStartParameters): CryptoWalletAuthenticateStartResponse
 
     /**
-     * TODO
+     * Begin a crypto wallet authentication flow
+     * @param parameters the parameters required to begin a crypto wallet authentication flow
+     * @param callback a callback that receives a [CryptoWalletAuthenticateStartResponse]
      */
     public fun authenticateStart(
         parameters: AuthenticateStartParameters,
@@ -38,12 +48,16 @@ public interface CryptoWallet {
     )
 
     /**
-     * TODO
+     * Complete a crypto wallet authentication flow
+     * @param parameters the parameters required to complete a crypto wallet authentication flow
+     * @return [AuthResponse]
      */
     public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
 
     /**
-     * TODO
+     * Complete a crypto wallet authentication flow
+     * @param parameters the parameters required to complete a crypto wallet authentication flow
+     * @param callback a callback that receives an [AuthResponse]
      */
     public fun authenticate(
         parameters: AuthenticateParameters,
