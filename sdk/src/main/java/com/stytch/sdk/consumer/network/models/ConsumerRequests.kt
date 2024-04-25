@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.NameData
+import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal object ConsumerRequests {
     object MagicLinks {
@@ -119,6 +120,18 @@ internal object ConsumerRequests {
         data class StrengthCheckRequest(
             val email: String?,
             val password: String,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class PasswordResetByExistingPasswordRequest(
+            val email: String,
+            @Json(name = "existing_password")
+            val existingPassword: String,
+            @Json(name = "new_password")
+            val newPassword: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
         )
     }
 

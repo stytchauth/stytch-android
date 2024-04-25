@@ -451,6 +451,23 @@ internal object StytchApi {
                 )
             }
 
+        suspend fun resetByExisting(
+            email: String,
+            existingPassword: String,
+            newPassword: String,
+            sessionDurationMinutes: UInt,
+        ): StytchResult<AuthData> =
+            safeConsumerApiCall {
+                apiService.resetByExistingPassword(
+                    ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest(
+                        email = email,
+                        existingPassword = existingPassword,
+                        newPassword = newPassword,
+                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    )
+                )
+            }
+
         suspend fun strengthCheck(
             email: String?,
             password: String,

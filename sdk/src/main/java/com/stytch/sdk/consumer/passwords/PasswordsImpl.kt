@@ -153,6 +153,28 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
+    override suspend fun resetByExistingPassword(parameters: Passwords.ResetByExistingPasswordParameters): AuthResponse {
+        return withContext(dispatchers.io) {
+            api.resetByExisting(
+                email = parameters.email,
+                existingPassword = parameters.existingPassword,
+                newPassword = parameters.newPassword,
+                sessionDurationMinutes = parameters.sessionDurationMinutes
+            ).apply {
+                launchSessionUpdater(dispatchers, sessionStorage)
+            }
+        }
+    }
+
+    override fun resetByExistingPassword(
+        parameters: Passwords.ResetByExistingPasswordParameters,
+        callback: (AuthResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            callback(resetByExistingPassword(parameters))
+        }
+    }
+
     override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse {
         return withContext(dispatchers.io) {
             api.resetBySession(

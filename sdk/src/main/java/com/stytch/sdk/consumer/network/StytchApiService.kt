@@ -125,6 +125,11 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.Passwords.ResetBySessionRequest,
     ): ConsumerResponses.AuthenticateResponse
 
+    @POST("passwords/existing_password/reset")
+    suspend fun resetByExistingPassword(
+        @Body request: ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest,
+    ): ConsumerResponses.AuthenticateResponse
+
     @POST("passwords/strength_check")
     suspend fun strengthCheck(
         @Body request: ConsumerRequests.Passwords.StrengthCheckRequest,
