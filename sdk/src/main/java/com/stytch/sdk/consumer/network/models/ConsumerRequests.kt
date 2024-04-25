@@ -4,7 +4,6 @@ import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.NameData
-import org.bouncycastle.asn1.x500.style.RFC4519Style.name
 
 internal object ConsumerRequests {
     object MagicLinks {
