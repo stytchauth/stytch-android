@@ -120,6 +120,18 @@ internal object ConsumerRequests {
             val email: String?,
             val password: String,
         )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class PasswordResetByExistingPasswordRequest(
+            val email: String,
+            @Json(name = "existing_password")
+            val existingPassword: String,
+            @Json(name = "new_password")
+            val newPassword: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
     }
 
     object OTP {

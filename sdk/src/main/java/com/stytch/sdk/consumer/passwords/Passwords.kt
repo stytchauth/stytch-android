@@ -92,6 +92,21 @@ public interface Passwords {
     )
 
     /**
+     * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
+     * @property email is the account identifier for the account in the form of an Email address to identify which
+     * account's password you wish to start resetting
+     * @property existingPassword The user's existing password.
+     * @property newPassword The new password for the user.
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     */
+    public data class ResetByExistingPasswordParameters(
+        val email: String,
+        val existingPassword: String,
+        val newPassword: String,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+    )
+
+    /**
      * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
      * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
@@ -213,6 +228,23 @@ public interface Passwords {
     public fun resetByEmail(
         parameters: ResetByEmailParameters,
         callback: (response: AuthResponse) -> Unit,
+    )
+
+    /**
+     * Reset a user's password and authenticate them
+     * @param parameters required to reset a user's password
+     * @returns [AuthResponse]
+     */
+    public suspend fun resetByExistingPassword(parameters: ResetByExistingPasswordParameters): AuthResponse
+
+    /**
+     * Reset a user's password and authenticate them
+     * @param parameters required to reset a user's password
+     * @param callback a callback that receives an [AuthResponse]
+     */
+    public fun resetByExistingPassword(
+        parameters: ResetByExistingPasswordParameters,
+        callback: (AuthResponse) -> Unit,
     )
 
     /**

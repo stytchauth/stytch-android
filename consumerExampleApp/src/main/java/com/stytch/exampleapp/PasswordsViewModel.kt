@@ -24,6 +24,7 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
 
     var emailTextState by mutableStateOf(TextFieldValue(""))
     var passwordTextState by mutableStateOf(TextFieldValue(""))
+    var newPasswordTextState by mutableStateOf(TextFieldValue(""))
     var tokenTextState by mutableStateOf(TextFieldValue(""))
 
     val emailIsValid
@@ -142,6 +143,23 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
                     ),
                 )
             _currentResponse.value = result.toFriendlyDisplay()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
+
+    fun resetByExisting() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            _currentResponse.value =
+                StytchClient.passwords.resetByExistingPassword(
+                    Passwords.ResetByExistingPasswordParameters(
+                        email = emailTextState.text,
+                        existingPassword = passwordTextState.text,
+                        newPassword = newPasswordTextState.text,
+                        sessionDurationMinutes = 5U,
+                    ),
+                ).toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

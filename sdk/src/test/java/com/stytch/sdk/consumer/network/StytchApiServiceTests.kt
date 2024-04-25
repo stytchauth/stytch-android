@@ -520,6 +520,31 @@ internal class StytchApiServiceTests {
     }
 
     @Test
+    fun `check Passwords resetByExistingPassword request`() {
+        runBlocking {
+            val parameters =
+                ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest(
+                    email = "robot@stytch.com",
+                    existingPassword = "old password",
+                    newPassword = "new password",
+                    sessionDurationMinutes = 10,
+                )
+            requestIgnoringResponseException {
+                apiService.resetByExistingPassword(parameters)
+            }.verifyPost(
+                expectedPath = "/passwords/existing_password/reset",
+                expectedBody =
+                    mapOf(
+                        "email" to parameters.email,
+                        "existing_password" to parameters.existingPassword,
+                        "new_password" to parameters.newPassword,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+
+    @Test
     fun `check Passwords authenticate request`() {
         runBlocking {
             val parameters =
