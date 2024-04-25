@@ -64,6 +64,18 @@ fun PasswordsScreen(navController: NavController) {
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),
+            value = viewModel.newPasswordTextState,
+            singleLine = true,
+            label = {
+                Text(text = stringResource(id = R.string.passwords_new))
+            },
+            onValueChange = {
+                viewModel.newPasswordTextState = it
+            },
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
             value = viewModel.tokenTextState,
             singleLine = true,
             label = {
@@ -103,6 +115,11 @@ fun PasswordsScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_session),
             onClick = { viewModel.resetPasswordBySession() },
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_reset_by_existing),
+            onClick = viewModel::resetByExisting,
         )
         if (loading.value) {
             CircularProgressIndicator()
