@@ -104,6 +104,7 @@ tasks.named("dokkaHtmlPartial").configure {
                 "src/main/java/com/stytch/sdk/common/sso/README.md",
                 "src/main/java/com/stytch/sdk/consumer/README.md",
                 "src/main/java/com/stytch/sdk/consumer/biometrics/README.md",
+                "src/main/java/com/stytch/sdk/consumer/crypto/README.md",
                 "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
                 "src/main/java/com/stytch/sdk/consumer/oauth/README.md",
                 "src/main/java/com/stytch/sdk/consumer/otp/README.md",

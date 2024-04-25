@@ -311,4 +311,27 @@ internal object ConsumerRequests {
             val name: String,
         )
     }
+
+    object Crypto {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class CryptoWalletAuthenticateStartRequest(
+            @Json(name = "crypto_wallet_address")
+            val cryptoWalletAddress: String,
+            @Json(name = "crypto_wallet_type")
+            val cryptoWalletType: CryptoWalletType,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class CryptoWalletAuthenticateRequest(
+            @Json(name = "crypto_wallet_address")
+            val cryptoWalletAddress: String,
+            @Json(name = "crypto_wallet_type")
+            val cryptoWalletType: CryptoWalletType,
+            val signature: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+    }
 }

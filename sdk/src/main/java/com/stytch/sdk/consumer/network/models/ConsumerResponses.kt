@@ -79,6 +79,14 @@ internal object ConsumerResponses {
         class UpdateResponse(data: WebAuthnUpdateResponseData) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
     }
 
+    object Crypto {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class AuthenticateStartResponse(
+            data: CryptoWalletAuthenticateStartResponseData,
+        ): StytchDataResponse<CryptoWalletAuthenticateStartResponseData>(data)
+    }
+
     @Keep
     @JsonClass(generateAdapter = true)
     class AuthenticateResponse(data: AuthData) : StytchDataResponse<AuthData>(data)

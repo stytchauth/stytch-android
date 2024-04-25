@@ -26,6 +26,8 @@ import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
+import com.stytch.sdk.consumer.crypto.CryptoWallet
+import com.stytch.sdk.consumer.crypto.CryptoWalletImpl
 import com.stytch.sdk.consumer.events.Events
 import com.stytch.sdk.consumer.events.EventsImpl
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -331,6 +333,26 @@ public object StytchClient {
             assertInitialized()
             return DFPImpl(dfpProvider, dispatchers, externalScope)
         }
+
+    /**
+     * Exposes an instance of the [CryptoWallet] interface which provides methods for authenticating with a crypto
+     * wallet
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
+     */
+    public var crypto: CryptoWallet =
+        CryptoWalletImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchApi.Crypto,
+        )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
 
     public val events: Events
         get() {
