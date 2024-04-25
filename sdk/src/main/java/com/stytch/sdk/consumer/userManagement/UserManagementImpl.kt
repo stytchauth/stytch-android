@@ -41,7 +41,7 @@ internal class UserManagementImpl(
                 is UserAuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
                 is UserAuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
                 is UserAuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
-                is UserAuthenticationFactor.TOTP -> api.deleteTotpByIp(factor.id)
+                is UserAuthenticationFactor.TOTP -> api.deleteTotpById(factor.id)
                 is UserAuthenticationFactor.OAuth -> api.deleteOAuthById(factor.id)
             }.apply {
                 if (this is StytchResult.Success) {

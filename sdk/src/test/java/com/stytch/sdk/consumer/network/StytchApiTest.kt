@@ -389,7 +389,7 @@ internal class StytchApiTest {
             coEvery {
                 StytchApi.apiService.deleteTOTPById(any())
             } returns mockk(relaxed = true)
-            StytchApi.UserManagement.deleteTotpByIp("totp-registration-id")
+            StytchApi.UserManagement.deleteTotpById("totp-registration-id")
             coVerify { StytchApi.apiService.deleteTOTPById("totp-registration-id") }
         }
 

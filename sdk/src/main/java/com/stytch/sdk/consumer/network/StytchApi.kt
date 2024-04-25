@@ -562,7 +562,7 @@ internal object StytchApi {
                 apiService.deleteWebAuthnById(id)
             }
 
-        suspend fun deleteTotpByIp(id: String): StytchResult<DeleteAuthenticationFactorData> =
+        suspend fun deleteTotpById(id: String): StytchResult<DeleteAuthenticationFactorData> =
             safeConsumerApiCall {
                 apiService.deleteTOTPById(id)
             }

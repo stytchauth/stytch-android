@@ -120,7 +120,7 @@ internal class UserManagementImplTest {
             } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteCryptoWalletById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteWebAuthnById(any()) } returns StytchResult.Success(mockk(relaxed = true))
-            coEvery { mockApi.deleteTotpByIp(any()) } returns StytchResult.Success(mockk(relaxed = true))
+            coEvery { mockApi.deleteTotpById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteOAuthById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             listOf(
                 UserAuthenticationFactor.Email("emailAddressId"),
@@ -136,7 +136,7 @@ internal class UserManagementImplTest {
             coVerify { mockApi.deleteBiometricRegistrationById("biometricsRegistrationId") }
             coVerify { mockApi.deleteCryptoWalletById("cryptoWalletId") }
             coVerify { mockApi.deleteWebAuthnById("webAuthnId") }
-            coVerify { mockApi.deleteTotpByIp("totpId") }
+            coVerify { mockApi.deleteTotpById("totpId") }
             coVerify { mockApi.deleteOAuthById("oauthId") }
         }
 
