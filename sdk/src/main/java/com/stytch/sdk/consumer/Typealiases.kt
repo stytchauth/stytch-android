@@ -5,6 +5,7 @@ import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
+import com.stytch.sdk.consumer.network.models.CryptoWalletAuthenticateStartResponseData
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
@@ -97,3 +98,8 @@ public typealias WebAuthnAuthenticateStartResponse = StytchResult<WebAuthnAuthen
  * Type alias for StytchResult<WebAuthnUpdateResponseData> used for WebAuthn update responses
  */
 public typealias WebAuthnUpdateResponse = StytchResult<WebAuthnUpdateResponseData>
+
+/**
+ * Type alias for StytchResult<CryptoWalletAuthenticateStartResponseData> used for crypto authentication start responses
+ */
+public typealias CryptoWalletAuthenticateStartResponse = StytchResult<CryptoWalletAuthenticateStartResponseData>

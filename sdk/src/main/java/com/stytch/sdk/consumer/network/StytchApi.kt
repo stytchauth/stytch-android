@@ -25,6 +25,7 @@ import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
@@ -35,6 +36,7 @@ import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CreateResponse
+import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
@@ -719,6 +721,51 @@ internal object StytchApi {
                     id = id,
                     ConsumerRequests.WebAuthn.UpdateRequest(
                         name = name,
+                    ),
+                )
+            }
+    }
+
+    internal object Crypto {
+        suspend fun authenticateStartPrimary(
+            cryptoWalletAddress: String,
+            cryptoWalletType: CryptoWalletType,
+        ): CryptoWalletAuthenticateStartResponse =
+            safeConsumerApiCall {
+                apiService.cryptoWalletAuthenticateStartPrimary(
+                    ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest(
+                        cryptoWalletAddress = cryptoWalletAddress,
+                        cryptoWalletType = cryptoWalletType,
+                    ),
+                )
+            }
+
+        suspend fun authenticateStartSecondary(
+            cryptoWalletAddress: String,
+            cryptoWalletType: CryptoWalletType,
+        ): CryptoWalletAuthenticateStartResponse =
+            safeConsumerApiCall {
+                apiService.cryptoWalletAuthenticateStartSecondary(
+                    ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest(
+                        cryptoWalletAddress = cryptoWalletAddress,
+                        cryptoWalletType = cryptoWalletType,
+                    ),
+                )
+            }
+
+        suspend fun authenticate(
+            cryptoWalletAddress: String,
+            cryptoWalletType: CryptoWalletType,
+            signature: String,
+            sessionDurationMinutes: UInt,
+        ): AuthResponse =
+            safeConsumerApiCall {
+                apiService.cryptoWalletAuthenticate(
+                    ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest(
+                        cryptoWalletAddress = cryptoWalletAddress,
+                        cryptoWalletType = cryptoWalletType,
+                        signature = signature,
+                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
                     ),
                 )
             }

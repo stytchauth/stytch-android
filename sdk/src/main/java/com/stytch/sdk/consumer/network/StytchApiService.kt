@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.network
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
+import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.ConsumerResponses
 import retrofit2.Response
@@ -267,4 +268,21 @@ internal interface StytchApiService : ApiService {
         @Body request: List<CommonRequests.Events.Event>,
     ): Response<Unit>
     //endregion Events
+
+    //region Crypto
+    @POST("crypto_wallets/authenticate/start/primary")
+    suspend fun cryptoWalletAuthenticateStartPrimary(
+        @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest,
+    ): ConsumerResponses.Crypto.AuthenticateStartResponse
+
+    @POST("crypto_wallets/authenticate/start/secondary")
+    suspend fun cryptoWalletAuthenticateStartSecondary(
+        @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest,
+    ): ConsumerResponses.Crypto.AuthenticateStartResponse
+
+    @POST("crypto_wallets/authenticate")
+    suspend fun cryptoWalletAuthenticate(
+        @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest,
+    ): ConsumerResponses.AuthenticateResponse
+    //endregion
 }
