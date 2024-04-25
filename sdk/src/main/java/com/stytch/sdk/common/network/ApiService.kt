@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.utils.createEnumJsonAdapter
+import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -64,6 +65,7 @@ internal interface ApiService {
                     .add(createEnumJsonAdapter<AllowedAuthMethods>())
                     .add(createEnumJsonAdapter<MfaMethod>())
                     .add(createEnumJsonAdapter<SetMFAEnrollment>())
+                    .add(createEnumJsonAdapter<CryptoWalletType>())
                     .build()
             return Retrofit.Builder()
                 .baseUrl(hostUrl)

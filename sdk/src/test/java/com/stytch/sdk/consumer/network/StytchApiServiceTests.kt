@@ -4,6 +4,7 @@ import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
+import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
@@ -987,6 +988,75 @@ internal class StytchApiServiceTests {
         }
     }
     //endregion
+
+    //region Crypto
+    @Test
+    fun `check cryptoWalletAuthenticateStartPrimary request`() {
+        val parameters =
+            ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest(
+                cryptoWalletAddress = "my-crypto-wallet-address",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+            )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.cryptoWalletAuthenticateStartPrimary(parameters)
+            }.verifyPost(
+                expectedPath = "/crypto_wallets/authenticate/start/primary",
+                expectedBody =
+                    mapOf(
+                        "crypto_wallet_address" to parameters.cryptoWalletAddress,
+                        "crypto_wallet_type" to parameters.cryptoWalletType.jsonName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check cryptoWalletAuthenticateStartSecondary request`() {
+        val parameters =
+            ConsumerRequests.Crypto.CryptoWalletAuthenticateStartRequest(
+                cryptoWalletAddress = "my-crypto-wallet-address",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+            )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.cryptoWalletAuthenticateStartSecondary(parameters)
+            }.verifyPost(
+                expectedPath = "/crypto_wallets/authenticate/start/secondary",
+                expectedBody =
+                    mapOf(
+                        "crypto_wallet_address" to parameters.cryptoWalletAddress,
+                        "crypto_wallet_type" to parameters.cryptoWalletType.jsonName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check cryptoWalletAuthenticate request`() {
+        val parameters =
+            ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest(
+                cryptoWalletAddress = "my-crypto-wallet-address",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+                signature = "my-signature",
+                sessionDurationMinutes = 30,
+            )
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.cryptoWalletAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/crypto_wallets/authenticate",
+                expectedBody =
+                    mapOf(
+                        "crypto_wallet_address" to parameters.cryptoWalletAddress,
+                        "crypto_wallet_type" to parameters.cryptoWalletType.jsonName,
+                        "signature" to parameters.signature,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+    //endregion Crypto
 
     //region Events
     @Test

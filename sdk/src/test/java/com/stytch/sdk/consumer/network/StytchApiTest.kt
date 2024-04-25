@@ -13,6 +13,7 @@ import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
+import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -550,6 +551,44 @@ internal class StytchApiTest {
             coEvery { StytchApi.apiService.webAuthnUpdate(any(), any()) } returns mockk(relaxed = true)
             StytchApi.WebAuthn.update("", "my new name")
             coVerify { StytchApi.apiService.webAuthnUpdate("", any()) }
+        }
+
+    @Test
+    fun `StytchApi Crypto authenticateStartPrimary calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.cryptoWalletAuthenticateStartPrimary(any()) } returns mockk(relaxed = true)
+            StytchApi.Crypto.authenticateStartPrimary(
+                cryptoWalletAddress = "",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+            )
+            coVerify { StytchApi.apiService.cryptoWalletAuthenticateStartPrimary(any()) }
+        }
+
+    @Test
+    fun `StytchApi Crypto authenticateStartSecondary calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.cryptoWalletAuthenticateStartSecondary(any()) } returns mockk(relaxed = true)
+            StytchApi.Crypto.authenticateStartSecondary(
+                cryptoWalletAddress = "",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+            )
+            coVerify { StytchApi.apiService.cryptoWalletAuthenticateStartSecondary(any()) }
+        }
+
+    @Test
+    fun `StytchApi Crypto authenticate calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.cryptoWalletAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchApi.Crypto.authenticate(
+                cryptoWalletAddress = "",
+                cryptoWalletType = CryptoWalletType.ETHEREUM,
+                signature = "",
+                sessionDurationMinutes = 30U,
+            )
+            coVerify { StytchApi.apiService.cryptoWalletAuthenticate(any()) }
         }
 
     @Test
