@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -85,6 +86,8 @@ internal class StytchB2BClientTest {
         mockkObject(StorageHelper)
         mockkObject(StytchB2BApi)
         mockkObject(StytchB2BApi.Sessions)
+        mockkObject(Recaptcha)
+        coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns ""
         every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")

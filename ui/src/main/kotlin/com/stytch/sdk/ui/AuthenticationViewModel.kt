@@ -15,7 +15,6 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchSSOError
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
@@ -33,22 +32,6 @@ internal class AuthenticationViewModel(
     val eventFlow = _eventFlow.asSharedFlow()
 
     val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
-
-    fun authenticateGoogleOneTapLogin(
-        data: Intent,
-        sessionOptions: SessionOptions,
-        scope: CoroutineScope = viewModelScope,
-    ) {
-        scope.launch {
-            val parameters =
-                OAuth.GoogleOneTap.AuthenticateParameters(
-                    data = data,
-                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
-                )
-            val result = stytchClient.oauth.googleOneTap.authenticate(parameters)
-            _eventFlow.emit(EventState.Authenticated(result))
-        }
-    }
 
     fun authenticateThirdPartyOAuth(
         resultCode: Int,

@@ -9,6 +9,7 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Keep
 public interface IB2BAuthData : CommonAuthenticationData {
     public val memberSession: B2BSessionData
     public override val sessionJwt: String

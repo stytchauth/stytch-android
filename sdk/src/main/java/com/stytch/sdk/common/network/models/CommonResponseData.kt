@@ -461,6 +461,7 @@ public data class PasswordConfig(
 ) : Parcelable
 
 @Keep
+@JsonClass(generateAdapter = false)
 public enum class DFPProtectedAuthMode {
     OBSERVATION,
     DECISIONING,

@@ -4,7 +4,6 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
-import com.stytch.sdk.common.sso.GoogleOneTapProviderImpl
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -27,7 +26,6 @@ internal class OAuthImpl(
             dispatchers,
             sessionStorage,
             api,
-            GoogleOneTapProviderImpl(),
         )
     override val apple: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "apple")
     override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "amazon")

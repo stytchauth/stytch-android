@@ -1,7 +1,6 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
-import android.content.Intent
 import com.stytch.sdk.common.Constants
 import io.mockk.mockk
 import org.junit.Test
@@ -14,28 +13,12 @@ internal class OAuthTest {
             OAuth.GoogleOneTap.StartParameters(
                 context = mockActivity,
                 clientId = "clientId",
-                oAuthRequestIdentifier = 1,
             )
         val expected =
             OAuth.GoogleOneTap.StartParameters(
                 context = mockActivity,
                 clientId = "clientId",
-                oAuthRequestIdentifier = 1,
                 autoSelectEnabled = false,
-            )
-        assert(params == expected)
-    }
-
-    @Test
-    fun `OAuth Google AuthenticateParameters has correct defaults`() {
-        val mockIntent: Intent = mockk()
-        val params =
-            OAuth.GoogleOneTap.AuthenticateParameters(
-                data = mockIntent,
-            )
-        val expected =
-            OAuth.GoogleOneTap.AuthenticateParameters(
-                data = mockIntent,
                 sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)

@@ -117,10 +117,6 @@ internal class AuthenticationActivity : ComponentActivity() {
     ) {
         super.onActivityResult(requestCode, resultCode, intent)
         when (requestCode) {
-            STYTCH_GOOGLE_OAUTH_REQUEST_ID ->
-                intent?.let {
-                    viewModel.authenticateGoogleOneTapLogin(it, uiConfig.productConfig.sessionOptions)
-                }
             STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID ->
                 intent?.let {
                     viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
@@ -131,7 +127,6 @@ internal class AuthenticationActivity : ComponentActivity() {
     internal companion object {
         internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_UI_CONFIG"
         internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
-        internal const val STYTCH_GOOGLE_OAUTH_REQUEST_ID = 5551
         internal const val STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID = 5552
 
         internal fun createIntent(

@@ -64,6 +64,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
+                    is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
                     else -> {}
                 }
             }

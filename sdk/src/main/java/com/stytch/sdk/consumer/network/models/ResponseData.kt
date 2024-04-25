@@ -18,6 +18,7 @@ import com.stytch.sdk.common.network.models.WebAuthNRegistrations
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
+@Keep
 public interface IAuthData : CommonAuthenticationData {
     public val session: SessionData
     public override val sessionJwt: String
@@ -25,6 +26,7 @@ public interface IAuthData : CommonAuthenticationData {
     public val user: UserData
 }
 
+@Keep
 public interface INativeOAuthData : IAuthData {
     public val userCreated: Boolean
 }
@@ -258,6 +260,7 @@ public data class StrengthCheckResponse(
     val strengthPolicy: StrengthPolicy,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = false)
 public enum class StrengthPolicy {
     @Json(name = "zxcvbn")
@@ -285,6 +288,7 @@ public data class UserSearchResponseData(
     val userType: UserType,
 ) : Parcelable
 
+@Keep
 @JsonClass(generateAdapter = false)
 @Parcelize
 public enum class UserType : Parcelable {

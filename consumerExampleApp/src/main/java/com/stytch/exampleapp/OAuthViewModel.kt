@@ -43,25 +43,13 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loginWithGoogleOneTap(context: Activity) {
         viewModelScope.launch {
-            val didStart =
+            _currentResponse.value =
                 StytchClient.oauth.googleOneTap.start(
                     OAuth.GoogleOneTap.StartParameters(
                         context = context,
                         clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
-                        oAuthRequestIdentifier = GOOGLE_OAUTH_REQUEST,
                     ),
-                )
-            _currentResponse.value = if (didStart) "Starting Google OneTap" else "Google OneTap not available"
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
-    }
-
-    fun authenticateGoogleOneTapLogin(data: Intent) {
-        viewModelScope.launch {
-            _currentResponse.value = "Authenticating Google OneTap login"
-            val result = StytchClient.oauth.googleOneTap.authenticate(OAuth.GoogleOneTap.AuthenticateParameters(data))
-            _currentResponse.value = result.toFriendlyDisplay()
+                ).toFriendlyDisplay()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

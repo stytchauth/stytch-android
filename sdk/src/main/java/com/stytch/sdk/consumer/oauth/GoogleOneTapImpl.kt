@@ -1,93 +1,120 @@
 package com.stytch.sdk.consumer.oauth
 
-import android.content.IntentSender
+import android.app.Activity
+import android.os.Bundle
 import androidx.annotation.VisibleForTesting
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
-import com.stytch.sdk.common.errors.StytchInvalidAuthorizationCredentialError
-import com.stytch.sdk.common.errors.StytchMissingAuthorizationCredentialIdTokenError
-import com.stytch.sdk.common.sso.GoogleOneTapProvider
+import com.stytch.sdk.common.errors.UnexpectedCredentialType
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
+internal interface GoogleCredentialManagerProvider {
+    suspend fun getSignInWithGoogleCredential(
+        activity: Activity,
+        dispatchers: StytchDispatchers,
+        clientId: String,
+        autoSelectEnabled: Boolean,
+        nonce: String,
+    ): GetCredentialResponse
+
+    fun createTokenCredential(credentialData: Bundle): GoogleIdTokenCredential
+}
+
+internal class GoogleCredentialManagerProviderImpl : GoogleCredentialManagerProvider {
+    override suspend fun getSignInWithGoogleCredential(
+        activity: Activity,
+        dispatchers: StytchDispatchers,
+        clientId: String,
+        autoSelectEnabled: Boolean,
+        nonce: String,
+    ): GetCredentialResponse {
+        val credentialManager = CredentialManager.create(activity)
+        val option: GetGoogleIdOption =
+            GetGoogleIdOption
+                .Builder()
+                .setServerClientId(clientId)
+                .setNonce(nonce)
+                .setAutoSelectEnabled(autoSelectEnabled)
+                .build()
+        val request: GetCredentialRequest =
+            GetCredentialRequest
+                .Builder()
+                .addCredentialOption(option)
+                .setPreferImmediatelyAvailableCredentials(true)
+                .build()
+        return withContext(dispatchers.ui) {
+            credentialManager.getCredential(activity, request)
+        }
+    }
+
+    override fun createTokenCredential(credentialData: Bundle): GoogleIdTokenCredential =
+        GoogleIdTokenCredential.createFrom(credentialData)
+}
 
 internal class GoogleOneTapImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.OAuth,
-    private val googleOneTapProvider: GoogleOneTapProvider,
+    private val credentialManagerProvider: GoogleCredentialManagerProvider = GoogleCredentialManagerProviderImpl(),
 ) : OAuth.GoogleOneTap {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal lateinit var nonce: String
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    internal lateinit var oneTapClient: SignInClient
-
-    override suspend fun start(parameters: OAuth.GoogleOneTap.StartParameters): Boolean {
+    override suspend fun start(parameters: OAuth.GoogleOneTap.StartParameters): NativeOAuthResponse {
         return try {
-            nonce = EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge())
-            oneTapClient = googleOneTapProvider.getSignInClient(context = parameters.context)
-            val signInRequest =
-                googleOneTapProvider.getSignInRequest(
-                    clientId = parameters.clientId,
+            withContext(dispatchers.io) {
+                nonce = EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge())
+                val credentialResponse =
+                    credentialManagerProvider.getSignInWithGoogleCredential(
+                        activity = parameters.context,
+                        dispatchers = dispatchers,
+                        clientId = parameters.clientId,
+                        autoSelectEnabled = parameters.autoSelectEnabled,
+                        nonce = nonce,
+                    )
+                val credential = credentialResponse.credential
+                if (credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    return@withContext StytchResult.Error(UnexpectedCredentialType(credentialType = credential.type))
+                }
+                val googleIdTokenCredential = credentialManagerProvider.createTokenCredential(credential.data)
+                return@withContext api.authenticateWithGoogleIdToken(
+                    idToken = googleIdTokenCredential.idToken,
                     nonce = nonce,
-                    autoSelectEnabled = parameters.autoSelectEnabled,
-                )
-            suspendCancellableCoroutine { continuation ->
-                oneTapClient
-                    .beginSignIn(signInRequest)
-                    .addOnSuccessListener(parameters.context) { result ->
-                        try {
-                            parameters.context.startIntentSenderForResult(
-                                // the intent sender generated by the OneTap client
-                                result.pendingIntent.intentSender,
-                                // the request ID for retrieving the result
-                                parameters.oAuthRequestIdentifier,
-                                // If non-null, this will be provided as the intent parameter
-                                null,
-                                // Intent flags in the original IntentSender that you would like to change
-                                0,
-                                // Desired values for any bits set in flagsMask
-                                0,
-                                // Always set to 0
-                                0,
-                                // Additional options for how the Activity should be started
-                                null,
-                            )
-                            continuation.resume(Unit)
-                        } catch (e: IntentSender.SendIntentException) {
-                            continuation.resumeWithException(e)
-                        }
-                    }
-                    .addOnFailureListener(parameters.context) { e ->
-                        // No saved credentials found. Launch the One Tap sign-up flow, or
-                        // do nothing and continue presenting the signed-out UI.
-                        continuation.resumeWithException(e)
-                    }
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
             }
-            true
+        } catch (e: GoogleIdTokenParsingException) {
+            StytchLog.e("Received an invalid google id token response: $e")
+            StytchResult.Error(StytchInternalError(e))
         } catch (e: Exception) {
-            StytchLog.e(e.message ?: "Error beginning Google Sign in flow")
-            false
+            StytchResult.Error(StytchInternalError(e))
         }
     }
 
     override fun start(
         parameters: OAuth.GoogleOneTap.StartParameters,
-        callback: (Boolean) -> Unit,
+        callback: (NativeOAuthResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = start(parameters)
@@ -95,42 +122,10 @@ internal class GoogleOneTapImpl(
         }
     }
 
-    override suspend fun authenticate(parameters: OAuth.GoogleOneTap.AuthenticateParameters): NativeOAuthResponse {
-        if (!::nonce.isInitialized || !::oneTapClient.isInitialized) {
-            return StytchResult.Error(StytchInvalidAuthorizationCredentialError)
-        }
-        return withContext(dispatchers.io) {
-            try {
-                val credential = oneTapClient.getSignInCredentialFromIntent(parameters.data)
-                val idToken =
-                    credential.googleIdToken
-                        ?: return@withContext StytchResult.Error(StytchMissingAuthorizationCredentialIdTokenError)
-                api.authenticateWithGoogleIdToken(
-                    idToken = idToken,
-                    nonce = nonce,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
-            } catch (e: ApiException) {
-                StytchResult.Error(StytchInternalError(e))
-            }
-        }
-    }
-
-    override fun authenticate(
-        parameters: OAuth.GoogleOneTap.AuthenticateParameters,
-        callback: (NativeOAuthResponse) -> Unit,
-    ) {
-        externalScope.launch(dispatchers.ui) {
-            val result = authenticate(parameters)
-            callback(result)
-        }
-    }
-
-    override fun signOut() {
-        if (::oneTapClient.isInitialized) {
-            oneTapClient.signOut()
+    override fun signOut(activity: Activity) {
+        externalScope.launch(dispatchers.io) {
+            val credentialManager = CredentialManager.create(activity)
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
         }
     }
 }

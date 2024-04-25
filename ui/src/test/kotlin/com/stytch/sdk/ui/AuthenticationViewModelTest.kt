@@ -9,7 +9,6 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.common.sso.SSOError.Companion.SSO_EXCEPTION
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.ui.data.EventState
 import com.stytch.sdk.ui.data.NavigationRoute
 import io.mockk.MockKAnnotations
@@ -52,21 +51,6 @@ internal class AuthenticationViewModelTest {
     fun after() {
         unmockkAll()
     }
-
-    @Test
-    fun `authenticateGoogleOneTapLogin delegates to stytch client and emits the result`() =
-        runTest(dispatcher) {
-            val result: StytchResult<INativeOAuthData> = mockk(relaxed = true)
-            coEvery { mockStytchClient.oauth.googleOneTap.authenticate(any()) } returns result
-            val expectedEvent = EventState.Authenticated(result)
-            val eventFlow =
-                async {
-                    viewModel.eventFlow.first()
-                }
-            viewModel.authenticateGoogleOneTapLogin(mockk(relaxed = true), mockk(relaxed = true), this)
-            coVerify(exactly = 1) { mockStytchClient.oauth.googleOneTap.authenticate(any()) }
-            assert(eventFlow.await() == expectedEvent)
-        }
 
     @Test
     fun `authenticateThirdPartyOAuth emits the expected event based on intent when success`() =

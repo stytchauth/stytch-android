@@ -14,7 +14,6 @@ import com.stytch.sdk.consumer.StytchClient.publicToken
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.userManagement.UserManagement
-import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_GOOGLE_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.AuthenticationActivity.Companion.STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
@@ -57,20 +56,17 @@ internal class MainScreenViewModel(
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         if (provider == OAuthProvider.GOOGLE) {
             scope.launch {
-                val didStartOneTap =
-                    productConfig.googleOauthOptions.clientId?.let { clientId ->
+                val clientId = productConfig.googleOauthOptions.clientId
+                clientId?.let {
+                    val result =
                         stytchClient.oauth.googleOneTap.start(
                             OAuth.GoogleOneTap.StartParameters(
                                 context = context,
                                 clientId = clientId,
-                                oAuthRequestIdentifier = STYTCH_GOOGLE_OAUTH_REQUEST_ID,
                             ),
                         )
-                    } ?: false
-                if (!didStartOneTap) {
-                    // Google OneTap is unavailable, fallback to traditional OAuth
-                    onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
-                }
+                    _eventFlow.emit(EventState.Authenticated(result))
+                } ?: onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
             }
         } else {
             onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)

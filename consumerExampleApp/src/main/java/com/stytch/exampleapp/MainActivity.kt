@@ -95,7 +95,6 @@ class MainActivity : FragmentActivity() {
                 } else {
                     // Consent denied. User can type OTC manually.
                 }
-            GOOGLE_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateGoogleOneTapLogin(it) }
             THIRD_PARTY_OAUTH_REQUEST -> data?.let { oauthViewModel.authenticateThirdPartyOAuth(resultCode, it) }
         }
     }

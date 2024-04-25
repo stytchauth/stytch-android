@@ -68,27 +68,14 @@ internal class MainScreenViewModelTest {
                             every { clientId } returns "google-client-id"
                         }
                 }
-            coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns true
+            coEvery {
+                mockStytchClient.oauth.googleOneTap.start(
+                    any(),
+                )
+            } returns StytchResult.Success(mockk(relaxed = true))
             every { mockStytchClient.oauth.google.start(any()) } throws Exception("THIS SHOULD NOT BE CALLED")
             viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
             coVerify { mockStytchClient.oauth.googleOneTap.start(any()) }
-        }
-
-    @Test
-    fun `onStartOAuthLogin delegates to third party if fails to start`() =
-        runTest(dispatcher) {
-            val mockProductConfig: StytchProductConfig =
-                mockk {
-                    every { googleOauthOptions } returns
-                        mockk {
-                            every { clientId } returns "my-client-id"
-                        }
-                    every { oAuthOptions } returns mockk(relaxed = true)
-                }
-            coEvery { mockStytchClient.oauth.googleOneTap.start(any()) } returns false
-            every { mockStytchClient.oauth.google.start(any()) } just runs
-            viewModel.onStartOAuthLogin(mockk(relaxed = true), OAuthProvider.GOOGLE, mockProductConfig, this)
-            coVerify { mockStytchClient.oauth.google.start(any()) }
         }
 
     @Test
