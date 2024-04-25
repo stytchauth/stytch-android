@@ -464,7 +464,7 @@ internal object StytchApi {
                         existingPassword = existingPassword,
                         newPassword = newPassword,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
-                    )
+                    ),
                 )
             }
 

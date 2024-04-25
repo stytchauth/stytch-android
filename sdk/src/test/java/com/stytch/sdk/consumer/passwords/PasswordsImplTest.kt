@@ -212,6 +212,23 @@ internal class PasswordsImplTest {
     }
 
     @Test
+    fun `PasswordsImpl resetByExistingPassword delegates to api`() =
+        runTest {
+            coEvery { mockApi.resetByExisting(any(), any(), any(), any()) } returns successfulAuthResponse
+            impl.resetByExistingPassword(mockk(relaxed = true))
+            coVerify { mockApi.resetByExisting(any(), any(), any(), any()) }
+            verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+        }
+
+    @Test
+    fun `PasswordsImpl resetByExistingPassword with callback calls callback`() {
+        coEvery { mockApi.resetByExisting(any(), any(), any(), any()) } returns successfulAuthResponse
+        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        impl.resetByExistingPassword(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(successfulAuthResponse) }
+    }
+
+    @Test
     fun `PasswordsImpl strengthCheck delegates to api`() =
         runTest {
             coEvery { mockApi.strengthCheck(any(), any()) } returns mockk()

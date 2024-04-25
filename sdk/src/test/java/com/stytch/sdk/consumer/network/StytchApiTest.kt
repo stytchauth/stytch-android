@@ -260,6 +260,20 @@ internal class StytchApiTest {
         }
 
     @Test
+    fun `StytchApi Passwords resetByExisting calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.resetByExistingPassword(any()) } returns mockk(relaxed = true)
+            StytchApi.Passwords.resetByExisting(
+                email = "",
+                existingPassword = "",
+                newPassword = "",
+                sessionDurationMinutes = 30U,
+            )
+            coVerify { StytchApi.apiService.resetByExistingPassword(any()) }
+        }
+
+    @Test
     fun `StytchApi Passwords strengthCheck calls appropriate apiService method`() =
         runTest {
             every { StytchApi.isInitialized } returns true
