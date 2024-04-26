@@ -40,6 +40,10 @@ import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
+import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
+import com.stytch.sdk.consumer.network.models.TOTPRecoverResponseData
+import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
@@ -766,6 +770,48 @@ internal object StytchApi {
                         cryptoWalletType = cryptoWalletType,
                         signature = signature,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                    ),
+                )
+            }
+    }
+
+    internal object TOTP {
+        suspend fun create(expirationMinutes: Int): StytchResult<TOTPCreateResponseData> =
+            safeConsumerApiCall {
+                apiService.totpsCreate(
+                    ConsumerRequests.TOTP.TOTPCreateRequest(
+                        expirationMinutes = expirationMinutes,
+                    ),
+                )
+            }
+
+        suspend fun authenticate(
+            totpCode: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<TOTPAuthenticateResponseData> =
+            safeConsumerApiCall {
+                apiService.totpsAuthenticate(
+                    ConsumerRequests.TOTP.TOTPAuthenticateRequest(
+                        totpCode = totpCode,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+
+        suspend fun recoveryCodes(): StytchResult<TOTPRecoveryCodesResponseData> =
+            safeConsumerApiCall {
+                apiService.totpsRecoveryCodes()
+            }
+
+        suspend fun recover(
+            recoveryCode: String,
+            sessionDurationMinutes: Int,
+        ): StytchResult<TOTPRecoverResponseData> =
+            safeConsumerApiCall {
+                apiService.totpsRecover(
+                    ConsumerRequests.TOTP.TOTPRecoverRequest(
+                        recoveryCode = recoveryCode,
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }

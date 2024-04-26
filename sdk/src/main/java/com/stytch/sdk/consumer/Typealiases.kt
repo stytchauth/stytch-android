@@ -11,6 +11,10 @@ import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
+import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
+import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
+import com.stytch.sdk.consumer.network.models.TOTPRecoverResponseData
+import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
@@ -103,3 +107,8 @@ public typealias WebAuthnUpdateResponse = StytchResult<WebAuthnUpdateResponseDat
  * Type alias for StytchResult<CryptoWalletAuthenticateStartResponseData> used for crypto authentication start responses
  */
 public typealias CryptoWalletAuthenticateStartResponse = StytchResult<CryptoWalletAuthenticateStartResponseData>
+
+public typealias TOTPCreateResponse = StytchResult<TOTPCreateResponseData>
+public typealias TOTPAuthenticateResponse = StytchResult<TOTPAuthenticateResponseData>
+public typealias TOTPRecoveryCodesResponse = StytchResult<TOTPRecoveryCodesResponseData>
+public typealias TOTPRecoverResponse = StytchResult<TOTPRecoverResponseData>

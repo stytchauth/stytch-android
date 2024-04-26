@@ -61,4 +61,12 @@
     <string name="passkeys_clear">Clear passkey registrations</string>
     <string name="passkey_name">Passkey Name</string>
     <string name="passkey_update">Update Passkey</string>
+    <string name="totps">TOTP</string>
+    <string name="totp_create">Create TOTP</string>
+    <string name="totp_authenticate">Authenticate TOTP</string>
+    <string name="totp_recovery_codes">TOTP Recovery Codes</string>
+    <string name="totp_recover">Recover TOTP</string>
+    <string name="totp_id">TOTP ID</string>
+    <string name="totp_code">TOTP Code</string>
+    <string name="totp_recovery_code">TOTP Recovery Code</string>
 </resources>

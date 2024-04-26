@@ -334,4 +334,31 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object TOTP {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPCreateRequest(
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPAuthenticateRequest(
+            @Json(name = "totp_code")
+            val totpCode: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPRecoverRequest(
+            @Json(name = "recovery_code")
+            val recoveryCode: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+    }
 }
