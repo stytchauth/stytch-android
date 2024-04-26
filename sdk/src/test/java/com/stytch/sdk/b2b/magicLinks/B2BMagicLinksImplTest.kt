@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.magicLinks
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -108,7 +108,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate with callback calls callback method`() {
-        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        val mockCallback = spyk<(EMLAuthenticateResponse) -> Unit>()
         impl.authenticate(authParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
     }

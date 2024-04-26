@@ -19,9 +19,58 @@ public interface IB2BAuthData : CommonAuthenticationData {
 }
 
 @Keep
+public interface IB2BAuthDataWithMFA : CommonAuthenticationData {
+    public val memberId: String
+    public override val sessionToken: String
+    public override val sessionJwt: String
+    public val member: MemberData
+    public val organization: OrganizationData
+    public val memberSession: B2BSessionData?
+    public val memberAuthenticated: Boolean
+    public val intermediateSessionToken: String?
+    public val mfaRequired: MFARequired?
+}
+
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
-public data class B2BAuthData(
+public data class MFARequired(
+    @Json(name = "member_options")
+    val memberOptions: MemberOptions? = null,
+    @Json(name = "secondary_auth_initiated")
+    val secondaryAuthInitiated: String? = null,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class MemberOptions(
+    @Json(name = "mfa_phone_number")
+    val mfaPhoneNumber: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SessionsAuthenticateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+) : IB2BAuthData, Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SMSAuthenticateResponseData(
     @Json(name = "status_code")
     val statusCode: Int,
     @Json(name = "request_id")
@@ -50,11 +99,19 @@ public data class B2BEMLAuthenticateData(
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "member_session")
-    override val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "reset_sessions")
     val resetSessions: Boolean,
+    @Json(name = "member_id")
+    override val memberId: String,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -188,18 +245,22 @@ public data class PasswordsAuthenticateResponseData(
     @Json(name = "request_id")
     val requestId: String,
     @Json(name = "member_session")
-    override val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "session_token")
     override val sessionToken: String,
+    @Json(name = "member_id")
+    override val memberId: String,
     override val member: MemberData,
     override val organization: OrganizationData,
-    @Json(name = "member_id")
-    val memberId: String,
-    @Json(name = "organization_id")
-    val organizationId: String,
-) : IB2BAuthData, Parcelable
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -217,13 +278,45 @@ public data class EmailResetResponseData(
     override val sessionToken: String,
     override val member: MemberData,
     override val organization: OrganizationData,
-    @Json(name = "member_id")
-    val memberId: String,
-    @Json(name = "organization_id")
-    val organizationId: String,
     @Json(name = "member_email_id")
     val memberEmailId: String,
-) : IB2BAuthData, Parcelable
+    @Json(name = "member_id")
+    override val memberId: String,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PasswordResetByExistingPasswordResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData?,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "member_email_id")
+    val memberEmailId: String,
+    @Json(name = "member_id")
+    override val memberId: String,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -331,12 +424,22 @@ public data class IntermediateSessionExchangeResponseData(
     @Json(name = "request_id")
     val requestId: String,
     @Json(name = "member_session")
-    val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "session_jwt")
-    val sessionJwt: String,
+    override val sessionJwt: String,
     @Json(name = "session_token")
-    val sessionToken: String,
-) : Parcelable
+    override val sessionToken: String,
+    @Json(name = "member_id")
+    override val memberId: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -347,12 +450,22 @@ public data class OrganizationCreateResponseData(
     @Json(name = "request_id")
     val requestId: String,
     @Json(name = "member_session")
-    val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "session_jwt")
-    val sessionJwt: String,
+    override val sessionJwt: String,
     @Json(name = "session_token")
-    val sessionToken: String,
-) : Parcelable
+    override val sessionToken: String,
+    @Json(name = "member_id")
+    override val memberId: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -370,9 +483,6 @@ public data class DiscoveryAuthenticateResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SSOAuthenticateResponseData(
-    @Json(name = "member_id")
-    val memberId: String,
-    override val member: MemberData,
     @Json(name = "organization_id")
     val organizationId: String,
     @Json(name = "method_id")
@@ -382,11 +492,20 @@ public data class SSOAuthenticateResponseData(
     @Json(name = "session_token")
     override val sessionToken: String,
     @Json(name = "session")
-    override val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "reset_session")
     val resetSession: Boolean,
+    @Json(name = "member_id")
+    override val memberId: String,
+    override val member: MemberData,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -397,18 +516,22 @@ public data class SessionExchangeResponseData(
     @Json(name = "request_id")
     val requestId: String,
     @Json(name = "member_session")
-    override val memberSession: B2BSessionData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "session_token")
     override val sessionToken: String,
+    @Json(name = "member_id")
+    override val memberId: String,
     override val member: MemberData,
     override val organization: OrganizationData,
     @Json(name = "member_authenticated")
-    val memberAuthenticated: Boolean,
+    override val memberAuthenticated: Boolean,
     @Json(name = "intermediate_session_token")
-    val intermediateSessionToken: String,
-) : IB2BAuthData, Parcelable
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -611,19 +734,25 @@ public data class OAuthAuthenticateResponseData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    @Json(name = "member_id")
-    val memberId: String,
     @Json(name = "session_token")
     override val sessionToken: String,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "member_session")
-    override val memberSession: B2BSessionData,
-    override val member: MemberData,
-    override val organization: OrganizationData,
+    override val memberSession: B2BSessionData?,
     @Json(name = "provider_values")
     val providerValues: OAuthProviderValues,
-) : IB2BAuthData, Parcelable
+    @Json(name = "member_id")
+    override val memberId: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+) : IB2BAuthDataWithMFA, Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)

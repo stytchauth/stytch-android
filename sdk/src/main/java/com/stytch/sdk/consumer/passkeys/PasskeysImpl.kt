@@ -94,7 +94,7 @@ internal class PasskeysImpl internal constructor(
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
     override suspend fun register(parameters: Passkeys.RegisterParameters): WebAuthnRegisterResponse {
-        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError)
+        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError())
         return try {
             withContext(dispatchers.io) {
                 val startResponse =
@@ -132,7 +132,7 @@ internal class PasskeysImpl internal constructor(
     }
 
     override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
-        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError)
+        if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError())
         return try {
             withContext(dispatchers.io) {
                 val startResponse =

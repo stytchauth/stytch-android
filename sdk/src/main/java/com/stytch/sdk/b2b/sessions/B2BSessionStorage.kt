@@ -61,11 +61,13 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
         sessionToken: String?,
         sessionJwt: String?,
         session: B2BSessionData? = null,
+        intermediateSessionToken: String? = null,
     ) {
         synchronized(this) {
             this.sessionToken = sessionToken
             this.sessionJwt = sessionJwt
             this.memberSession = session
+            this.intermediateSessionToken = intermediateSessionToken
         }
     }
 
@@ -78,6 +80,7 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
             sessionJwt = null
             memberSession = null
             member = null
+            intermediateSessionToken = null
         }
     }
 }

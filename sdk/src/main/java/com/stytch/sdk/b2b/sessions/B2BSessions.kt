@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.SessionExchangeResponse
+import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
@@ -41,19 +41,19 @@ public interface B2BSessions {
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
      * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @return [AuthResponse]
+     * @return [SessionsAuthenticateResponse]
      */
-    public suspend fun authenticate(authParams: AuthParams): AuthResponse
+    public suspend fun authenticate(authParams: AuthParams): SessionsAuthenticateResponse
 
     /**
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
      * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [SessionsAuthenticateResponse]
      */
     public fun authenticate(
         authParams: AuthParams,
-        callback: (AuthResponse) -> Unit,
+        callback: (SessionsAuthenticateResponse) -> Unit,
     )
 
     /**

@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
-import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
@@ -24,7 +23,6 @@ import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
-import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
@@ -39,13 +37,16 @@ import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
+import com.stytch.sdk.b2b.network.models.PasswordResetByExistingPasswordResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
+import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
+import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
@@ -252,7 +253,7 @@ internal object StytchB2BApi {
     }
 
     internal object Sessions {
-        suspend fun authenticate(sessionDurationMinutes: UInt? = null): StytchResult<IB2BAuthData> =
+        suspend fun authenticate(sessionDurationMinutes: UInt? = null): StytchResult<SessionsAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateSessions(
                     CommonRequests.Sessions.AuthenticateRequest(
@@ -534,7 +535,7 @@ internal object StytchB2BApi {
             existingPassword: String,
             newPassword: String,
             sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
-        ): StytchResult<B2BAuthData> =
+        ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByExisting(
                     B2BRequests.Passwords.ResetByExistingPasswordRequest(
@@ -853,7 +854,7 @@ internal object StytchB2BApi {
             code: String,
             setMFAEnrollment: SetMFAEnrollment? = null,
             sessionDurationMinutes: Int,
-        ): StytchResult<B2BAuthData> =
+        ): StytchResult<SMSAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateSMSOTP(
                     B2BRequests.OTP.SMS.AuthenticateRequest(

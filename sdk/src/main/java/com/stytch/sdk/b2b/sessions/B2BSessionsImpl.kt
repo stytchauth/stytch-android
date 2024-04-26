@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.SessionExchangeResponse
+import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
@@ -38,8 +38,8 @@ internal class B2BSessionsImpl internal constructor(
             }
         }
 
-    override suspend fun authenticate(authParams: B2BSessions.AuthParams): AuthResponse {
-        val result: AuthResponse
+    override suspend fun authenticate(authParams: B2BSessions.AuthParams): SessionsAuthenticateResponse {
+        val result: SessionsAuthenticateResponse
         withContext(dispatchers.io) {
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
@@ -55,7 +55,7 @@ internal class B2BSessionsImpl internal constructor(
 
     override fun authenticate(
         authParams: B2BSessions.AuthParams,
-        callback: (AuthResponse) -> Unit,
+        callback: (SessionsAuthenticateResponse) -> Unit,
     ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
@@ -101,7 +101,7 @@ internal class B2BSessionsImpl internal constructor(
         sessionJwt: String?,
     ) {
         try {
-            sessionStorage.updateSession(sessionToken, sessionJwt)
+            sessionStorage.updateSession(sessionToken = sessionToken, sessionJwt = sessionJwt)
         } catch (ex: Exception) {
             throw StytchInternalError(ex)
         }

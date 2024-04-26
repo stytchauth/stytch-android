@@ -113,7 +113,7 @@ internal class BiometricsImpl internal constructor(
         withContext(dispatchers.io) {
             try {
                 if (!isUsingKeystore() && !parameters.allowFallbackToCleartext) {
-                    throw StytchKeystoreUnavailableError
+                    throw StytchKeystoreUnavailableError()
                 }
                 if (isRegistrationAvailable(parameters.context)) {
                     removeRegistration()
@@ -181,7 +181,7 @@ internal class BiometricsImpl internal constructor(
                 try {
                     require(isRegistrationAvailable(parameters.context) && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalArgumentException) {
-                    throw StytchNoBiometricsRegistrationError
+                    throw StytchNoBiometricsRegistrationError()
                 }
                 val cipher =
                     withContext(dispatchers.ui) {

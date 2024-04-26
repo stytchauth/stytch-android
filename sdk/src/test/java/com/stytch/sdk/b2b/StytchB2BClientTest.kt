@@ -7,7 +7,7 @@ import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
 import com.stytch.sdk.b2b.oauth.OAuth
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
@@ -161,7 +161,7 @@ internal class StytchB2BClientTest {
     @Test
     fun `should validate persisted sessions if applicable when calling StytchB2BClient configure`() {
         runBlocking {
-            val mockResponse: StytchResult<IB2BAuthData> =
+            val mockResponse: StytchResult<SessionsAuthenticateResponseData> =
                 mockk {
                     every { launchSessionUpdater(any(), any()) } just runs
                 }
@@ -182,7 +182,7 @@ internal class StytchB2BClientTest {
     @Test
     fun `should report the initialization state after configuration and initialization is complete`() {
         runTest {
-            val mockResponse: StytchResult<IB2BAuthData> =
+            val mockResponse: StytchResult<SessionsAuthenticateResponseData> =
                 mockk {
                     every { launchSessionUpdater(any(), any()) } just runs
                 }
@@ -369,7 +369,7 @@ internal class StytchB2BClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
                 }
-            val mockAuthResponse = mockk<AuthResponse>()
+            val mockAuthResponse = mockk<EMLAuthenticateResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }

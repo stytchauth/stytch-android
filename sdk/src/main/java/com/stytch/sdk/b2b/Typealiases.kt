@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b
 
+import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
@@ -13,7 +14,6 @@ import com.stytch.sdk.b2b.network.models.B2BSearchOrganizationResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
-import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IntermediateSessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.MemberDeleteAuthenticationFactorData
 import com.stytch.sdk.b2b.network.models.MemberResponseCommonData
@@ -25,23 +25,22 @@ import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationMemberDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
+import com.stytch.sdk.b2b.network.models.PasswordResetByExistingPasswordResponseData
+import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
+import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
+import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BasicData
-
-/**
- * Type alias for StytchResult<IB2BAuthData> used for authentication responses
- */
-public typealias AuthResponse = StytchResult<IB2BAuthData>
 
 /**
  * Type alias for StytchResult<OrganizationResponseData> used for organization.get() responses
@@ -161,3 +160,13 @@ public typealias B2BSSOOIDCUpdateConnectionResponse = StytchResult<B2BSSOOIDCUpd
 public typealias B2BSearchOrganizationResponse = StytchResult<B2BSearchOrganizationResponseData>
 
 public typealias B2BSearchMemberResponse = StytchResult<B2BSearchMemberResponseData>
+
+public typealias PasswordsAuthenticateResponse = StytchResult<PasswordsAuthenticateResponseData>
+
+public typealias PasswordResetByExistingPasswordResponse = StytchResult<PasswordResetByExistingPasswordResponseData>
+
+public typealias SessionsAuthenticateResponse = StytchResult<SessionsAuthenticateResponseData>
+
+public typealias SMSAuthenticateResponse = StytchResult<SMSAuthenticateResponseData>
+
+public typealias EMLAuthenticateResponse = StytchResult<B2BEMLAuthenticateData>

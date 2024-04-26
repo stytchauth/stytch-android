@@ -1,8 +1,9 @@
 package com.stytch.sdk.b2b.passwords
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
+import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
@@ -49,9 +50,9 @@ public interface Passwords {
      * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
      * account-takeover attack.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [PasswordsAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): PasswordsAuthenticateResponse
 
     /**
      * Authenticate a member with their email address and password. This endpoint verifies that the member has a
@@ -67,11 +68,11 @@ public interface Passwords {
      * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
      * account-takeover attack.
      * @param parameters required to authenticate
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordsAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsAuthenticateResponse) -> Unit,
     )
 
     /**
@@ -170,9 +171,11 @@ public interface Passwords {
      * advance with the password strength endpoint. If the password and accompanying parameters are accepted, the
      * password is securely stored for future authentication and the member is authenticated.
      * @param parameters required to reset a member's password
-     * @return [AuthResponse]
+     * @return [PasswordResetByExistingPasswordResponse]
      */
-    public suspend fun resetByExisting(parameters: ResetByExistingPasswordParameters): AuthResponse
+    public suspend fun resetByExisting(
+        parameters: ResetByExistingPasswordParameters,
+    ): PasswordResetByExistingPasswordResponse
 
     /**
      * Reset the member’s password and authenticate them. This endpoint checks that the existing password matches the
@@ -180,11 +183,11 @@ public interface Passwords {
      * advance with the password strength endpoint. If the password and accompanying parameters are accepted, the
      * password is securely stored for future authentication and the member is authenticated.
      * @param parameters required to reset a member's password
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordResetByExistingPasswordResponse]
      */
     public fun resetByExisting(
         parameters: ResetByExistingPasswordParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordResetByExistingPasswordResponse) -> Unit,
     )
 
     /**

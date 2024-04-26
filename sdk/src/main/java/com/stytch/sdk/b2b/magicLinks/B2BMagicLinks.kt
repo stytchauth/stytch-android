@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.magicLinks
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.Constants
@@ -46,20 +46,20 @@ public interface B2BMagicLinks {
      * previously used. Provide a value for session_duration_minutes to receive a Session. If the Member’s status is
      * pending, they will be updated to active.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [EMLAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): EMLAuthenticateResponse
 
     /**
      * Authenticate a Member with a Magic Link. This endpoint requires a Magic Link token that is not expired or
      * previously used. Provide a value for session_duration_minutes to receive a Session. If the Member’s status is
      * pending, they will be updated to active.
      * @param parameters required to authenticate
-     * @param callback A callback that receives an [AuthResponse]
+     * @param callback A callback that receives an [EMLAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: EMLAuthenticateResponse) -> Unit,
     )
 
     /**
