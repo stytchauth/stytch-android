@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -46,6 +47,7 @@ val items =
         Screen.Biometrics,
         Screen.OAuth,
         Screen.Passkeys,
+        Screen.TOTP,
     )
 
 @Composable
@@ -57,9 +59,9 @@ fun AppScreen(
     val stytchIsInitialized = StytchClient.isInitialized.collectAsState()
     Scaffold(
         modifier =
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(),
+        Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(),
         contentColor = MaterialTheme.colors.onBackground,
         topBar = { Toolbar(toolbarText = stringResource(id = R.string.app_name)) },
         bottomBar = {
@@ -98,6 +100,7 @@ fun AppScreen(
                     composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                     composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
                     composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+                    composable(Screen.TOTP.route) { TOTPScreen() }
                 }
             } else {
                 // maybe show a loading state while stytch sets up
@@ -138,4 +141,6 @@ sealed class Screen(
     object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
 
     object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
+
+    object TOTP : Screen("totp", R.string.totps, Icons.Filled.Build)
 }

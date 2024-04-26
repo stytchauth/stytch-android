@@ -357,8 +357,8 @@ public object StytchClient {
         internal set
 
     /**
-     * Exposes an instance of the [TOTP] interface which provides methods for authenticating with a crypto
-     * wallet
+     * Exposes an instance of the [TOTP] interface which provides methods for creating, authenticating, and recovering
+     * TOTP codes
      *
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()

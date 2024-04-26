@@ -384,6 +384,7 @@ public data class TOTPCreateResponseData(
 @Parcelize
 public data class TOTPAuthenticateResponseData(
     @Json(name = "totp_id")
+    val totpId: String,
     override val session: SessionData,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
@@ -398,7 +399,7 @@ public data class TOTPAuthenticateResponseData(
 public data class TOTPRecoveryCodesResponseData(
     @Json(name = "user_id")
     val userId: String,
-    val totps: TOTPRecovery,
+    val totps: List<TOTPRecovery>,
 ) : Parcelable
 
 @Keep
@@ -417,6 +418,7 @@ public data class TOTPRecovery(
 @Parcelize
 public data class TOTPRecoverResponseData(
     @Json(name = "totp_id")
+    val totpId: String,
     override val session: SessionData,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
