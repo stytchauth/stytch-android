@@ -285,4 +285,24 @@ internal interface StytchApiService : ApiService {
         @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest,
     ): ConsumerResponses.AuthenticateResponse
     //endregion
+
+    //region TOTP
+    @POST("totps")
+    suspend fun totpsCreate(
+        @Body request: ConsumerRequests.TOTP.TOTPCreateRequest,
+    ): ConsumerResponses.TOTP.TOTPCreateResponse
+
+    @POST("totps/authenticate")
+    suspend fun totpsAuthenticate(
+        @Body request: ConsumerRequests.TOTP.TOTPAuthenticateRequest,
+    ): ConsumerResponses.TOTP.TOTPAuthenticateResponse
+
+    @POST("totps/recovery_codes")
+    suspend fun totpsRecoveryCodes(): ConsumerResponses.TOTP.TOTPRecoveryCodesResponse
+
+    @POST("totps/recover")
+    suspend fun totpsRecover(
+        @Body request: ConsumerRequests.TOTP.TOTPRecoverRequest,
+    ): ConsumerResponses.TOTP.TOTPRecoverResponse
+    //endregion TOTP
 }

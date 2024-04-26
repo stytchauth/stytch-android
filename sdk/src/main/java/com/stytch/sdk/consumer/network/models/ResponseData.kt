@@ -365,3 +365,62 @@ public enum class CryptoWalletType(override val jsonName: String) : IEnumValue, 
 public data class CryptoWalletAuthenticateStartResponseData(
     val challenge: String,
 ) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPCreateResponseData(
+    @Json(name = "totp_id")
+    val totpId: String,
+    val secret: String,
+    @Json(name = "qr_code")
+    val qrCode: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPAuthenticateResponseData(
+    @Json(name = "totp_id")
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : IAuthData, Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecoveryCodesResponseData(
+    @Json(name = "user_id")
+    val userId: String,
+    val totps: TOTPRecovery,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecovery(
+    @Json(name = "totp_id")
+    val totpId: String,
+    val verified: Boolean,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecoverResponseData(
+    @Json(name = "totp_id")
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : IAuthData, Parcelable

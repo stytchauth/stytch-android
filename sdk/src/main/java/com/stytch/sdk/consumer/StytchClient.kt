@@ -45,6 +45,8 @@ import com.stytch.sdk.consumer.passwords.PasswordsImpl
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import com.stytch.sdk.consumer.sessions.Sessions
 import com.stytch.sdk.consumer.sessions.SessionsImpl
+import com.stytch.sdk.consumer.totp.TOTP
+import com.stytch.sdk.consumer.totp.TOTPImpl
 import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
@@ -347,6 +349,26 @@ public object StytchClient {
             dispatchers,
             sessionStorage,
             StytchApi.Crypto,
+        )
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [TOTP] interface which provides methods for authenticating with a crypto
+     * wallet
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
+     */
+    public var totp: TOTP =
+        TOTPImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchApi.TOTP,
         )
         get() {
             assertInitialized()

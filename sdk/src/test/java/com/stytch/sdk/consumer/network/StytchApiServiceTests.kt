@@ -1058,6 +1058,75 @@ internal class StytchApiServiceTests {
     }
     //endregion Crypto
 
+    //region TOTP
+    @Test
+    fun `check TOTP create request`() {
+        runBlocking {
+            val request = ConsumerRequests.TOTP.TOTPCreateRequest(expirationMinutes = 5)
+            requestIgnoringResponseException {
+                apiService.totpsCreate(request)
+            }.verifyPost(
+                expectedPath = "/totps",
+                expectedBody = mapOf("expiration_minutes" to request.expirationMinutes),
+            )
+        }
+    }
+
+    @Test
+    fun `check TOTP authenticate request`() {
+        runBlocking {
+            val request =
+                ConsumerRequests.TOTP.TOTPAuthenticateRequest(
+                    totpCode = "123456",
+                    sessionDurationMinutes = 30,
+                )
+            requestIgnoringResponseException {
+                apiService.totpsAuthenticate(request)
+            }.verifyPost(
+                expectedPath = "/totps/authenticate",
+                expectedBody =
+                    mapOf(
+                        "totp_code" to request.totpCode,
+                        "session_duration_minutes" to request.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check TOTP recoveryCodes request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.totpsRecoveryCodes()
+            }.verifyPost(
+                expectedPath = "/totps/recovery_codes",
+                expectedBody = emptyMap(),
+            )
+        }
+    }
+
+    @Test
+    fun `check TOTP recover request`() {
+        runBlocking {
+            val request =
+                ConsumerRequests.TOTP.TOTPRecoverRequest(
+                    recoveryCode = "recovery-code",
+                    sessionDurationMinutes = 30,
+                )
+            requestIgnoringResponseException {
+                apiService.totpsRecover(request)
+            }.verifyPost(
+                expectedPath = "/totps/recover",
+                expectedBody =
+                    mapOf(
+                        "recovery_code" to request.recoveryCode,
+                        "session_duration_minutes" to request.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+    //endregion TOTP
+
     //region Events
     @Test
     fun `check Events logEvent request`() {

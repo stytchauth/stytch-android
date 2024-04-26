@@ -592,6 +592,48 @@ internal class StytchApiTest {
         }
 
     @Test
+    fun `StytchApi TOTP create calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.totpsCreate(any()) } returns mockk(relaxed = true)
+            StytchApi.TOTP.create(expirationMinutes = 5)
+            coVerify { StytchApi.apiService.totpsCreate(any()) }
+        }
+
+    @Test
+    fun `StytchApi TOTP authenticate calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.totpsAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchApi.TOTP.authenticate(
+                totpCode = "123456",
+                sessionDurationMinutes = 30,
+            )
+            coVerify { StytchApi.apiService.totpsAuthenticate(any()) }
+        }
+
+    @Test
+    fun `StytchApi TOTP recoveryCodes calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.totpsRecoveryCodes() } returns mockk(relaxed = true)
+            StytchApi.TOTP.recoveryCodes()
+            coVerify { StytchApi.apiService.totpsRecoveryCodes() }
+        }
+
+    @Test
+    fun `StytchApi TOTP recover calls appropriate apiService method`() =
+        runTest {
+            every { StytchApi.isInitialized } returns true
+            coEvery { StytchApi.apiService.totpsRecover(any()) } returns mockk(relaxed = true)
+            StytchApi.TOTP.recover(
+                recoveryCode = "recovery-code",
+                sessionDurationMinutes = 30,
+            )
+            coVerify { StytchApi.apiService.totpsRecover(any()) }
+        }
+
+    @Test
     fun `StytchApi Events logEvent calls appropriate apiService method`() =
         runTest {
             every { StytchApi.isInitialized } returns true
