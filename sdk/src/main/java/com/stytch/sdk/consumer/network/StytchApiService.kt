@@ -3,7 +3,6 @@ package com.stytch.sdk.consumer.network
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.ConsumerResponses
 import retrofit2.Response

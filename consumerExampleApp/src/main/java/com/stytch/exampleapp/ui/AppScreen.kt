@@ -59,9 +59,9 @@ fun AppScreen(
     val stytchIsInitialized = StytchClient.isInitialized.collectAsState()
     Scaffold(
         modifier =
-        Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
         contentColor = MaterialTheme.colors.onBackground,
         topBar = { Toolbar(toolbarText = stringResource(id = R.string.app_name)) },
         bottomBar = {

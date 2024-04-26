@@ -153,7 +153,9 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun resetByExistingPassword(parameters: Passwords.ResetByExistingPasswordParameters): AuthResponse {
+    override suspend fun resetByExistingPassword(
+        parameters: Passwords.ResetByExistingPasswordParameters,
+    ): AuthResponse {
         return withContext(dispatchers.io) {
             api.resetByExisting(
                 email = parameters.email,
