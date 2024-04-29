@@ -70,6 +70,7 @@ internal class B2BMagicLinksImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockB2BSessionStorage.intermediateSessionToken } returns ""
         impl =
             B2BMagicLinksImpl(
                 externalScope = TestScope(),
@@ -99,10 +100,10 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl authenticate delegates to api`() =
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns ""
-            coEvery { mockEmailApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
+            coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
-            coVerify { mockEmailApi.authenticate(any(), any(), any()) }
+            coVerify { mockEmailApi.authenticate(any(), any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
         }
 

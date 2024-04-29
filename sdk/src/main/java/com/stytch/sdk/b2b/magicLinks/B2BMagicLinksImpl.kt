@@ -41,9 +41,10 @@ internal class B2BMagicLinksImpl internal constructor(
             // call backend endpoint
             result =
                 emailApi.authenticate(
-                    parameters.token,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier,
+                    token = parameters.token,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

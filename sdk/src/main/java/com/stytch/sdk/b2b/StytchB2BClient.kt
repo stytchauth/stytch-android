@@ -270,6 +270,7 @@ public object StytchB2BClient {
         DiscoveryImpl(
             externalScope,
             dispatchers,
+            sessionStorage,
             StytchB2BApi.Discovery,
         )
         get() {

@@ -80,6 +80,7 @@ internal class SSOImpl(
                     ssoToken = params.ssoToken,
                     sessionDurationMinutes = params.sessionDurationMinutes,
                     codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

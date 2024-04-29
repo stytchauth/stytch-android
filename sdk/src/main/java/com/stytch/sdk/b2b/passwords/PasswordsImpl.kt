@@ -33,6 +33,7 @@ internal class PasswordsImpl internal constructor(
                 emailAddress = parameters.emailAddress,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
@@ -100,6 +101,7 @@ internal class PasswordsImpl internal constructor(
                     password = parameters.password,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                     codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

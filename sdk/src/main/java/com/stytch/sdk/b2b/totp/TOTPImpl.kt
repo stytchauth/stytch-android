@@ -22,6 +22,7 @@ internal class TOTPImpl(
                 organizationId = parameters.organizationId,
                 memberId = parameters.memberId,
                 expirationMinutes = parameters.expirationMinutes?.toInt(),
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
             )
         }
 
@@ -43,6 +44,7 @@ internal class TOTPImpl(
                 setMFAEnrollment = parameters.setMFAEnrollment,
                 setDefaultMfaMethod = parameters.setDefaultMFAMethod,
                 sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }

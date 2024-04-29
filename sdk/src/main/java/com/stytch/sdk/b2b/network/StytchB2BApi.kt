@@ -184,6 +184,7 @@ internal object StytchB2BApi {
                 token: String,
                 sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String,
+                intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
                 safeB2BApiCall {
                     apiService.authenticate(
@@ -191,6 +192,7 @@ internal object StytchB2BApi {
                             token = token,
                             codeVerifier = codeVerifier,
                             sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                            intermediateSessionToken = intermediateSessionToken,
                         ),
                     )
                 }
@@ -476,6 +478,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             password: String,
             sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticatePassword(
@@ -484,6 +487,7 @@ internal object StytchB2BApi {
                         emailAddress = emailAddress,
                         password = password,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -517,6 +521,7 @@ internal object StytchB2BApi {
             password: String,
             sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
             codeVerifier: String,
+            intermediateSessionToken: String? = null,
         ): StytchResult<EmailResetResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmail(
@@ -525,6 +530,7 @@ internal object StytchB2BApi {
                         password = password,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         codeVerifier = codeVerifier,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -588,7 +594,7 @@ internal object StytchB2BApi {
             }
 
         suspend fun exchangeSession(
-            intermediateSessionToken: String,
+            intermediateSessionToken: String? = null,
             organizationId: String,
             sessionDurationMinutes: UInt,
         ): StytchResult<IntermediateSessionExchangeResponseData> =
@@ -604,7 +610,7 @@ internal object StytchB2BApi {
 
         @Suppress("LongParameterList")
         suspend fun createOrganization(
-            intermediateSessionToken: String,
+            intermediateSessionToken: String? = null,
             sessionDurationMinutes: UInt,
             organizationName: String?,
             organizationSlug: String?,
@@ -640,6 +646,7 @@ internal object StytchB2BApi {
             ssoToken: String,
             sessionDurationMinutes: UInt,
             codeVerifier: String,
+            intermediateSessionToken: String? = null,
         ): StytchResult<SSOAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.ssoAuthenticate(
@@ -647,6 +654,7 @@ internal object StytchB2BApi {
                         ssoToken = ssoToken,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         codeVerifier = codeVerifier,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -836,6 +844,7 @@ internal object StytchB2BApi {
             memberId: String,
             mfaPhoneNumber: String? = null,
             locale: String? = null,
+            intermediateSessionToken: String? = null,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.sendSMSOTP(
@@ -844,6 +853,7 @@ internal object StytchB2BApi {
                         memberId = memberId,
                         mfaPhoneNumber = mfaPhoneNumber,
                         locale = locale,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -854,6 +864,7 @@ internal object StytchB2BApi {
             code: String,
             setMFAEnrollment: SetMFAEnrollment? = null,
             sessionDurationMinutes: Int,
+            intermediateSessionToken: String? = null,
         ): StytchResult<SMSAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateSMSOTP(
@@ -863,6 +874,7 @@ internal object StytchB2BApi {
                         code = code,
                         setMFAEnrollment = setMFAEnrollment,
                         sessionDurationMinutes = sessionDurationMinutes,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -873,6 +885,7 @@ internal object StytchB2BApi {
             organizationId: String,
             memberId: String,
             expirationMinutes: Int? = null,
+            intermediateSessionToken: String? = null,
         ): StytchResult<TOTPCreateResponseData> =
             safeB2BApiCall {
                 apiService.createTOTP(
@@ -880,6 +893,7 @@ internal object StytchB2BApi {
                         organizationId = organizationId,
                         memberId = memberId,
                         expirationMinutes = expirationMinutes,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -891,6 +905,7 @@ internal object StytchB2BApi {
             setMFAEnrollment: SetMFAEnrollment? = null,
             setDefaultMfaMethod: Boolean? = null,
             sessionDurationMinutes: Int,
+            intermediateSessionToken: String? = null,
         ): StytchResult<TOTPAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateTOTP(
@@ -901,6 +916,7 @@ internal object StytchB2BApi {
                         setMFAEnrollment = setMFAEnrollment,
                         setDefaultMfaMethod = setDefaultMfaMethod,
                         sessionDurationMinutes = sessionDurationMinutes,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }
@@ -922,6 +938,7 @@ internal object StytchB2BApi {
             memberId: String,
             sessionDurationMinutes: Int,
             recoveryCode: String,
+            intermediateSessionToken: String? = null,
         ): StytchResult<RecoveryCodeRecoverResponseData> =
             safeB2BApiCall {
                 apiService.recoverRecoveryCodes(
@@ -930,6 +947,7 @@ internal object StytchB2BApi {
                         memberId = memberId,
                         sessionDurationMinutes = sessionDurationMinutes,
                         recoveryCode = recoveryCode,
+                        intermediateSessionToken = intermediateSessionToken,
                     ),
                 )
             }

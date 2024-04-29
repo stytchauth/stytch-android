@@ -13,7 +13,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,7 +65,6 @@ fun AppScreen(
     oAuthViewModel: OAuthViewModel,
 ) {
     val navController = rememberNavController()
-    val intermediateSessionTokenValue = homeViewModel.intermediateSessionToken.collectAsState()
     Scaffold(
         modifier =
             Modifier
@@ -106,12 +104,7 @@ fun AppScreen(
             NavHost(navController, startDestination = Screen.Main.route, Modifier.padding(padding)) {
                 composable(Screen.Main.route) { MainScreen(viewModel = homeViewModel) }
                 composable(Screen.Passwords.route) { PasswordsScreen(viewModel = passwordsViewModel) }
-                composable(Screen.Discovery.route) {
-                    DiscoveryScreen(
-                        viewModel = discoveryViewModel,
-                        intermediateSessionToken = intermediateSessionTokenValue.value,
-                    )
-                }
+                composable(Screen.Discovery.route) { DiscoveryScreen(viewModel = discoveryViewModel) }
                 composable(Screen.SSO.route) { SSOScreen(viewModel = ssoViewModel) }
                 composable(Screen.Member.route) { MemberScreen(viewModel = memberViewModel) }
                 composable(Screen.Organization.route) { OrganizationScreen(viewModel = organizationViewModel) }

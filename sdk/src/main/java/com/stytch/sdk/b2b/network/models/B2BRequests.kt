@@ -78,6 +78,8 @@ internal object B2BRequests {
             val codeVerifier: String,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
     }
 
@@ -92,6 +94,8 @@ internal object B2BRequests {
             val password: String,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
 
         @Keep
@@ -123,6 +127,8 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
             @Json(name = "code_verifier")
             val codeVerifier: String,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
 
         @Keep
@@ -168,7 +174,7 @@ internal object B2BRequests {
         @JsonClass(generateAdapter = true)
         data class SessionExchangeRequest(
             @Json(name = "intermediate_session_token")
-            val intermediateSessionToken: String,
+            val intermediateSessionToken: String? = null,
             @Json(name = "organization_id")
             val organizationId: String,
             @Json(name = "session_duration_minutes")
@@ -179,7 +185,7 @@ internal object B2BRequests {
         @JsonClass(generateAdapter = true)
         data class CreateRequest(
             @Json(name = "intermediate_session_token")
-            val intermediateSessionToken: String,
+            val intermediateSessionToken: String? = null,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
             @Json(name = "organization_name")
@@ -213,6 +219,8 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
             @Json(name = "pkce_code_verifier")
             val codeVerifier: String,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
 
         @Keep
@@ -437,6 +445,8 @@ internal object B2BRequests {
                 @Json(name = "mfa_phone_number")
                 val mfaPhoneNumber: String? = null,
                 val locale: String? = null,
+                @Json(name = "intermediate_session_token")
+                val intermediateSessionToken: String? = null,
             )
 
             @Keep
@@ -451,6 +461,8 @@ internal object B2BRequests {
                 val setMFAEnrollment: SetMFAEnrollment? = null,
                 @Json(name = "session_duration_minutes")
                 val sessionDurationMinutes: Int,
+                @Json(name = "intermediate_session_token")
+                val intermediateSessionToken: String? = null,
             )
         }
     }
@@ -465,6 +477,8 @@ internal object B2BRequests {
             val memberId: String,
             @Json(name = "expiration_minutes")
             val expirationMinutes: Int? = null,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
 
         @Keep
@@ -481,6 +495,8 @@ internal object B2BRequests {
             val setDefaultMfaMethod: Boolean? = null,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
     }
 
@@ -496,6 +512,8 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
             @Json(name = "recovery_code")
             val recoveryCode: String,
+            @Json(name = "intermediate_session_token")
+            val intermediateSessionToken: String? = null,
         )
     }
 

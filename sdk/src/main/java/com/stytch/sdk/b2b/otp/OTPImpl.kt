@@ -26,6 +26,7 @@ internal class OTPImpl(
                     memberId = parameters.memberId,
                     mfaPhoneNumber = parameters.mfaPhoneNumber,
                     locale = parameters.locale,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 )
             }
 
@@ -46,6 +47,7 @@ internal class OTPImpl(
                     code = parameters.code,
                     setMFAEnrollment = parameters.setMFAEnrollment,
                     sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

@@ -27,18 +27,15 @@ class DiscoveryViewModel : ViewModel() {
     fun organizations() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.discovery.listOrganizations(
-                    Discovery.DiscoverOrganizationsParameters(),
-                ).toFriendlyDisplay()
+                StytchB2BClient.discovery.listOrganizations().toFriendlyDisplay()
         }
     }
 
-    fun createOrganization(intermediateSessionToken: String) {
+    fun createOrganization() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
                 StytchB2BClient.discovery.createOrganization(
                     Discovery.CreateOrganizationParameters(
-                        intermediateSessionToken = intermediateSessionToken,
                         ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
                         emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
                         emailInvites = EmailInvites.ALL_ALLOWED,

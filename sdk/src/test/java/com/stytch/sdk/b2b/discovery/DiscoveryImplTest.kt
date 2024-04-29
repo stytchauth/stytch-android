@@ -4,12 +4,14 @@ import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.spyk
@@ -28,16 +30,21 @@ internal class DiscoveryImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.Discovery
 
+    @MockK
+    private lateinit var mockB2BSessionStorage: B2BSessionStorage
+
     private lateinit var impl: DiscoveryImpl
     private val dispatcher = Dispatchers.Unconfined
 
     @Before
     fun before() {
         MockKAnnotations.init(this, true, true)
+        every { mockB2BSessionStorage.intermediateSessionToken } returns ""
         impl =
             DiscoveryImpl(
                 externalScope = TestScope(),
                 dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockB2BSessionStorage,
                 api = mockApi,
             )
     }
@@ -52,7 +59,7 @@ internal class DiscoveryImplTest {
     fun `DiscoveryImpl organizations delegates to api`() =
         runTest {
             coEvery { mockApi.discoverOrganizations(any()) } returns StytchResult.Success(mockk(relaxed = true))
-            val response = impl.listOrganizations(mockk(relaxed = true))
+            val response = impl.listOrganizations()
             assert(response is StytchResult.Success)
             coVerify { mockApi.discoverOrganizations(any()) }
         }
@@ -61,7 +68,7 @@ internal class DiscoveryImplTest {
     fun `DiscoveryImpl organizations with callback calls callback method`() {
         coEvery { mockApi.discoverOrganizations(any()) } returns StytchResult.Success(mockk(relaxed = true))
         val mockCallback = spyk<(DiscoverOrganizationsResponse) -> Unit>()
-        impl.listOrganizations(mockk(relaxed = true), mockCallback)
+        impl.listOrganizations(mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

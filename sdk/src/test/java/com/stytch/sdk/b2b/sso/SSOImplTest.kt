@@ -66,6 +66,7 @@ internal class SSOImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockB2BSessionStorage.intermediateSessionToken } returns ""
         impl =
             SSOImpl(
                 externalScope = TestScope(),
@@ -95,10 +96,10 @@ internal class SSOImplTest {
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns ""
             val mockResponse = StytchResult.Success<SSOAuthenticateResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.authenticate(any(), any(), any()) } returns mockResponse
+            coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns mockResponse
             val response = impl.authenticate(SSO.AuthenticateParams(""))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.authenticate(any(), any(), any()) }
+            coVerify { mockApi.authenticate(any(), any(), any(), any()) }
             verify { mockResponse.launchSessionUpdater(any(), any()) }
         }
 
