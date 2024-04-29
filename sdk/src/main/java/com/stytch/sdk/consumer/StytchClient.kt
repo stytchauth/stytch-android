@@ -406,7 +406,7 @@ public object StytchClient {
         return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
             }
             when (val tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 ConsumerTokenType.MAGIC_LINKS -> {
@@ -431,7 +431,7 @@ public object StytchClient {
                 }
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
-                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
+                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError())
                 }
             }
         }

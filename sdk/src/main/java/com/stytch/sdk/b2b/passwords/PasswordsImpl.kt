@@ -1,8 +1,9 @@
 package com.stytch.sdk.b2b.passwords
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
+import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -25,13 +26,14 @@ internal class PasswordsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.Passwords,
 ) : Passwords {
-    override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
+    override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse {
         return withContext(dispatchers.io) {
             api.authenticate(
                 organizationId = parameters.organizationId,
                 emailAddress = parameters.emailAddress,
                 password = parameters.password,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
@@ -40,7 +42,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun authenticate(
         parameters: Passwords.AuthParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
@@ -99,6 +101,7 @@ internal class PasswordsImpl internal constructor(
                     password = parameters.password,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                     codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
@@ -116,7 +119,9 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun resetByExisting(parameters: Passwords.ResetByExistingPasswordParameters): AuthResponse {
+    override suspend fun resetByExisting(
+        parameters: Passwords.ResetByExistingPasswordParameters,
+    ): PasswordResetByExistingPasswordResponse {
         return withContext(dispatchers.io) {
             api.resetByExisting(
                 organizationId = parameters.organizationId,
@@ -132,7 +137,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByExisting(
         parameters: Passwords.ResetByExistingPasswordParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordResetByExistingPasswordResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetByExisting(parameters)

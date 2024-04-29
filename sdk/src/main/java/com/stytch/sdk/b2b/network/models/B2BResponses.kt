@@ -26,7 +26,9 @@ internal object B2BResponses {
     object Sessions {
         @Keep
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+        class AuthenticateResponse(
+            data: SessionsAuthenticateResponseData,
+        ) : StytchDataResponse<SessionsAuthenticateResponseData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -123,7 +125,9 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class ResetByExistingPasswordResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+        class ResetByExistingPasswordResponse(
+            data: PasswordResetByExistingPasswordResponseData,
+        ) : StytchDataResponse<PasswordResetByExistingPasswordResponseData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -225,8 +229,8 @@ internal object B2BResponses {
             @Keep
             @JsonClass(generateAdapter = true)
             class AuthenticateResponse(
-                data: B2BAuthData,
-            ) : StytchDataResponse<B2BAuthData>(data)
+                data: SMSAuthenticateResponseData,
+            ) : StytchDataResponse<SMSAuthenticateResponseData>(data)
         }
     }
 

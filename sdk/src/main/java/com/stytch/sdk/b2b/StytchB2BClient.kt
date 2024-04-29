@@ -270,6 +270,7 @@ public object StytchB2BClient {
         DiscoveryImpl(
             externalScope,
             dispatchers,
+            sessionStorage,
             StytchB2BApi.Discovery,
         )
         get() {
@@ -413,7 +414,7 @@ public object StytchB2BClient {
         return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
             }
             when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
@@ -480,7 +481,7 @@ public object StytchB2BClient {
                 }
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
-                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
+                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError())
                 }
             }
         }

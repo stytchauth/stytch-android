@@ -1,13 +1,14 @@
 package com.stytch.sdk.b2b.passwords
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
+import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.network.models.B2BAuthData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
+import com.stytch.sdk.b2b.network.models.PasswordResetByExistingPasswordResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionResetResponseData
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
@@ -67,6 +68,7 @@ internal class PasswordsImplTest {
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
+        every { mockSessionStorage.intermediateSessionToken } returns ""
         impl =
             PasswordsImpl(
                 externalScope = TestScope(),
@@ -87,18 +89,18 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl authenticate delegates to api`() =
         runTest {
             val mockkResponse = StytchResult.Success<PasswordsAuthenticateResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.authenticate(any(), any(), any(), any()) }
+            coVerify { mockApi.authenticate(any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl authenticate with callback calls callback method`() {
         val mockkResponse = StytchResult.Success<PasswordsAuthenticateResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns mockkResponse
-        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns mockkResponse
+        val mockCallback = spyk<(PasswordsAuthenticateResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
     }
@@ -165,10 +167,10 @@ internal class PasswordsImplTest {
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns ""
             val mockkResponse = StytchResult.Success<EmailResetResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.resetByEmail(any(), any(), any(), any()) }
+            coVerify { mockApi.resetByEmail(any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
         }
 
@@ -176,7 +178,7 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl resetByEmail with callback calls callback method`() {
         every { mockStorageHelper.retrieveCodeVerifier() } returns ""
         val mockkResponse = StytchResult.Success<EmailResetResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(EmailResetResponse) -> Unit>()
         impl.resetByEmail(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
@@ -186,7 +188,7 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByExisting delegates to api`() =
         runTest {
-            val mockkResponse = StytchResult.Success<B2BAuthData>(mockk(relaxed = true))
+            val mockkResponse = StytchResult.Success<PasswordResetByExistingPasswordResponseData>(mockk(relaxed = true))
             coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.resetByExisting(mockk(relaxed = true))
             assert(response is StytchResult.Success)
@@ -196,9 +198,9 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByExisting with callback calls callback method`() {
-        val mockkResponse = StytchResult.Success<B2BAuthData>(mockk(relaxed = true))
+        val mockkResponse = StytchResult.Success<PasswordResetByExistingPasswordResponseData>(mockk(relaxed = true))
         coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any()) } returns mockkResponse
-        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        val mockCallback = spyk<(PasswordResetByExistingPasswordResponse) -> Unit>()
         impl.resetByExisting(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
     }

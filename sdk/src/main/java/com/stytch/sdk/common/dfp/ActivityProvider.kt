@@ -6,7 +6,6 @@ import android.os.Bundle
 import java.lang.ref.WeakReference
 
 internal class ActivityProvider(application: Application) : Application.ActivityLifecycleCallbacks {
-    @Suppress("ktlint:standard:backing-property-naming")
     private var _currentActivity = WeakReference<Activity>(null)
     internal val currentActivity: Activity?
         get() = _currentActivity.get()

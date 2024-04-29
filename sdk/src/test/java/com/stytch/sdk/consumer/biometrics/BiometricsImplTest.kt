@@ -131,7 +131,7 @@ internal class BiometricsImplTest {
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every {
                 mockSessionStorage.ensureSessionIsValidOrThrow()
-            } throws StytchNoCurrentSessionError
+            } throws StytchNoCurrentSessionError()
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
             assert(result.exception is StytchNoCurrentSessionError)

@@ -1,10 +1,10 @@
 package com.stytch.sdk.b2b.otp
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.BasicResponse
+import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.network.models.B2BAuthData
+import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
@@ -42,7 +42,7 @@ internal class OTPImplTest {
     private lateinit var impl: OTPImpl
     private val dispatcher = Dispatchers.Unconfined
     private val successfulBaseResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
-    private val successfulAuthResponse = StytchResult.Success<B2BAuthData>(mockk(relaxed = true))
+    private val successfulAuthResponse = StytchResult.Success<SMSAuthenticateResponseData>(mockk(relaxed = true))
 
     @Before
     fun before() {
@@ -100,7 +100,7 @@ internal class OTPImplTest {
     @Test
     fun `OTP SMS Authenticate with callback calls callback`() {
         coEvery { mockApi.authenticateSMSOTP(any(), any(), any(), any(), any()) } returns successfulAuthResponse
-        val mockCallback = spyk<(AuthResponse) -> Unit>()
+        val mockCallback = spyk<(SMSAuthenticateResponse) -> Unit>()
         impl.sms.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }

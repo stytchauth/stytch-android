@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.otp
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.BasicResponse
+import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.Constants
 
@@ -72,18 +72,18 @@ public interface OTP {
         /**
          * Authenticate a one-time passcode (OTP) sent to a user via SMS.
          * @param parameters required to authenticate an SMS OTP
-         * @return [AuthResponse]
+         * @return [SMSAuthenticateResponse]
          */
-        public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
+        public suspend fun authenticate(parameters: AuthenticateParameters): SMSAuthenticateResponse
 
         /**
          * Authenticate a one-time passcode (OTP) sent to a user via SMS.
          * @param parameters required to authenticate an SMS OTP
-         * @param callback a callback that receives a [AuthResponse]
+         * @param callback a callback that receives a [SMSAuthenticateResponse]
          */
         public fun authenticate(
             parameters: AuthenticateParameters,
-            callback: (AuthResponse) -> Unit,
+            callback: (SMSAuthenticateResponse) -> Unit,
         )
     }
 }

@@ -77,25 +77,25 @@ internal class StytchErrorTests {
 
     @Test
     fun `StytchDeeplinkUnkownTokenTypeError has expected properties`() {
-        val error = StytchDeeplinkUnkownTokenTypeError
+        val error = StytchDeeplinkUnkownTokenTypeError()
         assert(error.message == "The deeplink received has an unknown token type.")
     }
 
     @Test
     fun `StytchDeeplinkMissingTokenError has expected properties`() {
-        val error = StytchDeeplinkMissingTokenError
+        val error = StytchDeeplinkMissingTokenError()
         assert(error.message == "The deeplink received has a missing token value.")
     }
 
     @Test
     fun `StytchNoCurrentSessionError has expected properties`() {
-        val error = StytchNoCurrentSessionError
+        val error = StytchNoCurrentSessionError()
         assert(error.message == "There is no session currently available.")
     }
 
     @Test
     fun `StytchNoBiometricsRegistrationError has expected properties`() {
-        val error = StytchNoBiometricsRegistrationError
+        val error = StytchNoBiometricsRegistrationError()
         assert(
             error.message == "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
         )
@@ -103,7 +103,7 @@ internal class StytchErrorTests {
 
     @Test
     fun `StytchKeystoreUnavailableError has expected properties`() {
-        val error = StytchKeystoreUnavailableError
+        val error = StytchKeystoreUnavailableError()
         assert(
             error.message == "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
         )
@@ -127,19 +127,19 @@ internal class StytchErrorTests {
 
     @Test
     fun `StytchMissingAuthorizationCredentialIdTokenError has expected properties`() {
-        val error = StytchMissingAuthorizationCredentialIdTokenError
+        val error = StytchMissingAuthorizationCredentialIdTokenError()
         assert(error.message == "The authorization credential is missing an ID token.")
     }
 
     @Test
     fun `StytchInvalidAuthorizationCredentialError has expected properties`() {
-        val error = StytchInvalidAuthorizationCredentialError
+        val error = StytchInvalidAuthorizationCredentialError()
         assert(error.message == "The authorization credential is invalid.")
     }
 
     @Test
     fun `StytchPasskeysNotSupportedError has expected properties`() {
-        val error = StytchPasskeysNotSupportedError
+        val error = StytchPasskeysNotSupportedError()
         assert(error.message == "Passkeys are not supported on this device.")
     }
 

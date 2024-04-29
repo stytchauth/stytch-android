@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.otp
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.BasicResponse
+import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -26,6 +26,7 @@ internal class OTPImpl(
                     memberId = parameters.memberId,
                     mfaPhoneNumber = parameters.mfaPhoneNumber,
                     locale = parameters.locale,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 )
             }
 
@@ -38,7 +39,7 @@ internal class OTPImpl(
             }
         }
 
-        override suspend fun authenticate(parameters: OTP.SMS.AuthenticateParameters): AuthResponse =
+        override suspend fun authenticate(parameters: OTP.SMS.AuthenticateParameters): SMSAuthenticateResponse =
             withContext(dispatchers.io) {
                 api.authenticateSMSOTP(
                     organizationId = parameters.organizationId,
@@ -46,6 +47,7 @@ internal class OTPImpl(
                     code = parameters.code,
                     setMFAEnrollment = parameters.setMFAEnrollment,
                     sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
@@ -53,7 +55,7 @@ internal class OTPImpl(
 
         override fun authenticate(
             parameters: OTP.SMS.AuthenticateParameters,
-            callback: (AuthResponse) -> Unit,
+            callback: (SMSAuthenticateResponse) -> Unit,
         ) {
             externalScope.launch(dispatchers.ui) {
                 callback(authenticate(parameters))

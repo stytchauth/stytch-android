@@ -85,7 +85,7 @@ internal class OrganizationImpl(
                 if (this is StytchResult.Success) {
                     sessionStorage.organization = null
                     sessionStorage.member = null
-                    sessionStorage.updateSession(null, null, null)
+                    sessionStorage.updateSession(null, null, null, null)
                 }
             }
         }

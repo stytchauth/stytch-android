@@ -13,7 +13,7 @@ import org.junit.Test
 internal class ThrowableExtTest {
     @Test
     fun `A StytchError returns the same StytchError`() {
-        val originalException = StytchDeeplinkUnkownTokenTypeError
+        val originalException = StytchDeeplinkUnkownTokenTypeError()
         val returnedException = originalException.toStytchError()
         assert(originalException == returnedException)
     }

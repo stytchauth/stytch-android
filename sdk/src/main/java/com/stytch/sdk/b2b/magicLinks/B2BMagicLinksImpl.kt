@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.magicLinks
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
+import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -26,8 +26,8 @@ internal class B2BMagicLinksImpl internal constructor(
 ) : B2BMagicLinks {
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): AuthResponse {
-        var result: AuthResponse
+    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse {
+        var result: EMLAuthenticateResponse
         withContext(dispatchers.io) {
             val codeVerifier: String
 
@@ -41,9 +41,10 @@ internal class B2BMagicLinksImpl internal constructor(
             // call backend endpoint
             result =
                 emailApi.authenticate(
-                    parameters.token,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier,
+                    token = parameters.token,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
@@ -54,7 +55,7 @@ internal class B2BMagicLinksImpl internal constructor(
 
     override fun authenticate(
         parameters: B2BMagicLinks.AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: EMLAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)

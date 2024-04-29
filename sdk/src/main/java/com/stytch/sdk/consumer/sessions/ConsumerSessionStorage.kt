@@ -78,7 +78,7 @@ internal class ConsumerSessionStorage(private val storageHelper: StorageHelper) 
 
     fun ensureSessionIsValidOrThrow() {
         if (sessionToken == null && sessionJwt == null) {
-            throw StytchNoCurrentSessionError
+            throw StytchNoCurrentSessionError()
         }
     }
 }
