@@ -20,3 +20,5 @@ Call the `StytchB2BClient.organization.members.reactivate()` method to reactivat
 Call the `StytchB2BClient.organization.members.deleteMemberAuthenticationFactor()` method to delete an authentication factor from a member of the organization.
 
 Call the `StytchB2BClient.organization.members.search()` method to search an organizations members.
+
+Call the `StytchB2BClient.organization.onChange()` method with a callback to be triggered on changes to the underlying organization. Alternatively, you can listen directly to the flow using the `StytchB2BClient.organization.onChange` StateFlow.
