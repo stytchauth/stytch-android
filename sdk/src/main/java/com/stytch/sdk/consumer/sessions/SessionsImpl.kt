@@ -56,6 +56,10 @@ internal class SessionsImpl internal constructor(
             }
         }
 
+    override fun getSync(): SessionData? {
+        return sessionStorage.session
+    }
+
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         val result: AuthResponse
         withContext(dispatchers.io) {

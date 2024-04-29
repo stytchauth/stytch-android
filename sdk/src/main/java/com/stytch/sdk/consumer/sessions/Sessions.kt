@@ -33,6 +33,11 @@ public interface Sessions {
     public val sessionJwt: String?
 
     /**
+     * Get the locally persisted session
+     */
+    public fun getSync(): SessionData?
+
+    /**
      * Data class used for wrapping parameters used with Sessions authentication
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
