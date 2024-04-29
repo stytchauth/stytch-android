@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.sessions
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.network.models.SessionData
 
 /**
  * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
@@ -18,6 +19,11 @@ public interface Sessions {
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionJwt: String?
+
+    /**
+     * Get the locally persisted session
+     */
+    public fun getSync(): SessionData?
 
     /**
      * Data class used for wrapping parameters used with Sessions authentication

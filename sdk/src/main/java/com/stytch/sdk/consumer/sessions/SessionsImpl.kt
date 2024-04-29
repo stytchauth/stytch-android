@@ -8,6 +8,7 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,6 +36,10 @@ internal class SessionsImpl internal constructor(
                 throw StytchFailedToDecryptDataError(ex)
             }
         }
+
+    override fun getSync(): SessionData? {
+        return sessionStorage.session
+    }
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         val result: AuthResponse
