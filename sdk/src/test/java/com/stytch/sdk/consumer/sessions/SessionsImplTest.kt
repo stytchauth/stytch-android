@@ -58,6 +58,8 @@ internal class SessionsImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
         impl =
             SessionsImpl(
                 externalScope = TestScope(),

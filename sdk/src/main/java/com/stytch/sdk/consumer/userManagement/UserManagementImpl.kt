@@ -10,6 +10,7 @@ import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -19,6 +20,24 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
+    private val callbacks = mutableListOf<(UserData?) -> Unit>()
+
+    override val onChange: StateFlow<UserData?> = sessionStorage.userFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (UserData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override suspend fun getUser(): UserResponse =
         withContext(dispatchers.io) {
             api.getUser()
