@@ -71,8 +71,8 @@ jobs:
 
     - name: Zip docs site
       run: |
-        cd main/sdk/build/dokka/htmlPartial
-        zip -r ../../../../../Docs.zip .
+        cd main/docs
+        zip -r ../../Docs.zip .
         cd -
     - uses: actions/upload-artifact@v3
       with:
