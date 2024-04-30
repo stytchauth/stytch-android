@@ -67,12 +67,12 @@ jobs:
         STYTCH_UI_PUBLIC_TOKEN: 'abc123'
         UI_GOOGLE_CLIENT_ID: 'abc123'
       working-directory: main
-      run: ./gradlew sdk:dokkaHtmlMultiModule
+      run: ./gradlew dokkaHtmlMultiModule
 
     - name: Zip docs site
       run: |
-        cd main/sdk/build/dokka/html
-        zip -r ../../../../../Docs.zip .
+        cd main/docs
+        zip -r ../../Docs.zip .
         cd -
     - uses: actions/upload-artifact@v3
       with:
