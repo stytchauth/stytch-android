@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.consumer.oauth</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="Stytch Android::com.stytch.sdk.consumer.oauth////PointingToDeclaration//-154216341">
+  <div class="breadcrumbs"><a href="../index.html">Stytch Android</a><span class="delimiter">/</span><span class="current">com.stytch.sdk.consumer.oauth</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><p class="paragraph">The OAuth.kt interface provides methods for authenticating a user via a native Google OneTap prompt or any of the following third-party OAuth providers, provided you have configured them within your Stytch Dashboard:</p><ul><li><p class="paragraph">Amazon</p></li><li><p class="paragraph">BitBucket</p></li><li><p class="paragraph">Coinbase</p></li><li><p class="paragraph">Discord</p></li><li><p class="paragraph">Facebook</p></li><li><p class="paragraph">Github</p></li><li><p class="paragraph">GitLab</p></li><li><p class="paragraph">Google</p></li><li><p class="paragraph">LinkedIn</p></li><li><p class="paragraph">Microsoft</p></li><li><p class="paragraph">Salesforce</p></li><li><p class="paragraph">Slack</p></li><li><p class="paragraph">Twitch</p></li><li><p class="paragraph">Yahoo</p></li></ul><h2 class=""> Google OneTap</h2><p class="paragraph">Google OneTap has been deprecated in favor of Google Credential Manager. To use it, you can call the <code class="lang-kotlin">StytchClient.oauth.googleOneTap.start()</code> method, which will handle the entire authentication flow.</p><p class="paragraph">If this method returns an Error, it probably means your app is not configured for Google OneTap or there are no credentials available. You can fallback to a redirect-based OAuth flow by calling the <code class="lang-kotlin">StytchClient.oauth.google.start()</code> method. </p><h2 class=""> Third Party OAuth</h2><p class="paragraph">In order to use Third-party OAuth flows, there are a few settings you need to configure in your application.</p><p class="paragraph">First, ensure you have added the relevant manifest placeholders in your application's <code class="lang-kotlin">build.gradle</code> file (as explained in the /README.md).</p><p class="paragraph">Second, you must specify a unique identifier for the activity result:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">const val THIRD_PARTY_OAUTH_REQUEST = 456</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Third, in your activity, add a listener for that unique identifier in <code class="lang-kotlin">onActivityResult</code>, like so:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">class MyActivity : AppCompatActivity() {<br>    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {<br>        super.onActivityResult(requestCode, resultCode, data)<br>        when (requestCode) {<br>            THIRD_PARTY_OAUTH_REQUEST -&gt; data?.let { viewModel.authenticateThirdPartyOAuth(resultCode, it) }<br>        }<br>    }<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">To begin a Third-party OAuth flow, call the <code class="lang-kotlin">StytchClient.oauth.[PROVIDER].start()</code> method, ensuring you pass in the unique third-party OAuth identifier defined previously. This will spawn a new (manager) activity that opens the user's default browser to begin the authentication flow. When the authentication flow has concluded, a new receiver activity intercepts the result, and returns it to the manager activity, which ultimately returns a response to your activity. This helps keep the backstack in order.</p><p class="paragraph">Once your listener has retrieved the <code class="lang-kotlin">resultCode</code> and <code class="lang-kotlin">Intent</code> from the activity listener, you can pass both to the <code class="lang-kotlin">StytchClient.oauth.authenticate()</code> method to complete the authentication flow.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="755634166%2FClasslikes%2F-154216341" anchor-label="OAuth" id="755634166%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-o-auth/index.html"><span><span>OAuth</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="755634166%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-o-auth/index.html">OAuth</a></div><div class="brief "><p class="paragraph">The OAuth interface provides methods for authenticating a user via a native Google OneTap prompt or any of the supported third-party OAuth providers, provided you have configured them within your Stytch Dashboard.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

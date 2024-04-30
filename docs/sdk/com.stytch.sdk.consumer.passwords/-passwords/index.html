@@ -1,0 +1,270 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Passwords</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Stytch Android::com.stytch.sdk.consumer.passwords/Passwords///PointingToDeclaration//-154216341">
+  <div class="breadcrumbs"><a href="../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="../index.html">com.stytch.sdk.consumer.passwords</a><span class="delimiter">/</span><span class="current">Passwords</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Passwords</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Passwords</a></div><p class="paragraph">The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of passwords.</p><p class="paragraph">Stytch supports creating, storing, and authenticating passwords, as well as support for account recovery (password reset) and account deduplication with passwordless login methods.</p><p class="paragraph">Our implementation of passwords has built-in breach detection powered by <a href="https://haveibeenpwned.com">HaveIBeenPwned</a> on both sign-up and login, to prevent the use of compromised credentials and uses configurable strength requirements (either Dropbox’s <a href="https://github.com/dropbox/zxcvbn">zxcvbn</a> or adjustable LUDS) to guide members towards creating passwords that are easy for humans to remember but difficult for computers to crack.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-460927442%2FClasslikes%2F-154216341" anchor-label="AuthParameters" id="-460927442%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-auth-parameters/index.html"><span>Auth</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-460927442%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-auth-parameters/index.html">AuthParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>email<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>password<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>DEFAULT_SESSION_TIME_MINUTES</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords authentication</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2102457702%2FClasslikes%2F-154216341" anchor-label="CreateParameters" id="-2102457702%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-parameters/index.html"><span>Create</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2102457702%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-create-parameters/index.html">CreateParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>email<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>password<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>DEFAULT_SESSION_TIME_MINUTES</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords create endpoint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1690496800%2FClasslikes%2F-154216341" anchor-label="ResetByEmailParameters" id="-1690496800%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reset-by-email-parameters/index.html"><span>Reset</span><wbr><span>By</span><wbr><span>Email</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1690496800%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reset-by-email-parameters/index.html">ResetByEmailParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>token<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>password<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>DEFAULT_SESSION_TIME_MINUTES</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords ResetByEmail endpoint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1923574260%2FClasslikes%2F-154216341" anchor-label="ResetByEmailStartParameters" id="-1923574260%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reset-by-email-start-parameters/index.html"><span>Reset</span><wbr><span>By</span><wbr><span>Email</span><wbr><span>Start</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1923574260%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reset-by-email-start-parameters/index.html">ResetByEmailStartParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>email<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>loginRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>loginExpirationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resetPasswordRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resetPasswordExpirationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resetPasswordTemplateId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/os/Parcelable.html">Parcelable</a></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1307563622%2FClasslikes%2F-154216341" anchor-label="ResetBySessionParameters" id="1307563622%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reset-by-session-parameters/index.html"><span>Reset</span><wbr><span>By</span><wbr><span>Session</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1307563622%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reset-by-session-parameters/index.html">ResetBySessionParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>password<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator"> = </span>DEFAULT_SESSION_TIME_MINUTES</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords StrengthCheck endpoint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1158665167%2FClasslikes%2F-154216341" anchor-label="StrengthCheckParameters" id="-1158665167%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-strength-check-parameters/index.html"><span>Strength</span><wbr><span>Check</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1158665167%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-strength-check-parameters/index.html">StrengthCheckParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>email<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>password<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data class used for wrapping parameters used with Passwords StrengthCheck endpoint</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1529761418%2FFunctions%2F-154216341" anchor-label="authenticate" id="1529761418%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="authenticate.html"><span><span>authenticate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1529761418%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-auth-parameters/index.html">Passwords.AuthParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="authenticate.html"><span class="token function">authenticate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-auth-parameters/index.html">Passwords.AuthParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Authenticate a user with their email address and password. This endpoint verifies that the user has a password currently set, and that the entered password is correct.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1571959266%2FFunctions%2F-154216341" anchor-label="create" id="1571959266%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create.html"><span><span>create</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1571959266%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="create.html"><span class="token function">create</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-create-parameters/index.html">Passwords.CreateParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.consumer/-passwords-create-response/index.html">PasswordsCreateResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="create.html"><span class="token function">create</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-create-parameters/index.html">Passwords.CreateParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.consumer/-passwords-create-response/index.html">PasswordsCreateResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Create a new user with a password and an authenticated session for the user if requested. If a user with this email already exists in the project, this method will return an error.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1554877420%2FFunctions%2F-154216341" anchor-label="resetByEmail" id="1554877420%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-by-email.html"><span>reset</span><wbr><span>By</span><wbr><span><span>Email</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1554877420%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="reset-by-email.html"><span class="token function">resetByEmail</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-email-parameters/index.html">Passwords.ResetByEmailParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="reset-by-email.html"><span class="token function">resetByEmail</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-email-parameters/index.html">Passwords.ResetByEmailParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t expired, or already been used. The provided password needs to meet our password strength requirements, which can be checked in advance with the <a href="strength-check.html">strengthCheck</a> method. If the token and password are accepted, the password is securely stored for future authentication and the user is authenticated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="284432700%2FFunctions%2F-154216341" anchor-label="resetByEmailStart" id="284432700%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-by-email-start.html"><span>reset</span><wbr><span>By</span><wbr><span>Email</span><wbr><span><span>Start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="284432700%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="reset-by-email-start.html"><span class="token function">resetByEmailStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-email-start-parameters/index.html">Passwords.ResetByEmailStartParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.common/-base-response/index.html">BaseResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="reset-by-email-start.html"><span class="token function">resetByEmailStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-email-start-parameters/index.html">Passwords.ResetByEmailStartParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.common/-base-response/index.html">BaseResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Initiates a password reset for the email address provided. This will trigger an email to be sent to the address, containing a magic link that will allow them to set a new password and authenticate.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="963317380%2FFunctions%2F-154216341" anchor-label="resetBySession" id="963317380%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-by-session.html"><span>reset</span><wbr><span>By</span><wbr><span><span>Session</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="963317380%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="reset-by-session.html"><span class="token function">resetBySession</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-session-parameters/index.html">Passwords.ResetBySessionParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="reset-by-session.html"><span class="token function">resetBySession</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-reset-by-session-parameters/index.html">Passwords.ResetBySessionParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.consumer/-auth-response/index.html">AuthResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t expired or been revoked. The provided password needs to meet our password strength requirements, which can be checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted, the password is securely stored for future authentication and the user is authenticated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1450948097%2FFunctions%2F-154216341" anchor-label="strengthCheck" id="1450948097%2FFunctions%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="strength-check.html"><span>strength</span><wbr><span><span>Check</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1450948097%2FFunctions%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="strength-check.html"><span class="token function">strengthCheck</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-strength-check-parameters/index.html">Passwords.StrengthCheckParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.consumer/-passwords-strength-check-response/index.html">PasswordsStrengthCheckResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="strength-check.html"><span class="token function">strengthCheck</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-strength-check-parameters/index.html">Passwords.StrengthCheckParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.consumer/-passwords-strength-check-response/index.html">PasswordsStrengthCheckResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to the user on how to increase the strength of their password.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

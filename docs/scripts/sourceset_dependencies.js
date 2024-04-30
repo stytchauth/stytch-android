@@ -1,1 +1,1 @@
-{"@class":"org.jetbrains.dokka.base.templating.AddToSourcesetDependencies","moduleName":"Stytch Android","content":{":sdk:dokkaHtmlPartial/debug":[],":sdk:dokkaHtmlPartial/main":[],":sdk:dokkaHtmlPartial/release":[]}}
+sourceset_dependencies = '{":ui:dokkaHtmlPartial/debug":[],":ui:dokkaHtmlPartial/main":[],":ui:dokkaHtmlPartial/release":[],":sdk:dokkaHtmlPartial/debug":[],":sdk:dokkaHtmlPartial/main":[],":sdk:dokkaHtmlPartial/release":[]}'
