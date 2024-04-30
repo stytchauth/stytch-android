@@ -13,6 +13,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.EventTypes
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.PasswordOptions
@@ -133,6 +134,16 @@ internal class OTPConfirmationScreenViewModel(
                 }
             when (result) {
                 is StytchResult.Success -> {
+                    if (resend is OTPDetails.EmailOTP) {
+                        stytchClient.events.logEvent(
+                            eventName = EventTypes.EMAIL_TRY_AGAIN_CLICKED,
+                            details =
+                                mapOf(
+                                    "email" to resend.parameters.email,
+                                    "type" to EventTypes.LOGIN_OR_CREATE_OTP,
+                                ),
+                        )
+                    }
                     methodId = result.value.methodId
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
@@ -166,7 +177,15 @@ internal class OTPConfirmationScreenViewModel(
                         publicToken = stytchClient.publicToken,
                     )
                 when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
-                    is StytchResult.Success ->
+                    is StytchResult.Success -> {
+                        stytchClient.events.logEvent(
+                            eventName = EventTypes.EMAIL_SENT,
+                            details =
+                                mapOf(
+                                    "email" to parameters.email,
+                                    "type" to EventTypes.RESET_PASSWORD,
+                                ),
+                        )
                         _eventFlow.emit(
                             EventState.NavigationRequested(
                                 NavigationRoute.PasswordResetSent(
@@ -174,6 +193,7 @@ internal class OTPConfirmationScreenViewModel(
                                 ),
                             ),
                         )
+                    }
                     is StytchResult.Error ->
                         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                             uiState.value.copy(

@@ -50,6 +50,10 @@ internal class MainScreenViewModelTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
+        every { mockStytchClient.events } returns
+            mockk(relaxed = true) {
+                every { logEvent(any(), any()) } just runs
+            }
         viewModel = spyk(MainScreenViewModel(savedStateHandle, mockStytchClient))
     }
 
