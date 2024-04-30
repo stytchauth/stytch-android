@@ -13,6 +13,7 @@ import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.EventTypes
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OTPDetails
 import com.stytch.sdk.ui.data.OTPOptions
@@ -45,7 +46,16 @@ internal class PasswordResetSentScreenViewModel(
         onDialogDismiss()
         scope.launch {
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
-                is StytchResult.Success -> {} // do nothing
+                is StytchResult.Success -> {
+                    stytchClient.events.logEvent(
+                        eventName = EventTypes.EMAIL_SENT,
+                        details =
+                            mapOf(
+                                "email" to parameters.email,
+                                "type" to EventTypes.RESET_PASSWORD,
+                            ),
+                    )
+                }
                 is StytchResult.Error -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
@@ -74,6 +84,14 @@ internal class PasswordResetSentScreenViewModel(
                 )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
+                    stytchClient.events.logEvent(
+                        eventName = EventTypes.EMAIL_SENT,
+                        details =
+                            mapOf(
+                                "email" to parameters.email,
+                                "type" to EventTypes.LOGIN_OR_CREATE_EML,
+                            ),
+                    )
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(
@@ -108,6 +126,14 @@ internal class PasswordResetSentScreenViewModel(
             val parameters = otpOptions.toEmailOtpParameters(emailAddress)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
+                    stytchClient.events.logEvent(
+                        eventName = EventTypes.EMAIL_SENT,
+                        details =
+                            mapOf(
+                                "email" to parameters.email,
+                                "type" to EventTypes.LOGIN_OR_CREATE_OTP,
+                            ),
+                    )
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
                     _eventFlow.emit(
                         EventState.NavigationRequested(

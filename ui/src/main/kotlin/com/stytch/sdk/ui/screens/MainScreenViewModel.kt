@@ -20,6 +20,7 @@ import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.data.EmailState
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.EventTypes
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.OAuthOptions
 import com.stytch.sdk.ui.data.OAuthProvider
@@ -211,6 +212,14 @@ internal class MainScreenViewModel(
             )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
+                stytchClient.events.logEvent(
+                    eventName = EventTypes.EMAIL_SENT,
+                    details =
+                        mapOf(
+                            "email" to parameters.email,
+                            "type" to EventTypes.LOGIN_OR_CREATE_EML,
+                        ),
+                )
                 NavigationRoute.EMLConfirmation(details = EMLDetails(parameters), isReturningUser = true)
             }
             is StytchResult.Error -> {
@@ -230,6 +239,14 @@ internal class MainScreenViewModel(
         val parameters = otpOptions.toEmailOtpParameters(emailAddress)
         return when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
+                stytchClient.events.logEvent(
+                    eventName = EventTypes.EMAIL_SENT,
+                    details =
+                        mapOf(
+                            "email" to parameters.email,
+                            "type" to EventTypes.LOGIN_OR_CREATE_OTP,
+                        ),
+                )
                 NavigationRoute.OTPConfirmation(
                     OTPDetails.EmailOTP(
                         parameters = parameters,
@@ -260,6 +277,14 @@ internal class MainScreenViewModel(
             )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
+                stytchClient.events.logEvent(
+                    eventName = EventTypes.EMAIL_SENT,
+                    details =
+                        mapOf(
+                            "email" to parameters.email,
+                            "type" to EventTypes.RESET_PASSWORD,
+                        ),
+                )
                 NavigationRoute.PasswordResetSent(PasswordResetDetails(parameters, PasswordResetType.NO_PASSWORD_SET))
             }
             is StytchResult.Error -> {

@@ -11,6 +11,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.data.EventTypes
 import com.stytch.sdk.ui.data.NavigationRoute
 import com.stytch.sdk.ui.data.PasswordOptions
 import com.stytch.sdk.ui.data.PasswordResetDetails
@@ -36,6 +37,14 @@ internal class EMLConfirmationScreenViewModel(
         scope.launch {
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
+                    stytchClient.events.logEvent(
+                        eventName = EventTypes.EMAIL_TRY_AGAIN_CLICKED,
+                        details =
+                            mapOf(
+                                "email" to parameters.email,
+                                "type" to EventTypes.LOGIN_OR_CREATE_EML,
+                            ),
+                    )
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showResendDialog = false,
@@ -74,7 +83,15 @@ internal class EMLConfirmationScreenViewModel(
                         publicToken = stytchClient.publicToken,
                     )
                 when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
-                    is StytchResult.Success ->
+                    is StytchResult.Success -> {
+                        stytchClient.events.logEvent(
+                            eventName = EventTypes.EMAIL_SENT,
+                            details =
+                                mapOf(
+                                    "email" to parameters.email,
+                                    "type" to EventTypes.RESET_PASSWORD,
+                                ),
+                        )
                         _eventFlow.emit(
                             EventState.NavigationRequested(
                                 NavigationRoute.PasswordResetSent(
@@ -82,6 +99,7 @@ internal class EMLConfirmationScreenViewModel(
                                 ),
                             ),
                         )
+                    }
                     is StytchResult.Error ->
                         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                             uiState.value.copy(
