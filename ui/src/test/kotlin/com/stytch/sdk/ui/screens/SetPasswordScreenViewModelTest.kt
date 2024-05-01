@@ -61,61 +61,69 @@ internal class SetPasswordScreenViewModelTest {
     @Test
     fun `onEmailAddressChanged updates the state correctly`() {
         viewModel.onEmailAddressChanged("new@email.com")
-        val expected = EmailState(
-            emailAddress = "new@email.com",
-            validEmail = true,
-        )
+        val expected =
+            EmailState(
+                emailAddress = "new@email.com",
+                validEmail = true,
+            )
         assert(viewModel.uiState.value.emailState == expected)
     }
 
     @Test
-    fun `onPasswordChanged delegates to stytchclient, and updates the state as expected`() = runTest(dispatcher) {
-        coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns StytchResult.Error(
-            StytchInternalError(message = "Testing error state")
-        )
-        viewModel.onPasswordChanged("fail strength check", this)
-        assert(viewModel.uiState.value.passwordState.password == "fail strength check")
-        assert(viewModel.uiState.value.passwordState.errorMessage == "Testing error state")
+    fun `onPasswordChanged delegates to stytchclient, and updates the state as expected`() =
+        runTest(dispatcher) {
+            coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns
+                StytchResult.Error(
+                    StytchInternalError(message = "Testing error state"),
+                )
+            viewModel.onPasswordChanged("fail strength check", this)
+            assert(viewModel.uiState.value.passwordState.password == "fail strength check")
+            assert(viewModel.uiState.value.passwordState.errorMessage == "Testing error state")
 
-        val mockFeedback: Feedback = mockk(relaxed = true)
-        val result = StrengthCheckResponse(
-            breachedPassword = false,
-            feedback = mockFeedback,
-            requestId = "",
-            score = 5,
-            statusCode = 200,
-            validPassword = true,
-            strengthPolicy = StrengthPolicy.ZXCVBN,
-        )
-        coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns StytchResult.Success(result)
-        viewModel.onPasswordChanged("pass strength check", this)
-        assert(viewModel.uiState.value.passwordState.password == "pass strength check")
-        assert(viewModel.uiState.value.passwordState.breachedPassword == result.breachedPassword)
-        assert(viewModel.uiState.value.passwordState.feedback == result.feedback)
-        assert(viewModel.uiState.value.passwordState.score == result.score)
-        assert(viewModel.uiState.value.passwordState.validPassword == result.validPassword)
-    }
-
-    @Test
-    fun `onSubmit delegates to stytchclient and navigates on success`() = runTest(dispatcher) {
-        val result = StytchResult.Success(mockk<IAuthData>(relaxed = true))
-        coEvery { mockStytchClient.passwords.resetByEmail(any()) } returns result
-        val eventFlow = async {
-            viewModel.eventFlow.first()
+            val mockFeedback: Feedback = mockk(relaxed = true)
+            val result =
+                StrengthCheckResponse(
+                    breachedPassword = false,
+                    feedback = mockFeedback,
+                    requestId = "",
+                    score = 5,
+                    statusCode = 200,
+                    validPassword = true,
+                    strengthPolicy = StrengthPolicy.ZXCVBN,
+                )
+            coEvery { mockStytchClient.passwords.strengthCheck(any()) } returns StytchResult.Success(result)
+            viewModel.onPasswordChanged("pass strength check", this)
+            assert(viewModel.uiState.value.passwordState.password == "pass strength check")
+            assert(viewModel.uiState.value.passwordState.breachedPassword == result.breachedPassword)
+            assert(viewModel.uiState.value.passwordState.feedback == result.feedback)
+            assert(viewModel.uiState.value.passwordState.score == result.score)
+            assert(viewModel.uiState.value.passwordState.validPassword == result.validPassword)
         }
-        val expectedEvent = EventState.Authenticated(result)
-        viewModel.onSubmit("", mockk(relaxed = true), this)
-        coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmail(any()) }
-        assert(eventFlow.await() == expectedEvent)
-    }
 
     @Test
-    fun `onSubmit delegates to stytchclient and updates state on error`() = runTest(dispatcher) {
-        coEvery { mockStytchClient.passwords.resetByEmail(any()) } returns StytchResult.Error(
-            StytchInternalError(message = "Testing error state")
-        )
-        viewModel.onSubmit("", mockk(relaxed = true), this)
-        coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmail(any()) }
-        assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
-    }
+    fun `onSubmit delegates to stytchclient and navigates on success`() =
+        runTest(dispatcher) {
+            val result = StytchResult.Success(mockk<IAuthData>(relaxed = true))
+            coEvery { mockStytchClient.passwords.resetByEmail(any()) } returns result
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            val expectedEvent = EventState.Authenticated(result)
+            viewModel.onSubmit("", mockk(relaxed = true), this)
+            coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmail(any()) }
+            assert(eventFlow.await() == expectedEvent)
+        }
+
+    @Test
+    fun `onSubmit delegates to stytchclient and updates state on error`() =
+        runTest(dispatcher) {
+            coEvery { mockStytchClient.passwords.resetByEmail(any()) } returns
+                StytchResult.Error(
+                    StytchInternalError(message = "Testing error state"),
+                )
+            viewModel.onSubmit("", mockk(relaxed = true), this)
+            coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmail(any()) }
+            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+        }
 }

@@ -1,6 +1,5 @@
 package com.stytch.sdk.ui.robots
 
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.stytch.sdk.ui.BaseAndroidComposeTest
@@ -11,14 +10,14 @@ import com.stytch.sdk.ui.screens.EMLConfirmationScreen
 internal fun BaseAndroidComposeTest.emlConfirmationScreenRobot(
     emlDetails: EMLDetails,
     isReturningUser: Boolean,
-    func: EMLConfirmationScreenRobot.() -> Unit
+    func: EMLConfirmationScreenRobot.() -> Unit,
 ) = EMLConfirmationScreenRobot(emlDetails, isReturningUser, this).apply(func)
 
 internal class EMLConfirmationScreenRobot(
     emlDetails: EMLDetails,
     isReturningUser: Boolean,
-    baseAndroidComposeTest: BaseAndroidComposeTest
-): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, EMLConfirmationScreen(emlDetails, isReturningUser)) {
+    baseAndroidComposeTest: BaseAndroidComposeTest,
+) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, EMLConfirmationScreen(emlDetails, isReturningUser)) {
     private val pageTitle by lazy {
         composeTestRule.onNodeWithText(getString(R.string.check_your_email), substring = true)
     }

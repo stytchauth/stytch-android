@@ -29,61 +29,66 @@ class PasswordsViewModel : ViewModel() {
 
     fun resetByEmailStart() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value = StytchB2BClient.passwords.resetByEmailStart(
-                Passwords.ResetByEmailStartParameters(
-                    organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
-                    emailAddress = emailState.text,
-                    loginRedirectUrl = "app://b2bexampleapp.com/",
-                    resetPasswordRedirectUrl = "app://b2bexampleapp.com/"
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.passwords.resetByEmailStart(
+                    Passwords.ResetByEmailStartParameters(
+                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        emailAddress = emailState.text,
+                        loginRedirectUrl = "app://b2bexampleapp.com/",
+                        resetPasswordRedirectUrl = "app://b2bexampleapp.com/",
+                    ),
+                ).toFriendlyDisplay()
         }
     }
 
     fun resetByExisting() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value = StytchB2BClient.passwords.resetByExisting(
-                Passwords.ResetByExistingPasswordParameters(
-                    organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
-                    emailAddress = emailState.text,
-                    existingPassword = existingPasswordState.text,
-                    newPassword = newPasswordState.text,
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.passwords.resetByExisting(
+                    Passwords.ResetByExistingPasswordParameters(
+                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        emailAddress = emailState.text,
+                        existingPassword = existingPasswordState.text,
+                        newPassword = newPasswordState.text,
+                    ),
+                ).toFriendlyDisplay()
         }
     }
 
     fun resetBySession() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value = StytchB2BClient.passwords.resetBySession(
-                Passwords.ResetBySessionParameters(
-                    organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
-                    password = newPasswordState.text
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.passwords.resetBySession(
+                    Passwords.ResetBySessionParameters(
+                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        password = newPasswordState.text,
+                    ),
+                ).toFriendlyDisplay()
         }
     }
 
     fun authenticate() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value = StytchB2BClient.passwords.authenticate(
-                Passwords.AuthParameters(
-                    organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
-                    emailAddress = emailState.text,
-                    password = existingPasswordState.text,
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.passwords.authenticate(
+                    Passwords.AuthParameters(
+                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        emailAddress = emailState.text,
+                        password = existingPasswordState.text,
+                    ),
+                ).toFriendlyDisplay()
         }
     }
 
     fun strengthCheck() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value = StytchB2BClient.passwords.strengthCheck(
-                Passwords.StrengthCheckParameters(
-                    email = emailState.text,
-                    password = newPasswordState.text
-                )
-            ).toFriendlyDisplay()
+            _currentResponse.value =
+                StytchB2BClient.passwords.strengthCheck(
+                    Passwords.StrengthCheckParameters(
+                        email = emailState.text,
+                        password = newPasswordState.text,
+                    ),
+                ).toFriendlyDisplay()
         }
     }
 

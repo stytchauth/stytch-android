@@ -11,7 +11,6 @@ import com.stytch.sdk.consumer.WebAuthnUpdateResponse
  * Passkeys.
  */
 public interface Passkeys {
-
     /**
      * Data class used for wrapping parameters used with Passkeys registration
      * @property activity an activity context for launching the native Passkeys UI
@@ -63,7 +62,7 @@ public interface Passkeys {
      */
     public fun register(
         parameters: RegisterParameters,
-        callback: (response: WebAuthnRegisterResponse) -> Unit
+        callback: (response: WebAuthnRegisterResponse) -> Unit,
     )
 
     /**

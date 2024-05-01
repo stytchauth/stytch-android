@@ -23,12 +23,13 @@ internal fun StytchButton(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(theme.buttonBackgroundColor),
-            disabledContainerColor = Color(theme.disabledButtonBackgroundColor),
-            contentColor = Color(theme.buttonTextColor),
-            disabledContentColor = Color(theme.disabledButtonTextColor),
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = Color(theme.buttonBackgroundColor),
+                disabledContainerColor = Color(theme.disabledButtonBackgroundColor),
+                contentColor = Color(theme.buttonTextColor),
+                disabledContentColor = Color(theme.disabledButtonTextColor),
+            ),
     ) {
         Text(
             text = text,

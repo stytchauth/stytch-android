@@ -27,28 +27,26 @@ class DiscoveryViewModel : ViewModel() {
     fun organizations() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.discovery.listOrganizations(
-                    Discovery.DiscoverOrganizationsParameters()
-                ).toFriendlyDisplay()
+                StytchB2BClient.discovery.listOrganizations().toFriendlyDisplay()
         }
     }
 
-    fun createOrganization(intermediateSessionToken: String) {
+    fun createOrganization() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
                 StytchB2BClient.discovery.createOrganization(
                     Discovery.CreateOrganizationParameters(
-                        intermediateSessionToken = intermediateSessionToken,
                         ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
                         emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
                         emailInvites = EmailInvites.ALL_ALLOWED,
                         emailAllowedDomains = listOf("stytch.com"),
                         authMethods = AuthMethods.ALL_ALLOWED,
-                        allowedAuthMethods = listOf(AllowedAuthMethods.MAGIC_LINK, AllowedAuthMethods.PASSWORD)
-                    )
+                        allowedAuthMethods = listOf(AllowedAuthMethods.MAGIC_LINK, AllowedAuthMethods.PASSWORD),
+                    ),
                 ).toFriendlyDisplay()
         }
     }
+
     private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
         return launch {
             _loadingState.value = true

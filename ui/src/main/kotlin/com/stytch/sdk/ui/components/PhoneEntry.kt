@@ -58,9 +58,12 @@ internal fun PhoneEntry(
     var expanded by remember { mutableStateOf(false) }
     val semanticsPhoneInput = stringResource(id = R.string.semantics_phone_input)
     Column {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+        ) {
             ExposedDropdownMenuBox(
                 modifier = Modifier.fillMaxWidth(0.33f),
                 expanded = expanded,
@@ -90,19 +93,22 @@ internal fun PhoneEntry(
                             text = {
                                 Text(
                                     text = "+$selectionOption",
-                                    style = type.buttonLabel.copy(
-                                        textAlign = TextAlign.Start,
-                                        color = Color(theme.inputTextColor),
-                                    ),
+                                    style =
+                                        type.buttonLabel.copy(
+                                            textAlign = TextAlign.Start,
+                                            color = Color(theme.inputTextColor),
+                                        ),
                                 )
                             },
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color(theme.primaryTextColor),
-                                trailingIconColor = Color(theme.primaryTextColor),
-                            ),
-                            modifier = Modifier
-                                .background(color = Color(theme.disabledButtonBackgroundColor))
-                                .fillMaxSize(),
+                            colors =
+                                MenuDefaults.itemColors(
+                                    textColor = Color(theme.primaryTextColor),
+                                    trailingIconColor = Color(theme.primaryTextColor),
+                                ),
+                            modifier =
+                                Modifier
+                                    .background(color = Color(theme.disabledButtonBackgroundColor))
+                                    .fillMaxSize(),
                         )
                     }
                 }
@@ -117,10 +123,11 @@ internal fun PhoneEntry(
                 visualTransformation = PhoneNumberVisualTransformation(region),
                 isError = isError,
                 placeholder = "(123) 456-7890",
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Phone,
-                    imeAction = ImeAction.Done,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done,
+                    ),
             )
         }
         if (statusText != null) {

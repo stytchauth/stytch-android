@@ -1,5 +1,5 @@
-@file:Suppress("MaxLineLength")
-/* ktlint-disable max-line-length */
+@file:Suppress("MaxLineLength", "ktlint:standard:max-line-length")
+
 package com.stytch.sdk.common.errors
 
 import org.junit.Test
@@ -7,12 +7,13 @@ import org.junit.Test
 internal class StytchErrorTests {
     @Test
     fun `StytchAPIError has expected properties`() {
-        val error = StytchAPIError(
-            requestId = "request-id-1234",
-            errorType = "error_name",
-            message = "error_description",
-            url = "https://stytch.com"
-        )
+        val error =
+            StytchAPIError(
+                requestId = "request-id-1234",
+                errorType = "error_name",
+                message = "error_description",
+                url = "https://stytch.com",
+            )
         assert(error.requestId == "request-id-1234")
         assert(error.errorType == "error_name")
         assert(error.message == "error_description")
@@ -28,10 +29,11 @@ internal class StytchErrorTests {
     @Test
     fun `StytchAPIUnreachableError has expected properties`() {
         val underlyingException = RuntimeException("testing")
-        val error = StytchAPIUnreachableError(
-            message = "a schema error occurred",
-            exception = underlyingException,
-        )
+        val error =
+            StytchAPIUnreachableError(
+                message = "a schema error occurred",
+                exception = underlyingException,
+            )
         assert(error.message == "a schema error occurred")
         assert(error.exception == underlyingException)
     }
@@ -39,7 +41,9 @@ internal class StytchErrorTests {
     @Test
     fun `StytchSDKNotConfiguredError has expected properties`() {
         val error = StytchSDKNotConfiguredError("Test")
-        assert(error.message == "Test not configured. You must call `Test.configure(...)` before using any functionality of the SDK.")
+        assert(
+            error.message == "Test not configured. You must call `Test.configure(...)` before using any functionality of the SDK.",
+        )
     }
 
     @Test
@@ -57,7 +61,9 @@ internal class StytchErrorTests {
     fun `StytchMissingPKCEError has expected properties`() {
         val underlyingException = RuntimeException("testing")
         val error = StytchMissingPKCEError(underlyingException)
-        assert(error.message == "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.")
+        assert(
+            error.message == "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.",
+        )
         assert(error.exception == underlyingException)
     }
 
@@ -71,32 +77,36 @@ internal class StytchErrorTests {
 
     @Test
     fun `StytchDeeplinkUnkownTokenTypeError has expected properties`() {
-        val error = StytchDeeplinkUnkownTokenTypeError
+        val error = StytchDeeplinkUnkownTokenTypeError()
         assert(error.message == "The deeplink received has an unknown token type.")
     }
 
     @Test
     fun `StytchDeeplinkMissingTokenError has expected properties`() {
-        val error = StytchDeeplinkMissingTokenError
+        val error = StytchDeeplinkMissingTokenError()
         assert(error.message == "The deeplink received has a missing token value.")
     }
 
     @Test
     fun `StytchNoCurrentSessionError has expected properties`() {
-        val error = StytchNoCurrentSessionError
+        val error = StytchNoCurrentSessionError()
         assert(error.message == "There is no session currently available.")
     }
 
     @Test
     fun `StytchNoBiometricsRegistrationError has expected properties`() {
-        val error = StytchNoBiometricsRegistrationError
-        assert(error.message == "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.")
+        val error = StytchNoBiometricsRegistrationError()
+        assert(
+            error.message == "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
+        )
     }
 
     @Test
     fun `StytchKeystoreUnavailableError has expected properties`() {
-        val error = StytchKeystoreUnavailableError
-        assert(error.message == "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.")
+        val error = StytchKeystoreUnavailableError()
+        assert(
+            error.message == "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
+        )
     }
 
     @Test
@@ -117,19 +127,19 @@ internal class StytchErrorTests {
 
     @Test
     fun `StytchMissingAuthorizationCredentialIdTokenError has expected properties`() {
-        val error = StytchMissingAuthorizationCredentialIdTokenError
+        val error = StytchMissingAuthorizationCredentialIdTokenError()
         assert(error.message == "The authorization credential is missing an ID token.")
     }
 
     @Test
     fun `StytchInvalidAuthorizationCredentialError has expected properties`() {
-        val error = StytchInvalidAuthorizationCredentialError
+        val error = StytchInvalidAuthorizationCredentialError()
         assert(error.message == "The authorization credential is invalid.")
     }
 
     @Test
     fun `StytchPasskeysNotSupportedError has expected properties`() {
-        val error = StytchPasskeysNotSupportedError
+        val error = StytchPasskeysNotSupportedError()
         assert(error.message == "Passkeys are not supported on this device.")
     }
 

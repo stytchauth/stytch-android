@@ -12,10 +12,11 @@ internal data class PhoneNumberState(
     val error: String? = null,
 ) : Parcelable {
     fun toE164(): String {
-        val phone = Phonenumber.PhoneNumber().apply {
-            countryCode = this@PhoneNumberState.countryCode.toInt()
-            nationalNumber = (this@PhoneNumberState.phoneNumber).toLong()
-        }
+        val phone =
+            Phonenumber.PhoneNumber().apply {
+                countryCode = this@PhoneNumberState.countryCode.toInt()
+                nationalNumber = (this@PhoneNumberState.phoneNumber).toLong()
+            }
         return PhoneNumberUtil.getInstance().format(phone, PhoneNumberUtil.PhoneNumberFormat.E164)
     }
 }

@@ -10,7 +10,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.22.0'
+  PUBLISH_VERSION = '0.23.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -89,14 +89,22 @@ tasks.named("dokkaHtmlPartial").configure {
             includes.from([
                 "module.md",
                 "src/main/java/com/stytch/sdk/b2b/README.md",
+                "src/main/java/com/stytch/sdk/b2b/discovery/README.md",
                 "src/main/java/com/stytch/sdk/b2b/magicLinks/README.md",
                 "src/main/java/com/stytch/sdk/b2b/member/README.md",
+                "src/main/java/com/stytch/sdk/b2b/oauth/README.md",
                 "src/main/java/com/stytch/sdk/b2b/organization/README.md",
+                "src/main/java/com/stytch/sdk/b2b/otp/README.md",
+                "src/main/java/com/stytch/sdk/b2b/passwords/README.md",
+                "src/main/java/com/stytch/sdk/b2b/recoveryCodes/README.md",
                 "src/main/java/com/stytch/sdk/b2b/sessions/README.md",
+                "src/main/java/com/stytch/sdk/b2b/sso/README.md",
+                "src/main/java/com/stytch/sdk/b2b/totp/README.md",
                 "src/main/java/com/stytch/sdk/common/README.md",
                 "src/main/java/com/stytch/sdk/common/sso/README.md",
                 "src/main/java/com/stytch/sdk/consumer/README.md",
                 "src/main/java/com/stytch/sdk/consumer/biometrics/README.md",
+                "src/main/java/com/stytch/sdk/consumer/crypto/README.md",
                 "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
                 "src/main/java/com/stytch/sdk/consumer/oauth/README.md",
                 "src/main/java/com/stytch/sdk/consumer/otp/README.md",

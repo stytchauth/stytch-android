@@ -1,8 +1,9 @@
 package com.stytch.sdk.b2b.passwords
 
-import com.stytch.sdk.b2b.AuthResponse
 import com.stytch.sdk.b2b.EmailResetResponse
+import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
+import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
@@ -25,20 +26,24 @@ internal class PasswordsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.Passwords,
 ) : Passwords {
-    override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
+    override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse {
         return withContext(dispatchers.io) {
             api.authenticate(
                 organizationId = parameters.organizationId,
                 emailAddress = parameters.emailAddress,
                 password = parameters.password,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
         }
     }
 
-    override fun authenticate(parameters: Passwords.AuthParameters, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(
+        parameters: Passwords.AuthParameters,
+        callback: (PasswordsAuthenticateResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
             callback(result)
@@ -56,15 +61,16 @@ internal class PasswordsImpl internal constructor(
                 result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 return@withContext
             }
-            result = api.resetByEmailStart(
-                organizationId = parameters.organizationId,
-                emailAddress = parameters.emailAddress,
-                loginRedirectUrl = parameters.loginRedirectUrl,
-                resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
-                resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
-                resetPasswordTemplateId = parameters.resetPasswordTemplateId,
-                codeChallenge = challengeCode,
-            )
+            result =
+                api.resetByEmailStart(
+                    organizationId = parameters.organizationId,
+                    emailAddress = parameters.emailAddress,
+                    loginRedirectUrl = parameters.loginRedirectUrl,
+                    resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
+                    resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
+                    resetPasswordTemplateId = parameters.resetPasswordTemplateId,
+                    codeChallenge = challengeCode,
+                )
         }
         return result
     }
@@ -89,33 +95,40 @@ internal class PasswordsImpl internal constructor(
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
             }
-            result = api.resetByEmail(
-                passwordResetToken = parameters.token,
-                password = parameters.password,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                codeVerifier = codeVerifier,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.resetByEmail(
+                    passwordResetToken = parameters.token,
+                    password = parameters.password,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
-    override fun resetByEmail(parameters: Passwords.ResetByEmailParameters, callback: (EmailResetResponse) -> Unit) {
+    override fun resetByEmail(
+        parameters: Passwords.ResetByEmailParameters,
+        callback: (EmailResetResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetByEmail(parameters)
             callback(result)
         }
     }
 
-    override suspend fun resetByExisting(parameters: Passwords.ResetByExistingPasswordParameters): AuthResponse {
+    override suspend fun resetByExisting(
+        parameters: Passwords.ResetByExistingPasswordParameters,
+    ): PasswordResetByExistingPasswordResponse {
         return withContext(dispatchers.io) {
             api.resetByExisting(
                 organizationId = parameters.organizationId,
                 emailAddress = parameters.emailAddress,
                 existingPassword = parameters.existingPassword,
                 newPassword = parameters.newPassword,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
             ).apply {
                 launchSessionUpdater(dispatchers, sessionStorage)
             }
@@ -124,7 +137,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByExisting(
         parameters: Passwords.ResetByExistingPasswordParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordResetByExistingPasswordResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetByExisting(parameters)
@@ -143,7 +156,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetBySession(
         parameters: Passwords.ResetBySessionParameters,
-        callback: (SessionResetResponse) -> Unit
+        callback: (SessionResetResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetBySession(parameters)
@@ -155,7 +168,7 @@ internal class PasswordsImpl internal constructor(
         return withContext(dispatchers.io) {
             api.strengthCheck(
                 email = parameters.email,
-                password = parameters.password
+                password = parameters.password,
             )
         }
     }

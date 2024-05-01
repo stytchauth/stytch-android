@@ -30,8 +30,40 @@ public enum class AuthMethods {
 }
 
 @JsonClass(generateAdapter = false)
+public enum class MfaMethods {
+    ALL_ALLOWED,
+    RESTRICTED,
+}
+
+@JsonClass(generateAdapter = false)
+public enum class MfaPolicy {
+    REQUIRED_FOR_ALL,
+    OPTIONAL,
+}
+
+@JsonClass(generateAdapter = false)
 public enum class AllowedAuthMethods(override val jsonName: String) : IEnumValue {
     SSO("sso"),
     MAGIC_LINK("magic_link"),
     PASSWORD("password"),
+    GOOGLE_OAUTH("google_oauth"),
+    MICROSOFT_OAUTH("microsoft_oauth"),
+}
+
+@JsonClass(generateAdapter = false)
+public enum class MfaMethod(override val jsonName: String) : IEnumValue {
+    SMS("sms_otp"),
+    TOTP("totp"),
+}
+
+@JsonClass(generateAdapter = false)
+public enum class SearchOperator {
+    AND,
+    OR,
+}
+
+@JsonClass(generateAdapter = false)
+public enum class SetMFAEnrollment(override val jsonName: String) : IEnumValue {
+    ENROLL("enroll"),
+    UNENROLL("unenroll"),
 }

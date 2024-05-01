@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -12,34 +13,29 @@ import kotlinx.coroutines.withContext
 internal class DiscoveryImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
+    private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Discovery,
 ) : Discovery {
-    override suspend fun listOrganizations(
-        parameters: Discovery.DiscoverOrganizationsParameters
-    ): DiscoverOrganizationsResponse {
+    override suspend fun listOrganizations(): DiscoverOrganizationsResponse {
         return withContext(dispatchers.io) {
-            api.discoverOrganizations(parameters.intermediateSessionToken)
+            api.discoverOrganizations(sessionStorage.intermediateSessionToken)
         }
     }
 
-    override fun listOrganizations(
-        parameters: Discovery.DiscoverOrganizationsParameters,
-        callback: (DiscoverOrganizationsResponse) -> Unit,
-    ) {
+    override fun listOrganizations(callback: (DiscoverOrganizationsResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
-            val result = listOrganizations(parameters)
-            callback(result)
+            callback(listOrganizations())
         }
     }
 
     override suspend fun exchangeIntermediateSession(
-        parameters: Discovery.SessionExchangeParameters
+        parameters: Discovery.SessionExchangeParameters,
     ): IntermediateSessionExchangeResponse {
         return withContext(dispatchers.io) {
             api.exchangeSession(
-                intermediateSessionToken = parameters.intermediateSessionToken,
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 organizationId = parameters.organizationId,
-                sessionDurationMinutes = parameters.sessionDurationMinutes
+                sessionDurationMinutes = parameters.sessionDurationMinutes,
             )
         }
     }
@@ -55,11 +51,11 @@ internal class DiscoveryImpl(
     }
 
     override suspend fun createOrganization(
-        parameters: Discovery.CreateOrganizationParameters
+        parameters: Discovery.CreateOrganizationParameters,
     ): OrganizationCreateResponse {
         return withContext(dispatchers.io) {
             api.createOrganization(
-                intermediateSessionToken = parameters.intermediateSessionToken,
+                intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 organizationName = parameters.organizationName,
                 organizationSlug = parameters.organizationSlug,
                 organizationLogoUrl = parameters.organizationLogoUrl,
@@ -69,7 +65,7 @@ internal class DiscoveryImpl(
                 emailInvites = parameters.emailInvites,
                 emailJitProvisioning = parameters.emailJitProvisioning,
                 authMethods = parameters.authMethods,
-                allowedAuthMethods = parameters.allowedAuthMethods
+                allowedAuthMethods = parameters.allowedAuthMethods,
             )
         }
     }

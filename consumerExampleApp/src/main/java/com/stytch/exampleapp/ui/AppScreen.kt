@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -39,13 +40,15 @@ import com.stytch.exampleapp.OAuthViewModel
 import com.stytch.exampleapp.R
 import com.stytch.sdk.consumer.StytchClient
 
-val items = listOf(
-    Screen.Main,
-    Screen.Passwords,
-    Screen.Biometrics,
-    Screen.OAuth,
-    Screen.Passkeys
-)
+val items =
+    listOf(
+        Screen.Main,
+        Screen.Passwords,
+        Screen.Biometrics,
+        Screen.OAuth,
+        Screen.Passkeys,
+        Screen.TOTP,
+    )
 
 @Composable
 fun AppScreen(
@@ -55,9 +58,10 @@ fun AppScreen(
     val navController = rememberNavController()
     val stytchIsInitialized = StytchClient.isInitialized.collectAsState()
     Scaffold(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
         contentColor = MaterialTheme.colors.onBackground,
         topBar = { Toolbar(toolbarText = stringResource(id = R.string.app_name)) },
         bottomBar = {
@@ -83,7 +87,7 @@ fun AppScreen(
                                 // Restore state when reselecting a previously selected item
                                 restoreState = true
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -96,11 +100,12 @@ fun AppScreen(
                     composable(Screen.Biometrics.route) { BiometricsScreen(navController = navController) }
                     composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
                     composable(Screen.Passkeys.route) { PasskeysScreen(navController = navController) }
+                    composable(Screen.TOTP.route) { TOTPScreen() }
                 }
             } else {
                 // maybe show a loading state while stytch sets up
             }
-        }
+        },
     )
 }
 
@@ -111,20 +116,31 @@ fun Toolbar(toolbarText: String) {
             Text(
                 text = toolbarText,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center),
             )
         },
         backgroundColor = MaterialTheme.colors.surface,
-        elevation = 2.dp
+        elevation = 2.dp,
     )
 }
 
-sealed class Screen(val route: String, @StringRes val resourceId: Int, val iconVector: ImageVector) {
+sealed class Screen(
+    val route: String,
+    @StringRes val resourceId: Int,
+    val iconVector: ImageVector,
+) {
     object Main : Screen("main", R.string.home, Icons.Filled.Home)
+
     object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
+
     object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
+
     object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+
     object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
+
+    object TOTP : Screen("totp", R.string.totps, Icons.Filled.Build)
 }

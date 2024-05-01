@@ -35,7 +35,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,6 +47,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 internal class StytchClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -73,13 +73,15 @@ internal class StytchClientTest {
         )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        val mockApplication: Application = mockk {
-            every { registerActivityLifecycleCallbacks(any()) } just runs
-            every { packageName } returns "Stytch"
-        }
-        mContextMock = mockk(relaxed = true) {
-            every { applicationContext } returns mockApplication
-        }
+        val mockApplication: Application =
+            mockk {
+                every { registerActivityLifecycleCallbacks(any()) } just runs
+                every { packageName } returns "Stytch"
+            }
+        mContextMock =
+            mockk(relaxed = true) {
+                every { applicationContext } returns mockApplication
+            }
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
@@ -159,9 +161,10 @@ internal class StytchClientTest {
     @Test
     fun `should validate persisted sessions if applicable when calling StytchClient configure`() {
         runBlocking {
-            val mockResponse: StytchResult<AuthData> = mockk {
-                every { launchSessionUpdater(any(), any()) } just runs
-            }
+            val mockResponse: StytchResult<AuthData> =
+                mockk {
+                    every { launchSessionUpdater(any(), any()) } just runs
+                }
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
             every { StorageHelper.loadValue(any()) } returns null
@@ -179,9 +182,10 @@ internal class StytchClientTest {
     @Test
     fun `should report the initialization state after configuration and initialization is complete`() {
         runTest {
-            val mockResponse: StytchResult<AuthData> = mockk {
-                every { launchSessionUpdater(any(), any()) } just runs
-            }
+            val mockResponse: StytchResult<AuthData> =
+                mockk {
+                    every { launchSessionUpdater(any(), any()) } just runs
+                }
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
             StytchClient.configure(mContextMock, "", callback)
@@ -323,9 +327,10 @@ internal class StytchClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns null
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns null
+                }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkMissingTokenError)
@@ -338,9 +343,10 @@ internal class StytchClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "something unexpected"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "something unexpected"
+                }
             val response = StytchClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
@@ -353,9 +359,10 @@ internal class StytchClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "MAGIC_LINKS"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "MAGIC_LINKS"
+                }
             val mockAuthResponse = mockk<AuthResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             val response = StytchClient.handle(mockUri, 30U)
@@ -370,9 +377,10 @@ internal class StytchClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "OAUTH"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "OAUTH"
+                }
             val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
             coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
             val response = StytchClient.handle(mockUri, 30U)
@@ -384,9 +392,10 @@ internal class StytchClientTest {
     @Test
     fun `handle with callback returns value in callback method when configured`() {
         every { StytchApi.isInitialized } returns true
-        val mockUri = mockk<Uri> {
-            every { getQueryParameter(any()) } returns null
-        }
+        val mockUri =
+            mockk<Uri> {
+                every { getQueryParameter(any()) } returns null
+            }
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
         StytchClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }

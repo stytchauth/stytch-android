@@ -17,4 +17,6 @@ If you have connected your deeplink handler with `StytchClient`, the resulting m
 
 Once you have a password reset token, and have collected the user's new desired password, you can call the `StytchClient.passwords.resetByEmail()` method to finish resetting their password.
 
+Call the `StytchClient.passwords.resetByExistingPassword()` method to reset a user's password using their existing email address and password combination.
+
 Call the `StytchClient.passwords.strengthCheck()` method to check whether or not the user’s provided password is valid, and to provide feedback to the user on how to increase the strength of their password.

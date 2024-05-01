@@ -22,14 +22,12 @@ import com.stytch.exampleapp.R
 import com.stytch.exampleapp.theme.Red300
 
 @Composable
-fun MainScreen(
-    viewModel: HomeViewModel,
-) {
+fun MainScreen(viewModel: HomeViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -42,7 +40,7 @@ fun MainScreen(
             onValueChange = {
                 viewModel.emailTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         if (viewModel.showEmailError) {
             Text(
@@ -62,7 +60,7 @@ fun MainScreen(
             onValueChange = {
                 viewModel.phoneNumberTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         if (viewModel.showPhoneError) {
             Text(
@@ -82,7 +80,7 @@ fun MainScreen(
             onValueChange = {
                 viewModel.otpTokenTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         if (viewModel.showOTPError) {
             Text(
@@ -94,32 +92,32 @@ fun MainScreen(
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_email_magic_link_flow),
-            onClick = { viewModel.loginOrCreate() }
+            onClick = { viewModel.loginOrCreate() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_sms_flow),
-            onClick = { viewModel.loginOrCreateSMS() }
+            onClick = { viewModel.loginOrCreateSMS() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_whatsapp_flow),
-            onClick = { viewModel.loginOrCreateWhatsApp() }
+            onClick = { viewModel.loginOrCreateWhatsApp() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_email_flow),
-            onClick = { viewModel.loginOrCreateEmail() }
+            onClick = { viewModel.loginOrCreateEmail() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.test_otp_authenticate_flow),
-            onClick = { viewModel.authenticateOTP() }
+            onClick = { viewModel.authenticateOTP() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.revoke_session),
-            onClick = { viewModel.revokeSession() }
+            onClick = { viewModel.revokeSession() },
         )
         if (loading.value) {
             CircularProgressIndicator()

@@ -10,23 +10,26 @@ import com.stytch.sdk.ui.screens.SetPasswordScreen
 
 internal sealed class NavigationRoute {
     abstract val screen: AndroidScreen
+
     data class OTPConfirmation(
         val details: OTPDetails,
         val isReturningUser: Boolean,
         val emailAddress: String? = null,
     ) : NavigationRoute() {
-        override val screen: OTPConfirmationScreen = OTPConfirmationScreen(
-            resendParameters = details,
-            isReturningUser = isReturningUser,
-            emailAddress = emailAddress,
-        )
+        override val screen: OTPConfirmationScreen =
+            OTPConfirmationScreen(
+                resendParameters = details,
+                isReturningUser = isReturningUser,
+                emailAddress = emailAddress,
+            )
     }
 
     data class EMLConfirmation(val details: EMLDetails, val isReturningUser: Boolean) : NavigationRoute() {
-        override val screen: EMLConfirmationScreen = EMLConfirmationScreen(
-            details = details,
-            isReturningUser = isReturningUser,
-        )
+        override val screen: EMLConfirmationScreen =
+            EMLConfirmationScreen(
+                details = details,
+                isReturningUser = isReturningUser,
+            )
     }
 
     object NewUser : NavigationRoute() {

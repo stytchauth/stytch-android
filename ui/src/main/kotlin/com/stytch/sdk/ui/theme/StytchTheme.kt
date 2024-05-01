@@ -11,7 +11,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.data.StytchProductConfig
 import com.stytch.sdk.ui.data.StytchTheme
 import com.stytch.sdk.ui.data.StytchUIConfig
@@ -22,10 +21,11 @@ internal fun StytchTheme(
     config: StytchUIConfig,
     content: @Composable () -> Unit,
 ) {
-    val stytchTheme = when {
-        darkTheme -> config.styles.darkTheme
-        else -> config.styles.lightTheme
-    }
+    val stytchTheme =
+        when {
+            darkTheme -> config.styles.darkTheme
+            else -> config.styles.lightTheme
+        }
     val view = LocalView.current
     val rememberedStytchTheme = remember { stytchTheme }
     val rememberedStytchTypography = remember { StytchTypography() }
@@ -50,18 +50,22 @@ internal fun StytchTheme(
     }
 }
 
-internal val LocalStytchTheme: ProvidableCompositionLocal<StytchTheme> = staticCompositionLocalOf {
-    StytchTheme.defaultLightTheme()
-}
+internal val LocalStytchTheme: ProvidableCompositionLocal<StytchTheme> =
+    staticCompositionLocalOf {
+        StytchTheme.defaultLightTheme()
+    }
 
-internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography> = staticCompositionLocalOf {
-    StytchTypography()
-}
+internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography> =
+    staticCompositionLocalOf {
+        StytchTypography()
+    }
 
-internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchProductConfig> = staticCompositionLocalOf {
-    StytchProductConfig()
-}
+internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchProductConfig> =
+    staticCompositionLocalOf {
+        StytchProductConfig()
+    }
 
-internal val LocalStytchBootstrapData: ProvidableCompositionLocal<BootstrapData> = staticCompositionLocalOf {
-    BootstrapData()
-}
+internal val LocalStytchBootstrapData: ProvidableCompositionLocal<BootstrapData> =
+    staticCompositionLocalOf {
+        BootstrapData()
+    }

@@ -4,12 +4,12 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
-import kotlin.math.pow
-import kotlin.random.Random
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.pow
+import kotlin.random.Random
 
 private const val SECOND = 1000L
 private const val MINUTE = 60L * SECOND
@@ -31,43 +31,51 @@ internal object SessionAutoUpdater {
     fun startSessionUpdateJob(
         dispatchers: StytchDispatchers,
         updateSession: suspend () -> StytchResult<CommonAuthenticationData>,
-        saveSession: suspend (CommonAuthenticationData) -> Unit
+        saveSession: suspend (CommonAuthenticationData) -> Unit,
     ) {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
-        sessionUpdateJob = GlobalScope.launch(dispatchers.io) {
-            while (true) {
-                // wait before another update request
-                delay(sessionUpdateDelay)
-                // request session update from backend
-                val sessionResult = updateSession()
-                // save session data in SessionStorage if call successful
-                if (sessionResult is StytchResult.Success) {
-                    // reset exponential backoff delay
-                    resetDelay()
-                    // save session
-                    saveSession(sessionResult.value)
-                } else {
-                    // set backoff start if not set
-                    if (backoffStartMillis <= 0) {
-                        backoffStartMillis = System.currentTimeMillis()
-                    }
-                    // if delay reached max delay stop exponential backoff
-                    if (System.currentTimeMillis() - backoffStartMillis > MAXIMUM_DELAY - DEFAULT_DELAY) {
+        sessionUpdateJob =
+            GlobalScope.launch(dispatchers.io) {
+                while (true) {
+                    // wait before another update request
+                    delay(sessionUpdateDelay)
+                    // request session update from backend
+                    val sessionResult = updateSession()
+                    // save session data in SessionStorage if call successful
+                    if (sessionResult is StytchResult.Success) {
+                        // reset exponential backoff delay
                         resetDelay()
-                        // stop auto updater/ exit while loop
-                        break
+                        // save session
+                        saveSession(sessionResult.value)
                     } else {
-                        // set exponential delay
-                        sessionUpdateDelay = minOf(
-                            (2.0.pow(n) + Random.nextLong(MINIMUM_RANDOM_MILLIS, MAXIMUM_RANDOM_MILLIS)).toLong(),
-                            MAXIMUM_BACKOFF_DELAY
-                        )
-                        n++
+                        // set backoff start if not set
+                        if (backoffStartMillis <= 0) {
+                            backoffStartMillis = System.currentTimeMillis()
+                        }
+                        // if delay reached max delay stop exponential backoff
+                        if (System.currentTimeMillis() - backoffStartMillis > MAXIMUM_DELAY - DEFAULT_DELAY) {
+                            resetDelay()
+                            // stop auto updater/ exit while loop
+                            break
+                        } else {
+                            // set exponential delay
+                            sessionUpdateDelay =
+                                minOf(
+                                    (
+                                        2.0.pow(n) +
+                                            Random.nextLong(
+                                                MINIMUM_RANDOM_MILLIS,
+                                                MAXIMUM_RANDOM_MILLIS,
+                                            )
+                                    ).toLong(),
+                                    MAXIMUM_BACKOFF_DELAY,
+                                )
+                            n++
+                        }
                     }
                 }
             }
-        }
     }
 
     private fun resetDelay() {

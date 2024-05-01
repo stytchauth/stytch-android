@@ -17,35 +17,32 @@ import com.stytch.exampleapp.b2b.DiscoveryViewModel
 import com.stytch.exampleapp.b2b.R
 
 @Composable
-fun DiscoveryScreen(
-    viewModel: DiscoveryViewModel,
-    intermediateSessionToken: String = ""
-) {
+fun DiscoveryScreen(viewModel: DiscoveryViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.discovery_discover),
-                onClick = viewModel::organizations
+                onClick = viewModel::organizations,
             )
 
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.create_organization),
-                onClick = { viewModel.createOrganization(intermediateSessionToken) }
+                onClick = { viewModel.createOrganization() },
             )
         }
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (loading.value) {
                 CircularProgressIndicator()

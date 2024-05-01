@@ -31,39 +31,23 @@ import com.stytch.sdk.common.Constants
  */
 public interface Discovery {
     /**
-     * Data class used for wrapping parameters used with Discovering organizations
-     * @property intermediateSessionToken is the unique sequence of characters used to authenticate a member. If this
-     * is not provided the existing session token will be used.
-     */
-    public data class DiscoverOrganizationsParameters(
-        val intermediateSessionToken: String? = null
-    )
-
-    /**
      * Discover a member's available organizations
-     * @param parameters required for retrieving a member's available organizations
      * @return [DiscoverOrganizationsResponse]
      */
-    public suspend fun listOrganizations(parameters: DiscoverOrganizationsParameters): DiscoverOrganizationsResponse
+    public suspend fun listOrganizations(): DiscoverOrganizationsResponse
 
     /**
      * Discover a member's available organizations
-     * @param parameters required for retrieving a member's available organizations
      * @param callback a callback that receives a [DiscoverOrganizationsResponse]
      */
-    public fun listOrganizations(
-        parameters: DiscoverOrganizationsParameters,
-        callback: (DiscoverOrganizationsResponse) -> Unit
-    )
+    public fun listOrganizations(callback: (DiscoverOrganizationsResponse) -> Unit)
 
     /**
      * Data class used for wrapping parameters used with exchanging sessions between organizations.
-     * @property intermediateSessionToken is the unique sequence of characters used to authenticate a member
      * @property organizationId is the organization ID of the desired organization
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
     public data class SessionExchangeParameters(
-        val intermediateSessionToken: String,
         val organizationId: String,
         val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
     )
@@ -76,7 +60,7 @@ public interface Discovery {
      * @return [IntermediateSessionExchangeResponse]
      */
     public suspend fun exchangeIntermediateSession(
-        parameters: SessionExchangeParameters
+        parameters: SessionExchangeParameters,
     ): IntermediateSessionExchangeResponse
 
     /**
@@ -88,12 +72,11 @@ public interface Discovery {
      */
     public fun exchangeIntermediateSession(
         parameters: SessionExchangeParameters,
-        callback: (IntermediateSessionExchangeResponse) -> Unit
+        callback: (IntermediateSessionExchangeResponse) -> Unit,
     )
 
     /**
      * A data class used for wrapping parameters used with creating organizations
-     * @property intermediateSessionToken is the unique sequence of characters used to authenticate a member
      * @property organizationName is the name of the new organization
      * @property organizationSlug is the desired slug of the new organization
      * @property organizationLogoUrl is the optional URL of the new organization's logo
@@ -127,7 +110,6 @@ public interface Discovery {
      * is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .
      */
     public data class CreateOrganizationParameters(
-        val intermediateSessionToken: String,
         val organizationName: String? = null,
         val organizationSlug: String? = null,
         val organizationLogoUrl: String? = null,
@@ -160,6 +142,6 @@ public interface Discovery {
      */
     public fun createOrganization(
         parameters: CreateOrganizationParameters,
-        callback: (OrganizationCreateResponse) -> Unit
+        callback: (OrganizationCreateResponse) -> Unit,
     )
 }

@@ -10,18 +10,36 @@ import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
 
 internal const val SSO_REQUEST_ID = 2
-class MainActivity : FragmentActivity() {
+internal const val B2B_OAUTH_REQUEST = 3
 
+class MainActivity : FragmentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val passwordsViewModel: PasswordsViewModel by viewModels()
     private val discoveryViewModel: DiscoveryViewModel by viewModels()
     private val ssoViewModel: SSOViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by viewModels()
+    private val organizationViewModel: OrganizationViewModel by viewModels()
+    private val otpViewModel: OTPViewModel by viewModels()
+    private val totpViewModel: TOTPViewModel by viewModels()
+    private val recoveryCodesViewModel: RecoveryCodesViewModel by viewModels()
+    private val oAuthViewModel: OAuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                AppScreen(homeViewModel, passwordsViewModel, discoveryViewModel, ssoViewModel)
+                AppScreen(
+                    homeViewModel,
+                    passwordsViewModel,
+                    discoveryViewModel,
+                    ssoViewModel,
+                    memberViewModel,
+                    organizationViewModel,
+                    otpViewModel,
+                    totpViewModel,
+                    recoveryCodesViewModel,
+                    oAuthViewModel,
+                )
             }
         }
         if (intent.action == Intent.ACTION_VIEW) {
@@ -35,10 +53,17 @@ class MainActivity : FragmentActivity() {
             homeViewModel.handleUri(appLinkData)
         }
     }
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+    public override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            SSO_REQUEST_ID -> { ssoViewModel.authenticateSSO(resultCode = resultCode, intent = data) }
+            SSO_REQUEST_ID -> {
+                ssoViewModel.authenticateSSO(resultCode = resultCode, intent = data)
+            }
         }
     }
 }

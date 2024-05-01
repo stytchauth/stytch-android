@@ -15,6 +15,7 @@ import com.stytch.sdk.common.network.models.PhoneNumber
 import com.stytch.sdk.common.network.models.Provider
 import com.stytch.sdk.common.network.models.TOTP
 import com.stytch.sdk.common.network.models.WebAuthNRegistrations
+import com.stytch.sdk.common.utils.IEnumValue
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -304,15 +305,17 @@ public enum class UserType : Parcelable {
 
 @Keep
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class WebAuthnRegisterStartData(
     @Json(name = "user_id")
     val userId: String,
     @Json(name = "public_key_credential_creation_options")
     val publicKeyCredentialCreationOptions: String,
-)
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class WebAuthnRegisterData(
     @Json(name = "status_code")
     val statusCode: Int,
@@ -326,17 +329,19 @@ public data class WebAuthnRegisterData(
     override val user: UserData,
     @Json(name = "webauthn_registration_id")
     val webauthnRegistrationId: String,
-) : IAuthData
+) : Parcelable, IAuthData
 
 @Keep
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class WebAuthnAuthenticateStartData(
     @Json(name = "public_key_credential_request_options")
     val publicKeyCredentialRequestOptions: String,
-)
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
+@Parcelize
 public data class WebAuthnUpdateResponseData(
     @Json(name = "status_code")
     val statusCode: Int,
@@ -344,4 +349,80 @@ public data class WebAuthnUpdateResponseData(
     val requestId: String,
     @Json(name = "webauthn_registration")
     val webauthnRegistration: WebAuthNRegistrations,
-)
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = false)
+@Parcelize
+public enum class CryptoWalletType(override val jsonName: String) : IEnumValue, Parcelable {
+    ETHEREUM("ethereum"),
+    SOLANA("solana"),
+}
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class CryptoWalletAuthenticateStartResponseData(
+    val challenge: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPCreateResponseData(
+    @Json(name = "totp_id")
+    val totpId: String,
+    val secret: String,
+    @Json(name = "qr_code")
+    val qrCode: String,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPAuthenticateResponseData(
+    @Json(name = "totp_id")
+    val totpId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : IAuthData, Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecoveryCodesResponseData(
+    @Json(name = "user_id")
+    val userId: String,
+    val totps: List<TOTPRecovery>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecovery(
+    @Json(name = "totp_id")
+    val totpId: String,
+    val verified: Boolean,
+    @Json(name = "recovery_codes")
+    val recoveryCodes: List<String>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class TOTPRecoverResponseData(
+    @Json(name = "totp_id")
+    val totpId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : IAuthData, Parcelable

@@ -1,12 +1,17 @@
 package com.stytch.sdk.utils
 
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Assert.fail
 
-private fun compare(key: String, requestValue: JsonElement, expectedValue: Any?) {
+private fun compare(
+    key: String,
+    requestValue: JsonElement,
+    expectedValue: Any?,
+) {
     require(expectedValue != null) {
         "Request contained a value for $key but expected was null"
     }
@@ -31,11 +36,18 @@ private fun compare(key: String, requestValue: JsonElement, expectedValue: Any?)
         require(array.size() == expectedValue.size) {
             "Request contains ${array.size()} elements but expected ${expectedValue.size}"
         }
-        val expectedAsJsonArray = JsonArray(expectedValue.size).apply {
-            expectedValue.forEach {
-                add(it.toString())
+        val expectedAsJsonArray =
+            JsonArray(expectedValue.size).apply {
+                expectedValue.forEach {
+                    if (it is Map<*, *>) {
+                        val gson = GsonBuilder().create()
+                        val json = gson.toJson(it)
+                        add(JsonParser.parseString(json))
+                    } else {
+                        add(it.toString())
+                    }
+                }
             }
-        }
         require(requestValue == expectedAsJsonArray) {
             "Expected $expectedValue but got $requestValue"
         }
@@ -62,11 +74,12 @@ private fun RecordedRequest.verify(
     // is an event log, which is the only one that _has_ to be a list. Everything else is just a map that we wrap
     // in a list for testing purposes. This helper will fail if we ever test sending multiple events, but we'll
     // cross that bridge when we get to it.
-    val bodyJson = try {
-        JsonParser.parseString(bodyString).asJsonObject
-    } catch (_: IllegalStateException) {
-        JsonParser.parseString(bodyString).asJsonArray[0].asJsonObject
-    }
+    val bodyJson =
+        try {
+            JsonParser.parseString(bodyString).asJsonObject
+        } catch (_: IllegalStateException) {
+            JsonParser.parseString(bodyString).asJsonArray[0].asJsonObject
+        }
     expectedBody[0].forEach { (key, expectedValue) ->
         val requestValue = bodyJson.get(key)
         try {
@@ -87,23 +100,19 @@ private fun RecordedRequest.verify(
 
 internal fun RecordedRequest.verifyPost(
     expectedPath: String,
-    expectedBody: Map<String, Any?> = emptyMap()
+    expectedBody: Map<String, Any?> = emptyMap(),
 ) = verify("POST", expectedPath, listOf(expectedBody))
 
 internal fun RecordedRequest.verifyPost(
     expectedPath: String,
-    expectedBody: List<Map<String, Any?>> = emptyList()
+    expectedBody: List<Map<String, Any?>> = emptyList(),
 ) = verify("POST", expectedPath, expectedBody)
 
-internal fun RecordedRequest.verifyGet(
-    expectedPath: String
-) = verify("GET", expectedPath, listOf(emptyMap()))
+internal fun RecordedRequest.verifyGet(expectedPath: String) = verify("GET", expectedPath, listOf(emptyMap()))
 
-internal fun RecordedRequest.verifyDelete(
-    expectedPath: String,
-) = verify("DELETE", expectedPath, listOf(emptyMap()))
+internal fun RecordedRequest.verifyDelete(expectedPath: String) = verify("DELETE", expectedPath, listOf(emptyMap()))
 
 internal fun RecordedRequest.verifyPut(
     expectedPath: String,
-    expectedBody: Map<String, Any?> = emptyMap()
+    expectedBody: Map<String, Any?> = emptyMap(),
 ) = verify("PUT", expectedPath, listOf(expectedBody))

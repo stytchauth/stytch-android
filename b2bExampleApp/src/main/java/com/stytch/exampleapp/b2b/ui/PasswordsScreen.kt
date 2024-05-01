@@ -20,19 +20,17 @@ import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
 
 @Composable
-fun PasswordsScreen(
-    viewModel: PasswordsViewModel
-) {
+fun PasswordsScreen(viewModel: PasswordsViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -44,7 +42,7 @@ fun PasswordsScreen(
                 onValueChange = {
                     viewModel.emailState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -56,7 +54,7 @@ fun PasswordsScreen(
                 onValueChange = {
                     viewModel.existingPasswordState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -68,37 +66,37 @@ fun PasswordsScreen(
                 onValueChange = {
                     viewModel.newPasswordState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_resetByEmail),
-                onClick = viewModel::resetByEmailStart
+                onClick = viewModel::resetByEmailStart,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_resetByExisting),
-                onClick = viewModel::resetByExisting
+                onClick = viewModel::resetByExisting,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_resetBySession),
-                onClick = viewModel::resetBySession
+                onClick = viewModel::resetBySession,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_authenticate),
-                onClick = viewModel::authenticate
+                onClick = viewModel::authenticate,
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_strengthCheck),
-                onClick = viewModel::strengthCheck
+                onClick = viewModel::strengthCheck,
             )
         }
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(0.5F, false),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (loading.value) {
                 CircularProgressIndicator()

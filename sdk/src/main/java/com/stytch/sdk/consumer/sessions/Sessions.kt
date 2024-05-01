@@ -3,12 +3,24 @@ package com.stytch.sdk.consumer.sessions
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.network.models.SessionData
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
 public interface Sessions {
+    /**
+     * Exposes a flow of session data
+     */
+    public val onChange: StateFlow<SessionData?>
+
+    /**
+     * Assign a callback that will be called when the session data changes
+     */
+
+    public fun onChange(callback: (SessionData?) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
@@ -19,6 +31,11 @@ public interface Sessions {
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
     public val sessionJwt: String?
+
+    /**
+     * Get the locally persisted session
+     */
+    public fun getSync(): SessionData?
 
     /**
      * Data class used for wrapping parameters used with Sessions authentication
@@ -50,7 +67,10 @@ public interface Sessions {
      * @param authParams required to authenticate
      * @param callback a callback that receives an [AuthResponse]
      */
-    public fun authenticate(authParams: AuthParams, callback: (AuthResponse) -> Unit)
+    public fun authenticate(
+        authParams: AuthParams,
+        callback: (AuthResponse) -> Unit,
+    )
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
@@ -64,12 +84,18 @@ public interface Sessions {
      * @param params required for revoking a session
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun revoke(params: RevokeParams = RevokeParams(), callback: (BaseResponse) -> Unit)
+    public fun revoke(
+        params: RevokeParams = RevokeParams(),
+        callback: (BaseResponse) -> Unit,
+    )
 
     /**
      * Updates the current session with a sessionToken and/or sessionJwt
      * @param sessionToken
      * @param sessionJwt
      */
-    public fun updateSession(sessionToken: String?, sessionJwt: String?)
+    public fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    )
 }

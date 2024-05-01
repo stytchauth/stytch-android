@@ -4,11 +4,12 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.network.InfoHeaderModel
+import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.TimeZone
 import java.util.UUID
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 internal class EventsImpl(
     deviceInfo: DeviceInfo,
@@ -19,13 +20,17 @@ internal class EventsImpl(
 ) : Events {
     private val infoHeaderModel = InfoHeaderModel.fromDeviceInfo(deviceInfo)
 
-    override fun logEvent(eventName: String, details: Map<String, Any>?, error: Exception?) {
+    override fun logEvent(
+        eventName: String,
+        details: Map<String, Any>?,
+        error: Exception?,
+    ) {
         externalScope.launch(dispatchers.io) {
             api.logEvent(
                 eventId = "event-id-${UUID.randomUUID()}",
                 appSessionId = appSessionId,
                 persistentId = "persistent-id-${UUID.randomUUID()}",
-                clientSentAt = Date().toString(),
+                clientSentAt = ISO_DATE_FORMATTER.format(Date()),
                 timezone = TimeZone.getDefault().id,
                 eventName = eventName,
                 infoHeaderModel = infoHeaderModel,

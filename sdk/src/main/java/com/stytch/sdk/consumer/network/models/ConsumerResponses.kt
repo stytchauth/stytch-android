@@ -79,6 +79,40 @@ internal object ConsumerResponses {
         class UpdateResponse(data: WebAuthnUpdateResponseData) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
     }
 
+    object Crypto {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class AuthenticateStartResponse(
+            data: CryptoWalletAuthenticateStartResponseData,
+        ) : StytchDataResponse<CryptoWalletAuthenticateStartResponseData>(data)
+    }
+
+    object TOTP {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class TOTPCreateResponse(
+            data: TOTPCreateResponseData,
+        ) : StytchDataResponse<TOTPCreateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class TOTPAuthenticateResponse(
+            data: TOTPAuthenticateResponseData,
+        ) : StytchDataResponse<TOTPAuthenticateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class TOTPRecoveryCodesResponse(
+            data: TOTPRecoveryCodesResponseData,
+        ) : StytchDataResponse<TOTPRecoveryCodesResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class TOTPRecoverResponse(
+            data: TOTPRecoverResponseData,
+        ) : StytchDataResponse<TOTPRecoverResponseData>(data)
+    }
+
     @Keep
     @JsonClass(generateAdapter = true)
     class AuthenticateResponse(data: AuthData) : StytchDataResponse<AuthData>(data)

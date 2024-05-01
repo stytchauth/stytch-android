@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.data.StytchUIConfig
 
-
 internal interface StytchAuth {
     fun authenticate(options: StytchUIConfig)
 }
@@ -17,10 +16,10 @@ internal class StytchAuthHandler(
     private val activity: ComponentActivity,
     private val onAuthenticated: (StytchResult<*>) -> Unit,
 ) : StytchAuth by StytchAuthImpl(
-    registry = activity.activityResultRegistry,
-    lifecycleOwner = activity,
-    onAuthenticated = onAuthenticated,
-)
+        registry = activity.activityResultRegistry,
+        lifecycleOwner = activity,
+        onAuthenticated = onAuthenticated,
+    )
 
 private class StytchAuthImpl(
     private val registry: ActivityResultRegistry,
@@ -34,9 +33,10 @@ private class StytchAuthImpl(
     }
 
     override fun onCreate(owner: LifecycleOwner) {
-        resultLauncher = registry.register(REGISTRY_KEY, StytchAuthenticationContract()) { result ->
-            onAuthenticated(result)
-        }
+        resultLauncher =
+            registry.register(REGISTRY_KEY, StytchAuthenticationContract()) { result ->
+                onAuthenticated(result)
+            }
     }
 
     override fun authenticate(options: StytchUIConfig) {

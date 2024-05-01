@@ -30,10 +30,11 @@ internal fun EmailInput(
             onValueChange = onEmailAddressChanged,
             placeholder = "Email Address",
             isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Done,
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done,
+                ),
             label = label,
             readOnly = emailState.readOnly,
         )

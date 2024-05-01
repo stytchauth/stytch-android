@@ -10,6 +10,7 @@ import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -19,9 +20,28 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    override suspend fun getUser(): UserResponse = withContext(dispatchers.io) {
-        api.getUser()
+    private val callbacks = mutableListOf<(UserData?) -> Unit>()
+
+    override val onChange: StateFlow<UserData?> = sessionStorage.userFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
     }
+
+    override fun onChange(callback: (UserData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
+    override suspend fun getUser(): UserResponse =
+        withContext(dispatchers.io) {
+            api.getUser()
+        }
 
     override fun getUser(callback: (UserResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -40,6 +60,8 @@ internal class UserManagementImpl(
                 is UserAuthenticationFactor.BiometricRegistration -> api.deleteBiometricRegistrationById(factor.id)
                 is UserAuthenticationFactor.CryptoWallet -> api.deleteCryptoWalletById(factor.id)
                 is UserAuthenticationFactor.WebAuthn -> api.deleteWebAuthnById(factor.id)
+                is UserAuthenticationFactor.TOTP -> api.deleteTotpById(factor.id)
+                is UserAuthenticationFactor.OAuth -> api.deleteOAuthById(factor.id)
             }.apply {
                 if (this is StytchResult.Success) {
                     sessionStorage.user = this.value.user
@@ -47,7 +69,10 @@ internal class UserManagementImpl(
             }
         }
 
-    override fun deleteFactor(factor: UserAuthenticationFactor, callback: (DeleteFactorResponse) -> Unit) {
+    override fun deleteFactor(
+        factor: UserAuthenticationFactor,
+        callback: (DeleteFactorResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = deleteFactor(factor)
             callback(result)
@@ -58,11 +83,14 @@ internal class UserManagementImpl(
         withContext(dispatchers.io) {
             api.updateUser(
                 name = params.name,
-                untrustedMetadata = params.untrustedMetadata
+                untrustedMetadata = params.untrustedMetadata,
             )
         }
 
-    override fun update(params: UserManagement.UpdateParams, callback: (UpdateUserResponse) -> Unit) {
+    override fun update(
+        params: UserManagement.UpdateParams,
+        callback: (UpdateUserResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             val result = update(params)
             callback(result)
@@ -74,7 +102,10 @@ internal class UserManagementImpl(
             api.searchUsers(email = params.email)
         }
 
-    override fun search(params: UserManagement.SearchParams, callback: (SearchUserResponse) -> Unit) {
+    override fun search(
+        params: UserManagement.SearchParams,
+        callback: (SearchUserResponse) -> Unit,
+    ) {
         externalScope.launch(dispatchers.ui) {
             callback(search(params))
         }

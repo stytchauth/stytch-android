@@ -10,7 +10,6 @@ import kotlinx.parcelize.Parcelize
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
  */
 public interface MagicLinks {
-
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
      * @property token is the unique sequence of characters used to log in
@@ -32,9 +31,7 @@ public interface MagicLinks {
      * @param parameters required to authenticate
      * @return [AuthResponse]
      */
-    public suspend fun authenticate(
-        parameters: AuthParameters,
-    ): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
 
     /**
      * Authenticate a user given a magic link. This endpoint verifies that the magic link token is valid, hasn't expired
@@ -51,7 +48,6 @@ public interface MagicLinks {
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
     public interface EmailMagicLinks {
-
         /**
          * Data class used for wrapping parameters used with MagicLinks.EmailMagicLinks.loginOrCreate
          * @property email is the account identifier for the account in the form of an Email address where you wish to
@@ -111,6 +107,9 @@ public interface MagicLinks {
          * @param parameters required to receive magic link
          * @param callback a callback that receives a [BaseResponse]
          */
-        public fun send(parameters: Parameters, callback: (response: BaseResponse) -> Unit)
+        public fun send(
+            parameters: Parameters,
+            callback: (response: BaseResponse) -> Unit,
+        )
     }
 }

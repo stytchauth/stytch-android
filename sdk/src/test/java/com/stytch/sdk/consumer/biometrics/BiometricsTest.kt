@@ -10,12 +10,13 @@ internal class BiometricsTest {
     fun `Biometrics StartParameters have correct default values`() {
         val mockContext: FragmentActivity = mockk()
         val params = Biometrics.RegisterParameters(context = mockContext)
-        val expected = Biometrics.RegisterParameters(
-            context = mockContext,
-            sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
-            allowFallbackToCleartext = false,
-            promptData = null,
-        )
+        val expected =
+            Biometrics.RegisterParameters(
+                context = mockContext,
+                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                allowFallbackToCleartext = false,
+                promptData = null,
+            )
         assert(params == expected)
     }
 }

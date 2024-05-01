@@ -6,12 +6,23 @@ import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
  * factors from an authenticated user.
  */
 public interface UserManagement {
+    /**
+     * Exposes a flow of user data
+     */
+    public val onChange: StateFlow<UserData?>
+
+    /**
+     * Assign a callback that will be called when the user data changes
+     */
+
+    public fun onChange(callback: (UserData?) -> Unit)
 
     /**
      * Fetches a user from the current session
@@ -41,7 +52,10 @@ public interface UserManagement {
      * Deletes a [UserAuthenticationFactor] from the currently authenticated user
      * @param callback A callback that receives a [DeleteFactorResponse]
      */
-    public fun deleteFactor(factor: UserAuthenticationFactor, callback: (DeleteFactorResponse) -> Unit)
+    public fun deleteFactor(
+        factor: UserAuthenticationFactor,
+        callback: (DeleteFactorResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used with User updates
@@ -50,7 +64,7 @@ public interface UserManagement {
      */
     public data class UpdateParams(
         val name: NameData? = null,
-        val untrustedMetadata: Map<String, Any>? = null
+        val untrustedMetadata: Map<String, Any>? = null,
     )
 
     /**
@@ -65,7 +79,10 @@ public interface UserManagement {
      * @param params required to udpate the user
      * @param callback a callback that receives an [UpdateUserResponse]
      */
-    public fun update(params: UpdateParams, callback: (UpdateUserResponse) -> Unit)
+    public fun update(
+        params: UpdateParams,
+        callback: (UpdateUserResponse) -> Unit,
+    )
 
     /**
      * Data class used for wrapping parameters used for searching Users
@@ -87,5 +104,8 @@ public interface UserManagement {
      * @param params required for searching users
      * @param callback a callback that receives a [SearchUserResponse]
      */
-    public fun search(params: SearchParams, callback: (SearchUserResponse) -> Unit)
+    public fun search(
+        params: SearchParams,
+        callback: (SearchUserResponse) -> Unit,
+    )
 }

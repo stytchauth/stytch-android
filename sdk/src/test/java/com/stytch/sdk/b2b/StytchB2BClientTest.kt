@@ -7,7 +7,8 @@ import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
-import com.stytch.sdk.b2b.network.models.IB2BAuthData
+import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
+import com.stytch.sdk.b2b.oauth.OAuth
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
@@ -34,7 +35,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,6 +47,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 internal class StytchB2BClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -54,6 +55,9 @@ internal class StytchB2BClientTest {
 
     @MockK
     private lateinit var mockMagicLinks: B2BMagicLinks
+
+    @MockK
+    private lateinit var mockOAuth: OAuth
 
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
@@ -65,17 +69,19 @@ internal class StytchB2BClientTest {
         mockkStatic(KeyStore::class)
         mockkStatic(
             "com.stytch.sdk.common.extensions.ContextExtKt",
-            "com.stytch.sdk.b2b.extensions.StytchResultExtKt"
+            "com.stytch.sdk.b2b.extensions.StytchResultExtKt",
         )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        val mockApplication: Application = mockk {
-            every { registerActivityLifecycleCallbacks(any()) } just runs
-            every { packageName } returns "Stytch"
-        }
-        mContextMock = mockk(relaxed = true) {
-            every { applicationContext } returns mockApplication
-        }
+        val mockApplication: Application =
+            mockk {
+                every { registerActivityLifecycleCallbacks(any()) } just runs
+                every { packageName } returns "Stytch"
+            }
+        mContextMock =
+            mockk(relaxed = true) {
+                every { applicationContext } returns mockApplication
+            }
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         mockkObject(StytchB2BApi)
@@ -88,6 +94,7 @@ internal class StytchB2BClientTest {
         MockKAnnotations.init(this, true, true)
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchB2BClient.magicLinks = mockMagicLinks
+        StytchB2BClient.oauth = mockOAuth
         StytchB2BClient.externalScope = TestScope()
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchB2BClient.dfpProvider = mockk()
@@ -154,9 +161,10 @@ internal class StytchB2BClientTest {
     @Test
     fun `should validate persisted sessions if applicable when calling StytchB2BClient configure`() {
         runBlocking {
-            val mockResponse: StytchResult<IB2BAuthData> = mockk {
-                every { launchSessionUpdater(any(), any()) } just runs
-            }
+            val mockResponse: StytchResult<SessionsAuthenticateResponseData> =
+                mockk {
+                    every { launchSessionUpdater(any(), any()) } just runs
+                }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
             every { StorageHelper.loadValue(any()) } returns null
@@ -174,9 +182,10 @@ internal class StytchB2BClientTest {
     @Test
     fun `should report the initialization state after configuration and initialization is complete`() {
         runTest {
-            val mockResponse: StytchResult<IB2BAuthData> = mockk {
-                every { launchSessionUpdater(any(), any()) } just runs
-            }
+            val mockResponse: StytchResult<SessionsAuthenticateResponseData> =
+                mockk {
+                    every { launchSessionUpdater(any(), any()) } just runs
+                }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
             StytchB2BClient.configure(mContextMock, "", callback)
@@ -306,9 +315,10 @@ internal class StytchB2BClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchB2BClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns null
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns null
+                }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkMissingTokenError)
@@ -321,9 +331,10 @@ internal class StytchB2BClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchB2BClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "something unexpected"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "something unexpected"
+                }
             val response = StytchB2BClient.handle(mockUri, 30U)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
@@ -336,9 +347,10 @@ internal class StytchB2BClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchB2BClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "DISCOVERY"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "DISCOVERY"
+                }
             val mockAuthResponse = mockk<DiscoveryEMLAuthResponse>()
             coEvery { mockMagicLinks.discoveryAuthenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
@@ -353,10 +365,11 @@ internal class StytchB2BClientTest {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchB2BClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
-            }
-            val mockAuthResponse = mockk<AuthResponse>()
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "MULTI_TENANT_MAGIC_LINKS"
+                }
+            val mockAuthResponse = mockk<EMLAuthenticateResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
             coVerify { mockMagicLinks.authenticate(any()) }
@@ -365,26 +378,29 @@ internal class StytchB2BClientTest {
     }
 
     @Test
-    fun `handle with coroutines returns NotHandled with correct error  when token is OAUTH`() {
+    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
         runBlocking {
             val deviceInfo = DeviceInfo()
             every { mContextMock.getDeviceInfo() } returns deviceInfo
             StytchB2BClient.configure(mContextMock, "")
-            val mockUri = mockk<Uri> {
-                every { getQueryParameter(any()) } returns "OAUTH"
-            }
+            val mockUri =
+                mockk<Uri> {
+                    every { getQueryParameter(any()) } returns "OAUTH"
+                }
+            val mockAuthResponse = mockk<OAuthAuthenticateResponse>()
+            coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
             val response = StytchB2BClient.handle(mockUri, 30U)
-            require(response is DeeplinkHandledStatus.NotHandled)
-            assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
+            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 
     @Test
     fun `handle with callback returns value in callback method when configured`() {
         every { StytchB2BApi.isInitialized } returns true
-        val mockUri = mockk<Uri> {
-            every { getQueryParameter(any()) } returns null
-        }
+        val mockUri =
+            mockk<Uri> {
+                every { getQueryParameter(any()) } returns null
+            }
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
         StytchB2BClient.handle(mockUri, 30u, mockCallback)
         verify { mockCallback.invoke(any()) }

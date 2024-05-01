@@ -13,13 +13,13 @@ internal data class InfoHeaderModel(
     val json: String
         get() {
             return """
-           {
-             "sdk": ${sdk.json},
-             "app": ${app.json},
-             "os": ${os.json},
-             "device": ${device.json}
-           }
-            """.trimIndent()
+                {
+                  "sdk": ${sdk.json},
+                  "app": ${app.json},
+                  "os": ${os.json},
+                  "device": ${device.json}
+                }
+                """.trimIndent()
         }
 
     internal data class Item(
@@ -33,26 +33,32 @@ internal data class InfoHeaderModel(
                 return "{ \"$identifierName\": \"$identifier\", \"$versionName\": \"$version\" }"
             }
     }
+
     companion object {
-        fun fromDeviceInfo(deviceInfo: DeviceInfo): InfoHeaderModel = InfoHeaderModel(
-            sdk = Item(
-                Constants.AUTH_HEADER_SDK_NAME,
-                BuildConfig.STYTCH_SDK_VERSION
-            ),
-            app = Item(
-                deviceInfo.applicationPackageName ?: "",
-                deviceInfo.applicationVersion ?: ""
-            ),
-            os = Item(
-                deviceInfo.osName ?: "",
-                deviceInfo.osVersion ?: ""
-            ),
-            device = Item(
-                deviceInfo.deviceName ?: "",
-                deviceInfo.screenSize ?: "",
-                "model",
-                "screen_size"
+        fun fromDeviceInfo(deviceInfo: DeviceInfo): InfoHeaderModel =
+            InfoHeaderModel(
+                sdk =
+                    Item(
+                        Constants.AUTH_HEADER_SDK_NAME,
+                        BuildConfig.STYTCH_SDK_VERSION,
+                    ),
+                app =
+                    Item(
+                        deviceInfo.applicationPackageName ?: "",
+                        deviceInfo.applicationVersion ?: "",
+                    ),
+                os =
+                    Item(
+                        deviceInfo.osName ?: "",
+                        deviceInfo.osVersion ?: "",
+                    ),
+                device =
+                    Item(
+                        deviceInfo.deviceName ?: "",
+                        deviceInfo.screenSize ?: "",
+                        "model",
+                        "screen_size",
+                    ),
             )
-        )
     }
 }

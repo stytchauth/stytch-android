@@ -14,10 +14,11 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
+import kotlinx.coroutines.test.TestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 internal class SessionStorageTest {
     @MockK
@@ -30,7 +31,7 @@ internal class SessionStorageTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
-        storage = ConsumerSessionStorage(mockStorageHelper)
+        storage = ConsumerSessionStorage(mockStorageHelper, TestScope())
     }
 
     @After
@@ -60,7 +61,7 @@ internal class SessionStorageTest {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         storage.updateSession(
             sessionToken = "mySessionToken",
-            sessionJwt = "mySessionJwt"
+            sessionJwt = "mySessionJwt",
         )
         verify {
             mockStorageHelper.saveValue(eq(PREFERENCES_NAME_SESSION_TOKEN), eq("mySessionToken"))

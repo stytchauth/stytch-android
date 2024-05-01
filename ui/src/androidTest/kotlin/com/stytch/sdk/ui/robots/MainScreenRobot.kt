@@ -18,13 +18,12 @@ import com.stytch.sdk.ui.BaseAndroidComposeTest
 import com.stytch.sdk.ui.R
 import com.stytch.sdk.ui.screens.MainScreen
 
-internal fun BaseAndroidComposeTest.mainScreenRobot(
-    func: MainScreenRobot.() -> Unit
-) = MainScreenRobot(this).apply(func)
+internal fun BaseAndroidComposeTest.mainScreenRobot(func: MainScreenRobot.() -> Unit) =
+    MainScreenRobot(this).apply(func)
 
 internal class MainScreenRobot(
-    baseAndroidComposeTest: BaseAndroidComposeTest
-): BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
+    baseAndroidComposeTest: BaseAndroidComposeTest,
+) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
     private val header by lazy {
         composeTestRule.onNodeWithText(getString(R.string.sign_up_or_login))
     }
@@ -36,24 +35,24 @@ internal class MainScreenRobot(
     private val emailTab by lazy {
         composeTestRule.onNode(
             hasText(getString(R.string.email)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs)))
-            )
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
         )
     }
 
     private val textTab by lazy {
         composeTestRule.onNode(
             hasText(getString(R.string.text)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs)))
-            )
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
         )
     }
 
     private val whatsappTab by lazy {
         composeTestRule.onNode(
             hasText(getString(R.string.whatsapp)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs)))
-            )
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
         )
     }
 
@@ -73,7 +72,10 @@ internal class MainScreenRobot(
         composeTestRule.onNodeWithText(getString(R.string.button_continue))
     }
 
-    private fun nodeExists(node: SemanticsNodeInteraction, shouldBeVisible: Boolean) {
+    private fun nodeExists(
+        node: SemanticsNodeInteraction,
+        shouldBeVisible: Boolean,
+    ) {
         if (shouldBeVisible) node.assertExists() else node.assertDoesNotExist()
     }
 
@@ -81,7 +83,11 @@ internal class MainScreenRobot(
 
     fun socialLoginButtonsExist(count: Int) = socialLoginButtons.assertCountEquals(count)
 
-    fun expectedTabsExist(email: Boolean, text: Boolean, whatsapp: Boolean) {
+    fun expectedTabsExist(
+        email: Boolean,
+        text: Boolean,
+        whatsapp: Boolean,
+    ) {
         if (email) nodeExists(emailTab, true)
         if (text) nodeExists(textTab, true)
         if (whatsapp) nodeExists(whatsappTab, true)
@@ -110,11 +116,12 @@ internal class MainScreenRobot(
         phoneInput.assertExists()
     }
 
-    fun continueButtonIsEnabled(enabled: Boolean) = if (enabled) {
-        continueButton.assertIsEnabled()
-    } else {
-        continueButton.assertIsNotEnabled()
-    }
+    fun continueButtonIsEnabled(enabled: Boolean) =
+        if (enabled) {
+            continueButton.assertIsEnabled()
+        } else {
+            continueButton.assertIsNotEnabled()
+        }
 
     fun enterPhoneNumber(number: String) {
         phoneInput.performTextInput(number)

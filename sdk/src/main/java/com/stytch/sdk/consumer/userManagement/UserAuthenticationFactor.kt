@@ -29,4 +29,14 @@ public sealed class UserAuthenticationFactor(public open val id: String) {
      * Represents a WebAuthn registration associated with a Stytch User
      */
     public data class WebAuthn(override val id: String) : UserAuthenticationFactor(id)
+
+    /**
+     * Represents a TOTP registration associated with a Stytch User
+     */
+    public data class TOTP(override val id: String) : UserAuthenticationFactor(id)
+
+    /**
+     * Represents an OAuth registration associated with a Stytch User
+     */
+    public data class OAuth(override val id: String) : UserAuthenticationFactor(id)
 }

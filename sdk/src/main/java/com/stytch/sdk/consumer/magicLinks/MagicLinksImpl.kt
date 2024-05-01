@@ -19,9 +19,8 @@ internal class MagicLinksImpl internal constructor(
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: ConsumerSessionStorage,
     private val storageHelper: StorageHelper,
-    private val api: StytchApi.MagicLinks.Email
+    private val api: StytchApi.MagicLinks.Email,
 ) : MagicLinks {
-
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
@@ -37,13 +36,14 @@ internal class MagicLinksImpl internal constructor(
             }
 
             // call backend endpoint
-            result = api.authenticate(
-                parameters.token,
-                parameters.sessionDurationMinutes,
-                codeVerifier
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticate(
+                    parameters.token,
+                    parameters.sessionDurationMinutes,
+                    codeVerifier,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
         return result
@@ -61,10 +61,7 @@ internal class MagicLinksImpl internal constructor(
     }
 
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
-
-        override suspend fun loginOrCreate(
-            parameters: MagicLinks.EmailMagicLinks.Parameters
-        ): BaseResponse {
+        override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
                 val challengeCodeMethod: String
@@ -79,14 +76,15 @@ internal class MagicLinksImpl internal constructor(
                     return@withContext
                 }
 
-                result = api.loginOrCreate(
-                    email = parameters.email,
-                    loginMagicLinkUrl = parameters.loginMagicLinkUrl,
-                    codeChallenge = challengeCode,
-                    codeChallengeMethod = challengeCodeMethod,
-                    loginTemplateId = parameters.loginTemplateId,
-                    signupTemplateId = parameters.signupTemplateId,
-                )
+                result =
+                    api.loginOrCreate(
+                        email = parameters.email,
+                        loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        codeChallenge = challengeCode,
+                        codeChallengeMethod = challengeCodeMethod,
+                        loginTemplateId = parameters.loginTemplateId,
+                        signupTemplateId = parameters.signupTemplateId,
+                    )
             }
 
             return result

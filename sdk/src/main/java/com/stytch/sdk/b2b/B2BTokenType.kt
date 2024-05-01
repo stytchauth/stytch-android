@@ -28,9 +28,21 @@ public enum class B2BTokenType : TokenType {
     SSO,
 
     /**
+     * An OAuth deeplink
+     */
+    OAUTH,
+
+    /**
+     * An OAuth Discovery deeplink
+     */
+    DISCOVERY_OAUTH,
+
+    /**
      * An unknown deeplink type. It's possible a non-Stytch deeplink was supplied to the Stytch client's handle() method
      */
-    UNKNOWN;
+    UNKNOWN,
+
+    ;
 
     internal companion object {
         fun fromString(typeString: String?): B2BTokenType {

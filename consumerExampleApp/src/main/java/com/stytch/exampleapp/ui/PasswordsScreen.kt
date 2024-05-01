@@ -28,7 +28,7 @@ fun PasswordsScreen(navController: NavController) {
     val responseState = viewModel.currentResponse.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -41,7 +41,7 @@ fun PasswordsScreen(navController: NavController) {
             onValueChange = {
                 viewModel.emailTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         if (viewModel.showEmailError) {
             Text(
@@ -60,7 +60,19 @@ fun PasswordsScreen(navController: NavController) {
             onValueChange = {
                 viewModel.passwordTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = viewModel.newPasswordTextState,
+            singleLine = true,
+            label = {
+                Text(text = stringResource(id = R.string.passwords_new))
+            },
+            onValueChange = {
+                viewModel.newPasswordTextState = it
+            },
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -72,37 +84,42 @@ fun PasswordsScreen(navController: NavController) {
             onValueChange = {
                 viewModel.tokenTextState = it
             },
-            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+            shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.check_password_strength),
-            onClick = { viewModel.checkPassword() }
+            onClick = { viewModel.checkPassword() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.authenticate),
-            onClick = { viewModel.authenticate() }
+            onClick = { viewModel.authenticate() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_create),
-            onClick = { viewModel.createAccount() }
+            onClick = { viewModel.createAccount() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_email_start),
-            onClick = { viewModel.resetPasswordByEmailStart() }
+            onClick = { viewModel.resetPasswordByEmailStart() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_email),
-            onClick = { viewModel.resetPasswordByEmail() }
+            onClick = { viewModel.resetPasswordByEmail() },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passwords_reset_by_session),
-            onClick = { viewModel.resetPasswordBySession() }
+            onClick = { viewModel.resetPasswordBySession() },
+        )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.passwords_reset_by_existing),
+            onClick = viewModel::resetByExisting,
         )
         if (loading.value) {
             CircularProgressIndicator()

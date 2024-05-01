@@ -49,16 +49,18 @@ internal fun OTPEntry(
         focusRequester.requestFocus()
     }
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 32.dp)
-            .semantics { contentDescription = semantics },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp)
+                .semantics { contentDescription = semantics },
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         finalCode.asIterable().forEachIndexed { i, value ->
-            var modifier = Modifier
-                .width(48.dp)
-                .height(48.dp)
+            var modifier =
+                Modifier
+                    .width(48.dp)
+                    .height(48.dp)
             if (i == 0) {
                 modifier = modifier.focusRequester(focusRequester)
             }
@@ -81,10 +83,11 @@ internal fun OTPEntry(
                         }
                     }
                 },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                    ),
                 textAlign = TextAlign.Center,
             )
         }
@@ -102,10 +105,11 @@ private fun PreviewOTPEntry() {
         color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             OTPEntry {}
         }

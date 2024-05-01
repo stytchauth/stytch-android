@@ -1,14 +1,27 @@
 package com.stytch.sdk.b2b.sessions
 
-import com.stytch.sdk.b2b.AuthResponse
+import com.stytch.sdk.b2b.SessionExchangeResponse
+import com.stytch.sdk.b2b.SessionsAuthenticateResponse
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
 public interface B2BSessions {
+    /**
+     * Exposes a flow of session data
+     */
+    public val onChange: StateFlow<B2BSessionData?>
+
+    /**
+     * Assign a callback that will be called when the session data changes
+     */
+
+    public fun onChange(callback: (B2BSessionData?) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
@@ -40,17 +53,20 @@ public interface B2BSessions {
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
      * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @return [AuthResponse]
+     * @return [SessionsAuthenticateResponse]
      */
-    public suspend fun authenticate(authParams: AuthParams): AuthResponse
+    public suspend fun authenticate(authParams: AuthParams): SessionsAuthenticateResponse
 
     /**
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
      * If the session_duration_minutes is not specified, a Session will not be extended
      * @param authParams required to authenticate
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [SessionsAuthenticateResponse]
      */
-    public fun authenticate(authParams: AuthParams, callback: (AuthResponse) -> Unit)
+    public fun authenticate(
+        authParams: AuthParams,
+        callback: (SessionsAuthenticateResponse) -> Unit,
+    )
 
     /**
      * Revoke a Session and immediately invalidate all its tokens.
@@ -64,12 +80,55 @@ public interface B2BSessions {
      * @param params required for revoking a session
      * @param callback a callback that receives a [BaseResponse]
      */
-    public fun revoke(params: RevokeParams = RevokeParams(), callback: (BaseResponse) -> Unit)
+    public fun revoke(
+        params: RevokeParams = RevokeParams(),
+        callback: (BaseResponse) -> Unit,
+    )
 
     /**
      * Updates the current session with a sessionToken and/or sessionJwt
      * @param sessionToken
      * @param sessionJwt
      */
-    public fun updateSession(sessionToken: String?, sessionJwt: String?)
+    public fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    )
+
+    /**
+     * Get session from memory without network call
+     * @return locally stored [B2BSessionData]
+     */
+    public fun getSync(): B2BSessionData?
+
+    /**
+     * Data class used for wrapping parameters used with Sessions exchange
+     * @property organizationId The ID of the organization that the new session should belong to.
+     * @property locale The locale will be used if an OTP code is sent to the member's phone number as part of a
+     * secondary authentication requirement.
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     */
+    public data class ExchangeParameters(
+        val organizationId: String,
+        val sessionDurationMinutes: UInt,
+        val locale: String? = null,
+    )
+
+    /**
+     * Exchanges an existing session for one in a different organization
+     * @param parameters required for exchanging a session between organizations
+     * @return [SessionExchangeResponse]
+     */
+    public suspend fun exchange(parameters: ExchangeParameters): SessionExchangeResponse
+
+    /**
+     * Exchanges an existing session for one in a different organization
+     * @param parameters required for exchanging a session between organizations
+     * @param callback a callback that receives a [SessionExchangeResponse]
+     * @return [SessionExchangeResponse]
+     */
+    public fun exchange(
+        parameters: ExchangeParameters,
+        callback: (SessionExchangeResponse) -> Unit,
+    )
 }

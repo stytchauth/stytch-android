@@ -31,22 +31,22 @@ fun PasskeysScreen(navController: NavController) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passkeys_register),
-            onClick = { viewModel.registerPasskey(activity) }
+            onClick = { viewModel.registerPasskey(activity) },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passkeys_authenticate),
-            onClick = { viewModel.authenticatePasskey(activity) }
+            onClick = { viewModel.authenticatePasskey(activity) },
         )
         StytchButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.passkeys_clear),
-            onClick = viewModel::clearPasskeyRegistrations
+            onClick = viewModel::clearPasskeyRegistrations,
         )
         if (registrationId.value.isNotBlank()) {
             TextField(
@@ -59,12 +59,12 @@ fun PasskeysScreen(navController: NavController) {
                 onValueChange = {
                     viewModel.passkeyNameState = it
                 },
-                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize)
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.passkey_update),
-                onClick = viewModel::updatePasskey
+                onClick = viewModel::updatePasskey,
             )
         }
         if (loading.value) {

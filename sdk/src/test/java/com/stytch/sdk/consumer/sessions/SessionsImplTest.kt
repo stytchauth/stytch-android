@@ -25,7 +25,6 @@ import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import java.security.KeyStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -33,6 +32,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class SessionsImplTest {
@@ -58,12 +58,15 @@ internal class SessionsImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        impl = SessionsImpl(
-            externalScope = TestScope(),
-            dispatchers = StytchDispatchers(dispatcher, dispatcher),
-            sessionStorage = mockSessionStorage,
-            api = mockApi
-        )
+        every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        impl =
+            SessionsImpl(
+                externalScope = TestScope(),
+                dispatchers = StytchDispatchers(dispatcher, dispatcher),
+                sessionStorage = mockSessionStorage,
+                api = mockApi,
+            )
     }
 
     @After
@@ -95,13 +98,14 @@ internal class SessionsImplTest {
     }
 
     @Test
-    fun `SessionsImpl authenticate delegates to api`() = runTest {
-        coEvery { mockApi.authenticate(any()) } returns successfulAuthResponse
-        val response = impl.authenticate(authParameters)
-        assert(response is StytchResult.Success)
-        coVerify { mockApi.authenticate(any()) }
-        verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
-    }
+    fun `SessionsImpl authenticate delegates to api`() =
+        runTest {
+            coEvery { mockApi.authenticate(any()) } returns successfulAuthResponse
+            val response = impl.authenticate(authParameters)
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.authenticate(any()) }
+            verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+        }
 
     @Test
     fun `SessionsImpl authenticate with callback calls callback method`() {
@@ -112,11 +116,12 @@ internal class SessionsImplTest {
     }
 
     @Test
-    fun `SessionsImpl revoke delegates to api`() = runTest {
-        coEvery { mockApi.revoke() } returns mockk()
-        impl.revoke()
-        coVerify { mockApi.revoke() }
-    }
+    fun `SessionsImpl revoke delegates to api`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns mockk()
+            impl.revoke()
+            coVerify { mockApi.revoke() }
+        }
 
     @Test
     fun `SessionsImpl revoke does not revoke a local session if a network error occurs and forceClear is not true`() =
@@ -135,13 +140,14 @@ internal class SessionsImplTest {
         }
 
     @Test
-    fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() = runTest {
-        coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
-        every { mockSessionStorage.revoke() } throws RuntimeException("Test")
-        val result = impl.revoke(Sessions.RevokeParams(true))
-        assert(result is StytchResult.Error)
-        verify(exactly = 1) { mockSessionStorage.revoke() }
-    }
+    fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() =
+        runTest {
+            coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
+            every { mockSessionStorage.revoke() } throws RuntimeException("Test")
+            val result = impl.revoke(Sessions.RevokeParams(true))
+            assert(result is StytchResult.Error)
+            verify(exactly = 1) { mockSessionStorage.revoke() }
+        }
 
     @Test
     fun `SessionsImpl revoke with callback calls callback method`() {

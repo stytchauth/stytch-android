@@ -120,6 +120,18 @@ internal object ConsumerRequests {
             val email: String?,
             val password: String,
         )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class PasswordResetByExistingPasswordRequest(
+            val email: String,
+            @Json(name = "existing_password")
+            val existingPassword: String,
+            @Json(name = "new_password")
+            val newPassword: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
     }
 
     object OTP {
@@ -297,6 +309,56 @@ internal object ConsumerRequests {
         @JsonClass(generateAdapter = true)
         data class UpdateRequest(
             val name: String,
+        )
+    }
+
+    object Crypto {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class CryptoWalletAuthenticateStartRequest(
+            @Json(name = "crypto_wallet_address")
+            val cryptoWalletAddress: String,
+            @Json(name = "crypto_wallet_type")
+            val cryptoWalletType: CryptoWalletType,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class CryptoWalletAuthenticateRequest(
+            @Json(name = "crypto_wallet_address")
+            val cryptoWalletAddress: String,
+            @Json(name = "crypto_wallet_type")
+            val cryptoWalletType: CryptoWalletType,
+            val signature: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+    }
+
+    object TOTP {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPCreateRequest(
+            @Json(name = "expiration_minutes")
+            val expirationMinutes: Int,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPAuthenticateRequest(
+            @Json(name = "totp_code")
+            val totpCode: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class TOTPRecoverRequest(
+            @Json(name = "recovery_code")
+            val recoveryCode: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int,
         )
     }
 }

@@ -2,20 +2,22 @@ package com.stytch.sdk.ui.tests
 
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.ui.BaseAndroidComposeTest
-import com.stytch.sdk.ui.data.ApplicationUIState
 import com.stytch.sdk.ui.data.EMLDetails
 import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.data.REALISTIC_STYTCH_UI_CONFIG_NO_PASSWORD
 import com.stytch.sdk.ui.robots.emlConfirmationScreenRobot
 import org.junit.Test
 
-internal class EMLConfirmationScreenTest:  BaseAndroidComposeTest() {
+internal class EMLConfirmationScreenTest : BaseAndroidComposeTest() {
     override fun provideTestInstance() = this
-    private val details = EMLDetails(
-        parameters = MagicLinks.EmailMagicLinks.Parameters(
-            email = "robot@stytch.com"
+
+    private val details =
+        EMLDetails(
+            parameters =
+                MagicLinks.EmailMagicLinks.Parameters(
+                    email = "robot@stytch.com",
+                ),
         )
-    )
 
     @Test
     fun newUserDoesNotShowPasswordOption() {

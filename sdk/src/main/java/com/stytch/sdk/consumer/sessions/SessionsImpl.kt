@@ -8,7 +8,9 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
+import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,6 +20,24 @@ internal class SessionsImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
+    private val callbacks = mutableListOf<(SessionData?) -> Unit>()
+
+    override val onChange: StateFlow<SessionData?> = sessionStorage.sessionFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (SessionData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override val sessionToken: String?
         get() {
             try {
@@ -36,21 +56,29 @@ internal class SessionsImpl internal constructor(
             }
         }
 
+    override fun getSync(): SessionData? {
+        return sessionStorage.session
+    }
+
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         val result: AuthResponse
         withContext(dispatchers.io) {
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
-            result = api.authenticate(
-                authParams.sessionDurationMinutes
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            result =
+                api.authenticate(
+                    authParams.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
         return result
     }
 
-    override fun authenticate(authParams: Sessions.AuthParams, callback: (AuthResponse) -> Unit) {
+    override fun authenticate(
+        authParams: Sessions.AuthParams,
+        callback: (AuthResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)
@@ -75,7 +103,10 @@ internal class SessionsImpl internal constructor(
         return result
     }
 
-    override fun revoke(params: Sessions.RevokeParams, callback: (BaseResponse) -> Unit) {
+    override fun revoke(
+        params: Sessions.RevokeParams,
+        callback: (BaseResponse) -> Unit,
+    ) {
         // call endpoint in IO thread
         externalScope.launch(dispatchers.ui) {
             val result = revoke(params)
@@ -87,7 +118,10 @@ internal class SessionsImpl internal constructor(
     /**
      * @throws StytchInternalError if failed to save data
      */
-    override fun updateSession(sessionToken: String?, sessionJwt: String?) {
+    override fun updateSession(
+        sessionToken: String?,
+        sessionJwt: String?,
+    ) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
         } catch (ex: Exception) {

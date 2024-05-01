@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.OTPSendResponseData
 
 internal object B2BResponses {
     object MagicLinks {
@@ -16,12 +17,24 @@ internal object B2BResponses {
         class DiscoveryAuthenticateResponse(
             data: DiscoveryAuthenticateResponseData,
         ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class InviteResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
     }
 
     object Sessions {
         @Keep
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+        class AuthenticateResponse(
+            data: SessionsAuthenticateResponseData,
+        ) : StytchDataResponse<SessionsAuthenticateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class ExchangeResponse(
+            data: SessionExchangeResponseData,
+        ) : StytchDataResponse<SessionExchangeResponseData>(data)
     }
 
     object Organizations {
@@ -33,7 +46,66 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
+        class UpdateOrganizationResponse(
+            data: OrganizationUpdateResponseData,
+        ) : StytchDataResponse<OrganizationUpdateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class DeleteOrganizationResponse(
+            data: OrganizationDeleteResponseData,
+        ) : StytchDataResponse<OrganizationDeleteResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class DeleteMemberResponse(
+            data: OrganizationMemberDeleteResponseData,
+        ) : StytchDataResponse<OrganizationMemberDeleteResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class ReactivateMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class DeleteOrganizationMemberAuthenticationFactorResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
         class GetMemberResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class UpdateMemberResponse(
+            data: UpdateMemberResponseData,
+        ) : StytchDataResponse<UpdateMemberResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class DeleteMemberAuthenticationFactorResponse(
+            data: MemberDeleteAuthenticationFactorData,
+        ) : StytchDataResponse<MemberDeleteAuthenticationFactorData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class CreateMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class UpdateOrganizationMemberResponse(
+            data: MemberResponseCommonData,
+        ) : StytchDataResponse<MemberResponseCommonData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class MemberSearchResponse(
+            data: MemberSearchResponseData,
+        ) : StytchDataResponse<MemberSearchResponseData>(data)
     }
 
     object Passwords {
@@ -53,7 +125,9 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class ResetByExistingPasswordResponse(data: B2BAuthData) : StytchDataResponse<B2BAuthData>(data)
+        class ResetByExistingPasswordResponse(
+            data: PasswordResetByExistingPasswordResponseData,
+        ) : StytchDataResponse<PasswordResetByExistingPasswordResponseData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -94,5 +168,131 @@ internal object B2BResponses {
         class AuthenticateResponse(
             data: SSOAuthenticateResponseData,
         ) : StytchDataResponse<SSOAuthenticateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOGetConnectionsResponse(
+            data: B2BSSOGetConnectionsResponseData,
+        ) : StytchDataResponse<B2BSSOGetConnectionsResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSODeleteConnectionResponse(
+            data: B2BSSODeleteConnectionResponseData,
+        ) : StytchDataResponse<B2BSSODeleteConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLCreateConnectionResponse(
+            data: B2BSSOSAMLCreateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLCreateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOOIDCCreateConnectionResponse(
+            data: B2BSSOOIDCCreateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOOIDCCreateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLUpdateConnectionResponse(
+            data: B2BSSOSAMLUpdateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLUpdateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOOIDCUpdateConnectionResponse(
+            data: B2BSSOOIDCUpdateConnectionResponseData,
+        ) : StytchDataResponse<B2BSSOOIDCUpdateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLUpdateConnectionByURLResponse(
+            data: B2BSSOSAMLUpdateConnectionByURLResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLUpdateConnectionByURLResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSOSAMLDeleteVerificationCertificateResponse(
+            data: B2BSSOSAMLDeleteVerificationCertificateResponseData,
+        ) : StytchDataResponse<B2BSSOSAMLDeleteVerificationCertificateResponseData>(data)
+    }
+
+    object OTP {
+        object SMS {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class SendResponse(
+                data: OTPSendResponseData,
+            ) : StytchDataResponse<OTPSendResponseData>(data)
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class AuthenticateResponse(
+                data: SMSAuthenticateResponseData,
+            ) : StytchDataResponse<SMSAuthenticateResponseData>(data)
+        }
+    }
+
+    object TOTP {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class CreateResponse(
+            data: TOTPCreateResponseData,
+        ) : StytchDataResponse<TOTPCreateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: TOTPAuthenticateResponseData,
+        ) : StytchDataResponse<TOTPAuthenticateResponseData>(data)
+    }
+
+    object RecoveryCodes {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class GetResponse(
+            data: RecoveryCodeGetResponseData,
+        ) : StytchDataResponse<RecoveryCodeGetResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class RotateResponse(
+            data: RecoveryCodeRotateResponseData,
+        ) : StytchDataResponse<RecoveryCodeRotateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class RecoverResponse(
+            data: RecoveryCodeRecoverResponseData,
+        ) : StytchDataResponse<RecoveryCodeRecoverResponseData>(data)
+    }
+
+    object OAuth {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: OAuthAuthenticateResponseData,
+        ) : StytchDataResponse<OAuthAuthenticateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class DiscoveryAuthenticateResponse(
+            data: DiscoveryAuthenticateResponseData,
+        ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
+    }
+
+    object SearchManager {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class SearchOrganizationResponse(
+            data: B2BSearchOrganizationResponseData,
+        ) : StytchDataResponse<B2BSearchOrganizationResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class SearchMemberResponse(
+            data: B2BSearchMemberResponseData,
+        ) : StytchDataResponse<B2BSearchMemberResponseData>(data)
     }
 }

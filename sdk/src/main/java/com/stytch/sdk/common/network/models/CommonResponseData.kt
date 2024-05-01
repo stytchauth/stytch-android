@@ -372,6 +372,82 @@ public data class BootstrapData(
     val dfpProtectedAuthMode: DFPProtectedAuthMode? = DFPProtectedAuthMode.OBSERVATION,
     @Json(name = "password_config")
     val passwordConfig: PasswordConfig? = null,
+    @Json(name = "rbac_policy")
+    val rbacPolicy: RBACPolicy? = null,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicy(
+    val roles: List<RBACPolicyRole>,
+    val resources: List<RBACPolicyResource>,
+) : Parcelable {
+    public val rolesByID: Map<String, RBACPolicyRole>
+        get() {
+            val map = mutableMapOf<String, RBACPolicyRole>()
+            roles.forEach { role ->
+                map[role.roleId] = role
+            }
+            return map
+        }
+
+    public fun callerIsAuthorized(
+        memberRoles: List<String>,
+        resourceId: String,
+        action: String,
+    ): Boolean {
+        val permission =
+            memberRoles
+                .mapNotNull { roleId -> rolesByID[roleId] }
+                .flatMap { role -> role.permissions }
+                .filter { permission -> permission.resourceId == resourceId }
+                .find { permission ->
+                    permission.actions.contains(action) || permission.actions.contains("*")
+                }
+        return permission != null
+    }
+
+    public fun allPermissionsForCaller(memberRoles: List<String>): Map<String, Map<String, Boolean>> {
+        val allPermissionsMap = mutableMapOf<String, Map<String, Boolean>>()
+        resources.forEach { resource ->
+            val actionMap = mutableMapOf<String, Boolean>()
+            resource.actions.forEach { action ->
+                actionMap[action] = callerIsAuthorized(memberRoles, resource.resourceId, action)
+            }
+            allPermissionsMap[resource.resourceId] = actionMap
+        }
+        return allPermissionsMap
+    }
+}
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicyRole(
+    @Json(name = "role_id")
+    val roleId: String,
+    val description: String,
+    val permissions: List<RBACPermission>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPermission(
+    @Json(name = "resource_id")
+    val resourceId: String,
+    val actions: List<String>,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACPolicyResource(
+    @Json(name = "resource_id")
+    val resourceId: String,
+    val description: String,
+    val actions: List<String>,
 ) : Parcelable
 
 @Keep

@@ -35,35 +35,36 @@ fun BiometricsScreen(navController: NavController) {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = stringResource(
-                R.string.biometrics_registration_exists,
-                StytchClient.biometrics.isRegistrationAvailable(context),
-            )
+            text =
+                stringResource(
+                    R.string.biometrics_registration_exists,
+                    StytchClient.biometrics.isRegistrationAvailable(context),
+                ),
         )
         if (biometricsAreAvailable) {
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.biometrics_register),
-                onClick = { viewModel.registerBiometrics(context) }
+                onClick = { viewModel.registerBiometrics(context) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.biometrics_authenticate),
-                onClick = { viewModel.authenticateBiometrics(context) }
+                onClick = { viewModel.authenticateBiometrics(context) },
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.biometrics_remove),
-                onClick = { viewModel.removeRegistration() }
+                onClick = { viewModel.removeRegistration() },
             )
         } else {
             val unavailable = biometricAvailability as BiometricAvailability.Unavailable
             Text(
                 text = stringResource(id = R.string.biometrics_unavailable, unavailable.reason.message),
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
             )
             if (
                 (unavailable.reason == BiometricAvailability.Unavailable.Reason.BIOMETRIC_ERROR_NONE_ENROLLED) &&
@@ -73,14 +74,15 @@ fun BiometricsScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.biometrics_enroll),
                     onClick = {
-                        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                            putExtra(
-                                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                BiometricManager.Authenticators.BIOMETRIC_STRONG
-                            )
-                        }
+                        val enrollIntent =
+                            Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                                putExtra(
+                                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                    BiometricManager.Authenticators.BIOMETRIC_STRONG,
+                                )
+                            }
                         context.startActivityForResult(enrollIntent, 12345)
-                    }
+                    },
                 )
             }
         }

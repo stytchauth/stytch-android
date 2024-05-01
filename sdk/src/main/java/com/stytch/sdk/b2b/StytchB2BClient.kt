@@ -13,15 +13,27 @@ import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
 import com.stytch.sdk.b2b.member.MemberImpl
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.oauth.OAuth
+import com.stytch.sdk.b2b.oauth.OAuthImpl
 import com.stytch.sdk.b2b.organization.Organization
 import com.stytch.sdk.b2b.organization.OrganizationImpl
+import com.stytch.sdk.b2b.otp.OTP
+import com.stytch.sdk.b2b.otp.OTPImpl
 import com.stytch.sdk.b2b.passwords.Passwords
 import com.stytch.sdk.b2b.passwords.PasswordsImpl
+import com.stytch.sdk.b2b.rbac.RBAC
+import com.stytch.sdk.b2b.rbac.RBACImpl
+import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodes
+import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodesImpl
+import com.stytch.sdk.b2b.searchManager.SearchManager
+import com.stytch.sdk.b2b.searchManager.SearchManagerImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.b2b.sessions.B2BSessionsImpl
 import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
+import com.stytch.sdk.b2b.totp.TOTP
+import com.stytch.sdk.b2b.totp.TOTPImpl
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
@@ -42,7 +54,6 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
-import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +61,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.VisibleForTesting
+import java.util.UUID
 
 /**
  * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our
@@ -57,8 +70,8 @@ import kotlinx.coroutines.withContext
  */
 public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal val sessionStorage = B2BSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
     internal lateinit var dfpProvider: DFPProvider
@@ -70,8 +83,11 @@ public object StytchB2BClient {
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
-    private lateinit var deviceInfo: DeviceInfo
-    private lateinit var appSessionId: String
+    @VisibleForTesting
+    internal lateinit var deviceInfo: DeviceInfo
+
+    @VisibleForTesting
+    internal lateinit var appSessionId: String
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -82,7 +98,11 @@ public object StytchB2BClient {
      * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
-    public fun configure(context: Context, publicToken: String, callback: ((Boolean) -> Unit) = {}) {
+    public fun configure(
+        context: Context,
+        publicToken: String,
+        callback: ((Boolean) -> Unit) = {},
+    ) {
         try {
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
@@ -91,19 +111,17 @@ public object StytchB2BClient {
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider = DFPProviderImpl(publicToken, activityProvider)
             externalScope.launch(dispatchers.io) {
-                bootstrapData = when (val res = StytchB2BApi.getBootstrapData()) {
-                    is StytchResult.Success -> res.value
-                    else -> BootstrapData()
-                }
+                refreshBootstrapData()
                 StytchB2BApi.configureDFP(
                     dfpProvider = dfpProvider,
-                    captchaProvider = CaptchaProviderImpl(
-                        context.applicationContext as Application,
-                        externalScope,
-                        bootstrapData.captchaSettings.siteKey
-                    ),
+                    captchaProvider =
+                        CaptchaProviderImpl(
+                            context.applicationContext as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey,
+                        ),
                     bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -119,9 +137,17 @@ public object StytchB2BClient {
             events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",
-                exception = ex
+                exception = ex,
             )
         }
+    }
+
+    public suspend fun refreshBootstrapData() {
+        bootstrapData =
+            when (val res = StytchB2BApi.getBootstrapData()) {
+                is StytchResult.Success -> res.value
+                else -> BootstrapData()
+            }
     }
 
     internal fun assertInitialized() {
@@ -134,16 +160,18 @@ public object StytchB2BClient {
      * Exposes an instance of the [B2BMagicLinks] interface whicih provides methods for sending and authenticating
      * users with Email Magic Links.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var magicLinks: B2BMagicLinks = B2BMagicLinksImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        StorageHelper,
-        StytchB2BApi.MagicLinks.Email,
-        StytchB2BApi.MagicLinks.Discovery,
-    )
+    public var magicLinks: B2BMagicLinks =
+        B2BMagicLinksImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StorageHelper,
+            StytchB2BApi.MagicLinks.Email,
+            StytchB2BApi.MagicLinks.Discovery,
+        )
         get() {
             assertInitialized()
             return field
@@ -154,14 +182,16 @@ public object StytchB2BClient {
      * Exposes an instance of the [B2BSessions] interface which provides methods for authenticating, updating, or
      * revoking sessions, and properties to retrieve the existing session token (opaque or JWT).
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var sessions: B2BSessions = B2BSessionsImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        StytchB2BApi.Sessions
-    )
+    public var sessions: B2BSessions =
+        B2BSessionsImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchB2BApi.Sessions,
+        )
         get() {
             assertInitialized()
             return field
@@ -172,13 +202,16 @@ public object StytchB2BClient {
      * Exposes an instance of the [Organization] interface which provides methods for retrieving the current
      * authenticated user's organization.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var organization: Organization = OrganizationImpl(
-        externalScope,
-        dispatchers,
-        StytchB2BApi.Organization
-    )
+    public var organization: Organization =
+        OrganizationImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchB2BApi.Organization,
+        )
         get() {
             assertInitialized()
             return field
@@ -189,14 +222,16 @@ public object StytchB2BClient {
      * Exposes an instance of the [Member] interface which provides methods for retrieving the current authenticated
      * user.
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var member: Member = MemberImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        StytchB2BApi.Member
-    )
+    public var member: Member =
+        MemberImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchB2BApi.Member,
+        )
         get() {
             assertInitialized()
             return field
@@ -207,15 +242,17 @@ public object StytchB2BClient {
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating passwords, resetting
      * passwords, and checking the strength of passwords
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var passwords: Passwords = PasswordsImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        StorageHelper,
-        StytchB2BApi.Passwords,
-    )
+    public var passwords: Passwords =
+        PasswordsImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StorageHelper,
+            StytchB2BApi.Passwords,
+        )
         get() {
             assertInitialized()
             return field
@@ -226,13 +263,16 @@ public object StytchB2BClient {
      * Exposes an instance of the [Discovery] interface which provides methods for creating and discovering
      * Organizations and exchanging sessions between organizations
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
-    public var discovery: Discovery = DiscoveryImpl(
-        externalScope,
-        dispatchers,
-        StytchB2BApi.Discovery,
-    )
+    public var discovery: Discovery =
+        DiscoveryImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StytchB2BApi.Discovery,
+        )
         get() {
             assertInitialized()
             return field
@@ -242,13 +282,14 @@ public object StytchB2BClient {
     /**
      * Exposes an instance of the [SSO] interface which provides methods for authenticating SSO sessions
      */
-    public var sso: SSO = SSOImpl(
-        externalScope,
-        dispatchers,
-        sessionStorage,
-        StorageHelper,
-        StytchB2BApi.SSO,
-    )
+    public var sso: SSO =
+        SSOImpl(
+            externalScope,
+            dispatchers,
+            sessionStorage,
+            StorageHelper,
+            StytchB2BApi.SSO,
+        )
         get() {
             assertInitialized()
             return field
@@ -259,7 +300,8 @@ public object StytchB2BClient {
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
      * in DFP lookups on your backend server
      *
-     * @throws [stytchError] if you attempt to access this property before calling StytchB2BClient.configure()
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
      */
     public val dfp: DFP by lazy {
         assertInitialized()
@@ -273,6 +315,86 @@ public object StytchB2BClient {
         }
 
     /**
+     * Exposes an instance of the [OTP] interface which provides a method for sending and authenticating OTP codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var otp: OTP = OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [TOTP] interface which provides a method for creating and authenticating TOTP codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var totp: TOTP = TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [RecoveryCodes] interface which provides methods for getting, rotating, and
+     * recovering recovery codes
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var recoveryCodes: RecoveryCodes =
+        RecoveryCodesImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.RecoveryCodes)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [OAuth] interface which provides a method for starting and authenticating OAuth and
+     * OAuth Discovery flows
+     *
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var oauth: OAuth =
+        OAuthImpl(externalScope, dispatchers, sessionStorage, StorageHelper, StytchB2BApi.OAuth)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [RBAC] interface which provides methods for checking a member's permissions
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var rbac: RBAC = RBACImpl(externalScope, dispatchers, sessionStorage)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [SearchManager] interface which provides methods for search organizations and members
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var searchManager: SearchManager = SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
      * deeplink types are: B2B Email Magic Links.
      *
@@ -284,20 +406,23 @@ public object StytchB2BClient {
      * @param sessionDurationMinutes desired session duration in minutes
      * @return [DeeplinkHandledStatus]
      */
-    public suspend fun handle(uri: Uri, sessionDurationMinutes: UInt): DeeplinkHandledStatus {
+    public suspend fun handle(
+        uri: Uri,
+        sessionDurationMinutes: UInt,
+    ): DeeplinkHandledStatus {
         assertInitialized()
         return withContext(dispatchers.io) {
             val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError)
+                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
             }
             when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Auth(
-                            magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes))
-                        )
+                            magicLinks.authenticate(B2BMagicLinks.AuthParameters(token, sessionDurationMinutes)),
+                        ),
                     )
                 }
                 B2BTokenType.DISCOVERY -> {
@@ -306,10 +431,10 @@ public object StytchB2BClient {
                         DeeplinkResponse.Discovery(
                             magicLinks.discoveryAuthenticate(
                                 B2BMagicLinks.DiscoveryAuthenticateParameters(
-                                    token = token
-                                )
-                            )
-                        )
+                                    token = token,
+                                ),
+                            ),
+                        ),
                     )
                 }
                 B2BTokenType.MULTI_TENANT_PASSWORDS -> {
@@ -323,15 +448,40 @@ public object StytchB2BClient {
                             sso.authenticate(
                                 SSO.AuthenticateParams(
                                     ssoToken = token,
-                                    sessionDurationMinutes = sessionDurationMinutes
-                                )
-                            )
-                        )
+                                    sessionDurationMinutes = sessionDurationMinutes,
+                                ),
+                            ),
+                        ),
+                    )
+                }
+                B2BTokenType.OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Auth(
+                            oauth.authenticate(
+                                OAuth.AuthenticateParameters(
+                                    oauthToken = token,
+                                    sessionDurationMinutes = sessionDurationMinutes,
+                                ),
+                            ),
+                        ),
+                    )
+                }
+                B2BTokenType.DISCOVERY_OAUTH -> {
+                    events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    DeeplinkHandledStatus.Handled(
+                        DeeplinkResponse.Discovery(
+                            oauth.discovery.authenticate(
+                                OAuth.Discovery.DiscoveryAuthenticateParameters(
+                                    discoveryOauthToken = token,
+                                ),
+                            ),
+                        ),
                     )
                 }
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
-                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError)
+                    DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError())
                 }
             }
         }
@@ -352,7 +502,7 @@ public object StytchB2BClient {
     public fun handle(
         uri: Uri,
         sessionDurationMinutes: UInt,
-        callback: (response: DeeplinkHandledStatus) -> Unit
+        callback: (response: DeeplinkHandledStatus) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = handle(uri, sessionDurationMinutes)

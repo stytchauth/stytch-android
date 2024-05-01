@@ -22,10 +22,11 @@ internal fun FormFieldStatus(
     val type = LocalStytchTypography.current
     Text(
         text = text,
-        style = type.caption.copy(
-            textAlign = textAlign,
-            color = Color(if (isError) theme.errorColor else theme.successColor),
-        ),
+        style =
+            type.caption.copy(
+                textAlign = textAlign,
+                color = Color(if (isError) theme.errorColor else theme.successColor),
+            ),
         modifier = modifier.fillMaxWidth().padding(bottom = 24.dp),
     )
 }

@@ -15,6 +15,8 @@
     <string name="passwords_reset_by_email_start">Reset by email start</string>
     <string name="passwords_reset_by_email">Reset by email (needs token)</string>
     <string name="passwords_reset_by_session">Reset by session</string>
+    <string name="passwords_new">New password</string>
+    <string name="passwords_reset_by_existing">Reset By Existing password</string>
     <string name="deep_link_title">Deep links</string>
     <string name="host">exampleapp.com</string>
     <string name="deeplink_received_toast">Deeplink received</string>
@@ -59,4 +61,12 @@
     <string name="passkeys_clear">Clear passkey registrations</string>
     <string name="passkey_name">Passkey Name</string>
     <string name="passkey_update">Update Passkey</string>
+    <string name="totps">TOTP</string>
+    <string name="totp_create">Create TOTP</string>
+    <string name="totp_authenticate">Authenticate TOTP</string>
+    <string name="totp_recovery_codes">TOTP Recovery Codes</string>
+    <string name="totp_recover">Recover TOTP</string>
+    <string name="totp_id">TOTP ID</string>
+    <string name="totp_code">TOTP Code</string>
+    <string name="totp_recovery_code">TOTP Recovery Code</string>
 </resources>

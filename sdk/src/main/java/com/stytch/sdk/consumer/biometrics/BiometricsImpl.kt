@@ -29,12 +29,13 @@ internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_re
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
 internal const val CIPHER_IV_KEY = "biometrics_cipher_iv"
 internal const val ALLOW_DEVICE_CREDENTIALS_KEY = "biometric_allow_device_credentials"
-private val KEYS_REQUIRED_FOR_REGISTRATION = listOf(
-    LAST_USED_BIOMETRIC_REGISTRATION_ID,
-    PRIVATE_KEY_KEY,
-    CIPHER_IV_KEY,
-    ALLOW_DEVICE_CREDENTIALS_KEY
-)
+private val KEYS_REQUIRED_FOR_REGISTRATION =
+    listOf(
+        LAST_USED_BIOMETRIC_REGISTRATION_ID,
+        PRIVATE_KEY_KEY,
+        CIPHER_IV_KEY,
+        ALLOW_DEVICE_CREDENTIALS_KEY,
+    )
 
 @Suppress("LongParameterList")
 internal class BiometricsImpl internal constructor(
@@ -53,9 +54,11 @@ internal class BiometricsImpl internal constructor(
             BIOMETRIC_STRONG
         }
 
-    private fun registrationExists(): Boolean = KEYS_REQUIRED_FOR_REGISTRATION.all {
-        storageHelper.preferenceExists(it)
-    }
+    private fun registrationExists(): Boolean =
+        KEYS_REQUIRED_FOR_REGISTRATION.all {
+            storageHelper.preferenceExists(it)
+        }
+
     override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
         return registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
     }
@@ -87,14 +90,15 @@ internal class BiometricsImpl internal constructor(
         }
     }
 
-    override suspend fun removeRegistration(): Boolean = withContext(dispatchers.io) {
-        storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-            deleteBiometricRegistration(it)
+    override suspend fun removeRegistration(): Boolean =
+        withContext(dispatchers.io) {
+            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
+                deleteBiometricRegistration(it)
+            }
+            KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
+            biometricsProvider.deleteSecretKey()
+            true
         }
-        KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
-        biometricsProvider.deleteSecretKey()
-        true
-    }
 
     override fun removeRegistration(callback: (Boolean) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -109,28 +113,30 @@ internal class BiometricsImpl internal constructor(
         withContext(dispatchers.io) {
             try {
                 if (!isUsingKeystore() && !parameters.allowFallbackToCleartext) {
-                    throw StytchKeystoreUnavailableError
+                    throw StytchKeystoreUnavailableError()
                 }
                 if (isRegistrationAvailable(parameters.context)) {
                     removeRegistration()
                 }
                 sessionStorage.ensureSessionIsValidOrThrow()
                 val allowedAuthenticators = getAllowedAuthenticators(parameters.allowDeviceCredentials)
-                val cipher = withContext(dispatchers.ui) {
-                    biometricsProvider.showBiometricPromptForRegistration(
-                        context = parameters.context,
-                        promptData = parameters.promptData,
-                        allowedAuthenticators = allowedAuthenticators,
-                    )
-                }
+                val cipher =
+                    withContext(dispatchers.ui) {
+                        biometricsProvider.showBiometricPromptForRegistration(
+                            context = parameters.context,
+                            promptData = parameters.promptData,
+                            allowedAuthenticators = allowedAuthenticators,
+                        )
+                    }
                 val (publicKey, privateKey) = EncryptionManager.generateEd25519KeyPair()
                 val encryptedPrivateKeyBytes = cipher.doFinal(privateKey.toBase64DecodedByteArray())
                 val encryptedPrivateKeyString = encryptedPrivateKeyBytes.toBase64EncodedString()
                 val startResponse = api.registerStart(publicKey = publicKey).getValueOrThrow()
-                val signature = EncryptionManager.signEd25519Challenge(
-                    challengeString = startResponse.challenge,
-                    privateKeyString = privateKey
-                )
+                val signature =
+                    EncryptionManager.signEd25519Challenge(
+                        challengeString = startResponse.challenge,
+                        privateKeyString = privateKey,
+                    )
                 api.register(
                     signature = signature,
                     biometricRegistrationId = startResponse.biometricRegistrationId,
@@ -139,7 +145,7 @@ internal class BiometricsImpl internal constructor(
                     if (this is StytchResult.Success) {
                         storageHelper.saveValue(
                             LAST_USED_BIOMETRIC_REGISTRATION_ID,
-                            startResponse.biometricRegistrationId
+                            startResponse.biometricRegistrationId,
                         )
                         storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
                         storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
@@ -175,29 +181,31 @@ internal class BiometricsImpl internal constructor(
                 try {
                     require(isRegistrationAvailable(parameters.context) && encryptedPrivateKey != null && iv != null)
                 } catch (e: IllegalArgumentException) {
-                    throw StytchNoBiometricsRegistrationError
+                    throw StytchNoBiometricsRegistrationError()
                 }
-                val cipher = withContext(dispatchers.ui) {
-                    biometricsProvider.showBiometricPromptForAuthentication(
-                        context = parameters.context,
-                        promptData = parameters.promptData,
-                        iv = iv.toBase64DecodedByteArray(),
-                        allowedAuthenticators = allowedAuthenticators,
-                    )
-                }
+                val cipher =
+                    withContext(dispatchers.ui) {
+                        biometricsProvider.showBiometricPromptForAuthentication(
+                            context = parameters.context,
+                            promptData = parameters.promptData,
+                            iv = iv.toBase64DecodedByteArray(),
+                            allowedAuthenticators = allowedAuthenticators,
+                        )
+                    }
                 val encryptedPrivateKeyBytes = encryptedPrivateKey.toBase64DecodedByteArray()
                 val decryptedPrivateKey = cipher.doFinal(encryptedPrivateKeyBytes)
                 val privateKeyString = decryptedPrivateKey.toBase64EncodedString()
                 val publicKeyString = EncryptionManager.deriveEd25519PublicKeyFromPrivateKeyBytes(decryptedPrivateKey)
                 val startResponse = api.authenticateStart(publicKey = publicKeyString).getValueOrThrow()
-                val signature = EncryptionManager.signEd25519Challenge(
-                    challengeString = startResponse.challenge,
-                    privateKeyString = privateKeyString
-                )
+                val signature =
+                    EncryptionManager.signEd25519Challenge(
+                        challengeString = startResponse.challenge,
+                        privateKeyString = privateKeyString,
+                    )
                 api.authenticate(
                     signature = signature,
                     biometricRegistrationId = startResponse.biometricRegistrationId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

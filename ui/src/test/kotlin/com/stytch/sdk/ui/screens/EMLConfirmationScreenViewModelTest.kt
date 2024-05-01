@@ -15,8 +15,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -43,6 +45,10 @@ internal class EMLConfirmationScreenViewModelTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
+        every { mockStytchClient.events } returns
+            mockk(relaxed = true) {
+                every { logEvent(any(), any()) } just runs
+            }
         viewModel = EMLConfirmationScreenViewModel(savedStateHandle, mockStytchClient)
     }
 
@@ -64,65 +70,78 @@ internal class EMLConfirmationScreenViewModelTest {
     }
 
     @Test
-    fun `sendResetPasswordEmail sets error message if no email address is passed`() = runTest(dispatcher) {
-        viewModel.sendResetPasswordEmail(null, mockk(), this)
-        assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
-    }
-
-    @Test
-    fun `sendResetPasswordEmail delegates to correct method and emits event on success`() = runTest(dispatcher) {
-        coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Success(BasicData(200, ""))
-        every { mockStytchClient.publicToken } returns "publicToken"
-        val eventFlow = async {
-            viewModel.eventFlow.first()
+    fun `sendResetPasswordEmail sets error message if no email address is passed`() =
+        runTest(dispatcher) {
+            viewModel.sendResetPasswordEmail(null, mockk(), this)
+            assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
         }
-        val mockOptions: PasswordOptions = mockk(relaxed = true)
-        val expectedEvent = EventState.NavigationRequested(
-            NavigationRoute.PasswordResetSent(
-                PasswordResetDetails(
-                    mockOptions.toResetByEmailStartParameters("my@email.com", "publicToken"),
-                    PasswordResetType.NO_PASSWORD_SET
-                ),
-            ),
-        )
-        viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
-        coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
-        assert(eventFlow.await() == expectedEvent)
-    }
 
     @Test
-    fun `sendResetPasswordEmail delegates to correct method and updates state on error`() = runTest(dispatcher) {
-        every { mockStytchClient.publicToken } returns "publicToken"
-        coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns StytchResult.Error(
-            StytchInternalError(message = "Testing error state")
-        )
-        val mockOptions: PasswordOptions = mockk(relaxed = true)
-        viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
-        coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
-        assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
-    }
+    fun `sendResetPasswordEmail delegates to correct method and emits event on success`() =
+        runTest(dispatcher) {
+            coEvery {
+                mockStytchClient.passwords.resetByEmailStart(
+                    any(),
+                )
+            } returns StytchResult.Success(BasicData(200, ""))
+            every { mockStytchClient.publicToken } returns "publicToken"
+            val eventFlow =
+                async {
+                    viewModel.eventFlow.first()
+                }
+            val mockOptions: PasswordOptions = mockk(relaxed = true)
+            val expectedEvent =
+                EventState.NavigationRequested(
+                    NavigationRoute.PasswordResetSent(
+                        PasswordResetDetails(
+                            mockOptions.toResetByEmailStartParameters("my@email.com", "publicToken"),
+                            PasswordResetType.NO_PASSWORD_SET,
+                        ),
+                    ),
+                )
+            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
+            coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
+            assert(eventFlow.await() == expectedEvent)
+        }
 
     @Test
-    fun `resendEML delegates to correct method and updates state on success`() = runTest(dispatcher) {
-        coEvery {
-            mockStytchClient.magicLinks.email.loginOrCreate(any())
-        } returns StytchResult.Success(BasicData(200, ""))
-        viewModel.resendEML(mockk(), this)
-        coVerify(exactly = 1) { mockStytchClient.magicLinks.email.loginOrCreate(any()) }
-        assert(!viewModel.uiState.value.showResendDialog)
-        assert(viewModel.uiState.value.genericErrorMessage == null)
-    }
+    fun `sendResetPasswordEmail delegates to correct method and updates state on error`() =
+        runTest(dispatcher) {
+            every { mockStytchClient.publicToken } returns "publicToken"
+            coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns
+                StytchResult.Error(
+                    StytchInternalError(message = "Testing error state"),
+                )
+            val mockOptions: PasswordOptions = mockk(relaxed = true)
+            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
+            coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
+            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+        }
 
     @Test
-    fun `resendEML delegates to correct method and updates state on error`() = runTest(dispatcher) {
-        coEvery {
-            mockStytchClient.magicLinks.email.loginOrCreate(any())
-        } returns StytchResult.Error(
-            StytchInternalError(message = "Testing error state")
-        )
-        viewModel.resendEML(mockk(), this)
-        coVerify(exactly = 1) { mockStytchClient.magicLinks.email.loginOrCreate(any()) }
-        assert(!viewModel.uiState.value.showResendDialog)
-        assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
-    }
+    fun `resendEML delegates to correct method and updates state on success`() =
+        runTest(dispatcher) {
+            coEvery {
+                mockStytchClient.magicLinks.email.loginOrCreate(any())
+            } returns StytchResult.Success(BasicData(200, ""))
+            viewModel.resendEML(mockk(relaxed = true), this)
+            coVerify(exactly = 1) { mockStytchClient.magicLinks.email.loginOrCreate(any()) }
+            assert(!viewModel.uiState.value.showResendDialog)
+            assert(viewModel.uiState.value.genericErrorMessage == null)
+        }
+
+    @Test
+    fun `resendEML delegates to correct method and updates state on error`() =
+        runTest(dispatcher) {
+            coEvery {
+                mockStytchClient.magicLinks.email.loginOrCreate(any())
+            } returns
+                StytchResult.Error(
+                    StytchInternalError(message = "Testing error state"),
+                )
+            viewModel.resendEML(mockk(), this)
+            coVerify(exactly = 1) { mockStytchClient.magicLinks.email.loginOrCreate(any()) }
+            assert(!viewModel.uiState.value.showResendDialog)
+            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+        }
 }

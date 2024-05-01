@@ -17,7 +17,7 @@ internal fun LoadingDialog() {
     val semantics = stringResource(id = R.string.semantics_loading_dialog)
     Dialog(onDismissRequest = {}) {
         CircularProgressIndicator(
-            modifier = Modifier.semantics { contentDescription = semantics},
+            modifier = Modifier.semantics { contentDescription = semantics },
             color = Color(theme.inputTextColor),
         )
     }

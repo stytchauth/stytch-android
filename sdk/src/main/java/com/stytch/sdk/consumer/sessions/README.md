@@ -6,3 +6,5 @@ Call the `StytchClient.sessions.authenticate()` method to authenticate a Session
 Call the `StytchClient.sessions.updateSession()` method to update the existing session with new session data.
 
 Call the `StytchClient.sessions.revoke()` method to revoke the current session and immediately invalidate all of its tokens.
+
+Call the `StytchClient.sessions.onChange()` method with a callback to be triggered on changes to the underlying session. Alternatively, you can listen directly to the flow using the `StytchClient.sessions.onChange` StateFlow.
