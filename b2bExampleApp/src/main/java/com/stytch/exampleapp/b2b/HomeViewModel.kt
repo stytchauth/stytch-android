@@ -41,14 +41,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val emailIsValid
         get() = isValidEmail(emailState.text)
 
-    init {
-        // Initialize StytchB2BClient
-        StytchB2BClient.configure(
-            context = application.applicationContext,
-            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
-        )
-    }
-
     fun getOrganizationDetails() {
         _loadingState.value = true
         viewModelScope.launch {

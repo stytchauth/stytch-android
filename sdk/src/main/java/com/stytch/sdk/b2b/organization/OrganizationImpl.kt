@@ -17,6 +17,7 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -26,6 +27,24 @@ internal class OrganizationImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Organization,
 ) : Organization {
+    private val callbacks = mutableListOf<(OrganizationData?) -> Unit>()
+
+    override val onChange: StateFlow<OrganizationData?> = sessionStorage.organizationFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (OrganizationData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override suspend fun get(): OrganizationResponse =
         withContext(dispatchers.io) {
             api.getOrganization().apply {

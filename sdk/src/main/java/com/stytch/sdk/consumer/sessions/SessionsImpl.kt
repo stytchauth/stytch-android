@@ -10,6 +10,7 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -19,6 +20,24 @@ internal class SessionsImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
+    private val callbacks = mutableListOf<(SessionData?) -> Unit>()
+
+    override val onChange: StateFlow<SessionData?> = sessionStorage.sessionFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (SessionData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override val sessionToken: String?
         get() {
             try {

@@ -8,3 +8,5 @@ If you want to get the freshest representation of the user from the Stytch serve
 To remove an authentication factor from a user, use the `StytchClient.user.deleteFactor()` method.
 
 To update a user, use the `StytchClient.user.update()` method.
+
+Call the `StytchClient.user.onChange()` method with a callback to be triggered on changes to the underlying user. Alternatively, you can listen directly to the flow using the `StytchClient.user.onChange` StateFlow.

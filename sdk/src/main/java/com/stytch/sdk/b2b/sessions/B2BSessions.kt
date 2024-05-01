@@ -5,12 +5,24 @@ import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
 public interface B2BSessions {
+    /**
+     * Exposes a flow of session data
+     */
+    public val onChange: StateFlow<B2BSessionData?>
+
+    /**
+     * Assign a callback that will be called when the session data changes
+     */
+
+    public fun onChange(callback: (B2BSessionData?) -> Unit)
+
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */

@@ -6,3 +6,5 @@ Call the `StytchB2BClient.sessions.authenticate()` method to authenticate a Sess
 Call the `StytchB2BClient.sessions.updateSession()` method to update the existing session with new session data.
 
 Call the `StytchB2BClient.sessions.revoke()` method to revoke the current session and immediately invalidate all of its tokens.
+
+Call the `StytchB2BClient.sessions.onChange()` method with a callback to be triggered on changes to the underlying session. Alternatively, you can listen directly to the flow using the `StytchB2BClient.sessions.onChange` StateFlow.

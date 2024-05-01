@@ -59,7 +59,7 @@ internal class OrganizationImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         every { StorageHelper.saveValue(any(), any()) } just runs
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
         impl =
             OrganizationImpl(
                 externalScope = TestScope(),

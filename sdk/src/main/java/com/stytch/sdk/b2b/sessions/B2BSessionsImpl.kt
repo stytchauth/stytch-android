@@ -11,6 +11,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -20,6 +21,24 @@ internal class B2BSessionsImpl internal constructor(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Sessions,
 ) : B2BSessions {
+    private val callbacks = mutableListOf<(B2BSessionData?) -> Unit>()
+
+    override val onChange: StateFlow<B2BSessionData?> = sessionStorage.sessionFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (B2BSessionData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override val sessionToken: String?
         get() {
             try {

@@ -70,8 +70,8 @@ import java.util.UUID
  */
 public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal val sessionStorage = B2BSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
     internal lateinit var dfpProvider: DFPProvider

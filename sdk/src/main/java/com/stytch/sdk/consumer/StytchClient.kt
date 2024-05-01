@@ -66,8 +66,8 @@ import java.util.UUID
  */
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal val sessionStorage = ConsumerSessionStorage(StorageHelper)
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
 

@@ -13,6 +13,7 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.coroutines.test.TestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +30,7 @@ internal class B2BSessionStorageTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
-        storage = B2BSessionStorage(mockStorageHelper)
+        storage = B2BSessionStorage(mockStorageHelper, TestScope())
     }
 
     @After

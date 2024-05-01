@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,6 +19,24 @@ internal class MemberImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Member,
 ) : Member {
+    private val callbacks = mutableListOf<(MemberData?) -> Unit>()
+
+    override val onChange: StateFlow<MemberData?> = sessionStorage.memberFlow
+
+    init {
+        externalScope.launch {
+            onChange.collect {
+                callbacks.forEach { callback ->
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    override fun onChange(callback: (MemberData?) -> Unit) {
+        callbacks.add(callback)
+    }
+
     override suspend fun get(): MemberResponse =
         withContext(dispatchers.io) {
             api.getMember().apply {

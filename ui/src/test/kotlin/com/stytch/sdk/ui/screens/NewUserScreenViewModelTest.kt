@@ -19,8 +19,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -47,6 +49,10 @@ internal class NewUserScreenViewModelTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
+        every { mockStytchClient.events } returns
+            mockk(relaxed = true) {
+                every { logEvent(any(), any()) } just runs
+            }
         viewModel = NewUserScreenViewModel(savedStateHandle, mockStytchClient)
     }
 

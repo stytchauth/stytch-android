@@ -21,12 +21,24 @@ import com.stytch.sdk.b2b.network.models.MfaPolicy
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The Organization interface provides methods for retrieving, updating, and deleting the current authenticated user's
  * organization and creating, updating, deleting, reactivating, and searching an organizations members
  */
 public interface Organization {
+    /**
+     * Exposes a flow of organization data
+     */
+    public val onChange: StateFlow<OrganizationData?>
+
+    /**
+     * Assign a callback that will be called when the organization data changes
+     */
+
+    public fun onChange(callback: (OrganizationData?) -> Unit)
+
     /**
      * Wraps Stytch’s organization/me endpoint.
      * @return [OrganizationResponse]

@@ -58,6 +58,8 @@ internal class UserManagementImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
         every { mockSessionStorage.user = any() } just runs
+        every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
         impl =
             UserManagementImpl(
                 externalScope = TestScope(),

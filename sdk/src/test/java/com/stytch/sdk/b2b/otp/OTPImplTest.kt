@@ -54,7 +54,7 @@ internal class OTPImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
         impl =
             OTPImpl(
                 externalScope = TestScope(),

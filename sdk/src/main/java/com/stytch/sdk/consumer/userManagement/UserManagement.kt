@@ -6,12 +6,24 @@ import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
  * factors from an authenticated user.
  */
 public interface UserManagement {
+    /**
+     * Exposes a flow of user data
+     */
+    public val onChange: StateFlow<UserData?>
+
+    /**
+     * Assign a callback that will be called when the user data changes
+     */
+
+    public fun onChange(callback: (UserData?) -> Unit)
+
     /**
      * Fetches a user from the current session
      * @return [UserResponse]

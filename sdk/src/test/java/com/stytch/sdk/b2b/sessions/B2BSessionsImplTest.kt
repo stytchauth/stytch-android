@@ -62,6 +62,9 @@ internal class B2BSessionsImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.memberFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.organizationFlow } returns mockk(relaxed = true)
         impl =
             B2BSessionsImpl(
                 externalScope = TestScope(),

@@ -9,6 +9,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
+import kotlinx.coroutines.test.TestScope
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
@@ -22,7 +23,7 @@ internal class ConsumerSessionStorageTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         every { StorageHelper.saveValue(any(), any()) } just runs
-        impl = ConsumerSessionStorage(StorageHelper)
+        impl = ConsumerSessionStorage(StorageHelper, TestScope())
     }
 
     @Test(expected = StytchNoCurrentSessionError::class)

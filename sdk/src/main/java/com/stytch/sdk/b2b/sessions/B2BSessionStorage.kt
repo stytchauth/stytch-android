@@ -5,8 +5,15 @@ import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
+internal class B2BSessionStorage(
+    private val storageHelper: StorageHelper,
+    private val externalScope: CoroutineScope,
+) {
     var sessionToken: String?
         private set(value) {
             storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_TOKEN, value)
@@ -43,16 +50,40 @@ internal class B2BSessionStorage(private val storageHelper: StorageHelper) {
         }
 
     var memberSession: B2BSessionData? = null
-        internal set
+        internal set(value) {
+            field = value
+            externalScope.launch {
+                _sessionFlow.emit(field)
+            }
+        }
 
     var member: MemberData? = null
-        internal set
+        internal set(value) {
+            field = value
+            externalScope.launch {
+                _memberFlow.emit(field)
+            }
+        }
 
     var organization: OrganizationData? = null
-        internal set
+        internal set(value) {
+            field = value
+            externalScope.launch {
+                _organizationFlow.emit(field)
+            }
+        }
 
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
+
+    private val _sessionFlow = MutableStateFlow(memberSession)
+    val sessionFlow = _sessionFlow.asStateFlow()
+
+    private val _memberFlow = MutableStateFlow(member)
+    val memberFlow = _memberFlow.asStateFlow()
+
+    private val _organizationFlow = MutableStateFlow(organization)
+    val organizationFlow = _organizationFlow.asStateFlow()
 
     /**
      * @throws Exception if failed to save data

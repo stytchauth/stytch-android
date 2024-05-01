@@ -4,12 +4,24 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.SessionData
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
 public interface Sessions {
+    /**
+     * Exposes a flow of session data
+     */
+    public val onChange: StateFlow<SessionData?>
+
+    /**
+     * Assign a callback that will be called when the session data changes
+     */
+
+    public fun onChange(callback: (SessionData?) -> Unit)
+
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data
      */
