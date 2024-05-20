@@ -38,10 +38,9 @@ android {
                 b2bOrganizationId = STYTCH_B2B_ORG_ID
             }
             buildConfigField "String", "STYTCH_B2B_ORG_ID", "\"$b2bOrganizationId\""
-            minifyEnabled true
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
