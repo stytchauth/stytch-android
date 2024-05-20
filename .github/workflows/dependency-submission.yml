@@ -20,6 +20,10 @@ jobs:
         java-version: 17
     - name: Generate and submit dependency graph
       uses: gradle/actions/dependency-submission@v3
+      with:
+        build-scan-publish: true
+        build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
+        build-scan-terms-of-use-agree: "yes"
       env:
         STYTCH_PUBLIC_TOKEN: 'abc123'
         GOOGLE_OAUTH_CLIENT_ID: 'abc123'
