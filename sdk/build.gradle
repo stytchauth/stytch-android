@@ -143,7 +143,7 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation 'com.google.crypto.tink:tink-android:1.8.0'
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.72'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
     implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
     implementation "androidx.credentials:credentials:1.2.2"
     implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
