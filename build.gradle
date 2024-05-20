@@ -21,7 +21,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version")
         classpath("org.jetbrains.dokka:versioning-plugin:$dokka_version")
-        classpath("com.android.tools:r8:8.3.37")
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
