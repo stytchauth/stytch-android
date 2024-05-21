@@ -44,7 +44,6 @@ android {
                 passkeysDomain = PASSKEYS_DOMAIN
             }
             buildConfigField "String", "PASSKEYS_DOMAIN", "\"$passkeysDomain\""
-            minifyEnabled true
         }
         release {
             minifyEnabled false
