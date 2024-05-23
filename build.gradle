@@ -64,6 +64,7 @@ subprojects {
     // Optionally configure plugin
     ktlint {
         android = true
+        version = "1.2.1"
     }
 }
 
