@@ -58,6 +58,7 @@ internal class B2BSessionStorageTest {
     @Test
     fun `SessionStorage setters delegate to storageHelper`() {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.saveLong(any(), any()) } just runs
         storage.updateSession(
             sessionToken = "mySessionToken",
             sessionJwt = "mySessionJwt",
@@ -72,6 +73,7 @@ internal class B2BSessionStorageTest {
     fun `SessionStorage updateSession correctly updates sessionData`() {
         // we're not testing sessiontoken or sessionjwt here, because the getters/setters are already tested above
         every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.saveLong(any(), any()) } just runs
         val mockedSessionData = mockk<B2BSessionData>(relaxed = true)
         storage.updateSession(
             sessionToken = "mySessionToken",
@@ -85,6 +87,7 @@ internal class B2BSessionStorageTest {
     fun `SessionStorage revoke properly nulls out session data`() {
         // we're not testing sessiontoken or sessionjwt here, because the getters/setters are already tested above
         every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.saveLong(any(), any()) } just runs
         storage.revoke()
         assert(storage.memberSession == null)
         assert(storage.member == null)
