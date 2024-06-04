@@ -51,7 +51,19 @@ internal object StorageHelper {
         }
     }
 
+    internal fun saveLong(
+        name: String,
+        value: Long,
+    ) {
+        with(sharedPreferences.edit()) {
+            putLong(name, value)
+            apply()
+        }
+    }
+
     internal fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
+
+    internal fun getLong(name: String): Long = sharedPreferences.getLong(name, 0L)
 
     /**
      * Load and decrypt value from SharedPreferences
