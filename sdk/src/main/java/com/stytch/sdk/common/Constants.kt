@@ -19,4 +19,6 @@ public object Constants {
     internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
     internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
     internal const val PREFERENCES_NAME_IST = "intermediate_session_token"
+    internal const val PREFERENCES_NAME_IST_EXPIRATION = "intermediate_session_token_expiration"
+    internal const val IST_EXPIRATION_TIME = 10 * 60 * 1000L // 10 minutes
 }

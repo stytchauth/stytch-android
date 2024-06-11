@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 
 internal class B2BSessionStorage(
     private val storageHelper: StorageHelper,
@@ -40,11 +41,38 @@ internal class B2BSessionStorage(
     var intermediateSessionToken: String?
         private set(value) {
             storageHelper.saveValue(Constants.PREFERENCES_NAME_IST, value)
+            // Set the IST expiration when persisting an IST
+            intermediateSessionTokenExpiration =
+                if (value != null) {
+                    Date().time + Constants.IST_EXPIRATION_TIME
+                } else {
+                    0L
+                }
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_IST)
+                // Only load and return an IST if it isn't expired
+                value =
+                    if (intermediateSessionTokenExpiration >= Date().time) {
+                        storageHelper.loadValue(Constants.PREFERENCES_NAME_IST)
+                    } else {
+                        // if IST is expired, null it out (this will also null the expiration in the setter)
+                        intermediateSessionToken = null
+                        null
+                    }
+            }
+            return value
+        }
+
+    private var intermediateSessionTokenExpiration: Long
+        set(value) {
+            storageHelper.saveLong(Constants.PREFERENCES_NAME_IST_EXPIRATION, value)
+        }
+        get() {
+            val value: Long
+            synchronized(this) {
+                value = storageHelper.getLong(Constants.PREFERENCES_NAME_IST_EXPIRATION)
             }
             return value
         }
