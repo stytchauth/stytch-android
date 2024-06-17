@@ -86,13 +86,13 @@ public interface B2BSessions {
     )
 
     /**
-     * Updates the current session with a sessionToken and/or sessionJwt
+     * Updates the current session with a sessionToken and sessionJwt
      * @param sessionToken
      * @param sessionJwt
      */
     public fun updateSession(
-        sessionToken: String?,
-        sessionJwt: String?,
+        sessionToken: String,
+        sessionJwt: String,
     )
 
     /**

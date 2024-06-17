@@ -119,8 +119,8 @@ internal class SessionsImpl internal constructor(
      * @throws StytchInternalError if failed to save data
      */
     override fun updateSession(
-        sessionToken: String?,
-        sessionJwt: String?,
+        sessionToken: String,
+        sessionJwt: String,
     ) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)

@@ -116,8 +116,8 @@ internal class B2BSessionsImpl internal constructor(
      * @throws StytchInternalError if failed to save data
      */
     override fun updateSession(
-        sessionToken: String?,
-        sessionJwt: String?,
+        sessionToken: String,
+        sessionJwt: String,
     ) {
         try {
             sessionStorage.updateSession(sessionToken = sessionToken, sessionJwt = sessionJwt)
