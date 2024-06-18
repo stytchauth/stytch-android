@@ -27,7 +27,7 @@ buildscript {
 
         constraints {
             classpath("org.apache.commons:commons-compress:1.26.0")
-            classpath("org.bitbucket.b_c:jose4j:0.9.3")
+            classpath("org.bitbucket.b_c:jose4j:0.9.4")
             classpath("io.netty:netty-codec-http2:4.1.100.Final")
             classpath("org.bouncycastle:bcpkix-jdk18on:1.78.1")
         }
