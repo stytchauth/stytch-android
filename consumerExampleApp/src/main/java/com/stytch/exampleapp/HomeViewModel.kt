@@ -162,4 +162,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             is StytchResult.Success -> otpMethodId = response.value.methodId
             is StytchResult.Error -> {}
         }
+
+    fun getPKCECodePair() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            _currentResponse.value = StytchClient.utils.getPKCEPair().toString()
+        }.invokeOnCompletion {
+            _loadingState.value = false
+        }
+    }
 }

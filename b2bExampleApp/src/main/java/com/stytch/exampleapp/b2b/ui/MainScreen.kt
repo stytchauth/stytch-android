@@ -121,6 +121,11 @@ fun MainScreen(viewModel: HomeViewModel) {
                 text = stringResource(id = R.string.organization_member_search),
                 onClick = viewModel::searchOrganizationMembers,
             )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.get_pkce_code_pair),
+                onClick = viewModel::getPKCECodePair,
+            )
         }
         Column(
             modifier =

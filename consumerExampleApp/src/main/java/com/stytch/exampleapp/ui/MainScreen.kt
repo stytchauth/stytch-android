@@ -119,6 +119,11 @@ fun MainScreen(viewModel: HomeViewModel) {
             text = stringResource(id = R.string.revoke_session),
             onClick = { viewModel.revokeSession() },
         )
+        StytchButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.get_pkce_code_pair),
+            onClick = viewModel::getPKCECodePair,
+        )
         if (loading.value) {
             CircularProgressIndicator()
         } else {

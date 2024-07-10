@@ -54,6 +54,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.utils.Utils
+import com.stytch.sdk.common.utils.UtilsImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -393,6 +395,18 @@ public object StytchB2BClient {
             return field
         }
         internal set
+
+    /**
+     * Exposes an instance of the [Utils] interface which provides utility methods that may interact with the client
+     * but do not necessarily relate to an authentication product.
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public val utils: Utils
+        get() {
+            assertInitialized()
+            return UtilsImpl(externalScope, dispatchers, StorageHelper)
+        }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

@@ -23,6 +23,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.utils.Utils
+import com.stytch.sdk.common.utils.UtilsImpl
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -380,6 +382,18 @@ public object StytchClient {
         get() {
             assertInitialized()
             return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
+        }
+
+    /**
+     * Exposes an instance of the [Utils] interface which provides utility methods that may interact with the client
+     * but do not necessarily relate to an authentication product.
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchClient.configure()
+     */
+    public val utils: Utils
+        get() {
+            assertInitialized()
+            return UtilsImpl(externalScope, dispatchers, StorageHelper)
         }
 
     /**
