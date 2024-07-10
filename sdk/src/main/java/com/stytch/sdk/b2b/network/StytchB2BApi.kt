@@ -183,7 +183,7 @@ internal object StytchB2BApi {
             suspend fun authenticate(
                 token: String,
                 sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
-                codeVerifier: String,
+                codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
                 safeB2BApiCall {

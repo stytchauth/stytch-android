@@ -75,7 +75,7 @@ internal object B2BRequests {
             @Json(name = "magic_links_token")
             val token: String,
             @Json(name = "pkce_code_verifier")
-            val codeVerifier: String,
+            val codeVerifier: String? = null,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
             @Json(name = "intermediate_session_token")

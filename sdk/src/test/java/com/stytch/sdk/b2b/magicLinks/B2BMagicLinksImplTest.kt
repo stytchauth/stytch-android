@@ -90,15 +90,7 @@ internal class B2BMagicLinksImplTest {
     }
 
     @Test
-    fun `MagicLinksImpl authenticate returns error if codeverifier fails`() =
-        runTest {
-            every { mockStorageHelper.loadValue(any()) } returns null
-            val response = impl.authenticate(authParameters)
-            assert(response is StytchResult.Error)
-        }
-
-    @Test
-    fun `MagicLinksImpl authenticate delegates to api`() =
+    fun `MagicLinksImpl authenticate delegates to api when code verifier is found`() =
         runTest {
             every { mockStorageHelper.retrieveCodeVerifier() } returns ""
             coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
@@ -110,7 +102,21 @@ internal class B2BMagicLinksImplTest {
         }
 
     @Test
+    fun `MagicLinksImpl authenticate delegates to api when code verifier is not found`() =
+        runTest {
+            every { mockStorageHelper.retrieveCodeVerifier() } returns null
+            coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
+            val response = impl.authenticate(authParameters)
+            assert(response is StytchResult.Success)
+            coVerify { mockEmailApi.authenticate(any(), any(), any(), any()) }
+            verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
+        }
+
+    @Test
     fun `MagicLinksImpl authenticate with callback calls callback method`() {
+        every { mockStorageHelper.retrieveCodeVerifier() } returns null
+        coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
         val mockCallback = spyk<(EMLAuthenticateResponse) -> Unit>()
         impl.authenticate(authParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
