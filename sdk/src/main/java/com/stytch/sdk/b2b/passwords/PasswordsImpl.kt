@@ -103,6 +103,7 @@ internal class PasswordsImpl internal constructor(
                     codeVerifier = codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
+                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

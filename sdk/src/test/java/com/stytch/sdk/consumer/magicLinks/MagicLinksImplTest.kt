@@ -65,6 +65,7 @@ internal class MagicLinksImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockStorageHelper.clearPKCE() } just runs
         impl =
             MagicLinksImpl(
                 externalScope = TestScope(),
@@ -98,6 +99,7 @@ internal class MagicLinksImplTest {
             assert(response is StytchResult.Success)
             coVerify { mockApi.authenticate(any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test

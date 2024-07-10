@@ -42,6 +42,7 @@ internal class MagicLinksImpl internal constructor(
                     parameters.sessionDurationMinutes,
                     codeVerifier,
                 ).apply {
+                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

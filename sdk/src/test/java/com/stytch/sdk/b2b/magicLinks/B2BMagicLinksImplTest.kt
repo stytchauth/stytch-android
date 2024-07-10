@@ -71,6 +71,7 @@ internal class B2BMagicLinksImplTest {
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockB2BSessionStorage.intermediateSessionToken } returns ""
+        every { mockStorageHelper.clearPKCE() } just runs
         impl =
             B2BMagicLinksImpl(
                 externalScope = TestScope(),
@@ -105,6 +106,7 @@ internal class B2BMagicLinksImplTest {
             assert(response is StytchResult.Success)
             coVerify { mockEmailApi.authenticate(any(), any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test
@@ -199,6 +201,7 @@ internal class B2BMagicLinksImplTest {
             coEvery { mockDiscoveryApi.authenticate(any(), any()) } returns mockk(relaxed = true)
             impl.discoveryAuthenticate(mockk(relaxed = true))
             coVerify { mockDiscoveryApi.authenticate(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test

@@ -82,6 +82,7 @@ internal class SSOImpl(
                     codeVerifier = codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
+                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

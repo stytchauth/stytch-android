@@ -46,6 +46,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     codeVerifier = codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
+                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
@@ -80,7 +81,9 @@ internal class B2BMagicLinksImpl internal constructor(
                 discoveryApi.authenticate(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
-                )
+                ).apply {
+                    storageHelper.clearPKCE()
+                }
         }
         return result
     }

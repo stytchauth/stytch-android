@@ -79,6 +79,7 @@ internal class PasswordsImplTest {
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
+        every { mockStorageHelper.clearPKCE() } just runs
         impl =
             PasswordsImpl(
                 externalScope = TestScope(),
@@ -186,6 +187,7 @@ internal class PasswordsImplTest {
             impl.resetByEmail(resetByEmailParameters)
             coVerify { mockApi.resetByEmail(any(), any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test

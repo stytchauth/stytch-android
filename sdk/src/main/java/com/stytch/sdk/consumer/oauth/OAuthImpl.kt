@@ -60,6 +60,7 @@ internal class OAuthImpl(
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
                 codeVerifier = pkce,
             ).apply {
+                storageHelper.clearPKCE()
                 when (this) {
                     is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
                     is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)

@@ -96,6 +96,11 @@ internal object StorageHelper {
 
     internal fun retrieveCodeVerifier(): String? = loadValue(PREFERENCES_CODE_VERIFIER)
 
+    internal fun clearPKCE() {
+        saveValue(PREFERENCES_CODE_CHALLENGE, null)
+        saveValue(PREFERENCES_CODE_VERIFIER, null)
+    }
+
     internal fun getPKCECodePair(): PKCECodePair =
         PKCECodePair(
             codeChallenge = loadValue(PREFERENCES_CODE_CHALLENGE),
