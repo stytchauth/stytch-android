@@ -67,6 +67,7 @@ internal class SSOImplTest {
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockB2BSessionStorage.intermediateSessionToken } returns ""
+        every { mockStorageHelper.clearPKCE() } just runs
         impl =
             SSOImpl(
                 externalScope = TestScope(),
@@ -101,6 +102,7 @@ internal class SSOImplTest {
             assert(response is StytchResult.Success)
             coVerify { mockApi.authenticate(any(), any(), any(), any()) }
             verify { mockResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test

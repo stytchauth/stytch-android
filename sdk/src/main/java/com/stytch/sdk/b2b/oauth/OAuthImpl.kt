@@ -44,6 +44,7 @@ internal class OAuthImpl(
                 pkceCodeVerifier = pkce,
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
+                storageHelper.clearPKCE()
                 when (this) {
                     is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_oauth_success")
                     is StytchResult.Error -> StytchB2BClient.events.logEvent("b2b_oauth_failure", null, this.exception)
@@ -128,6 +129,7 @@ internal class OAuthImpl(
                     pkceCodeVerifier = pkce,
                     discoveryOauthToken = parameters.discoveryOauthToken,
                 ).apply {
+                    storageHelper.clearPKCE()
                     when (this) {
                         is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
                         is StytchResult.Error ->

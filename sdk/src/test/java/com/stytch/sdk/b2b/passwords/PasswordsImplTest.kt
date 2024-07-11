@@ -69,6 +69,7 @@ internal class PasswordsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
         every { mockSessionStorage.intermediateSessionToken } returns ""
+        every { mockStorageHelper.clearPKCE() } just runs
         impl =
             PasswordsImpl(
                 externalScope = TestScope(),
@@ -172,6 +173,7 @@ internal class PasswordsImplTest {
             assert(response is StytchResult.Success)
             coVerify { mockApi.resetByEmail(any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test
@@ -183,6 +185,7 @@ internal class PasswordsImplTest {
         impl.resetByEmail(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
         verify { mockkResponse.launchSessionUpdater(any(), any()) }
+        verify(exactly = 1) { mockStorageHelper.clearPKCE() }
     }
 
     @Test

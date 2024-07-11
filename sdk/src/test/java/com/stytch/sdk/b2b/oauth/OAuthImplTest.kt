@@ -58,6 +58,7 @@ internal class OAuthImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockStorageHelper.loadValue(any()) } returns ""
         every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.clearPKCE() } just runs
         mockkObject(StytchB2BApi)
         every { StytchB2BApi.isInitialized } returns true
         every { mockSessionStorage.intermediateSessionToken } returns null
@@ -100,6 +101,7 @@ internal class OAuthImplTest {
             require(result is StytchResult.Error)
             assert(result.exception is StytchAPIError)
             coVerify { mockApi.authenticate(any(), any(), any(), "code-challenge", any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test
@@ -113,6 +115,7 @@ internal class OAuthImplTest {
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Success)
             coVerify { mockApi.authenticate(any(), any(), any(), "code-challenge", any()) }
+            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
         }
 
     @Test

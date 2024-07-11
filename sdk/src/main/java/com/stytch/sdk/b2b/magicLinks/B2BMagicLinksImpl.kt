@@ -29,23 +29,14 @@ internal class B2BMagicLinksImpl internal constructor(
     override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse {
         var result: EMLAuthenticateResponse
         withContext(dispatchers.io) {
-            val codeVerifier: String
-
-            try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-
-            // call backend endpoint
             result =
                 emailApi.authenticate(
                     token = parameters.token,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    codeVerifier = codeVerifier,
+                    codeVerifier = storageHelper.retrieveCodeVerifier(),
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
+                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
@@ -80,7 +71,9 @@ internal class B2BMagicLinksImpl internal constructor(
                 discoveryApi.authenticate(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
-                )
+                ).apply {
+                    storageHelper.clearPKCE()
+                }
         }
         return result
     }
