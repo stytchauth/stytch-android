@@ -2,10 +2,12 @@ package com.stytch.sdk.consumer.magicLinks
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -27,7 +29,6 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -35,7 +36,6 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class MagicLinksImplTest {
     @MockK
     private lateinit var mockApi: StytchApi.MagicLinks.Email
@@ -44,7 +44,7 @@ internal class MagicLinksImplTest {
     private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
-    private lateinit var mockStorageHelper: StorageHelper
+    private lateinit var mockPKCEPairManager: PKCEPairManager
 
     private lateinit var impl: MagicLinksImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -65,12 +65,13 @@ internal class MagicLinksImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             MagicLinksImpl(
                 externalScope = TestScope(),
                 dispatchers = StytchDispatchers(dispatcher, dispatcher),
                 sessionStorage = mockSessionStorage,
-                storageHelper = mockStorageHelper,
+                pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
             )
     }
@@ -84,7 +85,6 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl authenticate returns error if codeverifier fails`() =
         runTest {
-            every { mockStorageHelper.loadValue(any()) } returns null
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Error)
         }
@@ -92,12 +92,13 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl authenticate delegates to api`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns ""
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
             coVerify { mockApi.authenticate(any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
 
     @Test
@@ -110,7 +111,7 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() =
         runTest {
-            every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.email.loginOrCreate(emailMagicLinkParameters)
             assert(response is StytchResult.Error)
         }
@@ -118,7 +119,7 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl email loginOrCreate delegates to api`() =
         runTest {
-            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
                 mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
             } returns successfulLoginOrCreateResponse
@@ -140,7 +141,7 @@ internal class MagicLinksImplTest {
             coEvery {
                 mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
             } returns successfulBaseResponse
-            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             val response =
                 impl.email.send(
                     MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"),
@@ -158,7 +159,7 @@ internal class MagicLinksImplTest {
             coEvery {
                 mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())
             } returns successfulBaseResponse
-            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             val response =
                 impl.email.send(
                     MagicLinks.EmailMagicLinks.Parameters(email = "emailAddress"),

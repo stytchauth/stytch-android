@@ -7,6 +7,8 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -23,6 +25,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -68,6 +72,7 @@ public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
+    internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
 
@@ -168,8 +173,8 @@ public object StytchClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchApi.MagicLinks.Email,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -209,8 +214,8 @@ public object StytchClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchApi.Passwords,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -294,8 +299,8 @@ public object StytchClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchApi.OAuth,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -483,4 +488,9 @@ public object StytchClient {
             sessionStorage.revoke()
         }
     }
+
+    /**
+     * Retrieve the most recently created PKCE code pair from the device, if available
+     */
+    public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 }

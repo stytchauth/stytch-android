@@ -13,6 +13,7 @@ import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -21,6 +22,7 @@ import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -59,6 +61,9 @@ internal class StytchB2BClientTest {
     @MockK
     private lateinit var mockOAuth: OAuth
 
+    @MockK
+    private lateinit var mockPKCEPairManager: PKCEPairManager
+
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
@@ -87,17 +92,19 @@ internal class StytchB2BClientTest {
         mockkObject(StytchB2BApi)
         mockkObject(StytchB2BApi.Sessions)
         mockkObject(Recaptcha)
+        MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns ""
-        every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        MockKAnnotations.init(this, true, true)
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
+        every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchB2BClient.magicLinks = mockMagicLinks
         StytchB2BClient.oauth = mockOAuth
         StytchB2BClient.externalScope = TestScope()
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchB2BClient.dfpProvider = mockk()
+        StytchB2BClient.pkcePairManager = mockPKCEPairManager
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -415,5 +422,11 @@ internal class StytchB2BClientTest {
         assert(!StytchB2BClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "something random"
         assert(!StytchB2BClient.canHandle(uri))
+    }
+
+    @Test
+    fun `getPKCECodePair delegates to the PKCEPairManager`() {
+        StytchB2BClient.getPKCECodePair()
+        verify(exactly = 1) { mockPKCEPairManager.getPKCECodePair() }
     }
 }

@@ -2,14 +2,14 @@ package com.stytch.sdk.consumer.oauth
 
 import android.net.Uri
 import com.stytch.sdk.common.Constants
-import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.StytchApi
 
 internal class ThirdPartyOAuthImpl(
-    private val storageHelper: StorageHelper,
+    private val pkcePairManager: PKCEPairManager,
     override val providerName: String,
 ) : OAuth.ThirdParty {
     internal fun buildUri(
@@ -32,7 +32,7 @@ internal class ThirdPartyOAuthImpl(
             .build()
 
     override fun start(parameters: OAuth.ThirdParty.StartParameters) {
-        val pkce = storageHelper.generateHashedCodeChallenge().second
+        val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
         val token = StytchApi.publicToken
         val host =
             StytchClient.bootstrapData.cnameDomain?.let {

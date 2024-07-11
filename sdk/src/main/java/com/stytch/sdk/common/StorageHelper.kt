@@ -6,7 +6,6 @@ import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
-private const val PREFERENCES_CODE_VERIFIER = "code_verifier"
 
 internal object StorageHelper {
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
@@ -80,21 +79,6 @@ internal object StorageHelper {
             null
         }
     }
-
-    /**
-     * @return Pair(codeChallengeMethod, codeChallenge)
-     * @throws Exception if failed to encrypt data
-     */
-    internal fun generateHashedCodeChallenge(): Pair<String, String> {
-        val codeVerifier: String?
-
-        codeVerifier = EncryptionManager.generateCodeChallenge()
-        saveValue(PREFERENCES_CODE_VERIFIER, codeVerifier)
-
-        return "S256" to EncryptionManager.encryptCodeChallenge(codeVerifier)
-    }
-
-    internal fun retrieveCodeVerifier(): String? = loadValue(PREFERENCES_CODE_VERIFIER)
 
     /**
      * Delete an existing ED25519 key from shared preferences

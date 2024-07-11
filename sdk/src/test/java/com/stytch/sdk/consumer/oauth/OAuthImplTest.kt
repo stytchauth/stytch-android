@@ -1,11 +1,12 @@
 package com.stytch.sdk.consumer.oauth
 
 import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
@@ -41,7 +42,7 @@ internal class OAuthImplTest {
     private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
-    private lateinit var mockStorageHelper: StorageHelper
+    private lateinit var mockPKCEPairManager: PKCEPairManager
 
     private lateinit var impl: OAuthImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -56,8 +57,7 @@ internal class OAuthImplTest {
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        every { mockStorageHelper.loadValue(any()) } returns ""
-        every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockPKCEPairManager.clearPKCECodePair() } just runs
         mockkObject(StytchApi)
         every { StytchApi.isInitialized } returns true
         StytchClient.deviceInfo = mockk(relaxed = true)
@@ -67,7 +67,7 @@ internal class OAuthImplTest {
                 externalScope = TestScope(),
                 dispatchers = StytchDispatchers(dispatcher, dispatcher),
                 sessionStorage = mockSessionStorage,
-                storageHelper = mockStorageHelper,
+                pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
             )
     }
@@ -108,7 +108,7 @@ internal class OAuthImplTest {
     @Test
     fun `authenticate returns correct error if PKCE is missing`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns null
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
             assert(result.exception is StytchMissingPKCEError)
@@ -117,7 +117,7 @@ internal class OAuthImplTest {
     @Test
     fun `authenticate returns correct error if api call fails`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
                 StytchResult.Error(
                     StytchAPIError(errorType = "something_went_wrong", message = "testing"),
@@ -125,25 +125,27 @@ internal class OAuthImplTest {
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
             assert(result.exception is StytchAPIError)
-            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-verifier") }
+            verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
 
     @Test
     fun `authenticate returns success if api call succeeds`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns "code-challenge"
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
                 StytchResult.Success(
                     mockk(relaxed = true),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Success)
-            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-challenge") }
+            coVerify { mockApi.authenticateWithThirdPartyToken(any(), any(), "code-verifier") }
+            verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
 
     @Test
     fun `authenticate with callback calls callback method`() {
-        every { mockStorageHelper.retrieveCodeVerifier() } returns null
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val spy = spyk<(OAuthAuthenticatedResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), spy)
         verify { spy.invoke(any()) }

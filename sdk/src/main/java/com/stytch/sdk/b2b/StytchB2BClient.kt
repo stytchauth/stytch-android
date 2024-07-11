@@ -38,6 +38,8 @@ import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -54,6 +56,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,6 +76,7 @@ public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
+    internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
     internal lateinit var dfpProvider: DFPProvider
@@ -168,9 +173,9 @@ public object StytchB2BClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchB2BApi.MagicLinks.Email,
             StytchB2BApi.MagicLinks.Discovery,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -250,8 +255,8 @@ public object StytchB2BClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchB2BApi.Passwords,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -287,8 +292,8 @@ public object StytchB2BClient {
             externalScope,
             dispatchers,
             sessionStorage,
-            StorageHelper,
             StytchB2BApi.SSO,
+            pkcePairManager,
         )
         get() {
             assertInitialized()
@@ -363,7 +368,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     public var oauth: OAuth =
-        OAuthImpl(externalScope, dispatchers, sessionStorage, StorageHelper, StytchB2BApi.OAuth)
+        OAuthImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OAuth, pkcePairManager)
         get() {
             assertInitialized()
             return field
@@ -521,4 +526,9 @@ public object StytchB2BClient {
      */
     public fun canHandle(uri: Uri): Boolean =
         B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != B2BTokenType.UNKNOWN
+
+    /**
+     * Retrieve the most recently created PKCE code pair from the device, if available
+     */
+    public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 }

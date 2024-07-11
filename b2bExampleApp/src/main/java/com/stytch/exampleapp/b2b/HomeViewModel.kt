@@ -184,6 +184,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun getPKCECodePair() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value = StytchB2BClient.getPKCECodePair().toString()
+        }
+    }
+
     private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
         return launch {
             _loadingState.value = true

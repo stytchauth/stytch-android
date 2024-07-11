@@ -3,7 +3,8 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
-import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.PKCECodePair
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.network.StytchApi
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -22,7 +23,7 @@ import java.security.KeyStore
 @Suppress("MaxLineLength")
 internal class ThirdPartyOAuthImplTest {
     @MockK
-    private lateinit var mockStorageHelper: StorageHelper
+    private lateinit var mockPKCEPairManager: PKCEPairManager
 
     private lateinit var impl: ThirdPartyOAuthImpl
 
@@ -35,7 +36,7 @@ internal class ThirdPartyOAuthImplTest {
         MockKAnnotations.init(this, true, true)
         impl =
             ThirdPartyOAuthImpl(
-                mockStorageHelper,
+                mockPKCEPairManager,
                 providerName = "testing",
             )
     }
@@ -65,7 +66,7 @@ internal class ThirdPartyOAuthImplTest {
             mockk(relaxed = true) {
                 every { startActivityForResult(any(), any()) } just runs
             }
-        every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("S256", "hashedcodechallenge")
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("hashedcodechallenge", "")
         impl.start(OAuth.ThirdParty.StartParameters(mockActivity, 1234))
         verify { mockActivity.startActivityForResult(any(), 1234) }
     }

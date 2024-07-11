@@ -7,11 +7,11 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,34 +20,25 @@ internal class B2BMagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
-    private val storageHelper: StorageHelper,
     private val emailApi: StytchB2BApi.MagicLinks.Email,
     private val discoveryApi: StytchB2BApi.MagicLinks.Discovery,
+    private val pkcePairManager: PKCEPairManager,
 ) : B2BMagicLinks {
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse {
         var result: EMLAuthenticateResponse
         withContext(dispatchers.io) {
-            val codeVerifier: String
-
-            try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-
-            // call backend endpoint
             result =
                 emailApi.authenticate(
                     token = parameters.token,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    codeVerifier = codeVerifier,
+                    codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
+            pkcePairManager.clearPKCECodePair()
         }
 
         return result
@@ -71,7 +62,7 @@ internal class B2BMagicLinksImpl internal constructor(
         withContext(dispatchers.io) {
             val codeVerifier: String
             try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
@@ -81,6 +72,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
                 )
+            pkcePairManager.clearPKCECodePair()
         }
         return result
     }
@@ -101,8 +93,7 @@ internal class B2BMagicLinksImpl internal constructor(
             withContext(dispatchers.io) {
                 val challengeCode: String
                 try {
-                    val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCode = challengePair.second
+                    challengeCode = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext
@@ -142,8 +133,7 @@ internal class B2BMagicLinksImpl internal constructor(
             withContext(dispatchers.io) {
                 val challengeCode: String
                 try {
-                    val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCode = challengePair.second
+                    challengeCode = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
                     return@withContext

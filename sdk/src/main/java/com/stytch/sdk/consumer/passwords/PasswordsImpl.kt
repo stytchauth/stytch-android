@@ -1,11 +1,11 @@
 package com.stytch.sdk.consumer.passwords
 
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
@@ -20,8 +20,8 @@ internal class PasswordsImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: ConsumerSessionStorage,
-    private val storageHelper: StorageHelper,
     private val api: StytchApi.Passwords,
+    private val pkcePairManager: PKCEPairManager,
 ) : Passwords {
     override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
         val result: AuthResponse
@@ -83,9 +83,9 @@ internal class PasswordsImpl internal constructor(
             val challengeCode: String
 
             try {
-                val challengePair = storageHelper.generateHashedCodeChallenge()
-                challengeCodeMethod = challengePair.first
-                challengeCode = challengePair.second
+                val challengePair = pkcePairManager.generateAndReturnPKCECodePair()
+                challengeCodeMethod = challengePair.method
+                challengeCode = challengePair.codeChallenge
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 return@withContext
@@ -123,7 +123,7 @@ internal class PasswordsImpl internal constructor(
         withContext(dispatchers.io) {
             val codeVerifier: String
             try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
@@ -138,6 +138,7 @@ internal class PasswordsImpl internal constructor(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
+            pkcePairManager.clearPKCECodePair()
         }
 
         return result

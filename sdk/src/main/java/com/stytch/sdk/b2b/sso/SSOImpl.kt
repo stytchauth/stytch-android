@@ -15,10 +15,10 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.Constants
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -28,8 +28,8 @@ internal class SSOImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
-    private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.SSO,
+    private val pkcePairManager: PKCEPairManager,
 ) : SSO {
     internal fun buildUri(
         host: String,
@@ -55,7 +55,7 @@ internal class SSOImpl(
             mapOf(
                 "connection_id" to params.connectionId,
                 "public_token" to StytchB2BApi.publicToken,
-                "pkce_code_challenge" to storageHelper.generateHashedCodeChallenge().second,
+                "pkce_code_challenge" to pkcePairManager.generateAndReturnPKCECodePair().codeChallenge,
                 "login_redirect_url" to params.loginRedirectUrl,
                 "signup_redirect_url" to params.signupRedirectUrl,
             )
@@ -70,7 +70,7 @@ internal class SSOImpl(
         withContext(dispatchers.io) {
             val codeVerifier: String
             try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
@@ -84,6 +84,7 @@ internal class SSOImpl(
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
+            pkcePairManager.clearPKCECodePair()
         }
         return result
     }

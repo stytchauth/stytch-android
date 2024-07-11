@@ -29,7 +29,6 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -37,7 +36,6 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class B2BSessionsImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.Sessions

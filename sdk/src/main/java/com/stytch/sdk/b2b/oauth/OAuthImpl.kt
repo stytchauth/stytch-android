@@ -9,10 +9,10 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.Constants
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,8 +22,8 @@ internal class OAuthImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
-    private val storageHelper: StorageHelper,
     private val api: StytchB2BApi.OAuth,
+    private val pkcePairManager: PKCEPairManager,
 ) : OAuth {
     override val google: OAuth.Provider = ProviderImpl("google")
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
@@ -32,7 +32,7 @@ internal class OAuthImpl(
     override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse =
         withContext(dispatchers.io) {
             val pkce =
-                storageHelper.retrieveCodeVerifier()
+                pkcePairManager.getPKCECodePair()?.codeVerifier
                     ?: run {
                         StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
                         return@withContext StytchResult.Error(StytchMissingPKCEError(null))
@@ -44,6 +44,7 @@ internal class OAuthImpl(
                 pkceCodeVerifier = pkce,
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
             ).apply {
+                pkcePairManager.clearPKCECodePair()
                 when (this) {
                     is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_oauth_success")
                     is StytchResult.Error -> StytchB2BClient.events.logEvent("b2b_oauth_failure", null, this.exception)
@@ -63,7 +64,7 @@ internal class OAuthImpl(
 
     private inner class ProviderImpl(private val providerName: String) : OAuth.Provider {
         override fun start(parameters: OAuth.Provider.StartParameters) {
-            val pkce = storageHelper.generateHashedCodeChallenge().second
+            val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
             val host =
                 StytchB2BClient.bootstrapData.cnameDomain?.let {
                     "https://$it/"
@@ -91,7 +92,7 @@ internal class OAuthImpl(
 
     private inner class ProviderDiscoveryImpl(private val providerName: String) : OAuth.ProviderDiscovery {
         override fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
-            val pkce = storageHelper.generateHashedCodeChallenge().second
+            val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
             val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
             val urlParams =
@@ -115,7 +116,7 @@ internal class OAuthImpl(
         ): OAuthDiscoveryAuthenticateResponse =
             withContext(dispatchers.io) {
                 val pkce =
-                    storageHelper.retrieveCodeVerifier()
+                    pkcePairManager.getPKCECodePair()?.codeVerifier
                         ?: run {
                             StytchB2BClient.events.logEvent(
                                 "b2b_discovery_oauth_failure",
@@ -128,6 +129,7 @@ internal class OAuthImpl(
                     pkceCodeVerifier = pkce,
                     discoveryOauthToken = parameters.discoveryOauthToken,
                 ).apply {
+                    pkcePairManager.clearPKCECodePair()
                     when (this) {
                         is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
                         is StytchResult.Error ->

@@ -14,9 +14,10 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -33,7 +34,6 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -41,7 +41,6 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class SSOImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.SSO
@@ -50,7 +49,7 @@ internal class SSOImplTest {
     private lateinit var mockB2BSessionStorage: B2BSessionStorage
 
     @MockK
-    private lateinit var mockStorageHelper: StorageHelper
+    private lateinit var mockPKCEPairManager: PKCEPairManager
 
     private lateinit var impl: SSOImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -61,18 +60,18 @@ internal class SSOImplTest {
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockB2BSessionStorage.intermediateSessionToken } returns ""
+        every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             SSOImpl(
                 externalScope = TestScope(),
                 dispatchers = StytchDispatchers(dispatcher, dispatcher),
                 sessionStorage = mockB2BSessionStorage,
-                storageHelper = mockStorageHelper,
+                pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
             )
     }
@@ -86,7 +85,6 @@ internal class SSOImplTest {
     @Test
     fun `SSO authenticate returns error if codeverifier fails`() =
         runTest {
-            every { mockStorageHelper.loadValue(any()) } returns null
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Error)
         }
@@ -94,13 +92,14 @@ internal class SSOImplTest {
     @Test
     fun `SSO authenticate delegates to api`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns ""
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             val mockResponse = StytchResult.Success<SSOAuthenticateResponseData>(mockk(relaxed = true))
             coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns mockResponse
             val response = impl.authenticate(SSO.AuthenticateParams(""))
             assert(response is StytchResult.Success)
             coVerify { mockApi.authenticate(any(), any(), any(), any()) }
             verify { mockResponse.launchSessionUpdater(any(), any()) }
+            verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
 
     @Test

@@ -1,9 +1,9 @@
 package com.stytch.sdk.consumer.oauth
 
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -17,8 +17,8 @@ internal class OAuthImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: ConsumerSessionStorage,
-    private val storageHelper: StorageHelper,
     private val api: StytchApi.OAuth,
+    private val pkcePairManager: PKCEPairManager,
 ) : OAuth {
     override val googleOneTap: OAuth.GoogleOneTap =
         GoogleOneTapImpl(
@@ -26,31 +26,33 @@ internal class OAuthImpl(
             dispatchers,
             sessionStorage,
             api,
+            GoogleCredentialManagerProviderImpl(),
+            pkcePairManager,
         )
-    override val apple: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "apple")
-    override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "amazon")
-    override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "bitbucket")
-    override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "coinbase")
-    override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "discord")
-    override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "facebook")
-    override val figma: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "figma")
-    override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "github")
-    override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "gitlab")
-    override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "google")
-    override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "linkedin")
-    override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "microsoft")
-    override val salesforce: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "salesforce")
-    override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "slack")
-    override val snapchat: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "snapchat")
-    override val tiktok: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "tiktok")
-    override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitch")
-    override val twitter: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "twitter")
-    override val yahoo: OAuth.ThirdParty = ThirdPartyOAuthImpl(storageHelper, providerName = "yahoo")
+    override val apple: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "apple")
+    override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "amazon")
+    override val bitbucket: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "bitbucket")
+    override val coinbase: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "coinbase")
+    override val discord: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "discord")
+    override val facebook: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "facebook")
+    override val figma: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "figma")
+    override val github: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "github")
+    override val gitlab: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "gitlab")
+    override val google: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "google")
+    override val linkedin: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "linkedin")
+    override val microsoft: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "microsoft")
+    override val salesforce: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "salesforce")
+    override val slack: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "slack")
+    override val snapchat: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "snapchat")
+    override val tiktok: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "tiktok")
+    override val twitch: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "twitch")
+    override val twitter: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "twitter")
+    override val yahoo: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "yahoo")
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
         return withContext(dispatchers.io) {
             val pkce =
-                storageHelper.retrieveCodeVerifier()
+                pkcePairManager.getPKCECodePair()?.codeVerifier
                     ?: run {
                         StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
                         return@withContext StytchResult.Error(StytchMissingPKCEError(null))
@@ -60,6 +62,7 @@ internal class OAuthImpl(
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
                 codeVerifier = pkce,
             ).apply {
+                pkcePairManager.clearPKCECodePair()
                 when (this) {
                     is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
                     is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
