@@ -16,6 +16,7 @@ import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
@@ -59,6 +60,9 @@ internal class StytchClientTest {
     @MockK
     private lateinit var mockOAuth: OAuth
 
+    @MockK
+    private lateinit var mockPKCEPairManager: PKCEPairManager
+
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
@@ -87,11 +91,11 @@ internal class StytchClientTest {
         mockkObject(StytchApi)
         mockkObject(StytchApi.Sessions)
         mockkObject(Recaptcha)
+        MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
-        every { StorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
-        MockKAnnotations.init(this, true, true)
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks

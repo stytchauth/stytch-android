@@ -2,10 +2,12 @@ package com.stytch.sdk.consumer.passwords
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
@@ -30,7 +32,6 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -38,7 +39,6 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class PasswordsImplTest {
     @MockK
     private lateinit var mockApi: StytchApi.Passwords
@@ -47,7 +47,7 @@ internal class PasswordsImplTest {
     private lateinit var mockSessionStorage: ConsumerSessionStorage
 
     @MockK
-    private lateinit var mockStorageHelper: StorageHelper
+    private lateinit var mockPKCEPairManager: PKCEPairManager
 
     private lateinit var impl: PasswordsImpl
     private val dispatcher = Dispatchers.Unconfined
@@ -79,13 +79,13 @@ internal class PasswordsImplTest {
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
-        every { mockStorageHelper.clearPKCE() } just runs
+        every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             PasswordsImpl(
                 externalScope = TestScope(),
                 dispatchers = StytchDispatchers(dispatcher, dispatcher),
                 sessionStorage = mockSessionStorage,
-                storageHelper = mockStorageHelper,
+                pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
             )
     }
@@ -135,7 +135,7 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmailStart returns error if generateHashedCodeChallenge fails`() =
         runTest {
-            every { mockStorageHelper.generateHashedCodeChallenge() } throws RuntimeException("Test")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.resetByEmailStart(resetByEmailStartParameters)
             assert(response is StytchResult.Error)
         }
@@ -143,7 +143,7 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmailStart delegates to api`() =
         runTest {
-            every { mockStorageHelper.generateHashedCodeChallenge() } returns Pair("", "")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
                 mockApi.resetByEmailStart(
                     any(),
@@ -174,7 +174,6 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmail returns error if codeVerifier fails`() =
         runTest {
-            every { mockStorageHelper.loadValue(any()) } returns null
             val response = impl.resetByEmail(resetByEmailParameters)
             assert(response is StytchResult.Error)
         }
@@ -182,12 +181,12 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmail delegates to api`() =
         runTest {
-            every { mockStorageHelper.retrieveCodeVerifier() } returns ""
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             coEvery { mockApi.resetByEmail(any(), any(), any(), any()) } returns successfulAuthResponse
             impl.resetByEmail(resetByEmailParameters)
             coVerify { mockApi.resetByEmail(any(), any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
-            verify(exactly = 1) { mockStorageHelper.clearPKCE() }
+            verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
 
     @Test

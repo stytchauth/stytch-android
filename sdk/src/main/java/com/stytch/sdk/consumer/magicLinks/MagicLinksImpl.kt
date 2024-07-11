@@ -1,11 +1,11 @@
 package com.stytch.sdk.consumer.magicLinks
 
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -18,8 +18,8 @@ internal class MagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: ConsumerSessionStorage,
-    private val storageHelper: StorageHelper,
     private val api: StytchApi.MagicLinks.Email,
+    private val pkcePairManager: PKCEPairManager,
 ) : MagicLinks {
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
@@ -29,7 +29,7 @@ internal class MagicLinksImpl internal constructor(
             val codeVerifier: String
 
             try {
-                codeVerifier = storageHelper.retrieveCodeVerifier()!!
+                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchMissingPKCEError(ex))
                 return@withContext
@@ -42,9 +42,9 @@ internal class MagicLinksImpl internal constructor(
                     parameters.sessionDurationMinutes,
                     codeVerifier,
                 ).apply {
-                    storageHelper.clearPKCE()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
+            pkcePairManager.clearPKCECodePair()
         }
 
         return result
@@ -69,9 +69,9 @@ internal class MagicLinksImpl internal constructor(
                 val challengeCode: String
 
                 try {
-                    val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCodeMethod = challengePair.first
-                    challengeCode = challengePair.second
+                    val challengePair = pkcePairManager.generateAndReturnPKCECodePair()
+                    challengeCodeMethod = challengePair.method
+                    challengeCode = challengePair.codeChallenge
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                     return@withContext
@@ -107,8 +107,7 @@ internal class MagicLinksImpl internal constructor(
             withContext(dispatchers.io) {
                 val challengeCode: String
                 try {
-                    val challengePair = storageHelper.generateHashedCodeChallenge()
-                    challengeCode = challengePair.second
+                    challengeCode = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 } catch (ex: Exception) {
                     return@withContext StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
                 }

@@ -16,11 +16,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -47,8 +44,6 @@ internal class MemberImplTest {
         MockKAnnotations.init(this, true, true)
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(StorageHelper)
-        every { StorageHelper.saveValue(any(), any()) } just runs
         spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
         impl =
             MemberImpl(

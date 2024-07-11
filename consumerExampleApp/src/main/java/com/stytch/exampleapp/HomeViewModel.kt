@@ -166,7 +166,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getPKCECodePair() {
         viewModelScope.launch {
             _loadingState.value = true
-            _currentResponse.value = StytchClient.utils.getPKCEPair().toString()
+            _currentResponse.value = StytchClient.getPKCECodePair().toString()
         }.invokeOnCompletion {
             _loadingState.value = false
         }

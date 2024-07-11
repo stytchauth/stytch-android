@@ -3,7 +3,6 @@ package com.stytch.sdk.b2b.rbac
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.network.models.RBACPermission
 import com.stytch.sdk.common.network.models.RBACPolicy
@@ -107,7 +106,6 @@ internal class RBACImplTest {
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StytchB2BClient)
-        mockkObject(StorageHelper)
         MockKAnnotations.init(this, true, true)
         coEvery { StytchB2BClient.refreshBootstrapData() } just runs
         impl =

@@ -12,7 +12,6 @@ import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
@@ -65,7 +64,6 @@ internal class StytchB2BApiTest {
         mockkObject(StytchB2BApi)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(StorageHelper)
     }
 
     @After
