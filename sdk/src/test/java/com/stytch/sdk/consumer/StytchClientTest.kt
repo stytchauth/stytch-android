@@ -96,12 +96,14 @@ internal class StytchClientTest {
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
+        every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchClient.oauth = mockOAuth
         StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchClient.dfpProvider = mockk()
+        StytchClient.pkcePairManager = mockPKCEPairManager
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -418,5 +420,11 @@ internal class StytchClientTest {
         assert(!StytchClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "something random"
         assert(!StytchClient.canHandle(uri))
+    }
+
+    @Test
+    fun `getPKCECodePair delegates to the PKCEPairManager`() {
+        StytchClient.getPKCECodePair()
+        verify(exactly = 1) { mockPKCEPairManager.getPKCECodePair() }
     }
 }

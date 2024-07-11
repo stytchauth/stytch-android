@@ -10,12 +10,12 @@ import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.UnexpectedCredentialType
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -73,6 +73,7 @@ internal class GoogleOneTapImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.OAuth,
     private val credentialManagerProvider: GoogleCredentialManagerProvider = GoogleCredentialManagerProviderImpl(),
+    private val pkcePairManager: PKCEPairManager,
 ) : OAuth.GoogleOneTap {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal lateinit var nonce: String
@@ -80,7 +81,7 @@ internal class GoogleOneTapImpl(
     override suspend fun start(parameters: OAuth.GoogleOneTap.StartParameters): NativeOAuthResponse {
         return try {
             withContext(dispatchers.io) {
-                nonce = EncryptionManager.encryptCodeChallenge(EncryptionManager.generateCodeChallenge())
+                nonce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 val credentialResponse =
                     credentialManagerProvider.getSignInWithGoogleCredential(
                         activity = parameters.context,

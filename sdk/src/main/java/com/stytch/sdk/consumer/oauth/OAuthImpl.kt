@@ -26,6 +26,8 @@ internal class OAuthImpl(
             dispatchers,
             sessionStorage,
             api,
+            GoogleCredentialManagerProviderImpl(),
+            pkcePairManager,
         )
     override val apple: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "apple")
     override val amazon: OAuth.ThirdParty = ThirdPartyOAuthImpl(pkcePairManager, providerName = "amazon")

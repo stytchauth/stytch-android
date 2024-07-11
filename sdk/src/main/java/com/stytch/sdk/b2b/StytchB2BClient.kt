@@ -76,7 +76,7 @@ public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
-    private val pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
+    internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
     internal lateinit var dfpProvider: DFPProvider

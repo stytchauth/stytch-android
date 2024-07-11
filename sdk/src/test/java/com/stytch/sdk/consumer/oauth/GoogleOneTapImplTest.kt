@@ -2,10 +2,10 @@ package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.UnexpectedCredentialType
+import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.network.StytchApi
@@ -41,6 +41,9 @@ internal class GoogleOneTapImplTest {
     @MockK
     private lateinit var mockGoogleCredentialManagerProvider: GoogleCredentialManagerProvider
 
+    @MockK
+    private lateinit var mockPKCEPairManager: PKCEPairManager
+
     private lateinit var impl: GoogleOneTapImpl
     private val dispatcher = Dispatchers.Unconfined
     private val mockActivity: Activity = mockk()
@@ -56,9 +59,7 @@ internal class GoogleOneTapImplTest {
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
-        mockkObject(EncryptionManager)
-        every { EncryptionManager.generateCodeChallenge() } returns "code-challenge"
-        every { EncryptionManager.encryptCodeChallenge(any()) } returns "encrypted-code-challenge"
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk(relaxed = true)
         impl =
             GoogleOneTapImpl(
                 externalScope = TestScope(),
@@ -66,6 +67,7 @@ internal class GoogleOneTapImplTest {
                 sessionStorage = mockSessionStorage,
                 api = mockApi,
                 credentialManagerProvider = mockGoogleCredentialManagerProvider,
+                pkcePairManager = mockPKCEPairManager,
             )
     }
 
@@ -78,7 +80,7 @@ internal class GoogleOneTapImplTest {
     @Test
     fun `GoogleOneTapImpl start returns error if nonce fails to generate`() =
         runTest {
-            every { EncryptionManager.generateCodeChallenge() } throws RuntimeException("Testing")
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Testing")
             val result = impl.start(startParameters)
             assert(result is StytchResult.Error)
         }
@@ -86,7 +88,7 @@ internal class GoogleOneTapImplTest {
     @Test
     fun `GoogleOneTapImpl start with callback calls callback method`() {
         // short circuit
-        every { EncryptionManager.generateCodeChallenge() } throws RuntimeException("Testing")
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Testing")
         val spy = spyk<(NativeOAuthResponse) -> Unit>()
         impl.start(startParameters, spy)
         verify { spy.invoke(any()) }

@@ -4,16 +4,16 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 
-private const val PREFERENCES_CODE_VERIFIER = "code_verifier"
-private const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
+internal const val PREFERENCES_CODE_VERIFIER = "code_verifier"
+internal const val PREFERENCES_CODE_CHALLENGE = "code_challenge"
 
 internal class PKCEPairManagerImpl(
     private val storageHelper: StorageHelper,
     private val encryptionManager: EncryptionManager,
 ) : PKCEPairManager {
     override fun generateAndReturnPKCECodePair(): PKCECodePair {
-        val codeVerifier = encryptionManager.generateCodeChallenge()
-        val codeChallenge = encryptionManager.encryptCodeChallenge(codeVerifier)
+        val codeVerifier = encryptionManager.generateCodeVerifier()
+        val codeChallenge = encryptionManager.encryptCodeChallengeFromVerifier(codeVerifier)
         storageHelper.saveValue(PREFERENCES_CODE_CHALLENGE, codeChallenge)
         storageHelper.saveValue(PREFERENCES_CODE_VERIFIER, codeVerifier)
         return PKCECodePair(

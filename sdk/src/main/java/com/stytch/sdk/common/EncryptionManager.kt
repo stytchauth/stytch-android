@@ -103,14 +103,14 @@ internal object EncryptionManager {
         aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
 
-    fun generateCodeChallenge(): String {
+    fun generateCodeVerifier(): String {
         val randomBytes = ByteArray(Constants.CODE_CHALLENGE_BYTE_COUNT)
         SecureRandom().nextBytes(randomBytes)
         return randomBytes.toHexString()
     }
 
-    fun encryptCodeChallenge(codeChallenge: String): String {
-        return convertToBase64UrlEncoded(getSha256(codeChallenge))
+    fun encryptCodeChallengeFromVerifier(codeVerifier: String): String {
+        return convertToBase64UrlEncoded(getSha256(codeVerifier))
     }
 
     private fun getSha256(hexString: String): String {

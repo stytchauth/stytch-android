@@ -97,12 +97,14 @@ internal class StytchB2BClientTest {
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns ""
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
+        every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchB2BClient.magicLinks = mockMagicLinks
         StytchB2BClient.oauth = mockOAuth
         StytchB2BClient.externalScope = TestScope()
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchB2BClient.dfpProvider = mockk()
+        StytchB2BClient.pkcePairManager = mockPKCEPairManager
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -420,5 +422,11 @@ internal class StytchB2BClientTest {
         assert(!StytchB2BClient.canHandle(uri))
         every { uri.getQueryParameter(any()) } returns "something random"
         assert(!StytchB2BClient.canHandle(uri))
+    }
+
+    @Test
+    fun `getPKCECodePair delegates to the PKCEPairManager`() {
+        StytchB2BClient.getPKCECodePair()
+        verify(exactly = 1) { mockPKCEPairManager.getPKCECodePair() }
     }
 }
