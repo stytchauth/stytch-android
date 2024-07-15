@@ -3,9 +3,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-kapt'
     id "org.jetbrains.dokka"
     id 'kotlin-parcelize'
+    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
 }
 
 ext {
@@ -81,8 +81,8 @@ android {
 }
 
 tasks.named("dokkaHtmlPartial").configure {
-    dependsOn(tasks.named("kaptDebugKotlin"))
-    dependsOn(tasks.named("kaptReleaseKotlin"))
+    dependsOn(tasks.named("kspDebugKotlin"))
+    dependsOn(tasks.named("kspReleaseKotlin"))
     dependencies {
         dokkaRuntime(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.17.2"))
         dokkaPlugin(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.17.2"))
@@ -141,12 +141,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
     implementation "androidx.browser:browser:1.4.0"
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
     implementation "com.squareup.moshi:moshi:$moshi_version"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation 'com.google.crypto.tink:tink-android:1.8.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
