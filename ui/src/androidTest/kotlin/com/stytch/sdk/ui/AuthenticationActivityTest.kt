@@ -1,6 +1,6 @@
 package com.stytch.sdk.ui
 
-import androidx.activity.ComponentActivity
+import android.app.Activity
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ActivityScenario
 import com.stytch.sdk.common.StytchResult
@@ -15,7 +15,7 @@ internal class AuthenticationActivityTest {
     @Test
     fun testExpectedErrorWhenNoUIConfiguration() {
         val result = ActivityScenario.launchActivityForResult(AuthenticationActivity::class.java).result
-        assert(result.resultCode == ComponentActivity.RESULT_OK)
+        assert(result.resultCode == Activity.RESULT_OK)
         result.resultData.setExtrasClassLoader(AuthenticationActivity::class.java.classLoader)
         val error =
             result.resultData.extras

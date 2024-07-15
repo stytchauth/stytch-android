@@ -94,6 +94,8 @@ dependencies {
     testImplementation "io.mockk:mockk:1.13.8"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
     testImplementation("org.json:json:20231013")
+    androidTestImplementation "androidx.test:core:1.6.1"
+    androidTestImplementation "androidx.test:core-ktx:1.6.1"
     androidTestImplementation "androidx.test:runner:1.6.1"
     androidTestImplementation "androidx.test:rules:1.6.1"
     androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
