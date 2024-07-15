@@ -7,16 +7,23 @@ com.stytch.sdk.b2b.discovery
 com.stytch.sdk.b2b.events
 com.stytch.sdk.b2b.magicLinks
 com.stytch.sdk.b2b.member
+com.stytch.sdk.b2b.oauth
 com.stytch.sdk.b2b.organization
+com.stytch.sdk.b2b.otp
 com.stytch.sdk.b2b.passwords
+com.stytch.sdk.b2b.rbac
+com.stytch.sdk.b2b.recoveryCodes
+com.stytch.sdk.b2b.searchManager
 com.stytch.sdk.b2b.sessions
 com.stytch.sdk.b2b.sso
+com.stytch.sdk.b2b.totp
 com.stytch.sdk.common
 com.stytch.sdk.common.dfp
 com.stytch.sdk.common.errors
 com.stytch.sdk.common.sso
 com.stytch.sdk.consumer
 com.stytch.sdk.consumer.biometrics
+com.stytch.sdk.consumer.crypto
 com.stytch.sdk.consumer.events
 com.stytch.sdk.consumer.magicLinks
 com.stytch.sdk.consumer.oauth
@@ -24,6 +31,7 @@ com.stytch.sdk.consumer.otp
 com.stytch.sdk.consumer.passkeys
 com.stytch.sdk.consumer.passwords
 com.stytch.sdk.consumer.sessions
+com.stytch.sdk.consumer.totp
 com.stytch.sdk.consumer.userManagement
 module:Stytch Android UI
 com.stytch.sdk.ui

@@ -63,7 +63,7 @@
   <div class="breadcrumbs"><a href="../index.html">Stytch Android</a><span class="delimiter">/</span><span class="current">com.stytch.sdk.b2b.member</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
-    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><p class="paragraph">The Member.kt interface provides methods for retrieving the current authenticated user.</p><p class="paragraph">You can choose to get the local representation of the user, without making a network request, with the <code class="lang-kotlin">StytchClient.member.getSync()</code> method.</p><p class="paragraph">If you want to get the freshest representation of the user from the Stytch servers, use the <code class="lang-kotlin">StytchClient.member.get()</code> method.</p></div></div>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><p class="paragraph">The Member.kt interface provides methods for retrieving the current authenticated user.</p><p class="paragraph">You can choose to get the local representation of the user, without making a network request, with the <code class="lang-kotlin">StytchB2BClient.member.getSync()</code> method.</p><p class="paragraph">If you want to get the freshest representation of the user from the Stytch servers, use the <code class="lang-kotlin">StytchB2BClient.member.get()</code> method.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchB2BClient.member.onChange()</code> method with a callback to be triggered on changes to the underlying member. Alternatively, you can listen directly to the flow using the <code class="lang-kotlin">StytchB2BClient.member.onChange</code> StateFlow.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
@@ -80,7 +80,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-member/index.html">Member</a></div><div class="brief "><p class="paragraph">The Member interface provides methods for retrieving the current authenticated user.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-member/index.html">Member</a></div><div class="brief "><p class="paragraph">The Member interface provides methods for retrieving and updating the current authenticated member.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1708809685%2FClasslikes%2F-154216341" anchor-label="MemberAuthenticationFactor" id="-1708809685%2FClasslikes%2F-154216341" data-filterable-set=":sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sdk:dokkaHtmlPartial/release" data-filterable-set=":sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-authentication-factor/index.html"><span>Member</span><wbr><span>Authentication</span><wbr><span><span>Factor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1708809685%2FClasslikes%2F-154216341"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-member-authentication-factor/index.html">MemberAuthenticationFactor</a></div><div class="brief "><p class="paragraph">A <a href="-member-authentication-factor/index.html">MemberAuthenticationFactor</a> represents a primary authentication factor associated with a Stytch Member</p></div></div></div>
                 </div>
               </div>
             </div>
