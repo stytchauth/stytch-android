@@ -10,44 +10,12 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull') }}
 
 jobs:
-  set-matrix:
-    runs-on: ubuntu-latest
-
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      matrix-values: ${{ steps.set-matrix.outputs.matrix-values }}
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: git fetch --tags -f origin
-
-      - uses: actions/checkout@v3
-        with:
-          ref: docs
-          path: docs
-
-      - id: set-matrix
-        run: |
-          matrix_values=''
-          for ref in $(git tag --list); do
-            docs_path="docs/docs/olderVersions/$ref"
-            mkdir -p $docs_path
-            if [[ $(find $docs_path -type d -empty) ]]; then
-              matrix_values+="{\"ref\":\"$ref\",\"ref_label\":\"$ref\"},"
-            fi
-          done
-          matrix_values+='{"ref":"main","ref_label":"main"}' 
-          echo "matrix-values=[${matrix_values}]" >> $GITHUB_OUTPUT
-          echo "matrix={\"include\":[${matrix_values}]}" >> $GITHUB_OUTPUT
   docs:
-    needs: set-matrix
-    strategy:
-      matrix: ${{ fromJSON(needs.set-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: ${{ matrix.ref }}
+        ref: "main"
         path: main
     - uses: actions/checkout@v3
       with:
@@ -76,10 +44,10 @@ jobs:
         cd -
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.ref_label }}
+        name: "main"
         path: Docs.zip
   publish:
-    needs: [set-matrix, docs]
+    needs: [docs]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -99,18 +67,11 @@ jobs:
     - name: Unzip
       run: |
         mkdir unzipped-docs
-        for ref in $(echo ${{ toJSON(needs.set-matrix.outputs.matrix-values) }} | jq -r '.[].ref_label'); do
-          unzipped_path="unzipped-docs/$ref"
-          mkdir -p "$unzipped_path"
-          unzip "artifacts/$ref/Docs.zip" -d "$unzipped_path"
-          if [ "$ref" = "main" ]; then
-            echo "extracting to root"
-            rsync -a "$unzipped_path/" docs/docs
-          else
-            echo "extracting to olderVersions"
-            rsync -a "$unzipped_path" docs/docs/olderVersions/
-          fi
-        done
+        unzipped_path="unzipped-docs/main"
+        mkdir -p "$unzipped_path"
+        unzip "artifacts/main/Docs.zip" -d "$unzipped_path"
+        echo "extracting to root"
+        rsync -a "$unzipped_path/" docs/docs
     - name: Update git config
       working-directory: docs
       run: |
