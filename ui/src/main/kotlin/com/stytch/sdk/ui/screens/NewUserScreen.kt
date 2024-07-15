@@ -46,6 +46,7 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
         val hasEmailOTP =
             productConfig.products.contains(StytchProduct.OTP) &&
                 productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+        val hasPasswords = productConfig.products.contains(StytchProduct.PASSWORDS)
         val viewModel =
             viewModel<NewUserScreenViewModel>(
                 factory = NewUserScreenViewModel.factory(context.savedStateHandle),
@@ -70,6 +71,7 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
             },
             hasEML = hasEML,
             hasEmailOTP = hasEmailOTP,
+            hasPasswords = hasPasswords,
             onSendEML = { viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions) },
             onSendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
         )
@@ -85,6 +87,7 @@ private fun NewUserScreenComposable(
     onEmailAndPasswordSubmitted: () -> Unit,
     hasEML: Boolean,
     hasEmailOTP: Boolean,
+    hasPasswords: Boolean,
     onSendEML: () -> Unit,
     onSendEmailOTP: () -> Unit,
 ) {
@@ -105,23 +108,29 @@ private fun NewUserScreenComposable(
                     },
                 onClick = { if (hasEML) onSendEML() else onSendEmailOTP() },
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            DividerWithText(text = stringResource(id = R.string.or))
-            Spacer(modifier = Modifier.height(24.dp))
-            BodyText(text = AnnotatedString(stringResource(id = R.string.finish_creating)))
+            if (hasPasswords) {
+                Spacer(modifier = Modifier.height(24.dp))
+                DividerWithText(text = stringResource(id = R.string.or))
+                Spacer(modifier = Modifier.height(24.dp))
+                BodyText(text = AnnotatedString(stringResource(id = R.string.finish_creating)))
+            }
         } else {
-            PageTitle(
-                text = stringResource(id = R.string.create_account),
-                textAlign = TextAlign.Start,
+            if (hasPasswords) {
+                PageTitle(
+                    text = stringResource(id = R.string.create_account),
+                    textAlign = TextAlign.Start,
+                )
+            }
+        }
+        if (hasPasswords) {
+            EmailAndPasswordEntry(
+                emailState = uiState.emailState,
+                onEmailAddressChanged = onEmailAddressChanged,
+                passwordState = uiState.passwordState,
+                onPasswordChanged = onPasswordChanged,
+                onSubmit = onEmailAndPasswordSubmitted,
             )
         }
-        EmailAndPasswordEntry(
-            emailState = uiState.emailState,
-            onEmailAddressChanged = onEmailAddressChanged,
-            passwordState = uiState.passwordState,
-            onPasswordChanged = onPasswordChanged,
-            onSubmit = onEmailAndPasswordSubmitted,
-        )
     }
     if (uiState.showLoadingDialog) {
         LoadingDialog()
