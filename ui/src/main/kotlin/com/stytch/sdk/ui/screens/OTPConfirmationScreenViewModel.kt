@@ -130,9 +130,7 @@ internal class OTPConfirmationScreenViewModel(
                 when (resend) {
                     is OTPDetails.EmailOTP -> stytchClient.otps.email.loginOrCreate(resend.parameters)
                     is OTPDetails.SmsOTP ->
-                        stytchClient.otps.sms.loginOrCreate(
-                            resend.parameters.copy(enableAutofill = true),
-                        )
+                        stytchClient.otps.sms.loginOrCreate(resend.parameters)
                     is OTPDetails.WhatsAppOTP -> stytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
                 }
             when (result) {

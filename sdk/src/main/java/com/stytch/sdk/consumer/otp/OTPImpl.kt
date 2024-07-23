@@ -1,9 +1,11 @@
 package com.stytch.sdk.consumer.otp
 
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -32,6 +34,7 @@ internal class OTPImpl internal constructor(
                         methodId = parameters.methodId,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.methodId = null
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
         }
@@ -51,13 +54,21 @@ internal class OTPImpl internal constructor(
     private inner class SmsOTPImpl : OTP.SmsOTP {
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
+            if (parameters.enableAutofill) {
+                StytchClient.startSmsRetriever()
+            }
             withContext(dispatchers.io) {
                 result =
-                    api.loginOrCreateByOTPWithSMS(
-                        phoneNumber = parameters.phoneNumber,
-                        expirationMinutes = parameters.expirationMinutes,
-                        enableAutofill = parameters.enableAutofill,
-                    )
+                    api
+                        .loginOrCreateByOTPWithSMS(
+                            phoneNumber = parameters.phoneNumber,
+                            expirationMinutes = parameters.expirationMinutes,
+                            enableAutofill = parameters.enableAutofill,
+                        ).apply {
+                            if (this is StytchResult.Success && parameters.enableAutofill) {
+                                sessionStorage.methodId = this.value.methodId
+                            }
+                        }
             }
 
             return result
@@ -75,16 +86,29 @@ internal class OTPImpl internal constructor(
 
         override suspend fun send(parameters: OTP.SmsOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
+                if (parameters.enableAutofill) {
+                    StytchClient.startSmsRetriever()
+                }
                 if (sessionStorage.persistedSessionIdentifiersExist) {
-                    api.sendOTPWithSMSSecondary(
-                        phoneNumber = parameters.phoneNumber,
-                        expirationMinutes = parameters.expirationMinutes,
-                    )
+                    api
+                        .sendOTPWithSMSSecondary(
+                            phoneNumber = parameters.phoneNumber,
+                            expirationMinutes = parameters.expirationMinutes,
+                        ).apply {
+                            if (this is StytchResult.Success && parameters.enableAutofill) {
+                                sessionStorage.methodId = this.value.methodId
+                            }
+                        }
                 } else {
-                    api.sendOTPWithSMSPrimary(
-                        phoneNumber = parameters.phoneNumber,
-                        expirationMinutes = parameters.expirationMinutes,
-                    )
+                    api
+                        .sendOTPWithSMSPrimary(
+                            phoneNumber = parameters.phoneNumber,
+                            expirationMinutes = parameters.expirationMinutes,
+                        ).apply {
+                            if (this is StytchResult.Success && parameters.enableAutofill) {
+                                sessionStorage.methodId = this.value.methodId
+                            }
+                        }
                 }
             }
 

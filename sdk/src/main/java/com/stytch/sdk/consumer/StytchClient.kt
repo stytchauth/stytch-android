@@ -27,6 +27,8 @@ import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -78,6 +80,8 @@ public object StytchClient {
 
     internal lateinit var dfpProvider: DFPProvider
 
+    private lateinit var smsRetriever: StytchSMSRetriever
+
     /**
      * The public token that the StytchClient is configured to use
      */
@@ -118,6 +122,7 @@ public object StytchClient {
             StytchApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider = DFPProviderImpl(publicToken, activityProvider)
+            configureSmsRetriever(context.applicationContext)
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
                 bootstrapData =
@@ -153,6 +158,22 @@ public object StytchClient {
                 exception = ex,
             )
         }
+    }
+
+    private fun configureSmsRetriever(context: Context) {
+        smsRetriever =
+            StytchSMSRetrieverImpl(context) { code ->
+                val parsedCode = code ?: return@StytchSMSRetrieverImpl
+                val methodId = sessionStorage.methodId ?: return@StytchSMSRetrieverImpl
+                externalScope.launch {
+                    otps.authenticate(
+                        OTP.AuthParameters(
+                            token = parsedCode,
+                            methodId = methodId,
+                        ),
+                    )
+                }
+            }
     }
 
     internal fun assertInitialized() {
@@ -493,4 +514,6 @@ public object StytchClient {
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
+
+    internal fun startSmsRetriever() = smsRetriever.start()
 }

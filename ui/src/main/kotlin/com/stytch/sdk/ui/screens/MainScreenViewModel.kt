@@ -311,7 +311,7 @@ internal class MainScreenViewModel(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
                                 OTPDetails.SmsOTP(
-                                    parameters = parameters.copy(enableAutofill = true),
+                                    parameters = parameters,
                                     methodId = result.value.methodId,
                                 ),
                                 isReturningUser = false,

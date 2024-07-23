@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.otp
 
 import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -19,8 +20,11 @@ internal class OTPImpl(
     override val sms: OTP.SMS = SMSImpl()
 
     private inner class SMSImpl : OTP.SMS {
-        override suspend fun send(parameters: OTP.SMS.SendParameters): BasicResponse =
-            withContext(dispatchers.io) {
+        override suspend fun send(parameters: OTP.SMS.SendParameters): BasicResponse {
+            if (parameters.enableAutofill) {
+                StytchB2BClient.startSmsRetriever()
+            }
+            return withContext(dispatchers.io) {
                 api.sendSMSOTP(
                     organizationId = parameters.organizationId,
                     memberId = parameters.memberId,
@@ -30,6 +34,7 @@ internal class OTPImpl(
                     enableAutofill = parameters.enableAutofill,
                 )
             }
+        }
 
         override fun send(
             parameters: OTP.SMS.SendParameters,

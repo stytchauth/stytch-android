@@ -70,6 +70,8 @@ internal class ConsumerSessionStorage(
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
 
+    var methodId: String? = null
+
     /**
      * @throws Exception if failed to save data
      */
