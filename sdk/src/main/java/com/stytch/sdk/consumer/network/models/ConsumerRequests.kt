@@ -142,6 +142,8 @@ internal object ConsumerRequests {
             val phoneNumber: String,
             @Json(name = "expiration_minutes")
             val expirationMinutes: Int?,
+            @Json(name = "enable_autofill")
+            val enableAutofill: Boolean = false,
         )
 
         @Keep

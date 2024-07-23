@@ -845,6 +845,7 @@ internal object StytchB2BApi {
             mfaPhoneNumber: String? = null,
             locale: String? = null,
             intermediateSessionToken: String? = null,
+            enableAutofill: Boolean = false,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.sendSMSOTP(
@@ -854,6 +855,7 @@ internal object StytchB2BApi {
                         mfaPhoneNumber = mfaPhoneNumber,
                         locale = locale,
                         intermediateSessionToken = intermediateSessionToken,
+                        enableAutofill = enableAutofill,
                     ),
                 )
             }

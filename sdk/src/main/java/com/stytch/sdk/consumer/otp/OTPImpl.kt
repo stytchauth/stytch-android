@@ -26,13 +26,14 @@ internal class OTPImpl internal constructor(
         withContext(dispatchers.io) {
             // call backend endpoint
             result =
-                api.authenticateWithOTP(
-                    token = parameters.token,
-                    methodId = parameters.methodId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticateWithOTP(
+                        token = parameters.token,
+                        methodId = parameters.methodId,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
         }
         return result
     }
@@ -55,6 +56,7 @@ internal class OTPImpl internal constructor(
                     api.loginOrCreateByOTPWithSMS(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
+                        enableAutofill = parameters.enableAutofill,
                     )
             }
 

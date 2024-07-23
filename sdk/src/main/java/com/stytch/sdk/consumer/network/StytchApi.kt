@@ -222,12 +222,14 @@ internal object StytchApi {
         suspend fun loginOrCreateByOTPWithSMS(
             phoneNumber: String,
             expirationMinutes: UInt,
+            enableAutofill: Boolean = false,
         ): StytchResult<LoginOrCreateOTPData> =
             safeConsumerApiCall {
                 apiService.loginOrCreateUserByOTPWithSMS(
                     ConsumerRequests.OTP.SMS(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes.toInt(),
+                        enableAutofill = enableAutofill,
                     ),
                 )
             }

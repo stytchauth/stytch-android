@@ -27,6 +27,7 @@ internal class OTPImpl(
                     mfaPhoneNumber = parameters.mfaPhoneNumber,
                     locale = parameters.locale,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    enableAutofill = parameters.enableAutofill,
                 )
             }
 
@@ -41,16 +42,17 @@ internal class OTPImpl(
 
         override suspend fun authenticate(parameters: OTP.SMS.AuthenticateParameters): SMSAuthenticateResponse =
             withContext(dispatchers.io) {
-                api.authenticateSMSOTP(
-                    organizationId = parameters.organizationId,
-                    memberId = parameters.memberId,
-                    code = parameters.code,
-                    setMFAEnrollment = parameters.setMFAEnrollment,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticateSMSOTP(
+                        organizationId = parameters.organizationId,
+                        memberId = parameters.memberId,
+                        code = parameters.code,
+                        setMFAEnrollment = parameters.setMFAEnrollment,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             }
 
         override fun authenticate(

@@ -72,11 +72,13 @@ public interface OTP {
          * Data class used for wrapping parameters used with SMS OTP
          * @property phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @property expirationMinutes indicates how long the OTP should last before it expires
+         * @property enableAutofill indicates whether the SMS message should include autofill metadata
          */
         @Parcelize
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            val enableAutofill: Boolean = false,
         ) : Parcelable
 
         /**
