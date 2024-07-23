@@ -194,12 +194,11 @@ internal class MainScreenViewModel(
         }
     }
 
-    suspend fun getUserType(emailAddress: String): UserType? {
-        return when (val result = stytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
+    suspend fun getUserType(emailAddress: String): UserType? =
+        when (val result = stytchClient.user.search(UserManagement.SearchParams(emailAddress))) {
             is StytchResult.Success -> result.value.userType
             is StytchResult.Error -> null
         }
-    }
 
     suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
         emailAddress: String,
@@ -312,7 +311,7 @@ internal class MainScreenViewModel(
                         EventState.NavigationRequested(
                             NavigationRoute.OTPConfirmation(
                                 OTPDetails.SmsOTP(
-                                    parameters = parameters,
+                                    parameters = parameters.copy(enableAutofill = true),
                                     methodId = result.value.methodId,
                                 ),
                                 isReturningUser = false,
