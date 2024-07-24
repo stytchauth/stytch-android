@@ -251,6 +251,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithSMS(parameters)
@@ -260,6 +261,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
@@ -272,6 +274,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSPrimary(parameters)
@@ -281,6 +284,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
@@ -293,6 +297,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSSecondary(parameters)
@@ -302,6 +307,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }

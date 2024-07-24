@@ -56,6 +56,7 @@ internal class OTPImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.methodId = any() } just runs
         impl =
             OTPImpl(
                 externalScope = TestScope(),

@@ -456,8 +456,16 @@ internal class StytchB2BApiServiceTest {
                                 "operands" to
                                     listOf(
                                         mapOf(
-                                            "filter_name" to parameters.query?.operands?.get(0)?.filterName,
-                                            "filter_value" to parameters.query?.operands?.get(0)?.filterValue,
+                                            "filter_name" to
+                                                parameters.query
+                                                    ?.operands
+                                                    ?.get(0)
+                                                    ?.filterName,
+                                            "filter_value" to
+                                                parameters.query
+                                                    ?.operands
+                                                    ?.get(0)
+                                                    ?.filterValue,
                                         ),
                                     ),
                             ),
@@ -1086,6 +1094,7 @@ internal class StytchB2BApiServiceTest {
                     memberId = "my-member-id",
                     mfaPhoneNumber = "+15555550123",
                     locale = "en",
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.sendSMSOTP(parameters)
@@ -1097,6 +1106,7 @@ internal class StytchB2BApiServiceTest {
                         "member_id" to parameters.memberId,
                         "mfa_phone_number" to parameters.mfaPhoneNumber,
                         "locale" to parameters.locale,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
