@@ -12,7 +12,6 @@ import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
@@ -116,8 +115,7 @@ public object StytchClient {
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchApi.configure(publicToken, deviceInfo)
-            val activityProvider = ActivityProvider(context.applicationContext as Application)
-            dfpProvider = DFPProviderImpl(publicToken, activityProvider)
+            dfpProvider = DFPProviderImpl(context.applicationContext, publicToken)
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
                 bootstrapData =
