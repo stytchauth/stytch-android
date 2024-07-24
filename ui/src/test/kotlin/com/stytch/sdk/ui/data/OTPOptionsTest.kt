@@ -29,6 +29,7 @@ internal class OTPOptionsTest {
             OTP.SmsOTP.Parameters(
                 phoneNumber = "123-456-7890",
                 expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
+                enableAutofill = true,
             )
         assert(defaultOTPOptions.toSMSOtpParameters("123-456-7890") == expected)
     }
