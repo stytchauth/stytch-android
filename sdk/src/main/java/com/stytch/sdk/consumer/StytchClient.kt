@@ -163,6 +163,7 @@ public object StytchClient {
     private fun configureSmsRetriever(context: Context) {
         smsRetriever =
             StytchSMSRetrieverImpl(context) { code ->
+                smsRetriever.finish()
                 val parsedCode = code ?: return@StytchSMSRetrieverImpl
                 val methodId = sessionStorage.methodId ?: return@StytchSMSRetrieverImpl
                 externalScope.launch {

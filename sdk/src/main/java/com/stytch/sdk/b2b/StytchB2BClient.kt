@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -153,10 +152,10 @@ public object StytchB2BClient {
         }
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun configureSmsRetriever(applicationContext: Context) {
         smsRetriever =
             StytchSMSRetrieverImpl(applicationContext) { code ->
+                smsRetriever.finish()
                 val organizationId = sessionStorage.organization?.organizationId ?: return@StytchSMSRetrieverImpl
                 val memberId = sessionStorage.member?.memberId ?: return@StytchSMSRetrieverImpl
                 val parsedCode = code ?: return@StytchSMSRetrieverImpl

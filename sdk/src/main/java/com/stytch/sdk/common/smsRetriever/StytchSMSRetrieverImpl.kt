@@ -10,10 +10,12 @@ import com.stytch.sdk.common.StytchLog
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 internal class StytchSMSRetrieverImpl(
     private val context: Context,
-    callback: (String?) -> Unit,
+    private val callback: (String?) -> Unit,
 ) : StytchSMSRetriever {
-    init {
-        val broadcastReceiver = StytchSMSBroadcastReceiver(callback)
+    private var broadcastReceiver: StytchSMSBroadcastReceiver? = null
+
+    override fun start() {
+        broadcastReceiver = StytchSMSBroadcastReceiver(callback)
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
         val permission = SmsRetriever.SEND_PERMISSION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -27,11 +29,8 @@ internal class StytchSMSRetrieverImpl(
         } else {
             context.registerReceiver(broadcastReceiver, intentFilter, permission, null)
         }
-    }
-
-    override fun start() {
-        val client = SmsRetriever.getClient(context)
-        client
+        SmsRetriever
+            .getClient(context)
             .startSmsRetriever()
             .addOnSuccessListener {
                 StytchLog.d("Successfully started SMS Retriever Client")
@@ -42,5 +41,11 @@ internal class StytchSMSRetrieverImpl(
             }.addOnCompleteListener {
                 StytchLog.d("SMS Retriever Client completed")
             }
+    }
+
+    override fun finish() {
+        broadcastReceiver?.let {
+            context.unregisterReceiver(it)
+        }
     }
 }
