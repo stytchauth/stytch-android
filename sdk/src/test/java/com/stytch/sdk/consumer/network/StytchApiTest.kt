@@ -18,11 +18,9 @@ import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -48,7 +46,6 @@ internal class StytchApiTest {
     fun before() {
         val mockApplication: Application =
             mockk {
-                every { registerActivityLifecycleCallbacks(any()) } just runs
                 every { packageName } returns "Stytch"
             }
         mContextMock =
@@ -709,9 +706,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                return StytchDataResponse(true)
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = StytchDataResponse(true)
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Success)
         }
@@ -721,13 +716,12 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
+            fun mockApiCall(): StytchDataResponse<Boolean> =
                 throw HttpException(
                     mockk(relaxed = true) {
                         every { errorBody() } returns null
                     },
                 )
-            }
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
@@ -737,9 +731,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                throw StytchAPIError(errorType = "", message = "")
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
