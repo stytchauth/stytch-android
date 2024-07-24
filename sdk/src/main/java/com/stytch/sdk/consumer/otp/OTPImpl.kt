@@ -55,7 +55,7 @@ internal class OTPImpl internal constructor(
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
             if (parameters.enableAutofill) {
-                StytchClient.startSmsRetriever()
+                StytchClient.startSmsRetriever(parameters.autofillSessionDurationMinutes)
             }
             withContext(dispatchers.io) {
                 result =
@@ -87,7 +87,7 @@ internal class OTPImpl internal constructor(
         override suspend fun send(parameters: OTP.SmsOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
                 if (parameters.enableAutofill) {
-                    StytchClient.startSmsRetriever()
+                    StytchClient.startSmsRetriever(parameters.autofillSessionDurationMinutes)
                 }
                 if (sessionStorage.persistedSessionIdentifiersExist) {
                     api

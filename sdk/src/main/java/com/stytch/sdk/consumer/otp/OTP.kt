@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.otp
 
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
@@ -73,12 +74,14 @@ public interface OTP {
          * @property phoneNumber the number the OTP code should be sent to via SMS, in E.164 format (i.e. +1XXXXXXXXXX)
          * @property expirationMinutes indicates how long the OTP should last before it expires
          * @property enableAutofill indicates whether the SMS message should include autofill metadata
+         * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
          */
         @Parcelize
         public data class Parameters(
             val phoneNumber: String,
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             val enableAutofill: Boolean = false,
+            val autofillSessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         ) : Parcelable
 
         /**

@@ -75,16 +75,16 @@ internal class OTPImplTest {
     @Test
     fun `OTPImpl authenticate delegates to api`() =
         runTest {
-            coEvery { mockApi.authenticateWithOTP(any(), any()) } returns successfulAuthResponse
+            coEvery { mockApi.authenticateWithOTP(any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
-            coVerify { mockApi.authenticateWithOTP(any(), any()) }
+            coVerify { mockApi.authenticateWithOTP(any(), any(), any()) }
             verify { successfulAuthResponse.launchSessionUpdater(any(), any()) }
         }
 
     @Test
     fun `OTPImpl authenticate with callback calls callback method`() {
-        coEvery { mockApi.authenticateWithOTP(any(), any()) } returns successfulAuthResponse
+        coEvery { mockApi.authenticateWithOTP(any(), any(), any()) } returns successfulAuthResponse
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.authenticate(authParameters, mockCallback)
         verify { mockCallback.invoke(eq(successfulAuthResponse)) }

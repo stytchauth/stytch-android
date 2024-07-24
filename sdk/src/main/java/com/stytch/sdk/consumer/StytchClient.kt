@@ -162,7 +162,7 @@ public object StytchClient {
 
     private fun configureSmsRetriever(context: Context) {
         smsRetriever =
-            StytchSMSRetrieverImpl(context) { code ->
+            StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
                 smsRetriever.finish()
                 val parsedCode = code ?: return@StytchSMSRetrieverImpl
                 val methodId = sessionStorage.methodId ?: return@StytchSMSRetrieverImpl
@@ -171,6 +171,7 @@ public object StytchClient {
                         OTP.AuthParameters(
                             token = parsedCode,
                             methodId = methodId,
+                            sessionDurationMinutes = sessionDurationMinutes ?: Constants.DEFAULT_SESSION_TIME_MINUTES,
                         ),
                     )
                 }
@@ -516,5 +517,5 @@ public object StytchClient {
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever() = smsRetriever.start()
+    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
 }

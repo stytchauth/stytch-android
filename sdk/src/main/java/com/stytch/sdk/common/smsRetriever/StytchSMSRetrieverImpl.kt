@@ -10,12 +10,15 @@ import com.stytch.sdk.common.StytchLog
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 internal class StytchSMSRetrieverImpl(
     private val context: Context,
-    private val callback: (String?) -> Unit,
+    private val callback: (String?, UInt?) -> Unit,
 ) : StytchSMSRetriever {
     private var broadcastReceiver: StytchSMSBroadcastReceiver? = null
 
-    override fun start() {
-        broadcastReceiver = StytchSMSBroadcastReceiver(callback)
+    override fun start(sessionDurationMinutes: UInt) {
+        broadcastReceiver =
+            StytchSMSBroadcastReceiver { code ->
+                callback(code, sessionDurationMinutes)
+            }
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
         val permission = SmsRetriever.SEND_PERMISSION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

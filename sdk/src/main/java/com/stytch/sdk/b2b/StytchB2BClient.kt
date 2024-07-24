@@ -154,7 +154,7 @@ public object StytchB2BClient {
 
     private fun configureSmsRetriever(applicationContext: Context) {
         smsRetriever =
-            StytchSMSRetrieverImpl(applicationContext) { code ->
+            StytchSMSRetrieverImpl(applicationContext) { code, sessionDurationMinutes ->
                 smsRetriever.finish()
                 val organizationId = sessionStorage.organization?.organizationId ?: return@StytchSMSRetrieverImpl
                 val memberId = sessionStorage.member?.memberId ?: return@StytchSMSRetrieverImpl
@@ -165,6 +165,7 @@ public object StytchB2BClient {
                             organizationId = organizationId,
                             memberId = memberId,
                             code = parsedCode,
+                            sessionDurationMinutes = sessionDurationMinutes ?: Constants.DEFAULT_SESSION_TIME_MINUTES,
                         ),
                     )
                 }
@@ -556,5 +557,5 @@ public object StytchB2BClient {
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever() = smsRetriever.start()
+    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
 }

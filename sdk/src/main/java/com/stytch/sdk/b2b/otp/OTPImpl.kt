@@ -22,7 +22,7 @@ internal class OTPImpl(
     private inner class SMSImpl : OTP.SMS {
         override suspend fun send(parameters: OTP.SMS.SendParameters): BasicResponse {
             if (parameters.enableAutofill) {
-                StytchB2BClient.startSmsRetriever()
+                StytchB2BClient.startSmsRetriever(parameters.autofillSessionDurationMinutes)
             }
             return withContext(dispatchers.io) {
                 api.sendSMSOTP(
