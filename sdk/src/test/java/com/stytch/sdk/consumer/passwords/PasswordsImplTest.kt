@@ -153,18 +153,17 @@ internal class PasswordsImplTest {
                     any(),
                     any(),
                     any(),
-                    any(),
                 )
             } returns mockk()
             impl.resetByEmailStart(resetByEmailStartParameters)
-            coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) }
+            coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl resetByEmailStart with callback calls callback method`() {
         val mockResponse: StytchResult<BasicData> = mockk()
         coEvery {
-            mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any())
+            mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any())
         } returns mockResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.resetByEmailStart(resetByEmailStartParameters, mockCallback)

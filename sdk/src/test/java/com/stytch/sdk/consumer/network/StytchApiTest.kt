@@ -94,7 +94,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "")
+            StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "")
             coVerify { StytchApi.apiService.loginOrCreateUserByEmail(any()) }
         }
 
@@ -238,7 +238,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmailStart("", "", "", "", 30, "", 30, "")
+            StytchApi.Passwords.resetByEmailStart("", "", "", 30, "", 30, "")
             coVerify { StytchApi.apiService.resetByEmailStart(any()) }
         }
 
@@ -709,9 +709,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                return StytchDataResponse(true)
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = StytchDataResponse(true)
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Success)
         }
@@ -721,13 +719,12 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
+            fun mockApiCall(): StytchDataResponse<Boolean> =
                 throw HttpException(
                     mockk(relaxed = true) {
                         every { errorBody() } returns null
                     },
                 )
-            }
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
@@ -737,9 +734,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                throw StytchAPIError(errorType = "", message = "")
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
