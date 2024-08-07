@@ -16,8 +16,6 @@ internal object ConsumerRequests {
                 val loginMagicLinkUrl: String?,
                 @Json(name = "code_challenge")
                 val codeChallenge: String,
-                @Json(name = "code_challenge_method")
-                val codeChallengeMethod: String,
                 @Json(name = "login_template_id")
                 val loginTemplateId: String? = null,
                 @Json(name = "signup_template_id")
@@ -81,8 +79,6 @@ internal object ConsumerRequests {
             val email: String,
             @Json(name = "code_challenge")
             val codeChallenge: String,
-            @Json(name = "code_challenge_method")
-            val codeChallengeMethod: String,
             @Json(name = "login_redirect_url")
             val loginRedirectUrl: String?,
             @Json(name = "login_expiration_minutes")

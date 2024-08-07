@@ -27,13 +27,14 @@ internal class PasswordsImpl internal constructor(
         val result: AuthResponse
         withContext(dispatchers.io) {
             result =
-                api.authenticate(
-                    email = parameters.email,
-                    password = parameters.password,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        email = parameters.email,
+                        password = parameters.password,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
         }
         return result
     }
@@ -53,13 +54,14 @@ internal class PasswordsImpl internal constructor(
 
         withContext(dispatchers.io) {
             result =
-                api.create(
-                    email = parameters.email,
-                    password = parameters.password,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .create(
+                        email = parameters.email,
+                        password = parameters.password,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
         }
 
         return result
@@ -95,7 +97,6 @@ internal class PasswordsImpl internal constructor(
                 api.resetByEmailStart(
                     email = parameters.email,
                     codeChallenge = challengeCode,
-                    codeChallengeMethod = challengeCodeMethod,
                     loginRedirectUrl = parameters.loginRedirectUrl,
                     loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
                     resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
@@ -130,14 +131,15 @@ internal class PasswordsImpl internal constructor(
             }
 
             result =
-                api.resetByEmail(
-                    parameters.token,
-                    parameters.password,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .resetByEmail(
+                        parameters.token,
+                        parameters.password,
+                        parameters.sessionDurationMinutes,
+                        codeVerifier,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             pkcePairManager.clearPKCECodePair()
         }
 
@@ -156,18 +158,18 @@ internal class PasswordsImpl internal constructor(
 
     override suspend fun resetByExistingPassword(
         parameters: Passwords.ResetByExistingPasswordParameters,
-    ): AuthResponse {
-        return withContext(dispatchers.io) {
-            api.resetByExisting(
-                email = parameters.email,
-                existingPassword = parameters.existingPassword,
-                newPassword = parameters.newPassword,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    ): AuthResponse =
+        withContext(dispatchers.io) {
+            api
+                .resetByExisting(
+                    email = parameters.email,
+                    existingPassword = parameters.existingPassword,
+                    newPassword = parameters.newPassword,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun resetByExistingPassword(
         parameters: Passwords.ResetByExistingPasswordParameters,
@@ -178,16 +180,16 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse {
-        return withContext(dispatchers.io) {
-            api.resetBySession(
-                password = parameters.password,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse =
+        withContext(dispatchers.io) {
+            api
+                .resetBySession(
+                    password = parameters.password,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun resetBySession(
         parameters: Passwords.ResetBySessionParameters,

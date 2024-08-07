@@ -105,9 +105,15 @@ internal object StytchB2BApi {
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         StytchB2BClient.assertInitialized()
+        val sdkUrl =
+            if (isTestToken) {
+                Constants.TEST_SDK_URL
+            } else {
+                Constants.LIVE_SDK_URL
+            }
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                Constants.WEB_URL,
+                sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchB2BClient.sessionStorage.revoke() },
@@ -127,8 +133,14 @@ internal object StytchB2BApi {
         }
 
     private val regularStytchApiService: StytchB2BApiService by lazy {
+        val sdkUrl =
+            if (isTestToken) {
+                Constants.TEST_SDK_URL
+            } else {
+                Constants.LIVE_SDK_URL
+            }
         ApiService.createApiService(
-            Constants.WEB_URL,
+            sdkUrl,
             authHeaderInterceptor,
             null,
             { StytchB2BClient.sessionStorage.revoke() },

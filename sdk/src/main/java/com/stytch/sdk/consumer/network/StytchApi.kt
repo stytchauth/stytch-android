@@ -80,9 +80,15 @@ internal object StytchApi {
         dfpProtectedAuthEnabled: Boolean,
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
+        val sdkUrl =
+            if (isTestToken) {
+                Constants.TEST_SDK_URL
+            } else {
+                Constants.LIVE_SDK_URL
+            }
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                Constants.WEB_URL,
+                sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchClient.sessionStorage.revoke() },
@@ -102,8 +108,14 @@ internal object StytchApi {
         }
 
     private val regularStytchApiService: StytchApiService by lazy {
+        val sdkUrl =
+            if (isTestToken) {
+                Constants.TEST_SDK_URL
+            } else {
+                Constants.LIVE_SDK_URL
+            }
         ApiService.createApiService(
-            Constants.WEB_URL,
+            sdkUrl,
             authHeaderInterceptor,
             null,
             { StytchClient.sessionStorage.revoke() },
@@ -132,7 +144,6 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
             ): StytchResult<BasicData> =
@@ -142,7 +153,6 @@ internal object StytchApi {
                             email = email,
                             loginMagicLinkUrl = loginMagicLinkUrl,
                             codeChallenge = codeChallenge,
-                            codeChallengeMethod = codeChallengeMethod,
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
                         ),
@@ -407,7 +417,6 @@ internal object StytchApi {
         suspend fun resetByEmailStart(
             email: String,
             codeChallenge: String,
-            codeChallengeMethod: String,
             loginRedirectUrl: String?,
             loginExpirationMinutes: Int?,
             resetPasswordRedirectUrl: String?,
@@ -419,7 +428,6 @@ internal object StytchApi {
                     ConsumerRequests.Passwords.ResetByEmailStartRequest(
                         email,
                         codeChallenge,
-                        codeChallengeMethod,
                         loginRedirectUrl,
                         loginExpirationMinutes,
                         resetPasswordRedirectUrl,
