@@ -157,6 +157,7 @@ internal object B2BRequests {
         @Keep
         @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
+            @Json(name = "email_address")
             val email: String?,
             val password: String,
         )

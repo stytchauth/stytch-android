@@ -682,7 +682,7 @@ internal class StytchB2BApiServiceTest {
                 expectedPath = "/b2b/passwords/strength_check",
                 expectedBody =
                     mapOf(
-                        "email" to parameters.email,
+                        "email_address" to parameters.email,
                         "password" to parameters.password,
                     ),
             )
