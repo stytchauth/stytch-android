@@ -26,12 +26,16 @@ public interface OTP {
          * []IETF BCP 47 language tag](https://www.w3.org/International/articles/language-tags/), e.g. "en".
          * Currently supported languages are English ("en"), Spanish ("es"), and Brazilian Portuguese ("pt-br"); if no
          * value is provided, the copy defaults to English.
+         * @property enableAutofill indicates whether the SMS message should include autofill metadata
+         * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
          */
         public data class SendParameters(
             val organizationId: String,
             val memberId: String,
             val mfaPhoneNumber: String? = null,
             val locale: String? = null,
+            val enableAutofill: Boolean = false,
+            val autofillSessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**

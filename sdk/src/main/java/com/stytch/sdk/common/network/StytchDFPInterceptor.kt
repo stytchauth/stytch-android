@@ -3,6 +3,7 @@ package com.stytch.sdk.common.network
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.extensions.isDFPPAEnabled
 import com.stytch.sdk.common.extensions.requiresCaptcha
 import com.stytch.sdk.common.extensions.toNewRequestWithParams
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
@@ -29,8 +30,7 @@ internal class StytchDFPInterceptor(
 ) : DFPInterceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val isEventLogging = request.url.toUrl().path.contains("/events")
-        if (request.method == "GET" || request.method == "DELETE" || isEventLogging) return chain.proceed(request)
+        if (!request.isDFPPAEnabled()) return chain.proceed(request)
         if (!dfpProtectedAuthEnabled) return handleDisabledDFPStatus(chain)
         return when (dfpProtectedAuthMode) {
             DFPProtectedAuthMode.DECISIONING -> handleDFPDecisioningMode(chain)

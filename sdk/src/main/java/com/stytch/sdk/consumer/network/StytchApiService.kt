@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import com.stytch.sdk.common.annotations.DFPPAEnabled
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
@@ -17,16 +18,19 @@ import retrofit2.http.Path
 internal interface StytchApiService : ApiService {
     //region Magic Links
     @POST("magic_links/email/login_or_create")
+    @DFPPAEnabled
     suspend fun loginOrCreateUserByEmail(
         @Body request: ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest,
     ): CommonResponses.BasicResponse
 
     @POST("magic_links/email/send/primary")
+    @DFPPAEnabled
     suspend fun sendEmailMagicLinkPrimary(
         @Body request: ConsumerRequests.MagicLinks.SendRequest,
     ): CommonResponses.SendResponse
 
     @POST("magic_links/email/send/secondary")
+    @DFPPAEnabled
     suspend fun sendEmailMagicLinkSecondary(
         @Body request: ConsumerRequests.MagicLinks.SendRequest,
     ): CommonResponses.SendResponse
@@ -49,31 +53,37 @@ internal interface StytchApiService : ApiService {
 
     //region OTP
     @POST("otps/sms/login_or_create")
+    @DFPPAEnabled
     suspend fun loginOrCreateUserByOTPWithSMS(
         @Body request: ConsumerRequests.OTP.SMS,
     ): ConsumerResponses.LoginOrCreateOTPResponse
 
     @POST("otps/sms/send/primary")
+    @DFPPAEnabled
     suspend fun sendOTPWithSMSPrimary(
         @Body request: ConsumerRequests.OTP.SMS,
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/sms/send/secondary")
+    @DFPPAEnabled
     suspend fun sendOTPWithSMSSecondary(
         @Body request: ConsumerRequests.OTP.SMS,
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/login_or_create")
+    @DFPPAEnabled
     suspend fun loginOrCreateUserByOTPWithWhatsApp(
         @Body request: ConsumerRequests.OTP.WhatsApp,
     ): ConsumerResponses.LoginOrCreateOTPResponse
 
     @POST("otps/whatsapp/send/primary")
+    @DFPPAEnabled
     suspend fun sendOTPWithWhatsAppPrimary(
         @Body request: ConsumerRequests.OTP.WhatsApp,
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/whatsapp/send/secondary")
+    @DFPPAEnabled
     suspend fun sendOTPWithWhatsAppSecondary(
         @Body request: ConsumerRequests.OTP.WhatsApp,
     ): ConsumerResponses.OTPSendResponse
@@ -94,6 +104,7 @@ internal interface StytchApiService : ApiService {
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/authenticate")
+    @DFPPAEnabled
     suspend fun authenticateWithOTP(
         @Body request: ConsumerRequests.OTP.Authenticate,
     ): ConsumerResponses.AuthenticateResponse
@@ -101,31 +112,37 @@ internal interface StytchApiService : ApiService {
 
     //region passwords
     @POST("passwords")
+    @DFPPAEnabled
     suspend fun passwords(
         @Body request: ConsumerRequests.Passwords.CreateRequest,
     ): ConsumerResponses.Passwords.PasswordsCreateResponse
 
     @POST("passwords/authenticate")
+    @DFPPAEnabled
     suspend fun authenticateWithPasswords(
         @Body request: ConsumerRequests.Passwords.AuthenticateRequest,
     ): ConsumerResponses.AuthenticateResponse
 
     @POST("passwords/email/reset/start")
+    @DFPPAEnabled
     suspend fun resetByEmailStart(
         @Body request: ConsumerRequests.Passwords.ResetByEmailStartRequest,
     ): CommonResponses.BasicResponse
 
     @POST("passwords/email/reset")
+    @DFPPAEnabled
     suspend fun resetByEmail(
         @Body request: ConsumerRequests.Passwords.ResetByEmailRequest,
     ): ConsumerResponses.AuthenticateResponse
 
     @POST("passwords/session/reset")
+    @DFPPAEnabled
     suspend fun resetBySession(
         @Body request: ConsumerRequests.Passwords.ResetBySessionRequest,
     ): ConsumerResponses.AuthenticateResponse
 
     @POST("passwords/existing_password/reset")
+    @DFPPAEnabled
     suspend fun resetByExistingPassword(
         @Body request: ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest,
     ): ConsumerResponses.AuthenticateResponse
@@ -153,6 +170,7 @@ internal interface StytchApiService : ApiService {
     ): CommonResponses.Biometrics.AuthenticateStartResponse
 
     @POST("biometrics/authenticate")
+    @DFPPAEnabled
     suspend fun biometricsAuthenticate(
         @Body request: ConsumerRequests.Biometrics.AuthenticateRequest,
     ): ConsumerResponses.Biometrics.AuthenticateResponse
@@ -249,6 +267,7 @@ internal interface StytchApiService : ApiService {
     ): ConsumerResponses.WebAuthn.AuthenticateResponse
 
     @POST("webauthn/authenticate")
+    @DFPPAEnabled
     suspend fun webAuthnAuthenticate(
         @Body request: ConsumerRequests.WebAuthn.AuthenticateRequest,
     ): ConsumerResponses.AuthenticateResponse
@@ -280,6 +299,7 @@ internal interface StytchApiService : ApiService {
     ): ConsumerResponses.Crypto.AuthenticateStartResponse
 
     @POST("crypto_wallets/authenticate")
+    @DFPPAEnabled
     suspend fun cryptoWalletAuthenticate(
         @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest,
     ): ConsumerResponses.AuthenticateResponse
@@ -292,6 +312,7 @@ internal interface StytchApiService : ApiService {
     ): ConsumerResponses.TOTP.TOTPCreateResponse
 
     @POST("totps/authenticate")
+    @DFPPAEnabled
     suspend fun totpsAuthenticate(
         @Body request: ConsumerRequests.TOTP.TOTPAuthenticateRequest,
     ): ConsumerResponses.TOTP.TOTPAuthenticateResponse
@@ -300,6 +321,7 @@ internal interface StytchApiService : ApiService {
     suspend fun totpsRecoveryCodes(): ConsumerResponses.TOTP.TOTPRecoveryCodesResponse
 
     @POST("totps/recover")
+    @DFPPAEnabled
     suspend fun totpsRecover(
         @Body request: ConsumerRequests.TOTP.TOTPRecoverRequest,
     ): ConsumerResponses.TOTP.TOTPRecoverResponse

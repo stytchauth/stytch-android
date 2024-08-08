@@ -35,6 +35,7 @@ public data class OTPOptions(
         OTP.SmsOTP.Parameters(
             phoneNumber = phoneNumber,
             expirationMinutes = expirationMinutes.toUInt(),
+            enableAutofill = true,
         )
 
     internal fun toWhatsAppOtpParameters(phoneNumber: String) =

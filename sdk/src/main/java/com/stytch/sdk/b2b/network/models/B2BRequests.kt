@@ -157,6 +157,7 @@ internal object B2BRequests {
         @Keep
         @JsonClass(generateAdapter = true)
         data class StrengthCheckRequest(
+            @Json(name = "email_address")
             val email: String?,
             val password: String,
         )
@@ -447,6 +448,8 @@ internal object B2BRequests {
                 val locale: String? = null,
                 @Json(name = "intermediate_session_token")
                 val intermediateSessionToken: String? = null,
+                @Json(name = "enable_autofill")
+                val enableAutofill: Boolean = false,
             )
 
             @Keep

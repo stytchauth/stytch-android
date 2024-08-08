@@ -56,7 +56,6 @@ internal class StytchApiServiceTests {
                     email = EMAIL,
                     loginMagicLinkUrl = LOGIN_MAGIC_LINK,
                     codeChallenge = "123",
-                    codeChallengeMethod = "method2",
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
                 )
@@ -69,7 +68,6 @@ internal class StytchApiServiceTests {
                         "email" to parameters.email,
                         "login_magic_link_url" to parameters.loginMagicLinkUrl,
                         "code_challenge" to parameters.codeChallenge,
-                        "code_challenge_method" to parameters.codeChallengeMethod,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
                     ),
@@ -251,6 +249,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithSMS(parameters)
@@ -260,6 +259,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
@@ -272,6 +272,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSPrimary(parameters)
@@ -281,6 +282,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
@@ -293,6 +295,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.SMS(
                     phoneNumber = "000",
                     expirationMinutes = 24,
+                    enableAutofill = true,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSSecondary(parameters)
@@ -302,6 +305,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "enable_autofill" to parameters.enableAutofill,
                     ),
             )
         }
@@ -473,7 +477,6 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.Passwords.ResetByEmailStartRequest(
                     email = EMAIL,
                     codeChallenge = "123",
-                    codeChallengeMethod = "method2",
                     loginRedirectUrl = "loginRedirect",
                     loginExpirationMinutes = 24,
                     resetPasswordRedirectUrl = "resetPasswordUrl",
@@ -488,7 +491,6 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "email" to parameters.email,
                         "code_challenge" to parameters.codeChallenge,
-                        "code_challenge_method" to parameters.codeChallengeMethod,
                         "login_redirect_url" to parameters.loginRedirectUrl,
                         "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
                         "login_expiration_minutes" to parameters.loginExpirationMinutes,

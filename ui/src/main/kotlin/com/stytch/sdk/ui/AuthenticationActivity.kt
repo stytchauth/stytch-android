@@ -40,6 +40,11 @@ internal class AuthenticationActivity : ComponentActivity() {
                 eventName = "render_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
             )
+            StytchClient.user.onChange {
+                it?.let {
+                    returnAuthenticationResult(StytchResult.Success(it))
+                }
+            }
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
