@@ -225,14 +225,16 @@ With the above in place your app should be ready to accept deeplinks
 
 ### Example app
 
-The above code is used in practice in the Example Apps, which can be run and used to test out various flows of the SDK.
-In order to run the application, you have to define some gradle properties in your global or local `gradle.properties`.
+The above code is used in practice in the included Example Apps, which can be run and used to test out various flows of the SDK.
+In order to run the applications, you have to define some gradle properties in your global or local `gradle.properties`.
+Whether you are using the Consumer or B2B workbench app, you must provide all of the below values, as Gradle will attempt to build all of the apps in the project
 #### **For Consumer Applications**
 - `STYTCH_PUBLIC_TOKEN` - This token can be retrieved from your Stytch dashboard as mentioned before in this README.
 - `GOOGLE_OAUTH_CLIENT_ID` - This client ID is configured in your Google OAuth settings. You can leave it blank if you are not testing Google OneTap
+- `PASSKEYS_DOMAIN` - This is the domain that hosts your `.well-known/assetlinks.json` file. You can leave it blank if you are not testing Passkeys
 #### **For B2B Applications**
 - `STYTCH_B2B_PUBLIC_TOKEN` - This token can be retrieved from your Stytch dashboard as mentioned before in this README.
-- `STYTCH_B2B_ORG_ID` - You must create an organization in your Stytch product, and retrieve this ID
+- `STYTCH_B2B_ORG_ID` - You must create an organization in your Stytch dashboard, and retrieve this ID
 
 ### Authenticating
 
@@ -284,7 +286,7 @@ A. Yes! There is a Demo App included in this repo, available [here (consumer app
 
 ### Questions?
 
-Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://stytch.slack.com/join/shared_invite/zt-2f0fi1ruu-ub~HGouWRmPARM1MTwPESA), or our [Forum](https://forum.stytch.com/).
+Feel free to reach out any time at [support@stytch.com](mailto:support@stytch.com), our [Slack](https://stytch.com/docs/resources/support/overview), or our [Forum](https://forum.stytch.com/).
 
 ## License
 

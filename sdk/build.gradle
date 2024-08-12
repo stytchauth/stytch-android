@@ -84,8 +84,6 @@ tasks.named("dokkaHtmlPartial").configure {
     dependsOn(tasks.named("kspDebugKotlin"))
     dependsOn(tasks.named("kspReleaseKotlin"))
     dependencies {
-        dokkaRuntime(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.17.2"))
-        dokkaPlugin(enforcedPlatform("com.fasterxml.jackson:jackson-bom:2.17.2"))
         dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
     }
     moduleName.set("Stytch Android")

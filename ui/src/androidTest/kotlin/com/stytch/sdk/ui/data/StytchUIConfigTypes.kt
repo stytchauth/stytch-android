@@ -69,6 +69,7 @@ internal val REALISTIC_STYTCH_UI_CONFIG_EML =
                 products =
                     listOf(
                         StytchProduct.EMAIL_MAGIC_LINKS,
+                        StytchProduct.PASSWORDS,
                     ),
                 emailMagicLinksOptions = EmailMagicLinksOptions(),
                 passwordOptions = PasswordOptions(),
@@ -90,6 +91,7 @@ internal val REALISTIC_STYTCH_UI_CONFIG_EOTP =
                 products =
                     listOf(
                         StytchProduct.OTP,
+                        StytchProduct.PASSWORDS,
                     ),
                 emailMagicLinksOptions = EmailMagicLinksOptions(),
                 passwordOptions = PasswordOptions(),
