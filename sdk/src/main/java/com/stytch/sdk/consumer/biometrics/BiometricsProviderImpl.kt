@@ -21,7 +21,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 internal const val AUTHENTICATION_FAILED = "Authentication Failed"
-private const val BIOMETRIC_KEY_NAME = "stytch_biometric_key"
+internal const val BIOMETRIC_KEY_NAME = "stytch_biometric_key"
 
 internal class BiometricsProviderImpl : BiometricsProvider {
     private val keyStore = KeyStore.getInstance("AndroidKeyStore")
@@ -38,23 +38,24 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                         "AndroidKeyStore",
                     )
                 val keyGenParameterSpec =
-                    KeyGenParameterSpec.Builder(
-                        BIOMETRIC_KEY_NAME,
-                        KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
-                    ).apply {
-                        setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                        setUserAuthenticationRequired(true)
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                            val authenticationParameters =
-                                if (allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
-                                    KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
-                                } else {
-                                    KeyProperties.AUTH_BIOMETRIC_STRONG
-                                }
-                            setUserAuthenticationParameters(0, authenticationParameters)
-                        }
-                    }.build()
+                    KeyGenParameterSpec
+                        .Builder(
+                            BIOMETRIC_KEY_NAME,
+                            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+                        ).apply {
+                            setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                            setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                            setUserAuthenticationRequired(true)
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                                val authenticationParameters =
+                                    if (allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
+                                        KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
+                                    } else {
+                                        KeyProperties.AUTH_BIOMETRIC_STRONG
+                                    }
+                                setUserAuthenticationParameters(0, authenticationParameters)
+                            }
+                        }.build()
                 keyGenerator.init(keyGenParameterSpec)
                 keyGenerator.generateKey()
             }
@@ -67,13 +68,12 @@ internal class BiometricsProviderImpl : BiometricsProvider {
         keyStore.load(null)
     }
 
-    private fun getCipher(): Cipher {
-        return Cipher.getInstance(
+    private fun getCipher(): Cipher =
+        Cipher.getInstance(
             KeyProperties.KEY_ALGORITHM_AES + "/" +
                 KeyProperties.BLOCK_MODE_CBC + "/" +
                 KeyProperties.ENCRYPTION_PADDING_PKCS7,
         )
-    }
 
     private suspend fun showBiometricPrompt(
         context: FragmentActivity,
@@ -95,7 +95,8 @@ internal class BiometricsProviderImpl : BiometricsProvider {
 
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
-                        result.cryptoObject?.cipher
+                        result.cryptoObject
+                            ?.cipher
                             ?.let { continuation.resume(it) }
                             ?: continuation.resumeWithException(
                                 StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED),
@@ -103,18 +104,22 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                     }
                 }
             val prompt =
-                BiometricPrompt.PromptInfo.Builder().apply {
-                    setTitle(promptData?.title ?: context.getString(R.string.stytch_biometric_prompt_title))
-                    setSubtitle(promptData?.subTitle ?: context.getString(R.string.stytch_biometric_prompt_subtitle))
-                    setAllowedAuthenticators(allowedAuthenticators)
-                    if (!allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
-                        // can only show negative button if device credentials are not allowed
-                        setNegativeButtonText(
-                            promptData?.negativeButtonText
-                                ?: context.getString(R.string.stytch_biometric_prompt_negative),
+                BiometricPrompt.PromptInfo
+                    .Builder()
+                    .apply {
+                        setTitle(promptData?.title ?: context.getString(R.string.stytch_biometric_prompt_title))
+                        setSubtitle(
+                            promptData?.subTitle ?: context.getString(R.string.stytch_biometric_prompt_subtitle),
                         )
-                    }
-                }.build()
+                        setAllowedAuthenticators(allowedAuthenticators)
+                        if (!allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
+                            // can only show negative button if device credentials are not allowed
+                            setNegativeButtonText(
+                                promptData?.negativeButtonText
+                                    ?: context.getString(R.string.stytch_biometric_prompt_negative),
+                            )
+                        }
+                    }.build()
             BiometricPrompt(context, executor, callback).authenticate(prompt, CryptoObject(cipher))
         }
 
@@ -142,9 +147,7 @@ internal class BiometricsProviderImpl : BiometricsProvider {
     override fun areBiometricsAvailable(
         context: FragmentActivity,
         allowedAuthenticators: Int,
-    ): Int {
-        return BiometricManager.from(context).canAuthenticate(allowedAuthenticators)
-    }
+    ): Int = BiometricManager.from(context).canAuthenticate(allowedAuthenticators)
 
     override fun deleteSecretKey() {
         keyStore.deleteEntry(BIOMETRIC_KEY_NAME)

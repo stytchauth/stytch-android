@@ -29,7 +29,7 @@ internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_re
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
 internal const val CIPHER_IV_KEY = "biometrics_cipher_iv"
 internal const val ALLOW_DEVICE_CREDENTIALS_KEY = "biometric_allow_device_credentials"
-private val KEYS_REQUIRED_FOR_REGISTRATION =
+internal val KEYS_REQUIRED_FOR_REGISTRATION =
     listOf(
         LAST_USED_BIOMETRIC_REGISTRATION_ID,
         PRIVATE_KEY_KEY,
@@ -45,7 +45,7 @@ internal class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
-    private val deleteBiometricRegistration: suspend (String) -> Unit,
+    private val deleteBiometricRegistration: suspend (String) -> Boolean,
 ) : Biometrics {
     private fun getAllowedAuthenticators(allowDeviceCredentials: Boolean) =
         if (allowDeviceCredentials && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
@@ -59,9 +59,8 @@ internal class BiometricsImpl internal constructor(
             storageHelper.preferenceExists(it)
         }
 
-    override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
-        return registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
-    }
+    override fun isRegistrationAvailable(context: FragmentActivity): Boolean =
+        registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
 
     override fun areBiometricsAvailable(
         context: FragmentActivity,
@@ -137,22 +136,23 @@ internal class BiometricsImpl internal constructor(
                         challengeString = startResponse.challenge,
                         privateKeyString = privateKey,
                     )
-                api.register(
-                    signature = signature,
-                    biometricRegistrationId = startResponse.biometricRegistrationId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    if (this is StytchResult.Success) {
-                        storageHelper.saveValue(
-                            LAST_USED_BIOMETRIC_REGISTRATION_ID,
-                            startResponse.biometricRegistrationId,
-                        )
-                        storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
-                        storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
-                        storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
+                api
+                    .register(
+                        signature = signature,
+                        biometricRegistrationId = startResponse.biometricRegistrationId,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        if (this is StytchResult.Success) {
+                            storageHelper.saveValue(
+                                LAST_USED_BIOMETRIC_REGISTRATION_ID,
+                                startResponse.biometricRegistrationId,
+                            )
+                            storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
+                            storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
+                            storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
+                        }
+                        launchSessionUpdater(dispatchers, sessionStorage)
                     }
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
             } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
@@ -202,13 +202,14 @@ internal class BiometricsImpl internal constructor(
                         challengeString = startResponse.challenge,
                         privateKeyString = privateKeyString,
                     )
-                api.authenticate(
-                    signature = signature,
-                    biometricRegistrationId = startResponse.biometricRegistrationId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        signature = signature,
+                        biometricRegistrationId = startResponse.biometricRegistrationId,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
