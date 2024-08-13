@@ -90,14 +90,18 @@ internal class BiometricsImpl internal constructor(
         }
     }
 
+    private fun removeLocalRegistrationOnly() {
+        KEYS_REQUIRED_FOR_REGISTRATION.forEach { key -> storageHelper.deletePreference(key) }
+        biometricsProvider.deleteSecretKey()
+    }
+
     override suspend fun removeRegistration(): Boolean =
         withContext(dispatchers.io) {
             val lastUsedRegistrationId = storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)
             if (lastUsedRegistrationId.isNullOrEmpty()) return@withContext true
             return@withContext when (deleteBiometricRegistration(lastUsedRegistrationId)) {
                 is StytchResult.Success -> {
-                    KEYS_REQUIRED_FOR_REGISTRATION.forEach { key -> storageHelper.deletePreference(key) }
-                    biometricsProvider.deleteSecretKey()
+                    removeLocalRegistrationOnly()
                     true
                 }
                 else -> false
@@ -161,7 +165,7 @@ internal class BiometricsImpl internal constructor(
             } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
-                removeRegistration()
+                removeLocalRegistrationOnly()
                 StytchResult.Error(StytchInternalError(exception = e))
             }
         }

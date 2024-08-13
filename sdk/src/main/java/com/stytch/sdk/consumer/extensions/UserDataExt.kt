@@ -1,4 +1,4 @@
-package com.stytch.sdk.common.extensions
+package com.stytch.sdk.consumer.extensions
 
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.consumer.biometrics.BIOMETRIC_KEY_NAME
