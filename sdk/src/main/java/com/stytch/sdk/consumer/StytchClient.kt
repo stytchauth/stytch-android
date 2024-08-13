@@ -282,7 +282,9 @@ public object StytchClient {
             StytchApi.Biometrics,
             BiometricsProviderImpl(),
         ) { biometricRegistrationId ->
-            user.deleteFactor(UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId))
+            return@BiometricsImpl user.deleteFactor(
+                UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId),
+            )
         }
         get() {
             assertInitialized()

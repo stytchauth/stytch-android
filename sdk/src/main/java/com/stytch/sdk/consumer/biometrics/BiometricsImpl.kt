@@ -18,6 +18,7 @@ import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -45,7 +46,7 @@ internal class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
-    private val deleteBiometricRegistration: suspend (String) -> Boolean,
+    private val deleteBiometricRegistration: suspend (String) -> DeleteFactorResponse,
 ) : Biometrics {
     private fun getAllowedAuthenticators(allowDeviceCredentials: Boolean) =
         if (allowDeviceCredentials && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
@@ -91,12 +92,16 @@ internal class BiometricsImpl internal constructor(
 
     override suspend fun removeRegistration(): Boolean =
         withContext(dispatchers.io) {
-            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-                deleteBiometricRegistration(it)
+            val lastUsedRegistrationId = storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)
+            if (lastUsedRegistrationId.isNullOrEmpty()) return@withContext true
+            return@withContext when (deleteBiometricRegistration(lastUsedRegistrationId)) {
+                is StytchResult.Success -> {
+                    KEYS_REQUIRED_FOR_REGISTRATION.forEach { key -> storageHelper.deletePreference(key) }
+                    biometricsProvider.deleteSecretKey()
+                    true
+                }
+                else -> false
             }
-            KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
-            biometricsProvider.deleteSecretKey()
-            true
         }
 
     override fun removeRegistration(callback: (Boolean) -> Unit) {
