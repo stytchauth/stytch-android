@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.biometrics
 
 import androidx.fragment.app.FragmentActivity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 
 /**
@@ -22,7 +22,7 @@ public interface Biometrics {
      */
     public data class RegisterParameters(
         val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         val allowFallbackToCleartext: Boolean = false,
         val promptData: PromptData? = null,
         val allowDeviceCredentials: Boolean = false,
@@ -37,7 +37,7 @@ public interface Biometrics {
      */
     public data class AuthenticateParameters(
         val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         val promptData: PromptData? = null,
     )
 

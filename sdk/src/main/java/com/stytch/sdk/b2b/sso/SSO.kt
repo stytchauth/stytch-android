@@ -12,7 +12,7 @@ import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
 /**
  * Single-Sign On (SSO) refers to the ability for a user to use a single identity to authenticate and gain access to
@@ -59,7 +59,7 @@ public interface SSO {
      */
     public data class AuthenticateParams(
         val ssoToken: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -116,10 +116,19 @@ public interface SSO {
         callback: (B2BSSODeleteConnectionResponse) -> Unit,
     )
 
+    /**
+     * Exposes an instance of the [SAML] interface
+     */
     public val saml: SAML
 
+    /**
+     * Exposes an instance of the [OIDC] interface
+     */
     public val oidc: OIDC
 
+    /**
+     * The SAML interface provides methods for creating, updating, and deleting a SAML connection
+     */
     public interface SAML {
         /**
          * Data class used for wrapping the parameters for a SAML creation request
@@ -256,6 +265,9 @@ public interface SSO {
         )
     }
 
+    /**
+     * The OIDC interface provides methods for creating and updating an OIDC connection
+     */
     public interface OIDC {
         /**
          * Data class used for wrapping the parameters for an OIDC creation request

@@ -1,7 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.app.Activity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import io.mockk.mockk
 import org.junit.Test
 
@@ -12,7 +12,7 @@ internal class SSOTest {
         val expected =
             SSO.AuthenticateParams(
                 ssoToken = "sso-token",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }

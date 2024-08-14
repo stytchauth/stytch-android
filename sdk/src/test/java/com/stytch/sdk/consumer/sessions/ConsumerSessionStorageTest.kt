@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import io.mockk.every
@@ -33,14 +34,14 @@ internal class ConsumerSessionStorageTest {
 
     @Test
     fun `ensureSessionIsValidOrThrow doesn't throw StytchNoCurrentSessionError if either exists`() {
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN) } returns "sessionToken"
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT) } returns null
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN) } returns "sessionToken"
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT) } returns null
         impl.ensureSessionIsValidOrThrow()
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN) } returns null
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT) } returns "sessionJwt"
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN) } returns null
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT) } returns "sessionJwt"
         impl.ensureSessionIsValidOrThrow()
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN) } returns "sessionToken"
-        every { StorageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT) } returns "sessionJwt"
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN) } returns "sessionToken"
+        every { StorageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT) } returns "sessionJwt"
         impl.ensureSessionIsValidOrThrow()
     }
 }

@@ -8,7 +8,7 @@ import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
 /**
  * The Discovery interface provides methods for discovering a member's available organizations, creating organizations,
@@ -49,7 +49,7 @@ public interface Discovery {
      */
     public data class SessionExchangeParameters(
         val organizationId: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -113,7 +113,7 @@ public interface Discovery {
         val organizationName: String? = null,
         val organizationSlug: String? = null,
         val organizationLogoUrl: String? = null,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         val ssoJitProvisioning: SsoJitProvisioning? = null,
         val emailAllowedDomains: List<String>? = null,
         val emailJitProvisioning: EmailJitProvisioning? = null,

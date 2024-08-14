@@ -3,7 +3,7 @@ package com.stytch.sdk.b2b.totp
 import com.stytch.sdk.b2b.TOTPAuthenticateResponse
 import com.stytch.sdk.b2b.TOTPCreateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
 /**
  * The TOTP interface provides methods for creating and authenticating TOTPs for a member
@@ -57,7 +57,7 @@ public interface TOTP {
         val code: String,
         val setMFAEnrollment: SetMFAEnrollment? = null,
         val setDefaultMFAMethod: Boolean? = null,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

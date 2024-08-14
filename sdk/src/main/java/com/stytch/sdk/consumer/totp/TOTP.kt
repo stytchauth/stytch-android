@@ -1,11 +1,15 @@
 package com.stytch.sdk.consumer.totp
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.TOTPAuthenticateResponse
 import com.stytch.sdk.consumer.TOTPCreateResponse
 import com.stytch.sdk.consumer.TOTPRecoverResponse
 import com.stytch.sdk.consumer.TOTPRecoveryCodesResponse
 
+/**
+ * The TOTP interface provides methods for creating and authenticating TOTP codes; retrieving recovery codes; and
+ * consuming a recovery code
+ */
 public interface TOTP {
     /**
      * A data class wrapping the parameters used in a TOTP create request
@@ -24,7 +28,7 @@ public interface TOTP {
      */
     public data class AuthenticateParameters(
         val totpCode: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -34,7 +38,7 @@ public interface TOTP {
      */
     public data class RecoverParameters(
         val recoveryCode: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

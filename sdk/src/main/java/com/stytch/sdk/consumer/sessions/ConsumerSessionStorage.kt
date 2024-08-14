@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.consumer.network.models.SessionData
@@ -16,24 +17,24 @@ internal class ConsumerSessionStorage(
 ) {
     var sessionToken: String?
         private set(value) {
-            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_TOKEN, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
             }
             return value
         }
 
     var sessionJwt: String?
         private set(value) {
-            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_JWT, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
             }
             return value
         }

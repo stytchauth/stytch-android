@@ -2,7 +2,7 @@ package com.stytch.sdk.consumer.passwords
 
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse

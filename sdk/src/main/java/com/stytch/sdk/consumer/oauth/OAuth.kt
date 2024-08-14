@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 
@@ -125,7 +125,7 @@ public interface OAuth {
             val context: Activity,
             val clientId: String,
             val autoSelectEnabled: Boolean = false,
-            val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**
@@ -194,7 +194,7 @@ public interface OAuth {
          */
         public data class AuthenticateParameters(
             val token: String,
-            val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**

@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.passkeys
 
 import android.app.Activity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import io.mockk.mockk
 import org.junit.Test
 
@@ -18,7 +18,7 @@ internal class PasskeysTest {
             Passkeys.AuthenticateParameters(
                 activity = mockActivity,
                 domain = "test.domain.com",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }

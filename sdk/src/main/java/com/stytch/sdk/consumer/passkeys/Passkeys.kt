@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.passkeys
 
 import android.app.Activity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
@@ -30,7 +30,7 @@ public interface Passkeys {
     public data class AuthenticateParameters(
         val activity: Activity,
         val domain: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

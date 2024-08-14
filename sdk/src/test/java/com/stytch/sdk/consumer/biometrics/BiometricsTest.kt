@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.biometrics
 
 import androidx.fragment.app.FragmentActivity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import io.mockk.mockk
 import org.junit.Test
 
@@ -13,7 +13,7 @@ internal class BiometricsTest {
         val expected =
             Biometrics.RegisterParameters(
                 context = mockContext,
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
                 allowFallbackToCleartext = false,
                 promptData = null,
             )

@@ -1,7 +1,8 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.net.Uri
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.LIVE_API_URL
+import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
@@ -18,7 +19,8 @@ internal class ThirdPartyOAuthImpl(
         pkce: String,
         token: String,
     ): Uri =
-        Uri.parse("${host}public/oauth/$providerName/start")
+        Uri
+            .parse("${host}public/oauth/$providerName/start")
             .buildUpon()
             .apply {
                 appendQueryParameter("code_challenge", pkce)
@@ -28,8 +30,7 @@ internal class ThirdPartyOAuthImpl(
                         appendQueryParameter(it.key, it.value)
                     }
                 }
-            }
-            .build()
+            }.build()
 
     override fun start(parameters: OAuth.ThirdParty.StartParameters) {
         val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
@@ -37,7 +38,7 @@ internal class ThirdPartyOAuthImpl(
         val host =
             StytchClient.bootstrapData.cnameDomain?.let {
                 "https://$it/v1/"
-            } ?: if (StytchApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+            } ?: if (StytchApi.isTestToken) TEST_API_URL else LIVE_API_URL
         val potentialParameters =
             mapOf(
                 "login_redirect_url" to parameters.loginRedirectUrl,

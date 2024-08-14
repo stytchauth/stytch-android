@@ -34,12 +34,13 @@ import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.b2b.totp.TOTP
 import com.stytch.sdk.b2b.totp.TOTPImpl
-import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
+import com.stytch.sdk.common.QUERY_TOKEN
+import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -77,15 +78,20 @@ public object StytchB2BClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
+    internal lateinit var dfpProvider: DFPProvider
+
+    /**
+     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
+     */
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
-    internal lateinit var dfpProvider: DFPProvider
+
+    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
-    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     @VisibleForTesting
@@ -147,7 +153,7 @@ public object StytchB2BClient {
         }
     }
 
-    public suspend fun refreshBootstrapData() {
+    internal suspend fun refreshBootstrapData() {
         bootstrapData =
             when (val res = StytchB2BApi.getBootstrapData()) {
                 is StytchResult.Success -> res.value
@@ -313,7 +319,7 @@ public object StytchB2BClient {
         DFPImpl(dfpProvider, dispatchers, externalScope)
     }
 
-    public val events: Events
+    internal val events: Events
         get() {
             assertInitialized()
             return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
@@ -388,7 +394,7 @@ public object StytchB2BClient {
         internal set
 
     /**
-     * Exposes an instance of the [SearchManager] interface which provides methods for search organizations and members
+     * Exposes an instance of the [SearchManager] interface which provides methods to search organizations and members
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchB2BClient.configure()
      */
@@ -417,11 +423,11 @@ public object StytchB2BClient {
     ): DeeplinkHandledStatus {
         assertInitialized()
         return withContext(dispatchers.io) {
-            val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+            val token = uri.getQueryParameter(QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
             }
-            when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE))) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -525,7 +531,7 @@ public object StytchB2BClient {
      * @return Boolean
      */
     public fun canHandle(uri: Uri): Boolean =
-        B2BTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != B2BTokenType.UNKNOWN
+        B2BTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)) != B2BTokenType.UNKNOWN
 
     /**
      * Retrieve the most recently created PKCE code pair from the device, if available

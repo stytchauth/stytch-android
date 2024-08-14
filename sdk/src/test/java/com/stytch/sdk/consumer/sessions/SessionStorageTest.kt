@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.stytch.sdk.common.Constants.PREFERENCES_NAME_SESSION_JWT
-import com.stytch.sdk.common.Constants.PREFERENCES_NAME_SESSION_TOKEN
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.consumer.network.models.SessionData
 import io.mockk.MockKAnnotations

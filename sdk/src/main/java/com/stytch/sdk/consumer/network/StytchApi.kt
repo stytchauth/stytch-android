@@ -1,11 +1,11 @@
 package com.stytch.sdk.consumer.network
 
 import androidx.annotation.VisibleForTesting
-import com.stytch.sdk.common.Constants
-import com.stytch.sdk.common.Constants.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.WEB_URL
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
@@ -82,7 +82,7 @@ internal object StytchApi {
     ) {
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                Constants.WEB_URL,
+                WEB_URL,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchClient.sessionStorage.revoke() },
@@ -103,7 +103,7 @@ internal object StytchApi {
 
     private val regularStytchApiService: StytchApiService by lazy {
         ApiService.createApiService(
-            Constants.WEB_URL,
+            WEB_URL,
             authHeaderInterceptor,
             null,
             { StytchClient.sessionStorage.revoke() },

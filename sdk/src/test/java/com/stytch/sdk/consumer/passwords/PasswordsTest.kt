@@ -1,6 +1,6 @@
 package com.stytch.sdk.consumer.passwords
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import org.junit.Test
 
 internal class PasswordsTest {
@@ -11,7 +11,7 @@ internal class PasswordsTest {
             Passwords.AuthParameters(
                 email = "emailAddress",
                 password = "password",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -23,7 +23,7 @@ internal class PasswordsTest {
             Passwords.CreateParameters(
                 email = "emailAddress",
                 password = "password",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -50,7 +50,7 @@ internal class PasswordsTest {
             Passwords.ResetByEmailParameters(
                 token = "token",
                 password = "password",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }

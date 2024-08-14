@@ -3,7 +3,11 @@ package com.stytch.sdk.b2b.sessions
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.OrganizationData
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.IST_EXPIRATION_TIME
+import com.stytch.sdk.common.PREFERENCES_NAME_IST
+import com.stytch.sdk.common.PREFERENCES_NAME_IST_EXPIRATION
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,34 +21,34 @@ internal class B2BSessionStorage(
 ) {
     var sessionToken: String?
         private set(value) {
-            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_TOKEN, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_TOKEN)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_TOKEN)
             }
             return if (value?.isEmpty() == true) null else value
         }
 
     var sessionJwt: String?
         private set(value) {
-            storageHelper.saveValue(Constants.PREFERENCES_NAME_SESSION_JWT, value)
+            storageHelper.saveValue(PREFERENCES_NAME_SESSION_JWT, value)
         }
         get() {
             val value: String?
             synchronized(this) {
-                value = storageHelper.loadValue(Constants.PREFERENCES_NAME_SESSION_JWT)
+                value = storageHelper.loadValue(PREFERENCES_NAME_SESSION_JWT)
             }
             return value
         }
     var intermediateSessionToken: String?
         private set(value) {
-            storageHelper.saveValue(Constants.PREFERENCES_NAME_IST, value)
+            storageHelper.saveValue(PREFERENCES_NAME_IST, value)
             // Set the IST expiration when persisting an IST
             intermediateSessionTokenExpiration =
                 if (value != null) {
-                    Date().time + Constants.IST_EXPIRATION_TIME
+                    Date().time + IST_EXPIRATION_TIME
                 } else {
                     0L
                 }
@@ -55,7 +59,7 @@ internal class B2BSessionStorage(
                 // Only load and return an IST if it isn't expired
                 value =
                     if (intermediateSessionTokenExpiration >= Date().time) {
-                        storageHelper.loadValue(Constants.PREFERENCES_NAME_IST)
+                        storageHelper.loadValue(PREFERENCES_NAME_IST)
                     } else {
                         // if IST is expired, null it out (this will also null the expiration in the setter)
                         intermediateSessionToken = null
@@ -67,12 +71,12 @@ internal class B2BSessionStorage(
 
     private var intermediateSessionTokenExpiration: Long
         set(value) {
-            storageHelper.saveLong(Constants.PREFERENCES_NAME_IST_EXPIRATION, value)
+            storageHelper.saveLong(PREFERENCES_NAME_IST_EXPIRATION, value)
         }
         get() {
             val value: Long
             synchronized(this) {
-                value = storageHelper.getLong(Constants.PREFERENCES_NAME_IST_EXPIRATION)
+                value = storageHelper.getLong(PREFERENCES_NAME_IST_EXPIRATION)
             }
             return value
         }

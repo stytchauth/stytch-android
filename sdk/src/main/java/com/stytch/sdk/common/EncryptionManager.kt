@@ -40,9 +40,10 @@ internal object EncryptionManager {
     private fun getOrGenerateNewAES256KeysetManager(
         context: Context,
         keyAlias: String,
-    ): AndroidKeysetManager {
-        return try {
-            AndroidKeysetManager.Builder()
+    ): AndroidKeysetManager =
+        try {
+            AndroidKeysetManager
+                .Builder()
                 .withSharedPref(context, keyAlias, PREF_FILE_NAME)
                 .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
                 .withMasterKeyUri(MASTER_KEY_URI)
@@ -58,7 +59,6 @@ internal object EncryptionManager {
             context.clearPreferences(PREF_FILE_NAME)
             getOrGenerateNewAES256KeysetManager(context, keyAlias)
         }
-    }
 
     /**
      * @throws Exception if failed to encrypt text
@@ -104,14 +104,13 @@ internal object EncryptionManager {
     }
 
     fun generateCodeVerifier(): String {
-        val randomBytes = ByteArray(Constants.CODE_CHALLENGE_BYTE_COUNT)
+        val randomBytes = ByteArray(CODE_CHALLENGE_BYTE_COUNT)
         SecureRandom().nextBytes(randomBytes)
         return randomBytes.toHexString()
     }
 
-    fun encryptCodeChallengeFromVerifier(codeVerifier: String): String {
-        return convertToBase64UrlEncoded(getSha256(codeVerifier))
-    }
+    fun encryptCodeChallengeFromVerifier(codeVerifier: String): String =
+        convertToBase64UrlEncoded(getSha256(codeVerifier))
 
     private fun getSha256(hexString: String): String {
         // convert hexString to bytes

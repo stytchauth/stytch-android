@@ -1,6 +1,6 @@
 package com.stytch.sdk.b2b.discovery
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import org.junit.Test
 
 internal class DiscoveryTest {
@@ -13,7 +13,7 @@ internal class DiscoveryTest {
         val expected =
             Discovery.SessionExchangeParameters(
                 organizationId = "organization-id",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -26,7 +26,7 @@ internal class DiscoveryTest {
                 organizationName = null,
                 organizationSlug = null,
                 organizationLogoUrl = null,
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
                 ssoJitProvisioning = null,
                 emailAllowedDomains = null,
                 emailJitProvisioning = null,

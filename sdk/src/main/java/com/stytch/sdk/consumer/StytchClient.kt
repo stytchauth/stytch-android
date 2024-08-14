@@ -3,12 +3,13 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
+import com.stytch.sdk.common.QUERY_TOKEN
+import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -73,21 +74,25 @@ public object StytchClient {
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
     internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
+    internal lateinit var dfpProvider: DFPProvider
+
+    /**
+     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
+     */
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
-
-    internal lateinit var dfpProvider: DFPProvider
 
     /**
      * The public token that the StytchClient is configured to use
      */
     public lateinit var publicToken: String
 
+    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
-    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     @VisibleForTesting
@@ -409,11 +414,11 @@ public object StytchClient {
     ): DeeplinkHandledStatus {
         assertInitialized()
         return withContext(dispatchers.io) {
-            val token = uri.getQueryParameter(Constants.QUERY_TOKEN)
+            val token = uri.getQueryParameter(QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
             }
-            when (val tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE))) {
+            when (val tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE))) {
                 ConsumerTokenType.MAGIC_LINKS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -479,7 +484,7 @@ public object StytchClient {
      * @return Boolean
      */
     public fun canHandle(uri: Uri): Boolean =
-        ConsumerTokenType.fromString(uri.getQueryParameter(Constants.QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
+        ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
 
     private fun maybeClearBadSessionToken() {
         if (sessionStorage.sessionToken?.isBlank() == true) {

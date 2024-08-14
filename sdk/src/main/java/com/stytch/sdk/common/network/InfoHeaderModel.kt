@@ -1,7 +1,7 @@
 package com.stytch.sdk.common.network
 
 import com.stytch.sdk.BuildConfig
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.AUTH_HEADER_SDK_NAME
 import com.stytch.sdk.common.DeviceInfo
 
 internal data class InfoHeaderModel(
@@ -39,7 +39,7 @@ internal data class InfoHeaderModel(
             InfoHeaderModel(
                 sdk =
                     Item(
-                        Constants.AUTH_HEADER_SDK_NAME,
+                        AUTH_HEADER_SDK_NAME,
                         BuildConfig.STYTCH_SDK_VERSION,
                     ),
                 app =

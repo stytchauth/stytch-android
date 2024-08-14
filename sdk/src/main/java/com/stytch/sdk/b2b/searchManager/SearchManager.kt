@@ -3,6 +3,9 @@ package com.stytch.sdk.b2b.searchManager
 import com.stytch.sdk.b2b.B2BSearchMemberResponse
 import com.stytch.sdk.b2b.B2BSearchOrganizationResponse
 
+/**
+ * The SearchManager interface provides methods for searching for organizations and members
+ */
 public interface SearchManager {
     /**
      * A data class wrapping the parameters used for a Search Organizations call

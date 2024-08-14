@@ -2,7 +2,7 @@ package com.stytch.sdk.consumer.magicLinks
 
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import kotlinx.parcelize.Parcelize
 
@@ -17,7 +17,7 @@ public interface MagicLinks {
      */
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

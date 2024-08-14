@@ -8,9 +8,10 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
@@ -37,20 +38,26 @@ internal class OAuthImpl(
                         StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
                         return@withContext StytchResult.Error(StytchMissingPKCEError(null))
                     }
-            api.authenticate(
-                oauthToken = parameters.oauthToken,
-                locale = parameters.locale,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-                pkceCodeVerifier = pkce,
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-            ).apply {
-                pkcePairManager.clearPKCECodePair()
-                when (this) {
-                    is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_oauth_success")
-                    is StytchResult.Error -> StytchB2BClient.events.logEvent("b2b_oauth_failure", null, this.exception)
+            api
+                .authenticate(
+                    oauthToken = parameters.oauthToken,
+                    locale = parameters.locale,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    pkceCodeVerifier = pkce,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    when (this) {
+                        is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_oauth_success")
+                        is StytchResult.Error ->
+                            StytchB2BClient.events.logEvent(
+                                "b2b_oauth_failure",
+                                null,
+                                this.exception,
+                            )
+                    }
+                    launchSessionUpdater(dispatchers, sessionStorage)
                 }
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
         }
 
     override fun authenticate(
@@ -62,13 +69,15 @@ internal class OAuthImpl(
         }
     }
 
-    private inner class ProviderImpl(private val providerName: String) : OAuth.Provider {
+    private inner class ProviderImpl(
+        private val providerName: String,
+    ) : OAuth.Provider {
         override fun start(parameters: OAuth.Provider.StartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
             val host =
                 StytchB2BClient.bootstrapData.cnameDomain?.let {
                     "https://$it/"
-                } ?: if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+                } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/start"
             val urlParams =
                 mapOf(
@@ -90,10 +99,12 @@ internal class OAuthImpl(
         override val discovery: OAuth.ProviderDiscovery = ProviderDiscoveryImpl(providerName)
     }
 
-    private inner class ProviderDiscoveryImpl(private val providerName: String) : OAuth.ProviderDiscovery {
+    private inner class ProviderDiscoveryImpl(
+        private val providerName: String,
+    ) : OAuth.ProviderDiscovery {
         override fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
-            val host = if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+            val host = if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
             val urlParams =
                 mapOf(
@@ -125,21 +136,22 @@ internal class OAuthImpl(
                             )
                             return@withContext StytchResult.Error(StytchMissingPKCEError(null))
                         }
-                api.discoveryAuthenticate(
-                    pkceCodeVerifier = pkce,
-                    discoveryOauthToken = parameters.discoveryOauthToken,
-                ).apply {
-                    pkcePairManager.clearPKCECodePair()
-                    when (this) {
-                        is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
-                        is StytchResult.Error ->
-                            StytchB2BClient.events.logEvent(
-                                "b2b_discovery_oauth_failure",
-                                null,
-                                this.exception,
-                            )
+                api
+                    .discoveryAuthenticate(
+                        pkceCodeVerifier = pkce,
+                        discoveryOauthToken = parameters.discoveryOauthToken,
+                    ).apply {
+                        pkcePairManager.clearPKCECodePair()
+                        when (this) {
+                            is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                            is StytchResult.Error ->
+                                StytchB2BClient.events.logEvent(
+                                    "b2b_discovery_oauth_failure",
+                                    null,
+                                    this.exception,
+                                )
+                        }
                     }
-                }
             }
 
         override fun authenticate(
@@ -156,7 +168,8 @@ internal class OAuthImpl(
         url: String,
         parameters: Map<String, Any?>,
     ): Uri =
-        Uri.parse(url)
+        Uri
+            .parse(url)
             .buildUpon()
             .apply {
                 parameters.forEach {
@@ -167,6 +180,5 @@ internal class OAuthImpl(
                         }
                     }
                 }
-            }
-            .build()
+            }.build()
 }

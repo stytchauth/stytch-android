@@ -4,7 +4,7 @@ import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
@@ -33,7 +33,7 @@ public interface B2BMagicLinks {
      */
     public data class AuthParameters(
         val token: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

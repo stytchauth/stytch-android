@@ -3,8 +3,11 @@ package com.stytch.sdk.b2b.otp
 import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
+/**
+ * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
+ */
 public interface OTP {
     /**
      * Public variable that exposes an instance of SMS OTP
@@ -66,7 +69,7 @@ public interface OTP {
             val memberId: String,
             val code: String,
             val setMFAEnrollment: SetMFAEnrollment? = null,
-            val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**

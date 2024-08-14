@@ -42,7 +42,8 @@ internal class StytchErrorTests {
     fun `StytchSDKNotConfiguredError has expected properties`() {
         val error = StytchSDKNotConfiguredError("Test")
         assert(
-            error.message == "Test not configured. You must call `Test.configure(...)` before using any functionality of the SDK.",
+            error.message ==
+                "Test not configured. You must call `Test.configure(...)` before using any functionality of the SDK.",
         )
     }
 
@@ -62,7 +63,8 @@ internal class StytchErrorTests {
         val underlyingException = RuntimeException("testing")
         val error = StytchMissingPKCEError(underlyingException)
         assert(
-            error.message == "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.",
+            error.message ==
+                "The PKCE code challenge or code verifier is missing. Make sure this flow is completed on the same device on which it was started.",
         )
         assert(error.exception == underlyingException)
     }
@@ -97,7 +99,8 @@ internal class StytchErrorTests {
     fun `StytchNoBiometricsRegistrationError has expected properties`() {
         val error = StytchNoBiometricsRegistrationError()
         assert(
-            error.message == "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
+            error.message ==
+                "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
         )
     }
 
@@ -105,7 +108,8 @@ internal class StytchErrorTests {
     fun `StytchKeystoreUnavailableError has expected properties`() {
         val error = StytchKeystoreUnavailableError()
         assert(
-            error.message == "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
+            error.message ==
+                "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
         )
     }
 
@@ -156,11 +160,5 @@ internal class StytchErrorTests {
         val error = StytchBiometricAuthenticationFailed("Some reason from the device")
         assert(error.message == "Biometric authentication failed")
         assert(error.reason == "Some reason from the device")
-    }
-
-    @Test
-    fun `StytchSDKUsageError has expected properties`() {
-        val error = StytchSDKUsageError("You did something wrong")
-        assert(error.message == "You did something wrong")
     }
 }

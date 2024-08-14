@@ -1,5 +1,9 @@
 package com.stytch.sdk.b2b.rbac
 
+/**
+ * The RBAC interface provides methods for checking a user's permissions according to the roles defined in the Stytch
+ * Dashboard
+ */
 public interface RBAC {
     /**
      * Determines whether the logged-in member is allowed to perform the specified action on the specified resource.

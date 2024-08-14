@@ -108,65 +108,162 @@ public typealias UpdateMemberResponse = StytchResult<UpdateMemberResponseData>
  */
 public typealias DeleteMemberAuthenticationFactorResponse = StytchResult<MemberDeleteAuthenticationFactorData>
 
+/**
+ * Type alias for StytchResult<OrganizationUpdateResponseData> used for Organization Update responses
+ */
 public typealias UpdateOrganizationResponse = StytchResult<OrganizationUpdateResponseData>
 
+/**
+ * Type alias for StytchResult<OrganizationDeleteResponseData> used for Organization Delete responses
+ */
 public typealias DeleteOrganizationResponse = StytchResult<OrganizationDeleteResponseData>
 
+/**
+ * Type alias for StytchResult<OrganizationMemberDeleteResponseData> used for Organization Delete Member responses
+ */
 public typealias DeleteMemberResponse = StytchResult<OrganizationMemberDeleteResponseData>
 
+/**
+ * Type alias for StytchResult<MemberResponseCommonData> used for Reactivate Organization Member responses
+ */
 public typealias ReactivateMemberResponse = StytchResult<MemberResponseCommonData>
 
+/**
+ * Type alias for StytchResult<MemberResponseCommonData> used for Delete Organization Member authentication factor
+ * responses
+ */
 public typealias DeleteOrganizationMemberAuthenticationFactorResponse = StytchResult<MemberResponseCommonData>
 
+/**
+ * Type alias for StytchResult<MemberResponseCommonData> used for Create Organization Member responses
+ */
 public typealias CreateMemberResponse = StytchResult<MemberResponseCommonData>
 
+/**
+ * Type alias for StytchResult<MemberResponseCommonData> used for Update Organization Member responses
+ */
 public typealias UpdateOrganizationMemberResponse = StytchResult<MemberResponseCommonData>
 
+/**
+ * Type alias for StytchResult<MemberSearchResponseData> used for Member Search responses
+ */
 public typealias MemberSearchResponse = StytchResult<MemberSearchResponseData>
 
+/**
+ * Type alias for StytchResult<BasicData> used for non-specific responses
+ */
 public typealias BasicResponse = StytchResult<BasicData>
 
+/**
+ * Type alias for StytchResult<TOTPCreateResponseData> used for TOTP Create responses
+ */
 public typealias TOTPCreateResponse = StytchResult<TOTPCreateResponseData>
 
+/**
+ * Type alias for StytchResult<TOTPAuthenticateResponseData> used for TOTP Authenticate responses
+ */
 public typealias TOTPAuthenticateResponse = StytchResult<TOTPAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<RecoveryCodeGetResponseData> used for Recovery Code Get responses
+ */
 public typealias RecoveryCodesGetResponse = StytchResult<RecoveryCodeGetResponseData>
 
+/**
+ * Type alias for StytchResult<RecoveryCodeRotateResponseData> used for Recovery Code Rotate responses
+ */
 public typealias RecoveryCodesRotateResponse = StytchResult<RecoveryCodeRotateResponseData>
 
+/**
+ * Type alias for StytchResult<RecoveryCodeRecoverResponseData> used for Recovery Code Recover responses
+ */
 public typealias RecoveryCodesRecoverResponse = StytchResult<RecoveryCodeRecoverResponseData>
 
+/**
+ * Type alias for StytchResult<OAuthAuthenticateResponseData> used for OAuth Authentication responses
+ */
 public typealias OAuthAuthenticateResponse = StytchResult<OAuthAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<DiscoveryAuthenticateResponseData> used for Discovery Authentication responses
+ */
 public typealias OAuthDiscoveryAuthenticateResponse = StytchResult<DiscoveryAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOGetConnectionsResponseData> used for SSO Get Connection responses
+ */
 public typealias B2BSSOGetConnectionsResponse = StytchResult<B2BSSOGetConnectionsResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSODeleteConnectionResponseData> used for SSO Connection Deletion responses
+ */
 public typealias B2BSSODeleteConnectionResponse = StytchResult<B2BSSODeleteConnectionResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOSAMLCreateConnectionResponseData> used for SSO SAML Connection Creation responses
+ */
 public typealias B2BSSOSAMLCreateConnectionResponse = StytchResult<B2BSSOSAMLCreateConnectionResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOSAMLUpdateConnectionResponseData> used for SSO SAML Connection Update responses
+ */
 public typealias B2BSSOSAMLUpdateConnectionResponse = StytchResult<B2BSSOSAMLUpdateConnectionResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOSAMLUpdateConnectionByURLResponseData> used for SSO SAML Connection Update by
+ * URL responses
+ */
 public typealias B2BSSOSAMLUpdateConnectionByURLResponse = StytchResult<B2BSSOSAMLUpdateConnectionByURLResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOSAMLDeleteVerificationCertificateResponseData> used for SSO SAML Verification
+ * Certificate Deletion responses
+ */
 public typealias B2BSSOSAMLDeleteVerificationCertificateResponse =
     StytchResult<B2BSSOSAMLDeleteVerificationCertificateResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOOIDCCreateConnectionResponseData> used for SSO OIDC Connection Create responses
+ */
 public typealias B2BSSOOIDCCreateConnectionResponse = StytchResult<B2BSSOOIDCCreateConnectionResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSSOOIDCUpdateConnectionResponseData> used for SSO OIDC Connection Update responses
+ */
 public typealias B2BSSOOIDCUpdateConnectionResponse = StytchResult<B2BSSOOIDCUpdateConnectionResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSearchOrganizationResponseData> used for Search Organization responses
+ */
 public typealias B2BSearchOrganizationResponse = StytchResult<B2BSearchOrganizationResponseData>
 
+/**
+ * Type alias for StytchResult<B2BSearchMemberResponseData> used for Search Member responses
+ */
 public typealias B2BSearchMemberResponse = StytchResult<B2BSearchMemberResponseData>
 
+/**
+ * Type alias for StytchResult<PasswordsAuthenticateResponseData> used for Passwords Authenticate responses
+ */
 public typealias PasswordsAuthenticateResponse = StytchResult<PasswordsAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<PasswordResetByExistingPasswordResponseData> used for Password Reset By Existing
+ * Password responses
+ */
 public typealias PasswordResetByExistingPasswordResponse = StytchResult<PasswordResetByExistingPasswordResponseData>
 
+/**
+ * Type alias for StytchResult<SessionsAuthenticateResponseData> used for Sessions Authenticate responses
+ */
 public typealias SessionsAuthenticateResponse = StytchResult<SessionsAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<SMSAuthenticateResponseData> used for SMS OTP Authenticate responses
+ */
 public typealias SMSAuthenticateResponse = StytchResult<SMSAuthenticateResponseData>
 
+/**
+ * Type alias for StytchResult<B2BEMLAuthenticateData> used for Email Magic Link Authenticate responses
+ */
 public typealias EMLAuthenticateResponse = StytchResult<B2BEMLAuthenticateData>

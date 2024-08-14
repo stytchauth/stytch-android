@@ -44,6 +44,14 @@ public interface Member {
      * Data class used for wrapping parameters used with Member updates
      * @property name the name of the member
      * @property untrustedMetadata a map of untrusted metadata to assign to the member
+     * @property mfaEnrolled Sets whether the Member is enrolled in MFA. If true, the Member must complete an MFA step
+     * whenever they wish to log in to their Organization. If false, the Member only needs to complete an MFA step if
+     * the Organization's MFA policy is set to REQUIRED_FOR_ALL.
+     * @property mfaPhoneNumber Sets the Member's phone number. Throws an error if the Member already has a phone number
+     * @property defaultMfaMethod Sets the Member's default MFA method. Valid values are 'SMS' and 'TOTP'.
+     * This value will determine
+     *  1. Which MFA method the Member is prompted to use when logging in
+     *  2. Whether An SMS will be sent automatically after completing the first leg of authentication
      */
     public data class UpdateParams(
         val name: String? = null,

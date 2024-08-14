@@ -6,7 +6,7 @@ import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
 import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
@@ -33,7 +33,7 @@ public interface Passwords {
         val organizationId: String,
         val emailAddress: String,
         val password: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -123,7 +123,7 @@ public interface Passwords {
     public data class ResetByEmailParameters(
         val token: String,
         val password: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**
@@ -162,7 +162,7 @@ public interface Passwords {
         val emailAddress: String,
         val existingPassword: String,
         val newPassword: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import io.mockk.mockk
 import org.junit.Test
 
@@ -19,7 +19,7 @@ internal class OAuthTest {
                 context = mockActivity,
                 clientId = "clientId",
                 autoSelectEnabled = false,
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -49,7 +49,7 @@ internal class OAuthTest {
         val expected =
             OAuth.ThirdParty.AuthenticateParameters(
                 token = "token",
-                sessionDurationMinutes = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
             )
         assert(params == expected)
     }

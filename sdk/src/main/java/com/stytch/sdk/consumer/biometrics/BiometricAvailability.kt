@@ -4,18 +4,22 @@ import androidx.biometric.BiometricManager
 
 /**
  * Wrapper around BiometricManager results to provide friendly messaging for developers
- * @property message A string explaining the BiometricAvailability status
  */
 public sealed class BiometricAvailability {
     /**
      * Status indicating that biometrics are not available on this device for some reason
-     * @param reason a reason why biometrics are unavailable
+     * @property reason a reason why biometrics are unavailable
      */
-    public data class Unavailable(public val reason: Reason) : BiometricAvailability() {
+    public data class Unavailable(
+        public val reason: Reason,
+    ) : BiometricAvailability() {
         /**
          * An enum describing why biometrics are unavailable on this device
+         * @property message a string representation of why biometrics are unavailable
          */
-        public enum class Reason(public val message: String) {
+        public enum class Reason(
+            public val message: String,
+        ) {
             /**
              * Status indicating that the biometric key failed to generate. Biometrics cannot proceed.
              */

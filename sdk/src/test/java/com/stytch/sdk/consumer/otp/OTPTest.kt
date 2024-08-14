@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.otp
 
-import com.stytch.sdk.common.Constants
 import org.junit.Test
 
 internal class OTPTest {
@@ -10,7 +9,7 @@ internal class OTPTest {
         val expected =
             OTP.SmsOTP.Parameters(
                 phoneNumber = "phonenumber",
-                expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                expirationMinutes = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -21,7 +20,7 @@ internal class OTPTest {
         val expected =
             OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "phonenumber",
-                expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                expirationMinutes = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             )
         assert(params == expected)
     }
@@ -32,7 +31,7 @@ internal class OTPTest {
         val expected =
             OTP.EmailOTP.Parameters(
                 email = "emailAddress",
-                expirationMinutes = Constants.DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                expirationMinutes = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
                 loginTemplateId = null,
                 signupTemplateId = null,
             )

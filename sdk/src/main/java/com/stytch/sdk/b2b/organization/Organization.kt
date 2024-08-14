@@ -147,6 +147,10 @@ public interface Organization {
      */
     public val members: OrganizationMembers
 
+    /**
+     * An interface that provides methods for performing create, update, delete, reactivate, and search operations on an
+     * Organization's members
+     */
     public interface OrganizationMembers {
         /**
          * Deletes a Member.
@@ -258,6 +262,7 @@ public interface Organization {
 
         /**
          * Data class used for wrapping the parameters necessary for creating a user
+         * @property memberId Globally unique UUID that identifies a specific Member.
          * @property emailAddress  the Member's `email_address`
          * @property name The name of the Member.
          * @property isBreakGlass Identifies the Member as a break glass user - someone who has permissions to
@@ -334,15 +339,24 @@ public interface Organization {
         )
 
         /**
-         *The action to perform on the operands. The accepted value are:
+         * A data class representing conditions for a query
+         * @property operator The action to perform on the operands. The accepted value are:
          * `AND` – all the operand values provided must match.
          * `OR` – the operator will return any matches to at least one of the operand values you supply.
+         * @property operands An array of operand objects that contains all of the filters and values to apply to your
+         * search query.
          */
         public data class SearchQuery(
             val operator: SearchOperator,
             val operands: List<SearchQueryOperand>,
         )
 
+        /**
+         * A data class representing a Search Query Operand, which contains all of the filters and values to apply to
+         * your search query.
+         * @property filterName the field on which to filter
+         * @property filterValue the value of the field to filter by
+         */
         public data class SearchQueryOperand(
             @Json(name = "filter_name")
             val filterName: String,

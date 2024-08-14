@@ -1,10 +1,14 @@
 package com.stytch.sdk.consumer.crypto
 
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
 
+/**
+ * The CryptoWallet interface provides methods for authenticating a user using one of the supported Crypto Wallets
+ * (Ethereum or Solana)
+ */
 public interface CryptoWallet {
     /**
      * A data class wrapping the parameters needed to begin a crypto wallet authentication flow
@@ -27,7 +31,7 @@ public interface CryptoWallet {
         val cryptoWalletAddress: String,
         val cryptoWalletType: CryptoWalletType,
         val signature: String,
-        val sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 
     /**

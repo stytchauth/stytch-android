@@ -108,7 +108,22 @@ public typealias WebAuthnUpdateResponse = StytchResult<WebAuthnUpdateResponseDat
  */
 public typealias CryptoWalletAuthenticateStartResponse = StytchResult<CryptoWalletAuthenticateStartResponseData>
 
+/**
+ * Type alias for StytchResult<TOTPCreateResponseData> used for TOTP creation responses
+ */
 public typealias TOTPCreateResponse = StytchResult<TOTPCreateResponseData>
+
+/**
+ * Type alias for StytchResult<TOTPAuthenticateResponseData> used for TOTP authentication responses
+ */
 public typealias TOTPAuthenticateResponse = StytchResult<TOTPAuthenticateResponseData>
+
+/**
+ * Type alias for StytchResult<TOTPRecoveryCodesResponseData> used for TOTP recover code responses
+ */
 public typealias TOTPRecoveryCodesResponse = StytchResult<TOTPRecoveryCodesResponseData>
+
+/**
+ * Type alias for StytchResult<TOTPRecoverResponseData> used for TOTP recovery responses
+ */
 public typealias TOTPRecoverResponse = StytchResult<TOTPRecoverResponseData>

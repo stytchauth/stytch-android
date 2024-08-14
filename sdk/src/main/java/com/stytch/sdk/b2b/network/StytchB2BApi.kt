@@ -53,10 +53,11 @@ import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.WEB_URL
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
@@ -107,7 +108,7 @@ internal object StytchB2BApi {
         StytchB2BClient.assertInitialized()
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                Constants.WEB_URL,
+                WEB_URL,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchB2BClient.sessionStorage.revoke() },
@@ -128,7 +129,7 @@ internal object StytchB2BApi {
 
     private val regularStytchApiService: StytchB2BApiService by lazy {
         ApiService.createApiService(
-            Constants.WEB_URL,
+            WEB_URL,
             authHeaderInterceptor,
             null,
             { StytchB2BClient.sessionStorage.revoke() },
@@ -182,7 +183,7 @@ internal object StytchB2BApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
@@ -477,7 +478,7 @@ internal object StytchB2BApi {
             organizationId: String,
             emailAddress: String,
             password: String,
-            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
@@ -519,7 +520,7 @@ internal object StytchB2BApi {
         suspend fun resetByEmail(
             passwordResetToken: String,
             password: String,
-            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
         ): StytchResult<EmailResetResponseData> =
@@ -540,7 +541,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             existingPassword: String,
             newPassword: String,
-            sessionDurationMinutes: UInt = Constants.DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByExisting(

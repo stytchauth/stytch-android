@@ -14,9 +14,10 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
@@ -35,7 +36,8 @@ internal class SSOImpl(
         host: String,
         parameters: Map<String, String?>,
     ): Uri =
-        Uri.parse("${host}public/sso/start")
+        Uri
+            .parse("${host}public/sso/start")
             .buildUpon()
             .apply {
                 parameters.forEach {
@@ -43,14 +45,13 @@ internal class SSOImpl(
                         appendQueryParameter(it.key, it.value)
                     }
                 }
-            }
-            .build()
+            }.build()
 
     override fun start(params: SSO.StartParams) {
         val host =
             StytchB2BClient.bootstrapData.cnameDomain?.let {
                 "https://$it/v1/"
-            } ?: if (StytchB2BApi.isTestToken) Constants.TEST_API_URL else Constants.LIVE_API_URL
+            } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
         val potentialParameters =
             mapOf(
                 "connection_id" to params.connectionId,
@@ -76,14 +77,15 @@ internal class SSOImpl(
                 return@withContext
             }
             result =
-                api.authenticate(
-                    ssoToken = params.ssoToken,
-                    sessionDurationMinutes = params.sessionDurationMinutes,
-                    codeVerifier = codeVerifier,
-                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        ssoToken = params.ssoToken,
+                        sessionDurationMinutes = params.sessionDurationMinutes,
+                        codeVerifier = codeVerifier,
+                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             pkcePairManager.clearPKCECodePair()
         }
         return result

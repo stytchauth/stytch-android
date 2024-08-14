@@ -1,7 +1,8 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.network.models.B2BSessionData
-import com.stytch.sdk.common.Constants
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -43,7 +44,7 @@ internal class B2BSessionStorageTest {
     fun `SessionStorage sessionToken getter delegates to storageHelper`() {
         every { mockStorageHelper.loadValue(any()) } returns "mockedSessionToken"
         val sessionToken = storage.sessionToken
-        verify { mockStorageHelper.loadValue(eq(Constants.PREFERENCES_NAME_SESSION_TOKEN)) }
+        verify { mockStorageHelper.loadValue(eq(PREFERENCES_NAME_SESSION_TOKEN)) }
         assert(sessionToken == "mockedSessionToken")
     }
 
@@ -51,7 +52,7 @@ internal class B2BSessionStorageTest {
     fun `SessionStorage sessionJwt getter delegates to storageHelper`() {
         every { mockStorageHelper.loadValue(any()) } returns "mockedSessionJwt"
         val sessionJwt = storage.sessionJwt
-        verify { mockStorageHelper.loadValue(eq(Constants.PREFERENCES_NAME_SESSION_JWT)) }
+        verify { mockStorageHelper.loadValue(eq(PREFERENCES_NAME_SESSION_JWT)) }
         assert(sessionJwt == "mockedSessionJwt")
     }
 
@@ -64,8 +65,8 @@ internal class B2BSessionStorageTest {
             sessionJwt = "mySessionJwt",
         )
         verify {
-            mockStorageHelper.saveValue(eq(Constants.PREFERENCES_NAME_SESSION_TOKEN), eq("mySessionToken"))
-            mockStorageHelper.saveValue(eq(Constants.PREFERENCES_NAME_SESSION_JWT), eq("mySessionJwt"))
+            mockStorageHelper.saveValue(eq(PREFERENCES_NAME_SESSION_TOKEN), eq("mySessionToken"))
+            mockStorageHelper.saveValue(eq(PREFERENCES_NAME_SESSION_JWT), eq("mySessionJwt"))
         }
     }
 
