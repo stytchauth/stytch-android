@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.sessions
 import com.stytch.sdk.common.Constants
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
+import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +52,7 @@ internal class ConsumerSessionStorage(
             synchronized(this) {
                 field = value
             }
+            value?.keepLocalBiometricRegistrationsInSync(storageHelper)
             externalScope.launch {
                 _userFlow.emit(value)
             }
