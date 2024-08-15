@@ -27,29 +27,29 @@ val revokeResponse = StytchCleint.sessions.revoke(Sessions.RevokeParams())
 Updating a session with tokens retrieved outside of the SDK (for instance, if you create or update a session on your backend, and want to hydrate a client application) can be done using the `updateSession` method:
 ```kotlin
 StytchClient.sessions.updateSession(
-	sessionToken="my-session-token",
-	sessionJwt="my-session-jwt"
+    sessionToken="my-session-token",
+    sessionJwt="my-session-jwt"
 )
 ```
 Lastly, to listen for session state changes, you can either subscribe to the `onChange` flow, or provide a callback to the `onChange` method:
 ```kotlin
 viewModelScope.launch {
-	StytchClient.sessions.onChange.collect {
-		// it: SessionData?
-		when(it) {  
-		    null -> println("No active session")  
-		    else -> println("User has an active session")  
-		}
-	}
+    StytchClient.sessions.onChange.collect {
+        // it: SessionData?
+        when(it) {
+            null -> println("No active session")
+            else -> println("User has an active session")
+        }
+    }
 }
 ```
 ```kotlin
 StytchClient.sessions.onChange {
-	// it: SessionData?
-	when(it) {  
-	    null -> println("No active session")  
-	    else -> println("User has an active session")  
-	}
+    // it: SessionData?
+    when(it) {
+        null -> println("No active session")
+        else -> println("User has an active session")
+    }
 }
 ```
 

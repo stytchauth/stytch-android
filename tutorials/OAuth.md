@@ -51,7 +51,7 @@ class MainActivity : FragmentActivity() {
 Fourth, jump into the viewmodel to define your `start` and `authenticate` handlers:
 ```kotlin
 class MyViewModel : ViewModel() {
-	// you'll call this method from your activity and pass in the activity context in order to launch intents
+    // you'll call this method from your activity and pass in the activity context in order to launch intents
     fun loginWithGitHub(context: Activity) {
         val startParameters =
             OAuth.ThirdParty.StartParameters(
@@ -64,36 +64,36 @@ class MyViewModel : ViewModel() {
          StytchClient.oauth.github.start(startParameters)
     }
 
-	fun authenticateOAuthRequest(
-		resultCode: Int,  
-		intent: Intent,
-	) {
-		if (resultCode == RESULT_OK) {
-			intent.data?.let { url ->
-				// you now have access to the returned URL, which contains the token to authenticate, as well as the "type" of request it was (login or signup)
-				val token = url.getQueryParameter("token")
-				val type = url.getQueryParameter("type")
-				viewModelScope.launch {
-				    val result = StytchClient.oauth.authenticate(
-					    OAuth.ThirdParty.AuthenticateParameters(
+    fun authenticateOAuthRequest(
+        resultCode: Int,
+        intent: Intent,
+    ) {
+        if (resultCode == RESULT_OK) {
+            intent.data?.let { url ->
+                // you now have access to the returned URL, which contains the token to authenticate, as well as the "type" of request it was (login or signup)
+                val token = url.getQueryParameter("token")
+                val type = url.getQueryParameter("type")
+                viewModelScope.launch {
+                    val result = StytchClient.oauth.authenticate(
+                        OAuth.ThirdParty.AuthenticateParameters(
                             token = token,
                             sessionDurationMinutes = 30U
                         )
                     )
-					when (result) {
+                    when (result) {
                         is StytchResult.Success -> {
                             // redirect the user based on the "type" parameter
                         }
                         is StytchResult.Error -> {}
                     }
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	companion object {
-		const val STYTCH_OAUTH_REQUEST_CODE = 555 // This can be whatever you want
-	}
+    companion object {
+        const val STYTCH_OAUTH_REQUEST_CODE = 555 // This can be whatever you want
+    }
 }
 ```
 Put it all together by calling your start method from your activity:
@@ -106,18 +106,18 @@ Native OAuth is a little bit different from, and quite a bit simpler than, Third
 ```kotlin
 fun loginWithGoogleOneTap(context: Activity) {
     viewModelScope.launch {
-	    val params = OAuth.GoogleOneTap.StartParameters(
+        val params = OAuth.GoogleOneTap.StartParameters(
             context = context,
             clientId = [YOUR_ANDROID_CLIENT_ID_FROM_GOOGLE_DEVELOPER_CONSOLE],
         )
         val result = StytchClient.oauth.googleOneTap.start(params)
         when (result) {
-	        is StytchResult.Success -> {
-		        // the user is authenticated!
-		        // use the value of `result.value.userCreated` to know whether they
-		        // created an account or logged in, and redirect accordingly
-	        }
-	        is StytchResult.Error -> {}
+            is StytchResult.Success -> {
+                // the user is authenticated!
+                // use the value of `result.value.userCreated` to know whether they
+                // created an account or logged in, and redirect accordingly
+            }
+            is StytchResult.Error -> {}
         }
     }
 }
