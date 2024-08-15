@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.otp
 
+import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import org.junit.Test
 
 internal class OTPTest {

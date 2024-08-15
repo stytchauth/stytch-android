@@ -88,7 +88,7 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
-    api project(":sdk")
+    api project(":source:sdk")
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.13.8"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
