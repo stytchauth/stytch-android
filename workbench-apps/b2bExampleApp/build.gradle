@@ -7,7 +7,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.stytch.exampleapp"
+        applicationId "com.stytch.exampleapp.b2b"
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 1
@@ -17,7 +17,7 @@ android {
         // Placeholders for OAuth redirect
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': 'app',
-            'stytchOAuthRedirectHost': 'oauth'
+            'stytchOAuthRedirectHost': 'b2bOAuth'
         ]
     }
 
@@ -28,23 +28,17 @@ android {
 
     buildTypes {
         all {
-            String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN")
-            if (!publicToken) {
-                publicToken = STYTCH_PUBLIC_TOKEN
+            String b2bPublicToken = System.getenv("STYTCH_B2B_PUBLIC_TOKEN")
+            if (!b2bPublicToken) {
+                b2bPublicToken = STYTCH_B2B_PUBLIC_TOKEN
             }
-            buildConfigField "String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\""
+            buildConfigField "String", "STYTCH_B2B_PUBLIC_TOKEN", "\"$b2bPublicToken\""
 
-            String googleOAuthClientId = System.getenv("GOOGLE_OAUTH_CLIENT_ID")
-            if (!googleOAuthClientId) {
-                googleOAuthClientId = GOOGLE_OAUTH_CLIENT_ID
+            String b2bOrganizationId = System.getenv("STYTCH_B2B_ORG_ID")
+            if (!b2bOrganizationId) {
+                b2bOrganizationId = STYTCH_B2B_ORG_ID
             }
-            buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\""
-
-            String passkeysDomain = System.getenv("PASSKEYS_DOMAIN")
-            if (!passkeysDomain) {
-                passkeysDomain = PASSKEYS_DOMAIN
-            }
-            buildConfigField "String", "PASSKEYS_DOMAIN", "\"$passkeysDomain\""
+            buildConfigField "String", "STYTCH_B2B_ORG_ID", "\"$b2bOrganizationId\""
         }
         release {
             minifyEnabled false
@@ -63,11 +57,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.4.8"
     }
-    namespace 'com.stytch.exampleapp'
+    namespace 'com.stytch.exampleapp.b2b'
 }
 
 dependencies {
-    implementation project(":sdk")
+    implementation project(":source:sdk")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
