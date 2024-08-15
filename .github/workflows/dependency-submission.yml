@@ -35,5 +35,5 @@ jobs:
         UI_GOOGLE_CLIENT_ID: 'abc123'
        
         # Exclude all dependencies that originate solely in the following projects
-        DEPENDENCY_GRAPH_EXCLUDE_PROJECTS: ':consumerExampleApp|:b2bExampleApp|:uiworkbench'
+        DEPENDENCY_GRAPH_EXCLUDE_PROJECTS: ':workbench-apps:consumerExampleApp|:workbench-apps:b2bExampleApp|:workbench-apps:uiworkbench'
        

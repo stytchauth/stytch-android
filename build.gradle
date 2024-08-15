@@ -94,12 +94,12 @@ task clean(type: Delete) {
 
 tasks.register("runOnGitHub") {
     dependsOn(
-            ":sdk:lint",
-            ":ui:lint",
-            ":sdk:ktlintCheck",
-            ":ui:ktlintCheck",
-            ":sdk:testDebugUnitTest",
-            ":ui:testDebugUnitTest"
+            ":source:sdk:lint",
+            ":source:ui:lint",
+            ":source:sdk:ktlintCheck",
+            ":source:ui:ktlintCheck",
+            ":source:sdk:testDebugUnitTest",
+            ":source:ui:testDebugUnitTest"
             // TODO: add UI tests once they are done
     )
     group = "custom"
