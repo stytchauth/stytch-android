@@ -72,5 +72,22 @@ fun handleDeeplink(uri: URI) {
     }
 }
 ```
+
+## PKCE
+PKCE (Pronounced "pixie") stands for Proof Key for Code Exchange, and is a method of ensuring that an authentication flow that starts on one device is completed on the same device, to avoid an authorization code interception attack. While PKCE is optional when integrating with our backend SDKs, it is mandatory when using our mobile SDKs. When using the Stytch Android SDK, the management of the PKCE flow is automatic; it will automatically create PKCE code pairs and use and delete them as appropriate.
+
+There are some instances where you may need to begin a flow on your mobile application, which will mark the flow as requiring PKCE, but complete it somewhere else (say, your backend). For these instances, we provide a method of retrieving the generated PKCE code pair so that you can use it as necessary.
+
+```kotlin
+// launch a PKCE-enabled flow
+val result = StytchClient.magicLinks.email.loginOrCreate(
+    EmailMagicLinks.Parameters(email = "user@email.com")
+)
+// retrieve the PKCE code pair that was generated
+val pkceCodePair: PKCECodePair? = StytchClient.getPKCECodePair()
+// pass the code pair to your backend
+...
+```
+
 ## Further Reading
 For more information on Email Magic Links, check out the [guide](https://stytch.com/docs/guides/magic-links/email-magic-links/api).
