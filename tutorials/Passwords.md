@@ -120,7 +120,7 @@ when (resetResponse) {
 ```
 
 #### By Email
-Lastly, a user may not be authenticated by any method or know their current password. In this scenario, they must reset their password by confirming their email address. This is a two part flow, that is similar to the [Email Magic Link](./EmailMagicLink.md) flow, and requires that you have configured [deeplinking](./Deeplinks.md) for your application.
+Lastly, a user may not be authenticated by any method or know their current password. In this scenario, they must reset their password by confirming their email address. This is a two part flow, that is similar to the [Email Magic Link](./EmailMagicLinks.md) flow, and requires that you have configured [deeplinking](./Deeplinks.md) for your application.
 
 First, you will start the resetByEmail flow:
 ```kotlin
