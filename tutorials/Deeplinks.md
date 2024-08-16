@@ -17,15 +17,15 @@ Next, in our manifest file, we're going to add an intent filter that uses that s
 ```xml
 <manifest ...>
     <application ...>
-	    <activity ...>
-		    ...
-		    <intent-filter android:label="@string/deep_link_title">
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="my-app" android:host="stytch-auth" />
-			</intent-filter>
-	    </activity>
+        <activity ...>
+            ...
+            <intent-filter android:label="@string/deep_link_title">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="my-app" android:host="stytch-auth" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
 ```
@@ -38,9 +38,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     ...
     if (intent.action == Intent.ACTION_VIEW) {
-	    intent.data?.let { deepLinkData ->
-		    viewModel.handleDeeplink(deepLinkData)
-	    }
+        intent.data?.let { deepLinkData ->
+            viewModel.handleDeeplink(deepLinkData)
+        }
     }
     ...
 }
@@ -57,25 +57,25 @@ When you receive the `intent.data`, what you're getting back is just a URI objec
 In our viewmodel, lets handle the following deeplink URL: `my-app://stytch-auth?stytch_token_type=magic_links&token=some-encrypted-token`
 ```kotlin
 fun handleDeeplink(uri: URI) {
-	val tokenType = uri.getQueryParameter("stytch_token_type") ?:return
-	val token = uri.getQueryParameter("token") ?: return
-	// at this point, we know what the token and product is, and can
-	// authenticate it directly (condensed for brevity)
-	viewModelScope.launch {
-		if (tokenType == "magic_links") {
-			val result = StytchClient.magicLinks.authenticate(
-				MagicLinks.AuthParameters(token, 30U)
-			)
-			when (result) {
-				is StytchResult.Success -> {
-					// user is authenticated!
-				}
-				is StytchResult.Error -> {
-					// something went wrong
-				}
-			}
-		}
-	}
+    val tokenType = uri.getQueryParameter("stytch_token_type") ?:return
+    val token = uri.getQueryParameter("token") ?: return
+    // at this point, we know what the token and product is, and can
+    // authenticate it directly (condensed for brevity)
+    viewModelScope.launch {
+        if (tokenType == "magic_links") {
+            val result = StytchClient.magicLinks.authenticate(
+                MagicLinks.AuthParameters(token, 30U)
+            )
+            when (result) {
+                is StytchResult.Success -> {
+                    // user is authenticated!
+                }
+                is StytchResult.Error -> {
+                    // something went wrong
+                }
+            }
+        }
+    }
 }
 ```
 #### Automatic Parsing
@@ -85,44 +85,44 @@ Let's handle the same deeplink URI as in the previous section: `my-app://stytch-
 ```kotlin
 fun handleDeeplink(uri: URI) {
     viewModelScope.launch {
-	    val result = StytchClient.handle(  
+        val result = StytchClient.handle(  
             uri = uri,  
-			sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),  
-		) 
-	    when (result) {  
-		    is DeeplinkHandledStatus.Handled -> {  
-				// The deeplink has been fully parsed and will have a
-				// nested response type that needs to be parsed
-				when (val response = result.response) {
-					is DeeplinkResponse.Auth -> {
-						// This was a standard authentication response
-						when (val authResponse = response.result) {
-							is StytchResult.Success -> {
-								// The user is authenticated!
-								// authResponse will be guaranteed to have a session token and JWT, but that is all
-							}
-							is StytchResult.Error -> {
-								// Something went wrong
-							}
-						}
-					}
-					is DeeplinkResponse.Discovery -> {
-						// This is returned from our B2B Discovery flow
-						// For consumer applications, you won't need to worry about it
-					}
-				}
-		    }  
-		    is DeeplinkHandledStatus.NotHandled -> {
-			    // This was not a deeplink we know how to handle.
-			    // It probably wasn't intended for us!
-		    }  
-		    is DeeplinkHandledStatus.ManualHandlingRequired -> {
-			    // This is returned for things that need further processing,
-			    // like Password Reset By Email flows.
-			    // It will have the token type and token itself as properties
-			    // so you can store them for later consumption
-		    }  
-		}
+            sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),  
+        ) 
+        when (result) {  
+            is DeeplinkHandledStatus.Handled -> {  
+                // The deeplink has been fully parsed and will have a
+                // nested response type that needs to be parsed
+                when (val response = result.response) {
+                    is DeeplinkResponse.Auth -> {
+                        // This was a standard authentication response
+                        when (val authResponse = response.result) {
+                            is StytchResult.Success -> {
+                                // The user is authenticated!
+                                // authResponse will be guaranteed to have a session token and JWT, but that is all
+                            }
+                            is StytchResult.Error -> {
+                                // Something went wrong
+                            }
+                        }
+                    }
+                    is DeeplinkResponse.Discovery -> {
+                        // This is returned from our B2B Discovery flow
+                        // For consumer applications, you won't need to worry about it
+                    }
+                }
+            }  
+            is DeeplinkHandledStatus.NotHandled -> {
+                // This was not a deeplink we know how to handle.
+                // It probably wasn't intended for us!
+            }  
+            is DeeplinkHandledStatus.ManualHandlingRequired -> {
+                // This is returned for things that need further processing,
+                // like Password Reset By Email flows.
+                // It will have the token type and token itself as properties
+                // so you can store them for later consumption
+            }  
+        }
     }
 }
 ```
