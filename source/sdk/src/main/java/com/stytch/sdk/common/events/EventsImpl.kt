@@ -1,10 +1,9 @@
-package com.stytch.sdk.consumer.events
+package com.stytch.sdk.common.events
 
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
-import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -16,7 +15,7 @@ internal class EventsImpl(
     private val appSessionId: String,
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
-    private val api: StytchApi.Events,
+    private val api: EventsAPI,
 ) : Events {
     private val infoHeaderModel = InfoHeaderModel.fromDeviceInfo(deviceInfo)
 

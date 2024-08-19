@@ -9,6 +9,7 @@ import com.stytch.sdk.common.WEB_URL
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
+import com.stytch.sdk.common.events.EventsAPI
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
@@ -822,8 +823,8 @@ internal object StytchApi {
             apiService.getBootstrapData(publicToken = publicToken)
         }
 
-    internal object Events {
-        suspend fun logEvent(
+    internal object Events : EventsAPI {
+        override suspend fun logEvent(
             eventId: String,
             appSessionId: String,
             persistentId: String,
@@ -831,8 +832,8 @@ internal object StytchApi {
             timezone: String,
             eventName: String,
             infoHeaderModel: InfoHeaderModel,
-            details: Map<String, Any>? = null,
-            error: Exception? = null,
+            details: Map<String, Any>?,
+            error: Exception?,
         ): NoResponseResponse =
             safeConsumerApiCall {
                 apiService.logEvent(

@@ -1,7 +1,7 @@
-package com.stytch.sdk.consumer.events
+package com.stytch.sdk.common.events
 
-public interface Events {
-    public fun logEvent(
+internal interface Events {
+    fun logEvent(
         eventName: String,
         details: Map<String, Any>? = null,
         error: Exception? = null,
