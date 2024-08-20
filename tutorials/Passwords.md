@@ -81,7 +81,6 @@ From time to time, you may need to reset a user's password. The Stytch Android S
 3. If a user is logged out and does not know their current password, they must reset their password by confirming their email address. This is a two part flow, that is similar to the [Email Magic Link](./EmailMagicLink.md) flow, and requires that you have configured [deeplinking](./Deeplinks.md) for your application.
 
 #### Reset By Email Flow
-
 First, you will start the resetByEmail flow:
 ```kotlin
 val startResponse = StytchClient.passwords.resetByEmailStart(
