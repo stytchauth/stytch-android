@@ -17,7 +17,8 @@ android {
         // Placeholders for OAuth redirect
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': 'app',
-            'stytchOAuthRedirectHost': 'b2bOAuth'
+            'stytchOAuthRedirectHost': 'b2bOAuth',
+            'STYTCH_PUBLIC_TOKEN': ''
         ]
     }
 

@@ -37,12 +37,11 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew :source:ui:connectedCheck
+          script: ./gradlew :source:connectedCheck
         env:
           STYTCH_PUBLIC_TOKEN: 'abc123'
           GOOGLE_OAUTH_CLIENT_ID: 'abc123'
           STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
           STYTCH_B2B_ORG_ID: 'abc123'
           PASSKEYS_DOMAIN: 'abc123'
-          STYTCH_UI_PUBLIC_TOKEN: 'abc123'
           UI_GOOGLE_CLIENT_ID: 'abc123'
