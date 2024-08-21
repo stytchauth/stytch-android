@@ -343,12 +343,83 @@ public interface Organization {
             val operands: List<SearchQueryOperand>,
         )
 
-        public data class SearchQueryOperand(
+        public sealed class SearchQueryOperand(
             @Json(name = "filter_name")
-            val filterName: String,
+            public val filterName: String,
             @Json(name = "filter_value")
-            val filterValue: Any,
-        )
+            public val filterValue: Any,
+        ) {
+            public data class MemberIds(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_ids",
+                    filterValue = value,
+                )
+
+            public data class MemberEmails(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_emails",
+                    filterValue = value,
+                )
+
+            public data class MemberEmailFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_email_fuzzy",
+                    filterValue = value,
+                )
+
+            public data class MemberIsBreakingGlass(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_is_breakglass",
+                    filterValue = value,
+                )
+
+            public data class Statuses(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "statuses",
+                    filterValue = value,
+                )
+
+            public data class MemberMFAPhoneNumbers(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_numbers",
+                    filterValue = value,
+                )
+
+            public data class MemberMFAPhoneNumberFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_number_fuzzy",
+                    filterValue = value,
+                )
+
+            public data class MemberPasswordExists(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_password_exists",
+                    filterValue = value,
+                )
+
+            public data class MemberRoles(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_roles",
+                    filterValue = value,
+                )
+
+            public data class Custom(
+                val name: String,
+                val value: Any,
+            ) : SearchQueryOperand(
+                    filterName = name,
+                    filterValue = value,
+                )
+        }
 
         /**
          * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
