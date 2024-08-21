@@ -343,12 +343,21 @@ public interface Organization {
             val operands: List<SearchQueryOperand>,
         )
 
+        /**
+         * A data class representing a Search Query Operand, which contains all of the filters and values to apply to
+         * your search query.
+         * @property filterName the field on which to filter
+         * @property filterValue the value of the field to filter by
+         */
         public sealed class SearchQueryOperand(
             @Json(name = "filter_name")
             public val filterName: String,
             @Json(name = "filter_value")
             public val filterValue: Any,
         ) {
+            /**
+             * An operand for searching based on member_ids
+             */
             public data class MemberIds(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -356,6 +365,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_emails
+             */
             public data class MemberEmails(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -363,6 +375,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_email_fuzzy
+             */
             public data class MemberEmailFuzzy(
                 val value: String,
             ) : SearchQueryOperand(
@@ -370,6 +385,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_is_breakglass
+             */
             public data class MemberIsBreakingGlass(
                 val value: Boolean,
             ) : SearchQueryOperand(
@@ -377,6 +395,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on statuses
+             */
             public data class Statuses(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -384,6 +405,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_mfa_phone_numbers
+             */
             public data class MemberMFAPhoneNumbers(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -391,6 +415,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_mfa_phone_number_fuzzy
+             */
             public data class MemberMFAPhoneNumberFuzzy(
                 val value: String,
             ) : SearchQueryOperand(
@@ -398,6 +425,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_password_exists
+             */
             public data class MemberPasswordExists(
                 val value: Boolean,
             ) : SearchQueryOperand(
@@ -405,6 +435,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on member_roles
+             */
             public data class MemberRoles(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -412,6 +445,9 @@ public interface Organization {
                     filterValue = value,
                 )
 
+            /**
+             * An operand for searching based on custom filters
+             */
             public data class Custom(
                 val name: String,
                 val value: Any,
