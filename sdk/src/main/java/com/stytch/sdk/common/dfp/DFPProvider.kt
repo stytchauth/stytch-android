@@ -17,6 +17,7 @@ internal interface DFPProvider {
 
 internal class DFPProviderImpl(
     private val publicToken: String,
+    private val dfppaDomain: String,
     private val activityProvider: ActivityProvider,
 ) : DFPProvider {
     @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
@@ -29,7 +30,7 @@ internal class DFPProviderImpl(
                     view: WebView,
                     url: String,
                 ) {
-                    view.evaluateJavascript("fetchTelemetryId('$publicToken');", null)
+                    view.evaluateJavascript("fetchTelemetryId('$publicToken', '$dfppaDomain/submit');", null)
                 }
             }
         dfpWebView.settings.javaScriptEnabled = true
