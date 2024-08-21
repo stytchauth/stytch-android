@@ -5,5 +5,5 @@ package com.stytch.sdk.common
  * @property dfppaDomain the domain that should be used for DFPPA
  */
 public data class EndpointOptions(
-    val dfppaDomain: String = "https://telemetry.stytch.com",
+    val dfppaDomain: String = "telemetry.stytch.com",
 )

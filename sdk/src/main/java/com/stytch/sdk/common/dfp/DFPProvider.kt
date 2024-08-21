@@ -30,7 +30,7 @@ internal class DFPProviderImpl(
                     view: WebView,
                     url: String,
                 ) {
-                    view.evaluateJavascript("fetchTelemetryId('$publicToken', '$dfppaDomain/submit');", null)
+                    view.evaluateJavascript("fetchTelemetryId('$publicToken', 'https://$dfppaDomain/submit');", null)
                 }
             }
         dfpWebView.settings.javaScriptEnabled = true
