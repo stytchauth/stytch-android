@@ -1,19 +1,15 @@
-package com.stytch.sdk.consumer.events
+package com.stytch.sdk.common.events
 
+import com.stytch.sdk.b2b.network.StytchB2BApi.Events
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.network.InfoHeaderModel
-import com.stytch.sdk.consumer.network.StytchApi
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestScope
@@ -21,12 +17,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.security.KeyStore
 import java.util.TimeZone
 
 internal class EventsImplTest {
     @MockK
-    private lateinit var mockEventsAPI: StytchApi.Events
+    private lateinit var mockEventsAPI: Events
 
     private lateinit var impl: EventsImpl
 
@@ -44,12 +39,7 @@ internal class EventsImplTest {
 
     @Before
     fun before() {
-        mockkStatic(KeyStore::class)
-        mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
-        every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
-        mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         impl =
             EventsImpl(
                 deviceInfo = mockDeviceInfo,
