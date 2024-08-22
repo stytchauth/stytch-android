@@ -10,11 +10,13 @@ import com.stytch.sdk.b2b.UpdateOrganizationMemberResponse
 import com.stytch.sdk.b2b.UpdateOrganizationResponse
 import com.stytch.sdk.b2b.member.MemberAuthenticationFactor
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.OrganizationDeleteResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
+import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
@@ -334,4 +336,76 @@ internal class OrganizationImplTest {
         impl.members.update(Organization.OrganizationMembers.UpdateMemberParameters("my-member-id"), callback)
         coVerify { callback.invoke(any()) }
     }
+
+    @Test
+    fun `Organization member search creates the expected operand values`() =
+        runTest {
+            coEvery { mockApi.search(any(), any(), any()) } returns mockk(relaxed = true)
+            val memberIdsOperand =
+                Organization.OrganizationMembers.SearchQueryOperand.MemberIds(
+                    value = listOf("member-id-1", "member-id-2"),
+                )
+            impl.members.search(
+                Organization.OrganizationMembers.SearchParameters(
+                    cursor = null,
+                    limit = null,
+                    query =
+                        Organization.OrganizationMembers.SearchQuery(
+                            operator = SearchOperator.OR,
+                            operands = listOf(memberIdsOperand),
+                        ),
+                ),
+            )
+            coVerify {
+                mockApi.search(
+                    any(),
+                    any(),
+                    B2BRequests.SearchQuery(
+                        operator = SearchOperator.OR,
+                        operands =
+                            listOf(
+                                B2BRequests.SearchQueryOperand(
+                                    filterName = memberIdsOperand.filterName,
+                                    filterValue = memberIdsOperand.filterValue,
+                                ),
+                            ),
+                    ),
+                )
+            }
+            val customOperand =
+                Organization.OrganizationMembers.SearchQueryOperand.Custom(
+                    name = "my_custom_filter",
+                    value =
+                        mapOf(
+                            "my_key" to "my_value",
+                        ),
+                )
+            impl.members.search(
+                Organization.OrganizationMembers.SearchParameters(
+                    cursor = null,
+                    limit = null,
+                    query =
+                        Organization.OrganizationMembers.SearchQuery(
+                            operator = SearchOperator.OR,
+                            operands = listOf(customOperand),
+                        ),
+                ),
+            )
+            coVerify {
+                mockApi.search(
+                    any(),
+                    any(),
+                    B2BRequests.SearchQuery(
+                        operator = SearchOperator.OR,
+                        operands =
+                            listOf(
+                                B2BRequests.SearchQueryOperand(
+                                    filterName = customOperand.filterName,
+                                    filterValue = customOperand.filterValue,
+                                ),
+                            ),
+                    ),
+                )
+            }
+        }
 }

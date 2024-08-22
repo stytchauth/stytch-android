@@ -343,12 +343,119 @@ public interface Organization {
             val operands: List<SearchQueryOperand>,
         )
 
-        public data class SearchQueryOperand(
+        /**
+         * A data class representing a Search Query Operand, which contains all of the filters and values to apply to
+         * your search query.
+         * @property filterName the field on which to filter
+         * @property filterValue the value of the field to filter by
+         */
+        public sealed class SearchQueryOperand(
             @Json(name = "filter_name")
-            val filterName: String,
+            public val filterName: String,
             @Json(name = "filter_value")
-            val filterValue: Any,
-        )
+            public val filterValue: Any,
+        ) {
+            /**
+             * An operand for searching based on member_ids
+             */
+            public data class MemberIds(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_ids",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_emails
+             */
+            public data class MemberEmails(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_emails",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_email_fuzzy
+             */
+            public data class MemberEmailFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_email_fuzzy",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_is_breakglass
+             */
+            public data class MemberIsBreakingGlass(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_is_breakglass",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on statuses
+             */
+            public data class Statuses(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "statuses",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_mfa_phone_numbers
+             */
+            public data class MemberMFAPhoneNumbers(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_numbers",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_mfa_phone_number_fuzzy
+             */
+            public data class MemberMFAPhoneNumberFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_number_fuzzy",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_password_exists
+             */
+            public data class MemberPasswordExists(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_password_exists",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_roles
+             */
+            public data class MemberRoles(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_roles",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on custom filters
+             */
+            public data class Custom(
+                val name: String,
+                val value: Any,
+            ) : SearchQueryOperand(
+                    filterName = name,
+                    filterValue = value,
+                )
+        }
 
         /**
          * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
