@@ -15,6 +15,7 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
@@ -194,7 +195,7 @@ internal class StytchB2BClientTest {
                 }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
-            StytchB2BClient.configure(mContextMock, "", callback)
+            StytchB2BClient.configure(mContextMock, "", StytchClientOptions(), callback)
             // callback is called with expected value
             verify(exactly = 1) { callback(true) }
             // isInitialized has fired
