@@ -1,12 +1,4 @@
 # StytchUI Usage
-If you would like to use our pre-built UI SDK to get up and running as quickly as possible, replace the `sdk` artifact with the `ui` artifact in your application dependencies. The `ui` artifact bundles the `sdk` artifact, so you only need one or the other. And if you use the `ui` artifact, you can use _both_ the UI and headless SDK as your needs dictate.
-```gradle
-dependencies {
-    ...
-    implementation("com.stytch.sdk:ui:latest")
-    ...
-}
-```
 The UI SDK automatically handles all necessary OAuth, Email Magic Link, and Password Reset deeplinks. To enable this functionality, you need to add a specific redirect URL in your [Stytch Dashboard](https://stytch.com/dashboard/redirect-urls): `stytchui-[YOUR_PUBLIC_TOKEN]://deeplink`, and set it as valid for Signups, Logins, and Password Resets.
 
 The Stytch UI uses the Builder pattern to initialize the UI, and allows you to fully customize the look, feel, and supported products.

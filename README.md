@@ -31,7 +31,7 @@ dependencies {
 }
 ```
 
-Lastly, to enable OAuth deeplinks, you must modify your applications build.gradle(.kts) to supply two `manifestPlaceholders`. If you are not using our OAuth product, you still need to supply these placeholders, but they can be blank. These values can be any valid scheme or host, and do not relate to your OAuth settings in the Stytch Dashboard. These are only used internally within your app to register an OAuth receiver activity. More information is available in our [OAuth tutorial](./tutorials/OAuth.md).
+Lastly, you must modify your applications build.gradle(.kts) to supply three `manifestPlaceholders`; two of them are for enabling OAuth deeplinks, and one is for enabling our UI SDK. If you are not using either, you still need to supply these placeholders, but they can be blank. The OAuth manifest placeholder values can be any valid scheme or host, and do not relate to your OAuth settings in the Stytch Dashboard. These are only used internally within your app to register an OAuth receiver activity. More information is available in our [OAuth tutorial](./tutorials/OAuth.md). The STYTCH_PUBLIC_TOKEN is your public token, which you can get from your project dashboard
 ```gradle
 android {
     ...
@@ -40,6 +40,7 @@ android {
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
             'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
+            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]',
         ]
         ...
     }
