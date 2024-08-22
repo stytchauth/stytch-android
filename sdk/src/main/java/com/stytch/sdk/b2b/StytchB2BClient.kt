@@ -41,6 +41,7 @@ import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
@@ -105,6 +106,7 @@ public object StytchB2BClient {
     public fun configure(
         context: Context,
         publicToken: String,
+        options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
         try {
@@ -112,7 +114,12 @@ public object StytchB2BClient {
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchB2BApi.configure(publicToken, deviceInfo)
-            dfpProvider = DFPProviderImpl(context.applicationContext, publicToken)
+            dfpProvider =
+                DFPProviderImpl(
+                    context = context.applicationContext,
+                    publicToken = publicToken,
+                    dfppaDomain = options.endpointOptions.dfppaDomain,
+                )
             externalScope.launch(dispatchers.io) {
                 refreshBootstrapData()
                 StytchB2BApi.configureDFP(
