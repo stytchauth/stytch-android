@@ -5,8 +5,6 @@ import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
-import com.stytch.sdk.b2b.events.Events
-import com.stytch.sdk.b2b.events.EventsImpl
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
@@ -54,6 +52,8 @@ import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
 import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
+import com.stytch.sdk.common.events.Events
+import com.stytch.sdk.common.events.EventsImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode

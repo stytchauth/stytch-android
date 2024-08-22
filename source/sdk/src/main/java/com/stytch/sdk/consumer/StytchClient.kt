@@ -23,6 +23,8 @@ import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
 import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
+import com.stytch.sdk.common.events.Events
+import com.stytch.sdk.common.events.EventsImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
@@ -33,8 +35,6 @@ import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
 import com.stytch.sdk.consumer.crypto.CryptoWallet
 import com.stytch.sdk.consumer.crypto.CryptoWalletImpl
-import com.stytch.sdk.consumer.events.Events
-import com.stytch.sdk.consumer.events.EventsImpl
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
@@ -386,7 +386,7 @@ public object StytchClient {
         }
         internal set
 
-    public val events: Events
+    internal val events: Events
         get() {
             assertInitialized()
             return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
