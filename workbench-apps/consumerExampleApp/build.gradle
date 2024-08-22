@@ -29,22 +29,13 @@ android {
 
     buildTypes {
         all {
-            String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN")
-            if (!publicToken) {
-                publicToken = STYTCH_PUBLIC_TOKEN
-            }
+            String publicToken = rootProject.ext["STYTCH_PUBLIC_TOKEN"]
             buildConfigField "String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\""
 
-            String googleOAuthClientId = System.getenv("GOOGLE_OAUTH_CLIENT_ID")
-            if (!googleOAuthClientId) {
-                googleOAuthClientId = GOOGLE_OAUTH_CLIENT_ID
-            }
+            String googleOAuthClientId = rootProject.ext["GOOGLE_OAUTH_CLIENT_ID"]
             buildConfigField "String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\""
 
-            String passkeysDomain = System.getenv("PASSKEYS_DOMAIN")
-            if (!passkeysDomain) {
-                passkeysDomain = PASSKEYS_DOMAIN
-            }
+            String passkeysDomain = rootProject.ext["PASSKEYS_DOMAIN"]
             buildConfigField "String", "PASSKEYS_DOMAIN", "\"$passkeysDomain\""
         }
         release {

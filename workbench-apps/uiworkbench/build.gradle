@@ -5,8 +5,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-String publicToken = System.getenv("STYTCH_PUBLIC_TOKEN") ?: STYTCH_PUBLIC_TOKEN
-String googleOAuthClientId = System.getenv("UI_GOOGLE_CLIENT_ID") ?: GOOGLE_OAUTH_CLIENT_ID
+String publicToken = rootProject.ext["STYTCH_PUBLIC_TOKEN"]
+String googleOAuthClientId = rootProject.ext["UI_GOOGLE_CLIENT_ID"]
 
 android {
     namespace 'com.stytch.uiworkbench'

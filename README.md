@@ -26,7 +26,7 @@ Then, add the Stytch SDK artifact to your application's dependencies:
 ```gradle
 dependencies {
     ...
-    implementation("com.stytch.sdk:sdk:latest")
+    implementation("com.stytch.sdk:sdk:latest.release")
     ...
 }
 ```

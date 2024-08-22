@@ -29,16 +29,10 @@ android {
 
     buildTypes {
         all {
-            String b2bPublicToken = System.getenv("STYTCH_B2B_PUBLIC_TOKEN")
-            if (!b2bPublicToken) {
-                b2bPublicToken = STYTCH_B2B_PUBLIC_TOKEN
-            }
+            String b2bPublicToken = rootProject.ext["STYTCH_B2B_PUBLIC_TOKEN"]
             buildConfigField "String", "STYTCH_B2B_PUBLIC_TOKEN", "\"$b2bPublicToken\""
 
-            String b2bOrganizationId = System.getenv("STYTCH_B2B_ORG_ID")
-            if (!b2bOrganizationId) {
-                b2bOrganizationId = STYTCH_B2B_ORG_ID
-            }
+            String b2bOrganizationId = rootProject.ext["STYTCH_B2B_ORG_ID"]
             buildConfigField "String", "STYTCH_B2B_ORG_ID", "\"$b2bOrganizationId\""
         }
         release {
