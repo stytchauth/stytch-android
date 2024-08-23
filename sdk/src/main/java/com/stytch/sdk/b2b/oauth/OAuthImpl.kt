@@ -1,7 +1,5 @@
 package com.stytch.sdk.b2b.oauth
 
-import android.net.Uri
-import com.google.gson.JsonParser
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.b2b.StytchB2BClient
@@ -14,6 +12,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
+import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -151,22 +150,4 @@ internal class OAuthImpl(
             }
         }
     }
-
-    private fun buildUri(
-        url: String,
-        parameters: Map<String, Any?>,
-    ): Uri =
-        Uri.parse(url)
-            .buildUpon()
-            .apply {
-                parameters.forEach {
-                    if (it.value != null) {
-                        when (it.value) {
-                            is String -> appendQueryParameter(it.key, it.value.toString())
-                            else -> appendQueryParameter(it.key, JsonParser.parseString(it.value.toString()).asString)
-                        }
-                    }
-                }
-            }
-            .build()
 }
