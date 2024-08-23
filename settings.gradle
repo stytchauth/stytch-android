@@ -4,8 +4,8 @@ plugins {
 
 rootProject.name = "Stytch Android SDK"
 include ':source:sdk'
-include ':workbench-apps:consumerExampleApp'
-include ':workbench-apps:b2bExampleApp'
+include ':workbench-apps:consumer-workbench'
+include ':workbench-apps:b2b-workbench'
 include ':workbench-apps:uiworkbench'
 include ':example-apps:stytchexampleapp'
 
