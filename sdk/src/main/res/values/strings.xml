@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="stytch_biometric_prompt_title">Biometric Authentication</string>
-    <string name="stytch_biometric_prompt_subtitle">Authenticate using your biometric credential</string>
-    <string name="stytch_biometric_prompt_negative">Cancel</string>
-</resources>

@@ -3,11 +3,11 @@ plugins {
 }
 
 rootProject.name = "Stytch Android SDK"
-include ':sdk'
-include ':consumerExampleApp'
-include ':b2bExampleApp'
-include ':ui'
-include ':uiworkbench'
+include ':source:sdk'
+include ':workbench-apps:consumer-workbench'
+include ':workbench-apps:b2b-workbench'
+include ':workbench-apps:uiworkbench'
+include ':example-apps:stytchexampleapp'
 
 develocity {
     buildScan {

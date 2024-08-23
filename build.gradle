@@ -45,6 +45,7 @@ plugins {
     id "io.gitlab.arturbosch.detekt" version "1.23.6"
     //id 'nl.neotech.plugin.rootcoverage' version '1.6.0'
     id "org.jetbrains.dokka" version "$dokka_version"
+    id 'com.google.dagger.hilt.android' version '2.44' apply false
 }
 /*
 rootCoverage {
@@ -94,13 +95,9 @@ task clean(type: Delete) {
 
 tasks.register("runOnGitHub") {
     dependsOn(
-            ":sdk:lint",
-            ":ui:lint",
-            ":sdk:ktlintCheck",
-            ":ui:ktlintCheck",
-            ":sdk:testDebugUnitTest",
-            ":ui:testDebugUnitTest"
-            // TODO: add UI tests once they are done
+            ":source:sdk:lint",
+            ":source:sdk:ktlintCheck",
+            ":source:sdk:testDebugUnitTest",
     )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"
@@ -108,4 +105,28 @@ tasks.register("runOnGitHub") {
 
 tasks.dokkaHtmlMultiModule.configure {
     outputDirectory.set(file("$projectDir/docs"))
+}
+
+// Create variables with empty default values
+ext["STYTCH_PUBLIC_TOKEN"] = ""
+ext["GOOGLE_OAUTH_CLIENT_ID"] = ""
+ext["STYTCH_B2B_PUBLIC_TOKEN"] = ""
+ext["STYTCH_B2B_ORG_ID"] = ""
+ext["UI_GOOGLE_CLIENT_ID"] = ""
+ext["PASSKEYS_DOMAIN"] = ""
+
+File localProperties = project.rootProject.file("local.properties")
+if (localProperties.exists()) {
+    // Read local.properties file first if it exists
+    Properties p = new Properties()
+    new FileInputStream(localProperties).withCloseable { is -> p.load(is) }
+    p.each { name, value -> ext[name] = value }
+} else {
+    // Use envvars
+    ext["STYTCH_PUBLIC_TOKEN"] = System.getenv('STYTCH_PUBLIC_TOKEN')
+    ext["GOOGLE_OAUTH_CLIENT_ID"] = System.getenv('GOOGLE_OAUTH_CLIENT_ID')
+    ext["STYTCH_B2B_PUBLIC_TOKEN"] = System.getenv('STYTCH_B2B_PUBLIC_TOKEN')
+    ext["STYTCH_B2B_ORG_ID"] = System.getenv('STYTCH_B2B_ORG_ID')
+    ext["UI_GOOGLE_CLIENT_ID"] = System.getenv('UI_GOOGLE_CLIENT_ID')
+    ext["PASSKEYS_DOMAIN"] = System.getenv('PASSKEYS_DOMAIN')
 }
