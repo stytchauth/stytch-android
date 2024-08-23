@@ -27,6 +27,7 @@ internal class ThirdPartyOAuthImpl(
                 "login_redirect_url" to parameters.loginRedirectUrl,
                 "signup_redirect_url" to parameters.signupRedirectUrl,
                 "custom_scopes" to parameters.customScopes,
+                "provider_params" to parameters.providerParams,
             )
         val requestUri = buildUri(baseUrl, potentialParameters)
         val intent = SSOManagerActivity.createBaseIntent(parameters.context)
