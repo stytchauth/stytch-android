@@ -17,7 +17,7 @@ internal interface CaptchaProvider {
 internal class CaptchaProviderImpl(
     application: Application,
     scope: CoroutineScope,
-    siteKey: String,
+    siteKey: String?,
 ) : CaptchaProvider {
     private lateinit var recaptchaClient: RecaptchaClient
 
@@ -26,8 +26,10 @@ internal class CaptchaProviderImpl(
 
     init {
         scope.launch(Dispatchers.Main) {
-            Recaptcha.getClient(application, siteKey).onSuccess {
-                recaptchaClient = it
+            siteKey?.let {
+                Recaptcha.getClient(application, it).onSuccess { client ->
+                    recaptchaClient = client
+                }
             }
         }
     }
