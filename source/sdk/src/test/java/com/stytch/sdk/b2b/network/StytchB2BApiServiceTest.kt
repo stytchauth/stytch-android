@@ -15,6 +15,7 @@ import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
@@ -24,7 +25,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import okio.EOFException
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.x509Certificate
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -100,7 +100,7 @@ internal class StytchB2BApiServiceTest {
                     inviteTemplateId = "invite-template-id",
                     name = "member name",
                     untrustedMetadata = mapOf("someMetadataKey" to "someMetadataValue"),
-                    locale = "en",
+                    locale = Locale.EN,
                     roles = listOf("role1", "role2"),
                 )
             requestIgnoringResponseException {
@@ -114,7 +114,7 @@ internal class StytchB2BApiServiceTest {
                         "invite_template_id" to parameters.inviteTemplateId,
                         "name" to parameters.name,
                         "untrusted_metadata" to parameters.untrustedMetadata,
-                        "locale" to parameters.locale,
+                        "locale" to parameters.locale?.jsonName,
                         "roles" to parameters.roles,
                     ),
             )
@@ -222,7 +222,7 @@ internal class StytchB2BApiServiceTest {
             val parameters =
                 B2BRequests.Session.ExchangeRequest(
                     organizationId = "test-123",
-                    locale = "en",
+                    locale = Locale.EN,
                     sessionDurationMinutes = 30,
                 )
             requestIgnoringResponseException {
@@ -232,7 +232,7 @@ internal class StytchB2BApiServiceTest {
                 expectedBody =
                     mapOf(
                         "organization_id" to parameters.organizationId,
-                        "locale" to parameters.locale,
+                        "locale" to parameters.locale?.jsonName,
                         "session_duration_minutes" to parameters.sessionDurationMinutes,
                     ),
             )
@@ -1093,7 +1093,7 @@ internal class StytchB2BApiServiceTest {
                     organizationId = "my-organization-id",
                     memberId = "my-member-id",
                     mfaPhoneNumber = "+15555550123",
-                    locale = "en",
+                    locale = Locale.EN,
                     enableAutofill = true,
                 )
             requestIgnoringResponseException {
@@ -1105,7 +1105,7 @@ internal class StytchB2BApiServiceTest {
                         "organization_id" to parameters.organizationId,
                         "member_id" to parameters.memberId,
                         "mfa_phone_number" to parameters.mfaPhoneNumber,
-                        "locale" to parameters.locale,
+                        "locale" to parameters.locale?.jsonName,
                         "enable_autofill" to parameters.enableAutofill,
                     ),
             )
@@ -1247,7 +1247,7 @@ internal class StytchB2BApiServiceTest {
             val params =
                 B2BRequests.OAuth.AuthenticateRequest(
                     oauthToken = "my-oauth-token",
-                    locale = "en-us",
+                    locale = Locale.EN,
                     sessionDurationMinutes = 30,
                     pkceCodeVerifier = "pkce-code-verifier",
                     intermediateSessionToken = "intermediate-session-token",
@@ -1259,7 +1259,7 @@ internal class StytchB2BApiServiceTest {
                 expectedBody =
                     mapOf(
                         "oauth_token" to params.oauthToken,
-                        "locale" to params.locale,
+                        "locale" to params.locale?.jsonName,
                         "session_duration_minutes" to params.sessionDurationMinutes,
                         "pkce_code_verifier" to params.pkceCodeVerifier,
                         "intermediate_session_token" to params.intermediateSessionToken,

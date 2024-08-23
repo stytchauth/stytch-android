@@ -93,14 +93,14 @@ internal class OTPImplTest {
     @Test
     fun `OTPImpl sms loginOrCreate delegates to api`() =
         runTest {
-            coEvery { mockApi.loginOrCreateByOTPWithSMS(any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockApi.loginOrCreateByOTPWithSMS(any(), any(), any(), any()) } returns mockk(relaxed = true)
             impl.sms.loginOrCreate(mockk(relaxed = true))
-            coVerify { mockApi.loginOrCreateByOTPWithSMS(any(), any()) }
+            coVerify { mockApi.loginOrCreateByOTPWithSMS(any(), any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl sms loginOrCreate with callback calls callback method`() {
-        coEvery { mockApi.loginOrCreateByOTPWithSMS(any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.loginOrCreateByOTPWithSMS(any(), any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(LoginOrCreateOTPResponse) -> Unit>()
         impl.sms.loginOrCreate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

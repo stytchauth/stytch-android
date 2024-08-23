@@ -72,6 +72,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
@@ -180,6 +181,7 @@ internal object StytchB2BApi {
                 codeChallenge: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.loginOrSignupByEmail(
@@ -191,6 +193,7 @@ internal object StytchB2BApi {
                             codeChallenge = codeChallenge,
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
+                            locale = locale,
                         ),
                     )
                 }
@@ -218,7 +221,7 @@ internal object StytchB2BApi {
                 inviteTemplateId: String? = null,
                 name: String? = null,
                 untrustedMetadata: Map<String, Any?>? = null,
-                locale: String? = null,
+                locale: Locale? = null,
                 roles: List<String>? = null,
             ): StytchResult<MemberResponseData> =
                 safeB2BApiCall {
@@ -242,6 +245,7 @@ internal object StytchB2BApi {
                 discoveryRedirectUrl: String?,
                 codeChallenge: String,
                 loginTemplateId: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.sendDiscoveryMagicLink(
@@ -250,6 +254,7 @@ internal object StytchB2BApi {
                             discoveryRedirectUrl = discoveryRedirectUrl,
                             codeChallenge = codeChallenge,
                             loginTemplateId = loginTemplateId,
+                            locale = locale,
                         ),
                     )
                 }
@@ -287,7 +292,7 @@ internal object StytchB2BApi {
         suspend fun exchange(
             organizationId: String,
             sessionDurationMinutes: UInt,
-            locale: String? = null,
+            locale: Locale? = null,
         ): StytchResult<SessionExchangeResponseData> =
             safeB2BApiCall {
                 apiService.exchangeSession(
@@ -492,6 +497,7 @@ internal object StytchB2BApi {
             organizationId: String,
             emailAddress: String,
             password: String,
+            locale: Locale? = null,
             sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
@@ -503,6 +509,7 @@ internal object StytchB2BApi {
                         password = password,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -537,6 +544,7 @@ internal object StytchB2BApi {
             sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
+            locale: Locale? = null,
         ): StytchResult<EmailResetResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmail(
@@ -546,6 +554,7 @@ internal object StytchB2BApi {
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -556,6 +565,7 @@ internal object StytchB2BApi {
             existingPassword: String,
             newPassword: String,
             sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            locale: Locale? = null,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByExisting(
@@ -565,6 +575,7 @@ internal object StytchB2BApi {
                         existingPassword = existingPassword,
                         newPassword = newPassword,
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        locale = locale,
                     ),
                 )
             }
@@ -662,6 +673,7 @@ internal object StytchB2BApi {
             sessionDurationMinutes: UInt,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
+            locale: Locale? = null,
         ): StytchResult<SSOAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.ssoAuthenticate(
@@ -670,6 +682,7 @@ internal object StytchB2BApi {
                         sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -858,7 +871,7 @@ internal object StytchB2BApi {
             organizationId: String,
             memberId: String,
             mfaPhoneNumber: String? = null,
-            locale: String? = null,
+            locale: Locale? = null,
             intermediateSessionToken: String? = null,
             enableAutofill: Boolean = false,
         ): StytchResult<BasicData> =
@@ -973,7 +986,7 @@ internal object StytchB2BApi {
     internal object OAuth {
         suspend fun authenticate(
             oauthToken: String,
-            locale: String? = null,
+            locale: Locale? = null,
             sessionDurationMinutes: Int,
             pkceCodeVerifier: String,
             intermediateSessionToken: String? = null,

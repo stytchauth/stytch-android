@@ -121,10 +121,10 @@ internal class MagicLinksImplTest {
         runTest {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
-                mockApi.loginOrCreate(any(), any(), any(), any(), any())
+                mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
             } returns successfulLoginOrCreateResponse
             impl.email.loginOrCreate(emailMagicLinkParameters)
-            coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any()) }
+            coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
         }
 
     @Test

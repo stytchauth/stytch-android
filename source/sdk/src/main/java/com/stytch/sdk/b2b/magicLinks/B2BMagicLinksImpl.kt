@@ -30,14 +30,15 @@ internal class B2BMagicLinksImpl internal constructor(
         var result: EMLAuthenticateResponse
         withContext(dispatchers.io) {
             result =
-                emailApi.authenticate(
-                    token = parameters.token,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
-                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                emailApi
+                    .authenticate(
+                        token = parameters.token,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                        codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
+                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             pkcePairManager.clearPKCECodePair()
         }
 
@@ -108,6 +109,7 @@ internal class B2BMagicLinksImpl internal constructor(
                         codeChallenge = challengeCode,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 
@@ -145,6 +147,7 @@ internal class B2BMagicLinksImpl internal constructor(
                         codeChallenge = challengeCode,
                         loginTemplateId = parameters.loginTemplateId,
                         discoveryRedirectUrl = parameters.discoveryRedirectUrl,
+                        locale = parameters.locale,
                     )
             }
             return result
@@ -160,8 +163,8 @@ internal class B2BMagicLinksImpl internal constructor(
             }
         }
 
-        override suspend fun invite(parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters): MemberResponse {
-            return withContext(dispatchers.io) {
+        override suspend fun invite(parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters): MemberResponse =
+            withContext(dispatchers.io) {
                 emailApi.invite(
                     emailAddress = parameters.emailAddress,
                     inviteRedirectUrl = parameters.inviteRedirectUrl,
@@ -172,7 +175,6 @@ internal class B2BMagicLinksImpl internal constructor(
                     roles = parameters.roles,
                 )
             }
-        }
 
         override fun invite(
             parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters,

@@ -64,6 +64,7 @@ internal class OTPImpl internal constructor(
                             phoneNumber = parameters.phoneNumber,
                             expirationMinutes = parameters.expirationMinutes,
                             enableAutofill = parameters.enableAutofill,
+                            locale = parameters.locale,
                         ).apply {
                             if (this is StytchResult.Success && parameters.enableAutofill) {
                                 sessionStorage.methodId = this.value.methodId
@@ -94,6 +95,7 @@ internal class OTPImpl internal constructor(
                         .sendOTPWithSMSSecondary(
                             phoneNumber = parameters.phoneNumber,
                             expirationMinutes = parameters.expirationMinutes,
+                            locale = parameters.locale,
                         ).apply {
                             if (this is StytchResult.Success && parameters.enableAutofill) {
                                 sessionStorage.methodId = this.value.methodId
@@ -104,6 +106,7 @@ internal class OTPImpl internal constructor(
                         .sendOTPWithSMSPrimary(
                             phoneNumber = parameters.phoneNumber,
                             expirationMinutes = parameters.expirationMinutes,
+                            locale = parameters.locale,
                         ).apply {
                             if (this is StytchResult.Success && parameters.enableAutofill) {
                                 sessionStorage.methodId = this.value.methodId

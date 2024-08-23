@@ -88,17 +88,17 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl authenticate delegates to api`() =
         runTest {
             val mockkResponse = StytchResult.Success<PasswordsAuthenticateResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.authenticate(any(), any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.authenticate(any(), any(), any(), any(), any()) }
+            coVerify { mockApi.authenticate(any(), any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl authenticate with callback calls callback method`() {
         val mockkResponse = StytchResult.Success<PasswordsAuthenticateResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockApi.authenticate(any(), any(), any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(PasswordsAuthenticateResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
@@ -165,10 +165,10 @@ internal class PasswordsImplTest {
         runTest {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             val mockkResponse = StytchResult.Success<EmailResetResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.resetByEmail(any(), any(), any(), any(), any()) }
+            coVerify { mockApi.resetByEmail(any(), any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
             verify(exactly = 1) { mockPKCEPairManager.clearPKCECodePair() }
         }
@@ -177,7 +177,7 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl resetByEmail with callback calls callback method`() {
         every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
         val mockkResponse = StytchResult.Success<EmailResetResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(EmailResetResponse) -> Unit>()
         impl.resetByEmail(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
@@ -189,17 +189,17 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl resetByExisting delegates to api`() =
         runTest {
             val mockkResponse = StytchResult.Success<PasswordResetByExistingPasswordResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.resetByExisting(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.resetByExisting(any(), any(), any(), any(), any()) }
+            coVerify { mockApi.resetByExisting(any(), any(), any(), any(), any(), any()) }
             verify { mockkResponse.launchSessionUpdater(any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl resetByExisting with callback calls callback method`() {
         val mockkResponse = StytchResult.Success<PasswordResetByExistingPasswordResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(PasswordResetByExistingPasswordResponse) -> Unit>()
         impl.resetByExisting(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }

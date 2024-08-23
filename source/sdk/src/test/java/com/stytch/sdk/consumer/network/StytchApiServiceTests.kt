@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.network
 
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
@@ -58,6 +59,7 @@ internal class StytchApiServiceTests {
                     codeChallenge = "123",
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByEmail(parameters)
@@ -70,6 +72,7 @@ internal class StytchApiServiceTests {
                         "code_challenge" to parameters.codeChallenge,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -88,6 +91,7 @@ internal class StytchApiServiceTests {
                     loginExpirationMinutes = 30,
                     signupExpirationMinutes = 30,
                     signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendEmailMagicLinkPrimary(parameters)
@@ -103,6 +107,7 @@ internal class StytchApiServiceTests {
                         "login_expiration_minutes" to parameters.loginExpirationMinutes,
                         "signup_expiration_minutes" to parameters.loginExpirationMinutes,
                         "signup_magic_link_url" to parameters.signupMagicLinkUrl,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -121,6 +126,7 @@ internal class StytchApiServiceTests {
                     loginExpirationMinutes = 30,
                     signupExpirationMinutes = 30,
                     signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendEmailMagicLinkSecondary(parameters)
@@ -136,6 +142,7 @@ internal class StytchApiServiceTests {
                         "login_expiration_minutes" to parameters.loginExpirationMinutes,
                         "signup_expiration_minutes" to parameters.loginExpirationMinutes,
                         "signup_magic_link_url" to parameters.signupMagicLinkUrl,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -176,6 +183,7 @@ internal class StytchApiServiceTests {
                     expirationMinutes = 60,
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithEmail(parameters)
@@ -187,6 +195,7 @@ internal class StytchApiServiceTests {
                         "expiration_minutes" to parameters.expirationMinutes,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -201,6 +210,7 @@ internal class StytchApiServiceTests {
                     expirationMinutes = 60,
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithEmailPrimary(parameters)
@@ -212,6 +222,7 @@ internal class StytchApiServiceTests {
                         "expiration_minutes" to parameters.expirationMinutes,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -226,6 +237,7 @@ internal class StytchApiServiceTests {
                     expirationMinutes = 60,
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithEmailSecondary(parameters)
@@ -237,6 +249,7 @@ internal class StytchApiServiceTests {
                         "expiration_minutes" to parameters.expirationMinutes,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -250,6 +263,7 @@ internal class StytchApiServiceTests {
                     phoneNumber = "000",
                     expirationMinutes = 24,
                     enableAutofill = true,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithSMS(parameters)
@@ -260,6 +274,7 @@ internal class StytchApiServiceTests {
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
                         "enable_autofill" to parameters.enableAutofill,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -273,6 +288,7 @@ internal class StytchApiServiceTests {
                     phoneNumber = "000",
                     expirationMinutes = 24,
                     enableAutofill = true,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSPrimary(parameters)
@@ -283,6 +299,7 @@ internal class StytchApiServiceTests {
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
                         "enable_autofill" to parameters.enableAutofill,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -296,6 +313,7 @@ internal class StytchApiServiceTests {
                     phoneNumber = "000",
                     expirationMinutes = 24,
                     enableAutofill = true,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithSMSSecondary(parameters)
@@ -306,6 +324,7 @@ internal class StytchApiServiceTests {
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
                         "enable_autofill" to parameters.enableAutofill,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }

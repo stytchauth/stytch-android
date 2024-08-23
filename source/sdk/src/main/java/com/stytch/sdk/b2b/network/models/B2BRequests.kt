@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.network.models
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.models.Locale
 
 internal object B2BRequests {
     object MagicLinks {
@@ -24,6 +25,7 @@ internal object B2BRequests {
                 val loginTemplateId: String? = null,
                 @Json(name = "signup_template_id")
                 val signupTemplateId: String? = null,
+                val locale: Locale? = null,
             )
         }
 
@@ -39,6 +41,7 @@ internal object B2BRequests {
                 val codeChallenge: String,
                 @Json(name = "login_template_id")
                 val loginTemplateId: String? = null,
+                val locale: Locale? = null,
             )
 
             @Keep
@@ -64,7 +67,7 @@ internal object B2BRequests {
                 val name: String? = null,
                 @Json(name = "untrusted_metadata")
                 val untrustedMetadata: Map<String, Any?>? = null,
-                val locale: String? = null,
+                val locale: Locale? = null,
                 val roles: List<String>? = null,
             )
         }
@@ -96,6 +99,7 @@ internal object B2BRequests {
             val sessionDurationMinutes: Int,
             @Json(name = "intermediate_session_token")
             val intermediateSessionToken: String? = null,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -129,6 +133,7 @@ internal object B2BRequests {
             val codeVerifier: String,
             @Json(name = "intermediate_session_token")
             val intermediateSessionToken: String? = null,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -144,6 +149,7 @@ internal object B2BRequests {
             val newPassword: String,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -222,6 +228,7 @@ internal object B2BRequests {
             val codeVerifier: String,
             @Json(name = "intermediate_session_token")
             val intermediateSessionToken: String? = null,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -306,7 +313,7 @@ internal object B2BRequests {
         data class ExchangeRequest(
             @Json(name = "organization_id")
             val organizationId: String,
-            val locale: String? = null,
+            val locale: Locale? = null,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int? = null,
         )
@@ -445,7 +452,7 @@ internal object B2BRequests {
                 val memberId: String,
                 @Json(name = "mfa_phone_number")
                 val mfaPhoneNumber: String? = null,
-                val locale: String? = null,
+                val locale: Locale? = null,
                 @Json(name = "intermediate_session_token")
                 val intermediateSessionToken: String? = null,
                 @Json(name = "enable_autofill")
@@ -526,7 +533,7 @@ internal object B2BRequests {
         data class AuthenticateRequest(
             @Json(name = "oauth_token")
             val oauthToken: String,
-            val locale: String? = null,
+            val locale: Locale? = null,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
             @Json(name = "pkce_code_verifier")

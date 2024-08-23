@@ -7,6 +7,7 @@ import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
@@ -28,12 +29,16 @@ public interface Passwords {
      * @property emailAddress is the member's email address
      * @property password is the member's password
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property locale Used to determine which language to use when sending the user this delivery method.
+     * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+     * if no value is provided, the copy defaults to English.
      */
     public data class AuthParameters(
         val organizationId: String,
         val emailAddress: String,
         val password: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+        val locale: Locale? = null,
     )
 
     /**
@@ -119,11 +124,15 @@ public interface Passwords {
      * @property token is the unique sequence of characters that should be received after calling the resetByEmailStart
      * @property password is the private sequence of characters you wish to use as a password
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property locale Used to determine which language to use when sending the user this delivery method.
+     * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+     * if no value is provided, the copy defaults to English.
      */
     public data class ResetByEmailParameters(
         val token: String,
         val password: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+        val locale: Locale? = null,
     )
 
     /**
@@ -156,6 +165,9 @@ public interface Passwords {
      * @property existingPassword The member's current password that they supplied.
      * @property newPassword The member's elected new password.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property locale Used to determine which language to use when sending the user this delivery method.
+     * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+     * if no value is provided, the copy defaults to English.
      */
     public data class ResetByExistingPasswordParameters(
         val organizationId: String,
@@ -163,6 +175,7 @@ public interface Passwords {
         val existingPassword: String,
         val newPassword: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+        val locale: Locale? = null,
     )
 
     /**
