@@ -1,0 +1,204 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id "org.jetbrains.dokka"
+    id 'kotlin-parcelize'
+    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
+    id("org.jetbrains.kotlin.plugin.compose")
+}
+
+ext {
+  PUBLISH_GROUP_ID = 'com.stytch.sdk'
+  PUBLISH_VERSION = '0.25.0'
+  PUBLISH_ARTIFACT_ID = 'sdk'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
+android {
+    compileSdk 34
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "Boolean", "DEBUG_MODE", "false"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "Boolean", "DEBUG_MODE", "true"
+            buildConfigField "String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\""
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+        freeCompilerArgs += '-Xexplicit-api=strict'
+    }
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
+    namespace 'com.stytch.sdk'
+    lint {
+        disable 'OldTargetApi'
+    }
+    buildFeatures {
+        buildConfig true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.8'
+    }
+    testVariants.all {
+        it.mergedFlavor.manifestPlaceholders = [
+            'stytchOAuthRedirectScheme': 'test://',
+            'stytchOAuthRedirectHost': 'oauth',
+            'STYTCH_PUBLIC_TOKEN': 'test',
+        ]
+    }
+    unitTestVariants.all {
+        it.mergedFlavor.manifestPlaceholders = [
+            'stytchOAuthRedirectScheme': 'test://',
+            'stytchOAuthRedirectHost': 'oauth',
+            'STYTCH_PUBLIC_TOKEN': 'test',
+        ]
+    }
+}
+
+tasks.named("dokkaHtmlPartial").configure {
+    dependsOn(tasks.named("kspDebugKotlin"))
+    dependsOn(tasks.named("kspReleaseKotlin"))
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
+    }
+    moduleName.set("Stytch Android")
+    suppressInheritedMembers.set(true)
+    dokkaSourceSets {
+        configureEach {
+            includes.from([
+                "module.md",
+                "src/main/java/com/stytch/sdk/b2b/README.md",
+                "src/main/java/com/stytch/sdk/b2b/discovery/README.md",
+                "src/main/java/com/stytch/sdk/b2b/magicLinks/README.md",
+                "src/main/java/com/stytch/sdk/b2b/member/README.md",
+                "src/main/java/com/stytch/sdk/b2b/oauth/README.md",
+                "src/main/java/com/stytch/sdk/b2b/organization/README.md",
+                "src/main/java/com/stytch/sdk/b2b/otp/README.md",
+                "src/main/java/com/stytch/sdk/b2b/passwords/README.md",
+                "src/main/java/com/stytch/sdk/b2b/recoveryCodes/README.md",
+                "src/main/java/com/stytch/sdk/b2b/sessions/README.md",
+                "src/main/java/com/stytch/sdk/b2b/sso/README.md",
+                "src/main/java/com/stytch/sdk/b2b/totp/README.md",
+                "src/main/java/com/stytch/sdk/common/README.md",
+                "src/main/java/com/stytch/sdk/common/sso/README.md",
+                "src/main/java/com/stytch/sdk/consumer/README.md",
+                "src/main/java/com/stytch/sdk/consumer/biometrics/README.md",
+                "src/main/java/com/stytch/sdk/consumer/crypto/README.md",
+                "src/main/java/com/stytch/sdk/consumer/magicLinks/README.md",
+                "src/main/java/com/stytch/sdk/consumer/oauth/README.md",
+                "src/main/java/com/stytch/sdk/consumer/otp/README.md",
+                "src/main/java/com/stytch/sdk/consumer/passkeys/README.md",
+                "src/main/java/com/stytch/sdk/consumer/passwords/README.md",
+                "src/main/java/com/stytch/sdk/consumer/sessions/README.md",
+                "src/main/java/com/stytch/sdk/consumer/userManagement/README.md",
+            ])
+            perPackageOption {
+                matchingRegex.set(".*\\.network.*")
+                suppress.set(true)
+            }
+            reportUndocumented.set(true)
+        }
+        /*
+        // TODO: Switch to KTS files to make this a lot easier/more idiomatic
+        pluginsMapConfiguration.set([
+            "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
+                "version": "$PUBLISH_VERSION",
+                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/sdk"
+            }"""
+        ])
+         */
+    }
+}
+
+dependencies {
+    // Headless SDK dependencies
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
+    implementation "androidx.browser:browser:1.4.0"
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
+    implementation 'com.google.crypto.tink:tink-android:1.8.0'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
+    implementation "androidx.credentials:credentials:1.2.2"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
+
+    // UI SDK dependencies
+    def voyagerVersion = "1.0.0-rc06"
+    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+    implementation "androidx.activity:activity-compose:1.6.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    implementation "cafe.adriel.voyager:voyager-navigator:$voyagerVersion"
+    implementation "cafe.adriel.voyager:voyager-transitions:$voyagerVersion"
+    implementation "cafe.adriel.voyager:voyager-androidx:$voyagerVersion"
+    implementation platform('androidx.compose:compose-bom:2023.06.01')
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-graphics"
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.compose.material:material-icons-extended"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+    implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
+
+    // Test depdendencies
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "io.mockk:mockk:1.13.8"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    testImplementation("org.json:json:20231013")
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestImplementation "androidx.test:rules:1.5.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
+    // Test rules and transitive dependencies:
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    // Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttp_version")
+    testImplementation("org.json:json:20231013")
+}
+
+tasks.withType(Test).configureEach {
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        showStackTraces = true
+    }
+}
