@@ -6,7 +6,8 @@ internal fun buildUri(
     url: String,
     parameters: Map<String, Any?>,
 ): Uri =
-    Uri.parse(url)
+    Uri
+        .parse(url)
         .buildUpon()
         .apply {
             parameters.forEach {
@@ -23,5 +24,4 @@ internal fun buildUri(
                     }
                 }
             }
-        }
-        .build()
+        }.build()
