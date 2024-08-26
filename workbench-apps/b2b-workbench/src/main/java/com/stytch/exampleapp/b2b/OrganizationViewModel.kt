@@ -30,14 +30,13 @@ class OrganizationViewModel : ViewModel() {
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 
     fun deleteOrganization() {
         viewModelScope.launchAndToggleLoadingState {
@@ -48,81 +47,87 @@ class OrganizationViewModel : ViewModel() {
     fun updateOrganizationName() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.update(
-                    Organization.UpdateOrganizationParameters(organizationName = newOrgNameState.text),
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization
+                    .update(
+                        Organization.UpdateOrganizationParameters(organizationName = newOrgNameState.text),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun deleteOrganizationMember() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.delete(
-                    memberId = memberIdState.text,
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization.members
+                    .delete(
+                        memberId = memberIdState.text,
+                    ).toFriendlyDisplay()
         }
     }
 
     fun reactivateOrganizationMember() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.reactivate(
-                    memberId = memberIdState.text,
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization.members
+                    .reactivate(
+                        memberId = memberIdState.text,
+                    ).toFriendlyDisplay()
         }
     }
 
     fun deleteMemberMfaPhoneNumber() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.deleteMemberAuthenticationFactor(
-                    memberId = memberIdState.text,
-                    authenticationFactor = MemberAuthenticationFactor.MfaPhoneNumber,
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization.members
+                    .deleteMemberAuthenticationFactor(
+                        memberId = memberIdState.text,
+                        authenticationFactor = MemberAuthenticationFactor.MfaPhoneNumber,
+                    ).toFriendlyDisplay()
         }
     }
 
     fun createOrganizationMember() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.create(
-                    Organization.OrganizationMembers.CreateMemberParameters(
-                        emailAddress = memberEmailState.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization.members
+                    .create(
+                        Organization.OrganizationMembers.CreateMemberParameters(
+                            emailAddress = memberEmailState.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun updateOrganizationMemberPhone() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.update(
-                    Organization.OrganizationMembers.UpdateMemberParameters(
-                        memberId = memberIdState.text,
-                        mfaPhoneNumber = memberPhoneState.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.organization.members
+                    .update(
+                        Organization.OrganizationMembers.UpdateMemberParameters(
+                            memberId = memberIdState.text,
+                            mfaPhoneNumber = memberPhoneState.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun searchOrganizationMembersByEmail() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.organization.members.search(
-                    Organization.OrganizationMembers.SearchParameters(
-                        query =
-                            Organization.OrganizationMembers.SearchQuery(
-                                operator = SearchOperator.AND,
-                                operands =
-                                    listOf(
-                                        Organization.OrganizationMembers.SearchQueryOperand(
-                                            filterName = "member_emails",
-                                            filterValue = listOf(memberEmailState.text),
+                StytchB2BClient.organization.members
+                    .search(
+                        Organization.OrganizationMembers.SearchParameters(
+                            query =
+                                Organization.OrganizationMembers.SearchQuery(
+                                    operator = SearchOperator.AND,
+                                    operands =
+                                        listOf(
+                                            Organization.OrganizationMembers.SearchQueryOperand.MemberEmails(
+                                                value = listOf(memberEmailState.text),
+                                            ),
                                         ),
-                                    ),
-                            ),
-                    ),
-                ).toFriendlyDisplay()
+                                ),
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 }

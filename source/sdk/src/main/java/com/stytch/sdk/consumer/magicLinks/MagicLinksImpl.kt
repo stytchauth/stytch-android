@@ -37,13 +37,14 @@ internal class MagicLinksImpl internal constructor(
 
             // call backend endpoint
             result =
-                api.authenticate(
-                    parameters.token,
-                    parameters.sessionDurationMinutes,
-                    codeVerifier,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        parameters.token,
+                        parameters.sessionDurationMinutes,
+                        codeVerifier,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             pkcePairManager.clearPKCECodePair()
         }
 
@@ -82,9 +83,9 @@ internal class MagicLinksImpl internal constructor(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         codeChallenge = challengeCode,
-                        codeChallengeMethod = challengeCodeMethod,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 
@@ -121,6 +122,7 @@ internal class MagicLinksImpl internal constructor(
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 } else {
                     api.sendPrimary(
@@ -132,6 +134,7 @@ internal class MagicLinksImpl internal constructor(
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 }
             }

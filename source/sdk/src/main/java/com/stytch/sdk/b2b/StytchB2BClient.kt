@@ -32,6 +32,7 @@ import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.b2b.totp.TOTP
 import com.stytch.sdk.b2b.totp.TOTPImpl
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
@@ -59,6 +60,8 @@ import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,6 +90,8 @@ public object StytchB2BClient {
         internal set
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    private lateinit var smsRetriever: StytchSMSRetriever
 
     /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
@@ -126,6 +131,7 @@ public object StytchB2BClient {
                     publicToken = publicToken,
                     dfppaDomain = options.endpointOptions.dfppaDomain,
                 )
+            configureSmsRetriever(context.applicationContext)
             externalScope.launch(dispatchers.io) {
                 refreshBootstrapData()
                 StytchB2BApi.configureDFP(
@@ -158,7 +164,27 @@ public object StytchB2BClient {
         }
     }
 
-    internal suspend fun refreshBootstrapData() {
+    private fun configureSmsRetriever(applicationContext: Context) {
+        smsRetriever =
+            StytchSMSRetrieverImpl(applicationContext) { code, sessionDurationMinutes ->
+                smsRetriever.finish()
+                val organizationId = sessionStorage.organization?.organizationId ?: return@StytchSMSRetrieverImpl
+                val memberId = sessionStorage.member?.memberId ?: return@StytchSMSRetrieverImpl
+                val parsedCode = code ?: return@StytchSMSRetrieverImpl
+                externalScope.launch {
+                    otp.sms.authenticate(
+                        OTP.SMS.AuthenticateParameters(
+                            organizationId = organizationId,
+                            memberId = memberId,
+                            code = parsedCode,
+                            sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        ),
+                    )
+                }
+            }
+    }
+
+    public suspend fun refreshBootstrapData() {
         bootstrapData =
             when (val res = StytchB2BApi.getBootstrapData()) {
                 is StytchResult.Success -> res.value
@@ -542,4 +568,6 @@ public object StytchB2BClient {
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
+
+    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
 }

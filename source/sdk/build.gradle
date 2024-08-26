@@ -10,7 +10,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.25.0'
+  PUBLISH_VERSION = '0.26.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -160,6 +160,7 @@ dependencies {
     implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
     implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
     implementation "com.stytch.dfp:dfp:0.1.0"
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.1.0'
 
     // UI SDK dependencies
     def voyagerVersion = "1.0.0-rc06"

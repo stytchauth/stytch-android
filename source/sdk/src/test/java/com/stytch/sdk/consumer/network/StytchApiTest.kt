@@ -91,7 +91,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "")
+            StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "")
             coVerify { StytchApi.apiService.loginOrCreateUserByEmail(any()) }
         }
 
@@ -235,7 +235,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmailStart("", "", "", "", 30, "", 30, "")
+            StytchApi.Passwords.resetByEmailStart("", "", "", 30, "", 30, "")
             coVerify { StytchApi.apiService.resetByEmailStart(any()) }
         }
 

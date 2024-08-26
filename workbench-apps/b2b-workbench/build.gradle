@@ -18,7 +18,7 @@ android {
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': 'app',
             'stytchOAuthRedirectHost': 'b2bOAuth',
-            'STYTCH_PUBLIC_TOKEN': ''
+            'STYTCH_PUBLIC_TOKEN': rootProject.ext["STYTCH_PUBLIC_TOKEN"]
         ]
     }
 

@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
@@ -30,6 +31,8 @@ import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
+import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -82,6 +85,8 @@ public object StytchClient {
     public var bootstrapData: BootstrapData = BootstrapData()
         internal set
 
+    private lateinit var smsRetriever: StytchSMSRetriever
+
     /**
      * The public token that the StytchClient is configured to use
      */
@@ -128,6 +133,7 @@ public object StytchClient {
                     publicToken = publicToken,
                     dfppaDomain = options.endpointOptions.dfppaDomain,
                 )
+            configureSmsRetriever(context.applicationContext)
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
                 bootstrapData =
@@ -163,6 +169,24 @@ public object StytchClient {
                 exception = ex,
             )
         }
+    }
+
+    private fun configureSmsRetriever(context: Context) {
+        smsRetriever =
+            StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
+                smsRetriever.finish()
+                val parsedCode = code ?: return@StytchSMSRetrieverImpl
+                val methodId = sessionStorage.methodId ?: return@StytchSMSRetrieverImpl
+                externalScope.launch {
+                    otps.authenticate(
+                        OTP.AuthParameters(
+                            token = parsedCode,
+                            methodId = methodId,
+                            sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        ),
+                    )
+                }
+            }
     }
 
     internal fun assertInitialized() {
@@ -503,4 +527,6 @@ public object StytchClient {
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
+
+    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
 }

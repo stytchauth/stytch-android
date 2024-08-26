@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
@@ -106,6 +107,9 @@ public interface B2BMagicLinks {
          * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
          * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
         public data class Parameters(
             val email: String,
@@ -114,6 +118,7 @@ public interface B2BMagicLinks {
             val signupRedirectUrl: String? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
+            val locale: Locale? = null,
         )
 
         /**
@@ -143,11 +148,15 @@ public interface B2BMagicLinks {
          * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Login.
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
         public data class DiscoverySendParameters(
             val emailAddress: String,
             val discoveryRedirectUrl: String? = null,
             val loginTemplateId: String? = null,
+            val locale: Locale? = null,
         )
 
         /**
@@ -196,7 +205,7 @@ public interface B2BMagicLinks {
             val inviteTemplateId: String? = null,
             val name: String? = null,
             val untrustedMetadata: Map<String, Any?>? = null,
-            val locale: String? = null,
+            val locale: Locale? = null,
             val roles: List<String>? = null,
         )
 

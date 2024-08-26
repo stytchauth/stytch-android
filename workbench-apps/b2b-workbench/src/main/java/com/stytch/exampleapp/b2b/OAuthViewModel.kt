@@ -29,6 +29,8 @@ class OAuthViewModel : ViewModel() {
                     organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
                     loginRedirectUrl = "app://b2bexampleapp.com/",
                     signupRedirectUrl = "app://b2bexampleapp.com/",
+                    providerParams = mapOf("param_1" to "value_1", "param_2" to "value_2"),
+                    customScopes = listOf("scope_1", "scope_2")
                 ),
             )
         }

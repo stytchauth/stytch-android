@@ -472,7 +472,7 @@ public enum class DFPProtectedAuthMode {
 @Parcelize
 public data class CaptchaSettings(
     val enabled: Boolean = false,
-    val siteKey: String = "",
+    val siteKey: String? = "",
 ) : Parcelable
 
 @Keep

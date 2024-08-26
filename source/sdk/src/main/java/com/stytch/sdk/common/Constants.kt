@@ -1,6 +1,7 @@
 package com.stytch.sdk.common
 
-internal const val WEB_URL: String = "https://web.stytch.com/sdk/v1/"
+internal const val TEST_SDK_URL: String = "https://test.stytch.com/sdk/v1/"
+internal const val LIVE_SDK_URL: String = "https://api.stytch.com/sdk/v1/"
 internal const val TEST_API_URL: String = "https://test.stytch.com/v1/"
 internal const val LIVE_API_URL: String = "https://api.stytch.com/v1/"
 

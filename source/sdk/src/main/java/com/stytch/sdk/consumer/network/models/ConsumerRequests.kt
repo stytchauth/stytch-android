@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.network.models
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NameData
 
 internal object ConsumerRequests {
@@ -16,12 +17,11 @@ internal object ConsumerRequests {
                 val loginMagicLinkUrl: String?,
                 @Json(name = "code_challenge")
                 val codeChallenge: String,
-                @Json(name = "code_challenge_method")
-                val codeChallengeMethod: String,
                 @Json(name = "login_template_id")
                 val loginTemplateId: String? = null,
                 @Json(name = "signup_template_id")
                 val signupTemplateId: String? = null,
+                val locale: Locale? = null,
             )
         }
 
@@ -53,6 +53,7 @@ internal object ConsumerRequests {
             val signupTemplateId: String?,
             @Json(name = "code_challenge")
             val codeChallenge: String?,
+            val locale: Locale? = null,
         )
     }
 
@@ -81,8 +82,6 @@ internal object ConsumerRequests {
             val email: String,
             @Json(name = "code_challenge")
             val codeChallenge: String,
-            @Json(name = "code_challenge_method")
-            val codeChallengeMethod: String,
             @Json(name = "login_redirect_url")
             val loginRedirectUrl: String?,
             @Json(name = "login_expiration_minutes")
@@ -142,6 +141,9 @@ internal object ConsumerRequests {
             val phoneNumber: String,
             @Json(name = "expiration_minutes")
             val expirationMinutes: Int?,
+            @Json(name = "enable_autofill")
+            val enableAutofill: Boolean = false,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -163,6 +165,7 @@ internal object ConsumerRequests {
             val loginTemplateId: String?,
             @Json(name = "signup_template_id")
             val signupTemplateId: String?,
+            val locale: Locale? = null,
         )
 
         @Keep

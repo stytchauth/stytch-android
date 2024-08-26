@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
@@ -29,12 +30,16 @@ public interface OTP {
          * []IETF BCP 47 language tag](https://www.w3.org/International/articles/language-tags/), e.g. "en".
          * Currently supported languages are English ("en"), Spanish ("es"), and Brazilian Portuguese ("pt-br"); if no
          * value is provided, the copy defaults to English.
+         * @property enableAutofill indicates whether the SMS message should include autofill metadata
+         * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
          */
         public data class SendParameters(
             val organizationId: String,
             val memberId: String,
             val mfaPhoneNumber: String? = null,
-            val locale: String? = null,
+            val locale: Locale? = null,
+            val enableAutofill: Boolean = false,
+            val autofillSessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         )
 
         /**

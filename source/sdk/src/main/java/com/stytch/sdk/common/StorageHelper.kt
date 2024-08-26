@@ -8,7 +8,7 @@ private const val KEY_ALIAS = "Stytch RSA 2048"
 private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 
 internal object StorageHelper {
-    private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
+    internal val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
     private lateinit var sharedPreferences: SharedPreferences
 
     fun initialize(context: Context) {

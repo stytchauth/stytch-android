@@ -177,7 +177,8 @@ public interface OAuth {
          * This should be a url that redirects back to your app. If this value is not passed, the default sign-up
          * redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an
          * error is returned.
-         * @property customScopes Any additional scopes to be requested from the identity provider.
+         * @property customScopes Any additional scopes to be requested from the identity provider
+         * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
          */
         public data class StartParameters(
             val context: Activity,
@@ -185,6 +186,7 @@ public interface OAuth {
             val loginRedirectUrl: String? = null,
             val signupRedirectUrl: String? = null,
             val customScopes: List<String>? = null,
+            val providerParams: Map<String, String>? = null,
         )
 
         /**

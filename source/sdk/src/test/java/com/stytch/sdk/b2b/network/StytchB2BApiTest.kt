@@ -18,6 +18,7 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.Locale
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -94,7 +95,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.loginOrSignupByEmail(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "")
+            StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "", null)
             coVerify { StytchB2BApi.apiService.loginOrSignupByEmail(any()) }
         }
 
@@ -121,7 +122,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Discovery.send("", "", "", "")
+            StytchB2BApi.MagicLinks.Discovery.send("", "", "", "", Locale.EN)
             coVerify { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) }
         }
 
@@ -728,7 +729,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.oauthAuthenticate(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.OAuth.authenticate("", "", 30, "", "")
+            StytchB2BApi.OAuth.authenticate("", Locale.EN, 30, "", "")
             coVerify { StytchB2BApi.apiService.oauthAuthenticate(any()) }
         }
 
