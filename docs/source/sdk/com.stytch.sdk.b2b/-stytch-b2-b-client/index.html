@@ -1,0 +1,405 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StytchB2BClient</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":source:sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Stytch Android::com.stytch.sdk.b2b/StytchB2BClient///PointingToDeclaration//-1093964584">
+  <div class="breadcrumbs"><a href="../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="../index.html">com.stytch.sdk.b2b</a><span class="delimiter">/</span><span class="current">StytchB2BClient</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Stytch</span><wbr><span><span>B2BClient</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">StytchB2BClient</a></div><p class="paragraph">The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1443697943%2FProperties%2F-1093964584" anchor-label="bootstrapData" id="-1443697943%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bootstrap-data.html"><span>bootstrap</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1443697943%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="bootstrap-data.html">bootstrapData</a><span class="token operator">: </span><span data-unresolved-link="com.stytch.sdk.common.network.models/BootstrapData///PointingToDeclaration/">BootstrapData</span></div><div class="brief "><p class="paragraph">Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2133213261%2FProperties%2F-1093964584" anchor-label="dfp" id="-2133213261%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="dfp.html"><span><span>dfp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2133213261%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="dfp.html">dfp</a><span class="token operator">: </span><a href="../../com.stytch.sdk.common.dfp/-d-f-p/index.html">DFP</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.common.dfp/-d-f-p/index.html">DFP</a> interface which provides a method for retrieving a dfp_telemetry_id for use in DFP lookups on your backend server</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1158727311%2FProperties%2F-1093964584" anchor-label="discovery" id="-1158727311%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="discovery.html"><span><span>discovery</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1158727311%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="discovery.html">discovery</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.discovery/-discovery/index.html">Discovery</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.discovery/-discovery/index.html">Discovery</a> interface which provides methods for creating and discovering Organizations and exchanging sessions between organizations</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-293811433%2FProperties%2F-1093964584" anchor-label="isInitialized" id="-293811433%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-initialized.html"><span>is</span><wbr><span><span>Initialized</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-293811433%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="is-initialized.html">isInitialized</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in the <code class="lang-kotlin">configure()</code> method, to know when the Stytch SDK has been fully initialized and is ready for use</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1471715763%2FProperties%2F-1093964584" anchor-label="magicLinks" id="-1471715763%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="magic-links.html"><span>magic</span><wbr><span><span>Links</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1471715763%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="magic-links.html">magicLinks</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.magicLinks/-b2-b-magic-links/index.html">B2BMagicLinks</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.magicLinks/-b2-b-magic-links/index.html">B2BMagicLinks</a> interface whicih provides methods for sending and authenticating users with Email Magic Links.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1213882497%2FProperties%2F-1093964584" anchor-label="member" id="-1213882497%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="member.html"><span><span>member</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1213882497%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="member.html">member</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.member/-member/index.html">Member</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.member/-member/index.html">Member</a> interface which provides methods for retrieving the current authenticated user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1857619050%2FProperties%2F-1093964584" anchor-label="oauth" id="1857619050%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="oauth.html"><span><span>oauth</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1857619050%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="oauth.html">oauth</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.oauth/-o-auth/index.html">OAuth</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.oauth/-o-auth/index.html">OAuth</a> interface which provides a method for starting and authenticating OAuth and OAuth Discovery flows</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1551964666%2FProperties%2F-1093964584" anchor-label="organization" id="-1551964666%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="organization.html"><span><span>organization</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1551964666%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="organization.html">organization</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.organization/-organization/index.html">Organization</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.organization/-organization/index.html">Organization</a> interface which provides methods for retrieving the current authenticated user's organization.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-62653610%2FProperties%2F-1093964584" anchor-label="otp" id="-62653610%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="otp.html"><span><span>otp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-62653610%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="otp.html">otp</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.otp/-o-t-p/index.html">OTP</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.otp/-o-t-p/index.html">OTP</a> interface which provides a method for sending and authenticating OTP codes</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-376983831%2FProperties%2F-1093964584" anchor-label="passwords" id="-376983831%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="passwords.html"><span><span>passwords</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-376983831%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="passwords.html">passwords</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.passwords/-passwords/index.html">Passwords</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.passwords/-passwords/index.html">Passwords</a> interface which provides methods for authenticating passwords, resetting passwords, and checking the strength of passwords</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-42036793%2FProperties%2F-1093964584" anchor-label="rbac" id="-42036793%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rbac.html"><span><span>rbac</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-42036793%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="rbac.html">rbac</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.rbac/-r-b-a-c/index.html">RBAC</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.rbac/-r-b-a-c/index.html">RBAC</a> interface which provides methods for checking a member's permissions</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1022772912%2FProperties%2F-1093964584" anchor-label="recoveryCodes" id="1022772912%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="recovery-codes.html"><span>recovery</span><wbr><span><span>Codes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1022772912%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="recovery-codes.html">recoveryCodes</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.recoveryCodes/-recovery-codes/index.html">RecoveryCodes</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.recoveryCodes/-recovery-codes/index.html">RecoveryCodes</a> interface which provides methods for getting, rotating, and recovering recovery codes</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-521114148%2FProperties%2F-1093964584" anchor-label="searchManager" id="-521114148%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="search-manager.html"><span>search</span><wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-521114148%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="search-manager.html">searchManager</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.searchManager/-search-manager/index.html">SearchManager</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.searchManager/-search-manager/index.html">SearchManager</a> interface which provides methods to search organizations and members</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1079131100%2FProperties%2F-1093964584" anchor-label="sessions" id="1079131100%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sessions.html"><span><span>sessions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1079131100%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="sessions.html">sessions</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.sessions/-b2-b-sessions/index.html">B2BSessions</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.sessions/-b2-b-sessions/index.html">B2BSessions</a> interface which provides methods for authenticating, updating, or revoking sessions, and properties to retrieve the existing session token (opaque or JWT).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2074233614%2FProperties%2F-1093964584" anchor-label="sso" id="-2074233614%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sso.html"><span><span>sso</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2074233614%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="sso.html">sso</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.sso/-s-s-o/index.html">SSO</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.sso/-s-s-o/index.html">SSO</a> interface which provides methods for authenticating SSO sessions</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-473353854%2FProperties%2F-1093964584" anchor-label="totp" id="-473353854%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="totp.html"><span><span>totp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-473353854%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="totp.html">totp</a><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b.totp/-t-o-t-p/index.html">TOTP</a></div><div class="brief "><p class="paragraph">Exposes an instance of the <a href="../../com.stytch.sdk.b2b.totp/-t-o-t-p/index.html">TOTP</a> interface which provides a method for creating and authenticating TOTP codes</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1238298269%2FFunctions%2F-1093964584" anchor-label="canHandle" id="1238298269%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="can-handle.html"><span>can</span><wbr><span><span>Handle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1238298269%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="can-handle.html"><span class="token function">canHandle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uri<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/net/Uri.html">Uri</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">A helper function for determining whether the deeplink is intended for Stytch. Useful in contexts where your application makes use of a deeplink coordinator/manager which requires a synchronous determination of whether a given handler can handle a given URL.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1641004160%2FFunctions%2F-1093964584" anchor-label="configure" id="1641004160%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="configure.html"><span><span>configure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1641004160%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="configure.html"><span class="token function">configure</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">publicToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">options<span class="token operator">: </span><a href="../../com.stytch.sdk.common/-stytch-client-options/index.html">StytchClientOptions</a><span class="token operator"> = </span>StytchClientOptions()<span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches. You must call this method before making any Stytch authentication requests.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1392009191%2FFunctions%2F-1093964584" anchor-label="getPKCECodePair" id="1392009191%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-p-k-c-e-code-pair.html"><span>get</span><wbr><span>PKCECode</span><wbr><span><span>Pair</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1392009191%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-p-k-c-e-code-pair.html"><span class="token function">getPKCECodePair</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.common/-p-k-c-e-code-pair/index.html">PKCECodePair</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve the most recently created PKCE code pair from the device, if available</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="831921783%2FFunctions%2F-1093964584" anchor-label="handle" id="831921783%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="handle.html"><span><span>handle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="831921783%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="handle.html"><span class="token function">handle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uri<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/net/Uri.html">Uri</a><span class="token punctuation">, </span></span><span class="parameter ">sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.common/-deeplink-handled-status/index.html">DeeplinkHandledStatus</a></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="handle.html"><span class="token function">handle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">uri<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/net/Uri.html">Uri</a><span class="token punctuation">, </span></span><span class="parameter ">sessionDurationMinutes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-u-int/index.html">UInt</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span>response<span class="token operator">: </span><a href="../../com.stytch.sdk.common/-deeplink-handled-status/index.html">DeeplinkHandledStatus</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call this method to parse out and authenticate deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1476136540%2FFunctions%2F-1093964584" anchor-label="refreshBootstrapData" id="1476136540%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="refresh-bootstrap-data.html"><span>refresh</span><wbr><span>Bootstrap</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1476136540%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="refresh-bootstrap-data.html"><span class="token function">refreshBootstrapData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

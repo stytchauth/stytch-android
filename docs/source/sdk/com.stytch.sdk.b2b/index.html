@@ -1,0 +1,776 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.b2b</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":source:sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="Stytch Android::com.stytch.sdk.b2b////PointingToDeclaration//-1093964584">
+  <div class="breadcrumbs"><a href="../index.html">Stytch Android</a><span class="delimiter">/</span><span class="current">com.stytch.sdk.b2b</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><p class="paragraph">Stytch's B2B SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.</p><h2 class=""> Supported Authentication Products</h2><ul><li><p class="paragraph">magicLinks</p></li><ul><li><p class="paragraph">Send/authenticate magic links via Email</p></li></ul><li><p class="paragraph">sessions</p></li><ul><li><p class="paragraph">Authenticate/refresh an existing session</p></li><li><p class="paragraph">Revoke a session (Sign out)</p></li></ul><li><p class="paragraph">member</p></li><ul><li><p class="paragraph">Get or fetch the current user object (sync/cached or async options available)</p></li></ul><li><p class="paragraph">organization</p></li><ul><li><p class="paragraph">Get or fetch the current user's organization</p></li></ul></ul><h2 class=""> Using the B2B SDK</h2><p class="paragraph">The <code class="lang-kotlin">StytchB2BClient</code> object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.</p><p class="paragraph">Each endpoint is explained in their respective READMEs and inline-documentation, but there are a few special methods on the <code class="lang-kotlin">StytchB2BClient</code> object to document here.</p><h3 class=""> <strong>Configuration</strong></h3><p class="paragraph">As mentioned in the /README.md, before making any Stytch authentication requests, you must configure the <code class="lang-kotlin">StytchB2BClient</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">StytchB2BClient.configure(context: Context, publicToken: String)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.</p><h3 class=""> <strong>Handling Deeplinks</strong></h3><p class="paragraph"><code class="lang-kotlin">StytchB2BClient.handle()</code> is the method you call for parsing out and authenticating deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links. This method returns a ../common/DeeplinkHandledStatus.kt class which details the result of the authentication call.</p><p class="paragraph">For B2B Email Magic Links, it will return a <code class="lang-kotlin">Handled</code> class containing either the authenticated response or error.</p><p class="paragraph">Any other link types passed to this method will return a <code class="lang-kotlin">NotHandled</code> class.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-727541907%2FClasslikes%2F-1093964584" anchor-label="B2BSearchMemberResponse" id="-727541907%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-search-member-response/index.html"><span>B2BSearch</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-727541907%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-search-member-response/index.html">B2BSearchMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSearchMemberResponseData///PointingToDeclaration/">B2BSearchMemberResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bsearchmemberresponsedata> used for Search Member responses</b2bsearchmemberresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2034347700%2FClasslikes%2F-1093964584" anchor-label="B2BSearchOrganizationResponse" id="2034347700%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-search-organization-response/index.html"><span>B2BSearch</span><wbr><span>Organization</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2034347700%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-search-organization-response/index.html">B2BSearchOrganizationResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSearchOrganizationResponseData///PointingToDeclaration/">B2BSearchOrganizationResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bsearchorganizationresponsedata> used for Search Organization responses</b2bsearchorganizationresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1804889255%2FClasslikes%2F-1093964584" anchor-label="B2BSSODeleteConnectionResponse" id="-1804889255%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-delete-connection-response/index.html"><span>B2BSSODelete</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1804889255%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-delete-connection-response/index.html">B2BSSODeleteConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSODeleteConnectionResponseData///PointingToDeclaration/">B2BSSODeleteConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssodeleteconnectionresponsedata> used for SSO Connection Deletion responses</b2bssodeleteconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1697097373%2FClasslikes%2F-1093964584" anchor-label="B2BSSOGetConnectionsResponse" id="-1697097373%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-get-connections-response/index.html"><span>B2BSSOGet</span><wbr><span>Connections</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1697097373%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-get-connections-response/index.html">B2BSSOGetConnectionsResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOGetConnectionsResponseData///PointingToDeclaration/">B2BSSOGetConnectionsResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssogetconnectionsresponsedata> used for SSO Get Connection responses</b2bssogetconnectionsresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-382229585%2FClasslikes%2F-1093964584" anchor-label="B2BSSOOIDCCreateConnectionResponse" id="-382229585%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-o-i-d-c-create-connection-response/index.html"><span>B2BSSOOIDCCreate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-382229585%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-o-i-d-c-create-connection-response/index.html">B2BSSOOIDCCreateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOOIDCCreateConnectionResponseData///PointingToDeclaration/">B2BSSOOIDCCreateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssooidccreateconnectionresponsedata> used for SSO OIDC Connection Create responses</b2bssooidccreateconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-137032254%2FClasslikes%2F-1093964584" anchor-label="B2BSSOOIDCUpdateConnectionResponse" id="-137032254%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-o-i-d-c-update-connection-response/index.html"><span>B2BSSOOIDCUpdate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-137032254%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-o-i-d-c-update-connection-response/index.html">B2BSSOOIDCUpdateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOOIDCUpdateConnectionResponseData///PointingToDeclaration/">B2BSSOOIDCUpdateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssooidcupdateconnectionresponsedata> used for SSO OIDC Connection Update responses</b2bssooidcupdateconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1908901477%2FClasslikes%2F-1093964584" anchor-label="B2BSSOSAMLCreateConnectionResponse" id="-1908901477%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-s-a-m-l-create-connection-response/index.html"><span>B2BSSOSAMLCreate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1908901477%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-s-a-m-l-create-connection-response/index.html">B2BSSOSAMLCreateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOSAMLCreateConnectionResponseData///PointingToDeclaration/">B2BSSOSAMLCreateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssosamlcreateconnectionresponsedata> used for SSO SAML Connection Creation responses</b2bssosamlcreateconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2041902470%2FClasslikes%2F-1093964584" anchor-label="B2BSSOSAMLDeleteVerificationCertificateResponse" id="-2041902470%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-s-a-m-l-delete-verification-certificate-response/index.html"><span>B2BSSOSAMLDelete</span><wbr><span>Verification</span><wbr><span>Certificate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2041902470%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-s-a-m-l-delete-verification-certificate-response/index.html">B2BSSOSAMLDeleteVerificationCertificateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOSAMLDeleteVerificationCertificateResponseData///PointingToDeclaration/">B2BSSOSAMLDeleteVerificationCertificateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssosamldeleteverificationcertificateresponsedata> used for SSO SAML Verification Certificate Deletion responses</b2bssosamldeleteverificationcertificateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-705686918%2FClasslikes%2F-1093964584" anchor-label="B2BSSOSAMLUpdateConnectionByURLResponse" id="-705686918%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-s-a-m-l-update-connection-by-u-r-l-response/index.html"><span>B2BSSOSAMLUpdate</span><wbr><span>Connection</span><wbr><span>By</span><wbr><span><span>URLResponse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-705686918%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-s-a-m-l-update-connection-by-u-r-l-response/index.html">B2BSSOSAMLUpdateConnectionByURLResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOSAMLUpdateConnectionByURLResponseData///PointingToDeclaration/">B2BSSOSAMLUpdateConnectionByURLResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssosamlupdateconnectionbyurlresponsedata> used for SSO SAML Connection Update by URL responses</b2bssosamlupdateconnectionbyurlresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1663704146%2FClasslikes%2F-1093964584" anchor-label="B2BSSOSAMLUpdateConnectionResponse" id="-1663704146%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-s-s-o-s-a-m-l-update-connection-response/index.html"><span>B2BSSOSAMLUpdate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1663704146%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-b2-b-s-s-o-s-a-m-l-update-connection-response/index.html">B2BSSOSAMLUpdateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSSOSAMLUpdateConnectionResponseData///PointingToDeclaration/">B2BSSOSAMLUpdateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bssosamlupdateconnectionresponsedata> used for SSO SAML Connection Update responses</b2bssosamlupdateconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1446770305%2FClasslikes%2F-1093964584" anchor-label="B2BTokenType" id="-1446770305%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b2-b-token-type/index.html"><span>B2BToken</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1446770305%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-b2-b-token-type/index.html">B2BTokenType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-b2-b-token-type/index.html">B2BTokenType</a><span class="token operator">&gt; </span>, <a href="../com.stytch.sdk.common/-token-type/index.html">TokenType</a></div><div class="brief "><p class="paragraph">An enum representing the supported (B2B) token types that we can extract from a deeplink</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1287372429%2FClasslikes%2F-1093964584" anchor-label="BasicResponse" id="-1287372429%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-basic-response/index.html"><span>Basic</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1287372429%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-basic-response/index.html">BasicResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.common.network.models/BasicData///PointingToDeclaration/">BasicData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<basicdata> used for non-specific responses</basicdata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="106603753%2FClasslikes%2F-1093964584" anchor-label="CreateMemberResponse" id="106603753%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-member-response/index.html"><span>Create</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="106603753%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-create-member-response/index.html">CreateMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberResponseCommonData///PointingToDeclaration/">MemberResponseCommonData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberresponsecommondata> used for Create Organization Member responses</memberresponsecommondata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="100592435%2FClasslikes%2F-1093964584" anchor-label="DeleteMemberAuthenticationFactorResponse" id="100592435%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delete-member-authentication-factor-response/index.html"><span>Delete</span><wbr><span>Member</span><wbr><span>Authentication</span><wbr><span>Factor</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="100592435%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-delete-member-authentication-factor-response/index.html">DeleteMemberAuthenticationFactorResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberDeleteAuthenticationFactorData///PointingToDeclaration/">MemberDeleteAuthenticationFactorData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberdeleteauthenticationfactordata> used for MemberDeleteAuthenticationFactor responses</memberdeleteauthenticationfactordata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="492366170%2FClasslikes%2F-1093964584" anchor-label="DeleteMemberResponse" id="492366170%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delete-member-response/index.html"><span>Delete</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="492366170%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-delete-member-response/index.html">DeleteMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OrganizationMemberDeleteResponseData///PointingToDeclaration/">OrganizationMemberDeleteResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<organizationmemberdeleteresponsedata> used for Organization Delete Member responses</organizationmemberdeleteresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1491682304%2FClasslikes%2F-1093964584" anchor-label="DeleteOrganizationMemberAuthenticationFactorResponse" id="1491682304%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delete-organization-member-authentication-factor-response/index.html"><span>Delete</span><wbr><span>Organization</span><wbr><span>Member</span><wbr><span>Authentication</span><wbr><span>Factor</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1491682304%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-delete-organization-member-authentication-factor-response/index.html">DeleteOrganizationMemberAuthenticationFactorResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberResponseCommonData///PointingToDeclaration/">MemberResponseCommonData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberresponsecommondata> used for Delete Organization Member authentication factor responses</memberresponsecommondata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1285809439%2FClasslikes%2F-1093964584" anchor-label="DeleteOrganizationResponse" id="-1285809439%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delete-organization-response/index.html"><span>Delete</span><wbr><span>Organization</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1285809439%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-delete-organization-response/index.html">DeleteOrganizationResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OrganizationDeleteResponseData///PointingToDeclaration/">OrganizationDeleteResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<organizationdeleteresponsedata> used for Organization Delete responses</organizationdeleteresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1404413066%2FClasslikes%2F-1093964584" anchor-label="DiscoverOrganizationsResponse" id="1404413066%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-discover-organizations-response/index.html"><span>Discover</span><wbr><span>Organizations</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1404413066%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-discover-organizations-response/index.html">DiscoverOrganizationsResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/DiscoveredOrganizationsResponseData///PointingToDeclaration/">DiscoveredOrganizationsResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<discoveredorganizationsresponsedata> used for discovery.organizations() responses</discoveredorganizationsresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="30652451%2FClasslikes%2F-1093964584" anchor-label="DiscoveryEMLAuthResponse" id="30652451%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-discovery-e-m-l-auth-response/index.html"><span>Discovery</span><wbr><span>EMLAuth</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="30652451%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-discovery-e-m-l-auth-response/index.html">DiscoveryEMLAuthResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/DiscoveryAuthenticateResponseData///PointingToDeclaration/">DiscoveryAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<discoveryauthenticateresponsedata> used for magicLinks.discovery.authenticate() responses</discoveryauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="669629420%2FClasslikes%2F-1093964584" anchor-label="EmailResetResponse" id="669629420%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-email-reset-response/index.html"><span>Email</span><wbr><span>Reset</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="669629420%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-email-reset-response/index.html">EmailResetResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/EmailResetResponseData///PointingToDeclaration/">EmailResetResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<emailresetresponsedata> used for passwords.resetByEmail() responses</emailresetresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="698155016%2FClasslikes%2F-1093964584" anchor-label="EMLAuthenticateResponse" id="698155016%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-m-l-authenticate-response/index.html"><span>EMLAuthenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="698155016%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-e-m-l-authenticate-response/index.html">EMLAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BEMLAuthenticateData///PointingToDeclaration/">B2BEMLAuthenticateData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bemlauthenticatedata> used for Email Magic Link Authenticate responses</b2bemlauthenticatedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-659624831%2FClasslikes%2F-1093964584" anchor-label="IntermediateSessionExchangeResponse" id="-659624831%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-intermediate-session-exchange-response/index.html"><span>Intermediate</span><wbr><span>Session</span><wbr><span>Exchange</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-659624831%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-intermediate-session-exchange-response/index.html">IntermediateSessionExchangeResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/IntermediateSessionExchangeResponseData///PointingToDeclaration/">IntermediateSessionExchangeResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<intermediatesessionexchangeresponsedata> used for discovery.exchangeSession() responses</intermediatesessionexchangeresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1706331963%2FClasslikes%2F-1093964584" anchor-label="MemberResponse" id="-1706331963%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-response/index.html"><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1706331963%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-member-response/index.html">MemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberResponseData///PointingToDeclaration/">MemberResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberresponsedata> used for member.get() responses</memberresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1751155773%2FClasslikes%2F-1093964584" anchor-label="MemberSearchResponse" id="1751155773%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-search-response/index.html"><span>Member</span><wbr><span>Search</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1751155773%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-member-search-response/index.html">MemberSearchResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberSearchResponseData///PointingToDeclaration/">MemberSearchResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<membersearchresponsedata> used for Member Search responses</membersearchresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="130803893%2FClasslikes%2F-1093964584" anchor-label="OAuthAuthenticateResponse" id="130803893%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-o-auth-authenticate-response/index.html"><span>OAuth</span><wbr><span>Authenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="130803893%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-o-auth-authenticate-response/index.html">OAuthAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OAuthAuthenticateResponseData///PointingToDeclaration/">OAuthAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<oauthauthenticateresponsedata> used for OAuth Authentication responses</oauthauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-310844879%2FClasslikes%2F-1093964584" anchor-label="OAuthDiscoveryAuthenticateResponse" id="-310844879%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-o-auth-discovery-authenticate-response/index.html"><span>OAuth</span><wbr><span>Discovery</span><wbr><span>Authenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-310844879%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-o-auth-discovery-authenticate-response/index.html">OAuthDiscoveryAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/DiscoveryAuthenticateResponseData///PointingToDeclaration/">DiscoveryAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<discoveryauthenticateresponsedata> used for Discovery Authentication responses</discoveryauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1582274704%2FClasslikes%2F-1093964584" anchor-label="OrganizationCreateResponse" id="-1582274704%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-organization-create-response/index.html"><span>Organization</span><wbr><span>Create</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1582274704%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-organization-create-response/index.html">OrganizationCreateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OrganizationCreateResponseData///PointingToDeclaration/">OrganizationCreateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<organizationcreateresponsedata> used for discovery.create() responses</organizationcreateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1203231220%2FClasslikes%2F-1093964584" anchor-label="OrganizationResponse" id="-1203231220%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-organization-response/index.html"><span>Organization</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1203231220%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-organization-response/index.html">OrganizationResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OrganizationResponseData///PointingToDeclaration/">OrganizationResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<organizationresponsedata> used for organization.get() responses</organizationresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="311159920%2FClasslikes%2F-1093964584" anchor-label="PasswordResetByExistingPasswordResponse" id="311159920%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-password-reset-by-existing-password-response/index.html"><span>Password</span><wbr><span>Reset</span><wbr><span>By</span><wbr><span>Existing</span><wbr><span>Password</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="311159920%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-password-reset-by-existing-password-response/index.html">PasswordResetByExistingPasswordResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/PasswordResetByExistingPasswordResponseData///PointingToDeclaration/">PasswordResetByExistingPasswordResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<passwordresetbyexistingpasswordresponsedata> used for Password Reset By Existing Password responses</passwordresetbyexistingpasswordresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="537382740%2FClasslikes%2F-1093964584" anchor-label="PasswordsAuthenticateResponse" id="537382740%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-passwords-authenticate-response/index.html"><span>Passwords</span><wbr><span>Authenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="537382740%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-passwords-authenticate-response/index.html">PasswordsAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/PasswordsAuthenticateResponseData///PointingToDeclaration/">PasswordsAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<passwordsauthenticateresponsedata> used for Passwords Authenticate responses</passwordsauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1193567477%2FClasslikes%2F-1093964584" anchor-label="PasswordStrengthCheckResponse" id="1193567477%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-password-strength-check-response/index.html"><span>Password</span><wbr><span>Strength</span><wbr><span>Check</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1193567477%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-password-strength-check-response/index.html">PasswordStrengthCheckResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/StrengthCheckResponseData///PointingToDeclaration/">StrengthCheckResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<strengthcheckresponsedata> used for passwords.strengthCheck() responses</strengthcheckresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1857772287%2FClasslikes%2F-1093964584" anchor-label="ReactivateMemberResponse" id="1857772287%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reactivate-member-response/index.html"><span>Reactivate</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1857772287%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-reactivate-member-response/index.html">ReactivateMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberResponseCommonData///PointingToDeclaration/">MemberResponseCommonData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberresponsecommondata> used for Reactivate Organization Member responses</memberresponsecommondata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1972479494%2FClasslikes%2F-1093964584" anchor-label="RecoveryCodesGetResponse" id="-1972479494%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-recovery-codes-get-response/index.html"><span>Recovery</span><wbr><span>Codes</span><wbr><span>Get</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1972479494%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-recovery-codes-get-response/index.html">RecoveryCodesGetResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/RecoveryCodeGetResponseData///PointingToDeclaration/">RecoveryCodeGetResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<recoverycodegetresponsedata> used for Recovery Code Get responses</recoverycodegetresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-871144020%2FClasslikes%2F-1093964584" anchor-label="RecoveryCodesRecoverResponse" id="-871144020%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-recovery-codes-recover-response/index.html"><span>Recovery</span><wbr><span>Codes</span><wbr><span>Recover</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-871144020%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-recovery-codes-recover-response/index.html">RecoveryCodesRecoverResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/RecoveryCodeRecoverResponseData///PointingToDeclaration/">RecoveryCodeRecoverResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<recoverycoderecoverresponsedata> used for Recovery Code Recover responses</recoverycoderecoverresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1308481195%2FClasslikes%2F-1093964584" anchor-label="RecoveryCodesRotateResponse" id="-1308481195%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-recovery-codes-rotate-response/index.html"><span>Recovery</span><wbr><span>Codes</span><wbr><span>Rotate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1308481195%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-recovery-codes-rotate-response/index.html">RecoveryCodesRotateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/RecoveryCodeRotateResponseData///PointingToDeclaration/">RecoveryCodeRotateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<recoverycoderotateresponsedata> used for Recovery Code Rotate responses</recoverycoderotateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-110321944%2FClasslikes%2F-1093964584" anchor-label="SessionExchangeResponse" id="-110321944%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-session-exchange-response/index.html"><span>Session</span><wbr><span>Exchange</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-110321944%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-session-exchange-response/index.html">SessionExchangeResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SessionExchangeResponseData///PointingToDeclaration/">SessionExchangeResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<sessionexchangeresponsedata> used for session.exchange() responses</sessionexchangeresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2056435622%2FClasslikes%2F-1093964584" anchor-label="SessionResetResponse" id="2056435622%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-session-reset-response/index.html"><span>Session</span><wbr><span>Reset</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2056435622%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-session-reset-response/index.html">SessionResetResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SessionResetResponseData///PointingToDeclaration/">SessionResetResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<sessionresetresponsedata> used for passwords.resetBySession() responses</sessionresetresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1795652595%2FClasslikes%2F-1093964584" anchor-label="SessionsAuthenticateResponse" id="-1795652595%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sessions-authenticate-response/index.html"><span>Sessions</span><wbr><span>Authenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1795652595%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-sessions-authenticate-response/index.html">SessionsAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SessionsAuthenticateResponseData///PointingToDeclaration/">SessionsAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<sessionsauthenticateresponsedata> used for Sessions Authenticate responses</sessionsauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1693890963%2FClasslikes%2F-1093964584" anchor-label="SMSAuthenticateResponse" id="1693890963%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-m-s-authenticate-response/index.html"><span>SMSAuthenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1693890963%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-m-s-authenticate-response/index.html">SMSAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SMSAuthenticateResponseData///PointingToDeclaration/">SMSAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<smsauthenticateresponsedata> used for SMS OTP Authenticate responses</smsauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1073047709%2FClasslikes%2F-1093964584" anchor-label="SSOAuthenticateResponse" id="1073047709%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-s-o-authenticate-response/index.html"><span>SSOAuthenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1073047709%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-s-o-authenticate-response/index.html">SSOAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/SSOAuthenticateResponseData///PointingToDeclaration/">SSOAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<ssoauthenticateresponsedata> used for sso.authenticate() responses</ssoauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-397003418%2FClasslikes%2F-1093964584" anchor-label="StytchB2BClient" id="-397003418%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-stytch-b2-b-client/index.html"><span>Stytch</span><wbr><span><span>B2BClient</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-397003418%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-stytch-b2-b-client/index.html">StytchB2BClient</a></div><div class="brief "><p class="paragraph">The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="604296275%2FClasslikes%2F-1093964584" anchor-label="TOTPAuthenticateResponse" id="604296275%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-t-o-t-p-authenticate-response/index.html"><span>TOTPAuthenticate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="604296275%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-t-o-t-p-authenticate-response/index.html">TOTPAuthenticateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/TOTPAuthenticateResponseData///PointingToDeclaration/">TOTPAuthenticateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<totpauthenticateresponsedata> used for TOTP Authenticate responses</totpauthenticateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1365576972%2FClasslikes%2F-1093964584" anchor-label="TOTPCreateResponse" id="1365576972%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-t-o-t-p-create-response/index.html"><span>TOTPCreate</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1365576972%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-t-o-t-p-create-response/index.html">TOTPCreateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/TOTPCreateResponseData///PointingToDeclaration/">TOTPCreateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<totpcreateresponsedata> used for TOTP Create responses</totpcreateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2056130684%2FClasslikes%2F-1093964584" anchor-label="UpdateMemberResponse" id="2056130684%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-update-member-response/index.html"><span>Update</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2056130684%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-update-member-response/index.html">UpdateMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/UpdateMemberResponseData///PointingToDeclaration/">UpdateMemberResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<updatememberresponsedata> used for UpdateMember responses</updatememberresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="501575369%2FClasslikes%2F-1093964584" anchor-label="UpdateOrganizationMemberResponse" id="501575369%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-update-organization-member-response/index.html"><span>Update</span><wbr><span>Organization</span><wbr><span>Member</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="501575369%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-update-organization-member-response/index.html">UpdateOrganizationMemberResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/MemberResponseCommonData///PointingToDeclaration/">MemberResponseCommonData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<memberresponsecommondata> used for Update Organization Member responses</memberresponsecommondata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1368661885%2FClasslikes%2F-1093964584" anchor-label="UpdateOrganizationResponse" id="-1368661885%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-update-organization-response/index.html"><span>Update</span><wbr><span>Organization</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1368661885%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-update-organization-response/index.html">UpdateOrganizationResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/OrganizationUpdateResponseData///PointingToDeclaration/">OrganizationUpdateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<organizationupdateresponsedata> used for Organization Update responses</organizationupdateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,225 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>StartParameters</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":source:sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Stytch Android::com.stytch.sdk.b2b.oauth/OAuth.Provider.StartParameters///PointingToDeclaration//-1093964584">
+  <div class="breadcrumbs"><a href="../../../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="../../../index.html">com.stytch.sdk.b2b.oauth</a><span class="delimiter">/</span><a href="../../index.html">OAuth</a><span class="delimiter">/</span><a href="../index.html">Provider</a><span class="delimiter">/</span><span class="current">StartParameters</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Start</span><wbr><span><span>Parameters</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">StartParameters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/app/Activity.html">Activity</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>oAuthRequestIdentifier<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>organizationId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>organizationSlug<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>loginRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>signupRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>customScopes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>providerParams<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><p class="paragraph">A data class wrapping the parameters necessary to start an OAuth flow for a specific provider</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="480191154%2FConstructors%2F-1093964584" anchor-label="StartParameters" id="480191154%2FConstructors%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-start-parameters.html"><span>Start</span><wbr><span><span>Parameters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="480191154%2FConstructors%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/app/Activity.html">Activity</a><span class="token punctuation">, </span></span><span class="parameter ">oAuthRequestIdentifier<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">organizationId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">organizationSlug<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">loginRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">signupRedirectUrl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">customScopes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">providerParams<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="311792495%2FProperties%2F-1093964584" anchor-label="context" id="311792495%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="context.html"><span><span>context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="311792495%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="context.html">context</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/app/Activity.html">Activity</a></div><div class="brief "><p class="paragraph">the calling Activity for launching the browser</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1195430804%2FProperties%2F-1093964584" anchor-label="customScopes" id="-1195430804%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="custom-scopes.html"><span>custom</span><wbr><span><span>Scopes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1195430804%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="custom-scopes.html">customScopes</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">Any additional scopes to be requested from the identity provider.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-274193198%2FProperties%2F-1093964584" anchor-label="loginRedirectUrl" id="-274193198%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="login-redirect-url.html"><span>login</span><wbr><span>Redirect</span><wbr><span><span>Url</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-274193198%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="login-redirect-url.html">loginRedirectUrl</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">The url an existing user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL, an error is returned.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1241780123%2FProperties%2F-1093964584" anchor-label="oAuthRequestIdentifier" id="1241780123%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="o-auth-request-identifier.html"><span>o</span><wbr><span>Auth</span><wbr><span>Request</span><wbr><span><span>Identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1241780123%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="o-auth-request-identifier.html">oAuthRequestIdentifier</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">is an ID for the return intent from the OAuth flow</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1988687918%2FProperties%2F-1093964584" anchor-label="organizationId" id="1988687918%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="organization-id.html"><span>organization</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1988687918%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="organization-id.html">organizationId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">The id of the organization the member belongs to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="598335902%2FProperties%2F-1093964584" anchor-label="organizationSlug" id="598335902%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="organization-slug.html"><span>organization</span><wbr><span><span>Slug</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="598335902%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="organization-slug.html">organizationSlug</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">The slug of the organization the member belongs to</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1626499877%2FProperties%2F-1093964584" anchor-label="providerParams" id="1626499877%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="provider-params.html"><span>provider</span><wbr><span><span>Params</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1626499877%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="provider-params.html">providerParams</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">An optional mapping of provider specific values to pass through to the OAuth provider</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1667330467%2FProperties%2F-1093964584" anchor-label="signupRedirectUrl" id="1667330467%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="signup-redirect-url.html"><span>signup</span><wbr><span>Redirect</span><wbr><span><span>Url</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1667330467%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="signup-redirect-url.html">signupRedirectUrl</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div><div class="brief "><p class="paragraph">The url a new user is redirected to after authenticating with the identity provider. This should be a url that redirects back to your app. If this value is not passed, the default sign-up redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an error is returned.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

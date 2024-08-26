@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.stytch.sdk.consumer.passwords</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":source:sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="Stytch Android::com.stytch.sdk.consumer.passwords////PointingToDeclaration//-1093964584">
+  <div class="breadcrumbs"><a href="../index.html">Stytch Android</a><span class="delimiter">/</span><span class="current">com.stytch.sdk.consumer.passwords</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><p class="paragraph">The Passwords.kt interface provides methods for authenticating, creating, resetting, and performing strength checks of passwords.</p><p class="paragraph">Stytch supports creating, storing, and authenticating passwords, as well as support for account recovery (password reset) and account deduplication with passwordless login methods.</p><p class="paragraph">Our implementation of passwords has built-in breach detection powered by <a href="https://haveibeenpwned.com">HaveIBeenPwned</a> on both sign-up and login, to prevent the use of compromised credentials and uses configurable strength requirements (either Dropbox’s <a href="https://github.com/dropbox/zxcvbn">zxcvbn</a> or adjustable LUDS) to guide members towards creating passwords that are easy for humans to remember but difficult for computers to crack.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.create()</code> method to create a new user with an email address and password. Only use this for creating new users. Existing passwordless users who wish to create a password need to go through the reset password flow.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.authenticate()</code> method to authenticate a user with their email address and password. This method will return an error if the user’s credentials appeared in the HaveIBeenPwned dataset or if a duplicate user is found (eg: Email Magic Links, OAuth).</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.resetByEmailStart()</code> method to initiate a password reset for the email address provided. This will trigger an email to be sent to the address, containing a magic link that will allow them to set a new password and authenticate.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.resetBySession()</code> method to reset the user’s password using their existing session. The endpoint will error if the session does not have a password, email magic link, or email OTP authentication factor that has been issued within the last 5 minutes.</p><p class="paragraph">If you have connected your deeplink handler with <code class="lang-kotlin">StytchClient</code>, the resulting magic link should be detected by your application and automatically parsed (via the <code class="lang-kotlin">StytchClient.handle()</code> method). See the instructions in the /README.md for information on handling deeplink intents. You should get a <code class="lang-kotlin">DeeplinkHandledStatus.ManualHandlingRequired</code> result, which includes the necessary token for resetting the user's password. If you are not using our deeplink handler, you must parse out the token from the deeplink yourself.</p><p class="paragraph">Once you have a password reset token, and have collected the user's new desired password, you can call the <code class="lang-kotlin">StytchClient.passwords.resetByEmail()</code> method to finish resetting their password.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.resetByExistingPassword()</code> method to reset a user's password using their existing email address and password combination.</p><p class="paragraph">Call the <code class="lang-kotlin">StytchClient.passwords.strengthCheck()</code> method to check whether or not the user’s provided password is valid, and to provide feedback to the user on how to increase the strength of their password.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1074329172%2FClasslikes%2F-1093964584" anchor-label="Passwords" id="1074329172%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-passwords/index.html"><span><span>Passwords</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1074329172%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-passwords/index.html">Passwords</a></div><div class="brief "><p class="paragraph">The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of passwords.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

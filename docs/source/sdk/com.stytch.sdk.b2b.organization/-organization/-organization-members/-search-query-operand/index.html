@@ -1,0 +1,270 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SearchQueryOperand</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../../../../styles/multimodule.css" rel="Stylesheet"></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../../index.html">
+                            Stytch Android SDK
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":source:sdk:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="Stytch Android::com.stytch.sdk.b2b.organization/Organization.OrganizationMembers.SearchQueryOperand///PointingToDeclaration//-1093964584">
+  <div class="breadcrumbs"><a href="../../../../index.html">Stytch Android</a><span class="delimiter">/</span><a href="../../../index.html">com.stytch.sdk.b2b.organization</a><span class="delimiter">/</span><a href="../../index.html">Organization</a><span class="delimiter">/</span><a href="../index.html">OrganizationMembers</a><span class="delimiter">/</span><span class="current">SearchQueryOperand</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Search</span><wbr><span>Query</span><wbr><span><span>Operand</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">SearchQueryOperand</a></div><p class="paragraph">A data class representing a Search Query Operand, which contains all of the filters and values to apply to your search query.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-ids/index.html">MemberIds</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-emails/index.html">MemberEmails</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-email-fuzzy/index.html">MemberEmailFuzzy</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-is-breaking-glass/index.html">MemberIsBreakingGlass</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-statuses/index.html">Statuses</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-m-f-a-phone-numbers/index.html">MemberMFAPhoneNumbers</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-m-f-a-phone-number-fuzzy/index.html">MemberMFAPhoneNumberFuzzy</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-password-exists/index.html">MemberPasswordExists</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-member-roles/index.html">MemberRoles</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-custom/index.html">Custom</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1552790798%2FClasslikes%2F-1093964584" anchor-label="Custom" id="-1552790798%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-custom/index.html"><span><span>Custom</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1552790798%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-custom/index.html">Custom</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on custom filters</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="18412987%2FClasslikes%2F-1093964584" anchor-label="MemberEmailFuzzy" id="18412987%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-email-fuzzy/index.html"><span>Member</span><wbr><span>Email</span><wbr><span><span>Fuzzy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="18412987%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-email-fuzzy/index.html">MemberEmailFuzzy</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_email_fuzzy</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1512333650%2FClasslikes%2F-1093964584" anchor-label="MemberEmails" id="1512333650%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-emails/index.html"><span>Member</span><wbr><span><span>Emails</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1512333650%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-emails/index.html">MemberEmails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_emails</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1983820257%2FClasslikes%2F-1093964584" anchor-label="MemberIds" id="1983820257%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-ids/index.html"><span>Member</span><wbr><span><span>Ids</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1983820257%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-ids/index.html">MemberIds</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_ids</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1789723338%2FClasslikes%2F-1093964584" anchor-label="MemberIsBreakingGlass" id="1789723338%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-is-breaking-glass/index.html"><span>Member</span><wbr><span>Is</span><wbr><span>Breaking</span><wbr><span><span>Glass</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1789723338%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-is-breaking-glass/index.html">MemberIsBreakingGlass</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_is_breakglass</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1604343298%2FClasslikes%2F-1093964584" anchor-label="MemberMFAPhoneNumberFuzzy" id="-1604343298%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-m-f-a-phone-number-fuzzy/index.html"><span>Member</span><wbr><span>MFAPhone</span><wbr><span>Number</span><wbr><span><span>Fuzzy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1604343298%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-m-f-a-phone-number-fuzzy/index.html">MemberMFAPhoneNumberFuzzy</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_mfa_phone_number_fuzzy</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1444785941%2FClasslikes%2F-1093964584" anchor-label="MemberMFAPhoneNumbers" id="1444785941%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-m-f-a-phone-numbers/index.html"><span>Member</span><wbr><span>MFAPhone</span><wbr><span><span>Numbers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1444785941%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-m-f-a-phone-numbers/index.html">MemberMFAPhoneNumbers</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_mfa_phone_numbers</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="563955410%2FClasslikes%2F-1093964584" anchor-label="MemberPasswordExists" id="563955410%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-password-exists/index.html"><span>Member</span><wbr><span>Password</span><wbr><span><span>Exists</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="563955410%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-password-exists/index.html">MemberPasswordExists</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_password_exists</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1526472572%2FClasslikes%2F-1093964584" anchor-label="MemberRoles" id="1526472572%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-member-roles/index.html"><span>Member</span><wbr><span><span>Roles</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1526472572%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-member-roles/index.html">MemberRoles</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on member_roles</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1284965539%2FClasslikes%2F-1093964584" anchor-label="Statuses" id="1284965539%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-statuses/index.html"><span><span>Statuses</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1284965539%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-statuses/index.html">Statuses</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Organization.OrganizationMembers.SearchQueryOperand</a></div><div class="brief "><p class="paragraph">An operand for searching based on statuses</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1871165045%2FProperties%2F-1093964584" anchor-label="filterName" id="-1871165045%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="filter-name.html"><span>filter</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1871165045%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="filter-name.html">filterName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">the field on which to filter</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1806623891%2FProperties%2F-1093964584" anchor-label="filterValue" id="1806623891%2FProperties%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="filter-value.html"><span>filter</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1806623891%2FProperties%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="filter-value.html">filterValue</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></div><div class="brief "><p class="paragraph">the value of the field to filter by</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

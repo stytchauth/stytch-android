@@ -4,7 +4,6 @@ $dokka.linkExtension:html
 module:Stytch Android
 com.stytch.sdk.b2b
 com.stytch.sdk.b2b.discovery
-com.stytch.sdk.b2b.events
 com.stytch.sdk.b2b.magicLinks
 com.stytch.sdk.b2b.member
 com.stytch.sdk.b2b.oauth
@@ -24,7 +23,6 @@ com.stytch.sdk.common.sso
 com.stytch.sdk.consumer
 com.stytch.sdk.consumer.biometrics
 com.stytch.sdk.consumer.crypto
-com.stytch.sdk.consumer.events
 com.stytch.sdk.consumer.magicLinks
 com.stytch.sdk.consumer.oauth
 com.stytch.sdk.consumer.otp
@@ -33,6 +31,5 @@ com.stytch.sdk.consumer.passwords
 com.stytch.sdk.consumer.sessions
 com.stytch.sdk.consumer.totp
 com.stytch.sdk.consumer.userManagement
-module:Stytch Android UI
 com.stytch.sdk.ui
 com.stytch.sdk.ui.data
