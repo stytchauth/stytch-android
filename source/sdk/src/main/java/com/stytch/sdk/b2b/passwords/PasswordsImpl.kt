@@ -26,19 +26,20 @@ internal class PasswordsImpl internal constructor(
     private val api: StytchB2BApi.Passwords,
     private val pkcePairManager: PKCEPairManager,
 ) : Passwords {
-    override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse {
-        return withContext(dispatchers.io) {
-            api.authenticate(
-                organizationId = parameters.organizationId,
-                emailAddress = parameters.emailAddress,
-                password = parameters.password,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse =
+        withContext(dispatchers.io) {
+            api
+                .authenticate(
+                    organizationId = parameters.organizationId,
+                    emailAddress = parameters.emailAddress,
+                    password = parameters.password,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    locale = parameters.locale,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun authenticate(
         parameters: Passwords.AuthParameters,
@@ -95,15 +96,17 @@ internal class PasswordsImpl internal constructor(
                 return@withContext
             }
             result =
-                api.resetByEmail(
-                    passwordResetToken = parameters.token,
-                    password = parameters.password,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    codeVerifier = codeVerifier,
-                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .resetByEmail(
+                        passwordResetToken = parameters.token,
+                        password = parameters.password,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                        codeVerifier = codeVerifier,
+                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                        locale = parameters.locale,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             pkcePairManager.clearPKCECodePair()
         }
         return result
@@ -121,19 +124,20 @@ internal class PasswordsImpl internal constructor(
 
     override suspend fun resetByExisting(
         parameters: Passwords.ResetByExistingPasswordParameters,
-    ): PasswordResetByExistingPasswordResponse {
-        return withContext(dispatchers.io) {
-            api.resetByExisting(
-                organizationId = parameters.organizationId,
-                emailAddress = parameters.emailAddress,
-                existingPassword = parameters.existingPassword,
-                newPassword = parameters.newPassword,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    ): PasswordResetByExistingPasswordResponse =
+        withContext(dispatchers.io) {
+            api
+                .resetByExisting(
+                    organizationId = parameters.organizationId,
+                    emailAddress = parameters.emailAddress,
+                    existingPassword = parameters.existingPassword,
+                    newPassword = parameters.newPassword,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    locale = parameters.locale,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun resetByExisting(
         parameters: Passwords.ResetByExistingPasswordParameters,
@@ -145,14 +149,13 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): SessionResetResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): SessionResetResponse =
+        withContext(dispatchers.io) {
             api.resetBySession(
                 organizationId = parameters.organizationId,
                 password = parameters.password,
             )
         }
-    }
 
     override fun resetBySession(
         parameters: Passwords.ResetBySessionParameters,
@@ -164,14 +167,13 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override suspend fun strengthCheck(parameters: Passwords.StrengthCheckParameters): PasswordStrengthCheckResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun strengthCheck(parameters: Passwords.StrengthCheckParameters): PasswordStrengthCheckResponse =
+        withContext(dispatchers.io) {
             api.strengthCheck(
                 email = parameters.email,
                 password = parameters.password,
             )
         }
-    }
 
     override fun strengthCheck(
         parameters: Passwords.StrengthCheckParameters,

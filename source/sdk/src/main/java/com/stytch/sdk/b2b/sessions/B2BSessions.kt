@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import com.stytch.sdk.common.network.models.Locale
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -111,7 +112,7 @@ public interface B2BSessions {
     public data class ExchangeParameters(
         val organizationId: String,
         val sessionDurationMinutes: UInt,
-        val locale: String? = null,
+        val locale: Locale? = null,
     )
 
     /**

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
@@ -74,6 +75,9 @@ public interface OTP {
          * @property expirationMinutes indicates how long the OTP should last before it expires
          * @property enableAutofill indicates whether the SMS message should include autofill metadata
          * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
         @Parcelize
         public data class Parameters(
@@ -81,6 +85,7 @@ public interface OTP {
             val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
             val enableAutofill: Boolean = false,
             val autofillSessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
         ) : Parcelable
 
         /**

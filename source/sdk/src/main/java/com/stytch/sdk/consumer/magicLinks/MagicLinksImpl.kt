@@ -85,6 +85,7 @@ internal class MagicLinksImpl internal constructor(
                         codeChallenge = challengeCode,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 
@@ -121,6 +122,7 @@ internal class MagicLinksImpl internal constructor(
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 } else {
                     api.sendPrimary(
@@ -132,6 +134,7 @@ internal class MagicLinksImpl internal constructor(
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 }
             }

@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
@@ -36,7 +37,7 @@ public interface OTP {
             val organizationId: String,
             val memberId: String,
             val mfaPhoneNumber: String? = null,
-            val locale: String? = null,
+            val locale: Locale? = null,
             val enableAutofill: Boolean = false,
             val autofillSessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
         )

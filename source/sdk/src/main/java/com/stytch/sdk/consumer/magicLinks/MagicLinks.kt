@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.magicLinks
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import kotlinx.parcelize.Parcelize
 
@@ -62,6 +63,9 @@ public interface MagicLinks {
          * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
          * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
         @Parcelize
         public data class Parameters(
@@ -72,6 +76,7 @@ public interface MagicLinks {
             val signupExpirationMinutes: UInt? = null,
             val loginTemplateId: String? = null,
             val signupTemplateId: String? = null,
+            val locale: Locale? = null,
         ) : Parcelable
 
         /**
