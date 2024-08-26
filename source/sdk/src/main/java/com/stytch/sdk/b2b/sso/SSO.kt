@@ -13,6 +13,7 @@ import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * Single-Sign On (SSO) refers to the ability for a user to use a single identity to authenticate and gain access to
@@ -56,10 +57,14 @@ public interface SSO {
      * Data class used for wrapping parameters used in SSO Authenticate calls
      * @property ssoToken the SSO token to authenticate
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property locale Used to determine which language to use when sending the user this delivery method.
+     * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+     * if no value is provided, the copy defaults to English.
      */
     public data class AuthenticateParams(
         val ssoToken: String,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+        val locale: Locale? = null,
     )
 
     /**

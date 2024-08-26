@@ -18,6 +18,7 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.CommonRequests
+import com.stytch.sdk.common.network.models.Locale
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -97,7 +98,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.loginOrSignupByEmail(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "")
+            StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "", null)
             coVerify { StytchB2BApi.apiService.loginOrSignupByEmail(any()) }
         }
 
@@ -124,7 +125,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Discovery.send("", "", "", "")
+            StytchB2BApi.MagicLinks.Discovery.send("", "", "", "", Locale.EN)
             coVerify { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) }
         }
 
@@ -731,7 +732,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.oauthAuthenticate(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.OAuth.authenticate("", "", 30, "", "")
+            StytchB2BApi.OAuth.authenticate("", Locale.EN, 30, "", "")
             coVerify { StytchB2BApi.apiService.oauthAuthenticate(any()) }
         }
 
@@ -775,9 +776,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                return StytchDataResponse(true)
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = StytchDataResponse(true)
             val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
             assert(result is StytchResult.Success)
         }
@@ -787,13 +786,12 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
+            fun mockApiCall(): StytchDataResponse<Boolean> =
                 throw HttpException(
                     mockk(relaxed = true) {
                         every { errorBody() } returns null
                     },
                 )
-            }
             val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
@@ -803,9 +801,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                throw StytchAPIError(errorType = "", message = "")
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
             val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }

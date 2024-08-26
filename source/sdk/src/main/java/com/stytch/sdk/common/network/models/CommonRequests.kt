@@ -3,6 +3,7 @@ package com.stytch.sdk.common.network.models
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.utils.IEnumValue
 
 internal object CommonRequests {
     object Sessions {
@@ -67,4 +68,14 @@ internal object CommonRequests {
             val errorDescription: String? = null,
         )
     }
+}
+
+@Keep
+@JsonClass(generateAdapter = false)
+public enum class Locale(
+    override val jsonName: String,
+) : IEnumValue {
+    EN("en"),
+    ES("es"),
+    PT_BR("pt-br"),
 }

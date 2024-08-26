@@ -4,6 +4,7 @@ import android.app.Activity
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
 
 /**
  * The OAuth interface provides methods for authenticating a user, via the supported OAuth providers, provided you have
@@ -144,7 +145,7 @@ public interface OAuth {
      */
     public data class AuthenticateParameters(
         val oauthToken: String,
-        val locale: String? = null,
+        val locale: Locale? = null,
         val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
     )
 

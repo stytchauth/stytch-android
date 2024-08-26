@@ -3,9 +3,10 @@ package com.stytch.sdk.consumer.network
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.LIVE_SDK_URL
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.WEB_URL
+import com.stytch.sdk.common.TEST_SDK_URL
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
@@ -20,6 +21,7 @@ import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.NoResponseData
@@ -81,9 +83,15 @@ internal object StytchApi {
         dfpProtectedAuthEnabled: Boolean,
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
+        val sdkUrl =
+            if (isTestToken) {
+                TEST_SDK_URL
+            } else {
+                LIVE_SDK_URL
+            }
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                WEB_URL,
+                sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchClient.sessionStorage.revoke() },
@@ -103,8 +111,14 @@ internal object StytchApi {
         }
 
     private val regularStytchApiService: StytchApiService by lazy {
+        val sdkUrl =
+            if (isTestToken) {
+                TEST_SDK_URL
+            } else {
+                LIVE_SDK_URL
+            }
         ApiService.createApiService(
-            WEB_URL,
+            sdkUrl,
             authHeaderInterceptor,
             null,
             { StytchClient.sessionStorage.revoke() },
@@ -133,9 +147,9 @@ internal object StytchApi {
                 email: String,
                 loginMagicLinkUrl: String?,
                 codeChallenge: String,
-                codeChallengeMethod: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeConsumerApiCall {
                     apiService.loginOrCreateUserByEmail(
@@ -143,9 +157,9 @@ internal object StytchApi {
                             email = email,
                             loginMagicLinkUrl = loginMagicLinkUrl,
                             codeChallenge = codeChallenge,
-                            codeChallengeMethod = codeChallengeMethod,
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
+                            locale = locale,
                         ),
                     )
                 }
@@ -158,9 +172,9 @@ internal object StytchApi {
                 safeConsumerApiCall {
                     apiService.authenticate(
                         ConsumerRequests.MagicLinks.AuthenticateRequest(
-                            token,
-                            codeVerifier,
-                            sessionDurationMinutes.toInt(),
+                            token = token,
+                            codeVerifier = codeVerifier,
+                            sessionDurationMinutes = sessionDurationMinutes.toInt(),
                         ),
                     )
                 }
@@ -175,6 +189,7 @@ internal object StytchApi {
                 loginTemplateId: String?,
                 signupTemplateId: String?,
                 codeChallenge: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeConsumerApiCall {
                     apiService.sendEmailMagicLinkPrimary(
@@ -187,6 +202,7 @@ internal object StytchApi {
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
                             codeChallenge = codeChallenge,
+                            locale = locale,
                         ),
                     )
                 }
@@ -201,6 +217,7 @@ internal object StytchApi {
                 loginTemplateId: String?,
                 signupTemplateId: String?,
                 codeChallenge: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeConsumerApiCall {
                     apiService.sendEmailMagicLinkSecondary(
@@ -213,6 +230,7 @@ internal object StytchApi {
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
                             codeChallenge = codeChallenge,
+                            locale = locale,
                         ),
                     )
                 }
@@ -223,12 +241,16 @@ internal object StytchApi {
         suspend fun loginOrCreateByOTPWithSMS(
             phoneNumber: String,
             expirationMinutes: UInt,
+            enableAutofill: Boolean = false,
+            locale: Locale? = null,
         ): StytchResult<LoginOrCreateOTPData> =
             safeConsumerApiCall {
                 apiService.loginOrCreateUserByOTPWithSMS(
                     ConsumerRequests.OTP.SMS(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes.toInt(),
+                        enableAutofill = enableAutofill,
+                        locale = locale,
                     ),
                 )
             }
@@ -237,12 +259,14 @@ internal object StytchApi {
         suspend fun sendOTPWithSMSPrimary(
             phoneNumber: String,
             expirationMinutes: UInt?,
+            locale: Locale? = null,
         ): StytchResult<OTPSendResponseData> =
             safeConsumerApiCall {
                 apiService.sendOTPWithSMSPrimary(
                     ConsumerRequests.OTP.SMS(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes?.toInt(),
+                        locale = locale,
                     ),
                 )
             }
@@ -251,12 +275,14 @@ internal object StytchApi {
         suspend fun sendOTPWithSMSSecondary(
             phoneNumber: String,
             expirationMinutes: UInt?,
+            locale: Locale? = null,
         ): StytchResult<OTPSendResponseData> =
             safeConsumerApiCall {
                 apiService.sendOTPWithSMSSecondary(
                     ConsumerRequests.OTP.SMS(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes?.toInt(),
+                        locale = locale,
                     ),
                 )
             }
@@ -406,7 +432,6 @@ internal object StytchApi {
         suspend fun resetByEmailStart(
             email: String,
             codeChallenge: String,
-            codeChallengeMethod: String,
             loginRedirectUrl: String?,
             loginExpirationMinutes: Int?,
             resetPasswordRedirectUrl: String?,
@@ -418,7 +443,6 @@ internal object StytchApi {
                     ConsumerRequests.Passwords.ResetByEmailStartRequest(
                         email,
                         codeChallenge,
-                        codeChallengeMethod,
                         loginRedirectUrl,
                         loginExpirationMinutes,
                         resetPasswordRedirectUrl,
