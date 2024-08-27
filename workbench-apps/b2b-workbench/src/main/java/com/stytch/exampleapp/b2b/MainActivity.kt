@@ -23,6 +23,7 @@ class MainActivity : FragmentActivity() {
     private val totpViewModel: TOTPViewModel by viewModels()
     private val recoveryCodesViewModel: RecoveryCodesViewModel by viewModels()
     private val oAuthViewModel: OAuthViewModel by viewModels()
+    private val scimViewModel: SCIMViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class MainActivity : FragmentActivity() {
                     totpViewModel,
                     recoveryCodesViewModel,
                     oAuthViewModel,
+                    scimViewModel,
                 )
             }
         }

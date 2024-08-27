@@ -1022,21 +1022,27 @@ public data class SCIMGroupImplicitRoleAssignment(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SCIMConnection(
+    @Json(name = "organization_id")
     override val organizationId: String,
+    @Json(name = "connection_id")
     override val connectionId: String,
     override val status: String,
+    @Json(name = "display_name")
     override val displayName: String,
+    @Json(name = "identity_provider")
     override val identityProvider: String,
+    @Json(name = "base_url")
     override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
     override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "bearer_token_last_four")
-    val bearerTokenLastFour: String,
+    val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: Long,
+    val bearerTokenExpiresAt: String?,
     @Json(name = "next_bearer_token_last_four")
-    val nextBearerTokenLastFour: String,
+    val nextBearerTokenLastFour: String?,
     @Json(name = "next_bearer_token_expires_at")
-    val nextBearerTokenExpiresAt: Long,
+    val nextBearerTokenExpiresAt: String?,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1044,17 +1050,23 @@ public data class SCIMConnection(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SCIMConnectionWithBearerToken(
+    @Json(name = "organization_id")
     override val organizationId: String,
+    @Json(name = "connection_id")
     override val connectionId: String,
     override val status: String,
+    @Json(name = "display_name")
     override val displayName: String,
+    @Json(name = "identity_provider")
     override val identityProvider: String,
+    @Json(name = "base_url")
     override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
     override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "bearer_token")
     val bearerToken: String,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: Long,
+    val bearerTokenExpiresAt: String,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1062,21 +1074,27 @@ public data class SCIMConnectionWithBearerToken(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SCIMConnectionWithNextBearerToken(
+    @Json(name = "organization_id")
     override val organizationId: String,
+    @Json(name = "connection_id")
     override val connectionId: String,
     override val status: String,
+    @Json(name = "display_name")
     override val displayName: String,
+    @Json(name = "identity_provider")
     override val identityProvider: String,
+    @Json(name = "base_url")
     override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
     override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "next_bearer_token")
-    val nextBearerToken: String,
+    val nextBearerToken: String?,
     @Json(name = "next_bearer_token_expires_at")
-    val nextBearerTokenExpiresAt: Long,
+    val nextBearerTokenExpiresAt: String?,
     @Json(name = "bearer_token_last_four")
-    val bearerTokenLastFour: String,
+    val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: Long,
+    val bearerTokenExpiresAt: String?,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1099,7 +1117,9 @@ public data class SCIMGroup(
 @Parcelize
 public data class B2BSCIMCreateConnectionResponseData(
     val connection: SCIMConnectionWithBearerToken,
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
 ) : Parcelable,
     IBasicData
@@ -1109,7 +1129,9 @@ public data class B2BSCIMCreateConnectionResponseData(
 @Parcelize
 public data class B2BSCIMUpdateConnectionResponseData(
     val connection: SCIMConnection,
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
 ) : Parcelable,
     IBasicData
@@ -1118,7 +1140,9 @@ public data class B2BSCIMUpdateConnectionResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMDeleteConnectionResponseData(
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
     @Json(name = "connection_id")
     val connectionId: String,
@@ -1129,9 +1153,11 @@ public data class B2BSCIMDeleteConnectionResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMGetConnectionResponseData(
-    val connection: SCIMConnection,
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
+    val connection: SCIMConnection,
 ) : IBasicData,
     Parcelable
 
@@ -1139,20 +1165,19 @@ public data class B2BSCIMGetConnectionResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMGetConnectionGroupsResponseData(
-    override val statusCode: Int,
-    override val requestId: String,
     @Json(name = "scim_groups")
     val scimGroups: List<SCIMGroup>,
     @Json(name = "next_cursor")
     val nextCursor: String? = null,
-) : IBasicData,
-    Parcelable
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMRotateStartResponseData(
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
     val connection: SCIMConnectionWithNextBearerToken,
 ) : IBasicData,
@@ -1162,7 +1187,9 @@ public data class B2BSCIMRotateStartResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMRotateCompleteResponseData(
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
     val connection: SCIMConnection,
 ) : IBasicData,
@@ -1172,7 +1199,9 @@ public data class B2BSCIMRotateCompleteResponseData(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class B2BSCIMRotateCancelResponseData(
+    @Json(name = "status_code")
     override val statusCode: Int,
+    @Json(name = "request_id")
     override val requestId: String,
     val connection: SCIMConnection,
 ) : IBasicData,
