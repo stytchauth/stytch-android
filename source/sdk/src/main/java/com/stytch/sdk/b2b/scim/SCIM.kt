@@ -20,8 +20,8 @@ public interface SCIM {
      * @property identityProvider The identity provider of this connection.
      */
     public data class CreateConnectionParameters(
-        val displayName: String?,
-        val identityProvider: String?,
+        val displayName: String? = null,
+        val identityProvider: String? = null,
     )
 
     /**
@@ -35,9 +35,9 @@ public interface SCIM {
      */
     public data class UpdateConnectionParameters(
         val connectionId: String,
-        val displayName: String?,
-        val identityProvider: String?,
-        val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+        val displayName: String? = null,
+        val identityProvider: String? = null,
+        val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>? = null,
     )
 
     /**
@@ -46,8 +46,8 @@ public interface SCIM {
      * @property cursor The cursor to use to indicate where to start group results.
      */
     public data class GetConnectionGroupsParameters(
-        val limit: Int?,
-        val cursor: String?,
+        val limit: Int? = null,
+        val cursor: String? = null,
     )
 
     /**

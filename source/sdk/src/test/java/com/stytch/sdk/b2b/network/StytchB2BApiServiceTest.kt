@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
+import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
@@ -1331,6 +1332,167 @@ internal class StytchB2BApiServiceTest {
         }
     }
     //endregion SearchManager
+
+    //region SCIM
+    @Test
+    fun `check scimCreateConnection request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMCreateConnection(
+                    displayName = "my-display-name",
+                    identityProvider = "my-identity-provider",
+                )
+            requestIgnoringResponseException {
+                apiService.scimCreateConnection(params)
+            }.verifyPost(
+                expectedPath = "/b2b/scim",
+                expectedBody =
+                    mapOf(
+                        "display_name" to params.displayName,
+                        "identity_provider" to params.identityProvider,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check scimUpdateConnection request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMUpdateConnection(
+                    connectionId = "my-connection-id",
+                    displayName = "my-display-name",
+                    identityProvider = "my-identity-provider",
+                    scimGroupImplicitRoleAssignments =
+                        listOf(
+                            SCIMGroupImplicitRoleAssignment(
+                                roleId = "my-role-id",
+                                groupId = "my-group-id",
+                            ),
+                        ),
+                )
+            requestIgnoringResponseException {
+                apiService.scimUpdateConnection(params.connectionId, params)
+            }.verifyPut(
+                expectedPath = "/b2b/scim/${params.connectionId}",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to params.connectionId,
+                        "display_name" to params.displayName,
+                        "identity_provider" to params.identityProvider,
+                        "scim_group_implicit_role_assignments" to
+                            listOf(
+                                mapOf(
+                                    "role_id" to params.scimGroupImplicitRoleAssignments!![0].roleId,
+                                    "group_id" to params.scimGroupImplicitRoleAssignments[0].groupId,
+                                ),
+                            ),
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check scimDeleteConnection request`() {
+        runBlocking {
+            val connectionId = "my-connection-id"
+            requestIgnoringResponseException {
+                apiService.scimDeleteConnection(connectionId)
+            }.verifyDelete(
+                expectedPath = "/b2b/scim/$connectionId",
+            )
+        }
+    }
+
+    @Test
+    fun `check scimGetConnection request`() {
+        runBlocking {
+            requestIgnoringResponseException {
+                apiService.scimGetConnection()
+            }.verifyGet(
+                expectedPath = "/b2b/scim",
+            )
+        }
+    }
+
+    @Test
+    fun `check scimGetConnectionGroups request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMGetConnectionGroups(
+                    limit = 100,
+                    cursor = "my-cursor",
+                )
+            requestIgnoringResponseException {
+                apiService.scimGetConnectionGroups(params)
+            }.verifyPost(
+                expectedPath = "/b2b/scim/groups",
+                expectedBody =
+                    mapOf(
+                        "limit" to params.limit,
+                        "cursor" to params.cursor,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check scimRotateStart request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                    connectionId = "my-connection-id",
+                )
+            requestIgnoringResponseException {
+                apiService.scimRotateStart(params)
+            }.verifyPost(
+                expectedPath = "/b2b/scim/rotate/start",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to params.connectionId,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check scimRotateComplete request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                    connectionId = "my-connection-id",
+                )
+            requestIgnoringResponseException {
+                apiService.scimRotateComplete(params)
+            }.verifyPost(
+                expectedPath = "/b2b/scim/rotate/complete",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to params.connectionId,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check scimRotateCancel request`() {
+        runBlocking {
+            val params =
+                B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                    connectionId = "my-connection-id",
+                )
+            requestIgnoringResponseException {
+                apiService.scimRotateCancel(params)
+            }.verifyPost(
+                expectedPath = "/b2b/scim/rotate/cancel",
+                expectedBody =
+                    mapOf(
+                        "connection_id" to params.connectionId,
+                    ),
+            )
+        }
+    }
+    //endregion SCIM
 
     private suspend fun requestIgnoringResponseException(block: suspend () -> Unit): RecordedRequest {
         try {

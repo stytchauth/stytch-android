@@ -763,6 +763,78 @@ internal class StytchB2BApiTest {
             coVerify { StytchB2BApi.apiService.searchOrganizationMembers(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi SCIM createConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimCreateConnection(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.createConnection("", "")
+            coVerify { StytchB2BApi.apiService.scimCreateConnection(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM updateConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimUpdateConnection(any(), any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.updateConnection("connection-id", "", "", emptyList())
+            coVerify { StytchB2BApi.apiService.scimUpdateConnection(eq("connection-id"), any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM deleteConection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimDeleteConnection(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.deleteConection("connection-id")
+            coVerify { StytchB2BApi.apiService.scimDeleteConnection(eq("connection-id")) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM getConnection calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimGetConnection() } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.getConnection()
+            coVerify { StytchB2BApi.apiService.scimGetConnection() }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM getConnectionGroups calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimGetConnectionGroups(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.getConnectionGroups("", 1000)
+            coVerify { StytchB2BApi.apiService.scimGetConnectionGroups(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateStart calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateStart(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateStart("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateStart(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateCancel calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateCancel(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateCancel("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateCancel(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateComplete calls appropriate apiService method`() =
+        runTest {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateComplete(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateComplete("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateComplete(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`() =
         runTest {
