@@ -10,7 +10,9 @@ internal object B2BResponses {
     object MagicLinks {
         @Keep
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: B2BEMLAuthenticateData) : StytchDataResponse<B2BEMLAuthenticateData>(data)
+        class AuthenticateResponse(
+            data: B2BEMLAuthenticateData,
+        ) : StytchDataResponse<B2BEMLAuthenticateData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -20,7 +22,9 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class InviteResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
+        class InviteResponse(
+            data: MemberResponseData,
+        ) : StytchDataResponse<MemberResponseData>(data)
     }
 
     object Sessions {
@@ -76,7 +80,9 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class GetMemberResponse(data: MemberResponseData) : StytchDataResponse<MemberResponseData>(data)
+        class GetMemberResponse(
+            data: MemberResponseData,
+        ) : StytchDataResponse<MemberResponseData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -117,11 +123,15 @@ internal object B2BResponses {
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class ResetByEmailStartResponse(data: BasicData) : StytchDataResponse<BasicData>(data)
+        class ResetByEmailStartResponse(
+            data: BasicData,
+        ) : StytchDataResponse<BasicData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
-        class ResetByEmailResponse(data: EmailResetResponseData) : StytchDataResponse<EmailResetResponseData>(data)
+        class ResetByEmailResponse(
+            data: EmailResetResponseData,
+        ) : StytchDataResponse<EmailResetResponseData>(data)
 
         @Keep
         @JsonClass(generateAdapter = true)
@@ -294,5 +304,55 @@ internal object B2BResponses {
         class SearchMemberResponse(
             data: B2BSearchMemberResponseData,
         ) : StytchDataResponse<B2BSearchMemberResponseData>(data)
+    }
+
+    object SCIM {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMCreateConnectionResponse(
+            data: B2BSCIMCreateConnectionResponseData,
+        ) : StytchDataResponse<B2BSCIMCreateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMUpdateConnectionResponse(
+            data: B2BSCIMUpdateConnectionResponseData,
+        ) : StytchDataResponse<B2BSCIMUpdateConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMDeleteConnectionResponse(
+            data: B2BSCIMDeleteConnectionResponseData,
+        ) : StytchDataResponse<B2BSCIMDeleteConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMGetConnectionResponse(
+            data: B2BSCIMGetConnectionResponseData,
+        ) : StytchDataResponse<B2BSCIMGetConnectionResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMGetConnectionGroupsResponse(
+            data: B2BSCIMGetConnectionGroupsResponseData,
+        ) : StytchDataResponse<B2BSCIMGetConnectionGroupsResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMRotateStartResponse(
+            data: B2BSCIMRotateStartResponseData,
+        ) : StytchDataResponse<B2BSCIMRotateStartResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMRotateCompleteResponse(
+            data: B2BSCIMRotateCompleteResponseData,
+        ) : StytchDataResponse<B2BSCIMRotateCompleteResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSCIMRotateCancelResponse(
+            data: B2BSCIMRotateCancelResponseData,
+        ) : StytchDataResponse<B2BSCIMRotateCancelResponseData>(data)
     }
 }

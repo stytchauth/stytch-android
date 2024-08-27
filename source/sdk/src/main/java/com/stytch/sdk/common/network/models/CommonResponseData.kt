@@ -8,14 +8,21 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Keep
+public interface IBasicData {
+    public val statusCode: Int
+    public val requestId: String
+}
+
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BasicData(
     @Json(name = "status_code")
-    val statusCode: Int,
+    override val statusCode: Int,
     @Json(name = "request_id")
-    val requestId: String,
-) : Parcelable
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
 
 @Keep
 @JsonClass(generateAdapter = true)

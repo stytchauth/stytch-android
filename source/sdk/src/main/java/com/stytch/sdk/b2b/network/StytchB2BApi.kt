@@ -1,6 +1,14 @@
 package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.b2b.SCIMCreateConnectionResponse
+import com.stytch.sdk.b2b.SCIMDeleteConnectionResponse
+import com.stytch.sdk.b2b.SCIMGetConnectionGroupsResponse
+import com.stytch.sdk.b2b.SCIMGetConnectionResponse
+import com.stytch.sdk.b2b.SCIMRotateCancelResponse
+import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
+import com.stytch.sdk.b2b.SCIMRotateStartResponse
+import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
@@ -42,6 +50,7 @@ import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
+import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
@@ -1036,6 +1045,92 @@ internal object StytchB2BApi {
                     B2BRequests.SearchManager.SearchMember(
                         emailAddress = emailAddress,
                         organizationId = organizationId,
+                    ),
+                )
+            }
+    }
+
+    internal object SCIM {
+        suspend fun createConnection(
+            displayName: String?,
+            identityProvider: String?,
+        ): SCIMCreateConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimCreateConnection(
+                    B2BRequests.SCIM.B2BSCIMCreateConnection(
+                        displayName = displayName,
+                        identityProvider = identityProvider,
+                    ),
+                )
+            }
+
+        suspend fun updateConnection(
+            connectionId: String,
+            displayName: String?,
+            identityProvider: String?,
+            scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+        ): SCIMUpdateConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimUpdateConnection(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SCIM.B2BSCIMUpdateConnection(
+                            connectionId = connectionId,
+                            displayName = displayName,
+                            identityProvider = identityProvider,
+                            scimGroupImplicitRoleAssignments = scimGroupImplicitRoleAssignments,
+                        ),
+                )
+            }
+
+        suspend fun deleteConection(connectionId: String): SCIMDeleteConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimDeleteConnection(
+                    connectionId = connectionId,
+                )
+            }
+
+        suspend fun getConnection(): SCIMGetConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimGetConnection()
+            }
+
+        suspend fun getConnectionGroups(
+            cursor: String?,
+            limit: Int?,
+        ): SCIMGetConnectionGroupsResponse =
+            safeB2BApiCall {
+                apiService.scimGetConnectionGroups(
+                    B2BRequests.SCIM.B2BSCIMGetConnectionGroups(
+                        cursor = cursor,
+                        limit = limit,
+                    ),
+                )
+            }
+
+        suspend fun rotateStart(connectionId: String): SCIMRotateStartResponse =
+            safeB2BApiCall {
+                apiService.scimRotateStart(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
+                    ),
+                )
+            }
+
+        suspend fun rotateComplete(connectionId: String): SCIMRotateCompleteResponse =
+            safeB2BApiCall {
+                apiService.scimRotateComplete(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
+                    ),
+                )
+            }
+
+        suspend fun rotateCancel(connectionId: String): SCIMRotateCancelResponse =
+            safeB2BApiCall {
+                apiService.scimRotateCancel(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
                     ),
                 )
             }
