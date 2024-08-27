@@ -85,12 +85,7 @@ public object StytchB2BClient {
     internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
-
-    /**
-     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
-     */
-    public var bootstrapData: BootstrapData = BootstrapData()
-        internal set
+    internal var bootstrapData: BootstrapData = BootstrapData()
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
