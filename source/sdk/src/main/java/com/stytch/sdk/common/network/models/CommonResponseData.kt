@@ -354,7 +354,7 @@ public interface CommonAuthenticationData {
 @Parcelize
 public data class BootstrapData(
     @Json(name = "disable_sdk_watermark")
-    val disableSDKWatermark: Boolean = false,
+    val disableSDKWatermark: Boolean = true,
     @Json(name = "cname_domain")
     val cnameDomain: String? = null,
     @Json(name = "email_domains")
