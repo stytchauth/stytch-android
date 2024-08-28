@@ -17,7 +17,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -38,21 +37,21 @@ import java.security.KeyStore
 internal class OTPConfirmationScreenViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
-    private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: OTPConfirmationScreenViewModel
+    private lateinit var mockStytchClient: StytchClient
 
     @Before
     fun before() {
-        mockkStatic(KeyStore::class, DateUtils::class)
+        mockkStatic(KeyStore::class, DateUtils::class, StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         every { DateUtils.formatElapsedTime(any()) } returns "Formatted DateTime String"
         MockKAnnotations.init(this, true, true, true)
-        every { mockStytchClient.events } returns
-            mockk(relaxed = true) {
-                every { logEvent(any(), any()) } just runs
+        mockStytchClient =
+            mockk {
+                every { events } returns
+                    mockk(relaxed = true) {
+                        every { logEvent(any(), any()) } just runs
+                    }
             }
         viewModel = OTPConfirmationScreenViewModel(savedStateHandle, mockStytchClient)
     }

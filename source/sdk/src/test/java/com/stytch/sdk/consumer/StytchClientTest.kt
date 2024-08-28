@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.common.DeeplinkHandledStatus
-import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
@@ -99,8 +98,6 @@ internal class StytchClientTest {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
-        StytchClient.oauth = mockOAuth
-        StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchClient.dfpProvider = mockk()
@@ -357,42 +354,6 @@ internal class StytchClientTest {
             val response = StytchClient.handle(mockUri, 30)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
-        }
-    }
-
-    @Test
-    fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
-        runBlocking {
-            val deviceInfo = DeviceInfo()
-            every { mContextMock.getDeviceInfo() } returns deviceInfo
-            StytchClient.configure(mContextMock, "")
-            val mockUri =
-                mockk<Uri> {
-                    every { getQueryParameter(any()) } returns "MAGIC_LINKS"
-                }
-            val mockAuthResponse = mockk<AuthResponse>()
-            coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
-            val response = StytchClient.handle(mockUri, 30)
-            coVerify { mockMagicLinks.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
-        }
-    }
-
-    @Test
-    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
-        runBlocking {
-            val deviceInfo = DeviceInfo()
-            every { mContextMock.getDeviceInfo() } returns deviceInfo
-            StytchClient.configure(mContextMock, "")
-            val mockUri =
-                mockk<Uri> {
-                    every { getQueryParameter(any()) } returns "OAUTH"
-                }
-            val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
-            coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
-            val response = StytchClient.handle(mockUri, 30)
-            coVerify { mockOAuth.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 

@@ -10,7 +10,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.StytchClient.publicToken
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
 import com.stytch.sdk.consumer.userManagement.UserManagement
@@ -272,7 +271,7 @@ internal class MainScreenViewModel(
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = emailAddress,
-                publicToken = publicToken,
+                publicToken = stytchClient.publicToken,
             )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {

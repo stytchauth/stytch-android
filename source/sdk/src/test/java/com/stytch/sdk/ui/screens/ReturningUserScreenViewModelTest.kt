@@ -16,7 +16,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -36,20 +35,20 @@ import java.security.KeyStore
 internal class ReturningUserScreenViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
     private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: ReturningUserScreenViewModel
 
     @Before
     fun before() {
-        mockkStatic(KeyStore::class)
+        mockkStatic(KeyStore::class, StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
-        every { mockStytchClient.events } returns
-            mockk(relaxed = true) {
-                every { logEvent(any(), any()) } just runs
+        mockStytchClient =
+            mockk {
+                every { events } returns
+                    mockk(relaxed = true) {
+                        every { logEvent(any(), any()) } just runs
+                    }
             }
         viewModel = ReturningUserScreenViewModel(savedStateHandle, mockStytchClient)
     }
