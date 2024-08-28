@@ -34,6 +34,7 @@ import com.stytch.exampleapp.b2b.OrganizationViewModel
 import com.stytch.exampleapp.b2b.PasswordsViewModel
 import com.stytch.exampleapp.b2b.R
 import com.stytch.exampleapp.b2b.RecoveryCodesViewModel
+import com.stytch.exampleapp.b2b.SCIMViewModel
 import com.stytch.exampleapp.b2b.SSOViewModel
 import com.stytch.exampleapp.b2b.TOTPViewModel
 
@@ -49,6 +50,7 @@ val items =
         Screen.TOTP,
         Screen.RecoveryCodes,
         Screen.OAuth,
+        Screen.SCIM,
     )
 
 @Composable
@@ -63,6 +65,7 @@ fun AppScreen(
     totpViewModel: TOTPViewModel,
     recoveryCodesViewModel: RecoveryCodesViewModel,
     oAuthViewModel: OAuthViewModel,
+    scimViewModel: SCIMViewModel,
 ) {
     val navController = rememberNavController()
     Scaffold(
@@ -112,6 +115,7 @@ fun AppScreen(
                 composable(Screen.TOTP.route) { TOTPScreen(viewModel = totpViewModel) }
                 composable(Screen.RecoveryCodes.route) { RecoveryCodesScreen(viewModel = recoveryCodesViewModel) }
                 composable(Screen.OAuth.route) { OAuthScreen(viewModel = oAuthViewModel) }
+                composable(Screen.SCIM.route) { ScimScreen(viewModel = scimViewModel) }
             }
         },
     )
@@ -158,4 +162,6 @@ sealed class Screen(
     object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes)
 
     object OAuth : Screen("oauth", R.string.oauth)
+
+    object SCIM : Screen("scim", R.string.scim_scim)
 }

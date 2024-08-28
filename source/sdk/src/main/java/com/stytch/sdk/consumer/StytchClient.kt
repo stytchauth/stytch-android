@@ -79,19 +79,10 @@ public object StytchClient {
     internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
-
-    /**
-     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
-     */
-    public var bootstrapData: BootstrapData = BootstrapData()
-        internal set
+    internal var bootstrapData: BootstrapData = BootstrapData()
+    internal lateinit var publicToken: String
 
     private lateinit var smsRetriever: StytchSMSRetriever
-
-    /**
-     * The public token that the StytchClient is configured to use
-     */
-    public lateinit var publicToken: String
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 

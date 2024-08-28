@@ -321,4 +321,45 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.SearchManager.SearchMember,
     ): B2BResponses.SearchManager.SearchMemberResponse
     //endregion SearchManager
+
+    //region SCIM
+    @POST("b2b/scim")
+    suspend fun scimCreateConnection(
+        @Body request: B2BRequests.SCIM.B2BSCIMCreateConnection,
+    ): B2BResponses.SCIM.B2BSCIMCreateConnectionResponse
+
+    @PUT("b2b/scim/{connectionId}")
+    suspend fun scimUpdateConnection(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SCIM.B2BSCIMUpdateConnection,
+    ): B2BResponses.SCIM.B2BSCIMUpdateConnectionResponse
+
+    @DELETE("b2b/scim/{connectionId}")
+    suspend fun scimDeleteConnection(
+        @Path(value = "connectionId") connectionId: String,
+    ): B2BResponses.SCIM.B2BSCIMDeleteConnectionResponse
+
+    @GET("b2b/scim")
+    suspend fun scimGetConnection(): B2BResponses.SCIM.B2BSCIMGetConnectionResponse
+
+    @POST("b2b/scim/groups")
+    suspend fun scimGetConnectionGroups(
+        @Body request: B2BRequests.SCIM.B2BSCIMGetConnectionGroups,
+    ): B2BResponses.SCIM.B2BSCIMGetConnectionGroupsResponse
+
+    @POST("b2b/scim/rotate/start")
+    suspend fun scimRotateStart(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateStartResponse
+
+    @POST("b2b/scim/rotate/complete")
+    suspend fun scimRotateComplete(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateCompleteResponse
+
+    @POST("b2b/scim/rotate/cancel")
+    suspend fun scimRotateCancel(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateCancelResponse
+    //endregion SCIM
 }

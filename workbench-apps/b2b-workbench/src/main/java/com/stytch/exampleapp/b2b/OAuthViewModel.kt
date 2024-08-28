@@ -29,8 +29,6 @@ class OAuthViewModel : ViewModel() {
                     organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
                     loginRedirectUrl = "app://b2bexampleapp.com/",
                     signupRedirectUrl = "app://b2bexampleapp.com/",
-                    providerParams = mapOf("param_1" to "value_1", "param_2" to "value_2"),
-                    customScopes = listOf("scope_1", "scope_2")
                 ),
             )
         }
@@ -48,12 +46,11 @@ class OAuthViewModel : ViewModel() {
         }
     }
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 }

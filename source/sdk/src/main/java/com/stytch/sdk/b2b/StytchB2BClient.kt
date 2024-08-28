@@ -23,6 +23,8 @@ import com.stytch.sdk.b2b.rbac.RBAC
 import com.stytch.sdk.b2b.rbac.RBACImpl
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodes
 import com.stytch.sdk.b2b.recoveryCodes.RecoveryCodesImpl
+import com.stytch.sdk.b2b.scim.SCIM
+import com.stytch.sdk.b2b.scim.SCIMImpl
 import com.stytch.sdk.b2b.searchManager.SearchManager
 import com.stytch.sdk.b2b.searchManager.SearchManagerImpl
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -83,12 +85,7 @@ public object StytchB2BClient {
     internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
-
-    /**
-     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
-     */
-    public var bootstrapData: BootstrapData = BootstrapData()
-        internal set
+    internal var bootstrapData: BootstrapData = BootstrapData()
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -432,6 +429,19 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     public var searchManager: SearchManager = SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
+        get() {
+            assertInitialized()
+            return field
+        }
+        internal set
+
+    /**
+     * Exposes an instance of the [SCIM] interface which provides methods for creating, getting, updating, deleting, and
+     * rotating SCIM connections
+     * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
+     * StytchB2BClient.configure()
+     */
+    public var scim: SCIM = SCIMImpl(externalScope, dispatchers, StytchB2BApi.SCIM)
         get() {
             assertInitialized()
             return field

@@ -8,14 +8,21 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Keep
+public interface IBasicData {
+    public val statusCode: Int
+    public val requestId: String
+}
+
+@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BasicData(
     @Json(name = "status_code")
-    val statusCode: Int,
+    override val statusCode: Int,
     @Json(name = "request_id")
-    val requestId: String,
-) : Parcelable
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -347,7 +354,7 @@ public interface CommonAuthenticationData {
 @Parcelize
 public data class BootstrapData(
     @Json(name = "disable_sdk_watermark")
-    val disableSDKWatermark: Boolean = false,
+    val disableSDKWatermark: Boolean = true,
     @Json(name = "cname_domain")
     val cnameDomain: String? = null,
     @Json(name = "email_domains")

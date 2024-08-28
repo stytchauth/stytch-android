@@ -1,6 +1,14 @@
 package com.stytch.sdk.b2b
 
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
+import com.stytch.sdk.b2b.network.models.B2BSCIMCreateConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMDeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMGetConnectionGroupsResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMGetConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMRotateCancelResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMRotateCompleteResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMRotateStartResponseData
+import com.stytch.sdk.b2b.network.models.B2BSCIMUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
@@ -267,3 +275,43 @@ public typealias SMSAuthenticateResponse = StytchResult<SMSAuthenticateResponseD
  * Type alias for StytchResult<B2BEMLAuthenticateData> used for Email Magic Link Authenticate responses
  */
 public typealias EMLAuthenticateResponse = StytchResult<B2BEMLAuthenticateData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMCreateConnectionResponseData> used for SCIM Create Connection responses
+ */
+public typealias SCIMCreateConnectionResponse = StytchResult<B2BSCIMCreateConnectionResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMUpdateConnectionResponseData> used for SCIM Update Connection responses
+ */
+public typealias SCIMUpdateConnectionResponse = StytchResult<B2BSCIMUpdateConnectionResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMDeleteConnectionResponseData> used for SCIM Delete Connection responses
+ */
+public typealias SCIMDeleteConnectionResponse = StytchResult<B2BSCIMDeleteConnectionResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMGetConnectionResponseData> used for SCIM Get Connection responses
+ */
+public typealias SCIMGetConnectionResponse = StytchResult<B2BSCIMGetConnectionResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMGetConnectionGroupsResponseData> used for SCIM Get Connection Groups responses
+ */
+public typealias SCIMGetConnectionGroupsResponse = StytchResult<B2BSCIMGetConnectionGroupsResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMRotateStartResponseData> used for SCIM Rotate Start responses
+ */
+public typealias SCIMRotateStartResponse = StytchResult<B2BSCIMRotateStartResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMRotateCompleteResponseData> used for SCIM Rotate Complete responses
+ */
+public typealias SCIMRotateCompleteResponse = StytchResult<B2BSCIMRotateCompleteResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSCIMRotateCancelResponseData> used for SCIM Rotate Cancel responses
+ */
+public typealias SCIMRotateCancelResponse = StytchResult<B2BSCIMRotateCancelResponseData>

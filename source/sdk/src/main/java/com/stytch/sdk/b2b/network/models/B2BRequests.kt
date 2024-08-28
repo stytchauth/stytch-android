@@ -569,4 +569,42 @@ internal object B2BRequests {
             val organizationId: String,
         )
     }
+
+    object SCIM {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMCreateConnection(
+            @Json(name = "display_name")
+            val displayName: String?,
+            @Json(name = "identity_provider")
+            val identityProvider: String?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMUpdateConnection(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "display_name")
+            val displayName: String?,
+            @Json(name = "identity_provider")
+            val identityProvider: String?,
+            @Json(name = "scim_group_implicit_role_assignments")
+            val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMGetConnectionGroups(
+            val limit: Int?,
+            val cursor: String?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMRotateConnectionRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
+        )
+    }
 }

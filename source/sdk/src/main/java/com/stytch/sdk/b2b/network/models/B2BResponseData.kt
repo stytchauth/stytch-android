@@ -6,6 +6,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.AuthenticationFactor
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.IBasicData
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -65,7 +66,8 @@ public data class SessionsAuthenticateResponseData(
     override val sessionToken: String,
     override val member: MemberData,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+) : IB2BAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -83,7 +85,8 @@ public data class SMSAuthenticateResponseData(
     override val sessionToken: String,
     override val member: MemberData,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+) : IB2BAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -111,7 +114,8 @@ public data class B2BEMLAuthenticateData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -260,7 +264,8 @@ public data class PasswordsAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -288,7 +293,8 @@ public data class EmailResetResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -316,7 +322,8 @@ public data class PasswordResetByExistingPasswordResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -439,7 +446,8 @@ public data class IntermediateSessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -465,7 +473,8 @@ public data class OrganizationCreateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -505,7 +514,8 @@ public data class SSOAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -531,7 +541,8 @@ public data class SessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -643,7 +654,8 @@ public data class OTPAuthenticateResponse(
     @Json(name = "reset_session")
     val resetSession: Boolean,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+) : IB2BAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -678,7 +690,8 @@ public data class TOTPAuthenticateResponseData(
     override val memberSession: B2BSessionData,
     override val member: MemberData,
     override val organization: OrganizationData,
-) : IB2BAuthData, Parcelable
+) : IB2BAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -724,7 +737,8 @@ public data class RecoveryCodeRecoverResponseData(
     override val organization: OrganizationData,
     @Json(name = "recovery_codes_remaining")
     val recoveryCodesRemaining: Int,
-) : IB2BAuthData, Parcelable
+) : IB2BAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -752,7 +766,8 @@ public data class OAuthAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
-) : IB2BAuthDataWithMFA, Parcelable
+) : IB2BAuthDataWithMFA,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -970,3 +985,224 @@ public data class InternalMemberData(
     @Json(name = "member_password_id")
     val memberPasswordId: String,
 ) : Parcelable
+
+@Keep
+public interface BaseSCIMConnection {
+    @Json(name = "organization_id")
+    public val organizationId: String
+
+    @Json(name = "connection_id")
+    public val connectionId: String
+    public val status: String
+
+    @Json(name = "display_name")
+    public val displayName: String
+
+    @Json(name = "identity_provider")
+    public val identityProvider: String
+
+    @Json(name = "base_url")
+    public val baseUrl: String
+
+    @Json(name = "scim_group_implicit_role_assignments")
+    public val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>
+}
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SCIMGroupImplicitRoleAssignment(
+    @Json(name = "role_id")
+    val roleId: String,
+    @Json(name = "group_id")
+    val groupId: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SCIMConnection(
+    @Json(name = "organization_id")
+    override val organizationId: String,
+    @Json(name = "connection_id")
+    override val connectionId: String,
+    override val status: String,
+    @Json(name = "display_name")
+    override val displayName: String,
+    @Json(name = "identity_provider")
+    override val identityProvider: String,
+    @Json(name = "base_url")
+    override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    @Json(name = "bearer_token_last_four")
+    val bearerTokenLastFour: String?,
+    @Json(name = "bearer_token_expires_at")
+    val bearerTokenExpiresAt: String?,
+    @Json(name = "next_bearer_token_last_four")
+    val nextBearerTokenLastFour: String?,
+    @Json(name = "next_bearer_token_expires_at")
+    val nextBearerTokenExpiresAt: String?,
+) : BaseSCIMConnection,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SCIMConnectionWithBearerToken(
+    @Json(name = "organization_id")
+    override val organizationId: String,
+    @Json(name = "connection_id")
+    override val connectionId: String,
+    override val status: String,
+    @Json(name = "display_name")
+    override val displayName: String,
+    @Json(name = "identity_provider")
+    override val identityProvider: String,
+    @Json(name = "base_url")
+    override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    @Json(name = "bearer_token")
+    val bearerToken: String,
+    @Json(name = "bearer_token_expires_at")
+    val bearerTokenExpiresAt: String,
+) : BaseSCIMConnection,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SCIMConnectionWithNextBearerToken(
+    @Json(name = "organization_id")
+    override val organizationId: String,
+    @Json(name = "connection_id")
+    override val connectionId: String,
+    override val status: String,
+    @Json(name = "display_name")
+    override val displayName: String,
+    @Json(name = "identity_provider")
+    override val identityProvider: String,
+    @Json(name = "base_url")
+    override val baseUrl: String,
+    @Json(name = "scim_group_implicit_role_assignments")
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    @Json(name = "next_bearer_token")
+    val nextBearerToken: String?,
+    @Json(name = "next_bearer_token_expires_at")
+    val nextBearerTokenExpiresAt: String?,
+    @Json(name = "bearer_token_last_four")
+    val bearerTokenLastFour: String?,
+    @Json(name = "bearer_token_expires_at")
+    val bearerTokenExpiresAt: String?,
+) : BaseSCIMConnection,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SCIMGroup(
+    @Json(name = "organization_id")
+    val organizationId: String,
+    @Json(name = "connection_id")
+    val connectionId: String,
+    @Json(name = "group_id")
+    val groupId: String,
+    @Json(name = "group_name")
+    val groupName: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMCreateConnectionResponseData(
+    val connection: SCIMConnectionWithBearerToken,
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMUpdateConnectionResponseData(
+    val connection: SCIMConnection,
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMDeleteConnectionResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+    @Json(name = "connection_id")
+    val connectionId: String,
+) : Parcelable,
+    IBasicData
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMGetConnectionResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+    val connection: SCIMConnection,
+) : IBasicData,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMGetConnectionGroupsResponseData(
+    @Json(name = "scim_groups")
+    val scimGroups: List<SCIMGroup>,
+    @Json(name = "next_cursor")
+    val nextCursor: String? = null,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMRotateStartResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+    val connection: SCIMConnectionWithNextBearerToken,
+) : IBasicData,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMRotateCompleteResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+    val connection: SCIMConnection,
+) : IBasicData,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BSCIMRotateCancelResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+    val connection: SCIMConnection,
+) : IBasicData,
+    Parcelable
