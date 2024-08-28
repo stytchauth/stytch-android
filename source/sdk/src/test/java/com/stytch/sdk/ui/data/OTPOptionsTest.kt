@@ -16,7 +16,7 @@ internal class OTPOptionsTest {
         val expected =
             OTP.EmailOTP.Parameters(
                 email = "my@email.com",
-                expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
+                expirationMinutes = defaultOTPOptions.expirationMinutes,
                 loginTemplateId = defaultOTPOptions.loginTemplateId,
                 signupTemplateId = defaultOTPOptions.signupTemplateId,
             )
@@ -28,7 +28,7 @@ internal class OTPOptionsTest {
         val expected =
             OTP.SmsOTP.Parameters(
                 phoneNumber = "123-456-7890",
-                expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
+                expirationMinutes = defaultOTPOptions.expirationMinutes,
                 enableAutofill = true,
             )
         assert(defaultOTPOptions.toSMSOtpParameters("123-456-7890") == expected)
@@ -39,7 +39,7 @@ internal class OTPOptionsTest {
         val expected =
             OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "123-456-7890",
-                expirationMinutes = defaultOTPOptions.expirationMinutes.toUInt(),
+                expirationMinutes = defaultOTPOptions.expirationMinutes,
             )
         assert(defaultOTPOptions.toWhatsAppOtpParameters("123-456-7890") == expected)
     }

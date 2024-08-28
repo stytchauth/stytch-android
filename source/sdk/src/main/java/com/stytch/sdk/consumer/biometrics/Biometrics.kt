@@ -20,13 +20,15 @@ public interface Biometrics {
      * @property allowDeviceCredentials opts-in to allowing the use of non-biometric device credentials (PIN, Pattern)
      * as a fallback (on Android versions greater than Q)
      */
-    public data class RegisterParameters(
-        val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val allowFallbackToCleartext: Boolean = false,
-        val promptData: PromptData? = null,
-        val allowDeviceCredentials: Boolean = false,
-    )
+    public data class RegisterParameters
+        @JvmOverloads
+        constructor(
+            val context: FragmentActivity,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val allowFallbackToCleartext: Boolean = false,
+            val promptData: PromptData? = null,
+            val allowDeviceCredentials: Boolean = false,
+        )
 
     /**
      * Data class used for wrapping parameters used with Biometrics authentication flow
@@ -35,11 +37,13 @@ public interface Biometrics {
      * @property promptData is an optional biometric prompt configuration. If one is not provided a default will be
      * created
      */
-    public data class AuthenticateParameters(
-        val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val promptData: PromptData? = null,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val context: FragmentActivity,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val promptData: PromptData? = null,
+        )
 
     /**
      * Data class used for wrapping parameters used to create a biometric prompt

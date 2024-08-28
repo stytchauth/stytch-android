@@ -191,7 +191,7 @@ internal class NewUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.passwords.create(any()) } returns StytchResult.Success(validCreateResponse)
-            viewModel.createAccountWithPassword(30U, this)
+            viewModel.createAccountWithPassword(30, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.Authenticated)
@@ -206,7 +206,7 @@ internal class NewUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.create(any()) } returns invalidResponse
-            viewModel.createAccountWithPassword(30U, this)
+            viewModel.createAccountWithPassword(30, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
         }

@@ -62,10 +62,12 @@ public interface UserManagement {
      * @property name the name of the user
      * @property untrustedMetadata a map of untrusted metadata to assign to the user
      */
-    public data class UpdateParams(
-        val name: NameData? = null,
-        val untrustedMetadata: Map<String, Any>? = null,
-    )
+    public data class UpdateParams
+        @JvmOverloads
+        constructor(
+            val name: NameData? = null,
+            val untrustedMetadata: Map<String, Any>? = null,
+        )
 
     /**
      * Updates the currently authenticated user

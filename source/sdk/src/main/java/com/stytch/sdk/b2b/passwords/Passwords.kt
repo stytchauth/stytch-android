@@ -33,13 +33,15 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
-    public data class AuthParameters(
-        val organizationId: String,
-        val emailAddress: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val locale: Locale? = null,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val emailAddress: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
+        )
 
     /**
      * Authenticate a member with their email address and password. This endpoint verifies that the member has a
@@ -91,14 +93,16 @@ public interface Passwords {
      * default email template. The template must be a template using our built-in customizations or a custom HTML email
      * for Password Reset.
      */
-    public data class ResetByEmailStartParameters(
-        val organizationId: String,
-        val emailAddress: String,
-        val loginRedirectUrl: String? = null,
-        val resetPasswordRedirectUrl: String? = null,
-        val resetPasswordExpirationMinutes: UInt? = null,
-        val resetPasswordTemplateId: String? = null,
-    )
+    public data class ResetByEmailStartParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val emailAddress: String,
+            val loginRedirectUrl: String? = null,
+            val resetPasswordRedirectUrl: String? = null,
+            val resetPasswordExpirationMinutes: Int? = null,
+            val resetPasswordTemplateId: String? = null,
+        )
 
     /**
      * Initiates a password reset for the email address provided. This will trigger an email to be sent to the address,
@@ -128,12 +132,14 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
-    public data class ResetByEmailParameters(
-        val token: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val locale: Locale? = null,
-    )
+    public data class ResetByEmailParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
+        )
 
     /**
      * Reset the member’s password and authenticate them. This endpoint checks that the magic link token is valid,
@@ -169,14 +175,16 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
-    public data class ResetByExistingPasswordParameters(
-        val organizationId: String,
-        val emailAddress: String,
-        val existingPassword: String,
-        val newPassword: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val locale: Locale? = null,
-    )
+    public data class ResetByExistingPasswordParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val emailAddress: String,
+            val existingPassword: String,
+            val newPassword: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
+        )
 
     /**
      * Reset the member’s password and authenticate them. This endpoint checks that the existing password matches the
@@ -242,10 +250,12 @@ public interface Passwords {
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
-    public data class StrengthCheckParameters(
-        val email: String? = null,
-        val password: String,
-    )
+    public data class StrengthCheckParameters
+        @JvmOverloads
+        constructor(
+            val email: String? = null,
+            val password: String,
+        )
 
     /**
      * This method allows you to check whether or not the member’s provided password is valid, and to provide feedback

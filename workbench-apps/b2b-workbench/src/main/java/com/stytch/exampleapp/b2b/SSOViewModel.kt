@@ -43,79 +43,86 @@ class SSOViewModel : ViewModel() {
     fun deleteConnection() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.deleteConnection(
-                    connectionId = ssoConnectionId.text,
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso
+                    .deleteConnection(
+                        connectionId = ssoConnectionId.text,
+                    ).toFriendlyDisplay()
         }
     }
 
     fun createSamlConnection() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.saml.createConnection(
-                    SSO.SAML.CreateParameters(
-                        displayName = "Cool New SAML Connection ${Random(Date().time).nextInt()}",
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.saml
+                    .createConnection(
+                        SSO.SAML.CreateParameters(
+                            displayName = "Cool New SAML Connection ${Random(Date().time).nextInt()}",
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun updateSamlConnection() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.saml.updateConnection(
-                    SSO.SAML.UpdateParameters(
-                        connectionId = ssoConnectionId.text,
-                        displayName = "Updated SAML Connection Name",
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.saml
+                    .updateConnection(
+                        SSO.SAML.UpdateParameters(
+                            connectionId = ssoConnectionId.text,
+                            displayName = "Updated SAML Connection Name",
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun updateSamlConnectionByUrl() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.saml.updateConnectionByUrl(
-                    SSO.SAML.UpdateByURLParameters(
-                        connectionId = ssoConnectionId.text,
-                        metadataUrl = metadataUrl.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.saml
+                    .updateConnectionByUrl(
+                        SSO.SAML.UpdateByURLParameters(
+                            connectionId = ssoConnectionId.text,
+                            metadataUrl = metadataUrl.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun deleteVerificationCertificate() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.saml.deleteVerificationCertificate(
-                    SSO.SAML.DeleteVerificationCertificateParameters(
-                        connectionId = ssoConnectionId.text,
-                        certificateId = certificateId.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.saml
+                    .deleteVerificationCertificate(
+                        SSO.SAML.DeleteVerificationCertificateParameters(
+                            connectionId = ssoConnectionId.text,
+                            certificateId = certificateId.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun createOidcConnection() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.oidc.createConnection(
-                    SSO.OIDC.CreateParameters(
-                        displayName = "Cool New OIDC Connection ${Random(Date().time).nextInt()}",
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.oidc
+                    .createConnection(
+                        SSO.OIDC.CreateParameters(
+                            displayName = "Cool New OIDC Connection ${Random(Date().time).nextInt()}",
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun updateOidcConnection() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.sso.oidc.updateConnection(
-                    SSO.OIDC.UpdateParameters(
-                        connectionId = ssoConnectionId.text,
-                        displayName = "Updated OIDC Connection Name",
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.sso.oidc
+                    .updateConnection(
+                        SSO.OIDC.UpdateParameters(
+                            connectionId = ssoConnectionId.text,
+                            displayName = "Updated OIDC Connection Name",
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
@@ -138,7 +145,7 @@ class SSOViewModel : ViewModel() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         intent?.data?.let {
-                            val result = StytchClient.handle(it, 60U)
+                            val result = StytchClient.handle(it, 60)
                             when (result) {
                                 is DeeplinkHandledStatus.NotHandled -> result.reason.message
                                 is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
@@ -161,12 +168,11 @@ class SSOViewModel : ViewModel() {
         }
     }
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 }

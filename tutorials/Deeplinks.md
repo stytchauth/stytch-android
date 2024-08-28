@@ -64,7 +64,7 @@ fun handleDeeplink(uri: URI) {
     viewModelScope.launch {
         if (tokenType == "magic_links") {
             val result = StytchClient.magicLinks.authenticate(
-                MagicLinks.AuthParameters(token, 30U)
+                MagicLinks.AuthParameters(token, 30)
             )
             when (result) {
                 is StytchResult.Success -> {
@@ -87,7 +87,7 @@ fun handleDeeplink(uri: URI) {
     viewModelScope.launch {
         val result = StytchClient.handle(  
             uri = uri,  
-            sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),  
+            sessionDurationMinutes = sessionOptions.sessionDurationMinutes(),  
         ) 
         when (result) {  
             is DeeplinkHandledStatus.Handled -> {  

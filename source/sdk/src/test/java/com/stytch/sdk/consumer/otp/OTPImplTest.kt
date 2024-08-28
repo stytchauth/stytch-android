@@ -44,7 +44,7 @@ internal class OTPImplTest {
     private val dispatcher = Dispatchers.Unconfined
 
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
-    private val authParameters = OTP.AuthParameters("", "", sessionDurationMinutes = 30U)
+    private val authParameters = OTP.AuthParameters("", "", sessionDurationMinutes = 30)
 
     @Before
     fun before() {
@@ -114,7 +114,7 @@ internal class OTPImplTest {
             impl.sms.send(
                 OTP.SmsOTP.Parameters(
                     phoneNumber = "phoneNumber",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                 ),
             )
             coVerify { mockApi.sendOTPWithSMSSecondary(any(), any()) }
@@ -128,7 +128,7 @@ internal class OTPImplTest {
             impl.sms.send(
                 OTP.SmsOTP.Parameters(
                     phoneNumber = "phoneNumber",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                 ),
             )
             coVerify { mockApi.sendOTPWithSMSPrimary(any(), any()) }
@@ -142,7 +142,7 @@ internal class OTPImplTest {
         impl.sms.send(
             OTP.SmsOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = 10U,
+                expirationMinutes = 10,
             ),
             mockCallback,
         )
@@ -173,7 +173,7 @@ internal class OTPImplTest {
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                 ),
             )
             coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) }
@@ -187,7 +187,7 @@ internal class OTPImplTest {
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                 ),
             )
             coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) }
@@ -201,7 +201,7 @@ internal class OTPImplTest {
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "phoneNumber",
-                expirationMinutes = 10U,
+                expirationMinutes = 10,
             ),
             mockCallback,
         )
@@ -239,7 +239,7 @@ internal class OTPImplTest {
             impl.email.send(
                 OTP.EmailOTP.Parameters(
                     email = "emailAddress",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                     loginTemplateId = null,
                     signupTemplateId = null,
                 ),
@@ -255,7 +255,7 @@ internal class OTPImplTest {
             impl.email.send(
                 OTP.EmailOTP.Parameters(
                     email = "emailAddress",
-                    expirationMinutes = 10U,
+                    expirationMinutes = 10,
                     loginTemplateId = null,
                     signupTemplateId = null,
                 ),
@@ -271,7 +271,7 @@ internal class OTPImplTest {
         impl.email.send(
             OTP.EmailOTP.Parameters(
                 email = "emailAddress",
-                expirationMinutes = 10U,
+                expirationMinutes = 10,
                 loginTemplateId = null,
                 signupTemplateId = null,
             ),

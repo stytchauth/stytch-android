@@ -12,6 +12,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class GoogleOAuthOptions(
-    val clientId: String? = null,
-) : Parcelable
+public data class GoogleOAuthOptions
+    @JvmOverloads
+    constructor(
+        val clientId: String? = null,
+    ) : Parcelable

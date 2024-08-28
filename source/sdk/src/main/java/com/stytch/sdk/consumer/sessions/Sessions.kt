@@ -41,17 +41,21 @@ public interface Sessions {
      * Data class used for wrapping parameters used with Sessions authentication
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParams(
-        val sessionDurationMinutes: UInt? = null,
-    )
+    public data class AuthParams
+        @JvmOverloads
+        constructor(
+            val sessionDurationMinutes: Int? = null,
+        )
 
     /**
      * Data class used for wrapping parameters used with Sessions revocation
      * @property forceClear if true, we will clear the local session regardless of any network errors
      */
-    public data class RevokeParams(
-        val forceClear: Boolean = false,
-    )
+    public data class RevokeParams
+        @JvmOverloads
+        constructor(
+            val forceClear: Boolean = false,
+        )
 
     /**
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.

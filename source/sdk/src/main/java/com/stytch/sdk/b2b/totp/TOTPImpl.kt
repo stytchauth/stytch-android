@@ -21,7 +21,7 @@ internal class TOTPImpl(
             api.create(
                 organizationId = parameters.organizationId,
                 memberId = parameters.memberId,
-                expirationMinutes = parameters.expirationMinutes?.toInt(),
+                expirationMinutes = parameters.expirationMinutes,
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
             )
         }
@@ -37,17 +37,18 @@ internal class TOTPImpl(
 
     override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse =
         withContext(dispatchers.io) {
-            api.authenticate(
-                organizationId = parameters.organizationId,
-                memberId = parameters.memberId,
-                code = parameters.code,
-                setMFAEnrollment = parameters.setMFAEnrollment,
-                setDefaultMfaMethod = parameters.setDefaultMFAMethod,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            api
+                .authenticate(
+                    organizationId = parameters.organizationId,
+                    memberId = parameters.memberId,
+                    code = parameters.code,
+                    setMFAEnrollment = parameters.setMFAEnrollment,
+                    setDefaultMfaMethod = parameters.setDefaultMFAMethod,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
     override fun authenticate(

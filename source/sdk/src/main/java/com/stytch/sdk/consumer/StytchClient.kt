@@ -432,7 +432,7 @@ public object StytchClient {
      */
     public suspend fun handle(
         uri: Uri,
-        sessionDurationMinutes: UInt,
+        sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
         assertInitialized()
         return withContext(dispatchers.io) {
@@ -487,7 +487,7 @@ public object StytchClient {
      */
     public fun handle(
         uri: Uri,
-        sessionDurationMinutes: UInt,
+        sessionDurationMinutes: Int,
         callback: (response: DeeplinkHandledStatus) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
@@ -521,5 +521,5 @@ public object StytchClient {
      */
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
+    internal fun startSmsRetriever(sessionDurationMinutes: Int) = smsRetriever.start(sessionDurationMinutes)
 }

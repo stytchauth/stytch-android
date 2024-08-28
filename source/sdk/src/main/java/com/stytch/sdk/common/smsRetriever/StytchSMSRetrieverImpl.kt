@@ -10,11 +10,11 @@ import com.stytch.sdk.common.StytchLog
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 internal class StytchSMSRetrieverImpl(
     private val context: Context,
-    private val callback: (String?, UInt?) -> Unit,
+    private val callback: (String?, Int?) -> Unit,
 ) : StytchSMSRetriever {
     private var broadcastReceiver: StytchSMSBroadcastReceiver? = null
 
-    override fun start(sessionDurationMinutes: UInt) {
+    override fun start(sessionDurationMinutes: Int) {
         broadcastReceiver =
             StytchSMSBroadcastReceiver { code ->
                 callback(code, sessionDurationMinutes)

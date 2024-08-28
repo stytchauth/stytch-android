@@ -35,16 +35,18 @@ public interface OAuth {
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth
          * provider
          */
-        public data class StartParameters(
-            val context: Activity,
-            val oAuthRequestIdentifier: Int,
-            val organizationId: String? = null,
-            val organizationSlug: String? = null,
-            val loginRedirectUrl: String? = null,
-            val signupRedirectUrl: String? = null,
-            val customScopes: List<String>? = null,
-            val providerParams: Map<String, String>? = null,
-        )
+        public data class StartParameters
+            @JvmOverloads
+            constructor(
+                val context: Activity,
+                val oAuthRequestIdentifier: Int,
+                val organizationId: String? = null,
+                val organizationSlug: String? = null,
+                val loginRedirectUrl: String? = null,
+                val signupRedirectUrl: String? = null,
+                val customScopes: List<String>? = null,
+                val providerParams: Map<String, String>? = null,
+            )
 
         /**
          * Start a provider OAuth flow
@@ -76,13 +78,15 @@ public interface OAuth {
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth
          * provider
          */
-        public data class DiscoveryStartParameters(
-            val context: Activity,
-            val oAuthRequestIdentifier: Int,
-            val discoveryRedirectUrl: String? = null,
-            val customScopes: List<String>? = null,
-            val providerParams: Map<String, String>? = null,
-        )
+        public data class DiscoveryStartParameters
+            @JvmOverloads
+            constructor(
+                val context: Activity,
+                val oAuthRequestIdentifier: Int,
+                val discoveryRedirectUrl: String? = null,
+                val customScopes: List<String>? = null,
+                val providerParams: Map<String, String>? = null,
+            )
 
         /**
          * Start a provider OAuth Discovery flow
@@ -143,11 +147,13 @@ public interface OAuth {
      * secondary authentication requirement.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthenticateParameters(
-        val oauthToken: String,
-        val locale: Locale? = null,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val oauthToken: String,
+            val locale: Locale? = null,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Authenticate an OAuth flow

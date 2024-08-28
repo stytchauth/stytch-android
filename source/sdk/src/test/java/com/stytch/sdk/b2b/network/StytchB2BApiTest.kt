@@ -107,7 +107,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticate(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Email.authenticate("", 30U, "")
+            StytchB2BApi.MagicLinks.Email.authenticate("", 30, "")
             coVerify { StytchB2BApi.apiService.authenticate(any()) }
         }
 
@@ -143,7 +143,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Sessions.authenticate(30U)
+            StytchB2BApi.Sessions.authenticate(30)
             coVerify { StytchB2BApi.apiService.authenticateSessions(any()) }
         }
 
@@ -161,7 +161,7 @@ internal class StytchB2BApiTest {
         runTest {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.exchangeSession(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Sessions.exchange(organizationId = "test-123", sessionDurationMinutes = 30U)
+            StytchB2BApi.Sessions.exchange(organizationId = "test-123", sessionDurationMinutes = 30)
             coVerify { StytchB2BApi.apiService.exchangeSession(any()) }
         }
 
@@ -428,7 +428,7 @@ internal class StytchB2BApiTest {
             StytchB2BApi.Discovery.exchangeSession(
                 intermediateSessionToken = "",
                 organizationId = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
             coVerify { StytchB2BApi.apiService.intermediateSessionExchange(any()) }
         }
@@ -443,7 +443,7 @@ internal class StytchB2BApiTest {
                 organizationLogoUrl = "",
                 organizationSlug = "",
                 organizationName = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
                 ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
                 emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
                 emailInvites = EmailInvites.ALL_ALLOWED,
@@ -475,7 +475,7 @@ internal class StytchB2BApiTest {
             coEvery { StytchB2BApi.apiService.ssoAuthenticate(any()) } returns mockk(relaxed = true)
             StytchB2BApi.SSO.authenticate(
                 ssoToken = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
                 codeVerifier = "",
             )
             coVerify { StytchB2BApi.apiService.ssoAuthenticate(any()) }

@@ -27,11 +27,13 @@ public interface Passwords {
      * @property password is your private sequence of characters to authenticate
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val email: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords create endpoint
@@ -41,11 +43,13 @@ public interface Passwords {
      * created account in the future
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class CreateParameters(
-        val email: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class CreateParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint
@@ -60,14 +64,16 @@ public interface Passwords {
      * for Password Reset.
      */
     @Parcelize
-    public data class ResetByEmailStartParameters(
-        val email: String,
-        val loginRedirectUrl: String? = null,
-        val loginExpirationMinutes: UInt? = null,
-        val resetPasswordRedirectUrl: String? = null,
-        val resetPasswordExpirationMinutes: UInt? = null,
-        val resetPasswordTemplateId: String? = null,
-    ) : Parcelable
+    public data class ResetByEmailStartParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val loginRedirectUrl: String? = null,
+            val loginExpirationMinutes: Int? = null,
+            val resetPasswordRedirectUrl: String? = null,
+            val resetPasswordExpirationMinutes: Int? = null,
+            val resetPasswordTemplateId: String? = null,
+        ) : Parcelable
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
@@ -75,21 +81,25 @@ public interface Passwords {
      * @property password is the private sequence of characters you wish to use as a password
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetByEmailParameters(
-        val token: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetByEmailParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property password is the new password to set
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetBySessionParameters(
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetBySessionParameters
+        @JvmOverloads
+        constructor(
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -99,12 +109,14 @@ public interface Passwords {
      * @property newPassword The new password for the user.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetByExistingPasswordParameters(
-        val email: String,
-        val existingPassword: String,
-        val newPassword: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetByExistingPasswordParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val existingPassword: String,
+            val newPassword: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
@@ -135,10 +147,12 @@ public interface Passwords {
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
-    public data class StrengthCheckParameters(
-        val email: String?,
-        val password: String,
-    )
+    public data class StrengthCheckParameters
+        @JvmOverloads
+        constructor(
+            val email: String? = null,
+            val password: String,
+        )
 
     /**
      * Authenticate a user with their email address and password. This endpoint verifies that the user has a password

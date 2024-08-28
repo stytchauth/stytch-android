@@ -83,7 +83,7 @@ internal class ReturningUserScreenViewModel(
                 Passwords.AuthParameters(
                     email = uiState.value.emailState.emailAddress,
                     password = uiState.value.passwordState.password,
-                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
                 )
             when (val result = stytchClient.passwords.authenticate(parameters)) {
                 is StytchResult.Success -> {

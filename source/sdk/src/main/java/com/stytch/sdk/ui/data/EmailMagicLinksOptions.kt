@@ -16,22 +16,24 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class EmailMagicLinksOptions(
-    val loginExpirationMinutes: Int? = null,
-    val signupExpirationMinutes: Int? = null,
-    val loginTemplateId: String? = null,
-    val signupTemplateId: String? = null,
-) : Parcelable {
-    internal fun toParameters(
-        emailAddress: String,
-        publicToken: String,
-    ) = MagicLinks.EmailMagicLinks.Parameters(
-        email = emailAddress,
-        loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
-        signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
-        loginExpirationMinutes = loginExpirationMinutes?.toUInt(),
-        signupExpirationMinutes = signupExpirationMinutes?.toUInt(),
-        loginTemplateId = loginTemplateId,
-        signupTemplateId = signupTemplateId,
-    )
-}
+public data class EmailMagicLinksOptions
+    @JvmOverloads
+    constructor(
+        val loginExpirationMinutes: Int? = null,
+        val signupExpirationMinutes: Int? = null,
+        val loginTemplateId: String? = null,
+        val signupTemplateId: String? = null,
+    ) : Parcelable {
+        internal fun toParameters(
+            emailAddress: String,
+            publicToken: String,
+        ) = MagicLinks.EmailMagicLinks.Parameters(
+            email = emailAddress,
+            loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
+            signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
+            loginExpirationMinutes = loginExpirationMinutes,
+            signupExpirationMinutes = signupExpirationMinutes,
+            loginTemplateId = loginTemplateId,
+            signupTemplateId = signupTemplateId,
+        )
+    }

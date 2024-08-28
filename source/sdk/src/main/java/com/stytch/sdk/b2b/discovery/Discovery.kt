@@ -47,10 +47,12 @@ public interface Discovery {
      * @property organizationId is the organization ID of the desired organization
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class SessionExchangeParameters(
-        val organizationId: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class SessionExchangeParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Exchange an Intermediate Session for a fully realized Member Session in a desired Organization. This operation
@@ -109,18 +111,20 @@ public interface Discovery {
      * @property allowedAuthMethods An array of allowed authentication methods. This list is enforced when auth_methods
      * is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .
      */
-    public data class CreateOrganizationParameters(
-        val organizationName: String? = null,
-        val organizationSlug: String? = null,
-        val organizationLogoUrl: String? = null,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val ssoJitProvisioning: SsoJitProvisioning? = null,
-        val emailAllowedDomains: List<String>? = null,
-        val emailJitProvisioning: EmailJitProvisioning? = null,
-        val emailInvites: EmailInvites? = null,
-        val authMethods: AuthMethods? = null,
-        val allowedAuthMethods: List<AllowedAuthMethods>? = null,
-    )
+    public data class CreateOrganizationParameters
+        @JvmOverloads
+        constructor(
+            val organizationName: String? = null,
+            val organizationSlug: String? = null,
+            val organizationLogoUrl: String? = null,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val ssoJitProvisioning: SsoJitProvisioning? = null,
+            val emailAllowedDomains: List<String>? = null,
+            val emailJitProvisioning: EmailJitProvisioning? = null,
+            val emailInvites: EmailInvites? = null,
+            val authMethods: AuthMethods? = null,
+            val allowedAuthMethods: List<AllowedAuthMethods>? = null,
+        )
 
     /**
      * Create a new organization. If an end user does not want to join any already-existing organization, or has no

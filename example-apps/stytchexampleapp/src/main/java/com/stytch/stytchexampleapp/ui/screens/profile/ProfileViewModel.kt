@@ -25,7 +25,7 @@ import javax.inject.Inject
         fun refreshSession() {
             viewModelScope.launch {
                 screenStateFlow.value = ScreenState.Loading
-                StytchClient.sessions.authenticate(Sessions.AuthParams(sessionDurationMinutes = 5U))
+                StytchClient.sessions.authenticate(Sessions.AuthParams(sessionDurationMinutes = 5))
                 screenStateFlow.value = ScreenState.Idle
             }
         }

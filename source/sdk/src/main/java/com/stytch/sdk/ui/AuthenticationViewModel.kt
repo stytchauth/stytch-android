@@ -42,7 +42,7 @@ internal class AuthenticationViewModel(
         scope.launch {
             if (resultCode == Activity.RESULT_OK) {
                 intent.data?.let {
-                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes.toUInt())) {
+                    when (val result = stytchClient.handle(it, sessionOptions.sessionDurationMinutes)) {
                         is DeeplinkHandledStatus.Handled -> {
                             _eventFlow.emit(EventState.Authenticated(result.response.result))
                         }
@@ -69,7 +69,7 @@ internal class AuthenticationViewModel(
                 val result =
                     stytchClient.handle(
                         uri = uri,
-                        sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                        sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
                     )
             ) {
                 is DeeplinkHandledStatus.Handled -> {

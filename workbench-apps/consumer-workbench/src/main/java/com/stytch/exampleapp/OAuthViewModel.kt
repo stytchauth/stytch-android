@@ -32,7 +32,9 @@ enum class OAuthProvider {
     YAHOO,
 }
 
-class OAuthViewModel(application: Application) : AndroidViewModel(application) {
+class OAuthViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -42,17 +44,19 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         get() = _loadingState
 
     fun loginWithGoogleOneTap(context: Activity) {
-        viewModelScope.launch {
-            _currentResponse.value =
-                StytchClient.oauth.googleOneTap.start(
-                    OAuth.GoogleOneTap.StartParameters(
-                        context = context,
-                        clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
-                    ),
-                ).toFriendlyDisplay()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
+        viewModelScope
+            .launch {
+                _currentResponse.value =
+                    StytchClient.oauth.googleOneTap
+                        .start(
+                            OAuth.GoogleOneTap.StartParameters(
+                                context = context,
+                                clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                            ),
+                        ).toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 
     fun loginWithThirdPartyOAuth(
@@ -89,31 +93,32 @@ class OAuthViewModel(application: Application) : AndroidViewModel(application) {
         resultCode: Int,
         intent: Intent,
     ) {
-        viewModelScope.launch {
-            _loadingState.value = true
-            if (resultCode == RESULT_OK) {
-                intent.data?.let {
-                    val result = StytchClient.handle(it, 60U)
-                    _currentResponse.value =
-                        when (result) {
-                            is DeeplinkHandledStatus.NotHandled -> result.reason.message
-                            is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
-                            // This only happens for password reset deeplinks
-                            is DeeplinkHandledStatus.ManualHandlingRequired -> ""
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                if (resultCode == RESULT_OK) {
+                    intent.data?.let {
+                        val result = StytchClient.handle(it, 60)
+                        _currentResponse.value =
+                            when (result) {
+                                is DeeplinkHandledStatus.NotHandled -> result.reason.message
+                                is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
+                                // This only happens for password reset deeplinks
+                                is DeeplinkHandledStatus.ManualHandlingRequired -> ""
+                            }
+                    }
+                } else {
+                    intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
+                        when (it as SSOError) {
+                            is SSOError.UserCanceled -> {} // do nothing
+                            is SSOError.NoBrowserFound,
+                            is SSOError.NoURIFound,
+                            -> _currentResponse.value = it.message
                         }
-                }
-            } else {
-                intent.extras?.getSerializable(SSOError.SSO_EXCEPTION)?.let {
-                    when (it as SSOError) {
-                        is SSOError.UserCanceled -> {} // do nothing
-                        is SSOError.NoBrowserFound,
-                        is SSOError.NoURIFound,
-                        -> _currentResponse.value = it.message
                     }
                 }
+            }.invokeOnCompletion {
+                _loadingState.value = false
             }
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
     }
 }

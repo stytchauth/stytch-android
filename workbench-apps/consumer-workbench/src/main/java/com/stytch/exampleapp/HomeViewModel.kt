@@ -56,7 +56,7 @@ class HomeViewModel(
             .launch {
                 _loadingState.value = true
                 _currentResponse.value =
-                    when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
+                    when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60)) {
                         is DeeplinkHandledStatus.NotHandled -> result.reason.message
                         is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                         // This only happens for password reset deeplinks

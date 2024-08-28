@@ -18,17 +18,19 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class StytchProductConfig(
-    val products: List<StytchProduct> =
-        listOf(
-            StytchProduct.EMAIL_MAGIC_LINKS,
-            StytchProduct.PASSWORDS,
-            StytchProduct.OTP,
-        ),
-    val emailMagicLinksOptions: EmailMagicLinksOptions = EmailMagicLinksOptions(),
-    val oAuthOptions: OAuthOptions = OAuthOptions(),
-    val otpOptions: OTPOptions = OTPOptions(),
-    val sessionOptions: SessionOptions = SessionOptions(),
-    val passwordOptions: PasswordOptions = PasswordOptions(),
-    val googleOauthOptions: GoogleOAuthOptions = GoogleOAuthOptions(),
-) : Parcelable
+public data class StytchProductConfig
+    @JvmOverloads
+    constructor(
+        val products: List<StytchProduct> =
+            listOf(
+                StytchProduct.EMAIL_MAGIC_LINKS,
+                StytchProduct.PASSWORDS,
+                StytchProduct.OTP,
+            ),
+        val emailMagicLinksOptions: EmailMagicLinksOptions = EmailMagicLinksOptions(),
+        val oAuthOptions: OAuthOptions = OAuthOptions(),
+        val otpOptions: OTPOptions = OTPOptions(),
+        val sessionOptions: SessionOptions = SessionOptions(),
+        val passwordOptions: PasswordOptions = PasswordOptions(),
+        val googleOauthOptions: GoogleOAuthOptions = GoogleOAuthOptions(),
+    ) : Parcelable

@@ -32,10 +32,12 @@ public interface B2BMagicLinks {
      * @property token is the unique sequence of characters used to log in
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val token: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Public variable that exposes an instance of [EmailMagicLinks]
@@ -111,15 +113,17 @@ public interface B2BMagicLinks {
          * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
          * if no value is provided, the copy defaults to English.
          */
-        public data class Parameters(
-            val email: String,
-            val organizationId: String,
-            val loginRedirectUrl: String? = null,
-            val signupRedirectUrl: String? = null,
-            val loginTemplateId: String? = null,
-            val signupTemplateId: String? = null,
-            val locale: Locale? = null,
-        )
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val email: String,
+                val organizationId: String,
+                val loginRedirectUrl: String? = null,
+                val signupRedirectUrl: String? = null,
+                val loginTemplateId: String? = null,
+                val signupTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
 
         /**
          * Send either a login or signup magic link to a Member. A new or pending Member will receive a signup
@@ -152,12 +156,14 @@ public interface B2BMagicLinks {
          * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
          * if no value is provided, the copy defaults to English.
          */
-        public data class DiscoverySendParameters(
-            val emailAddress: String,
-            val discoveryRedirectUrl: String? = null,
-            val loginTemplateId: String? = null,
-            val locale: Locale? = null,
-        )
+        public data class DiscoverySendParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val discoveryRedirectUrl: String? = null,
+                val loginTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
 
         /**
          * Send a discovery magic link to an email address
@@ -199,15 +205,17 @@ public interface B2BMagicLinks {
          * [RBAC guide](https://stytch.com/docs/b2b/guides/rbac/role-assignment) for more information about role
          * assignment.
          */
-        public data class InviteParameters(
-            val emailAddress: String,
-            val inviteRedirectUrl: String? = null,
-            val inviteTemplateId: String? = null,
-            val name: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val locale: Locale? = null,
-            val roles: List<String>? = null,
-        )
+        public data class InviteParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val inviteRedirectUrl: String? = null,
+                val inviteTemplateId: String? = null,
+                val name: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val locale: Locale? = null,
+                val roles: List<String>? = null,
+            )
 
         /**
          * Send an invite email to a new Member to join an Organization. The Member will be created with an invited

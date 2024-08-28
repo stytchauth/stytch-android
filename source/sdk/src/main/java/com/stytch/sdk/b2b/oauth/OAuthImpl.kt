@@ -41,7 +41,7 @@ internal class OAuthImpl(
                 .authenticate(
                     oauthToken = parameters.oauthToken,
                     locale = parameters.locale,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
                     pkceCodeVerifier = pkce,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {

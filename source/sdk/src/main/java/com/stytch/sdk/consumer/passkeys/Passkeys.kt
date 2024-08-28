@@ -27,11 +27,13 @@ public interface Passkeys {
      * @property domain the domain of the Passkey registration. Do not include the protocol
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthenticateParameters(
-        val activity: Activity,
-        val domain: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val activity: Activity,
+            val domain: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passkeys updates

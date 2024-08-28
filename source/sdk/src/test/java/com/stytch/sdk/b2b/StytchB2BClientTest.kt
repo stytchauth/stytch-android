@@ -313,7 +313,7 @@ internal class StytchB2BClientTest {
     fun `handle with coroutines throws StytchSDKNotConfiguredError when not configured`() {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns false
-            StytchB2BClient.handle(mockk(), 30U)
+            StytchB2BClient.handle(mockk(), 30)
         }
     }
 
@@ -327,7 +327,7 @@ internal class StytchB2BClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns null
                 }
-            val response = StytchB2BClient.handle(mockUri, 30U)
+            val response = StytchB2BClient.handle(mockUri, 30)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkMissingTokenError)
         }
@@ -343,7 +343,7 @@ internal class StytchB2BClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns "something unexpected"
                 }
-            val response = StytchB2BClient.handle(mockUri, 30U)
+            val response = StytchB2BClient.handle(mockUri, 30)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
         }
@@ -361,7 +361,7 @@ internal class StytchB2BClientTest {
                 }
             val mockAuthResponse = mockk<DiscoveryEMLAuthResponse>()
             coEvery { mockMagicLinks.discoveryAuthenticate(any()) } returns mockAuthResponse
-            val response = StytchB2BClient.handle(mockUri, 30U)
+            val response = StytchB2BClient.handle(mockUri, 30)
             coVerify { mockMagicLinks.discoveryAuthenticate(any()) }
             assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Discovery(mockAuthResponse)))
         }
@@ -379,7 +379,7 @@ internal class StytchB2BClientTest {
                 }
             val mockAuthResponse = mockk<EMLAuthenticateResponse>()
             coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
-            val response = StytchB2BClient.handle(mockUri, 30U)
+            val response = StytchB2BClient.handle(mockUri, 30)
             coVerify { mockMagicLinks.authenticate(any()) }
             assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
@@ -397,7 +397,7 @@ internal class StytchB2BClientTest {
                 }
             val mockAuthResponse = mockk<OAuthAuthenticateResponse>()
             coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
-            val response = StytchB2BClient.handle(mockUri, 30U)
+            val response = StytchB2BClient.handle(mockUri, 30)
             assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
@@ -410,7 +410,7 @@ internal class StytchB2BClientTest {
                 every { getQueryParameter(any()) } returns null
             }
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
-        StytchB2BClient.handle(mockUri, 30u, mockCallback)
+        StytchB2BClient.handle(mockUri, 30, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

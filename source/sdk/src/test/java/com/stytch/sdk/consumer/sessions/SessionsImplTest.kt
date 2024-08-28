@@ -44,7 +44,7 @@ internal class SessionsImplTest {
     private val dispatcher = Dispatchers.Unconfined
 
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
-    private val authParameters = Sessions.AuthParams(sessionDurationMinutes = 30U)
+    private val authParameters = Sessions.AuthParams(sessionDurationMinutes = 30)
 
     @Before
     fun before() {

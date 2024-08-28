@@ -39,13 +39,15 @@ public interface SSO {
      * finish the login. The URL must be configured as a Sign Up URL in the Redirect URL page. If the field is not
      * specified, the default Sign Up URL will be used.
      */
-    public data class StartParams(
-        val context: Activity,
-        val ssoAuthRequestIdentifier: Int,
-        val connectionId: String,
-        val loginRedirectUrl: String? = null,
-        val signupRedirectUrl: String? = null,
-    )
+    public data class StartParams
+        @JvmOverloads
+        constructor(
+            val context: Activity,
+            val ssoAuthRequestIdentifier: Int,
+            val connectionId: String,
+            val loginRedirectUrl: String? = null,
+            val signupRedirectUrl: String? = null,
+        )
 
     /**
      * Start an SSO authentication flow
@@ -61,11 +63,13 @@ public interface SSO {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
-    public data class AuthenticateParams(
-        val ssoToken: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val locale: Locale? = null,
-    )
+    public data class AuthenticateParams
+        @JvmOverloads
+        constructor(
+            val ssoToken: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
+        )
 
     /**
      * Authenticate a user given a token. This endpoint verifies that the user completed the SSO Authentication flow by
@@ -139,9 +143,11 @@ public interface SSO {
          * Data class used for wrapping the parameters for a SAML creation request
          * @property displayName A human-readable display name for the connection.
          */
-        public data class CreateParameters(
-            val displayName: String? = null,
-        )
+        public data class CreateParameters
+            @JvmOverloads
+            constructor(
+                val displayName: String? = null,
+            )
 
         /**
          * Create a new SAML Connection.
@@ -179,16 +185,18 @@ public interface SSO {
          * implicit role assignments, you must add a "groups" key to your SAML connection's attribute_mapping. Make sure
          * that your IdP is configured to correctly send the group information.
          */
-        public data class UpdateParameters(
-            val connectionId: String,
-            val idpEntityId: String? = null,
-            val displayName: String? = null,
-            val attributeMapping: Map<String, String>? = null,
-            val idpSsoUrl: String? = null,
-            val x509Certificate: String? = null,
-            val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
-            val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
-        )
+        public data class UpdateParameters
+            @JvmOverloads
+            constructor(
+                val connectionId: String,
+                val idpEntityId: String? = null,
+                val displayName: String? = null,
+                val attributeMapping: Map<String, String>? = null,
+                val idpSsoUrl: String? = null,
+                val x509Certificate: String? = null,
+                val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+                val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+            )
 
         /**
          * Update a SAML Connection.
@@ -278,9 +286,11 @@ public interface SSO {
          * Data class used for wrapping the parameters for an OIDC creation request
          * @property displayName A human-readable display name for the connection.
          */
-        public data class CreateParameters(
-            val displayName: String? = null,
-        )
+        public data class CreateParameters
+            @JvmOverloads
+            constructor(
+                val displayName: String? = null,
+            )
 
         /**
          * Create a new OIDC Connection.
@@ -317,17 +327,19 @@ public interface SSO {
          * @property jwksUrl The location of the IdP's JSON Web Key Set, used to verify credentials issued by the IdP.
          * This will be provided by the IdP.
          */
-        public data class UpdateParameters(
-            val connectionId: String,
-            val displayName: String? = null,
-            val issuer: String? = null,
-            val clientId: String? = null,
-            val clientSecret: String? = null,
-            val authorizationUrl: String? = null,
-            val tokenUrl: String? = null,
-            val userInfoUrl: String? = null,
-            val jwksUrl: String? = null,
-        )
+        public data class UpdateParameters
+            @JvmOverloads
+            constructor(
+                val connectionId: String,
+                val displayName: String? = null,
+                val issuer: String? = null,
+                val clientId: String? = null,
+                val clientSecret: String? = null,
+                val authorizationUrl: String? = null,
+                val tokenUrl: String? = null,
+                val userInfoUrl: String? = null,
+                val jwksUrl: String? = null,
+            )
 
         /**
          * Update an OIDC Connection.
