@@ -116,7 +116,7 @@ class MyViewModel : ViewModel() {
     fun authenticateSmsOtp(code: String) {
         viewModelScope.launch {
             val response = StytchClient.otps.authenticate(
-                OTP.SmsOTP.AuthParameters(
+                OTP.AuthParameters(
                     token = code,
                     methodId = methodId
               ),  
@@ -128,6 +128,26 @@ class MyViewModel : ViewModel() {
                 is StytchResult.Error -> {  
                     // something went wrong  
                 }  
+            }
+        }
+    }
+}
+```
+### Concurrency
+While the Stytch Android SDK makes heavy use of Coroutines under the hood, every suspend function has a callback-compatible version for developers that are not using Coroutines. An example of the above `authenticateSmsOtp` method with callbacks might look like this:
+```kotlin
+fun authenticateSmsOtp(code: String) {
+    val params = OTP.AuthParameters(
+        token = code,
+        methodId = methodId
+    )
+    StytchClient.otps.authenticate(params) { response ->
+        when (response) {
+            is StytchResult.Success -> {
+                // the user has been authenticated
+            }
+            is StytchResult.Error -> {
+                // something went wrong
             }
         }
     }
