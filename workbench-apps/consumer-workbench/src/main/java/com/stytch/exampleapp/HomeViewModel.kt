@@ -33,10 +33,10 @@ class HomeViewModel(
     var phoneNumberTextState by mutableStateOf(TextFieldValue(""))
     var otpTokenTextState by mutableStateOf(TextFieldValue(""))
 
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailTextState.text)
 
-    val phoneNumberIsValid
+    private val phoneNumberIsValid
         get() = isPhoneNumberValid(phoneNumberTextState.text)
 
     var showEmailError by mutableStateOf(false)

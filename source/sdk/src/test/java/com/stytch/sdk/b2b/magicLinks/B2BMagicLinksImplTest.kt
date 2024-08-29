@@ -210,6 +210,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery authenticate with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(DiscoveryEMLAuthResponse) -> Unit>()
         impl.discoveryAuthenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

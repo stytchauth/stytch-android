@@ -40,7 +40,7 @@ class HomeViewModel(
     var emailState by mutableStateOf(TextFieldValue(""))
     var orgSlugState by mutableStateOf(TextFieldValue(""))
     var showEmailError by mutableStateOf(false)
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailState.text)
 
     fun getOrganizationDetails() {

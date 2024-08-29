@@ -26,24 +26,19 @@ internal class B2BMagicLinksImpl internal constructor(
 ) : B2BMagicLinks {
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse {
-        var result: EMLAuthenticateResponse
+    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse =
         withContext(dispatchers.io) {
-            result =
-                emailApi
-                    .authenticate(
-                        token = parameters.token,
-                        sessionDurationMinutes = parameters.sessionDurationMinutes,
-                        codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
-                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                    ).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
-            pkcePairManager.clearPKCECodePair()
+            emailApi
+                .authenticate(
+                    token = parameters.token,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-
-        return result
-    }
 
     override fun authenticate(
         parameters: B2BMagicLinks.AuthParameters,
@@ -59,23 +54,17 @@ internal class B2BMagicLinksImpl internal constructor(
     override suspend fun discoveryAuthenticate(
         parameters: B2BMagicLinks.DiscoveryAuthenticateParameters,
     ): DiscoveryEMLAuthResponse {
-        var result: DiscoveryEMLAuthResponse
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-            result =
-                discoveryApi.authenticate(
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            discoveryApi
+                .authenticate(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
-                )
-            pkcePairManager.clearPKCECodePair()
+                ).also {
+                    pkcePairManager.clearPKCECodePair()
+                }
         }
-        return result
     }
 
     override fun discoveryAuthenticate(

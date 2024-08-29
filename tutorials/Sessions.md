@@ -17,12 +17,12 @@ To retrieve any existing session data, access the appropriate property or method
 ```kotlin
 val sessionToken: String? = StytchClient.sessions.sessionToken
 val sessionJwt: String? = StytchClient.sessions.sessionJwt
-val sessionData: SessionData? = StytchCleint.sessions.getSync()
+val sessionData: SessionData? = StytchClient.sessions.getSync()
 ```
 Authenticating and Revoking sessions are similarly easy:
 ```kotlin
 val authResponse = StytchClient.sessions.authenticate(Sessions.AuthParams())
-val revokeResponse = StytchCleint.sessions.revoke(Sessions.RevokeParams())
+val revokeResponse = StytchClient.sessions.revoke(Sessions.RevokeParams())
 ```
 Updating a session with tokens retrieved outside of the SDK (for instance, if you create or update a session on your backend, and want to hydrate a client application) can be done using the `updateSession` method:
 ```kotlin

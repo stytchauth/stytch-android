@@ -5,9 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal sealed class ScreenState : Parcelable {
-    object Idle : ScreenState()
+    data object Idle : ScreenState()
 
-    object Loading : ScreenState()
+    data object Loading : ScreenState()
 
     data class Error(
         val error: Exception,

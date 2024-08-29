@@ -18,10 +18,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
-import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
-import com.stytch.sdk.consumer.oauth.OAuth
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -53,12 +51,6 @@ import java.security.KeyStore
 internal class StytchClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
     private val dispatcher = Dispatchers.Unconfined
-
-    @MockK
-    private lateinit var mockMagicLinks: MagicLinks
-
-    @MockK
-    private lateinit var mockOAuth: OAuth
 
     @MockK
     private lateinit var mockPKCEPairManager: PKCEPairManager

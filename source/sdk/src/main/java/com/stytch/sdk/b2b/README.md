@@ -20,7 +20,7 @@ Each endpoint is explained in their respective READMEs and inline-documentation,
 ### **Configuration**
 As mentioned in the [toplevel README](/README.md), before making any Stytch authentication requests, you must configure the `StytchB2BClient`:
 ```kotlin
-StytchB2BClient.configure(context: Context, publicToken: String)
+StytchB2BClient.configure(context, publicToken)
 ```
 This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.
 

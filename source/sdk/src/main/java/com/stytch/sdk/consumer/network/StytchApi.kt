@@ -391,7 +391,7 @@ internal object StytchApi {
                     ConsumerRequests.OTP.Authenticate(
                         token,
                         methodId,
-                        sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes,
                     ),
                 )
             }
@@ -408,7 +408,7 @@ internal object StytchApi {
                     ConsumerRequests.Passwords.AuthenticateRequest(
                         email,
                         password,
-                        sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes,
                     ),
                 )
             }
@@ -423,7 +423,7 @@ internal object StytchApi {
                     ConsumerRequests.Passwords.CreateRequest(
                         email,
                         password,
-                        sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes,
                     ),
                 )
             }
@@ -463,7 +463,7 @@ internal object StytchApi {
                     ConsumerRequests.Passwords.ResetByEmailRequest(
                         token,
                         password,
-                        sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes,
                         codeVerifier,
                     ),
                 )
@@ -477,7 +477,7 @@ internal object StytchApi {
                 apiService.resetBySession(
                     ConsumerRequests.Passwords.ResetBySessionRequest(
                         password = password,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -494,7 +494,7 @@ internal object StytchApi {
                         email = email,
                         existingPassword = existingPassword,
                         newPassword = newPassword,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -549,7 +549,7 @@ internal object StytchApi {
                     ConsumerRequests.Biometrics.RegisterRequest(
                         signature = signature,
                         biometricRegistrationId = biometricRegistrationId,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -573,7 +573,7 @@ internal object StytchApi {
                     ConsumerRequests.Biometrics.AuthenticateRequest(
                         signature = signature,
                         biometricRegistrationId = biometricRegistrationId,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -654,7 +654,7 @@ internal object StytchApi {
                     ConsumerRequests.OAuth.Google.AuthenticateRequest(
                         idToken = idToken,
                         nonce = nonce,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -668,7 +668,7 @@ internal object StytchApi {
                 apiService.authenticateWithThirdPartyToken(
                     ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest(
                         token = token,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
                     ),
                 )
@@ -736,7 +736,7 @@ internal object StytchApi {
                 apiService.webAuthnAuthenticate(
                     ConsumerRequests.WebAuthn.AuthenticateRequest(
                         publicKeyCredential = publicKeyCredential,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -794,7 +794,7 @@ internal object StytchApi {
                         cryptoWalletAddress = cryptoWalletAddress,
                         cryptoWalletType = cryptoWalletType,
                         signature = signature,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }

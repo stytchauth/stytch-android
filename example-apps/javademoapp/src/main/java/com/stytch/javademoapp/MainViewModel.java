@@ -16,7 +16,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<StytchState> stytchState;
     public MutableLiveData<StytchState> getStytchState() {
         if (stytchState == null) {
-            stytchState = new MutableLiveData<StytchState>(StytchState.DEFAULT);
+            stytchState = new MutableLiveData<>(StytchState.DEFAULT);
         }
         return stytchState;
     }
@@ -57,9 +57,7 @@ public class MainViewModel extends ViewModel {
     }
 
     void logout() {
-        StytchClient.getSessions().revoke(new Sessions.RevokeParams(), (StytchResult<BasicData> result) -> {
-            return Unit.INSTANCE;
-        });
+        StytchClient.getSessions().revoke(new Sessions.RevokeParams(), (StytchResult<BasicData> result) -> Unit.INSTANCE);
     }
 }
 

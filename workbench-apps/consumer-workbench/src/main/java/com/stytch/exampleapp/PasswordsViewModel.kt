@@ -29,11 +29,11 @@ class PasswordsViewModel(
     var newPasswordTextState by mutableStateOf(TextFieldValue(""))
     var tokenTextState by mutableStateOf(TextFieldValue(""))
 
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailTextState.text)
 
     var showEmailError by mutableStateOf(false)
-    var showTokenError by mutableStateOf(false)
+    private var showTokenError by mutableStateOf(false)
 
     fun checkPassword() {
         if (emailIsValid) {
