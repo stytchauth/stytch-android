@@ -63,7 +63,7 @@
   <div class="breadcrumbs"><a href="../index.html">Stytch Android</a><span class="delimiter">/</span><span class="current">com.stytch.sdk.b2b</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
-    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><p class="paragraph">Stytch's B2B SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.</p><h2 class=""> Supported Authentication Products</h2><ul><li><p class="paragraph">magicLinks</p></li><ul><li><p class="paragraph">Send/authenticate magic links via Email</p></li></ul><li><p class="paragraph">sessions</p></li><ul><li><p class="paragraph">Authenticate/refresh an existing session</p></li><li><p class="paragraph">Revoke a session (Sign out)</p></li></ul><li><p class="paragraph">member</p></li><ul><li><p class="paragraph">Get or fetch the current user object (sync/cached or async options available)</p></li></ul><li><p class="paragraph">organization</p></li><ul><li><p class="paragraph">Get or fetch the current user's organization</p></li></ul></ul><h2 class=""> Using the B2B SDK</h2><p class="paragraph">The <code class="lang-kotlin">StytchB2BClient</code> object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.</p><p class="paragraph">Each endpoint is explained in their respective READMEs and inline-documentation, but there are a few special methods on the <code class="lang-kotlin">StytchB2BClient</code> object to document here.</p><h3 class=""> <strong>Configuration</strong></h3><p class="paragraph">As mentioned in the /README.md, before making any Stytch authentication requests, you must configure the <code class="lang-kotlin">StytchB2BClient</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">StytchB2BClient.configure(context: Context, publicToken: String)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.</p><h3 class=""> <strong>Handling Deeplinks</strong></h3><p class="paragraph"><code class="lang-kotlin">StytchB2BClient.handle()</code> is the method you call for parsing out and authenticating deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links. This method returns a ../common/DeeplinkHandledStatus.kt class which details the result of the authentication call.</p><p class="paragraph">For B2B Email Magic Links, it will return a <code class="lang-kotlin">Handled</code> class containing either the authenticated response or error.</p><p class="paragraph">Any other link types passed to this method will return a <code class="lang-kotlin">NotHandled</code> class.</p></div></div>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><p class="paragraph">Stytch's B2B SDK makes it simple to seamlessly onboard, authenticate, and engage users. This SDK provides the easiest way for you to use Stytch on Android. With just a few lines of code, you can easily authenticate your users and get back to focusing on the core of your product.</p><h2 class=""> Supported Authentication Products</h2><ul><li><p class="paragraph">magicLinks</p></li><ul><li><p class="paragraph">Send/authenticate magic links via Email</p></li></ul><li><p class="paragraph">sessions</p></li><ul><li><p class="paragraph">Authenticate/refresh an existing session</p></li><li><p class="paragraph">Revoke a session (Sign out)</p></li></ul><li><p class="paragraph">member</p></li><ul><li><p class="paragraph">Get or fetch the current user object (sync/cached or async options available)</p></li></ul><li><p class="paragraph">organization</p></li><ul><li><p class="paragraph">Get or fetch the current user's organization</p></li></ul></ul><h2 class=""> Using the B2B SDK</h2><p class="paragraph">The <code class="lang-kotlin">StytchB2BClient</code> object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our supported authentication products.</p><p class="paragraph">Each endpoint is explained in their respective READMEs and inline-documentation, but there are a few special methods on the <code class="lang-kotlin">StytchB2BClient</code> object to document here.</p><h3 class=""> <strong>Configuration</strong></h3><p class="paragraph">As mentioned in the /README.md, before making any Stytch authentication requests, you must configure the <code class="lang-kotlin">StytchB2BClient</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">StytchB2BClient.configure(context, publicToken)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.</p><h3 class=""> <strong>Handling Deeplinks</strong></h3><p class="paragraph"><code class="lang-kotlin">StytchB2BClient.handle()</code> is the method you call for parsing out and authenticating deeplinks that your application receives. The currently supported deeplink types are: B2B Email Magic Links. This method returns a ../common/DeeplinkHandledStatus.kt class which details the result of the authentication call.</p><p class="paragraph">For B2B Email Magic Links, it will return a <code class="lang-kotlin">Handled</code> class containing either the authenticated response or error.</p><p class="paragraph">Any other link types passed to this method will return a <code class="lang-kotlin">NotHandled</code> class.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
@@ -591,6 +591,126 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-recovery-codes-rotate-response/index.html">RecoveryCodesRotateResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/RecoveryCodeRotateResponseData///PointingToDeclaration/">RecoveryCodeRotateResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<recoverycoderotateresponsedata> used for Recovery Code Rotate responses</recoverycoderotateresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="93646641%2FClasslikes%2F-1093964584" anchor-label="SCIMCreateConnectionResponse" id="93646641%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-create-connection-response/index.html"><span>SCIMCreate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="93646641%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-create-connection-response/index.html">SCIMCreateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMCreateConnectionResponseData///PointingToDeclaration/">B2BSCIMCreateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimcreateconnectionresponsedata> used for SCIM Create Connection responses</b2bscimcreateconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="839488290%2FClasslikes%2F-1093964584" anchor-label="SCIMDeleteConnectionResponse" id="839488290%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-delete-connection-response/index.html"><span>SCIMDelete</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="839488290%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-delete-connection-response/index.html">SCIMDeleteConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMDeleteConnectionResponseData///PointingToDeclaration/">B2BSCIMDeleteConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimdeleteconnectionresponsedata> used for SCIM Delete Connection responses</b2bscimdeleteconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="243131981%2FClasslikes%2F-1093964584" anchor-label="SCIMGetConnectionGroupsResponse" id="243131981%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-get-connection-groups-response/index.html"><span>SCIMGet</span><wbr><span>Connection</span><wbr><span>Groups</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="243131981%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-get-connection-groups-response/index.html">SCIMGetConnectionGroupsResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMGetConnectionGroupsResponseData///PointingToDeclaration/">B2BSCIMGetConnectionGroupsResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimgetconnectiongroupsresponsedata> used for SCIM Get Connection Groups responses</b2bscimgetconnectiongroupsresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1430146689%2FClasslikes%2F-1093964584" anchor-label="SCIMGetConnectionResponse" id="1430146689%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-get-connection-response/index.html"><span>SCIMGet</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1430146689%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMGetConnectionResponseData///PointingToDeclaration/">B2BSCIMGetConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimgetconnectionresponsedata> used for SCIM Get Connection responses</b2bscimgetconnectionresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-987508394%2FClasslikes%2F-1093964584" anchor-label="SCIMRotateCancelResponse" id="-987508394%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-rotate-cancel-response/index.html"><span>SCIMRotate</span><wbr><span>Cancel</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-987508394%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-rotate-cancel-response/index.html">SCIMRotateCancelResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMRotateCancelResponseData///PointingToDeclaration/">B2BSCIMRotateCancelResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimrotatecancelresponsedata> used for SCIM Rotate Cancel responses</b2bscimrotatecancelresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1535638135%2FClasslikes%2F-1093964584" anchor-label="SCIMRotateCompleteResponse" id="1535638135%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-rotate-complete-response/index.html"><span>SCIMRotate</span><wbr><span>Complete</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1535638135%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-rotate-complete-response/index.html">SCIMRotateCompleteResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMRotateCompleteResponseData///PointingToDeclaration/">B2BSCIMRotateCompleteResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimrotatecompleteresponsedata> used for SCIM Rotate Complete responses</b2bscimrotatecompleteresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-795947730%2FClasslikes%2F-1093964584" anchor-label="SCIMRotateStartResponse" id="-795947730%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-rotate-start-response/index.html"><span>SCIMRotate</span><wbr><span>Start</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-795947730%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-rotate-start-response/index.html">SCIMRotateStartResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMRotateStartResponseData///PointingToDeclaration/">B2BSCIMRotateStartResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimrotatestartresponsedata> used for SCIM Rotate Start responses</b2bscimrotatestartresponsedata></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="338843972%2FClasslikes%2F-1093964584" anchor-label="SCIMUpdateConnectionResponse" id="338843972%2FClasslikes%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-s-c-i-m-update-connection-response/index.html"><span>SCIMUpdate</span><wbr><span>Connection</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="338843972%2FClasslikes%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="-s-c-i-m-update-connection-response/index.html">SCIMUpdateConnectionResponse</a><span class="token operator"> = </span><a href="../com.stytch.sdk.common/-stytch-result/index.html">StytchResult</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="com.stytch.sdk.b2b.network.models/B2BSCIMUpdateConnectionResponseData///PointingToDeclaration/">B2BSCIMUpdateConnectionResponseData</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Type alias for StytchResult<b2bscimupdateconnectionresponsedata> used for SCIM Update Connection responses</b2bscimupdateconnectionresponsedata></p></div></div></div>
                 </div>
               </div>
             </div>

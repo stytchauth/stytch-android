@@ -12,6 +12,7 @@ com.stytch.sdk.b2b.otp
 com.stytch.sdk.b2b.passwords
 com.stytch.sdk.b2b.rbac
 com.stytch.sdk.b2b.recoveryCodes
+com.stytch.sdk.b2b.scim
 com.stytch.sdk.b2b.searchManager
 com.stytch.sdk.b2b.sessions
 com.stytch.sdk.b2b.sso
