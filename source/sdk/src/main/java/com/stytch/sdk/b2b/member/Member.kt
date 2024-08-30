@@ -53,13 +53,15 @@ public interface Member {
      *  1. Which MFA method the Member is prompted to use when logging in
      *  2. Whether An SMS will be sent automatically after completing the first leg of authentication
      */
-    public data class UpdateParams(
-        val name: String? = null,
-        val untrustedMetadata: Map<String, Any>? = null,
-        val mfaEnrolled: Boolean? = null,
-        val mfaPhoneNumber: String? = null,
-        val defaultMfaMethod: MfaMethod? = null,
-    )
+    public data class UpdateParams
+        @JvmOverloads
+        constructor(
+            val name: String? = null,
+            val untrustedMetadata: Map<String, Any>? = null,
+            val mfaEnrolled: Boolean? = null,
+            val mfaPhoneNumber: String? = null,
+            val defaultMfaMethod: MfaMethod? = null,
+        )
 
     /**
      * Updates the currently authenticated member

@@ -33,10 +33,10 @@ class HomeViewModel(
     var phoneNumberTextState by mutableStateOf(TextFieldValue(""))
     var otpTokenTextState by mutableStateOf(TextFieldValue(""))
 
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailTextState.text)
 
-    val phoneNumberIsValid
+    private val phoneNumberIsValid
         get() = isPhoneNumberValid(phoneNumberTextState.text)
 
     var showEmailError by mutableStateOf(false)
@@ -56,7 +56,7 @@ class HomeViewModel(
             .launch {
                 _loadingState.value = true
                 _currentResponse.value =
-                    when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
+                    when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60)) {
                         is DeeplinkHandledStatus.NotHandled -> result.reason.message
                         is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
                         // This only happens for password reset deeplinks

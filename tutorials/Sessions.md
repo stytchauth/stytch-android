@@ -10,19 +10,23 @@ When the Stytch Android SDK is initialized, it decrypts the persisted session to
 
 On every authentication response, the SDK updates the in-memory and device-persisted session data with the latest data returned from the endpoint. In addition, once the SDK receives a valid session, it begins an automatic "heartbeat" job that checks for continued session validity in the background, roughly every three minutes. This heartbeat does not extend an existing session, it merely checks it's validity and updates the local data as appropriate.
 
-### Manual Session Management and Observation
-The [Sessions client](../source/sdk/src/main/java/com/stytch/sdk/consumer/sessions/Sessions.kt) provides properties to retrieve the current session tokens; methods for authenticating, updating, and revoking sessions; and a flow/callback to listen for changes in session state.
+#### Cached Data
+Because the Stytch Android SDK performs automatic session and user syncing operations, it is not advised, or necessary, to cache the results of authentication requests. Doing so risks caching and using stale data, which may be a source of bugs in your application. When you need access to session or user data, you should always retrieve them from the appropriate Stytch client, as outlined in the next section.
 
-To retrieve any existing session data, access the appropriate property or method, which will return the decrypted value to you, if it exists. This may be useful if you need to parse a JWT or use the token for a call from your backend, or need access to the in-memory session data:
+### Manual Session/User Management and Observation
+The [Sessions client](../source/sdk/src/main/java/com/stytch/sdk/consumer/sessions/Sessions.kt) provides properties to retrieve the current session tokens; methods for authenticating, updating, and revoking sessions; and a flow/callback to listen for changes in session state. The [UserManagement client](../source/sdk/src/main/java/com/stytch/sdk/consumer/userManagement/UserManagement.kt) provides methods for retrieving the current user (if any); methods for updating the currently authenticated user; and a flow/callback to listen for changes in the user object.
+
+To retrieve any existing session or user data, access the appropriate property or method, which will return the decrypted value to you, if it exists. This may be useful if you need to parse a JWT or use the token for a call from your backend, or need access to the in-memory session or user data:
 ```kotlin
 val sessionToken: String? = StytchClient.sessions.sessionToken
 val sessionJwt: String? = StytchClient.sessions.sessionJwt
-val sessionData: SessionData? = StytchCleint.sessions.getSync()
+val sessionData: SessionData? = StytchClient.sessions.getSync()
+val userData: UserData? = StytchClient.user.getSyncUser()
 ```
 Authenticating and Revoking sessions are similarly easy:
 ```kotlin
 val authResponse = StytchClient.sessions.authenticate(Sessions.AuthParams())
-val revokeResponse = StytchCleint.sessions.revoke(Sessions.RevokeParams())
+val revokeResponse = StytchClient.sessions.revoke(Sessions.RevokeParams())
 ```
 Updating a session with tokens retrieved outside of the SDK (for instance, if you create or update a session on your backend, and want to hydrate a client application) can be done using the `updateSession` method:
 ```kotlin
@@ -31,7 +35,7 @@ StytchClient.sessions.updateSession(
     sessionJwt="my-session-jwt"
 )
 ```
-Lastly, to listen for session state changes, you can either subscribe to the `onChange` flow, or provide a callback to the `onChange` method:
+Lastly, to listen for session or user state changes, you can either subscribe to the appropriate `onChange` flow, or provide a callback to the `onChange` method:
 ```kotlin
 viewModelScope.launch {
     StytchClient.sessions.onChange.collect {
@@ -42,6 +46,15 @@ viewModelScope.launch {
         }
     }
 }
+viewModelScope.launch {
+    StytchClient.user.onChange.collect {
+        // it: UserData?
+        when(it) {
+            null -> println("There is no user")
+            else -> println("User exists")
+        }
+    }
+}
 ```
 ```kotlin
 StytchClient.sessions.onChange {
@@ -49,6 +62,13 @@ StytchClient.sessions.onChange {
     when(it) {
         null -> println("No active session")
         else -> println("User has an active session")
+    }
+}
+StytchClient.user.onChange {
+    // it: UserData?
+    when(it) {
+        null -> println("There is no user")
+        else -> println("User exists")
     }
 }
 ```

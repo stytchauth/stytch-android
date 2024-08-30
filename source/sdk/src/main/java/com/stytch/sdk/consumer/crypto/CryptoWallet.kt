@@ -27,12 +27,14 @@ public interface CryptoWallet {
      * @property signature The signature from the message.
      * @property sessionDurationMinutes the length of time in minutes that a session should be minted for
      */
-    public data class AuthenticateParameters(
-        val cryptoWalletAddress: String,
-        val cryptoWalletType: CryptoWalletType,
-        val signature: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val cryptoWalletAddress: String,
+            val cryptoWalletType: CryptoWalletType,
+            val signature: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Begin a crypto wallet authentication flow

@@ -24,31 +24,19 @@ internal class MagicLinksImpl internal constructor(
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
-        var result: AuthResponse
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-
-            // call backend endpoint
-            result =
-                api
-                    .authenticate(
-                        parameters.token,
-                        parameters.sessionDurationMinutes,
-                        codeVerifier,
-                    ).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
-            pkcePairManager.clearPKCECodePair()
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            api
+                .authenticate(
+                    parameters.token,
+                    parameters.sessionDurationMinutes,
+                    codeVerifier,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-
-        return result
     }
 
     override fun authenticate(
@@ -66,12 +54,10 @@ internal class MagicLinksImpl internal constructor(
         override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
-                val challengeCodeMethod: String
                 val challengeCode: String
 
                 try {
                     val challengePair = pkcePairManager.generateAndReturnPKCECodePair()
-                    challengeCodeMethod = challengePair.method
                     challengeCode = challengePair.codeChallenge
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
@@ -117,8 +103,8 @@ internal class MagicLinksImpl internal constructor(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginExpirationMinutes = parameters.loginExpirationMinutes,
+                        signupExpirationMinutes = parameters.signupExpirationMinutes,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
@@ -129,8 +115,8 @@ internal class MagicLinksImpl internal constructor(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginExpirationMinutes = parameters.loginExpirationMinutes,
+                        signupExpirationMinutes = parameters.signupExpirationMinutes,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,

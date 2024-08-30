@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
 import com.stytch.sdk.common.DeeplinkHandledStatus
-import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
@@ -19,10 +18,8 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
-import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
-import com.stytch.sdk.consumer.oauth.OAuth
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -54,12 +51,6 @@ import java.security.KeyStore
 internal class StytchClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
     private val dispatcher = Dispatchers.Unconfined
-
-    @MockK
-    private lateinit var mockMagicLinks: MagicLinks
-
-    @MockK
-    private lateinit var mockOAuth: OAuth
 
     @MockK
     private lateinit var mockPKCEPairManager: PKCEPairManager
@@ -99,8 +90,6 @@ internal class StytchClientTest {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
-        StytchClient.oauth = mockOAuth
-        StytchClient.magicLinks = mockMagicLinks
         StytchClient.externalScope = TestScope()
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchClient.dfpProvider = mockk()
@@ -324,7 +313,7 @@ internal class StytchClientTest {
     fun `handle with coroutines throws StytchSDKNotConfiguredError when not configured`() {
         runBlocking {
             every { StytchApi.isInitialized } returns false
-            StytchClient.handle(mockk(), 30U)
+            StytchClient.handle(mockk(), 30)
         }
     }
 
@@ -338,7 +327,7 @@ internal class StytchClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns null
                 }
-            val response = StytchClient.handle(mockUri, 30U)
+            val response = StytchClient.handle(mockUri, 30)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkMissingTokenError)
         }
@@ -354,45 +343,9 @@ internal class StytchClientTest {
                 mockk<Uri> {
                     every { getQueryParameter(any()) } returns "something unexpected"
                 }
-            val response = StytchClient.handle(mockUri, 30U)
+            val response = StytchClient.handle(mockUri, 30)
             require(response is DeeplinkHandledStatus.NotHandled)
             assert(response.reason is StytchDeeplinkUnkownTokenTypeError)
-        }
-    }
-
-    @Test
-    fun `handle with coroutines delegates to magiclinks when token is MAGIC_LINKS`() {
-        runBlocking {
-            val deviceInfo = DeviceInfo()
-            every { mContextMock.getDeviceInfo() } returns deviceInfo
-            StytchClient.configure(mContextMock, "")
-            val mockUri =
-                mockk<Uri> {
-                    every { getQueryParameter(any()) } returns "MAGIC_LINKS"
-                }
-            val mockAuthResponse = mockk<AuthResponse>()
-            coEvery { mockMagicLinks.authenticate(any()) } returns mockAuthResponse
-            val response = StytchClient.handle(mockUri, 30U)
-            coVerify { mockMagicLinks.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
-        }
-    }
-
-    @Test
-    fun `handle with coroutines delegates to oauth when token is OAUTH`() {
-        runBlocking {
-            val deviceInfo = DeviceInfo()
-            every { mContextMock.getDeviceInfo() } returns deviceInfo
-            StytchClient.configure(mContextMock, "")
-            val mockUri =
-                mockk<Uri> {
-                    every { getQueryParameter(any()) } returns "OAUTH"
-                }
-            val mockAuthResponse = mockk<OAuthAuthenticatedResponse>()
-            coEvery { mockOAuth.authenticate(any()) } returns mockAuthResponse
-            val response = StytchClient.handle(mockUri, 30U)
-            coVerify { mockOAuth.authenticate(any()) }
-            assert(response == DeeplinkHandledStatus.Handled(DeeplinkResponse.Auth(mockAuthResponse)))
         }
     }
 
@@ -404,7 +357,7 @@ internal class StytchClientTest {
                 every { getQueryParameter(any()) } returns null
             }
         val mockCallback = spyk<(DeeplinkHandledStatus) -> Unit>()
-        StytchClient.handle(mockUri, 30u, mockCallback)
+        StytchClient.handle(mockUri, 30, mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

@@ -85,23 +85,25 @@ public interface Organization {
      * @property rbacEmailImplicitRoleAssignments An array of implicit role assignments granted to members in this
      * organization whose emails match the domain.
      */
-    public data class UpdateOrganizationParameters(
-        val organizationName: String? = null,
-        val organizationSlug: String? = null,
-        val organizationLogoUrl: String? = null,
-        val ssoDefaultConnectionId: String? = null,
-        val ssoJitProvisioning: SsoJitProvisioning? = null,
-        val ssoJitProvisioningAllowedConnections: List<String>? = null,
-        val emailAllowedDomains: List<String>? = null,
-        val emailJitProvisioning: EmailJitProvisioning? = null,
-        val emailInvites: EmailInvites? = null,
-        val authMethods: AuthMethods? = null,
-        val allowedAuthMethods: List<AllowedAuthMethods>? = null,
-        val mfaMethods: MfaMethods? = null,
-        val allowedMfaMethods: List<MfaMethod>? = null,
-        val mfaPolicy: MfaPolicy? = null,
-        val rbacEmailImplicitRoleAssignments: List<String>? = null,
-    )
+    public data class UpdateOrganizationParameters
+        @JvmOverloads
+        constructor(
+            val organizationName: String? = null,
+            val organizationSlug: String? = null,
+            val organizationLogoUrl: String? = null,
+            val ssoDefaultConnectionId: String? = null,
+            val ssoJitProvisioning: SsoJitProvisioning? = null,
+            val ssoJitProvisioningAllowedConnections: List<String>? = null,
+            val emailAllowedDomains: List<String>? = null,
+            val emailJitProvisioning: EmailJitProvisioning? = null,
+            val emailInvites: EmailInvites? = null,
+            val authMethods: AuthMethods? = null,
+            val allowedAuthMethods: List<AllowedAuthMethods>? = null,
+            val mfaMethods: MfaMethods? = null,
+            val allowedMfaMethods: List<MfaMethod>? = null,
+            val mfaPolicy: MfaPolicy? = null,
+            val rbacEmailImplicitRoleAssignments: List<String>? = null,
+        )
 
     /**
      * Updates the Organization of the logged-in member.
@@ -230,16 +232,18 @@ public interface Organization {
          * that Member authenticates and becomes active. If false, new Members will be created with status active.
          * @property roles Roles to explicitly assign to this Member.
          */
-        public data class CreateMemberParameters(
-            val emailAddress: String,
-            val name: String? = null,
-            val isBreakGlass: Boolean? = null,
-            val mfaEnrolled: Boolean? = null,
-            val mfaPhoneNumber: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val createMemberAsPending: Boolean? = null,
-            val roles: List<String>? = null,
-        )
+        public data class CreateMemberParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val name: String? = null,
+                val isBreakGlass: Boolean? = null,
+                val mfaEnrolled: Boolean? = null,
+                val mfaPhoneNumber: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val createMemberAsPending: Boolean? = null,
+                val roles: List<String>? = null,
+            )
 
         /**
          * Creates a Member.
@@ -283,18 +287,20 @@ public interface Organization {
          * 1. Which MFA method the Member is prompted to use when logging in
          * 2. Whether An SMS will be sent automatically after completing the first leg of authentication
          */
-        public data class UpdateMemberParameters(
-            val memberId: String,
-            val emailAddress: String? = null,
-            val name: String? = null,
-            val isBreakGlass: Boolean? = null,
-            val mfaEnrolled: Boolean? = null,
-            val mfaPhoneNumber: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val roles: List<String>? = null,
-            val preserveExistingSessions: Boolean? = null,
-            val defaultMfaMethod: MfaMethod? = null,
-        )
+        public data class UpdateMemberParameters
+            @JvmOverloads
+            constructor(
+                val memberId: String,
+                val emailAddress: String? = null,
+                val name: String? = null,
+                val isBreakGlass: Boolean? = null,
+                val mfaEnrolled: Boolean? = null,
+                val mfaPhoneNumber: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val roles: List<String>? = null,
+                val preserveExistingSessions: Boolean? = null,
+                val defaultMfaMethod: MfaMethod? = null,
+            )
 
         /**
          * Updates a Member.
@@ -332,11 +338,13 @@ public interface Organization {
          * Only an operator is required. If you include no operands, no filtering will be applied.
          * If you include no query object, it will return all Members with no filtering applied.
          */
-        public data class SearchParameters(
-            val cursor: String? = null,
-            val limit: Int? = null,
-            val query: SearchQuery? = null,
-        )
+        public data class SearchParameters
+            @JvmOverloads
+            constructor(
+                val cursor: String? = null,
+                val limit: Int? = null,
+                val query: SearchQuery? = null,
+            )
 
         /**
          * A data class representing conditions for a query

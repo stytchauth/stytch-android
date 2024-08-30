@@ -48,53 +48,55 @@ private val INK: Int = Color(0xFFFF354D5A).toArgb()
  * @param hideHeaderText a Boolean that determines whether or not to show the header text on the main UI screen.
  */
 @Parcelize
-public data class StytchTheme(
-    val backgroundColor: Int = WHITE,
-    val primaryTextColor: Int = BLACK,
-    val secondaryTextColor: Int = SLATE,
-    val disabledTextColor: Int = STEEL,
-    val successColor: Int = PINE,
-    val errorColor: Int = MAROON,
-    val socialButtonBackgroundColor: Int = WHITE,
-    val socialButtonTextColor: Int = CHARCOAL,
-    val buttonBackgroundColor: Int = CHARCOAL,
-    val buttonTextColor: Int = WHITE,
-    val buttonBorderColor: Int = CHARCOAL,
-    val buttonBorderRadius: Int = 4,
-    val disabledButtonBackgroundColor: Int = CHALK,
-    val disabledButtonBorderColor: Int = CHALK,
-    val disabledButtonTextColor: Int = STEEL,
-    val inputBorderRadius: Int = 4,
-    val inputBorderColor: Int = CEMENT,
-    val inputBackgroundColor: Int = WHITE,
-    val inputTextColor: Int = CHARCOAL,
-    val inputPlaceholderTextColor: Int = STEEL,
-    val disabledInputBorderColor: Int = FOG,
-    val disabledInputBackgroundColor: Int = CHALK,
-    val disabledInputTextColor: Int = STEEL,
-    val dialogTextColor: Int = CHARCOAL,
-    val hideHeaderText: Boolean = false,
-) : Parcelable {
-    internal companion object {
-        fun defaultDarkTheme(): StytchTheme =
-            StytchTheme(
-                backgroundColor = CHARCOAL,
-                primaryTextColor = WHITE,
-                secondaryTextColor = CEMENT,
-                successColor = MINT,
-                errorColor = PEACH,
-                buttonBackgroundColor = WHITE,
-                buttonTextColor = CHARCOAL,
-                buttonBorderColor = WHITE,
-                disabledButtonBackgroundColor = INK,
-                disabledButtonBorderColor = INK,
-                inputBorderColor = SLATE,
-                inputBackgroundColor = CHARCOAL,
-                inputTextColor = WHITE,
-                disabledInputBorderColor = INK,
-                disabledInputBackgroundColor = INK,
-            )
+public data class StytchTheme
+    @JvmOverloads
+    constructor(
+        val backgroundColor: Int = WHITE,
+        val primaryTextColor: Int = BLACK,
+        val secondaryTextColor: Int = SLATE,
+        val disabledTextColor: Int = STEEL,
+        val successColor: Int = PINE,
+        val errorColor: Int = MAROON,
+        val socialButtonBackgroundColor: Int = WHITE,
+        val socialButtonTextColor: Int = CHARCOAL,
+        val buttonBackgroundColor: Int = CHARCOAL,
+        val buttonTextColor: Int = WHITE,
+        val buttonBorderColor: Int = CHARCOAL,
+        val buttonBorderRadius: Int = 4,
+        val disabledButtonBackgroundColor: Int = CHALK,
+        val disabledButtonBorderColor: Int = CHALK,
+        val disabledButtonTextColor: Int = STEEL,
+        val inputBorderRadius: Int = 4,
+        val inputBorderColor: Int = CEMENT,
+        val inputBackgroundColor: Int = WHITE,
+        val inputTextColor: Int = CHARCOAL,
+        val inputPlaceholderTextColor: Int = STEEL,
+        val disabledInputBorderColor: Int = FOG,
+        val disabledInputBackgroundColor: Int = CHALK,
+        val disabledInputTextColor: Int = STEEL,
+        val dialogTextColor: Int = CHARCOAL,
+        val hideHeaderText: Boolean = false,
+    ) : Parcelable {
+        internal companion object {
+            fun defaultDarkTheme(): StytchTheme =
+                StytchTheme(
+                    backgroundColor = CHARCOAL,
+                    primaryTextColor = WHITE,
+                    secondaryTextColor = CEMENT,
+                    successColor = MINT,
+                    errorColor = PEACH,
+                    buttonBackgroundColor = WHITE,
+                    buttonTextColor = CHARCOAL,
+                    buttonBorderColor = WHITE,
+                    disabledButtonBackgroundColor = INK,
+                    disabledButtonBorderColor = INK,
+                    inputBorderColor = SLATE,
+                    inputBackgroundColor = CHARCOAL,
+                    inputTextColor = WHITE,
+                    disabledInputBorderColor = INK,
+                    disabledInputBackgroundColor = INK,
+                )
 
-        fun defaultLightTheme(): StytchTheme = StytchTheme()
+            fun defaultLightTheme(): StytchTheme = StytchTheme()
+        }
     }
-}

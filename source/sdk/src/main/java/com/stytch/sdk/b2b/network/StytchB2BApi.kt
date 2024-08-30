@@ -209,7 +209,7 @@ internal object StytchB2BApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
@@ -218,7 +218,7 @@ internal object StytchB2BApi {
                         B2BRequests.MagicLinks.AuthenticateRequest(
                             token = token,
                             codeVerifier = codeVerifier,
-                            sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                            sessionDurationMinutes = sessionDurationMinutes,
                             intermediateSessionToken = intermediateSessionToken,
                         ),
                     )
@@ -284,11 +284,11 @@ internal object StytchB2BApi {
     }
 
     internal object Sessions {
-        suspend fun authenticate(sessionDurationMinutes: UInt? = null): StytchResult<SessionsAuthenticateResponseData> =
+        suspend fun authenticate(sessionDurationMinutes: Int? = null): StytchResult<SessionsAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateSessions(
                     CommonRequests.Sessions.AuthenticateRequest(
-                        sessionDurationMinutes = sessionDurationMinutes?.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -300,7 +300,7 @@ internal object StytchB2BApi {
 
         suspend fun exchange(
             organizationId: String,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
             locale: Locale? = null,
         ): StytchResult<SessionExchangeResponseData> =
             safeB2BApiCall {
@@ -308,7 +308,7 @@ internal object StytchB2BApi {
                     B2BRequests.Session.ExchangeRequest(
                         organizationId = organizationId,
                         locale = locale,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -507,7 +507,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             password: String,
             locale: Locale? = null,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
@@ -516,7 +516,7 @@ internal object StytchB2BApi {
                         organizationId = organizationId,
                         emailAddress = emailAddress,
                         password = password,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         intermediateSessionToken = intermediateSessionToken,
                         locale = locale,
                     ),
@@ -529,7 +529,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             loginRedirectUrl: String?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: UInt?,
+            resetPasswordExpirationMinutes: Int?,
             resetPasswordTemplateId: String?,
             codeChallenge: String,
         ): StytchResult<BasicData> =
@@ -540,7 +540,7 @@ internal object StytchB2BApi {
                         emailAddress = emailAddress,
                         loginRedirectUrl = loginRedirectUrl,
                         resetPasswordRedirectUrl = resetPasswordRedirectUrl,
-                        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes?.toInt(),
+                        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
                         resetPasswordTemplateId = resetPasswordTemplateId,
                         codeChallenge = codeChallenge,
                     ),
@@ -550,7 +550,7 @@ internal object StytchB2BApi {
         suspend fun resetByEmail(
             passwordResetToken: String,
             password: String,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
             locale: Locale? = null,
@@ -560,7 +560,7 @@ internal object StytchB2BApi {
                     B2BRequests.Passwords.ResetByEmailRequest(
                         passwordResetToken = passwordResetToken,
                         password = password,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
                         locale = locale,
@@ -573,7 +573,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             existingPassword: String,
             newPassword: String,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
             locale: Locale? = null,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {
@@ -583,7 +583,7 @@ internal object StytchB2BApi {
                         emailAddress = emailAddress,
                         existingPassword = existingPassword,
                         newPassword = newPassword,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         locale = locale,
                     ),
                 )
@@ -631,14 +631,14 @@ internal object StytchB2BApi {
         suspend fun exchangeSession(
             intermediateSessionToken: String? = null,
             organizationId: String,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
         ): StytchResult<IntermediateSessionExchangeResponseData> =
             safeB2BApiCall {
                 apiService.intermediateSessionExchange(
                     B2BRequests.Discovery.SessionExchangeRequest(
                         intermediateSessionToken = intermediateSessionToken,
                         organizationId = organizationId,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -646,7 +646,7 @@ internal object StytchB2BApi {
         @Suppress("LongParameterList")
         suspend fun createOrganization(
             intermediateSessionToken: String? = null,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
             organizationName: String?,
             organizationSlug: String?,
             organizationLogoUrl: String?,
@@ -661,7 +661,7 @@ internal object StytchB2BApi {
                 apiService.createOrganization(
                     B2BRequests.Discovery.CreateRequest(
                         intermediateSessionToken = intermediateSessionToken,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         organizationName = organizationName,
                         organizationSlug = organizationSlug,
                         organizationLogoUrl = organizationLogoUrl,
@@ -679,7 +679,7 @@ internal object StytchB2BApi {
     internal object SSO {
         suspend fun authenticate(
             ssoToken: String,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
             locale: Locale? = null,
@@ -688,7 +688,7 @@ internal object StytchB2BApi {
                 apiService.ssoAuthenticate(
                     B2BRequests.SSO.AuthenticateRequest(
                         ssoToken = ssoToken,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
                         locale = locale,

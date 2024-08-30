@@ -98,23 +98,25 @@ internal class PasskeysImpl internal constructor(
         return try {
             withContext(dispatchers.io) {
                 val startResponse =
-                    api.registerStart(
-                        domain = parameters.domain,
-                        userAgent = WebSettings.getDefaultUserAgent(parameters.activity),
-                        authenticatorType = "platform",
-                        isPasskey = true,
-                    ).getValueOrThrow()
+                    api
+                        .registerStart(
+                            domain = parameters.domain,
+                            userAgent = WebSettings.getDefaultUserAgent(parameters.activity),
+                            authenticatorType = "platform",
+                            isPasskey = true,
+                        ).getValueOrThrow()
                 val credentialResponse =
                     provider.createPublicKeyCredential(
                         startResponse = startResponse,
                         activity = parameters.activity,
                         dispatchers = dispatchers,
                     )
-                api.register(
-                    publicKeyCredential = credentialResponse.registrationResponseJson,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .register(
+                        publicKeyCredential = credentialResponse.registrationResponseJson,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             }
         } catch (e: Exception) {
             StytchResult.Error(StytchInternalError(e))
@@ -137,15 +139,17 @@ internal class PasskeysImpl internal constructor(
             withContext(dispatchers.io) {
                 val startResponse =
                     if (sessionStorage.persistedSessionIdentifiersExist) {
-                        api.authenticateStartSecondary(
-                            domain = parameters.domain,
-                            isPasskey = true,
-                        ).getValueOrThrow()
+                        api
+                            .authenticateStartSecondary(
+                                domain = parameters.domain,
+                                isPasskey = true,
+                            ).getValueOrThrow()
                     } else {
-                        api.authenticateStartPrimary(
-                            domain = parameters.domain,
-                            isPasskey = true,
-                        ).getValueOrThrow()
+                        api
+                            .authenticateStartPrimary(
+                                domain = parameters.domain,
+                                isPasskey = true,
+                            ).getValueOrThrow()
                     }
                 val credentialResponse =
                     provider.getPublicKeyCredential(
@@ -153,12 +157,13 @@ internal class PasskeysImpl internal constructor(
                         activity = parameters.activity,
                         dispatchers = dispatchers,
                     )
-                api.authenticate(
-                    publicKeyCredential = credentialResponse.authenticationResponseJson,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        publicKeyCredential = credentialResponse.authenticationResponseJson,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             }
         } catch (e: Exception) {
             StytchResult.Error(StytchInternalError(e))
@@ -175,14 +180,13 @@ internal class PasskeysImpl internal constructor(
         }
     }
 
-    override suspend fun update(parameters: Passkeys.UpdateParameters): WebAuthnUpdateResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun update(parameters: Passkeys.UpdateParameters): WebAuthnUpdateResponse =
+        withContext(dispatchers.io) {
             api.update(
                 id = parameters.id,
                 name = parameters.name,
             )
         }
-    }
 
     override fun update(
         parameters: Passkeys.UpdateParameters,

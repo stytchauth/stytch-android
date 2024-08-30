@@ -18,13 +18,12 @@ internal class TOTPImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.TOTP,
 ) : TOTP {
-    override suspend fun create(parameters: TOTP.CreateParameters): TOTPCreateResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun create(parameters: TOTP.CreateParameters): TOTPCreateResponse =
+        withContext(dispatchers.io) {
             api.create(
                 expirationMinutes = parameters.expirationMinutes,
             )
         }
-    }
 
     override fun create(
         parameters: TOTP.CreateParameters,
@@ -35,16 +34,16 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse {
-        return withContext(dispatchers.io) {
-            api.authenticate(
-                totpCode = parameters.totpCode,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse =
+        withContext(dispatchers.io) {
+            api
+                .authenticate(
+                    totpCode = parameters.totpCode,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun authenticate(
         parameters: TOTP.AuthenticateParameters,
@@ -55,11 +54,10 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun recoveryCodes(): TOTPRecoveryCodesResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun recoveryCodes(): TOTPRecoveryCodesResponse =
+        withContext(dispatchers.io) {
             api.recoveryCodes()
         }
-    }
 
     override fun recoveryCodes(callback: (TOTPRecoveryCodesResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -67,16 +65,16 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun recover(parameters: TOTP.RecoverParameters): TOTPRecoverResponse {
-        return withContext(dispatchers.io) {
-            api.recover(
-                recoveryCode = parameters.recoveryCode,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override suspend fun recover(parameters: TOTP.RecoverParameters): TOTPRecoverResponse =
+        withContext(dispatchers.io) {
+            api
+                .recover(
+                    recoveryCode = parameters.recoveryCode,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun recover(
         parameters: TOTP.RecoverParameters,

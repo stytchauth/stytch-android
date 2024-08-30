@@ -14,8 +14,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class OAuthOptions(
-    val loginRedirectURL: String? = null,
-    val signupRedirectURL: String? = null,
-    val providers: List<OAuthProvider> = emptyList(),
-) : Parcelable
+public data class OAuthOptions
+    @JvmOverloads
+    constructor(
+        val loginRedirectURL: String? = null,
+        val signupRedirectURL: String? = null,
+        val providers: List<OAuthProvider> = emptyList(),
+    ) : Parcelable

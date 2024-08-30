@@ -143,25 +143,25 @@ sealed class Screen(
     val route: String,
     @StringRes val resourceId: Int,
 ) {
-    object Main : Screen("main", R.string.home)
+    data object Main : Screen("main", R.string.home)
 
-    object Passwords : Screen("passwords", R.string.passwords)
+    data object Passwords : Screen("passwords", R.string.passwords)
 
-    object Discovery : Screen("discovery", R.string.discovery)
+    data object Discovery : Screen("discovery", R.string.discovery)
 
-    object SSO : Screen("sso", R.string.sso)
+    data object SSO : Screen("sso", R.string.sso)
 
-    object Member : Screen("member", R.string.member)
+    data object Member : Screen("member", R.string.member)
 
-    object Organization : Screen("organization", R.string.organization)
+    data object Organization : Screen("organization", R.string.organization)
 
-    object OTP : Screen("otp", R.string.otp)
+    data object OTP : Screen("otp", R.string.otp)
 
-    object TOTP : Screen("totp", R.string.totp)
+    data object TOTP : Screen("totp", R.string.totp)
 
-    object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes)
+    data object RecoveryCodes : Screen("recovery-codes", R.string.recovery_codes)
 
-    object OAuth : Screen("oauth", R.string.oauth)
+    data object OAuth : Screen("oauth", R.string.oauth)
 
-    object SCIM : Screen("scim", R.string.scim_scim)
+    data object SCIM : Screen("scim", R.string.scim_scim)
 }

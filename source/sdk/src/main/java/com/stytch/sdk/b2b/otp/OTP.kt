@@ -33,14 +33,16 @@ public interface OTP {
          * @property enableAutofill indicates whether the SMS message should include autofill metadata
          * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
          */
-        public data class SendParameters(
-            val organizationId: String,
-            val memberId: String,
-            val mfaPhoneNumber: String? = null,
-            val locale: Locale? = null,
-            val enableAutofill: Boolean = false,
-            val autofillSessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        )
+        public data class SendParameters
+            @JvmOverloads
+            constructor(
+                val organizationId: String,
+                val memberId: String,
+                val mfaPhoneNumber: String? = null,
+                val locale: Locale? = null,
+                val enableAutofill: Boolean = false,
+                val autofillSessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            )
 
         /**
          * Send a one-time passcode (OTP) to a user using their phone number via SMS.
@@ -69,13 +71,15 @@ public interface OTP {
          * false. If not set, does not affect the member's MFA enrollment.
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
-        public data class AuthenticateParameters(
-            val organizationId: String,
-            val memberId: String,
-            val code: String,
-            val setMFAEnrollment: SetMFAEnrollment? = null,
-            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        )
+        public data class AuthenticateParameters
+            @JvmOverloads
+            constructor(
+                val organizationId: String,
+                val memberId: String,
+                val code: String,
+                val setMFAEnrollment: SetMFAEnrollment? = null,
+                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            )
 
         /**
          * Authenticate a one-time passcode (OTP) sent to a user via SMS.

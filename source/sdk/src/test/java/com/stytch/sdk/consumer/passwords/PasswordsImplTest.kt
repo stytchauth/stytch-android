@@ -173,6 +173,7 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmail returns error if codeVerifier fails`() =
         runTest {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.resetByEmail(resetByEmailParameters)
             assert(response is StytchResult.Error)
         }
@@ -190,6 +191,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmail with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.resetByEmail(resetByEmailParameters, mockCallback)
         verify { mockCallback.invoke(any()) }

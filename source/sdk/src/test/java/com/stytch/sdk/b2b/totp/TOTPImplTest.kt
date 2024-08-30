@@ -74,7 +74,7 @@ internal class TOTPImplTest {
     fun `TOTP create delegates to the API`() =
         runTest {
             coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
-            val response = impl.create(TOTP.CreateParameters("", "", 30U))
+            val response = impl.create(TOTP.CreateParameters("", "", 30))
             assert(response is StytchResult.Success)
             coVerify { mockApi.create(any(), any(), any()) }
         }
@@ -83,7 +83,7 @@ internal class TOTPImplTest {
     fun `TOTP create with callback calls callback`() {
         coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
         val mockCallback = spyk<(TOTPCreateResponse) -> Unit>()
-        impl.create(TOTP.CreateParameters("", "", 30U), mockCallback)
+        impl.create(TOTP.CreateParameters("", "", 30), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 

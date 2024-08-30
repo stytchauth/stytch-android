@@ -16,10 +16,12 @@ public interface MagicLinks {
      * @property token is the unique sequence of characters used to log in
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val token: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Public variable that exposes an instance of EmailMagicLinks
@@ -68,16 +70,18 @@ public interface MagicLinks {
          * if no value is provided, the copy defaults to English.
          */
         @Parcelize
-        public data class Parameters(
-            val email: String,
-            val loginMagicLinkUrl: String? = null,
-            val signupMagicLinkUrl: String? = null,
-            val loginExpirationMinutes: UInt? = null,
-            val signupExpirationMinutes: UInt? = null,
-            val loginTemplateId: String? = null,
-            val signupTemplateId: String? = null,
-            val locale: Locale? = null,
-        ) : Parcelable
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val email: String,
+                val loginMagicLinkUrl: String? = null,
+                val signupMagicLinkUrl: String? = null,
+                val loginExpirationMinutes: Int? = null,
+                val signupExpirationMinutes: Int? = null,
+                val loginTemplateId: String? = null,
+                val signupTemplateId: String? = null,
+                val locale: Locale? = null,
+            ) : Parcelable
 
         /**
          * Send either a login or signup magic link to the user based on if the email is associated with a user already.

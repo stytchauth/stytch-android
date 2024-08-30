@@ -81,12 +81,10 @@ internal class PasswordsImpl internal constructor(
         val result: BaseResponse
 
         withContext(dispatchers.io) {
-            val challengeCodeMethod: String
             val challengeCode: String
 
             try {
                 val challengePair = pkcePairManager.generateAndReturnPKCECodePair()
-                challengeCodeMethod = challengePair.method
                 challengeCode = challengePair.codeChallenge
             } catch (ex: Exception) {
                 result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
@@ -98,9 +96,9 @@ internal class PasswordsImpl internal constructor(
                     email = parameters.email,
                     codeChallenge = challengeCode,
                     loginRedirectUrl = parameters.loginRedirectUrl,
-                    loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
+                    loginExpirationMinutes = parameters.loginExpirationMinutes,
                     resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
-                    resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes?.toInt(),
+                    resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
                 )
         }
@@ -118,32 +116,20 @@ internal class PasswordsImpl internal constructor(
     }
 
     override suspend fun resetByEmail(parameters: Passwords.ResetByEmailParameters): AuthResponse {
-        val result: AuthResponse
-
-        // call backend endpoint
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-
-            result =
-                api
-                    .resetByEmail(
-                        parameters.token,
-                        parameters.password,
-                        parameters.sessionDurationMinutes,
-                        codeVerifier,
-                    ).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
-            pkcePairManager.clearPKCECodePair()
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            api
+                .resetByEmail(
+                    parameters.token,
+                    parameters.password,
+                    parameters.sessionDurationMinutes,
+                    codeVerifier,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-
-        return result
     }
 
     override fun resetByEmail(

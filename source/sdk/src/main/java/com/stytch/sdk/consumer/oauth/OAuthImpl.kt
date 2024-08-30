@@ -57,18 +57,19 @@ internal class OAuthImpl(
                         StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
                         return@withContext StytchResult.Error(StytchMissingPKCEError(null))
                     }
-            api.authenticateWithThirdPartyToken(
-                token = parameters.token,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                codeVerifier = pkce,
-            ).apply {
-                pkcePairManager.clearPKCECodePair()
-                when (this) {
-                    is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
-                    is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
+            api
+                .authenticateWithThirdPartyToken(
+                    token = parameters.token,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = pkce,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    when (this) {
+                        is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
+                        is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
+                    }
+                    launchSessionUpdater(dispatchers, sessionStorage)
                 }
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
         }
     }
 

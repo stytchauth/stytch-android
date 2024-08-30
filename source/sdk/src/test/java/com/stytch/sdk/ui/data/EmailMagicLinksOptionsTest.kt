@@ -18,8 +18,8 @@ internal class EmailMagicLinksOptionsTest {
                 email = "my@email.com",
                 loginMagicLinkUrl = "stytchui-publicToken://deeplink",
                 signupMagicLinkUrl = "stytchui-publicToken://deeplink",
-                loginExpirationMinutes = options.loginExpirationMinutes?.toUInt(),
-                signupExpirationMinutes = options.signupExpirationMinutes?.toUInt(),
+                loginExpirationMinutes = options.loginExpirationMinutes,
+                signupExpirationMinutes = options.signupExpirationMinutes,
                 loginTemplateId = options.loginTemplateId,
                 signupTemplateId = options.signupTemplateId,
             )

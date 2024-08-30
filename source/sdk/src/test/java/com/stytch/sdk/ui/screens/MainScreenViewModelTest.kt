@@ -18,7 +18,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -39,20 +38,21 @@ import java.security.KeyStore
 internal class MainScreenViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
-    private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: MainScreenViewModel
+    private lateinit var mockStytchClient: StytchClient
 
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
+        mockkStatic(StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
-        every { mockStytchClient.events } returns
-            mockk(relaxed = true) {
-                every { logEvent(any(), any()) } just runs
+        mockStytchClient =
+            mockk {
+                every { events } returns
+                    mockk(relaxed = true) {
+                        every { logEvent(any(), any()) } just runs
+                    }
             }
         viewModel = spyk(MainScreenViewModel(savedStateHandle, mockStytchClient))
     }
@@ -436,7 +436,7 @@ internal class MainScreenViewModelTest {
             viewModel.onPhoneNumberChanged("5555555555")
             val mockOptions: OTPOptions =
                 mockk {
-                    every { toWhatsAppOtpParameters(any()) } returns mockk()
+                    every { toWhatsAppOtpParameters(any()) } returns mockk(relaxed = true)
                 }
             coEvery { mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns
                 StytchResult.Success(

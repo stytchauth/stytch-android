@@ -26,20 +26,24 @@ public interface TOTP {
      * @property totpCode The TOTP code to authenticate. The TOTP code should consist of 6 digits.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthenticateParameters(
-        val totpCode: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val totpCode: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * A data class wrapping the parameters use in a TOTP recover request
      * @property recoveryCode The recovery code to authenticate.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class RecoverParameters(
-        val recoveryCode: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class RecoverParameters
+        @JvmOverloads
+        constructor(
+            val recoveryCode: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      *  Call this method to create a new TOTP instance for a user. The user can use the authenticator application of

@@ -156,6 +156,7 @@ internal class PasswordsImplTest {
     @Test
     fun `PasswordsImpl resetByEmail returns error if codeVerifier fails`() =
         runTest {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Error)
         }

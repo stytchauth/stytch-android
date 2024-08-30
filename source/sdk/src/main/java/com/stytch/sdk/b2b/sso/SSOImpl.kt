@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b.sso
 
-import android.net.Uri
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
@@ -21,6 +20,7 @@ import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
+import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,21 +32,6 @@ internal class SSOImpl(
     private val api: StytchB2BApi.SSO,
     private val pkcePairManager: PKCEPairManager,
 ) : SSO {
-    internal fun buildUri(
-        host: String,
-        parameters: Map<String, String?>,
-    ): Uri =
-        Uri
-            .parse("${host}public/sso/start")
-            .buildUpon()
-            .apply {
-                parameters.forEach {
-                    if (it.value != null) {
-                        appendQueryParameter(it.key, it.value)
-                    }
-                }
-            }.build()
-
     override fun start(params: SSO.StartParams) {
         val host =
             StytchB2BClient.bootstrapData.cnameDomain?.let {
@@ -60,36 +45,28 @@ internal class SSOImpl(
                 "login_redirect_url" to params.loginRedirectUrl,
                 "signup_redirect_url" to params.signupRedirectUrl,
             )
-        val requestUri = buildUri(host, potentialParameters)
+        val requestUri = buildUri("${host}public/sso/start", potentialParameters)
         val intent = SSOManagerActivity.createBaseIntent(params.context)
         intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
         params.context.startActivityForResult(intent, params.ssoAuthRequestIdentifier)
     }
 
     override suspend fun authenticate(params: SSO.AuthenticateParams): SSOAuthenticateResponse {
-        val result: SSOAuthenticateResponse
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-            result =
-                api
-                    .authenticate(
-                        ssoToken = params.ssoToken,
-                        sessionDurationMinutes = params.sessionDurationMinutes,
-                        codeVerifier = codeVerifier,
-                        intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                        locale = params.locale,
-                    ).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
-            pkcePairManager.clearPKCECodePair()
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            api
+                .authenticate(
+                    ssoToken = params.ssoToken,
+                    sessionDurationMinutes = params.sessionDurationMinutes,
+                    codeVerifier = codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    locale = params.locale,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-        return result
     }
 
     override fun authenticate(

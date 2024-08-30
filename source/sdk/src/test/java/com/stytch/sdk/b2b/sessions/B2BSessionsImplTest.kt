@@ -47,7 +47,7 @@ internal class B2BSessionsImplTest {
     private val dispatcher = Dispatchers.Unconfined
 
     private val successfulAuthResponse = StytchResult.Success<SessionsAuthenticateResponseData>(mockk(relaxed = true))
-    private val authParameters = B2BSessions.AuthParams(sessionDurationMinutes = 30U)
+    private val authParameters = B2BSessions.AuthParams(sessionDurationMinutes = 30)
     private val successfulExchangeResponse = StytchResult.Success<SessionExchangeResponseData>(mockk(relaxed = true))
 
     @Before
@@ -186,7 +186,7 @@ internal class B2BSessionsImplTest {
     fun `SessionsImpl exchange delegates to the api`() =
         runTest {
             coEvery { mockApi.exchange(any(), any()) } returns successfulExchangeResponse
-            impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123", sessionDurationMinutes = 30U))
+            impl.exchange(B2BSessions.ExchangeParameters(organizationId = "test-123", sessionDurationMinutes = 30))
             coVerify(exactly = 1) { mockApi.exchange(any(), any()) }
             verify { successfulExchangeResponse.launchSessionUpdater(any(), any()) }
         }
@@ -198,7 +198,7 @@ internal class B2BSessionsImplTest {
         impl.exchange(
             B2BSessions.ExchangeParameters(
                 organizationId = "test-123",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             ),
             callback = mockCallback,
         )

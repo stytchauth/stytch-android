@@ -29,19 +29,19 @@ internal class OAuthImpl(
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
-    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse =
-        withContext(dispatchers.io) {
-            val pkce =
-                pkcePairManager.getPKCECodePair()?.codeVerifier
-                    ?: run {
-                        StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
-                        return@withContext StytchResult.Error(StytchMissingPKCEError(null))
-                    }
+    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse {
+        val pkce =
+            pkcePairManager.getPKCECodePair()?.codeVerifier
+                ?: run {
+                    StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
+                    return StytchResult.Error(StytchMissingPKCEError(null))
+                }
+        return withContext(dispatchers.io) {
             api
                 .authenticate(
                     oauthToken = parameters.oauthToken,
                     locale = parameters.locale,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
                     pkceCodeVerifier = pkce,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
@@ -58,6 +58,7 @@ internal class OAuthImpl(
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
+    }
 
     override fun authenticate(
         parameters: OAuth.AuthenticateParameters,

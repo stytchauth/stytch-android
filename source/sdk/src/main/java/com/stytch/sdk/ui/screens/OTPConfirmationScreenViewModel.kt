@@ -67,7 +67,7 @@ internal class OTPConfirmationScreenViewModel(
                     is OTPDetails.EmailOTP -> resendParameters.parameters.expirationMinutes
                     is OTPDetails.SmsOTP -> resendParameters.parameters.expirationMinutes
                     is OTPDetails.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
-                } * 60U
+                } * 60
             ).toLong()
         resendCountdownSeconds = countdownSeconds
         scope.launch {
@@ -98,7 +98,7 @@ internal class OTPConfirmationScreenViewModel(
                         OTP.AuthParameters(
                             token = token,
                             methodId = methodId,
-                            sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                            sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
                         ),
                     )
             ) {

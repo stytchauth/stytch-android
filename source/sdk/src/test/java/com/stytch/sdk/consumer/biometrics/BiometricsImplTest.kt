@@ -282,12 +282,12 @@ internal class BiometricsImplTest {
                 )
             every { EncryptionManager.signEd25519Challenge(any(), any()) } returns "signature"
             val mockResponse = mockk<StytchResult.Success<BiometricsAuthData>>(relaxed = true)
-            coEvery { mockApi.register("signature", "biometricRegistrationId", 30U) } returns mockResponse
+            coEvery { mockApi.register("signature", "biometricRegistrationId", 30) } returns mockResponse
             every { mockStorageHelper.saveValue(any(), any()) } just runs
             every { mockResponse.launchSessionUpdater(any(), any()) } just runs
-            val result = impl.register(Biometrics.RegisterParameters(mockk(), 30U))
+            val result = impl.register(Biometrics.RegisterParameters(mockk(), 30))
             assert(result is StytchResult.Success)
-            coVerify { mockApi.register("signature", "biometricRegistrationId", 30U) }
+            coVerify { mockApi.register("signature", "biometricRegistrationId", 30) }
             verify { mockResponse.launchSessionUpdater(any(), any()) }
             verify { mockStorageHelper.saveValue(LAST_USED_BIOMETRIC_REGISTRATION_ID, "biometricRegistrationId") }
             verify { mockStorageHelper.saveValue(PRIVATE_KEY_KEY, base64EncodedString) }
@@ -439,11 +439,11 @@ internal class BiometricsImplTest {
                 )
             every { EncryptionManager.signEd25519Challenge(any(), any()) } returns "signature"
             val mockResponse = mockk<StytchResult.Success<BiometricsAuthData>>(relaxed = true)
-            coEvery { mockApi.authenticate("signature", "biometricRegistrationId", 30U) } returns mockResponse
+            coEvery { mockApi.authenticate("signature", "biometricRegistrationId", 30) } returns mockResponse
             every { mockResponse.launchSessionUpdater(any(), any()) } just runs
-            val result = impl.authenticate(Biometrics.AuthenticateParameters(mockk(), 30U))
+            val result = impl.authenticate(Biometrics.AuthenticateParameters(mockk(), 30))
             assert(result is StytchResult.Success)
-            coVerify { mockApi.authenticate("signature", "biometricRegistrationId", 30U) }
+            coVerify { mockApi.authenticate("signature", "biometricRegistrationId", 30) }
             verify { mockResponse.launchSessionUpdater(any(), any()) }
         }
 

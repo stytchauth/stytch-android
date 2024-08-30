@@ -18,13 +18,13 @@ internal const val CODE_CHALLENGE_BYTE_COUNT = 32
  * The default time that a created session will be valid. This is used if you do not provide a session duration
  * to an authentication call, and defaults to the shortest valid session duration supported by Stytch (5 minutes)
  */
-public const val DEFAULT_SESSION_TIME_MINUTES: UInt = 5u
+public const val DEFAULT_SESSION_TIME_MINUTES: Int = 5
 
 /**
  * The default time that an OTP code will be valid. This is used if you do not provide an expiration duration
  * to an OTP loginOrCreate or send call
  */
-public const val DEFAULT_OTP_EXPIRATION_TIME_MINUTES: UInt = 10u
+public const val DEFAULT_OTP_EXPIRATION_TIME_MINUTES: Int = 10
 
 internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
 internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"

@@ -106,7 +106,7 @@ internal class SetPasswordScreenViewModel(
                 Passwords.ResetByEmailParameters(
                     token = token,
                     password = password,
-                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                    sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
                 )
             when (val result = stytchClient.passwords.resetByEmail(parameters)) {
                 is StytchResult.Success ->

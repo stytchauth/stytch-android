@@ -53,7 +53,7 @@ internal class OTPImpl(
                         memberId = parameters.memberId,
                         code = parameters.code,
                         setMFAEnrollment = parameters.setMFAEnrollment,
-                        sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
                         intermediateSessionToken = sessionStorage.intermediateSessionToken,
                     ).apply {
                         launchSessionUpdater(dispatchers, sessionStorage)

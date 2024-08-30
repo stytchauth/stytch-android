@@ -21,11 +21,13 @@ public interface OTP {
      * @property methodId the identifier returned from the corresponding loginOrCreate or send method
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val token: String,
-        val methodId: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val methodId: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Public variable that exposes an instance of SMS OTP
@@ -80,13 +82,15 @@ public interface OTP {
          * if no value is provided, the copy defaults to English.
          */
         @Parcelize
-        public data class Parameters(
-            val phoneNumber: String,
-            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            val enableAutofill: Boolean = false,
-            val autofillSessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-            val locale: Locale? = null,
-        ) : Parcelable
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val phoneNumber: String,
+                val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                val enableAutofill: Boolean = false,
+                val autofillSessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val locale: Locale? = null,
+            ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their phone number via SMS. If the phone number is not
@@ -138,10 +142,12 @@ public interface OTP {
          * @property expirationMinutes indicates how long the OTP should last before it expires
          */
         @Parcelize
-        public data class Parameters(
-            val phoneNumber: String,
-            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-        ) : Parcelable
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val phoneNumber: String,
+                val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+            ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their phone number via WhatsApp. If the phone number is not
@@ -198,12 +204,14 @@ public interface OTP {
          * Magic links - Sign-up.
          */
         @Parcelize
-        public data class Parameters(
-            val email: String,
-            val expirationMinutes: UInt = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
-            val loginTemplateId: String? = null,
-            val signupTemplateId: String? = null,
-        ) : Parcelable
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val email: String,
+                val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                val loginTemplateId: String? = null,
+                val signupTemplateId: String? = null,
+            ) : Parcelable
 
         /**
          * Send a one-time passcode (OTP) to a user using their email address. If the email address is not associated
