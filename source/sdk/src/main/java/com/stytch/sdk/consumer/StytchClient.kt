@@ -6,6 +6,7 @@ import android.net.Uri
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
@@ -581,4 +582,14 @@ public object StytchClient {
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 
     internal fun startSmsRetriever(sessionDurationMinutes: Int) = smsRetriever.start(sessionDurationMinutes)
+
+    /**
+     * Retrieve the token and a concrete token type from a deeplink
+     */
+    @JvmStatic
+    public fun parseDeeplink(uri: Uri): DeeplinkTokenPair =
+        DeeplinkTokenPair(
+            tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
+            token = uri.getQueryParameter(QUERY_TOKEN),
+        )
 }

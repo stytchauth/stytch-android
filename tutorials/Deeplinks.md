@@ -57,23 +57,26 @@ When you receive the `intent.data`, what you're getting back is just a URI objec
 In our viewmodel, lets handle the following deeplink URL: `my-app://stytch-auth?stytch_token_type=magic_links&token=some-encrypted-token`
 ```kotlin
 fun handleDeeplink(uri: URI) {
-    val tokenType = uri.getQueryParameter("stytch_token_type") ?:return
-    val token = uri.getQueryParameter("token") ?: return
-    // at this point, we know what the token and product is, and can
-    // authenticate it directly (condensed for brevity)
+    val (tokenType, token) = StytchClient.parseDeeplink(uri)
+    token ?: return
     viewModelScope.launch {
-        if (tokenType == "magic_links") {
-            val result = StytchClient.magicLinks.authenticate(
-                MagicLinks.AuthParameters(token, 30)
-            )
-            when (result) {
-                is StytchResult.Success -> {
-                    // user is authenticated!
-                }
-                is StytchResult.Error -> {
-                    // something went wrong
+        when (tokenType as ConsumerTokenType) {
+            ConsumerTokenType.MAGIC_LINKS -> {
+                val result =
+                    StytchClient.magicLinks.authenticate(
+                        MagicLinks.AuthParameters(token, 30),
+                    )
+                when (result) {
+                    is StytchResult.Success -> {
+                        // user is authenticated!
+                    }
+
+                    is StytchResult.Error -> {
+                        // something went wrong
+                    }
                 }
             }
+            else -> {}
         }
     }
 }
