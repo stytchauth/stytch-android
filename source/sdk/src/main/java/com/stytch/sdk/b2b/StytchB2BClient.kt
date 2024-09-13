@@ -646,6 +646,7 @@ public object StytchB2BClient {
     /**
      * Retrieve the token and a concrete token type from a deeplink
      */
+    @JvmStatic
     public fun parseDeeplink(uri: Uri): DeeplinkTokenPair =
         DeeplinkTokenPair(
             tokenType = B2BTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),

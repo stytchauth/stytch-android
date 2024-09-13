@@ -586,6 +586,7 @@ public object StytchClient {
     /**
      * Retrieve the token and a concrete token type from a deeplink
      */
+    @JvmStatic
     public fun parseDeeplink(uri: Uri): DeeplinkTokenPair =
         DeeplinkTokenPair(
             tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
