@@ -123,22 +123,17 @@ public interface SCIM {
      * Gets the SCIM connection for an organization.
      * This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection get-connection} endpoint. The
      * caller must have permission to view SCIM via the project's RBAC policy & their role assignments.
-     * @param connectionId the ID of the connection to get
      * @return [SCIMGetConnectionResponse]
      */
-    public suspend fun getConnection(connectionId: String): SCIMGetConnectionResponse
+    public suspend fun getConnection(): SCIMGetConnectionResponse
 
     /**
      * Gets the SCIM connection for an organization.
      * This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection get-connection} endpoint. The
      * caller must have permission to view SCIM via the project's RBAC policy & their role assignments.
-     * @param connectionId the ID of the connection to get
      * @param callback a callback that receives a [SCIMGetConnectionResponse]
      */
-    public fun getConnection(
-        connectionId: String,
-        callback: (SCIMGetConnectionResponse) -> Unit,
-    )
+    public fun getConnection(callback: (SCIMGetConnectionResponse) -> Unit)
 
     /**
      * Gets all groups associated with an organization's SCIM connection.

@@ -66,11 +66,7 @@ class SCIMViewModel : ViewModel() {
 
     fun getConnection() {
         viewModelScope.launchAndToggleLoadingState {
-            _currentResponse.value =
-                StytchB2BClient.scim
-                    .getConnection(
-                        connectionId = connectionIdState.text,
-                    ).toFriendlyDisplay()
+            _currentResponse.value = StytchB2BClient.scim.getConnection().toFriendlyDisplay()
         }
     }
 

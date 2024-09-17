@@ -69,17 +69,14 @@ internal class SCIMImpl(
         }
     }
 
-    override suspend fun getConnection(connectionId: String): SCIMGetConnectionResponse =
+    override suspend fun getConnection(): SCIMGetConnectionResponse =
         withContext(dispatchers.io) {
             api.getConnection()
         }
 
-    override fun getConnection(
-        connectionId: String,
-        callback: (SCIMGetConnectionResponse) -> Unit,
-    ) {
+    override fun getConnection(callback: (SCIMGetConnectionResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
-            callback(getConnection(connectionId))
+            callback(getConnection())
         }
     }
 
