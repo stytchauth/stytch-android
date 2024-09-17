@@ -132,7 +132,7 @@ internal class SCIMImplTest {
     @Test
     fun `SCIMImpl getConnection delegates to api`() =
         runTest {
-            val response = impl.getConnection("connection-id")
+            val response = impl.getConnection()
             assert(response is StytchResult.Success)
             coVerify { mockApi.getConnection() }
         }
@@ -140,7 +140,7 @@ internal class SCIMImplTest {
     @Test
     fun `SCIMImpl getConnection with callback calls callback method`() {
         val mockCallback = spyk<(SCIMGetConnectionResponse) -> Unit>()
-        impl.getConnection("connection-id", mockCallback)
+        impl.getConnection(mockCallback)
         verify { mockCallback.invoke(mockGetResponse) }
     }
 
