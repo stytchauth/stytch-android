@@ -10,9 +10,12 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class SessionsImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -56,9 +59,7 @@ internal class SessionsImpl internal constructor(
             }
         }
 
-    override fun getSync(): SessionData? {
-        return sessionStorage.session
-    }
+    override fun getSync(): SessionData? = sessionStorage.session
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse {
         val result: AuthResponse
@@ -66,11 +67,12 @@ internal class SessionsImpl internal constructor(
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
             result =
-                api.authenticate(
-                    authParams.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        authParams.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
         }
         return result
     }
@@ -86,6 +88,12 @@ internal class SessionsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(authParams: Sessions.AuthParams): CompletableFuture<AuthResponse> =
+        externalScope
+            .async {
+                authenticate(authParams)
+            }.asCompletableFuture()
 
     override suspend fun revoke(params: Sessions.RevokeParams): BaseResponse {
         var result: BaseResponse
@@ -114,6 +122,12 @@ internal class SessionsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun revokeCompletable(params: Sessions.RevokeParams): CompletableFuture<BaseResponse> =
+        externalScope
+            .async {
+                revoke(params)
+            }.asCompletableFuture()
 
     /**
      * @throws StytchInternalError if failed to save data

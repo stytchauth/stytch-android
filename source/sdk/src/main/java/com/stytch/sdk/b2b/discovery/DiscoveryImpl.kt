@@ -7,8 +7,11 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class DiscoveryImpl(
     private val externalScope: CoroutineScope,
@@ -16,11 +19,10 @@ internal class DiscoveryImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Discovery,
 ) : Discovery {
-    override suspend fun listOrganizations(): DiscoverOrganizationsResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun listOrganizations(): DiscoverOrganizationsResponse =
+        withContext(dispatchers.io) {
             api.discoverOrganizations(sessionStorage.intermediateSessionToken)
         }
-    }
 
     override fun listOrganizations(callback: (DiscoverOrganizationsResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -28,17 +30,22 @@ internal class DiscoveryImpl(
         }
     }
 
+    override fun listOrganizationsCompletable(): CompletableFuture<DiscoverOrganizationsResponse> =
+        externalScope
+            .async {
+                listOrganizations()
+            }.asCompletableFuture()
+
     override suspend fun exchangeIntermediateSession(
         parameters: Discovery.SessionExchangeParameters,
-    ): IntermediateSessionExchangeResponse {
-        return withContext(dispatchers.io) {
+    ): IntermediateSessionExchangeResponse =
+        withContext(dispatchers.io) {
             api.exchangeSession(
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 organizationId = parameters.organizationId,
                 sessionDurationMinutes = parameters.sessionDurationMinutes,
             )
         }
-    }
 
     override fun exchangeIntermediateSession(
         parameters: Discovery.SessionExchangeParameters,
@@ -50,10 +57,18 @@ internal class DiscoveryImpl(
         }
     }
 
+    override fun exchangeIntermediateSessionCompletable(
+        parameters: Discovery.SessionExchangeParameters,
+    ): CompletableFuture<IntermediateSessionExchangeResponse> =
+        externalScope
+            .async {
+                exchangeIntermediateSession(parameters)
+            }.asCompletableFuture()
+
     override suspend fun createOrganization(
         parameters: Discovery.CreateOrganizationParameters,
-    ): OrganizationCreateResponse {
-        return withContext(dispatchers.io) {
+    ): OrganizationCreateResponse =
+        withContext(dispatchers.io) {
             api.createOrganization(
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 organizationName = parameters.organizationName,
@@ -68,7 +83,6 @@ internal class DiscoveryImpl(
                 allowedAuthMethods = parameters.allowedAuthMethods,
             )
         }
-    }
 
     override fun createOrganization(
         parameters: Discovery.CreateOrganizationParameters,
@@ -79,4 +93,12 @@ internal class DiscoveryImpl(
             callback(result)
         }
     }
+
+    override fun createOrganizationCompletable(
+        parameters: Discovery.CreateOrganizationParameters,
+    ): CompletableFuture<OrganizationCreateResponse> =
+        externalScope
+            .async {
+                createOrganization(parameters)
+            }.asCompletableFuture()
 }

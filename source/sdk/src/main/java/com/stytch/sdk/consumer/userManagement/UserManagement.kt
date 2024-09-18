@@ -7,6 +7,7 @@ import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
@@ -37,6 +38,12 @@ public interface UserManagement {
     public fun getUser(callback: (UserResponse) -> Unit)
 
     /**
+     * Fetches a user from the current session
+     * @return [UserResponse]
+     */
+    public fun getUserCompletable(): CompletableFuture<UserResponse>
+
+    /**
      * Get user from memory without making a network call
      * @return [UserData]
      */
@@ -56,6 +63,12 @@ public interface UserManagement {
         factor: UserAuthenticationFactor,
         callback: (DeleteFactorResponse) -> Unit,
     )
+
+    /**
+     * Deletes a [UserAuthenticationFactor] from the currently authenticated user
+     * @return [DeleteFactorResponse]
+     */
+    public fun deleteFactorCompletable(factor: UserAuthenticationFactor): CompletableFuture<DeleteFactorResponse>
 
     /**
      * Data class used for wrapping parameters used with User updates
@@ -87,6 +100,13 @@ public interface UserManagement {
     )
 
     /**
+     * Updates the currently authenticated user
+     * @param params required to udpate the user
+     * @return [UpdateUserResponse]
+     */
+    public fun updateCompletable(params: UpdateParams): CompletableFuture<UpdateUserResponse>
+
+    /**
      * Data class used for wrapping parameters used for searching Users
      * @property email the email address to search for
      */
@@ -110,4 +130,11 @@ public interface UserManagement {
         params: SearchParams,
         callback: (SearchUserResponse) -> Unit,
     )
+
+    /**
+     * Searches for the specified user
+     * @param params required for searching users
+     * @return [SearchUserResponse]
+     */
+    public fun searchCompletable(params: SearchParams): CompletableFuture<SearchUserResponse>
 }

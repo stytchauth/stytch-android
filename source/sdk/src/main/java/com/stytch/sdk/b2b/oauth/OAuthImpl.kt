@@ -15,8 +15,11 @@ import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -68,6 +71,14 @@ internal class OAuthImpl(
             callback(authenticate(parameters))
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: OAuth.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 
     private inner class ProviderImpl(
         private val providerName: String,
@@ -162,5 +173,13 @@ internal class OAuthImpl(
                 callback(authenticate(parameters))
             }
         }
+
+        override fun authenticateCompletable(
+            parameters: OAuth.Discovery.DiscoveryAuthenticateParameters,
+        ): CompletableFuture<OAuthDiscoveryAuthenticateResponse> =
+            externalScope
+                .async {
+                    authenticate(parameters)
+                }.asCompletableFuture()
     }
 }

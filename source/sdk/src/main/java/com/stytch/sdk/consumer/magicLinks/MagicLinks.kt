@@ -6,6 +6,7 @@ import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import kotlinx.parcelize.Parcelize
+import java.util.concurrent.CompletableFuture
 
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
@@ -46,6 +47,14 @@ public interface MagicLinks {
         parameters: AuthParameters,
         callback: (response: AuthResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a user given a magic link. This endpoint verifies that the magic link token is valid, hasn't expired
+     * or been previously used.
+     * @param parameters required to authenticate
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<AuthResponse>
 
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
@@ -103,6 +112,14 @@ public interface MagicLinks {
         )
 
         /**
+         * Send either a login or signup magic link to the user based on if the email is associated with a user already.
+         * A new or pending user will receive a signup magic link. An active user will receive a login magic link.
+         * @param parameters required to receive magic link
+         * @return [BaseResponse]
+         */
+        public fun loginOrCreateCompletable(parameters: Parameters): CompletableFuture<BaseResponse>
+
+        /**
          * Send a magic link to an existing Stytch user using their email address. If you'd like to create a user and
          * send them a magic link by email with one request, use [loginOrCreate]
          * @param parameters required to receive magic link
@@ -120,5 +137,13 @@ public interface MagicLinks {
             parameters: Parameters,
             callback: (response: BaseResponse) -> Unit,
         )
+
+        /**
+         * Send a magic link to an existing Stytch user using their email address. If you'd like to create a user and
+         * send them a magic link by email with one request, use [loginOrCreate]
+         * @param parameters required to receive magic link
+         * @return [BaseResponse]
+         */
+        public fun sendCompletable(parameters: Parameters): CompletableFuture<BaseResponse>
     }
 }

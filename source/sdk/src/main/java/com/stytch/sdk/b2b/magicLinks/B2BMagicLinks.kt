@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.network.models.Locale
+import java.util.concurrent.CompletableFuture
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
@@ -66,6 +67,15 @@ public interface B2BMagicLinks {
     )
 
     /**
+     * Authenticate a Member with a Magic Link. This endpoint requires a Magic Link token that is not expired or
+     * previously used. Provide a value for session_duration_minutes to receive a Session. If the Member’s status is
+     * pending, they will be updated to active.
+     * @param parameters required to authenticate
+     * @return [EMLAuthenticateResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<EMLAuthenticateResponse>
+
+    /**
      * A data class used for wrapping parameters used for authenticating a discovery magic link
      * @property token the discovery magic links token
      */
@@ -91,6 +101,16 @@ public interface B2BMagicLinks {
         parameters: DiscoveryAuthenticateParameters,
         callback: (DiscoveryEMLAuthResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @return [DiscoveryEMLAuthResponse]
+     */
+    public fun discoveryAuthenticateCompletable(
+        parameters: DiscoveryAuthenticateParameters,
+    ): CompletableFuture<DiscoveryEMLAuthResponse>
 
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
@@ -145,6 +165,14 @@ public interface B2BMagicLinks {
         )
 
         /**
+         * Send either a login or signup magic link to a Member. A new or pending Member will receive a signup
+         * Email Magic Link. An active Member will receive a login Email Magic Link.
+         * @param parameters required to receive magic link
+         * @return [BaseResponse]
+         */
+        public fun loginOrSignupCompletable(parameters: Parameters): CompletableFuture<BaseResponse>
+
+        /**
          * A data class used for wrapping paramaters used for sending a discovery magic link
          * @property emailAddress is the account identifier for the account in the form of an Email address where you
          * wish to receive a magic link to authenticate
@@ -181,6 +209,13 @@ public interface B2BMagicLinks {
             parameters: DiscoverySendParameters,
             callback: (BaseResponse) -> Unit,
         )
+
+        /**
+         * Send a discovery magic link to an email address
+         * @param parameters required to send a discovery magic link
+         * @return [BaseResponse]
+         */
+        public fun discoverySendCompletable(parameters: DiscoverySendParameters): CompletableFuture<BaseResponse>
 
         /**
          * A data class used for wrapping paramaters used for sending an invite magic link
@@ -237,5 +272,14 @@ public interface B2BMagicLinks {
             parameters: InviteParameters,
             callback: (MemberResponse) -> Unit,
         )
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send an invite magic link
+         * @return [MemberResponse]
+         */
+        public fun inviteCompletable(parameters: InviteParameters): CompletableFuture<MemberResponse>
     }
 }

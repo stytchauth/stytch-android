@@ -9,6 +9,7 @@ import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
 import kotlinx.parcelize.Parcelize
+import java.util.concurrent.CompletableFuture
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
@@ -68,6 +69,16 @@ public interface OTP {
     )
 
     /**
+     * Authenticate a user given a method_id (the associated email_id or phone_id) and a code. This endpoint verifies
+     * that the code is valid, hasn't expired or been previously used. A given method_id may only have a single active
+     * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
+     * will be invalidated.
+     * @param parameters required to authenticate
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<AuthResponse>
+
+    /**
      * Provides all possible ways to call SMS OTP endpoints
      */
     public interface SmsOTP {
@@ -112,6 +123,14 @@ public interface OTP {
         )
 
         /**
+         * Send a one-time passcode (OTP) to a user using their phone number via SMS. If the phone number is not
+         * associated with a user already, a user will be created.
+         * @param parameters required to receive a SMS OTP
+         * @return [LoginOrCreateOTPResponse]
+         */
+        public fun loginOrCreateCompletable(parameters: Parameters): CompletableFuture<LoginOrCreateOTPResponse>
+
+        /**
          * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
          * a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
@@ -129,6 +148,14 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: OTPSendResponse) -> Unit,
         )
+
+        /**
+         * Send a one-time passcode (OTP) to a user's phone number via SMS. If you'd like to create a user and send them
+         * a passcode with one request, use our [loginOrCreate] method.
+         * @param parameters required to send OTP
+         * @return [OTPSendResponse]
+         */
+        public fun sendCompletable(parameters: Parameters): CompletableFuture<OTPSendResponse>
     }
 
     /**
@@ -169,6 +196,14 @@ public interface OTP {
         )
 
         /**
+         * Send a one-time passcode (OTP) to a user using their phone number via WhatsApp. If the phone number is not
+         * associated with a user already, a user will be created.
+         * @param parameters required to receive a WhatsApp OTP
+         * @return [BaseResponse]
+         */
+        public fun loginOrCreateCompletable(parameters: Parameters): CompletableFuture<LoginOrCreateOTPResponse>
+
+        /**
          * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
          * them a passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
@@ -186,6 +221,14 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: OTPSendResponse) -> Unit,
         )
+
+        /**
+         * Send a one-time passcode (OTP) to a user's phone number via WhatsApp. If you'd like to create a user and send
+         * them a passcode with one request, use our [loginOrCreate] method.
+         * @param parameters required to send OTP
+         * @return [OTPSendResponse]
+         */
+        public fun sendCompletable(parameters: Parameters): CompletableFuture<OTPSendResponse>
     }
 
     /**
@@ -233,6 +276,14 @@ public interface OTP {
         )
 
         /**
+         * Send a one-time passcode (OTP) to a user using their email address. If the email address is not associated
+         * with a user already, a user will be created.
+         * @param parameters required to receive an Email OTP
+         * @return [LoginOrCreateOTPResponse]
+         */
+        public fun loginOrCreateCompletable(parameters: Parameters): CompletableFuture<LoginOrCreateOTPResponse>
+
+        /**
          * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
          * passcode with one request, use our [loginOrCreate] method.
          * @param parameters required to send OTP
@@ -250,5 +301,13 @@ public interface OTP {
             parameters: Parameters,
             callback: (response: OTPSendResponse) -> Unit,
         )
+
+        /**
+         * Send a one-time passcode (OTP) to a user's email address. If you'd like to create a user and send them a
+         * passcode with one request, use our [loginOrCreate] method.
+         * @param parameters required to send OTP
+         * @return [OTPSendResponse] response from backend
+         */
+        public fun sendCompletable(parameters: Parameters): CompletableFuture<OTPSendResponse>
     }
 }

@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.TOTPAuthenticateResponse
 import com.stytch.sdk.b2b.TOTPCreateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import java.util.concurrent.CompletableFuture
 
 /**
  * The TOTP interface provides methods for creating and authenticating TOTPs for a member
@@ -43,6 +44,13 @@ public interface TOTP {
     )
 
     /**
+     * Create a TOTP for a member
+     * @param parameters required to create a TOTP
+     * @return [TOTPCreateResponse]
+     */
+    public fun createCompletable(parameters: CreateParameters): CompletableFuture<TOTPCreateResponse>
+
+    /**
      * A data class wrapping the parameters needed to authenticate a TOTP
      * @property organizationId The ID of the organization the member belongs to
      * @property memberId The ID of the member to create the TOTP for
@@ -80,4 +88,11 @@ public interface TOTP {
         parameters: AuthenticateParameters,
         callback: (TOTPAuthenticateResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a TOTP for a member
+     * @param parameters required to authenticate a TOTP
+     * @return [TOTPAuthenticateResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<TOTPAuthenticateResponse>
 }

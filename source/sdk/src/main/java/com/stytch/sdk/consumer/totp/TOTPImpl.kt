@@ -9,8 +9,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class TOTPImpl(
     private val externalScope: CoroutineScope,
@@ -34,6 +37,12 @@ internal class TOTPImpl(
         }
     }
 
+    override fun createCompletable(parameters: TOTP.CreateParameters): CompletableFuture<TOTPCreateResponse> =
+        externalScope
+            .async {
+                create(parameters)
+            }.asCompletableFuture()
+
     override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse =
         withContext(dispatchers.io) {
             api
@@ -54,6 +63,14 @@ internal class TOTPImpl(
         }
     }
 
+    override fun authenticateCompletable(
+        parameters: TOTP.AuthenticateParameters,
+    ): CompletableFuture<TOTPAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
     override suspend fun recoveryCodes(): TOTPRecoveryCodesResponse =
         withContext(dispatchers.io) {
             api.recoveryCodes()
@@ -64,6 +81,12 @@ internal class TOTPImpl(
             callback(recoveryCodes())
         }
     }
+
+    override fun recoveryCodesCompletable(): CompletableFuture<TOTPRecoveryCodesResponse> =
+        externalScope
+            .async {
+                recoveryCodes()
+            }.asCompletableFuture()
 
     override suspend fun recover(parameters: TOTP.RecoverParameters): TOTPRecoverResponse =
         withContext(dispatchers.io) {
@@ -84,4 +107,10 @@ internal class TOTPImpl(
             callback(recover(parameters))
         }
     }
+
+    override fun recoverCompletable(parameters: TOTP.RecoverParameters): CompletableFuture<TOTPRecoverResponse> =
+        externalScope
+            .async {
+                recover(parameters)
+            }.asCompletableFuture()
 }

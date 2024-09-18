@@ -8,8 +8,11 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OTPImpl(
     private val externalScope: CoroutineScope,
@@ -45,6 +48,12 @@ internal class OTPImpl(
             }
         }
 
+        override fun sendCompletable(parameters: OTP.SMS.SendParameters): CompletableFuture<BasicResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
+
         override suspend fun authenticate(parameters: OTP.SMS.AuthenticateParameters): SMSAuthenticateResponse =
             withContext(dispatchers.io) {
                 api
@@ -68,5 +77,13 @@ internal class OTPImpl(
                 callback(authenticate(parameters))
             }
         }
+
+        override fun authenticateCompletable(
+            parameters: OTP.SMS.AuthenticateParameters,
+        ): CompletableFuture<SMSAuthenticateResponse> =
+            externalScope
+                .async {
+                    authenticate(parameters)
+                }.asCompletableFuture()
     }
 }

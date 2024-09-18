@@ -4,6 +4,7 @@ import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
+import java.util.concurrent.CompletableFuture
 
 /**
  * The CryptoWallet interface provides methods for authenticating a user using one of the supported Crypto Wallets
@@ -54,6 +55,15 @@ public interface CryptoWallet {
     )
 
     /**
+     * Begin a crypto wallet authentication flow
+     * @param parameters the parameters required to begin a crypto wallet authentication flow
+     * @return [CryptoWalletAuthenticateStartResponse]
+     */
+    public fun authenticateStartCompletable(
+        parameters: AuthenticateStartParameters,
+    ): CompletableFuture<CryptoWalletAuthenticateStartResponse>
+
+    /**
      * Complete a crypto wallet authentication flow
      * @param parameters the parameters required to complete a crypto wallet authentication flow
      * @return [AuthResponse]
@@ -69,4 +79,11 @@ public interface CryptoWallet {
         parameters: AuthenticateParameters,
         callback: (AuthResponse) -> Unit,
     )
+
+    /**
+     * Complete a crypto wallet authentication flow
+     * @param parameters the parameters required to complete a crypto wallet authentication flow
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<AuthResponse>
 }
