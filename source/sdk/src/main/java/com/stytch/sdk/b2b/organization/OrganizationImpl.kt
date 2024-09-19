@@ -246,9 +246,11 @@ internal class OrganizationImpl(
 
         override fun createCompletable(
             parameters: Organization.OrganizationMembers.CreateMemberParameters,
-        ): CompletableFuture<CreateMemberResponse> {
-            TODO("Not yet implemented")
-        }
+        ): CompletableFuture<CreateMemberResponse> =
+            externalScope
+                .async {
+                    create(parameters)
+                }.asCompletableFuture()
 
         override suspend fun update(
             parameters: Organization.OrganizationMembers.UpdateMemberParameters,
@@ -319,8 +321,10 @@ internal class OrganizationImpl(
 
         override fun searchCompletable(
             parameters: Organization.OrganizationMembers.SearchParameters,
-        ): CompletableFuture<MemberSearchResponse> {
-            TODO("Not yet implemented")
-        }
+        ): CompletableFuture<MemberSearchResponse> =
+            externalScope
+                .async {
+                    search(parameters)
+                }.asCompletableFuture()
     }
 }
