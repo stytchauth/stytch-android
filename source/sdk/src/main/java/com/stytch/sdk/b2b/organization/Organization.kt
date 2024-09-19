@@ -22,6 +22,7 @@ import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Organization interface provides methods for retrieving, updating, and deleting the current authenticated user's
@@ -44,6 +45,12 @@ public interface Organization {
      * @return [OrganizationResponse]
      */
     public suspend fun get(): OrganizationResponse
+
+    /**
+     * Wraps Stytch’s organization/me endpoint.
+     * @return [OrganizationResponse]
+     */
+    public fun getCompletable(): CompletableFuture<OrganizationResponse>
 
     /**
      * Wraps Stytch’s organization/me endpoint.
@@ -129,6 +136,18 @@ public interface Organization {
     )
 
     /**
+     * Updates the Organization of the logged-in member.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * An Organization must always have at least one auth setting set to either RESTRICTED or ALL_ALLOWED in order to
+     * provision new Members.
+     * @param parameters the parameters required for updating an organization
+     * @return [UpdateOrganizationResponse]
+     */
+    public fun updateCompletable(
+        parameters: UpdateOrganizationParameters,
+    ): CompletableFuture<UpdateOrganizationResponse>
+
+    /**
      * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
      * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
      * Note: This endpoint will log out the current member, as they will also be deleted
@@ -143,6 +162,14 @@ public interface Organization {
      * @param callback a callback that receives a [DeleteOrganizationResponse]
      */
     public fun delete(callback: (DeleteOrganizationResponse) -> Unit)
+
+    /**
+     * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * Note: This endpoint will log out the current member, as they will also be deleted
+     * @return [DeleteOrganizationResponse]
+     */
+    public fun deleteCompletable(): CompletableFuture<DeleteOrganizationResponse>
 
     /**
      * Public variable that exposes an instance of Organization.Members
@@ -174,6 +201,14 @@ public interface Organization {
         )
 
         /**
+         * Deletes a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be deleted
+         * @return [DeleteMemberResponse]
+         */
+        public fun deleteCompletable(memberId: String): CompletableFuture<DeleteMemberResponse>
+
+        /**
          * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
          * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
          * @param memberId The ID of the member to be reactivated
@@ -191,6 +226,14 @@ public interface Organization {
             memberId: String,
             callback: (ReactivateMemberResponse) -> Unit,
         )
+
+        /**
+         * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be reactivated
+         * @return [ReactivateMemberResponse]
+         */
+        public fun reactivateCompletable(memberId: String): CompletableFuture<ReactivateMemberResponse>
 
         /**
          * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
@@ -212,6 +255,16 @@ public interface Organization {
             authenticationFactor: MemberAuthenticationFactor,
             callback: (DeleteOrganizationMemberAuthenticationFactorResponse) -> Unit,
         )
+
+        /**
+         * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+         * @param authenticationFactor the authentication factor to delete
+         * @return [DeleteOrganizationMemberAuthenticationFactorResponse]
+         */
+        public fun deleteMemberAuthenticationFactorCompletable(
+            memberId: String,
+            authenticationFactor: MemberAuthenticationFactor,
+        ): CompletableFuture<DeleteOrganizationMemberAuthenticationFactorResponse>
 
         /**
          * Data class used for wrapping the parameters necessary for creating a user
@@ -263,6 +316,14 @@ public interface Organization {
             parameters: CreateMemberParameters,
             callback: (CreateMemberResponse) -> Unit,
         )
+
+        /**
+         * Creates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for creating a user
+         * @return [CreateMemberResponse]
+         */
+        public fun createCompletable(parameters: CreateMemberParameters): CompletableFuture<CreateMemberResponse>
 
         /**
          * Data class used for wrapping the parameters necessary for creating a user
@@ -320,6 +381,16 @@ public interface Organization {
             parameters: UpdateMemberParameters,
             callback: (UpdateOrganizationMemberResponse) -> Unit,
         )
+
+        /**
+         * Updates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for updating a user
+         * @return [UpdateOrganizationMemberResponse]
+         */
+        public fun updateCompletable(
+            parameters: UpdateMemberParameters,
+        ): CompletableFuture<UpdateOrganizationMemberResponse>
 
         /**
          * Data class used for wrapping the parameters necessary to search members
@@ -493,5 +564,14 @@ public interface Organization {
             parameters: SearchParameters,
             callback: (MemberSearchResponse) -> Unit,
         )
+
+        /**
+         * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
+         * All fuzzy search filters require a minimum of three characters.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters for searching
+         * @return [MemberSearchResponse]
+         */
+        public fun searchCompletable(parameters: SearchParameters): CompletableFuture<MemberSearchResponse>
     }
 }

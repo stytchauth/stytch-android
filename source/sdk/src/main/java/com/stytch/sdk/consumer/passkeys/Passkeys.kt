@@ -5,6 +5,7 @@ import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Passkeys interface provides methods for detecting Passkeys support, registering, and authenticating with
@@ -68,6 +69,13 @@ public interface Passkeys {
     )
 
     /**
+     * Creates a new Passkey registration.
+     * @param parameters required to register a Passkey
+     * @return [WebAuthnRegisterResponse]
+     */
+    public fun registerCompletable(parameters: RegisterParameters): CompletableFuture<WebAuthnRegisterResponse>
+
+    /**
      * Authenticates a Passkey registration.
      * @param parameters required to authenticate a Passkey registration
      * @return [AuthResponse]
@@ -85,6 +93,13 @@ public interface Passkeys {
     )
 
     /**
+     * Authenticates a Passkey registration.
+     * @param parameters required to authenticate a Passkey registration
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<AuthResponse>
+
+    /**
      * Updates a Passkey registration.
      * @param parameters required to update a Passkey registration
      * @return [WebAuthnUpdateResponse]
@@ -100,4 +115,11 @@ public interface Passkeys {
         parameters: UpdateParameters,
         callback: (response: WebAuthnUpdateResponse) -> Unit,
     )
+
+    /**
+     * Updates a Passkey registration.
+     * @param parameters required to update a Passkey registration
+     * @return [WebAuthnUpdateResponse]
+     */
+    public fun updateCompletable(parameters: UpdateParameters): CompletableFuture<WebAuthnUpdateResponse>
 }

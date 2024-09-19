@@ -10,8 +10,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -82,4 +85,12 @@ internal class OAuthImpl(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: OAuth.ThirdParty.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticatedResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 }

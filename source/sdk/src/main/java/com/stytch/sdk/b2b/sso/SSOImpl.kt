@@ -22,8 +22,11 @@ import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class SSOImpl(
     private val externalScope: CoroutineScope,
@@ -79,6 +82,12 @@ internal class SSOImpl(
         }
     }
 
+    override fun authenticateCompletable(params: SSO.AuthenticateParams): CompletableFuture<SSOAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(params)
+            }.asCompletableFuture()
+
     override suspend fun getConnections(): B2BSSOGetConnectionsResponse =
         withContext(dispatchers.io) {
             api.getConnections()
@@ -89,6 +98,12 @@ internal class SSOImpl(
             callback(getConnections())
         }
     }
+
+    override fun getConnectionsCompletable(): CompletableFuture<B2BSSOGetConnectionsResponse> =
+        externalScope
+            .async {
+                getConnections()
+            }.asCompletableFuture()
 
     override suspend fun deleteConnection(connectionId: String): B2BSSODeleteConnectionResponse =
         withContext(dispatchers.io) {
@@ -103,6 +118,12 @@ internal class SSOImpl(
             callback(deleteConnection(connectionId))
         }
     }
+
+    override fun deleteConnectionCompletable(connectionId: String): CompletableFuture<B2BSSODeleteConnectionResponse> =
+        externalScope
+            .async {
+                deleteConnection(connectionId)
+            }.asCompletableFuture()
 
     override val saml: SSO.SAML = SAMLImpl()
 
@@ -122,6 +143,14 @@ internal class SSOImpl(
                 callback(createConnection(parameters))
             }
         }
+
+        override fun createConnectionCompletable(
+            parameters: SSO.SAML.CreateParameters,
+        ): CompletableFuture<B2BSSOSAMLCreateConnectionResponse> =
+            externalScope
+                .async {
+                    createConnection(parameters)
+                }.asCompletableFuture()
 
         override suspend fun updateConnection(
             parameters: SSO.SAML.UpdateParameters,
@@ -148,6 +177,14 @@ internal class SSOImpl(
             }
         }
 
+        override fun updateConnectionCompletable(
+            parameters: SSO.SAML.UpdateParameters,
+        ): CompletableFuture<B2BSSOSAMLUpdateConnectionResponse> =
+            externalScope
+                .async {
+                    updateConnection(parameters)
+                }.asCompletableFuture()
+
         override suspend fun updateConnectionByUrl(
             parameters: SSO.SAML.UpdateByURLParameters,
         ): B2BSSOSAMLUpdateConnectionByURLResponse =
@@ -167,6 +204,14 @@ internal class SSOImpl(
             }
         }
 
+        override fun updateConnectionByUrlCompletable(
+            parameters: SSO.SAML.UpdateByURLParameters,
+        ): CompletableFuture<B2BSSOSAMLUpdateConnectionByURLResponse> =
+            externalScope
+                .async {
+                    updateConnectionByUrl(parameters)
+                }.asCompletableFuture()
+
         override suspend fun deleteVerificationCertificate(
             parameters: SSO.SAML.DeleteVerificationCertificateParameters,
         ): B2BSSOSAMLDeleteVerificationCertificateResponse =
@@ -185,6 +230,14 @@ internal class SSOImpl(
                 callback(deleteVerificationCertificate(parameters))
             }
         }
+
+        override fun deleteVerificationCertificateCompletable(
+            parameters: SSO.SAML.DeleteVerificationCertificateParameters,
+        ): CompletableFuture<B2BSSOSAMLDeleteVerificationCertificateResponse> =
+            externalScope
+                .async {
+                    deleteVerificationCertificate(parameters)
+                }.asCompletableFuture()
     }
 
     override val oidc: SSO.OIDC = OIDCImpl()
@@ -205,6 +258,14 @@ internal class SSOImpl(
                 callback(createConnection(parameters))
             }
         }
+
+        override fun createConnectionCompletable(
+            parameters: SSO.OIDC.CreateParameters,
+        ): CompletableFuture<B2BSSOOIDCCreateConnectionResponse> =
+            externalScope
+                .async {
+                    createConnection(parameters)
+                }.asCompletableFuture()
 
         override suspend fun updateConnection(
             parameters: SSO.OIDC.UpdateParameters,
@@ -231,5 +292,13 @@ internal class SSOImpl(
                 callback(updateConnection(parameters))
             }
         }
+
+        override fun updateConnectionCompletable(
+            parameters: SSO.OIDC.UpdateParameters,
+        ): CompletableFuture<B2BSSOOIDCUpdateConnectionResponse> =
+            externalScope
+                .async {
+                    updateConnection(parameters)
+                }.asCompletableFuture()
     }
 }

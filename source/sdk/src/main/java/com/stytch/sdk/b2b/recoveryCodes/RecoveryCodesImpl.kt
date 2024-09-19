@@ -9,8 +9,11 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class RecoveryCodesImpl(
     private val externalScope: CoroutineScope,
@@ -29,6 +32,12 @@ internal class RecoveryCodesImpl(
         }
     }
 
+    override fun getCompletable(): CompletableFuture<RecoveryCodesGetResponse> =
+        externalScope
+            .async {
+                get()
+            }.asCompletableFuture()
+
     override suspend fun rotate(): RecoveryCodesRotateResponse =
         withContext(dispatchers.io) {
             api.rotate()
@@ -40,19 +49,26 @@ internal class RecoveryCodesImpl(
         }
     }
 
+    override fun rotateCompletable(): CompletableFuture<RecoveryCodesRotateResponse> =
+        externalScope
+            .async {
+                rotate()
+            }.asCompletableFuture()
+
     override suspend fun recover(parameters: RecoveryCodes.RecoverParameters): RecoveryCodesRecoverResponse =
         withContext(dispatchers.io) {
-            api.recover(
-                organizationId = parameters.organizationId,
-                memberId = parameters.memberId,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                recoveryCode = parameters.recoveryCode,
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-            ).apply {
-                if (this is StytchResult.Success) {
-                    launchSessionUpdater(dispatchers, sessionStorage)
+            api
+                .recover(
+                    organizationId = parameters.organizationId,
+                    memberId = parameters.memberId,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    recoveryCode = parameters.recoveryCode,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    if (this is StytchResult.Success) {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
                 }
-            }
         }
 
     override fun recover(
@@ -63,4 +79,12 @@ internal class RecoveryCodesImpl(
             callback(recover(parameters))
         }
     }
+
+    override fun recoverCompletable(
+        parameters: RecoveryCodes.RecoverParameters,
+    ): CompletableFuture<RecoveryCodesRecoverResponse> =
+        externalScope
+            .async {
+                recover(parameters)
+            }.asCompletableFuture()
 }

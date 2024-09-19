@@ -4,6 +4,7 @@ import android.app.Activity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The OAuth interface provides methods for authenticating a user via a native Google OneTap prompt or any of the
@@ -152,6 +153,15 @@ public interface OAuth {
         )
 
         /**
+         * Begin a Google OneTap login flow. Returns an authenticated session if the flow was successfully initiated.
+         * If this returns an error, it means the Google OneTap flow is not available (no play services on device
+         * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
+         * @param parameters required to begin the OneTap flow
+         * @return NativeOAuthResponse
+         */
+        public fun startCompletable(parameters: StartParameters): CompletableFuture<NativeOAuthResponse>
+
+        /**
          * Sign a user out of Google Play Services
          */
         public fun signOut(activity: Activity)
@@ -228,4 +238,13 @@ public interface OAuth {
         parameters: ThirdParty.AuthenticateParameters,
         callback: (OAuthAuthenticatedResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a ThirdParty OAuth flow
+     * @param parameters required to authenticate the OAuth flow
+     * @return [OAuthAuthenticatedResponse]
+     */
+    public fun authenticateCompletable(
+        parameters: ThirdParty.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticatedResponse>
 }

@@ -5,6 +5,7 @@ import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
@@ -77,6 +78,14 @@ public interface Sessions {
     )
 
     /**
+     * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
+     * If the session_duration_minutes is not specified, a Session will not be extended
+     * @param authParams required to authenticate
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(authParams: AuthParams): CompletableFuture<AuthResponse>
+
+    /**
      * Revoke a Session and immediately invalidate all its tokens.
      * @param params required for revoking a session
      * @return [BaseResponse]
@@ -92,6 +101,13 @@ public interface Sessions {
         params: RevokeParams = RevokeParams(),
         callback: (BaseResponse) -> Unit,
     )
+
+    /**
+     * Revoke a Session and immediately invalidate all its tokens.
+     * @param params required for revoking a session
+     * @return [BaseResponse]
+     */
+    public fun revokeCompletable(params: RevokeParams = RevokeParams()): CompletableFuture<BaseResponse>
 
     /**
      * Updates the current session with a sessionToken and sessionJwt

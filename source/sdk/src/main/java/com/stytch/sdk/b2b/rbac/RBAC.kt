@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.rbac
 
+import java.util.concurrent.CompletableFuture
+
 /**
  * The RBAC interface provides methods for checking a user's permissions according to the roles defined in the Stytch
  * Dashboard
@@ -53,6 +55,21 @@ public interface RBAC {
     )
 
     /**
+     * Determines whether the logged-in member is allowed to perform the specified action on the specified resource.
+     * Returns `true` if the member can perform the action, `false` otherwise.
+     *
+     * If the member is not logged in, this method will always return false.
+     * If the resource or action provided are not valid for the configured RBAC policy, this method will return false.
+     *
+     * To check authorization using cached data, use {@link isAuthorizedSync}.
+     * Remember - authorization checks for sensitive actions should always occur on the backend as well.
+     */
+    public fun isAuthorizedCompletable(
+        resourceId: String,
+        action: String,
+    ): CompletableFuture<Boolean>
+
+    /**
      * Evaluates all permissions granted to the logged-in member.
      * Returns a Map<RoleId, Map<Action, Boolean>> response indicating the member's permissions.
      * Each boolean will be `true` if the member can perform the action, `false` otherwise.
@@ -73,4 +90,15 @@ public interface RBAC {
      * Remember - authorization checks for sensitive actions should always occur on the backend as well.
      */
     public fun allPermissions(callback: (Map<String, Map<String, Boolean>>) -> Unit)
+
+    /**
+     * Evaluates all permissions granted to the logged-in member.
+     * Returns a Map<RoleId, Map<Action, Boolean>> response indicating the member's permissions.
+     * Each boolean will be `true` if the member can perform the action, `false` otherwise.
+     *
+     * If the member is not logged in, all values will be false.
+     *
+     * Remember - authorization checks for sensitive actions should always occur on the backend as well.
+     */
+    public fun allPermissionsCompletable(): CompletableFuture<Map<String, Map<String, Boolean>>>
 }

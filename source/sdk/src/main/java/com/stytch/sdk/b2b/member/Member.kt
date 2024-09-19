@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Member interface provides methods for retrieving and updating the current authenticated member.
@@ -33,6 +34,12 @@ public interface Member {
      * @param callback a callback that receives a [MemberResponse]
      */
     public fun get(callback: (MemberResponse) -> Unit)
+
+    /**
+     * Wraps Stytch’s organization/members/me endpoint.
+     * @return [MemberResponse]
+     */
+    public fun getCompletable(): CompletableFuture<MemberResponse>
 
     /**
      * Get member from memory without network call
@@ -81,6 +88,13 @@ public interface Member {
     )
 
     /**
+     * Updates the currently authenticated member
+     * @param params required to update the member
+     * @return [UpdateMemberResponse]
+     */
+    public fun updateCompletable(params: UpdateParams): CompletableFuture<UpdateMemberResponse>
+
+    /**
      * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
      * @return [DeleteMemberAuthenticationFactorResponse]
      */
@@ -94,4 +108,12 @@ public interface Member {
         factor: MemberAuthenticationFactor,
         callback: (DeleteMemberAuthenticationFactorResponse) -> Unit,
     )
+
+    /**
+     * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+     * @return [DeleteMemberAuthenticationFactorResponse]
+     */
+    public fun deleteFactorCompletable(
+        factor: MemberAuthenticationFactor,
+    ): CompletableFuture<DeleteMemberAuthenticationFactorResponse>
 }

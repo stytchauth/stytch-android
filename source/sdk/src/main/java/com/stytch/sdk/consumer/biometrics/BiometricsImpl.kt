@@ -23,8 +23,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
@@ -115,6 +118,12 @@ internal class BiometricsImpl internal constructor(
         }
     }
 
+    override fun removeRegistrationCompletable(): CompletableFuture<Boolean> =
+        externalScope
+            .async {
+                removeRegistration()
+            }.asCompletableFuture()
+
     override fun isUsingKeystore(): Boolean = storageHelper.checkIfKeysetIsUsingKeystore()
 
     override suspend fun register(parameters: Biometrics.RegisterParameters): BiometricsAuthResponse =
@@ -180,6 +189,14 @@ internal class BiometricsImpl internal constructor(
         }
     }
 
+    override fun registerCompletable(
+        parameters: Biometrics.RegisterParameters,
+    ): CompletableFuture<BiometricsAuthResponse> =
+        externalScope
+            .async {
+                register(parameters)
+            }.asCompletableFuture()
+
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
             try {
@@ -235,4 +252,12 @@ internal class BiometricsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: Biometrics.AuthenticateParameters,
+    ): CompletableFuture<BiometricsAuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 }

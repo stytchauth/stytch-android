@@ -10,9 +10,12 @@ import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class UserManagementImpl(
     private val externalScope: CoroutineScope,
@@ -50,6 +53,12 @@ internal class UserManagementImpl(
         }
     }
 
+    override fun getUserCompletable(): CompletableFuture<UserResponse> =
+        externalScope
+            .async {
+                getUser()
+            }.asCompletableFuture()
+
     override fun getSyncUser(): UserData? = sessionStorage.user
 
     override suspend fun deleteFactor(factor: UserAuthenticationFactor): DeleteFactorResponse =
@@ -79,6 +88,12 @@ internal class UserManagementImpl(
         }
     }
 
+    override fun deleteFactorCompletable(factor: UserAuthenticationFactor): CompletableFuture<DeleteFactorResponse> =
+        externalScope
+            .async {
+                deleteFactor(factor)
+            }.asCompletableFuture()
+
     override suspend fun update(params: UserManagement.UpdateParams): UpdateUserResponse =
         withContext(dispatchers.io) {
             api.updateUser(
@@ -97,6 +112,12 @@ internal class UserManagementImpl(
         }
     }
 
+    override fun updateCompletable(params: UserManagement.UpdateParams): CompletableFuture<UpdateUserResponse> =
+        externalScope
+            .async {
+                update(params)
+            }.asCompletableFuture()
+
     override suspend fun search(params: UserManagement.SearchParams): SearchUserResponse =
         withContext(dispatchers.io) {
             api.searchUsers(email = params.email)
@@ -110,4 +131,10 @@ internal class UserManagementImpl(
             callback(search(params))
         }
     }
+
+    override fun searchCompletable(params: UserManagement.SearchParams): CompletableFuture<SearchUserResponse> =
+        externalScope
+            .async {
+                search(params)
+            }.asCompletableFuture()
 }

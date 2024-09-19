@@ -11,8 +11,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class MagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -49,6 +52,12 @@ internal class MagicLinksImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(parameters: MagicLinks.AuthParameters): CompletableFuture<AuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
         override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse {
@@ -89,6 +98,14 @@ internal class MagicLinksImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun loginOrCreateCompletable(
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    loginOrCreate(parameters)
+                }.asCompletableFuture()
 
         override suspend fun send(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse =
             withContext(dispatchers.io) {
@@ -134,5 +151,13 @@ internal class MagicLinksImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun sendCompletable(
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
     }
 }

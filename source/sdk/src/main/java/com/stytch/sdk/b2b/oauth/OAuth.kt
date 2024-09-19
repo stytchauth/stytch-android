@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.network.models.Locale
+import java.util.concurrent.CompletableFuture
 
 /**
  * The OAuth interface provides methods for authenticating a user, via the supported OAuth providers, provided you have
@@ -123,6 +124,15 @@ public interface OAuth {
             parameters: DiscoveryAuthenticateParameters,
             callback: (OAuthDiscoveryAuthenticateResponse) -> Unit,
         )
+
+        /**
+         * Authenticate an OAuth Discovery flow
+         * @param parameters required to authenticate the OAuth Discovery flow
+         * @return [OAuthDiscoveryAuthenticateResponse]
+         */
+        public fun authenticateCompletable(
+            parameters: DiscoveryAuthenticateParameters,
+        ): CompletableFuture<OAuthDiscoveryAuthenticateResponse>
     }
 
     /**
@@ -171,4 +181,13 @@ public interface OAuth {
         parameters: AuthenticateParameters,
         callback: (OAuthAuthenticateResponse) -> Unit,
     )
+
+    /**
+     * Authenticate an OAuth flow
+     * @param parameters required to authenticate the OAuth flow
+     * @return [OAuthAuthenticateResponse]
+     */
+    public fun authenticateCompletable(
+        parameters: AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticateResponse>
 }

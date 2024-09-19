@@ -24,8 +24,11 @@ import com.stytch.sdk.consumer.network.models.WebAuthnAuthenticateStartData
 import com.stytch.sdk.consumer.network.models.WebAuthnRegisterStartData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal interface PasskeysProvider {
     suspend fun createPublicKeyCredential(
@@ -133,6 +136,14 @@ internal class PasskeysImpl internal constructor(
         }
     }
 
+    override fun registerCompletable(
+        parameters: Passkeys.RegisterParameters,
+    ): CompletableFuture<WebAuthnRegisterResponse> =
+        externalScope
+            .async {
+                register(parameters)
+            }.asCompletableFuture()
+
     override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
         if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError())
         return try {
@@ -180,6 +191,12 @@ internal class PasskeysImpl internal constructor(
         }
     }
 
+    override fun authenticateCompletable(parameters: Passkeys.AuthenticateParameters): CompletableFuture<AuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
     override suspend fun update(parameters: Passkeys.UpdateParameters): WebAuthnUpdateResponse =
         withContext(dispatchers.io) {
             api.update(
@@ -197,4 +214,10 @@ internal class PasskeysImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun updateCompletable(parameters: Passkeys.UpdateParameters): CompletableFuture<WebAuthnUpdateResponse> =
+        externalScope
+            .async {
+                update(parameters)
+            }.asCompletableFuture()
 }

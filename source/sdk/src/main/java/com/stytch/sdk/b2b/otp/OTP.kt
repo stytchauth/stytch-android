@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.network.models.Locale
+import java.util.concurrent.CompletableFuture
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
@@ -62,6 +63,13 @@ public interface OTP {
         )
 
         /**
+         * Send a one-time passcode (OTP) to a user using their phone number via SMS.
+         * @param parameters required to receive a SMS OTP
+         * @return [BasicResponse]
+         */
+        public fun sendCompletable(parameters: SendParameters): CompletableFuture<BasicResponse>
+
+        /**
          * A data class wrapping the parameters needed to authenticate an SMS OTP
          * @property organizationId The ID of the organization the member belongs to
          * @property memberId The ID of the member to send the OTP to
@@ -97,5 +105,14 @@ public interface OTP {
             parameters: AuthenticateParameters,
             callback: (SMSAuthenticateResponse) -> Unit,
         )
+
+        /**
+         * Authenticate a one-time passcode (OTP) sent to a user via SMS.
+         * @param parameters required to authenticate an SMS OTP
+         * @return [SMSAuthenticateResponse]
+         */
+        public fun authenticateCompletable(
+            parameters: AuthenticateParameters,
+        ): CompletableFuture<SMSAuthenticateResponse>
     }
 }
