@@ -56,6 +56,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                     email = EMAIL,
                     loginMagicLinkUrl = LOGIN_MAGIC_LINK,
+                    signupMagicLinkUrl = SIGNUP_MAGIC_LINK,
                     codeChallenge = "123",
                     loginTemplateId = "loginTemplateId",
                     signupTemplateId = "signUpTemplateId",
@@ -69,6 +70,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "email" to parameters.email,
                         "login_magic_link_url" to parameters.loginMagicLinkUrl,
+                        "signup_magic_link_url" to parameters.signupMagicLinkUrl,
                         "code_challenge" to parameters.codeChallenge,
                         "login_template_id" to parameters.loginTemplateId,
                         "signup_template_id" to parameters.signupTemplateId,
