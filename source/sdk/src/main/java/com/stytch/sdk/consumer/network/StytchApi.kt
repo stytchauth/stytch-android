@@ -146,6 +146,7 @@ internal object StytchApi {
             suspend fun loginOrCreate(
                 email: String,
                 loginMagicLinkUrl: String?,
+                signupMagicLinkUrl: String?,
                 codeChallenge: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
@@ -156,6 +157,7 @@ internal object StytchApi {
                         ConsumerRequests.MagicLinks.Email.LoginOrCreateUserRequest(
                             email = email,
                             loginMagicLinkUrl = loginMagicLinkUrl,
+                            signupMagicLinkUrl = signupMagicLinkUrl,
                             codeChallenge = codeChallenge,
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
