@@ -180,7 +180,7 @@ internal class NewUserScreenViewModel(
     }
 
     fun createAccountWithPassword(
-        sessionDurationMinutes: UInt,
+        sessionDurationMinutes: Int,
         scope: CoroutineScope = viewModelScope,
     ) {
         val emailState = uiState.value.emailState

@@ -23,8 +23,8 @@ val params = EmailMagicLinks.Parameters(
     // The following parameters are all optional
     loginMagicLinkUrl = "my-app://stytch-auth/login", // The URL to be directed to on login. Will use your default, if not provided
     signupMagicLinkUrl = "my-app://stytch-auth/signup",  // The URL to be directed to on user creation. It is ignored on send requests. Will use your default, if not provided
-    loginExpirationMinutes = 10U, // the duration after which the login url should expire
-    signupExpirationMinutes = 10U, // the duration after which the signup url should expire. It is ignored on send requests
+    loginExpirationMinutes = 10, // the duration after which the login url should expire
+    signupExpirationMinutes = 10, // the duration after which the signup url should expire. It is ignored on send requests
     loginTemplateId = "my-login-template", // a custom template for login emails, if you've configured one
     signupTemplateId = "my-signup-template", // a custom template for signup emails, if you've configured one. It is ignored on send requests
 )
@@ -58,7 +58,7 @@ fun handleDeeplink(uri: URI) {
     viewModelScope.launch {
         if (tokenType == "magic_links") {
             val result = StytchClient.magicLinks.authenticate(
-                MagicLinks.AuthParameters(token, 30U)
+                MagicLinks.AuthParameters(token, 30)
             )
             when (result) {
                 is StytchResult.Success -> {

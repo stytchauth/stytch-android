@@ -24,7 +24,10 @@ internal sealed class NavigationRoute {
             )
     }
 
-    data class EMLConfirmation(val details: EMLDetails, val isReturningUser: Boolean) : NavigationRoute() {
+    data class EMLConfirmation(
+        val details: EMLDetails,
+        val isReturningUser: Boolean,
+    ) : NavigationRoute() {
         override val screen: EMLConfirmationScreen =
             EMLConfirmationScreen(
                 details = details,
@@ -32,19 +35,23 @@ internal sealed class NavigationRoute {
             )
     }
 
-    object NewUser : NavigationRoute() {
+    data object NewUser : NavigationRoute() {
         override val screen: NewUserScreen = NewUserScreen
     }
 
-    object ReturningUser : NavigationRoute() {
+    data object ReturningUser : NavigationRoute() {
         override val screen: ReturningUserScreen = ReturningUserScreen
     }
 
-    data class PasswordResetSent(val details: PasswordResetDetails) : NavigationRoute() {
+    data class PasswordResetSent(
+        val details: PasswordResetDetails,
+    ) : NavigationRoute() {
         override val screen: PasswordResetSentScreen = PasswordResetSentScreen(details = details)
     }
 
-    data class SetNewPassword(val token: String) : NavigationRoute() {
+    data class SetNewPassword(
+        val token: String,
+    ) : NavigationRoute() {
         override val screen: SetPasswordScreen = SetPasswordScreen(token = token)
     }
 }

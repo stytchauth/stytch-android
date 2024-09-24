@@ -67,7 +67,7 @@ internal class OTPConfirmationScreenViewModel(
                     is OTPDetails.EmailOTP -> resendParameters.parameters.expirationMinutes
                     is OTPDetails.SmsOTP -> resendParameters.parameters.expirationMinutes
                     is OTPDetails.WhatsAppOTP -> resendParameters.parameters.expirationMinutes
-                } * 60U
+                } * 60
             ).toLong()
         resendCountdownSeconds = countdownSeconds
         scope.launch {
@@ -98,7 +98,7 @@ internal class OTPConfirmationScreenViewModel(
                         OTP.AuthParameters(
                             token = token,
                             methodId = methodId,
-                            sessionDurationMinutes = sessionOptions.sessionDurationMinutes.toUInt(),
+                            sessionDurationMinutes = sessionOptions.sessionDurationMinutes,
                         ),
                     )
             ) {
@@ -129,7 +129,8 @@ internal class OTPConfirmationScreenViewModel(
             val result =
                 when (resend) {
                     is OTPDetails.EmailOTP -> stytchClient.otps.email.loginOrCreate(resend.parameters)
-                    is OTPDetails.SmsOTP -> stytchClient.otps.sms.loginOrCreate(resend.parameters)
+                    is OTPDetails.SmsOTP ->
+                        stytchClient.otps.sms.loginOrCreate(resend.parameters)
                     is OTPDetails.WhatsAppOTP -> stytchClient.otps.whatsapp.loginOrCreate(resend.parameters)
                 }
             when (result) {

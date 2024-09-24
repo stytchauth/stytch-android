@@ -7,6 +7,7 @@ import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import kotlinx.parcelize.Parcelize
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Passwords interface provides methods for authenticating, creating, resetting, and performing strength checks of
@@ -27,11 +28,13 @@ public interface Passwords {
      * @property password is your private sequence of characters to authenticate
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val email: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords create endpoint
@@ -41,11 +44,13 @@ public interface Passwords {
      * created account in the future
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class CreateParameters(
-        val email: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class CreateParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmailStart endpoint
@@ -60,14 +65,16 @@ public interface Passwords {
      * for Password Reset.
      */
     @Parcelize
-    public data class ResetByEmailStartParameters(
-        val email: String,
-        val loginRedirectUrl: String? = null,
-        val loginExpirationMinutes: UInt? = null,
-        val resetPasswordRedirectUrl: String? = null,
-        val resetPasswordExpirationMinutes: UInt? = null,
-        val resetPasswordTemplateId: String? = null,
-    ) : Parcelable
+    public data class ResetByEmailStartParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val loginRedirectUrl: String? = null,
+            val loginExpirationMinutes: Int? = null,
+            val resetPasswordRedirectUrl: String? = null,
+            val resetPasswordExpirationMinutes: Int? = null,
+            val resetPasswordTemplateId: String? = null,
+        ) : Parcelable
 
     /**
      * Data class used for wrapping parameters used with Passwords ResetByEmail endpoint
@@ -75,21 +82,25 @@ public interface Passwords {
      * @property password is the private sequence of characters you wish to use as a password
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetByEmailParameters(
-        val token: String,
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetByEmailParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property password is the new password to set
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetBySessionParameters(
-        val password: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetBySessionParameters
+        @JvmOverloads
+        constructor(
+            val password: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -99,12 +110,14 @@ public interface Passwords {
      * @property newPassword The new password for the user.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ResetByExistingPasswordParameters(
-        val email: String,
-        val existingPassword: String,
-        val newPassword: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class ResetByExistingPasswordParameters
+        @JvmOverloads
+        constructor(
+            val email: String,
+            val existingPassword: String,
+            val newPassword: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
@@ -130,15 +143,27 @@ public interface Passwords {
     )
 
     /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
+     * expired or been revoked. The provided password needs to meet our password strength requirements, which can be
+     * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
+     * the password is securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset a user's password
+     * @return [AuthResponse]
+     */
+    public fun resetBySessionCompletable(parameters: ResetBySessionParameters): CompletableFuture<AuthResponse>
+
+    /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
      * @property email is the account identifier for the account in the form of an Email address that you wish to use to
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
-    public data class StrengthCheckParameters(
-        val email: String?,
-        val password: String,
-    )
+    public data class StrengthCheckParameters
+        @JvmOverloads
+        constructor(
+            val email: String? = null,
+            val password: String,
+        )
 
     /**
      * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
@@ -170,6 +195,24 @@ public interface Passwords {
     )
 
     /**
+     * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
+     * currently set, and that the entered password is correct.
+     *
+     * There are two instances where the endpoint will return a reset_password error even if they enter their previous
+     * password:
+     * 1. The member's credentials appeared in the HaveIBeenPwned dataset. We force a password reset to ensure that the
+     * member is the legitimate owner of the email address, and not a malicious actor abusing the compromised
+     * credentials.
+     * 2. The member used email based authentication (e.g. Magic Links, Google OAuth) for the first time, and had not
+     * previously verified their email address for password based login. We force a password reset in this instance in
+     * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
+     * account-takeover attack.
+     * @param parameters required to authenticate
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<AuthResponse>
+
+    /**
      * Create a new user with a password and an authenticated session for the user if requested. If a user with this
      * email already exists in the project, this method will return an error.
      * @param parameters required to create an account
@@ -189,6 +232,14 @@ public interface Passwords {
     )
 
     /**
+     * Create a new user with a password and an authenticated session for the user if requested. If a user with this
+     * email already exists in the project, this method will return an error.
+     * @param parameters required to create an account
+     * @return [PasswordsCreateResponse]
+     */
+    public fun createCompletable(parameters: CreateParameters): CompletableFuture<PasswordsCreateResponse>
+
+    /**
      * Initiates a password reset for the email address provided. This will trigger an email to be sent to the address,
      * containing a magic link that will allow them to set a new password and authenticate.
      * @param parameters required to reset an account password
@@ -206,6 +257,14 @@ public interface Passwords {
         parameters: ResetByEmailStartParameters,
         callback: (response: BaseResponse) -> Unit,
     )
+
+    /**
+     * Initiates a password reset for the email address provided. This will trigger an email to be sent to the address,
+     * containing a magic link that will allow them to set a new password and authenticate.
+     * @param parameters required to reset an account password
+     * @return [BaseResponse]
+     */
+    public fun resetByEmailStartCompletable(parameters: ResetByEmailStartParameters): CompletableFuture<BaseResponse>
 
     /**
      * Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t
@@ -231,6 +290,16 @@ public interface Passwords {
     )
 
     /**
+     * Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t
+     * expired, or already been used. The provided password needs to meet our password strength requirements, which can
+     * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
+     * securely stored for future authentication and the user is authenticated.
+     * @param parameters required to reset an account password
+     * @return [AuthResponse]
+     */
+    public fun resetByEmailCompletable(parameters: ResetByEmailParameters): CompletableFuture<AuthResponse>
+
+    /**
      * Reset a user's password and authenticate them
      * @param parameters required to reset a user's password
      * @returns [AuthResponse]
@@ -246,6 +315,15 @@ public interface Passwords {
         parameters: ResetByExistingPasswordParameters,
         callback: (AuthResponse) -> Unit,
     )
+
+    /**
+     * Reset a user's password and authenticate them
+     * @param parameters required to reset a user's password
+     * @returns [AuthResponse]
+     */
+    public fun resetByExistingPasswordCompletable(
+        parameters: ResetByExistingPasswordParameters,
+    ): CompletableFuture<AuthResponse>
 
     /**
      * This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to
@@ -265,4 +343,14 @@ public interface Passwords {
         parameters: StrengthCheckParameters,
         callback: (response: PasswordsStrengthCheckResponse) -> Unit,
     )
+
+    /**
+     * This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to
+     * the user on how to increase the strength of their password.
+     * @param parameters required to advise on password strength
+     * @return [PasswordsStrengthCheckResponse]
+     */
+    public fun strengthCheckCompletable(
+        parameters: StrengthCheckParameters,
+    ): CompletableFuture<PasswordsStrengthCheckResponse>
 }

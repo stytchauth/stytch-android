@@ -18,18 +18,22 @@ import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
 internal const val PRIVATE_KEY_KEY = "biometrics_private_key"
 internal const val CIPHER_IV_KEY = "biometrics_cipher_iv"
 internal const val ALLOW_DEVICE_CREDENTIALS_KEY = "biometric_allow_device_credentials"
-private val KEYS_REQUIRED_FOR_REGISTRATION =
+internal val KEYS_REQUIRED_FOR_REGISTRATION =
     listOf(
         LAST_USED_BIOMETRIC_REGISTRATION_ID,
         PRIVATE_KEY_KEY,
@@ -45,7 +49,7 @@ internal class BiometricsImpl internal constructor(
     private val storageHelper: StorageHelper,
     private val api: StytchApi.Biometrics,
     private val biometricsProvider: BiometricsProvider,
-    private val deleteBiometricRegistration: suspend (String) -> Unit,
+    private val deleteBiometricRegistration: suspend (String) -> DeleteFactorResponse,
 ) : Biometrics {
     private fun getAllowedAuthenticators(allowDeviceCredentials: Boolean) =
         if (allowDeviceCredentials && Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
@@ -59,9 +63,8 @@ internal class BiometricsImpl internal constructor(
             storageHelper.preferenceExists(it)
         }
 
-    override fun isRegistrationAvailable(context: FragmentActivity): Boolean {
-        return registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
-    }
+    override fun isRegistrationAvailable(context: FragmentActivity): Boolean =
+        registrationExists() && areBiometricsAvailable(context) != BiometricAvailability.RegistrationRevoked
 
     override fun areBiometricsAvailable(
         context: FragmentActivity,
@@ -90,14 +93,22 @@ internal class BiometricsImpl internal constructor(
         }
     }
 
+    private fun removeLocalRegistrationOnly() {
+        KEYS_REQUIRED_FOR_REGISTRATION.forEach { key -> storageHelper.deletePreference(key) }
+        biometricsProvider.deleteSecretKey()
+    }
+
     override suspend fun removeRegistration(): Boolean =
         withContext(dispatchers.io) {
-            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let {
-                deleteBiometricRegistration(it)
+            val lastUsedRegistrationId = storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)
+            if (lastUsedRegistrationId.isNullOrEmpty()) return@withContext true
+            return@withContext when (deleteBiometricRegistration(lastUsedRegistrationId)) {
+                is StytchResult.Success -> {
+                    removeLocalRegistrationOnly()
+                    true
+                }
+                else -> false
             }
-            KEYS_REQUIRED_FOR_REGISTRATION.forEach { storageHelper.deletePreference(it) }
-            biometricsProvider.deleteSecretKey()
-            true
         }
 
     override fun removeRegistration(callback: (Boolean) -> Unit) {
@@ -106,6 +117,12 @@ internal class BiometricsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun removeRegistrationCompletable(): CompletableFuture<Boolean> =
+        externalScope
+            .async {
+                removeRegistration()
+            }.asCompletableFuture()
 
     override fun isUsingKeystore(): Boolean = storageHelper.checkIfKeysetIsUsingKeystore()
 
@@ -137,26 +154,27 @@ internal class BiometricsImpl internal constructor(
                         challengeString = startResponse.challenge,
                         privateKeyString = privateKey,
                     )
-                api.register(
-                    signature = signature,
-                    biometricRegistrationId = startResponse.biometricRegistrationId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    if (this is StytchResult.Success) {
-                        storageHelper.saveValue(
-                            LAST_USED_BIOMETRIC_REGISTRATION_ID,
-                            startResponse.biometricRegistrationId,
-                        )
-                        storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
-                        storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
-                        storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
+                api
+                    .register(
+                        signature = signature,
+                        biometricRegistrationId = startResponse.biometricRegistrationId,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        if (this is StytchResult.Success) {
+                            storageHelper.saveValue(
+                                LAST_USED_BIOMETRIC_REGISTRATION_ID,
+                                startResponse.biometricRegistrationId,
+                            )
+                            storageHelper.saveValue(PRIVATE_KEY_KEY, encryptedPrivateKeyString)
+                            storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
+                            storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
+                        }
+                        launchSessionUpdater(dispatchers, sessionStorage)
                     }
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
             } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
-                removeRegistration()
+                removeLocalRegistrationOnly()
                 StytchResult.Error(StytchInternalError(exception = e))
             }
         }
@@ -170,6 +188,14 @@ internal class BiometricsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun registerCompletable(
+        parameters: Biometrics.RegisterParameters,
+    ): CompletableFuture<BiometricsAuthResponse> =
+        externalScope
+            .async {
+                register(parameters)
+            }.asCompletableFuture()
 
     override suspend fun authenticate(parameters: Biometrics.AuthenticateParameters): BiometricsAuthResponse =
         withContext(dispatchers.io) {
@@ -202,13 +228,14 @@ internal class BiometricsImpl internal constructor(
                         challengeString = startResponse.challenge,
                         privateKeyString = privateKeyString,
                     )
-                api.authenticate(
-                    signature = signature,
-                    biometricRegistrationId = startResponse.biometricRegistrationId,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        signature = signature,
+                        biometricRegistrationId = startResponse.biometricRegistrationId,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             } catch (e: StytchError) {
                 StytchResult.Error(e)
             } catch (e: Exception) {
@@ -225,4 +252,12 @@ internal class BiometricsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: Biometrics.AuthenticateParameters,
+    ): CompletableFuture<BiometricsAuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 }

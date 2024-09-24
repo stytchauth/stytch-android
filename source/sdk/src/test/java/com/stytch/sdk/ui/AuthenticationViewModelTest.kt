@@ -15,7 +15,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -33,17 +32,16 @@ import java.security.KeyStore
 internal class AuthenticationViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
-    private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: AuthenticationViewModel
+    private lateinit var mockStytchClient: StytchClient
 
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
+        mockkStatic(StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
+        mockStytchClient = mockk()
         viewModel = AuthenticationViewModel(savedStateHandle = savedStateHandle, stytchClient = mockStytchClient)
     }
 

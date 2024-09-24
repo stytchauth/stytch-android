@@ -9,9 +9,12 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class MemberImpl(
     private val externalScope: CoroutineScope,
@@ -53,6 +56,12 @@ internal class MemberImpl(
         }
     }
 
+    override fun getCompletable(): CompletableFuture<MemberResponse> =
+        externalScope
+            .async {
+                get()
+            }.asCompletableFuture()
+
     override fun getSync(): MemberData? = sessionStorage.member
 
     override suspend fun update(params: Member.UpdateParams): UpdateMemberResponse =
@@ -76,6 +85,12 @@ internal class MemberImpl(
         }
     }
 
+    override fun updateCompletable(params: Member.UpdateParams): CompletableFuture<UpdateMemberResponse> =
+        externalScope
+            .async {
+                update(params)
+            }.asCompletableFuture()
+
     override suspend fun deleteFactor(factor: MemberAuthenticationFactor): DeleteMemberAuthenticationFactorResponse =
         withContext(dispatchers.io) {
             when (factor) {
@@ -98,4 +113,12 @@ internal class MemberImpl(
             callback(result)
         }
     }
+
+    override fun deleteFactorCompletable(
+        factor: MemberAuthenticationFactor,
+    ): CompletableFuture<DeleteMemberAuthenticationFactorResponse> =
+        externalScope
+            .async {
+                deleteFactor(factor)
+            }.asCompletableFuture()
 }

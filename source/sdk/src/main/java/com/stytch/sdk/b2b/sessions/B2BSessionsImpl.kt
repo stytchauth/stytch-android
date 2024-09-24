@@ -11,9 +11,12 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class B2BSessionsImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -63,11 +66,12 @@ internal class B2BSessionsImpl internal constructor(
             // do not revoke session here since we using stored data to authenticate
             // call backend endpoint
             result =
-                api.authenticate(
-                    authParams.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                api
+                    .authenticate(
+                        authParams.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
         }
         return result
     }
@@ -83,6 +87,14 @@ internal class B2BSessionsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(
+        authParams: B2BSessions.AuthParams,
+    ): CompletableFuture<SessionsAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(authParams)
+            }.asCompletableFuture()
 
     override suspend fun revoke(params: B2BSessions.RevokeParams): BaseResponse {
         var result: BaseResponse
@@ -112,6 +124,12 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
+    override fun revokeCompletable(params: B2BSessions.RevokeParams): CompletableFuture<BaseResponse> =
+        externalScope
+            .async {
+                revoke(params)
+            }.asCompletableFuture()
+
     /**
      * @throws StytchInternalError if failed to save data
      */
@@ -128,17 +146,17 @@ internal class B2BSessionsImpl internal constructor(
 
     override fun getSync(): B2BSessionData? = sessionStorage.memberSession
 
-    override suspend fun exchange(parameters: B2BSessions.ExchangeParameters): SessionExchangeResponse {
-        return withContext(dispatchers.io) {
-            api.exchange(
-                organizationId = parameters.organizationId,
-                locale = parameters.locale,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override suspend fun exchange(parameters: B2BSessions.ExchangeParameters): SessionExchangeResponse =
+        withContext(dispatchers.io) {
+            api
+                .exchange(
+                    organizationId = parameters.organizationId,
+                    locale = parameters.locale,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun exchange(
         parameters: B2BSessions.ExchangeParameters,
@@ -150,4 +168,12 @@ internal class B2BSessionsImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun exchangeCompletable(
+        parameters: B2BSessions.ExchangeParameters,
+    ): CompletableFuture<SessionExchangeResponse> =
+        externalScope
+            .async {
+                exchange(parameters)
+            }.asCompletableFuture()
 }

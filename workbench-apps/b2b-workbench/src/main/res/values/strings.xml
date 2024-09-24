@@ -72,4 +72,16 @@
     <string name="organization_search">Search Orgs By Slug</string>
     <string name="organization_member_search">Search Member By Email &amp; Org Id</string>
     <string name="get_pkce_code_pair">Get PKCE Code Pair</string>
+    <string name="scim_scim">SCIM</string>
+    <string name="scim_connection_id">Connection Id</string>
+    <string name="scim_identity_provider">Identity Provider</string>
+    <string name="scim_display_name">Display Name</string>
+    <string name="scim_create">Create Connection</string>
+    <string name="scim_update">Update Connection</string>
+    <string name="scim_delete">Delete Connection</string>
+    <string name="scim_get">Get Connection</string>
+    <string name="scim_get_groups">Get Connection Groups</string>
+    <string name="scim_rotate_start">Rotate Start</string>
+    <string name="scim_rotate_cancel">Rotate Cancel</string>
+    <string name="scim_rotate_complete">Rotate Complete</string>
 </resources>

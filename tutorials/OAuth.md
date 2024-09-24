@@ -77,7 +77,7 @@ class MyViewModel : ViewModel() {
                     val result = StytchClient.oauth.authenticate(
                         OAuth.ThirdParty.AuthenticateParameters(
                             token = token,
-                            sessionDurationMinutes = 30U
+                            sessionDurationMinutes = 30
                         )
                     )
                     when (result) {

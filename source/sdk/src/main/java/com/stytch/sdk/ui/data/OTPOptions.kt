@@ -17,29 +17,32 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class OTPOptions(
-    val methods: List<OTPMethods> = emptyList(),
-    val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES.toInt(),
-    val loginTemplateId: String? = null,
-    val signupTemplateId: String? = null,
-) : Parcelable {
-    internal fun toEmailOtpParameters(emailAddress: String) =
-        OTP.EmailOTP.Parameters(
-            email = emailAddress,
-            expirationMinutes = expirationMinutes.toUInt(),
-            loginTemplateId = loginTemplateId,
-            signupTemplateId = signupTemplateId,
-        )
+public data class OTPOptions
+    @JvmOverloads
+    constructor(
+        val methods: List<OTPMethods> = emptyList(),
+        val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+        val loginTemplateId: String? = null,
+        val signupTemplateId: String? = null,
+    ) : Parcelable {
+        internal fun toEmailOtpParameters(emailAddress: String) =
+            OTP.EmailOTP.Parameters(
+                email = emailAddress,
+                expirationMinutes = expirationMinutes,
+                loginTemplateId = loginTemplateId,
+                signupTemplateId = signupTemplateId,
+            )
 
-    internal fun toSMSOtpParameters(phoneNumber: String) =
-        OTP.SmsOTP.Parameters(
-            phoneNumber = phoneNumber,
-            expirationMinutes = expirationMinutes.toUInt(),
-        )
+        internal fun toSMSOtpParameters(phoneNumber: String) =
+            OTP.SmsOTP.Parameters(
+                phoneNumber = phoneNumber,
+                expirationMinutes = expirationMinutes,
+                enableAutofill = true,
+            )
 
-    internal fun toWhatsAppOtpParameters(phoneNumber: String) =
-        OTP.WhatsAppOTP.Parameters(
-            phoneNumber = phoneNumber,
-            expirationMinutes = expirationMinutes.toUInt(),
-        )
-}
+        internal fun toWhatsAppOtpParameters(phoneNumber: String) =
+            OTP.WhatsAppOTP.Parameters(
+                phoneNumber = phoneNumber,
+                expirationMinutes = expirationMinutes,
+            )
+    }

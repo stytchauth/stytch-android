@@ -85,6 +85,7 @@ internal class SSOImplTest {
     @Test
     fun `SSO authenticate returns error if codeverifier fails`() =
         runTest {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Error)
         }
@@ -104,6 +105,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO authenticate with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(SSOAuthenticateResponse) -> Unit>()
         impl.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

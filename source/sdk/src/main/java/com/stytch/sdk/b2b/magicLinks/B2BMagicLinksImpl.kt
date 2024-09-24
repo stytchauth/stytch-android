@@ -13,8 +13,11 @@ import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class B2BMagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -26,23 +29,19 @@ internal class B2BMagicLinksImpl internal constructor(
 ) : B2BMagicLinks {
     override val email: B2BMagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
-    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse {
-        var result: EMLAuthenticateResponse
+    override suspend fun authenticate(parameters: B2BMagicLinks.AuthParameters): EMLAuthenticateResponse =
         withContext(dispatchers.io) {
-            result =
-                emailApi.authenticate(
+            emailApi
+                .authenticate(
                     token = parameters.token,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                     codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
+                    pkcePairManager.clearPKCECodePair()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            pkcePairManager.clearPKCECodePair()
         }
-
-        return result
-    }
 
     override fun authenticate(
         parameters: B2BMagicLinks.AuthParameters,
@@ -55,26 +54,28 @@ internal class B2BMagicLinksImpl internal constructor(
         }
     }
 
+    override fun authenticateCompletable(
+        parameters: B2BMagicLinks.AuthParameters,
+    ): CompletableFuture<EMLAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
     override suspend fun discoveryAuthenticate(
         parameters: B2BMagicLinks.DiscoveryAuthenticateParameters,
     ): DiscoveryEMLAuthResponse {
-        var result: DiscoveryEMLAuthResponse
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-            result =
-                discoveryApi.authenticate(
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            discoveryApi
+                .authenticate(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
-                )
-            pkcePairManager.clearPKCECodePair()
+                ).also {
+                    pkcePairManager.clearPKCECodePair()
+                }
         }
-        return result
     }
 
     override fun discoveryAuthenticate(
@@ -86,6 +87,14 @@ internal class B2BMagicLinksImpl internal constructor(
             callback(result)
         }
     }
+
+    override fun discoveryAuthenticateCompletable(
+        parameters: B2BMagicLinks.DiscoveryAuthenticateParameters,
+    ): CompletableFuture<DiscoveryEMLAuthResponse> =
+        externalScope
+            .async {
+                discoveryAuthenticate(parameters)
+            }.asCompletableFuture()
 
     private inner class EmailMagicLinksImpl : B2BMagicLinks.EmailMagicLinks {
         override suspend fun loginOrSignup(parameters: B2BMagicLinks.EmailMagicLinks.Parameters): BaseResponse {
@@ -108,6 +117,7 @@ internal class B2BMagicLinksImpl internal constructor(
                         codeChallenge = challengeCode,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 
@@ -125,6 +135,14 @@ internal class B2BMagicLinksImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun loginOrSignupCompletable(
+            parameters: B2BMagicLinks.EmailMagicLinks.Parameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    loginOrSignup(parameters)
+                }.asCompletableFuture()
 
         override suspend fun discoverySend(
             parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters,
@@ -145,6 +163,7 @@ internal class B2BMagicLinksImpl internal constructor(
                         codeChallenge = challengeCode,
                         loginTemplateId = parameters.loginTemplateId,
                         discoveryRedirectUrl = parameters.discoveryRedirectUrl,
+                        locale = parameters.locale,
                     )
             }
             return result
@@ -160,8 +179,16 @@ internal class B2BMagicLinksImpl internal constructor(
             }
         }
 
-        override suspend fun invite(parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters): MemberResponse {
-            return withContext(dispatchers.io) {
+        override fun discoverySendCompletable(
+            parameters: B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    discoverySend(parameters)
+                }.asCompletableFuture()
+
+        override suspend fun invite(parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters): MemberResponse =
+            withContext(dispatchers.io) {
                 emailApi.invite(
                     emailAddress = parameters.emailAddress,
                     inviteRedirectUrl = parameters.inviteRedirectUrl,
@@ -172,7 +199,6 @@ internal class B2BMagicLinksImpl internal constructor(
                     roles = parameters.roles,
                 )
             }
-        }
 
         override fun invite(
             parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters,
@@ -183,5 +209,13 @@ internal class B2BMagicLinksImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun inviteCompletable(
+            parameters: B2BMagicLinks.EmailMagicLinks.InviteParameters,
+        ): CompletableFuture<MemberResponse> =
+            externalScope
+                .async {
+                    invite(parameters)
+                }.asCompletableFuture()
     }
 }

@@ -5,7 +5,9 @@ import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
+import com.stytch.sdk.common.network.models.Locale
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
@@ -37,17 +39,21 @@ public interface B2BSessions {
      * Data class used for wrapping parameters used with Sessions authentication
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParams(
-        val sessionDurationMinutes: UInt? = null,
-    )
+    public data class AuthParams
+        @JvmOverloads
+        constructor(
+            val sessionDurationMinutes: Int? = null,
+        )
 
     /**
      * Data class used for wrapping parameters used with Sessions revocation
      * @property forceClear if true, we will clear the local session regardless of any network errors
      */
-    public data class RevokeParams(
-        val forceClear: Boolean = false,
-    )
+    public data class RevokeParams
+        @JvmOverloads
+        constructor(
+            val forceClear: Boolean = false,
+        )
 
     /**
      * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
@@ -69,6 +75,14 @@ public interface B2BSessions {
     )
 
     /**
+     * Authenticates a Session and updates its lifetime by the specified session_duration_minutes.
+     * If the session_duration_minutes is not specified, a Session will not be extended
+     * @param authParams required to authenticate
+     * @return [SessionsAuthenticateResponse]
+     */
+    public fun authenticateCompletable(authParams: AuthParams): CompletableFuture<SessionsAuthenticateResponse>
+
+    /**
      * Revoke a Session and immediately invalidate all its tokens.
      * @param params required for revoking a session
      * @return [BaseResponse]
@@ -84,6 +98,13 @@ public interface B2BSessions {
         params: RevokeParams = RevokeParams(),
         callback: (BaseResponse) -> Unit,
     )
+
+    /**
+     * Revoke a Session and immediately invalidate all its tokens.
+     * @param params required for revoking a session
+     * @return [BaseResponse]
+     */
+    public fun revokeCompletable(params: RevokeParams = RevokeParams()): CompletableFuture<BaseResponse>
 
     /**
      * Updates the current session with a sessionToken and sessionJwt
@@ -108,11 +129,13 @@ public interface B2BSessions {
      * secondary authentication requirement.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class ExchangeParameters(
-        val organizationId: String,
-        val sessionDurationMinutes: UInt,
-        val locale: String? = null,
-    )
+    public data class ExchangeParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val sessionDurationMinutes: Int,
+            val locale: Locale? = null,
+        )
 
     /**
      * Exchanges an existing session for one in a different organization
@@ -131,4 +154,11 @@ public interface B2BSessions {
         parameters: ExchangeParameters,
         callback: (SessionExchangeResponse) -> Unit,
     )
+
+    /**
+     * Exchanges an existing session for one in a different organization
+     * @param parameters required for exchanging a session between organizations
+     * @return [SessionExchangeResponse]
+     */
+    public fun exchangeCompletable(parameters: ExchangeParameters): CompletableFuture<SessionExchangeResponse>
 }

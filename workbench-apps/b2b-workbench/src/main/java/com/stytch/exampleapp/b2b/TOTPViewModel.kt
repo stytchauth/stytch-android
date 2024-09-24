@@ -30,36 +30,37 @@ class TOTPViewModel : ViewModel() {
     fun create() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.totp.create(
-                    TOTP.CreateParameters(
-                        organizationId = orgIdState.text,
-                        memberId = memberIdState.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.totp
+                    .create(
+                        TOTP.CreateParameters(
+                            organizationId = orgIdState.text,
+                            memberId = memberIdState.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun authenticate() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.totp.authenticate(
-                    TOTP.AuthenticateParameters(
-                        organizationId = orgIdState.text,
-                        memberId = memberIdState.text,
-                        code = codeState.text,
-                        setMFAEnrollment = SetMFAEnrollment.ENROLL,
-                        sessionDurationMinutes = 30U,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.totp
+                    .authenticate(
+                        TOTP.AuthenticateParameters(
+                            organizationId = orgIdState.text,
+                            memberId = memberIdState.text,
+                            code = codeState.text,
+                            setMFAEnrollment = SetMFAEnrollment.ENROLL,
+                            sessionDurationMinutes = 30,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 }

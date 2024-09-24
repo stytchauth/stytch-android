@@ -13,6 +13,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
-public data class SessionOptions(
-    val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES.toInt(),
-) : Parcelable
+public data class SessionOptions
+    @JvmOverloads
+    constructor(
+        val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+    ) : Parcelable

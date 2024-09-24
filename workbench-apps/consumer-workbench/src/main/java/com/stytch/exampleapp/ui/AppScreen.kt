@@ -132,15 +132,15 @@ sealed class Screen(
     @StringRes val resourceId: Int,
     val iconVector: ImageVector,
 ) {
-    object Main : Screen("main", R.string.home, Icons.Filled.Home)
+    data object Main : Screen("main", R.string.home, Icons.Filled.Home)
 
-    object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
+    data object Passwords : Screen("passwords", R.string.passwords_name, Icons.Filled.Lock)
 
-    object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
+    data object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
 
-    object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+    data object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
 
-    object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
+    data object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
 
-    object TOTP : Screen("totp", R.string.totps, Icons.Filled.Build)
+    data object TOTP : Screen("totp", R.string.totps, Icons.Filled.Build)
 }

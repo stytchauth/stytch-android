@@ -5,6 +5,8 @@ import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.network.models.Locale
+import java.util.concurrent.CompletableFuture
 
 /**
  * The B2BMagicLinks interface provides methods for sending and authenticating users with Email Magic Links.
@@ -31,10 +33,12 @@ public interface B2BMagicLinks {
      * @property token is the unique sequence of characters used to log in
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthParameters(
-        val token: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthParameters
+        @JvmOverloads
+        constructor(
+            val token: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Public variable that exposes an instance of [EmailMagicLinks]
@@ -61,6 +65,15 @@ public interface B2BMagicLinks {
         parameters: AuthParameters,
         callback: (response: EMLAuthenticateResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a Member with a Magic Link. This endpoint requires a Magic Link token that is not expired or
+     * previously used. Provide a value for session_duration_minutes to receive a Session. If the Member’s status is
+     * pending, they will be updated to active.
+     * @param parameters required to authenticate
+     * @return [EMLAuthenticateResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<EMLAuthenticateResponse>
 
     /**
      * A data class used for wrapping parameters used for authenticating a discovery magic link
@@ -90,6 +103,16 @@ public interface B2BMagicLinks {
     )
 
     /**
+     * Authenticate a Member with a Discovery Magic Link. This endpoint requires a Magic Link token that is not
+     * expired or previously used.
+     * @param parameters required to authenticate
+     * @return [DiscoveryEMLAuthResponse]
+     */
+    public fun discoveryAuthenticateCompletable(
+        parameters: DiscoveryAuthenticateParameters,
+    ): CompletableFuture<DiscoveryEMLAuthResponse>
+
+    /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
     public interface EmailMagicLinks {
@@ -106,15 +129,21 @@ public interface B2BMagicLinks {
          * @property signupTemplateId Use a custom template for sign-up emails. By default, it will use your default
          * email template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Sign-up.
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
-        public data class Parameters(
-            val email: String,
-            val organizationId: String,
-            val loginRedirectUrl: String? = null,
-            val signupRedirectUrl: String? = null,
-            val loginTemplateId: String? = null,
-            val signupTemplateId: String? = null,
-        )
+        public data class Parameters
+            @JvmOverloads
+            constructor(
+                val email: String,
+                val organizationId: String,
+                val loginRedirectUrl: String? = null,
+                val signupRedirectUrl: String? = null,
+                val loginTemplateId: String? = null,
+                val signupTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
 
         /**
          * Send either a login or signup magic link to a Member. A new or pending Member will receive a signup
@@ -136,6 +165,14 @@ public interface B2BMagicLinks {
         )
 
         /**
+         * Send either a login or signup magic link to a Member. A new or pending Member will receive a signup
+         * Email Magic Link. An active Member will receive a login Email Magic Link.
+         * @param parameters required to receive magic link
+         * @return [BaseResponse]
+         */
+        public fun loginOrSignupCompletable(parameters: Parameters): CompletableFuture<BaseResponse>
+
+        /**
          * A data class used for wrapping paramaters used for sending a discovery magic link
          * @property emailAddress is the account identifier for the account in the form of an Email address where you
          * wish to receive a magic link to authenticate
@@ -143,12 +180,18 @@ public interface B2BMagicLinks {
          * @property loginTemplateId Use a custom template for login emails. By default, it will use your default email
          * template. The template must be a template using our built-in customizations or a custom HTML email for
          * Magic links - Login.
+         * @property locale Used to determine which language to use when sending the user this delivery method.
+         * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
+         * if no value is provided, the copy defaults to English.
          */
-        public data class DiscoverySendParameters(
-            val emailAddress: String,
-            val discoveryRedirectUrl: String? = null,
-            val loginTemplateId: String? = null,
-        )
+        public data class DiscoverySendParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val discoveryRedirectUrl: String? = null,
+                val loginTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
 
         /**
          * Send a discovery magic link to an email address
@@ -166,6 +209,13 @@ public interface B2BMagicLinks {
             parameters: DiscoverySendParameters,
             callback: (BaseResponse) -> Unit,
         )
+
+        /**
+         * Send a discovery magic link to an email address
+         * @param parameters required to send a discovery magic link
+         * @return [BaseResponse]
+         */
+        public fun discoverySendCompletable(parameters: DiscoverySendParameters): CompletableFuture<BaseResponse>
 
         /**
          * A data class used for wrapping paramaters used for sending an invite magic link
@@ -190,15 +240,17 @@ public interface B2BMagicLinks {
          * [RBAC guide](https://stytch.com/docs/b2b/guides/rbac/role-assignment) for more information about role
          * assignment.
          */
-        public data class InviteParameters(
-            val emailAddress: String,
-            val inviteRedirectUrl: String? = null,
-            val inviteTemplateId: String? = null,
-            val name: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val locale: String? = null,
-            val roles: List<String>? = null,
-        )
+        public data class InviteParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val inviteRedirectUrl: String? = null,
+                val inviteTemplateId: String? = null,
+                val name: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val locale: Locale? = null,
+                val roles: List<String>? = null,
+            )
 
         /**
          * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
@@ -220,5 +272,14 @@ public interface B2BMagicLinks {
             parameters: InviteParameters,
             callback: (MemberResponse) -> Unit,
         )
+
+        /**
+         * Send an invite email to a new Member to join an Organization. The Member will be created with an invited
+         * status until they successfully authenticate. Sending invites to pending Members will update their status to
+         * invited. Sending invites to already active Members will return an error.
+         * @param parameters required to send an invite magic link
+         * @return [MemberResponse]
+         */
+        public fun inviteCompletable(parameters: InviteParameters): CompletableFuture<MemberResponse>
     }
 }

@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.TOTPAuthenticateResponse
 import com.stytch.sdk.b2b.TOTPCreateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import java.util.concurrent.CompletableFuture
 
 /**
  * The TOTP interface provides methods for creating and authenticating TOTPs for a member
@@ -17,11 +18,13 @@ public interface TOTP {
      * within this time frame the TOTP will be unusable. Defaults to 60 (1 hour) with a minimum of 5 and a maximum of
      * 1440.
      */
-    public data class CreateParameters(
-        val organizationId: String,
-        val memberId: String,
-        val expirationMinutes: UInt? = null,
-    )
+    public data class CreateParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val memberId: String,
+            val expirationMinutes: Int? = null,
+        )
 
     /**
      * Create a TOTP for a member
@@ -41,6 +44,13 @@ public interface TOTP {
     )
 
     /**
+     * Create a TOTP for a member
+     * @param parameters required to create a TOTP
+     * @return [TOTPCreateResponse]
+     */
+    public fun createCompletable(parameters: CreateParameters): CompletableFuture<TOTPCreateResponse>
+
+    /**
      * A data class wrapping the parameters needed to authenticate a TOTP
      * @property organizationId The ID of the organization the member belongs to
      * @property memberId The ID of the member to create the TOTP for
@@ -51,14 +61,16 @@ public interface TOTP {
      * @property setDefaultMFAMethod If set to true, sets TOTP as the member's default MFA method.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthenticateParameters(
-        val organizationId: String,
-        val memberId: String,
-        val code: String,
-        val setMFAEnrollment: SetMFAEnrollment? = null,
-        val setDefaultMFAMethod: Boolean? = null,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val memberId: String,
+            val code: String,
+            val setMFAEnrollment: SetMFAEnrollment? = null,
+            val setDefaultMFAMethod: Boolean? = null,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Authenticate a TOTP for a member
@@ -76,4 +88,11 @@ public interface TOTP {
         parameters: AuthenticateParameters,
         callback: (TOTPAuthenticateResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a TOTP for a member
+     * @param parameters required to authenticate a TOTP
+     * @return [TOTPAuthenticateResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<TOTPAuthenticateResponse>
 }

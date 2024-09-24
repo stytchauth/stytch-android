@@ -16,9 +16,9 @@ internal class PasswordOptionsTest {
             Passwords.ResetByEmailStartParameters(
                 email = "my@email.com",
                 loginRedirectUrl = "stytchui-publicToken://deeplink",
-                loginExpirationMinutes = options.loginExpirationMinutes?.toUInt(),
+                loginExpirationMinutes = options.loginExpirationMinutes,
                 resetPasswordRedirectUrl = "stytchui-publicToken://deeplink",
-                resetPasswordExpirationMinutes = options.resetPasswordExpirationMinutes?.toUInt(),
+                resetPasswordExpirationMinutes = options.resetPasswordExpirationMinutes,
                 resetPasswordTemplateId = options.resetPasswordTemplateId,
             )
         assert(options.toResetByEmailStartParameters("my@email.com", "publicToken") == expected)

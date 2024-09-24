@@ -11,7 +11,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.25.0'
+  PUBLISH_VERSION = '0.27.1'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -69,7 +69,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.8'
+        kotlinCompilerExtensionVersion '1.5.7'
     }
     testVariants.all {
         it.mergedFlavor.manifestPlaceholders = [
@@ -160,6 +160,7 @@ dependencies {
     implementation "androidx.credentials:credentials:1.2.2"
     implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
     implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.1.0'
 
     // UI SDK dependencies
     def voyagerVersion = "1.0.0-rc06"
@@ -170,7 +171,7 @@ dependencies {
     implementation "cafe.adriel.voyager:voyager-navigator:$voyagerVersion"
     implementation "cafe.adriel.voyager:voyager-transitions:$voyagerVersion"
     implementation "cafe.adriel.voyager:voyager-androidx:$voyagerVersion"
-    implementation platform('androidx.compose:compose-bom:2023.06.01')
+    implementation platform('androidx.compose:compose-bom:2024.08.00')
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-graphics"
     implementation "androidx.compose.ui:ui-tooling-preview"

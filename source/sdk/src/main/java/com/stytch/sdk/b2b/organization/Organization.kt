@@ -22,6 +22,7 @@ import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Organization interface provides methods for retrieving, updating, and deleting the current authenticated user's
@@ -44,6 +45,12 @@ public interface Organization {
      * @return [OrganizationResponse]
      */
     public suspend fun get(): OrganizationResponse
+
+    /**
+     * Wraps Stytch’s organization/me endpoint.
+     * @return [OrganizationResponse]
+     */
+    public fun getCompletable(): CompletableFuture<OrganizationResponse>
 
     /**
      * Wraps Stytch’s organization/me endpoint.
@@ -85,23 +92,25 @@ public interface Organization {
      * @property rbacEmailImplicitRoleAssignments An array of implicit role assignments granted to members in this
      * organization whose emails match the domain.
      */
-    public data class UpdateOrganizationParameters(
-        val organizationName: String? = null,
-        val organizationSlug: String? = null,
-        val organizationLogoUrl: String? = null,
-        val ssoDefaultConnectionId: String? = null,
-        val ssoJitProvisioning: SsoJitProvisioning? = null,
-        val ssoJitProvisioningAllowedConnections: List<String>? = null,
-        val emailAllowedDomains: List<String>? = null,
-        val emailJitProvisioning: EmailJitProvisioning? = null,
-        val emailInvites: EmailInvites? = null,
-        val authMethods: AuthMethods? = null,
-        val allowedAuthMethods: List<AllowedAuthMethods>? = null,
-        val mfaMethods: MfaMethods? = null,
-        val allowedMfaMethods: List<MfaMethod>? = null,
-        val mfaPolicy: MfaPolicy? = null,
-        val rbacEmailImplicitRoleAssignments: List<String>? = null,
-    )
+    public data class UpdateOrganizationParameters
+        @JvmOverloads
+        constructor(
+            val organizationName: String? = null,
+            val organizationSlug: String? = null,
+            val organizationLogoUrl: String? = null,
+            val ssoDefaultConnectionId: String? = null,
+            val ssoJitProvisioning: SsoJitProvisioning? = null,
+            val ssoJitProvisioningAllowedConnections: List<String>? = null,
+            val emailAllowedDomains: List<String>? = null,
+            val emailJitProvisioning: EmailJitProvisioning? = null,
+            val emailInvites: EmailInvites? = null,
+            val authMethods: AuthMethods? = null,
+            val allowedAuthMethods: List<AllowedAuthMethods>? = null,
+            val mfaMethods: MfaMethods? = null,
+            val allowedMfaMethods: List<MfaMethod>? = null,
+            val mfaPolicy: MfaPolicy? = null,
+            val rbacEmailImplicitRoleAssignments: List<String>? = null,
+        )
 
     /**
      * Updates the Organization of the logged-in member.
@@ -127,6 +136,18 @@ public interface Organization {
     )
 
     /**
+     * Updates the Organization of the logged-in member.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * An Organization must always have at least one auth setting set to either RESTRICTED or ALL_ALLOWED in order to
+     * provision new Members.
+     * @param parameters the parameters required for updating an organization
+     * @return [UpdateOrganizationResponse]
+     */
+    public fun updateCompletable(
+        parameters: UpdateOrganizationParameters,
+    ): CompletableFuture<UpdateOrganizationResponse>
+
+    /**
      * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
      * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
      * Note: This endpoint will log out the current member, as they will also be deleted
@@ -141,6 +162,14 @@ public interface Organization {
      * @param callback a callback that receives a [DeleteOrganizationResponse]
      */
     public fun delete(callback: (DeleteOrganizationResponse) -> Unit)
+
+    /**
+     * Deletes the Organization of the logged-in member. All Members of the Organization will also be deleted.
+     * The member must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     * Note: This endpoint will log out the current member, as they will also be deleted
+     * @return [DeleteOrganizationResponse]
+     */
+    public fun deleteCompletable(): CompletableFuture<DeleteOrganizationResponse>
 
     /**
      * Public variable that exposes an instance of Organization.Members
@@ -172,6 +201,14 @@ public interface Organization {
         )
 
         /**
+         * Deletes a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be deleted
+         * @return [DeleteMemberResponse]
+         */
+        public fun deleteCompletable(memberId: String): CompletableFuture<DeleteMemberResponse>
+
+        /**
          * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
          * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
          * @param memberId The ID of the member to be reactivated
@@ -189,6 +226,14 @@ public interface Organization {
             memberId: String,
             callback: (ReactivateMemberResponse) -> Unit,
         )
+
+        /**
+         * Reactivates a deleted Member's status and its associated email status (if applicable) to active.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param memberId The ID of the member to be reactivated
+         * @return [ReactivateMemberResponse]
+         */
+        public fun reactivateCompletable(memberId: String): CompletableFuture<ReactivateMemberResponse>
 
         /**
          * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
@@ -212,6 +257,16 @@ public interface Organization {
         )
 
         /**
+         * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+         * @param authenticationFactor the authentication factor to delete
+         * @return [DeleteOrganizationMemberAuthenticationFactorResponse]
+         */
+        public fun deleteMemberAuthenticationFactorCompletable(
+            memberId: String,
+            authenticationFactor: MemberAuthenticationFactor,
+        ): CompletableFuture<DeleteOrganizationMemberAuthenticationFactorResponse>
+
+        /**
          * Data class used for wrapping the parameters necessary for creating a user
          * @property emailAddress  the Member's `email_address`
          * @property name The name of the Member.
@@ -230,16 +285,18 @@ public interface Organization {
          * that Member authenticates and becomes active. If false, new Members will be created with status active.
          * @property roles Roles to explicitly assign to this Member.
          */
-        public data class CreateMemberParameters(
-            val emailAddress: String,
-            val name: String? = null,
-            val isBreakGlass: Boolean? = null,
-            val mfaEnrolled: Boolean? = null,
-            val mfaPhoneNumber: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val createMemberAsPending: Boolean? = null,
-            val roles: List<String>? = null,
-        )
+        public data class CreateMemberParameters
+            @JvmOverloads
+            constructor(
+                val emailAddress: String,
+                val name: String? = null,
+                val isBreakGlass: Boolean? = null,
+                val mfaEnrolled: Boolean? = null,
+                val mfaPhoneNumber: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val createMemberAsPending: Boolean? = null,
+                val roles: List<String>? = null,
+            )
 
         /**
          * Creates a Member.
@@ -259,6 +316,14 @@ public interface Organization {
             parameters: CreateMemberParameters,
             callback: (CreateMemberResponse) -> Unit,
         )
+
+        /**
+         * Creates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for creating a user
+         * @return [CreateMemberResponse]
+         */
+        public fun createCompletable(parameters: CreateMemberParameters): CompletableFuture<CreateMemberResponse>
 
         /**
          * Data class used for wrapping the parameters necessary for creating a user
@@ -283,18 +348,20 @@ public interface Organization {
          * 1. Which MFA method the Member is prompted to use when logging in
          * 2. Whether An SMS will be sent automatically after completing the first leg of authentication
          */
-        public data class UpdateMemberParameters(
-            val memberId: String,
-            val emailAddress: String? = null,
-            val name: String? = null,
-            val isBreakGlass: Boolean? = null,
-            val mfaEnrolled: Boolean? = null,
-            val mfaPhoneNumber: String? = null,
-            val untrustedMetadata: Map<String, Any?>? = null,
-            val roles: List<String>? = null,
-            val preserveExistingSessions: Boolean? = null,
-            val defaultMfaMethod: MfaMethod? = null,
-        )
+        public data class UpdateMemberParameters
+            @JvmOverloads
+            constructor(
+                val memberId: String,
+                val emailAddress: String? = null,
+                val name: String? = null,
+                val isBreakGlass: Boolean? = null,
+                val mfaEnrolled: Boolean? = null,
+                val mfaPhoneNumber: String? = null,
+                val untrustedMetadata: Map<String, Any?>? = null,
+                val roles: List<String>? = null,
+                val preserveExistingSessions: Boolean? = null,
+                val defaultMfaMethod: MfaMethod? = null,
+            )
 
         /**
          * Updates a Member.
@@ -316,6 +383,16 @@ public interface Organization {
         )
 
         /**
+         * Updates a Member.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters required for updating a user
+         * @return [UpdateOrganizationMemberResponse]
+         */
+        public fun updateCompletable(
+            parameters: UpdateMemberParameters,
+        ): CompletableFuture<UpdateOrganizationMemberResponse>
+
+        /**
          * Data class used for wrapping the parameters necessary to search members
          * @property cursor The cursor field allows you to paginate through your results.
          * Each result array is limited to 1000 results.
@@ -332,11 +409,13 @@ public interface Organization {
          * Only an operator is required. If you include no operands, no filtering will be applied.
          * If you include no query object, it will return all Members with no filtering applied.
          */
-        public data class SearchParameters(
-            val cursor: String? = null,
-            val limit: Int? = null,
-            val query: SearchQuery? = null,
-        )
+        public data class SearchParameters
+            @JvmOverloads
+            constructor(
+                val cursor: String? = null,
+                val limit: Int? = null,
+                val query: SearchQuery? = null,
+            )
 
         /**
          * A data class representing conditions for a query
@@ -357,12 +436,113 @@ public interface Organization {
          * @property filterName the field on which to filter
          * @property filterValue the value of the field to filter by
          */
-        public data class SearchQueryOperand(
+        public sealed class SearchQueryOperand(
             @Json(name = "filter_name")
-            val filterName: String,
+            public val filterName: String,
             @Json(name = "filter_value")
-            val filterValue: Any,
-        )
+            public val filterValue: Any,
+        ) {
+            /**
+             * An operand for searching based on member_ids
+             */
+            public data class MemberIds(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_ids",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_emails
+             */
+            public data class MemberEmails(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_emails",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_email_fuzzy
+             */
+            public data class MemberEmailFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_email_fuzzy",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_is_breakglass
+             */
+            public data class MemberIsBreakingGlass(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_is_breakglass",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on statuses
+             */
+            public data class Statuses(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "statuses",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_mfa_phone_numbers
+             */
+            public data class MemberMFAPhoneNumbers(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_numbers",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_mfa_phone_number_fuzzy
+             */
+            public data class MemberMFAPhoneNumberFuzzy(
+                val value: String,
+            ) : SearchQueryOperand(
+                    filterName = "member_mfa_phone_number_fuzzy",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_password_exists
+             */
+            public data class MemberPasswordExists(
+                val value: Boolean,
+            ) : SearchQueryOperand(
+                    filterName = "member_password_exists",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on member_roles
+             */
+            public data class MemberRoles(
+                val value: List<String>,
+            ) : SearchQueryOperand(
+                    filterName = "member_roles",
+                    filterValue = value,
+                )
+
+            /**
+             * An operand for searching based on custom filters
+             */
+            public data class Custom(
+                val name: String,
+                val value: Any,
+            ) : SearchQueryOperand(
+                    filterName = name,
+                    filterValue = value,
+                )
+        }
 
         /**
          * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
@@ -384,5 +564,14 @@ public interface Organization {
             parameters: SearchParameters,
             callback: (MemberSearchResponse) -> Unit,
         )
+
+        /**
+         * Search for Members from the caller's organization. Submitting an empty query returns all non-deleted Members.
+         * All fuzzy search filters require a minimum of three characters.
+         * The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+         * @param parameters the parameters for searching
+         * @return [MemberSearchResponse]
+         */
+        public fun searchCompletable(parameters: SearchParameters): CompletableFuture<MemberSearchResponse>
     }
 }

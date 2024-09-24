@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -31,10 +33,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     var phoneNumberTextState by mutableStateOf(TextFieldValue(""))
     var otpTokenTextState by mutableStateOf(TextFieldValue(""))
 
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailTextState.text)
 
-    val phoneNumberIsValid
+    private val phoneNumberIsValid
         get() = isPhoneNumberValid(phoneNumberTextState.text)
 
     var showEmailError by mutableStateOf(false)
@@ -43,36 +45,44 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private var otpMethodId = ""
 
-    fun handleUri(uri: Uri) {
-        viewModelScope.launch {
-            _loadingState.value = true
-            _currentResponse.value =
-                when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60u)) {
-                    is DeeplinkHandledStatus.NotHandled -> result.reason.message
-                    is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
-                    // This only happens for password reset deeplinks
-                    is DeeplinkHandledStatus.ManualHandlingRequired ->
-                        "Password reset token retrieved, initiate password reset flow"
-                }
-        }.invokeOnCompletion {
-            _loadingState.value = false
+    init {
+        StytchClient.user.onChange {
+            _currentResponse.value = "USER CHANGED: $it"
         }
+    }
+
+    fun handleUri(uri: Uri) {
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                _currentResponse.value =
+                    when (val result = StytchClient.handle(uri = uri, sessionDurationMinutes = 60)) {
+                        is DeeplinkHandledStatus.NotHandled -> result.reason.message
+                        is DeeplinkHandledStatus.Handled -> result.response.result.toFriendlyDisplay()
+                        // This only happens for password reset deeplinks
+                        is DeeplinkHandledStatus.ManualHandlingRequired ->
+                            "Password reset token retrieved, initiate password reset flow"
+                    }
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 
     fun loginOrCreate() {
         showPhoneError = false
         if (emailIsValid) {
             showEmailError = false
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.magicLinks.email.loginOrCreate(
-                        MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.magicLinks.email.loginOrCreate(
+                            MagicLinks.EmailMagicLinks.Parameters(email = emailTextState.text),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -82,14 +92,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         showEmailError = false
         if (phoneNumberIsValid) {
             showPhoneError = false
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result = StytchClient.otps.sms.loginOrCreate(OTP.SmsOTP.Parameters(phoneNumberTextState.text))
-                handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.otps.sms.loginOrCreate(
+                            OTP.SmsOTP.Parameters(
+                                phoneNumber = phoneNumberTextState.text,
+                                enableAutofill = true,
+                            ),
+                        )
+                    handleLoginOrCreateOtp(result)
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showPhoneError = true
         }
@@ -99,17 +116,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         showEmailError = false
         if (phoneNumberIsValid) {
             showPhoneError = false
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.otps.whatsapp.loginOrCreate(
-                        OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text),
-                    )
-                handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.otps.whatsapp.loginOrCreate(
+                            OTP.WhatsAppOTP.Parameters(phoneNumberTextState.text),
+                        )
+                    handleLoginOrCreateOtp(result)
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showPhoneError = true
         }
@@ -119,14 +137,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         showPhoneError = false
         if (emailIsValid) {
             showEmailError = false
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters(emailTextState.text))
-                handleLoginOrCreateOtp(result)
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result = StytchClient.otps.email.loginOrCreate(OTP.EmailOTP.Parameters(emailTextState.text))
+                    handleLoginOrCreateOtp(result)
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -137,24 +156,26 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             showOTPError = true
         } else {
             showOTPError = false
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result = StytchClient.otps.authenticate(OTP.AuthParameters(otpTokenTextState.text, otpMethodId))
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result = StytchClient.otps.authenticate(OTP.AuthParameters(otpTokenTextState.text, otpMethodId))
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         }
     }
 
     fun revokeSession() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            val result = StytchClient.sessions.revoke()
-            _currentResponse.value = result.toFriendlyDisplay()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                val result = StytchClient.sessions.revoke()
+                _currentResponse.value = result.toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 
     private fun handleLoginOrCreateOtp(response: LoginOrCreateOTPResponse) =
@@ -164,11 +185,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     fun getPKCECodePair() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            _currentResponse.value = StytchClient.getPKCECodePair().toString()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                _currentResponse.value = StytchClient.getPKCECodePair().toString()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 }

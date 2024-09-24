@@ -5,6 +5,7 @@ import com.stytch.sdk.consumer.TOTPAuthenticateResponse
 import com.stytch.sdk.consumer.TOTPCreateResponse
 import com.stytch.sdk.consumer.TOTPRecoverResponse
 import com.stytch.sdk.consumer.TOTPRecoveryCodesResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The TOTP interface provides methods for creating and authenticating TOTP codes; retrieving recovery codes; and
@@ -26,20 +27,24 @@ public interface TOTP {
      * @property totpCode The TOTP code to authenticate. The TOTP code should consist of 6 digits.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class AuthenticateParameters(
-        val totpCode: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val totpCode: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * A data class wrapping the parameters use in a TOTP recover request
      * @property recoveryCode The recovery code to authenticate.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class RecoverParameters(
-        val recoveryCode: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class RecoverParameters
+        @JvmOverloads
+        constructor(
+            val recoveryCode: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      *  Call this method to create a new TOTP instance for a user. The user can use the authenticator application of
@@ -61,6 +66,14 @@ public interface TOTP {
     )
 
     /**
+     *  Call this method to create a new TOTP instance for a user. The user can use the authenticator application of
+     *  their choice to scan the QR code or enter the secret.
+     *  @param parameters the parameters required to create a TOTP
+     *  @return [TOTPCreateResponse]
+     */
+    public fun createCompletable(parameters: CreateParameters): CompletableFuture<TOTPCreateResponse>
+
+    /**
      * Call this method to authenticate a TOTP code entered by a user. If this method succeeds, the user will be logged
      * in and granted an active session
      * @param parameters the parameters required to authenticate a TOTP
@@ -80,6 +93,14 @@ public interface TOTP {
     )
 
     /**
+     * Call this method to authenticate a TOTP code entered by a user. If this method succeeds, the user will be logged
+     * in and granted an active session
+     * @param parameters the parameters required to authenticate a TOTP
+     * @return [TOTPAuthenticateResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<TOTPAuthenticateResponse>
+
+    /**
      * Call this method to retrieve the recovery codes for a TOTP instance tied to a user.
      * @return [TOTPRecoveryCodesResponse]
      */
@@ -90,6 +111,12 @@ public interface TOTP {
      * @param callback a callback that receives a [TOTPRecoveryCodesResponse]
      */
     public fun recoveryCodes(callback: (TOTPRecoveryCodesResponse) -> Unit)
+
+    /**
+     * Call this method to retrieve the recovery codes for a TOTP instance tied to a user.
+     * @return [TOTPRecoveryCodesResponse]
+     */
+    public fun recoveryCodesCompletable(): CompletableFuture<TOTPRecoveryCodesResponse>
 
     /**
      * Call this method to authenticate a recovery code for a TOTP instance. If this method succeeds, the user will be
@@ -109,4 +136,12 @@ public interface TOTP {
         parameters: RecoverParameters,
         callback: (TOTPRecoverResponse) -> Unit,
     )
+
+    /**
+     * Call this method to authenticate a recovery code for a TOTP instance. If this method succeeds, the user will be
+     * logged in and granted an active session
+     * @param parameters the parameters required to authenticate a recovery code for a TOTP instance
+     * @return [TOTPRecoverResponse]
+     */
+    public fun recoverCompletable(parameters: RecoverParameters): CompletableFuture<TOTPRecoverResponse>
 }

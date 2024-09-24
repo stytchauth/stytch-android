@@ -17,7 +17,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -38,21 +37,21 @@ import java.security.KeyStore
 internal class OTPConfirmationScreenViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
-    private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: OTPConfirmationScreenViewModel
+    private lateinit var mockStytchClient: StytchClient
 
     @Before
     fun before() {
-        mockkStatic(KeyStore::class, DateUtils::class)
+        mockkStatic(KeyStore::class, DateUtils::class, StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         every { DateUtils.formatElapsedTime(any()) } returns "Formatted DateTime String"
         MockKAnnotations.init(this, true, true, true)
-        every { mockStytchClient.events } returns
-            mockk(relaxed = true) {
-                every { logEvent(any(), any()) } just runs
+        mockStytchClient =
+            mockk {
+                every { events } returns
+                    mockk(relaxed = true) {
+                        every { logEvent(any(), any()) } just runs
+                    }
             }
         viewModel = OTPConfirmationScreenViewModel(savedStateHandle, mockStytchClient)
     }
@@ -69,9 +68,9 @@ internal class OTPConfirmationScreenViewModelTest {
             val emailDetails =
                 OTPDetails.EmailOTP(
                     methodId = "email-method-id",
-                    parameters = OTP.EmailOTP.Parameters("", expirationMinutes = 5u),
+                    parameters = OTP.EmailOTP.Parameters("", expirationMinutes = 5),
                 )
-            val expectedCountdownSeconds = (emailDetails.parameters.expirationMinutes * 60U).toLong()
+            val expectedCountdownSeconds = (emailDetails.parameters.expirationMinutes * 60).toLong()
             viewModel.setInitialState(emailDetails, this)
             assert(viewModel.methodId == emailDetails.methodId)
             assert(viewModel.resendCountdownSeconds == expectedCountdownSeconds)
@@ -87,9 +86,9 @@ internal class OTPConfirmationScreenViewModelTest {
             val smsDetails =
                 OTPDetails.SmsOTP(
                     methodId = "sms-method-id",
-                    parameters = OTP.SmsOTP.Parameters("", expirationMinutes = 10u),
+                    parameters = OTP.SmsOTP.Parameters("", expirationMinutes = 10),
                 )
-            val expectedCountdownSeconds = (smsDetails.parameters.expirationMinutes * 60U).toLong()
+            val expectedCountdownSeconds = (smsDetails.parameters.expirationMinutes * 60).toLong()
             viewModel.setInitialState(smsDetails, this)
             assert(viewModel.methodId == smsDetails.methodId)
             assert(viewModel.resendCountdownSeconds == expectedCountdownSeconds)
@@ -104,9 +103,9 @@ internal class OTPConfirmationScreenViewModelTest {
             val whatsappDetails =
                 OTPDetails.WhatsAppOTP(
                     methodId = "whatsapp-method-id",
-                    parameters = OTP.WhatsAppOTP.Parameters("", expirationMinutes = 15u),
+                    parameters = OTP.WhatsAppOTP.Parameters("", expirationMinutes = 15),
                 )
-            val expectedCountdownSeconds = (whatsappDetails.parameters.expirationMinutes * 60U).toLong()
+            val expectedCountdownSeconds = (whatsappDetails.parameters.expirationMinutes * 60).toLong()
             viewModel.setInitialState(whatsappDetails, this)
             assert(viewModel.methodId == whatsappDetails.methodId)
             assert(viewModel.resendCountdownSeconds == expectedCountdownSeconds)

@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.network
 
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BResponses
+import com.stytch.sdk.common.annotations.DFPPAEnabled
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.CommonResponses
@@ -21,16 +22,19 @@ internal interface StytchB2BApiService : ApiService {
     ): CommonResponses.BasicResponse
 
     @POST("b2b/magic_links/authenticate")
+    @DFPPAEnabled
     suspend fun authenticate(
         @Body request: B2BRequests.MagicLinks.AuthenticateRequest,
     ): B2BResponses.MagicLinks.AuthenticateResponse
 
     @POST("b2b/magic_links/email/discovery/send")
+    @DFPPAEnabled
     suspend fun sendDiscoveryMagicLink(
         @Body request: B2BRequests.MagicLinks.Discovery.SendRequest,
     ): CommonResponses.BasicResponse
 
     @POST("b2b/magic_links/discovery/authenticate")
+    @DFPPAEnabled
     suspend fun authenticateDiscoveryMagicLink(
         @Body request: B2BRequests.MagicLinks.Discovery.AuthenticateRequest,
     ): B2BResponses.MagicLinks.DiscoveryAuthenticateResponse
@@ -132,26 +136,31 @@ internal interface StytchB2BApiService : ApiService {
 
     //region Passwords
     @POST("b2b/passwords/authenticate")
+    @DFPPAEnabled
     suspend fun authenticatePassword(
         @Body request: B2BRequests.Passwords.AuthenticateRequest,
     ): B2BResponses.Passwords.AuthenticateResponse
 
     @POST("b2b/passwords/email/reset/start")
+    @DFPPAEnabled
     suspend fun resetPasswordByEmailStart(
         @Body request: B2BRequests.Passwords.ResetByEmailStartRequest,
     ): B2BResponses.Passwords.ResetByEmailStartResponse
 
     @POST("b2b/passwords/email/reset")
+    @DFPPAEnabled
     suspend fun resetPasswordByEmail(
         @Body request: B2BRequests.Passwords.ResetByEmailRequest,
     ): B2BResponses.Passwords.ResetByEmailResponse
 
     @POST("b2b/passwords/existing_password/reset")
+    @DFPPAEnabled
     suspend fun resetPasswordByExisting(
         @Body request: B2BRequests.Passwords.ResetByExistingPasswordRequest,
     ): B2BResponses.Passwords.ResetByExistingPasswordResponse
 
     @POST("b2b/passwords/session/reset")
+    @DFPPAEnabled
     suspend fun resetPasswordBySession(
         @Body request: B2BRequests.Passwords.ResetBySessionRequest,
     ): B2BResponses.Passwords.ResetBySessionResponse
@@ -181,6 +190,7 @@ internal interface StytchB2BApiService : ApiService {
 
     //region SSO
     @POST("b2b/sso/authenticate")
+    @DFPPAEnabled
     suspend fun ssoAuthenticate(
         @Body request: B2BRequests.SSO.AuthenticateRequest,
     ): B2BResponses.SSO.AuthenticateResponse
@@ -245,11 +255,13 @@ internal interface StytchB2BApiService : ApiService {
 
     //region OTP
     @POST("b2b/otps/sms/send")
+    @DFPPAEnabled
     suspend fun sendSMSOTP(
         @Body request: B2BRequests.OTP.SMS.SendRequest,
     ): CommonResponses.BasicResponse
 
     @POST("b2b/otps/sms/authenticate")
+    @DFPPAEnabled
     suspend fun authenticateSMSOTP(
         @Body request: B2BRequests.OTP.SMS.AuthenticateRequest,
     ): B2BResponses.OTP.SMS.AuthenticateResponse
@@ -257,11 +269,13 @@ internal interface StytchB2BApiService : ApiService {
 
     //region TOTP
     @POST("b2b/totp")
+    @DFPPAEnabled
     suspend fun createTOTP(
         @Body request: B2BRequests.TOTP.CreateRequest,
     ): B2BResponses.TOTP.CreateResponse
 
     @POST("b2b/totp/authenticate")
+    @DFPPAEnabled
     suspend fun authenticateTOTP(
         @Body request: B2BRequests.TOTP.AuthenticateRequest,
     ): B2BResponses.TOTP.AuthenticateResponse
@@ -272,9 +286,11 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun getRecoveryCodes(): B2BResponses.RecoveryCodes.GetResponse
 
     @POST("b2b/recovery_codes/rotate")
+    @DFPPAEnabled
     suspend fun rotateRecoveryCodes(): B2BResponses.RecoveryCodes.RotateResponse
 
     @POST("b2b/recovery_codes/recover")
+    @DFPPAEnabled
     suspend fun recoverRecoveryCodes(
         @Body request: B2BRequests.RecoveryCodes.RecoverRequest,
     ): B2BResponses.RecoveryCodes.RecoverResponse
@@ -282,11 +298,13 @@ internal interface StytchB2BApiService : ApiService {
 
     //region OAuth
     @POST("b2b/oauth/authenticate")
+    @DFPPAEnabled
     suspend fun oauthAuthenticate(
         @Body request: B2BRequests.OAuth.AuthenticateRequest,
     ): B2BResponses.OAuth.AuthenticateResponse
 
     @POST("b2b/oauth/discovery/authenticate")
+    @DFPPAEnabled
     suspend fun oauthDiscoveryAuthenticate(
         @Body request: B2BRequests.OAuth.DiscoveryAuthenticateRequest,
     ): B2BResponses.OAuth.DiscoveryAuthenticateResponse
@@ -303,4 +321,45 @@ internal interface StytchB2BApiService : ApiService {
         @Body request: B2BRequests.SearchManager.SearchMember,
     ): B2BResponses.SearchManager.SearchMemberResponse
     //endregion SearchManager
+
+    //region SCIM
+    @POST("b2b/scim")
+    suspend fun scimCreateConnection(
+        @Body request: B2BRequests.SCIM.B2BSCIMCreateConnection,
+    ): B2BResponses.SCIM.B2BSCIMCreateConnectionResponse
+
+    @PUT("b2b/scim/{connectionId}")
+    suspend fun scimUpdateConnection(
+        @Path(value = "connectionId") connectionId: String,
+        @Body request: B2BRequests.SCIM.B2BSCIMUpdateConnection,
+    ): B2BResponses.SCIM.B2BSCIMUpdateConnectionResponse
+
+    @DELETE("b2b/scim/{connectionId}")
+    suspend fun scimDeleteConnection(
+        @Path(value = "connectionId") connectionId: String,
+    ): B2BResponses.SCIM.B2BSCIMDeleteConnectionResponse
+
+    @GET("b2b/scim")
+    suspend fun scimGetConnection(): B2BResponses.SCIM.B2BSCIMGetConnectionResponse
+
+    @POST("b2b/scim/groups")
+    suspend fun scimGetConnectionGroups(
+        @Body request: B2BRequests.SCIM.B2BSCIMGetConnectionGroups,
+    ): B2BResponses.SCIM.B2BSCIMGetConnectionGroupsResponse
+
+    @POST("b2b/scim/rotate/start")
+    suspend fun scimRotateStart(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateStartResponse
+
+    @POST("b2b/scim/rotate/complete")
+    suspend fun scimRotateComplete(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateCompleteResponse
+
+    @POST("b2b/scim/rotate/cancel")
+    suspend fun scimRotateCancel(
+        @Body request: B2BRequests.SCIM.B2BSCIMRotateConnectionRequest,
+    ): B2BResponses.SCIM.B2BSCIMRotateCancelResponse
+    //endregion SCIM
 }

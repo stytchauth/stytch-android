@@ -1,6 +1,14 @@
 package com.stytch.sdk.b2b.network
 
 import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.b2b.SCIMCreateConnectionResponse
+import com.stytch.sdk.b2b.SCIMDeleteConnectionResponse
+import com.stytch.sdk.b2b.SCIMGetConnectionGroupsResponse
+import com.stytch.sdk.b2b.SCIMGetConnectionResponse
+import com.stytch.sdk.b2b.SCIMRotateCancelResponse
+import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
+import com.stytch.sdk.b2b.SCIMRotateStartResponse
+import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
@@ -42,6 +50,7 @@ import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
+import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
@@ -55,9 +64,10 @@ import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.LIVE_SDK_URL
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.WEB_URL
+import com.stytch.sdk.common.TEST_SDK_URL
 import com.stytch.sdk.common.dfp.CaptchaProvider
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
@@ -71,6 +81,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
@@ -107,9 +118,15 @@ internal object StytchB2BApi {
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         StytchB2BClient.assertInitialized()
+        val sdkUrl =
+            if (isTestToken) {
+                TEST_SDK_URL
+            } else {
+                LIVE_SDK_URL
+            }
         dfpProtectedStytchApiService =
             ApiService.createApiService(
-                WEB_URL,
+                sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
                 { StytchB2BClient.sessionStorage.revoke() },
@@ -129,8 +146,14 @@ internal object StytchB2BApi {
         }
 
     private val regularStytchApiService: StytchB2BApiService by lazy {
+        val sdkUrl =
+            if (isTestToken) {
+                TEST_SDK_URL
+            } else {
+                LIVE_SDK_URL
+            }
         ApiService.createApiService(
-            WEB_URL,
+            sdkUrl,
             authHeaderInterceptor,
             null,
             { StytchB2BClient.sessionStorage.revoke() },
@@ -167,6 +190,7 @@ internal object StytchB2BApi {
                 codeChallenge: String,
                 loginTemplateId: String?,
                 signupTemplateId: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.loginOrSignupByEmail(
@@ -178,13 +202,14 @@ internal object StytchB2BApi {
                             codeChallenge = codeChallenge,
                             loginTemplateId = loginTemplateId,
                             signupTemplateId = signupTemplateId,
+                            locale = locale,
                         ),
                     )
                 }
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
                 codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
@@ -193,7 +218,7 @@ internal object StytchB2BApi {
                         B2BRequests.MagicLinks.AuthenticateRequest(
                             token = token,
                             codeVerifier = codeVerifier,
-                            sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                            sessionDurationMinutes = sessionDurationMinutes,
                             intermediateSessionToken = intermediateSessionToken,
                         ),
                     )
@@ -205,7 +230,7 @@ internal object StytchB2BApi {
                 inviteTemplateId: String? = null,
                 name: String? = null,
                 untrustedMetadata: Map<String, Any?>? = null,
-                locale: String? = null,
+                locale: Locale? = null,
                 roles: List<String>? = null,
             ): StytchResult<MemberResponseData> =
                 safeB2BApiCall {
@@ -229,6 +254,7 @@ internal object StytchB2BApi {
                 discoveryRedirectUrl: String?,
                 codeChallenge: String,
                 loginTemplateId: String?,
+                locale: Locale? = null,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.sendDiscoveryMagicLink(
@@ -237,6 +263,7 @@ internal object StytchB2BApi {
                             discoveryRedirectUrl = discoveryRedirectUrl,
                             codeChallenge = codeChallenge,
                             loginTemplateId = loginTemplateId,
+                            locale = locale,
                         ),
                     )
                 }
@@ -257,11 +284,11 @@ internal object StytchB2BApi {
     }
 
     internal object Sessions {
-        suspend fun authenticate(sessionDurationMinutes: UInt? = null): StytchResult<SessionsAuthenticateResponseData> =
+        suspend fun authenticate(sessionDurationMinutes: Int? = null): StytchResult<SessionsAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.authenticateSessions(
                     CommonRequests.Sessions.AuthenticateRequest(
-                        sessionDurationMinutes = sessionDurationMinutes?.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -273,15 +300,15 @@ internal object StytchB2BApi {
 
         suspend fun exchange(
             organizationId: String,
-            sessionDurationMinutes: UInt,
-            locale: String? = null,
+            sessionDurationMinutes: Int,
+            locale: Locale? = null,
         ): StytchResult<SessionExchangeResponseData> =
             safeB2BApiCall {
                 apiService.exchangeSession(
                     B2BRequests.Session.ExchangeRequest(
                         organizationId = organizationId,
                         locale = locale,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -479,7 +506,8 @@ internal object StytchB2BApi {
             organizationId: String,
             emailAddress: String,
             password: String,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            locale: Locale? = null,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
@@ -488,8 +516,9 @@ internal object StytchB2BApi {
                         organizationId = organizationId,
                         emailAddress = emailAddress,
                         password = password,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -500,7 +529,7 @@ internal object StytchB2BApi {
             emailAddress: String,
             loginRedirectUrl: String?,
             resetPasswordRedirectUrl: String?,
-            resetPasswordExpirationMinutes: UInt?,
+            resetPasswordExpirationMinutes: Int?,
             resetPasswordTemplateId: String?,
             codeChallenge: String,
         ): StytchResult<BasicData> =
@@ -511,7 +540,7 @@ internal object StytchB2BApi {
                         emailAddress = emailAddress,
                         loginRedirectUrl = loginRedirectUrl,
                         resetPasswordRedirectUrl = resetPasswordRedirectUrl,
-                        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes?.toInt(),
+                        resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
                         resetPasswordTemplateId = resetPasswordTemplateId,
                         codeChallenge = codeChallenge,
                     ),
@@ -521,18 +550,20 @@ internal object StytchB2BApi {
         suspend fun resetByEmail(
             passwordResetToken: String,
             password: String,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
+            locale: Locale? = null,
         ): StytchResult<EmailResetResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmail(
                     B2BRequests.Passwords.ResetByEmailRequest(
                         passwordResetToken = passwordResetToken,
                         password = password,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -542,7 +573,8 @@ internal object StytchB2BApi {
             emailAddress: String,
             existingPassword: String,
             newPassword: String,
-            sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            locale: Locale? = null,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordByExisting(
@@ -551,7 +583,8 @@ internal object StytchB2BApi {
                         emailAddress = emailAddress,
                         existingPassword = existingPassword,
                         newPassword = newPassword,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
+                        locale = locale,
                     ),
                 )
             }
@@ -598,14 +631,14 @@ internal object StytchB2BApi {
         suspend fun exchangeSession(
             intermediateSessionToken: String? = null,
             organizationId: String,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
         ): StytchResult<IntermediateSessionExchangeResponseData> =
             safeB2BApiCall {
                 apiService.intermediateSessionExchange(
                     B2BRequests.Discovery.SessionExchangeRequest(
                         intermediateSessionToken = intermediateSessionToken,
                         organizationId = organizationId,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                     ),
                 )
             }
@@ -613,7 +646,7 @@ internal object StytchB2BApi {
         @Suppress("LongParameterList")
         suspend fun createOrganization(
             intermediateSessionToken: String? = null,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
             organizationName: String?,
             organizationSlug: String?,
             organizationLogoUrl: String?,
@@ -628,7 +661,7 @@ internal object StytchB2BApi {
                 apiService.createOrganization(
                     B2BRequests.Discovery.CreateRequest(
                         intermediateSessionToken = intermediateSessionToken,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         organizationName = organizationName,
                         organizationSlug = organizationSlug,
                         organizationLogoUrl = organizationLogoUrl,
@@ -646,17 +679,19 @@ internal object StytchB2BApi {
     internal object SSO {
         suspend fun authenticate(
             ssoToken: String,
-            sessionDurationMinutes: UInt,
+            sessionDurationMinutes: Int,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
+            locale: Locale? = null,
         ): StytchResult<SSOAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.ssoAuthenticate(
                     B2BRequests.SSO.AuthenticateRequest(
                         ssoToken = ssoToken,
-                        sessionDurationMinutes = sessionDurationMinutes.toInt(),
+                        sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
                         intermediateSessionToken = intermediateSessionToken,
+                        locale = locale,
                     ),
                 )
             }
@@ -845,8 +880,9 @@ internal object StytchB2BApi {
             organizationId: String,
             memberId: String,
             mfaPhoneNumber: String? = null,
-            locale: String? = null,
+            locale: Locale? = null,
             intermediateSessionToken: String? = null,
+            enableAutofill: Boolean = false,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.sendSMSOTP(
@@ -856,6 +892,7 @@ internal object StytchB2BApi {
                         mfaPhoneNumber = mfaPhoneNumber,
                         locale = locale,
                         intermediateSessionToken = intermediateSessionToken,
+                        enableAutofill = enableAutofill,
                     ),
                 )
             }
@@ -958,7 +995,7 @@ internal object StytchB2BApi {
     internal object OAuth {
         suspend fun authenticate(
             oauthToken: String,
-            locale: String? = null,
+            locale: Locale? = null,
             sessionDurationMinutes: Int,
             pkceCodeVerifier: String,
             intermediateSessionToken: String? = null,
@@ -1008,6 +1045,92 @@ internal object StytchB2BApi {
                     B2BRequests.SearchManager.SearchMember(
                         emailAddress = emailAddress,
                         organizationId = organizationId,
+                    ),
+                )
+            }
+    }
+
+    internal object SCIM {
+        suspend fun createConnection(
+            displayName: String?,
+            identityProvider: String?,
+        ): SCIMCreateConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimCreateConnection(
+                    B2BRequests.SCIM.B2BSCIMCreateConnection(
+                        displayName = displayName,
+                        identityProvider = identityProvider,
+                    ),
+                )
+            }
+
+        suspend fun updateConnection(
+            connectionId: String,
+            displayName: String?,
+            identityProvider: String?,
+            scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+        ): SCIMUpdateConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimUpdateConnection(
+                    connectionId = connectionId,
+                    request =
+                        B2BRequests.SCIM.B2BSCIMUpdateConnection(
+                            connectionId = connectionId,
+                            displayName = displayName,
+                            identityProvider = identityProvider,
+                            scimGroupImplicitRoleAssignments = scimGroupImplicitRoleAssignments,
+                        ),
+                )
+            }
+
+        suspend fun deleteConection(connectionId: String): SCIMDeleteConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimDeleteConnection(
+                    connectionId = connectionId,
+                )
+            }
+
+        suspend fun getConnection(): SCIMGetConnectionResponse =
+            safeB2BApiCall {
+                apiService.scimGetConnection()
+            }
+
+        suspend fun getConnectionGroups(
+            cursor: String?,
+            limit: Int?,
+        ): SCIMGetConnectionGroupsResponse =
+            safeB2BApiCall {
+                apiService.scimGetConnectionGroups(
+                    B2BRequests.SCIM.B2BSCIMGetConnectionGroups(
+                        cursor = cursor,
+                        limit = limit,
+                    ),
+                )
+            }
+
+        suspend fun rotateStart(connectionId: String): SCIMRotateStartResponse =
+            safeB2BApiCall {
+                apiService.scimRotateStart(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
+                    ),
+                )
+            }
+
+        suspend fun rotateComplete(connectionId: String): SCIMRotateCompleteResponse =
+            safeB2BApiCall {
+                apiService.scimRotateComplete(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
+                    ),
+                )
+            }
+
+        suspend fun rotateCancel(connectionId: String): SCIMRotateCancelResponse =
+            safeB2BApiCall {
+                apiService.scimRotateCancel(
+                    B2BRequests.SCIM.B2BSCIMRotateConnectionRequest(
+                        connectionId = connectionId,
                     ),
                 )
             }

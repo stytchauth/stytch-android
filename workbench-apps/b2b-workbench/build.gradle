@@ -19,7 +19,7 @@ android {
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': 'app',
             'stytchOAuthRedirectHost': 'b2bOAuth',
-            'STYTCH_PUBLIC_TOKEN': ''
+            'STYTCH_PUBLIC_TOKEN': rootProject.ext["STYTCH_PUBLIC_TOKEN"]
         ]
     }
 
@@ -51,7 +51,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.8"
+        kotlinCompilerExtensionVersion "1.5.7"
     }
     namespace 'com.stytch.exampleapp.b2b'
 }

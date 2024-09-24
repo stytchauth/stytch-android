@@ -32,37 +32,38 @@ class OTPViewModel : ViewModel() {
     fun send() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.otp.sms.send(
-                    OTP.SMS.SendParameters(
-                        organizationId = orgIdState.text,
-                        memberId = memberIdState.text,
-                        mfaPhoneNumber = phoneNumberState.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.otp.sms
+                    .send(
+                        OTP.SMS.SendParameters(
+                            organizationId = orgIdState.text,
+                            memberId = memberIdState.text,
+                            mfaPhoneNumber = phoneNumberState.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun authenticate() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.otp.sms.authenticate(
-                    OTP.SMS.AuthenticateParameters(
-                        organizationId = orgIdState.text,
-                        memberId = memberIdState.text,
-                        code = codeState.text,
-                        setMFAEnrollment = SetMFAEnrollment.ENROLL,
-                        sessionDurationMinutes = 30U,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.otp.sms
+                    .authenticate(
+                        OTP.SMS.AuthenticateParameters(
+                            organizationId = orgIdState.text,
+                            memberId = memberIdState.text,
+                            code = codeState.text,
+                            setMFAEnrollment = SetMFAEnrollment.ENROLL,
+                            sessionDurationMinutes = 30,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 }

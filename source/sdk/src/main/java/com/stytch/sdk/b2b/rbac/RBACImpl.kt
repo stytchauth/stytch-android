@@ -4,27 +4,27 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
+import java.util.concurrent.CompletableFuture
 
 internal class RBACImpl(
     private val externalScope: CoroutineScope,
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
 ) : RBAC {
-    private fun getRoleIds(): List<String> {
-        return sessionStorage.memberSession?.roles ?: emptyList()
-    }
+    private fun getRoleIds(): List<String> = sessionStorage.memberSession?.roles ?: emptyList()
 
     override fun isAuthorizedSync(
         resourceId: String,
         action: String,
-    ): Boolean {
-        return StytchB2BClient.bootstrapData.rbacPolicy?.callerIsAuthorized(
+    ): Boolean =
+        StytchB2BClient.bootstrapData.rbacPolicy?.callerIsAuthorized(
             memberRoles = getRoleIds(),
             resourceId = resourceId,
             action = action,
         ) ?: false
-    }
 
     override suspend fun isAuthorized(
         resourceId: String,
@@ -44,6 +44,15 @@ internal class RBACImpl(
         }
     }
 
+    override fun isAuthorizedCompletable(
+        resourceId: String,
+        action: String,
+    ): CompletableFuture<Boolean> =
+        externalScope
+            .async {
+                isAuthorized(resourceId, action)
+            }.asCompletableFuture()
+
     override suspend fun allPermissions(): Map<String, Map<String, Boolean>> {
         StytchB2BClient.refreshBootstrapData()
         return StytchB2BClient.bootstrapData.rbacPolicy?.allPermissionsForCaller(getRoleIds()) ?: emptyMap()
@@ -54,4 +63,10 @@ internal class RBACImpl(
             callback(allPermissions())
         }
     }
+
+    override fun allPermissionsCompletable(): CompletableFuture<Map<String, Map<String, Boolean>>> =
+        externalScope
+            .async {
+                allPermissions()
+            }.asCompletableFuture()
 }

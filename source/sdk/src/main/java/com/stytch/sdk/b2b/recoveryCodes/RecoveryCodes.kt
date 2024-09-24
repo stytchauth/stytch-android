@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.recoveryCodes
 import com.stytch.sdk.b2b.RecoveryCodesGetResponse
 import com.stytch.sdk.b2b.RecoveryCodesRecoverResponse
 import com.stytch.sdk.b2b.RecoveryCodesRotateResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The RecoveryCodes interface provides methods for getting, rotating, and using recovery codes for a member
@@ -21,6 +22,12 @@ public interface RecoveryCodes {
     public fun get(callback: (RecoveryCodesGetResponse) -> Unit)
 
     /**
+     * Get the recovery codes for an authenticated member
+     * @return [RecoveryCodesGetResponse]
+     */
+    public fun getCompletable(): CompletableFuture<RecoveryCodesGetResponse>
+
+    /**
      * Rotate the recovery codes for an authenticated member
      * @return [RecoveryCodesRotateResponse]
      */
@@ -31,6 +38,12 @@ public interface RecoveryCodes {
      * @param callback a callback that receives a [RecoveryCodesRotateResponse]
      */
     public fun rotate(callback: (RecoveryCodesRotateResponse) -> Unit)
+
+    /**
+     * Rotate the recovery codes for an authenticated member
+     * @return [RecoveryCodesRotateResponse]
+     */
+    public fun rotateCompletable(): CompletableFuture<RecoveryCodesRotateResponse>
 
     /**
      * A data class wrapping the parameters needed to consume a recovery code
@@ -62,4 +75,11 @@ public interface RecoveryCodes {
         parameters: RecoverParameters,
         callback: (RecoveryCodesRecoverResponse) -> Unit,
     )
+
+    /**
+     * Consume a recovery code for a member
+     * @param parameters the parameters needed to consume a recovery code
+     * @return [RecoveryCodesRecoverResponse]
+     */
+    public fun recoverCompletable(parameters: RecoverParameters): CompletableFuture<RecoveryCodesRecoverResponse>
 }

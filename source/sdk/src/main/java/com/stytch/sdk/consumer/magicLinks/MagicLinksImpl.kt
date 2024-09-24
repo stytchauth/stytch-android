@@ -11,8 +11,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class MagicLinksImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -24,30 +27,19 @@ internal class MagicLinksImpl internal constructor(
     override val email: MagicLinks.EmailMagicLinks = EmailMagicLinksImpl()
 
     override suspend fun authenticate(parameters: MagicLinks.AuthParameters): AuthResponse {
-        var result: AuthResponse
-        withContext(dispatchers.io) {
-            val codeVerifier: String
-
-            try {
-                codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier!!
-            } catch (ex: Exception) {
-                result = StytchResult.Error(StytchMissingPKCEError(ex))
-                return@withContext
-            }
-
-            // call backend endpoint
-            result =
-                api.authenticate(
+        val codeVerifier =
+            pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
+        return withContext(dispatchers.io) {
+            api
+                .authenticate(
                     parameters.token,
                     parameters.sessionDurationMinutes,
                     codeVerifier,
                 ).apply {
+                    pkcePairManager.clearPKCECodePair()
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
-            pkcePairManager.clearPKCECodePair()
         }
-
-        return result
     }
 
     override fun authenticate(
@@ -61,16 +53,20 @@ internal class MagicLinksImpl internal constructor(
         }
     }
 
+    override fun authenticateCompletable(parameters: MagicLinks.AuthParameters): CompletableFuture<AuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
     private inner class EmailMagicLinksImpl : MagicLinks.EmailMagicLinks {
         override suspend fun loginOrCreate(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse {
             val result: BaseResponse
             withContext(dispatchers.io) {
-                val challengeCodeMethod: String
                 val challengeCode: String
 
                 try {
                     val challengePair = pkcePairManager.generateAndReturnPKCECodePair()
-                    challengeCodeMethod = challengePair.method
                     challengeCode = challengePair.codeChallenge
                 } catch (ex: Exception) {
                     result = StytchResult.Error(StytchFailedToCreateCodeChallengeError(ex))
@@ -81,10 +77,11 @@ internal class MagicLinksImpl internal constructor(
                     api.loginOrCreate(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
+                        signupMagicLinkUrl = parameters.signupMagicLinkUrl,
                         codeChallenge = challengeCode,
-                        codeChallengeMethod = challengeCodeMethod,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 
@@ -103,6 +100,14 @@ internal class MagicLinksImpl internal constructor(
             }
         }
 
+        override fun loginOrCreateCompletable(
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    loginOrCreate(parameters)
+                }.asCompletableFuture()
+
         override suspend fun send(parameters: MagicLinks.EmailMagicLinks.Parameters): BaseResponse =
             withContext(dispatchers.io) {
                 val challengeCode: String
@@ -116,22 +121,24 @@ internal class MagicLinksImpl internal constructor(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginExpirationMinutes = parameters.loginExpirationMinutes,
+                        signupExpirationMinutes = parameters.signupExpirationMinutes,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 } else {
                     api.sendPrimary(
                         email = parameters.email,
                         loginMagicLinkUrl = parameters.loginMagicLinkUrl,
                         signupMagicLinkUrl = parameters.signupMagicLinkUrl,
-                        loginExpirationMinutes = parameters.loginExpirationMinutes?.toInt(),
-                        signupExpirationMinutes = parameters.signupExpirationMinutes?.toInt(),
+                        loginExpirationMinutes = parameters.loginExpirationMinutes,
+                        signupExpirationMinutes = parameters.signupExpirationMinutes,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
                         codeChallenge = challengeCode,
+                        locale = parameters.locale,
                     )
                 }
             }
@@ -145,5 +152,13 @@ internal class MagicLinksImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun sendCompletable(
+            parameters: MagicLinks.EmailMagicLinks.Parameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
     }
 }

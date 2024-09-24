@@ -18,7 +18,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -38,20 +37,21 @@ import java.security.KeyStore
 internal class NewUserScreenViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
-
-    @MockK
-    private lateinit var mockStytchClient: StytchClient
-
     private lateinit var viewModel: NewUserScreenViewModel
+    private lateinit var mockStytchClient: StytchClient
 
     @Before
     fun before() {
         mockkStatic(KeyStore::class)
+        mockkStatic(StytchClient::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true, true)
-        every { mockStytchClient.events } returns
-            mockk(relaxed = true) {
-                every { logEvent(any(), any()) } just runs
+        mockStytchClient =
+            mockk {
+                every { events } returns
+                    mockk(relaxed = true) {
+                        every { logEvent(any(), any()) } just runs
+                    }
             }
         viewModel = NewUserScreenViewModel(savedStateHandle, mockStytchClient)
     }
@@ -191,7 +191,7 @@ internal class NewUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.passwords.create(any()) } returns StytchResult.Success(validCreateResponse)
-            viewModel.createAccountWithPassword(30U, this)
+            viewModel.createAccountWithPassword(30, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.Authenticated)
@@ -206,7 +206,7 @@ internal class NewUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.create(any()) } returns invalidResponse
-            viewModel.createAccountWithPassword(30U, this)
+            viewModel.createAccountWithPassword(30, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.passwordState.errorMessage == "Something bad happened internally")
         }

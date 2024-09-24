@@ -17,9 +17,12 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OrganizationImpl(
     private val externalScope: CoroutineScope,
@@ -61,31 +64,38 @@ internal class OrganizationImpl(
         }
     }
 
+    override fun getCompletable(): CompletableFuture<OrganizationResponse> =
+        externalScope
+            .async {
+                get()
+            }.asCompletableFuture()
+
     override fun getSync(): OrganizationData? = sessionStorage.organization
 
     override suspend fun update(parameters: Organization.UpdateOrganizationParameters): UpdateOrganizationResponse =
         withContext(dispatchers.io) {
-            api.updateOrganization(
-                organizationName = parameters.organizationName,
-                organizationSlug = parameters.organizationSlug,
-                organizationLogoUrl = parameters.organizationLogoUrl,
-                ssoDefaultConnectionId = parameters.ssoDefaultConnectionId,
-                ssoJitProvisioning = parameters.ssoJitProvisioning,
-                ssoJitProvisioningAllowedConnections = parameters.ssoJitProvisioningAllowedConnections,
-                emailAllowedDomains = parameters.emailAllowedDomains,
-                emailJitProvisioning = parameters.emailJitProvisioning,
-                emailInvites = parameters.emailInvites,
-                authMethods = parameters.authMethods,
-                allowedAuthMethods = parameters.allowedAuthMethods,
-                mfaMethods = parameters.mfaMethods,
-                allowedMfaMethods = parameters.allowedMfaMethods,
-                mfaPolicy = parameters.mfaPolicy,
-                rbacEmailImplicitRoleAssignments = parameters.rbacEmailImplicitRoleAssignments,
-            ).apply {
-                if (this is StytchResult.Success) {
-                    sessionStorage.organization = this.value.organization
+            api
+                .updateOrganization(
+                    organizationName = parameters.organizationName,
+                    organizationSlug = parameters.organizationSlug,
+                    organizationLogoUrl = parameters.organizationLogoUrl,
+                    ssoDefaultConnectionId = parameters.ssoDefaultConnectionId,
+                    ssoJitProvisioning = parameters.ssoJitProvisioning,
+                    ssoJitProvisioningAllowedConnections = parameters.ssoJitProvisioningAllowedConnections,
+                    emailAllowedDomains = parameters.emailAllowedDomains,
+                    emailJitProvisioning = parameters.emailJitProvisioning,
+                    emailInvites = parameters.emailInvites,
+                    authMethods = parameters.authMethods,
+                    allowedAuthMethods = parameters.allowedAuthMethods,
+                    mfaMethods = parameters.mfaMethods,
+                    allowedMfaMethods = parameters.allowedMfaMethods,
+                    mfaPolicy = parameters.mfaPolicy,
+                    rbacEmailImplicitRoleAssignments = parameters.rbacEmailImplicitRoleAssignments,
+                ).apply {
+                    if (this is StytchResult.Success) {
+                        sessionStorage.organization = this.value.organization
+                    }
                 }
-            }
         }
 
     override fun update(
@@ -97,6 +107,14 @@ internal class OrganizationImpl(
             callback(result)
         }
     }
+
+    override fun updateCompletable(
+        parameters: Organization.UpdateOrganizationParameters,
+    ): CompletableFuture<UpdateOrganizationResponse> =
+        externalScope
+            .async {
+                update(parameters)
+            }.asCompletableFuture()
 
     override suspend fun delete(): DeleteOrganizationResponse =
         withContext(dispatchers.io) {
@@ -116,6 +134,12 @@ internal class OrganizationImpl(
         }
     }
 
+    override fun deleteCompletable(): CompletableFuture<DeleteOrganizationResponse> =
+        externalScope
+            .async {
+                delete()
+            }.asCompletableFuture()
+
     override val members: Organization.OrganizationMembers = OrganizationMembersImpl()
 
     private inner class OrganizationMembersImpl : Organization.OrganizationMembers {
@@ -134,6 +158,12 @@ internal class OrganizationImpl(
             }
         }
 
+        override fun deleteCompletable(memberId: String): CompletableFuture<DeleteMemberResponse> =
+            externalScope
+                .async {
+                    delete(memberId)
+                }.asCompletableFuture()
+
         override suspend fun reactivate(memberId: String): ReactivateMemberResponse =
             withContext(dispatchers.io) {
                 api.reactivateOrganizationMember(memberId = memberId)
@@ -147,6 +177,12 @@ internal class OrganizationImpl(
                 callback(members.reactivate(memberId))
             }
         }
+
+        override fun reactivateCompletable(memberId: String): CompletableFuture<ReactivateMemberResponse> =
+            externalScope
+                .async {
+                    reactivate(memberId)
+                }.asCompletableFuture()
 
         override suspend fun deleteMemberAuthenticationFactor(
             memberId: String,
@@ -172,6 +208,15 @@ internal class OrganizationImpl(
                 callback(members.deleteMemberAuthenticationFactor(memberId, authenticationFactor))
             }
         }
+
+        override fun deleteMemberAuthenticationFactorCompletable(
+            memberId: String,
+            authenticationFactor: MemberAuthenticationFactor,
+        ): CompletableFuture<DeleteOrganizationMemberAuthenticationFactorResponse> =
+            externalScope
+                .async {
+                    deleteMemberAuthenticationFactor(memberId, authenticationFactor)
+                }.asCompletableFuture()
 
         override suspend fun create(
             parameters: Organization.OrganizationMembers.CreateMemberParameters,
@@ -199,6 +244,14 @@ internal class OrganizationImpl(
             }
         }
 
+        override fun createCompletable(
+            parameters: Organization.OrganizationMembers.CreateMemberParameters,
+        ): CompletableFuture<CreateMemberResponse> =
+            externalScope
+                .async {
+                    create(parameters)
+                }.asCompletableFuture()
+
         override suspend fun update(
             parameters: Organization.OrganizationMembers.UpdateMemberParameters,
         ): UpdateOrganizationMemberResponse =
@@ -225,6 +278,14 @@ internal class OrganizationImpl(
                 callback(update(parameters))
             }
         }
+
+        override fun updateCompletable(
+            parameters: Organization.OrganizationMembers.UpdateMemberParameters,
+        ): CompletableFuture<UpdateOrganizationMemberResponse> =
+            externalScope
+                .async {
+                    update(parameters)
+                }.asCompletableFuture()
 
         override suspend fun search(
             parameters: Organization.OrganizationMembers.SearchParameters,
@@ -257,5 +318,13 @@ internal class OrganizationImpl(
                 callback(members.search(parameters))
             }
         }
+
+        override fun searchCompletable(
+            parameters: Organization.OrganizationMembers.SearchParameters,
+        ): CompletableFuture<MemberSearchResponse> =
+            externalScope
+                .async {
+                    search(parameters)
+                }.asCompletableFuture()
     }
 }

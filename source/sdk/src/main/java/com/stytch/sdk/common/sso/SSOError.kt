@@ -10,17 +10,17 @@ public sealed class SSOError(
     /**
      * Indicates that no suitable browser was found on this device, and OAuth authentication cannot proceed.
      */
-    public object NoBrowserFound : SSOError("No supported browser was found on this device")
+    public data object NoBrowserFound : SSOError("No supported browser was found on this device")
 
     /**
      * Indicates that no URI was found in the activity state, and OAuth authentication cannot proceed.
      */
-    public object NoURIFound : SSOError("No OAuth URI could be found in the bundle")
+    public data object NoURIFound : SSOError("No OAuth URI could be found in the bundle")
 
     /**
      * Indicates that the user canceled the OAuth flow. This is safe to ignore.
      */
-    public object UserCanceled : SSOError("The user canceled the OAuth flow")
+    public data object UserCanceled : SSOError("The user canceled the OAuth flow")
 
     /**
      * A helper object with properties that can help you interact with errors of this type

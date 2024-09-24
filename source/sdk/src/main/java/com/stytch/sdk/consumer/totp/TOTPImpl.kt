@@ -9,8 +9,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class TOTPImpl(
     private val externalScope: CoroutineScope,
@@ -18,13 +21,12 @@ internal class TOTPImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.TOTP,
 ) : TOTP {
-    override suspend fun create(parameters: TOTP.CreateParameters): TOTPCreateResponse {
-        return withContext(dispatchers.io) {
+    override suspend fun create(parameters: TOTP.CreateParameters): TOTPCreateResponse =
+        withContext(dispatchers.io) {
             api.create(
                 expirationMinutes = parameters.expirationMinutes,
             )
         }
-    }
 
     override fun create(
         parameters: TOTP.CreateParameters,
@@ -35,16 +37,22 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse {
-        return withContext(dispatchers.io) {
-            api.authenticate(
-                totpCode = parameters.totpCode,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override fun createCompletable(parameters: TOTP.CreateParameters): CompletableFuture<TOTPCreateResponse> =
+        externalScope
+            .async {
+                create(parameters)
+            }.asCompletableFuture()
+
+    override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse =
+        withContext(dispatchers.io) {
+            api
+                .authenticate(
+                    totpCode = parameters.totpCode,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun authenticate(
         parameters: TOTP.AuthenticateParameters,
@@ -55,11 +63,18 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun recoveryCodes(): TOTPRecoveryCodesResponse {
-        return withContext(dispatchers.io) {
+    override fun authenticateCompletable(
+        parameters: TOTP.AuthenticateParameters,
+    ): CompletableFuture<TOTPAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
+    override suspend fun recoveryCodes(): TOTPRecoveryCodesResponse =
+        withContext(dispatchers.io) {
             api.recoveryCodes()
         }
-    }
 
     override fun recoveryCodes(callback: (TOTPRecoveryCodesResponse) -> Unit) {
         externalScope.launch(dispatchers.ui) {
@@ -67,16 +82,22 @@ internal class TOTPImpl(
         }
     }
 
-    override suspend fun recover(parameters: TOTP.RecoverParameters): TOTPRecoverResponse {
-        return withContext(dispatchers.io) {
-            api.recover(
-                recoveryCode = parameters.recoveryCode,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+    override fun recoveryCodesCompletable(): CompletableFuture<TOTPRecoveryCodesResponse> =
+        externalScope
+            .async {
+                recoveryCodes()
+            }.asCompletableFuture()
+
+    override suspend fun recover(parameters: TOTP.RecoverParameters): TOTPRecoverResponse =
+        withContext(dispatchers.io) {
+            api
+                .recover(
+                    recoveryCode = parameters.recoveryCode,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-    }
 
     override fun recover(
         parameters: TOTP.RecoverParameters,
@@ -86,4 +107,10 @@ internal class TOTPImpl(
             callback(recover(parameters))
         }
     }
+
+    override fun recoverCompletable(parameters: TOTP.RecoverParameters): CompletableFuture<TOTPRecoverResponse> =
+        externalScope
+            .async {
+                recover(parameters)
+            }.asCompletableFuture()
 }

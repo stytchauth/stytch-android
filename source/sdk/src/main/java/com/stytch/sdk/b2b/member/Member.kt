@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Member interface provides methods for retrieving and updating the current authenticated member.
@@ -35,6 +36,12 @@ public interface Member {
     public fun get(callback: (MemberResponse) -> Unit)
 
     /**
+     * Wraps Stytch’s organization/members/me endpoint.
+     * @return [MemberResponse]
+     */
+    public fun getCompletable(): CompletableFuture<MemberResponse>
+
+    /**
      * Get member from memory without network call
      * @return locally stored [MemberData]
      */
@@ -53,13 +60,15 @@ public interface Member {
      *  1. Which MFA method the Member is prompted to use when logging in
      *  2. Whether An SMS will be sent automatically after completing the first leg of authentication
      */
-    public data class UpdateParams(
-        val name: String? = null,
-        val untrustedMetadata: Map<String, Any>? = null,
-        val mfaEnrolled: Boolean? = null,
-        val mfaPhoneNumber: String? = null,
-        val defaultMfaMethod: MfaMethod? = null,
-    )
+    public data class UpdateParams
+        @JvmOverloads
+        constructor(
+            val name: String? = null,
+            val untrustedMetadata: Map<String, Any>? = null,
+            val mfaEnrolled: Boolean? = null,
+            val mfaPhoneNumber: String? = null,
+            val defaultMfaMethod: MfaMethod? = null,
+        )
 
     /**
      * Updates the currently authenticated member
@@ -79,6 +88,13 @@ public interface Member {
     )
 
     /**
+     * Updates the currently authenticated member
+     * @param params required to update the member
+     * @return [UpdateMemberResponse]
+     */
+    public fun updateCompletable(params: UpdateParams): CompletableFuture<UpdateMemberResponse>
+
+    /**
      * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
      * @return [DeleteMemberAuthenticationFactorResponse]
      */
@@ -92,4 +108,12 @@ public interface Member {
         factor: MemberAuthenticationFactor,
         callback: (DeleteMemberAuthenticationFactorResponse) -> Unit,
     )
+
+    /**
+     * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+     * @return [DeleteMemberAuthenticationFactorResponse]
+     */
+    public fun deleteFactorCompletable(
+        factor: MemberAuthenticationFactor,
+    ): CompletableFuture<DeleteMemberAuthenticationFactorResponse>
 }

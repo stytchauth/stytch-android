@@ -133,10 +133,10 @@ internal class B2BMagicLinksImplTest {
         runTest {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
-                mockEmailApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any())
+                mockEmailApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any(), any())
             } returns mockBaseResponse
             impl.email.loginOrSignup(emailMagicLinkParameters)
-            coVerify { mockEmailApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any()) }
+            coVerify { mockEmailApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any(), any()) }
         }
 
     @Test
@@ -178,9 +178,9 @@ internal class B2BMagicLinksImplTest {
     fun `MagicLinksImpl discovery send delegates to api`() =
         runTest {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
-            coEvery { mockDiscoveryApi.send(any(), any(), any(), any()) } returns mockBaseResponse
+            coEvery { mockDiscoveryApi.send(any(), any(), any(), any(), any()) } returns mockBaseResponse
             impl.email.discoverySend(mockk(relaxed = true))
-            coVerify { mockDiscoveryApi.send(any(), any(), any(), any()) }
+            coVerify { mockDiscoveryApi.send(any(), any(), any(), any(), any()) }
         }
 
     @Test
@@ -210,6 +210,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery authenticate with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(DiscoveryEMLAuthResponse) -> Unit>()
         impl.discoveryAuthenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

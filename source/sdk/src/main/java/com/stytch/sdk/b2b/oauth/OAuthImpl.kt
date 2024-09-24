@@ -1,7 +1,5 @@
 package com.stytch.sdk.b2b.oauth
 
-import android.net.Uri
-import com.google.gson.JsonParser
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.b2b.StytchB2BClient
@@ -15,9 +13,13 @@ import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
+import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -30,19 +32,19 @@ internal class OAuthImpl(
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
-    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse =
-        withContext(dispatchers.io) {
-            val pkce =
-                pkcePairManager.getPKCECodePair()?.codeVerifier
-                    ?: run {
-                        StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
-                        return@withContext StytchResult.Error(StytchMissingPKCEError(null))
-                    }
+    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse {
+        val pkce =
+            pkcePairManager.getPKCECodePair()?.codeVerifier
+                ?: run {
+                    StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
+                    return StytchResult.Error(StytchMissingPKCEError(null))
+                }
+        return withContext(dispatchers.io) {
             api
                 .authenticate(
                     oauthToken = parameters.oauthToken,
                     locale = parameters.locale,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
                     pkceCodeVerifier = pkce,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
@@ -59,6 +61,7 @@ internal class OAuthImpl(
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
+    }
 
     override fun authenticate(
         parameters: OAuth.AuthenticateParameters,
@@ -68,6 +71,14 @@ internal class OAuthImpl(
             callback(authenticate(parameters))
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: OAuth.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 
     private inner class ProviderImpl(
         private val providerName: String,
@@ -162,23 +173,13 @@ internal class OAuthImpl(
                 callback(authenticate(parameters))
             }
         }
-    }
 
-    private fun buildUri(
-        url: String,
-        parameters: Map<String, Any?>,
-    ): Uri =
-        Uri
-            .parse(url)
-            .buildUpon()
-            .apply {
-                parameters.forEach {
-                    if (it.value != null) {
-                        when (it.value) {
-                            is String -> appendQueryParameter(it.key, it.value.toString())
-                            else -> appendQueryParameter(it.key, JsonParser.parseString(it.value.toString()).asString)
-                        }
-                    }
-                }
-            }.build()
+        override fun authenticateCompletable(
+            parameters: OAuth.Discovery.DiscoveryAuthenticateParameters,
+        ): CompletableFuture<OAuthDiscoveryAuthenticateResponse> =
+            externalScope
+                .async {
+                    authenticate(parameters)
+                }.asCompletableFuture()
+    }
 }

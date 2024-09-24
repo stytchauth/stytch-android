@@ -94,7 +94,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.MagicLinks.Email.loginOrCreate("", "", "", "", "", "")
+            StytchApi.MagicLinks.Email.loginOrCreate("", null, null, "", null, null)
             coVerify { StytchApi.apiService.loginOrCreateUserByEmail(any()) }
         }
 
@@ -121,7 +121,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.authenticate(any()) } returns mockk(relaxed = true)
-            StytchApi.MagicLinks.Email.authenticate("", 30U, "")
+            StytchApi.MagicLinks.Email.authenticate("", 30, "")
             coVerify { StytchApi.apiService.authenticate(any()) }
         }
 
@@ -130,7 +130,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithSMS(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.loginOrCreateByOTPWithSMS("", 30U)
+            StytchApi.OTP.loginOrCreateByOTPWithSMS("", 30)
             coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithSMS(any()) }
         }
 
@@ -139,7 +139,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithSMSPrimary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithSMSPrimary("", 30U)
+            StytchApi.OTP.sendOTPWithSMSPrimary("", 30)
             coVerify { StytchApi.apiService.sendOTPWithSMSPrimary(any()) }
         }
 
@@ -148,7 +148,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithSMSSecondary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithSMSSecondary("", 30U)
+            StytchApi.OTP.sendOTPWithSMSSecondary("", 30)
             coVerify { StytchApi.apiService.sendOTPWithSMSSecondary(any()) }
         }
 
@@ -157,7 +157,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithWhatsApp(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("", 30U)
+            StytchApi.OTP.loginOrCreateUserByOTPWithWhatsApp("", 30)
             coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithWhatsApp(any()) }
         }
 
@@ -166,7 +166,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithWhatsAppPrimary("", 30U)
+            StytchApi.OTP.sendOTPWithWhatsAppPrimary("", 30)
             coVerify { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) }
         }
 
@@ -175,7 +175,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithWhatsAppSecondary("", 30U)
+            StytchApi.OTP.sendOTPWithWhatsAppSecondary("", 30)
             coVerify { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) }
         }
 
@@ -184,7 +184,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30U, "", "")
+            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30, "", "")
             coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) }
         }
 
@@ -193,7 +193,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithEmailPrimary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithEmailPrimary("", 30U, null, null)
+            StytchApi.OTP.sendOTPWithEmailPrimary("", 30, null, null)
             coVerify { StytchApi.apiService.sendOTPWithEmailPrimary(any()) }
         }
 
@@ -202,7 +202,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithEmailSecondary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithEmailSecondary("", 30U, null, null)
+            StytchApi.OTP.sendOTPWithEmailSecondary("", 30, null, null)
             coVerify { StytchApi.apiService.sendOTPWithEmailSecondary(any()) }
         }
 
@@ -220,7 +220,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.authenticateWithPasswords(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.authenticate("", "", 30U)
+            StytchApi.Passwords.authenticate("", "", 30)
             coVerify { StytchApi.apiService.authenticateWithPasswords(any()) }
         }
 
@@ -229,7 +229,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.passwords(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.create("", "", 30U)
+            StytchApi.Passwords.create("", "", 30)
             coVerify { StytchApi.apiService.passwords(any()) }
         }
 
@@ -238,7 +238,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmailStart("", "", "", "", 30, "", 30, "")
+            StytchApi.Passwords.resetByEmailStart("", "", "", 30, "", 30, "")
             coVerify { StytchApi.apiService.resetByEmailStart(any()) }
         }
 
@@ -247,7 +247,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmail("", "", 30U, "")
+            StytchApi.Passwords.resetByEmail("", "", 30, "")
             coVerify { StytchApi.apiService.resetByEmail(any()) }
         }
 
@@ -256,7 +256,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetBySession(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetBySession(password = "", sessionDurationMinutes = 30U)
+            StytchApi.Passwords.resetBySession(password = "", sessionDurationMinutes = 30)
             coVerify { StytchApi.apiService.resetBySession(any()) }
         }
 
@@ -269,7 +269,7 @@ internal class StytchApiTest {
                 email = "",
                 existingPassword = "",
                 newPassword = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
             coVerify { StytchApi.apiService.resetByExistingPassword(any()) }
         }
@@ -288,7 +288,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-            StytchApi.Sessions.authenticate(30U)
+            StytchApi.Sessions.authenticate(30)
             coVerify { StytchApi.apiService.authenticateSessions(any()) }
         }
 
@@ -315,7 +315,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.biometricsRegister(any()) } returns mockk(relaxed = true)
-            StytchApi.Biometrics.register("", "", 30U)
+            StytchApi.Biometrics.register("", "", 30)
             coVerify { StytchApi.apiService.biometricsRegister(any()) }
         }
 
@@ -333,7 +333,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.biometricsAuthenticate(any()) } returns mockk(relaxed = true)
-            StytchApi.Biometrics.authenticate("", "", 30U)
+            StytchApi.Biometrics.authenticate("", "", 30)
             coVerify { StytchApi.apiService.biometricsAuthenticate(any()) }
         }
 
@@ -436,7 +436,7 @@ internal class StytchApiTest {
             StytchApi.OAuth.authenticateWithGoogleIdToken(
                 idToken = "id_token",
                 nonce = "nonce",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
             coVerify {
                 StytchApi.apiService.authenticateWithGoogleIdToken(
@@ -456,7 +456,7 @@ internal class StytchApiTest {
             coEvery { StytchApi.apiService.authenticateWithThirdPartyToken(any()) } returns mockk(relaxed = true)
             StytchApi.OAuth.authenticateWithThirdPartyToken(
                 token = "id_token",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
                 codeVerifier = "code_challenge",
             )
             coVerify {
@@ -540,7 +540,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.webAuthnAuthenticate(mockk(relaxed = true)) } returns mockk(relaxed = true)
-            StytchApi.WebAuthn.authenticate("", 30U)
+            StytchApi.WebAuthn.authenticate("", 30)
             coVerify { StytchApi.apiService.webAuthnAuthenticate(any()) }
         }
 
@@ -586,7 +586,7 @@ internal class StytchApiTest {
                 cryptoWalletAddress = "",
                 cryptoWalletType = CryptoWalletType.ETHEREUM,
                 signature = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
             coVerify { StytchApi.apiService.cryptoWalletAuthenticate(any()) }
         }
@@ -709,9 +709,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                return StytchDataResponse(true)
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = StytchDataResponse(true)
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Success)
         }
@@ -721,13 +719,12 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
+            fun mockApiCall(): StytchDataResponse<Boolean> =
                 throw HttpException(
                     mockk(relaxed = true) {
                         every { errorBody() } returns null
                     },
                 )
-            }
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
@@ -737,9 +734,7 @@ internal class StytchApiTest {
         runTest {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> {
-                throw StytchAPIError(errorType = "", message = "")
-            }
+            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }

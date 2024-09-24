@@ -63,7 +63,7 @@ internal object EncryptionManager {
     /**
      * @throws Exception if failed to encrypt text
      */
-    fun encryptString(plainText: String): String? {
+    fun encryptString(plainText: String): String {
         val encodedString: String?
         val aead = aead ?: throw Exception()
         val plainBytes: ByteArray = plainText.toByteArray(Charsets.UTF_8)

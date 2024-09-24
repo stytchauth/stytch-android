@@ -85,6 +85,7 @@ internal class MagicLinksImplTest {
     @Test
     fun `MagicLinksImpl authenticate returns error if codeverifier fails`() =
         runTest {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Error)
         }
@@ -103,6 +104,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.authenticate(authParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
@@ -121,10 +123,10 @@ internal class MagicLinksImplTest {
         runTest {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
-                mockApi.loginOrCreate(any(), any(), any(), any(), any(), any())
+                mockApi.loginOrCreate(any(), any(), any(), any(), any(), any(), any())
             } returns successfulLoginOrCreateResponse
             impl.email.loginOrCreate(emailMagicLinkParameters)
-            coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any()) }
+            coVerify { mockApi.loginOrCreate(any(), any(), any(), any(), any(), any(), any()) }
         }
 
     @Test
