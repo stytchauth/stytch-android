@@ -1,12 +1,12 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id 'com.android.library'
+    alias(libs.plugins.androidLibrary)
     id 'kotlin-android'
-    id "org.jetbrains.dokka"
+    alias(libs.plugins.dokka)
     id 'kotlin-parcelize'
-    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinPluginCompose)
 }
 
 ext {
@@ -91,7 +91,7 @@ tasks.named("dokkaHtmlPartial").configure {
     dependsOn(tasks.named("kspDebugKotlin"))
     dependsOn(tasks.named("kspReleaseKotlin"))
     dependencies {
-        dokkaPlugin("org.jetbrains.dokka:versioning-plugin:$dokka_version")
+        dokkaPlugin(libs.versioning.plugin)
     }
     moduleName.set("Stytch Android")
     suppressInheritedMembers.set(true)
@@ -144,57 +144,54 @@ tasks.named("dokkaHtmlPartial").configure {
 
 dependencies {
     // Headless SDK dependencies
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.biometric:biometric-ktx:1.2.0-alpha05"
-    implementation "androidx.browser:browser:1.4.0"
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
-    implementation("com.squareup.okhttp3:okhttp:$okhttp_version")
-    implementation "com.squareup.moshi:moshi:$moshi_version"
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
-    implementation 'com.google.crypto.tink:tink-android:1.8.0'
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
-    implementation 'com.google.android.recaptcha:recaptcha:18.4.0'
-    implementation "androidx.credentials:credentials:1.2.2"
-    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
-    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
-    implementation 'com.google.android.gms:play-services-auth-api-phone:18.1.0'
+    implementation libs.kotlin.stdlib
+    implementation libs.biometric.ktx
+    implementation libs.browser
+    implementation libs.core.ktx
+    implementation libs.retrofit
+    implementation libs.converter.moshi
+    implementation(libs.okhttp)
+    implementation libs.moshi
+    ksp(libs.moshi.kotlin.codegen)
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.tink.android
+    implementation libs.bcprov.jdk18on
+    implementation libs.recaptcha
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth
+    implementation libs.googleid
+    implementation libs.play.services.auth.api.phone
 
     // UI SDK dependencies
-    def voyagerVersion = "1.0.0-rc06"
-    implementation "androidx.activity:activity-ktx:1.7.2"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
-    implementation "androidx.activity:activity-compose:1.6.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-    implementation "cafe.adriel.voyager:voyager-navigator:$voyagerVersion"
-    implementation "cafe.adriel.voyager:voyager-transitions:$voyagerVersion"
-    implementation "cafe.adriel.voyager:voyager-androidx:$voyagerVersion"
-    implementation platform('androidx.compose:compose-bom:2024.08.00')
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.ui:ui-graphics"
-    implementation "androidx.compose.ui:ui-tooling-preview"
-    implementation "androidx.compose.material3:material3"
-    implementation "androidx.compose.material:material-icons-extended"
-    debugImplementation "androidx.compose.ui:ui-tooling"
-    implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
+    implementation libs.activity.ktx
+    implementation libs.lifecycle.runtime.ktx
+    implementation libs.activity.compose
+    implementation libs.lifecycle.viewmodel.compose
+    implementation libs.voyager.transitions
+    implementation libs.voyager.androidx
+    implementation platform(libs.compose.bom)
+    implementation libs.ui
+    implementation libs.ui.graphics
+    implementation libs.ui.tooling.preview
+    implementation libs.material3
+    implementation libs.material.icons.extended
+    debugImplementation libs.ui.tooling
+    implementation libs.libphonenumber
 
     // Test depdendencies
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "io.mockk:mockk:1.13.8"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
-    testImplementation("org.json:json:20231013")
-    androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation "androidx.test:rules:1.5.0"
-    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation libs.junit
+    testImplementation libs.mockk
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation(libs.json)
+    androidTestImplementation libs.runner
+    androidTestImplementation libs.rules
+    androidTestImplementation libs.core.testing
     // Test rules and transitive dependencies:
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation libs.ui.test.junit4
     // Needed for createAndroidComposeRule, but not createComposeRule:
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    debugImplementation libs.ui.test.manifest
 
-    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttp_version")
-    testImplementation("org.json:json:20231013")
+    testImplementation(libs.mockwebserver)
 }
 
 tasks.withType(Test).configureEach {

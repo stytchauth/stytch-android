@@ -1,0 +1,137 @@
+[versions]
+activityKtx = "1.9.2"
+androidMaterial = "1.12.0"
+appcompat = "1.7.0"
+bcprovJdk18on = "1.78.1"
+biometricKtx = "1.2.0-alpha05"
+browser = "1.8.0"
+commonsCompress = "1.26.2"
+composeBom = "2024.09.02"
+composeMaterial = "1.7.2"
+constraintlayout = "2.1.4"
+coreKtx = "1.13.1"
+coreTesting = "2.2.0"
+credentials = "1.2.2"
+dokkaGradlePlugin = "1.9.20"
+espressoCore = "3.6.1"
+googleid = "1.1.1"
+gradle = "8.5.2"
+hiltAndroid = "2.49"
+hiltCompiler = "2.44"
+hiltNavigationCompose = "1.2.0"
+json = "20231013"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+kotlinBom = "2.0.0"
+kotlinGradlePlugin = "2.0.20"
+kotlinxCoroutinesAndroid = "1.9.0-RC"
+kotlinxCoroutinesTest = "1.7.2"
+libphonenumber = "8.12.52"
+lifecycleRuntimeKtx = "2.8.6"
+material3 = "1.3.0"
+mockk = "1.13.8"
+mockwebserver = "4.12.0"
+moshi = "1.15.1"
+navigationCompose = "2.8.1"
+okhttp = "4.12.0"
+playServicesAuthApiPhone = "18.1.0"
+recaptcha = "18.6.1"
+retrofit = "2.11.0"
+rules = "1.6.1"
+runner = "1.6.2"
+timber = "4.7.1"
+tinkAndroid = "1.8.0"
+voyagerTransitions = "1.0.0-rc06"
+jose4j = "0.9.6"
+netty = "4.1.111.Final"
+jimfs = "1.3.0"
+grpcNetty = "1.65.0"
+guava = "32.0.1-jre"
+woodstox = "6.4.0"
+nexus = "1.1.0"
+ktlint = "12.1.0"
+detekt = "1.23.6"
+ksp = "2.0.20-1.0.24"
+
+[libraries]
+activity = { module = "androidx.activity:activity", version.ref = "activityKtx" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityKtx" }
+activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
+androidx-animation = { module = "androidx.compose.animation:animation" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprovJdk18on" }
+biometric-ktx = { module = "androidx.biometric:biometric-ktx", version.ref = "biometricKtx" }
+browser = { module = "androidx.browser:browser", version.ref = "browser" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "composeMaterial"}
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokkaGradlePlugin" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+json = { module = "org.json:json", version.ref = "json" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBom" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinGradlePlugin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "libphonenumber" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleRuntimeKtx" }
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-auth-api-phone = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playServicesAuthApiPhone" }
+recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+rules = { module = "androidx.test:rules", version.ref = "rules" }
+runner = { module = "androidx.test:runner", version.ref = "runner" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tinkAndroid" }
+ui = { module = "androidx.compose.ui:ui" }
+ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+versioning-plugin = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokkaGradlePlugin" }
+voyager-androidx = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyagerTransitions" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyagerTransitions" }
+commonsCompress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
+jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
+jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
+grpcNetty = { module = "io.grpc:grpc-netty", version.ref = "grpcNetty" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+woodstox = { module = "com.fasterxml.woodstox:woodstox-core", version.ref = "woodstox" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "gradle" }
+androidLibrary = { id = "com.android.library", version.ref = "gradle" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlinPluginCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinGradlePlugin" }
+nexusPublishPlugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid"}
