@@ -1,10 +1,10 @@
 plugins {
     alias(libs.plugins.androidApplication)
-    id("kotlin-android")
+    kotlin("android")
     id("kotlin-parcelize")
-    id("kotlin-kapt")
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlinPluginCompose)
+    alias(libs.plugins.ksp)
 }
 
 val publicToken: String = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
@@ -64,7 +64,7 @@ android {
 dependencies {
     implementation(project(":source:sdk"))
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -78,8 +78,4 @@ dependencies {
     implementation(libs.libphonenumber)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
-}
-
-kapt {
-    correctErrorTypes = true
 }
