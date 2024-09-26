@@ -1,4 +1,4 @@
-name: Publish Headless SDK
+name: Publish SDK
 
 on:
   workflow_dispatch:
