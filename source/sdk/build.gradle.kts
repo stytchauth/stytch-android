@@ -21,7 +21,6 @@ android {
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,6 +53,7 @@ android {
         freeCompilerArgs += "-Xexplicit-api=strict"
     }
     testOptions {
+        targetSdk = 33
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
@@ -61,6 +61,7 @@ android {
     }
     namespace = "com.stytch.sdk"
     lint {
+        targetSdk = 33
         disable.add("OldTargetApi")
     }
     buildFeatures {
