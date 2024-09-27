@@ -17,7 +17,7 @@ buildscript {
             classpath(libs.netty.handler.proxy)
             classpath(libs.netty.codec.http)
             classpath(libs.netty.codec.http2)
-            classpath(libs.bcprov.jdk18on)
+            classpath(libs.bcpkix.jdk18on)
             classpath(libs.jimfs)
             classpath(libs.grpcNetty)
             classpath(libs.guava)
