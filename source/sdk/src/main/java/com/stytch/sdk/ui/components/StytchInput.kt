@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults.Container
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -114,12 +115,12 @@ internal fun StytchInput(
                 colors = colors,
                 contentPadding = contentPadding,
                 container = {
-                    OutlinedTextFieldDefaults.ContainerBox(
-                        true,
-                        isError,
-                        interactionSource,
-                        colors,
-                        OutlinedTextFieldDefaults.shape,
+                    Container(
+                        enabled = true,
+                        isError = isError,
+                        interactionSource = interactionSource,
+                        colors = colors,
+                        shape = OutlinedTextFieldDefaults.shape,
                     )
                 },
             )

@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
@@ -138,7 +139,7 @@ sealed class Screen(
 
     data object Biometrics : Screen("biometrics", R.string.biometrics_name, Icons.Filled.Face)
 
-    data object OAuth : Screen("oauth", R.string.oauth_name, Icons.Filled.List)
+    data object OAuth : Screen("oauth", R.string.oauth_name, Icons.AutoMirrored.Filled.List)
 
     data object Passkeys : Screen("passkeys", R.string.passkeys_name, Icons.Filled.AccountCircle)
 

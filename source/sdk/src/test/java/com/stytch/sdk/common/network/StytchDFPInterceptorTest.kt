@@ -114,6 +114,8 @@ internal class StytchDFPInterceptorTest {
                 .tag(
                     Invocation::class.java,
                     Invocation.of(
+                        DFPPAEnabled::class.java,
+                        DFPPAEnabled(),
                         firstMethodWithoutDFPPAEnabledAnnotation(),
                         mutableListOf("args"),
                     ),
