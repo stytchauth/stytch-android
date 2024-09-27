@@ -1,22 +1,20 @@
 plugins {
     alias(libs.plugins.androidApplication)
     kotlin("android")
-    id("kotlin-parcelize")
-    alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlinPluginCompose)
-    kotlin("kapt")
 }
 
-val publicToken: String = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
+val publicToken = rootProject.extra["STYTCH_PUBLIC_TOKEN"] as String
+val googleOAuthClientId = rootProject.extra["UI_GOOGLE_CLIENT_ID"] as String
 
 android {
-    namespace = "com.stytch.stytchexampleapp"
+    namespace = "com.stytch.uiworkbench"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.stytch.stytchexampleapp"
-        minSdk = 24
-        targetSdk = 34
+        applicationId = "com.stytch.uiworkbench"
+        minSdk = 23
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -24,20 +22,24 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        manifestPlaceholders["stytchOAuthRedirectScheme"] = ""
-        manifestPlaceholders["stytchOAuthRedirectHost"] = ""
-        manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = publicToken
-
-        buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
+        // Placeholders for OAuth redirect
+        manifestPlaceholders.putAll(
+            mapOf(
+                "stytchOAuthRedirectScheme" to "uiworkbench",
+                "stytchOAuthRedirectHost" to "oauth",
+                "STYTCH_PUBLIC_TOKEN" to publicToken,
+            ),
+        )
     }
 
     buildTypes {
+        all {
+            buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
+            buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\"")
+        }
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -54,28 +56,24 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
-    implementation(project(":source:sdk"))
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.core.ktx)
+    implementation(platform(libs.kotlin.bom))
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
     implementation(platform(libs.compose.bom))
-    implementation(libs.navigation.compose)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.libphonenumber)
+    implementation(project(":source:sdk"))
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 }

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -163,7 +163,7 @@ private fun MainScreenComposable(
                     containerColor = Color(theme.backgroundColor),
                     modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
                     indicator = { tabPositions ->
-                        TabRowDefaults.Indicator(
+                        SecondaryIndicator(
                             modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
                             color = Color(theme.primaryTextColor),
                         )
