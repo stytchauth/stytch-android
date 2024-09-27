@@ -4,8 +4,9 @@ import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.pow
@@ -27,6 +28,7 @@ internal object SessionAutoUpdater {
     private var n = 0
     private var sessionUpdateDelay: Long = DEFAULT_DELAY
     private var backoffStartMillis: Long = 0
+    private val scope = CoroutineScope(SupervisorJob())
 
     fun startSessionUpdateJob(
         dispatchers: StytchDispatchers,
@@ -36,7 +38,7 @@ internal object SessionAutoUpdater {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
         sessionUpdateJob =
-            GlobalScope.launch(dispatchers.io) {
+            scope.launch(dispatchers.io) {
                 while (true) {
                     // wait before another update request
                     delay(sessionUpdateDelay)

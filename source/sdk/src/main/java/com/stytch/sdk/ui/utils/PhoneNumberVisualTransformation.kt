@@ -7,8 +7,11 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import kotlin.math.max
 
-internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTransformation {
+internal class PhoneNumberVisualTransformation(
+    countryCode: String,
+) : VisualTransformation {
     private val phoneNumberFormatter = PhoneNumberUtil.getInstance().getAsYouTypeFormatter(countryCode)
 
     override fun filter(text: AnnotatedString): TransformedText {
@@ -17,13 +20,9 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
         return TransformedText(
             AnnotatedString(transformation.formatted ?: ""),
             object : OffsetMapping {
-                override fun originalToTransformed(offset: Int): Int {
-                    return transformation.originalToTransformed[offset]
-                }
+                override fun originalToTransformed(offset: Int): Int = transformation.originalToTransformed[offset]
 
-                override fun transformedToOriginal(offset: Int): Int {
-                    return transformation.transformedToOriginal[offset]
-                }
+                override fun transformedToOriginal(offset: Int): Int = transformation.transformedToOriginal[offset]
             },
         )
     }
@@ -64,7 +63,7 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
             } else {
                 originalToTransformed.add(index)
             }
-            transformedToOriginal.add(index - specialCharsCount)
+            transformedToOriginal.add(max(index - specialCharsCount, 0))
         }
         originalToTransformed.add(originalToTransformed.maxOrNull()?.plus(1) ?: 0)
         transformedToOriginal.add(transformedToOriginal.maxOrNull()?.plus(1) ?: 0)
@@ -75,13 +74,12 @@ internal class PhoneNumberVisualTransformation(countryCode: String) : VisualTran
     private fun getFormattedNumber(
         lastNonSeparator: Char,
         hasCursor: Boolean,
-    ): String? {
-        return if (hasCursor) {
+    ): String? =
+        if (hasCursor) {
             phoneNumberFormatter.inputDigitAndRememberPosition(lastNonSeparator)
         } else {
             phoneNumberFormatter.inputDigit(lastNonSeparator)
         }
-    }
 
     private data class Transformation(
         val formatted: String?,

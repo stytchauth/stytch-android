@@ -118,12 +118,12 @@ internal class AuthenticationActivity : ComponentActivity() {
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
-        intent: Intent?,
+        data: Intent?,
     ) {
-        super.onActivityResult(requestCode, resultCode, intent)
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID ->
-                intent?.let {
+                data?.let {
                     viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
                 }
         }

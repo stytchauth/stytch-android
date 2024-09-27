@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,9 +40,9 @@ internal fun StytchAlertDialog(
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
     val semantics = stringResource(id = R.string.semantics_alert_dialog)
-    AlertDialog(
-        modifier = Modifier.semantics { contentDescription = semantics },
+    BasicAlertDialog(
         onDismissRequest = onDismissRequest,
+        modifier = Modifier.semantics { contentDescription = semantics },
     ) {
         Surface(
             modifier =

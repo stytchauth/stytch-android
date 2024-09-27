@@ -84,7 +84,7 @@ internal class StytchClientTest {
         mockkObject(StytchApi.Sessions)
         mockkObject(Recaptcha)
         MockKAnnotations.init(this, true, true)
-        coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
+        coEvery { Recaptcha.fetchClient(any(), any()) } returns mockk(relaxed = true)
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "some-value"
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
