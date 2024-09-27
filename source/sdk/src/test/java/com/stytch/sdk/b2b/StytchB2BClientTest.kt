@@ -80,7 +80,6 @@ internal class StytchB2BClientTest {
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         val mockApplication: Application =
             mockk {
-                every { registerActivityLifecycleCallbacks(any()) } just runs
                 every { packageName } returns "Stytch"
             }
         mContextMock =

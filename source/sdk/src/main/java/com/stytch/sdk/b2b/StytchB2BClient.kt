@@ -47,7 +47,6 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
@@ -127,12 +126,11 @@ public object StytchB2BClient {
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             StytchB2BApi.configure(publicToken, deviceInfo)
-            val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =
                 DFPProviderImpl(
+                    context = context.applicationContext,
                     publicToken = publicToken,
                     dfppaDomain = options.endpointOptions.dfppaDomain,
-                    activityProvider = activityProvider,
                 )
             configureSmsRetriever(context.applicationContext)
             externalScope.launch(dispatchers.io) {
