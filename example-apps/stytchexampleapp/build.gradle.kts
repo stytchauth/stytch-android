@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlinPluginCompose)
-    alias(libs.plugins.ksp)
+    kotlin("kapt")
 }
 
 val publicToken: String = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
@@ -52,7 +52,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.7"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
     }
     packaging {
         resources {
@@ -64,12 +64,12 @@ android {
 dependencies {
     implementation(project(":source:sdk"))
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
-    implementation(libs.compose.bom)
+    implementation(platform(libs.compose.bom))
     implementation(libs.navigation.compose)
     implementation(libs.ui)
     implementation(libs.ui.graphics)

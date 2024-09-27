@@ -68,17 +68,17 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.7"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
     }
-    testVariants.forEach {
-        it.mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        it.mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        it.mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
+    testVariants.all {
+        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
+        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
+        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
     }
-    unitTestVariants.forEach {
-        it.mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        it.mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        it.mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
+    unitTestVariants.all {
+        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
+        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
+        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
     }
 }
 

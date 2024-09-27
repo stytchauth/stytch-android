@@ -52,6 +52,7 @@ nexus = "1.1.0"
 ktlint = "12.1.0"
 detekt = "1.23.6"
 ksp = "2.0.20-1.0.24"
+kotlinCompilerExtension="1.5.15"
 
 [libraries]
 activity = { module = "androidx.activity:activity", version.ref = "activityKtx" }
