@@ -36,6 +36,7 @@ internal class B2BSessionStorageTest {
         every { mockStorageHelper.loadValue(any()) } returns "{}"
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         every { mockStorageHelper.saveLong(any(), any()) } just runs
+        every { mockStorageHelper.getLong(any()) } returns 0
         storage = B2BSessionStorage(mockStorageHelper, TestScope())
     }
 

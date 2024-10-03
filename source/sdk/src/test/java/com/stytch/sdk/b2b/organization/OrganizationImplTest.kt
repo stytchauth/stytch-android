@@ -73,12 +73,13 @@ internal class OrganizationImplTest {
         every { EncryptionManager.encryptString(any()) } returns ""
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
         every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
         every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
         every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0
         every { mockSharedPreferencesEditor.apply() } just runs
         StorageHelper.sharedPreferences = mockSharedPreferences
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
         impl =
             OrganizationImpl(
                 externalScope = TestScope(),

@@ -33,6 +33,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class OAuthImplTest {
     @MockK
@@ -61,6 +62,7 @@ internal class OAuthImplTest {
         mockkObject(StytchB2BApi)
         every { StytchB2BApi.isInitialized } returns true
         every { mockSessionStorage.intermediateSessionToken } returns null
+        every { mockSessionStorage.lastValidatedAt } returns Date(0)
         StytchB2BClient.deviceInfo = mockk(relaxed = true)
         StytchB2BClient.appSessionId = "app-session-id"
         impl =

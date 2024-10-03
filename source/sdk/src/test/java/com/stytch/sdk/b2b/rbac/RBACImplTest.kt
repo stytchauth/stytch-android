@@ -29,6 +29,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 private val MOCK_RBAC_POLICY =
     RBACPolicy(
@@ -107,6 +108,7 @@ internal class RBACImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StytchB2BClient)
         MockKAnnotations.init(this, true, true)
+        every { mockB2BSessionStorage.lastValidatedAt } returns Date(0)
         coEvery { StytchB2BClient.refreshBootstrapData() } just runs
         impl =
             RBACImpl(

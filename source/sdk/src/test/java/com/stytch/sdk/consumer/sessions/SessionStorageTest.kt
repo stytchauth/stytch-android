@@ -36,6 +36,7 @@ internal class SessionStorageTest {
         every { mockStorageHelper.loadValue(any()) } returns "{}"
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         every { mockStorageHelper.saveLong(any(), any()) } just runs
+        every { mockStorageHelper.getLong(any()) } returns 0
         storage = ConsumerSessionStorage(mockStorageHelper, TestScope())
     }
 

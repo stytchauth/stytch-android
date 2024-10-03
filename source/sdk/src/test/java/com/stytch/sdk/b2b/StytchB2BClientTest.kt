@@ -93,6 +93,7 @@ internal class StytchB2BClientTest {
         every { StorageHelper.loadValue(any()) } returns "{}"
         every { StorageHelper.saveValue(any(), any()) } just runs
         every { StorageHelper.saveLong(any(), any()) } just runs
+        every { StorageHelper.getLong(any()) } returns 0
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
