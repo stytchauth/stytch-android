@@ -1,11 +1,15 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.squareup.moshi.Moshi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.common.IST_EXPIRATION_TIME
 import com.stytch.sdk.common.PREFERENCES_NAME_IST
 import com.stytch.sdk.common.PREFERENCES_NAME_IST_EXPIRATION
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
+import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_DATA
+import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_SESSION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
@@ -13,12 +17,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.util.Date
 
 internal class B2BSessionStorage(
     private val storageHelper: StorageHelper,
     private val externalScope: CoroutineScope,
 ) {
+    private val moshi =
+        Moshi
+            .Builder()
+            .add(MemberData::class.java)
+            .add(B2BSessionData::class.java)
+            .build()
+
     var sessionToken: String?
         private set(value) {
             storageHelper.saveValue(PREFERENCES_NAME_SESSION_TOKEN, value)
@@ -81,19 +93,63 @@ internal class B2BSessionStorage(
             return value
         }
 
-    var memberSession: B2BSessionData? = null
-        internal set(value) {
-            field = value
+    var lastValidatedAt: Date
+        get() {
+            val longValue: Long?
+            synchronized(this) {
+                longValue = storageHelper.getLong(PREFERENCES_NAME_LAST_VALIDATED_AT)
+            }
+            return longValue?.let {
+                Date.from(Instant.ofEpochMilli(it))
+            } ?: Date.from(Instant.MIN)
+        }
+        set(value) {
+            storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
+        }
+
+    var memberSession: B2BSessionData?
+        get() {
+            val stringValue: String?
+            synchronized(this) {
+                stringValue = storageHelper.loadValue(PREFERENCES_NAME_MEMBER_SESSION_DATA)
+            }
+            return stringValue?.let {
+                moshi.adapter(B2BSessionData::class.java).fromJson(it)
+            }
+        }
+        private set(value) {
+            value?.let {
+                val stringValue = moshi.adapter(B2BSessionData::class.java).toJson(it)
+                storageHelper.saveValue(PREFERENCES_NAME_MEMBER_SESSION_DATA, stringValue)
+            } ?: run {
+                storageHelper.saveValue(PREFERENCES_NAME_MEMBER_SESSION_DATA, null)
+            }
+            lastValidatedAt = Date()
             externalScope.launch {
-                _sessionFlow.emit(field)
+                _sessionFlow.emit(value)
             }
         }
 
-    var member: MemberData? = null
+    var member: MemberData?
+        get() {
+            val stringValue: String?
+            synchronized(this) {
+                stringValue = storageHelper.loadValue(PREFERENCES_NAME_MEMBER_DATA)
+            }
+            return stringValue?.let {
+                moshi.adapter(MemberData::class.java).fromJson(it)
+            }
+        }
         internal set(value) {
-            field = value
+            value?.let {
+                val stringValue = moshi.adapter(MemberData::class.java).toJson(it)
+                storageHelper.saveValue(PREFERENCES_NAME_MEMBER_DATA, stringValue)
+            } ?: run {
+                storageHelper.saveValue(PREFERENCES_NAME_MEMBER_DATA, null)
+            }
+            lastValidatedAt = Date()
             externalScope.launch {
-                _memberFlow.emit(field)
+                _memberFlow.emit(value)
             }
         }
 
