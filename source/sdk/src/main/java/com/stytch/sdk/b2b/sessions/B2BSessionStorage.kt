@@ -10,14 +10,15 @@ import com.stytch.sdk.common.PREFERENCES_NAME_IST_EXPIRATION
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_SESSION_DATA
+import com.stytch.sdk.common.PREFERENCES_NAME_ORGANIZATION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.util.Date
 
 internal class B2BSessionStorage(
@@ -27,8 +28,9 @@ internal class B2BSessionStorage(
     private val moshi =
         Moshi
             .Builder()
-            .add(MemberData::class.java)
-            .add(B2BSessionData::class.java)
+            .add(MemberData::class)
+            .add(B2BSessionData::class)
+            .add(OrganizationData::class)
             .build()
 
     var sessionToken: String?
@@ -54,6 +56,7 @@ internal class B2BSessionStorage(
             }
             return value
         }
+
     var intermediateSessionToken: String?
         private set(value) {
             storageHelper.saveValue(PREFERENCES_NAME_IST, value)
@@ -99,9 +102,7 @@ internal class B2BSessionStorage(
             synchronized(this) {
                 longValue = storageHelper.getLong(PREFERENCES_NAME_LAST_VALIDATED_AT)
             }
-            return longValue?.let {
-                Date.from(Instant.ofEpochMilli(it))
-            } ?: Date.from(Instant.MIN)
+            return longValue?.let { Date(it) } ?: Date(0L)
         }
         set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
@@ -114,7 +115,16 @@ internal class B2BSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_MEMBER_SESSION_DATA)
             }
             return stringValue?.let {
-                moshi.adapter(B2BSessionData::class.java).fromJson(it)
+                // convert it back to a data class, check the expiration date, expire it if expired
+                val memberSessionData = moshi.adapter(B2BSessionData::class.java).fromJson(it)
+                val expirationDate =
+                    memberSessionData?.expiresAt?.let { expiresAt -> ISO_DATE_FORMATTER.parse(expiresAt) } ?: Date(0L)
+                val now = Date()
+                if (expirationDate.before(now)) {
+                    revoke()
+                    return null
+                }
+                return memberSessionData
             }
         }
         private set(value) {
@@ -153,11 +163,26 @@ internal class B2BSessionStorage(
             }
         }
 
-    var organization: OrganizationData? = null
+    var organization: OrganizationData?
+        get() {
+            val stringValue: String?
+            synchronized(this) {
+                stringValue = storageHelper.loadValue(PREFERENCES_NAME_ORGANIZATION_DATA)
+            }
+            return stringValue?.let {
+                moshi.adapter(OrganizationData::class.java).fromJson(it)
+            }
+        }
         internal set(value) {
-            field = value
+            value?.let {
+                val stringValue = moshi.adapter(OrganizationData::class.java).toJson(it)
+                storageHelper.saveValue(PREFERENCES_NAME_ORGANIZATION_DATA, stringValue)
+            } ?: run {
+                storageHelper.saveValue(PREFERENCES_NAME_ORGANIZATION_DATA, null)
+            }
+            lastValidatedAt = Date()
             externalScope.launch {
-                _organizationFlow.emit(field)
+                _organizationFlow.emit(value)
             }
         }
 
@@ -200,6 +225,7 @@ internal class B2BSessionStorage(
             memberSession = null
             member = null
             intermediateSessionToken = null
+            lastValidatedAt = Date(0L)
         }
     }
 }

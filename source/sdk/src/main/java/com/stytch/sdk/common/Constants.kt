@@ -35,4 +35,5 @@ internal const val PREFERENCES_NAME_SESSION_DATA = "stytch_session_data"
 internal const val PREFERENCES_NAME_USER_DATA = "stytch_user_data"
 internal const val PREFERENCES_NAME_MEMBER_SESSION_DATA = "stytch_member_session_data"
 internal const val PREFERENCES_NAME_MEMBER_DATA = "stytch_member_data"
+internal const val PREFERENCES_NAME_ORGANIZATION_DATA = "stytch_organization_data"
 internal const val IST_EXPIRATION_TIME = 10 * 60 * 1000L // 10 minutes

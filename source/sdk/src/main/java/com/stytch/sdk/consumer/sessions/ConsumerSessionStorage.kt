@@ -8,6 +8,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.PREFERENCES_NAME_USER_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
+import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
@@ -15,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.util.Date
 
 internal class ConsumerSessionStorage(
@@ -59,9 +59,7 @@ internal class ConsumerSessionStorage(
             synchronized(this) {
                 longValue = storageHelper.getLong(PREFERENCES_NAME_LAST_VALIDATED_AT)
             }
-            return longValue?.let {
-                Date.from(Instant.ofEpochMilli(it))
-            } ?: Date.from(Instant.MIN)
+            return longValue?.let { Date(it) } ?: Date(0L)
         }
         set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
@@ -74,7 +72,16 @@ internal class ConsumerSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_SESSION_DATA)
             }
             return stringValue?.let {
-                moshi.adapter(SessionData::class.java).fromJson(it)
+                // convert it back to a data class, check the expiration date, expire it if expired
+                val sessionData = moshi.adapter(SessionData::class.java).fromJson(it)
+                val expirationDate =
+                    sessionData?.expiresAt?.let { expiresAt -> ISO_DATE_FORMATTER.parse(expiresAt) } ?: Date(0L)
+                val now = Date()
+                if (expirationDate.before(now)) {
+                    revoke()
+                    return null
+                }
+                return sessionData
             }
         }
         private set(value) {
@@ -149,6 +156,7 @@ internal class ConsumerSessionStorage(
             sessionJwt = null
             session = null
             user = null
+            lastValidatedAt = Date(0L)
         }
     }
 

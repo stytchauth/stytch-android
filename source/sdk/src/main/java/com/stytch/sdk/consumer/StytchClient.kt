@@ -151,8 +151,12 @@ public object StytchClient {
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
-                    StytchApi.Sessions.authenticate(null).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
+                    sessionStorage.session?.let {
+                        // if we have a session, it's expiration date has already been validated, now attempt
+                        // to validate it with the Stytch servers
+                        StytchApi.Sessions.authenticate(null).apply {
+                            launchSessionUpdater(dispatchers, sessionStorage)
+                        }
                     }
                 }
                 _isInitialized.value = true
