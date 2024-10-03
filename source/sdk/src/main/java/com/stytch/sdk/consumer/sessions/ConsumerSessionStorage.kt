@@ -62,6 +62,9 @@ internal class ConsumerSessionStorage(
         }
         private set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
+            externalScope.launch {
+                _lastValidatedAtFlow.emit(value)
+            }
         }
 
     var session: SessionData?
