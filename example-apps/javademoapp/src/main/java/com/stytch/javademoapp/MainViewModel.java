@@ -9,6 +9,8 @@ import com.stytch.sdk.consumer.StytchClient;
 import com.stytch.sdk.consumer.network.models.SessionData;
 import com.stytch.sdk.consumer.network.models.UserData;
 import com.stytch.sdk.consumer.sessions.Sessions;
+import com.stytch.sdk.consumer.sessions.StytchSession;
+import com.stytch.sdk.consumer.userManagement.StytchUser;
 
 import kotlin.Unit;
 
@@ -36,7 +38,11 @@ public class MainViewModel extends ViewModel {
         return Unit.INSTANCE;
     }
 
-    private Unit handleUserChange(UserData userData) {
+    private Unit handleUserChange(StytchUser stytchUser) {
+        UserData userData = null;
+        if (stytchUser instanceof StytchUser.Available) {
+            userData = ((StytchUser.Available) stytchUser).getUserData();
+        }
         StytchState newState = new StytchState(
             true,
             StytchClient.getSessions().getSync(),
@@ -46,7 +52,11 @@ public class MainViewModel extends ViewModel {
         return Unit.INSTANCE;
     }
 
-    private Unit handleSessionChange(SessionData sessionData) {
+    private Unit handleSessionChange(StytchSession stytchSession) {
+        SessionData sessionData = null;
+        if (stytchSession instanceof StytchSession.Available) {
+            sessionData = ((StytchSession.Available) stytchSession).getSessionData();
+        }
         StytchState newState = new StytchState(
             true,
             sessionData,

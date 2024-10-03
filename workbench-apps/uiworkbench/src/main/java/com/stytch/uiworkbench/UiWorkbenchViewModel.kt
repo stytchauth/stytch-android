@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserData
+import com.stytch.sdk.consumer.userManagement.StytchUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,13 @@ class UiWorkbenchViewModel : ViewModel() {
     init {
         _userState.value = StytchClient.user.getSyncUser()
         StytchClient.user.onChange {
-            _userState.value = it
+            val userData =
+                if (it is StytchUser.Available) {
+                    it.userData
+                } else {
+                    null
+                }
+            _userState.value = userData
         }
     }
 
