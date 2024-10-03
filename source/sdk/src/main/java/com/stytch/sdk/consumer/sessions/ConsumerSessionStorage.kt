@@ -23,6 +23,8 @@ internal class ConsumerSessionStorage(
     private val externalScope: CoroutineScope,
 ) {
     private val moshi = Moshi.Builder().build()
+    private val moshiSessionDataAdapter = moshi.adapter(SessionData::class.java).lenient()
+    private val moshiUserDataAdapter = moshi.adapter(UserData::class.java).lenient()
 
     var sessionToken: String?
         private set(value) {
@@ -68,7 +70,7 @@ internal class ConsumerSessionStorage(
             }
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
-                val sessionData = moshi.adapter(SessionData::class.java).fromJson(it)
+                val sessionData = moshiSessionDataAdapter.fromJson(it)
                 val expirationDate = sessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
@@ -80,7 +82,7 @@ internal class ConsumerSessionStorage(
         }
         private set(value) {
             value?.let {
-                val stringValue = moshi.adapter(SessionData::class.java).toJson(it)
+                val stringValue = moshiSessionDataAdapter.toJson(it)
                 storageHelper.saveValue(PREFERENCES_NAME_SESSION_DATA, stringValue)
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_SESSION_DATA, null)
@@ -98,13 +100,13 @@ internal class ConsumerSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_USER_DATA)
             }
             return stringValue?.let {
-                moshi.adapter(UserData::class.java).fromJson(it)
+                moshiUserDataAdapter.fromJson(it)
             }
         }
         internal set(value) {
             value?.let {
                 it.keepLocalBiometricRegistrationsInSync(storageHelper)
-                val stringValue = moshi.adapter(UserData::class.java).toJson(it)
+                val stringValue = moshiUserDataAdapter.toJson(it)
                 storageHelper.saveValue(PREFERENCES_NAME_USER_DATA, stringValue)
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_USER_DATA, null)

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.OrganizationData
@@ -26,6 +27,9 @@ internal class B2BSessionStorage(
     private val externalScope: CoroutineScope,
 ) {
     private val moshi = Moshi.Builder().build()
+    private val moshiB2BSessionDataAdapter = moshi.adapter(B2BSessionData::class.java).lenient()
+    private val moshiMemberDataAdapter = moshi.adapter(MemberData::class.java).lenient()
+    private val moshiOrganizationDataAdapter = moshi.adapter(OrganizationData::class.java).lenient()
 
     var sessionToken: String?
         private set(value) {
@@ -110,7 +114,7 @@ internal class B2BSessionStorage(
             }
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
-                val memberSessionData = moshi.adapter(B2BSessionData::class.java).fromJson(it)
+                val memberSessionData = moshiB2BSessionDataAdapter.fromJson(it)
                 val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
@@ -122,7 +126,7 @@ internal class B2BSessionStorage(
         }
         private set(value) {
             value?.let {
-                val stringValue = moshi.adapter(B2BSessionData::class.java).toJson(it)
+                val stringValue = moshiB2BSessionDataAdapter.toJson(it)
                 storageHelper.saveValue(PREFERENCES_NAME_MEMBER_SESSION_DATA, stringValue)
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_MEMBER_SESSION_DATA, null)
@@ -140,12 +144,12 @@ internal class B2BSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_MEMBER_DATA)
             }
             return stringValue?.let {
-                moshi.adapter(MemberData::class.java).fromJson(it)
+                moshiMemberDataAdapter.fromJson(it)
             }
         }
         internal set(value) {
             value?.let {
-                val stringValue = moshi.adapter(MemberData::class.java).toJson(it)
+                val stringValue = moshiMemberDataAdapter.toJson(it)
                 storageHelper.saveValue(PREFERENCES_NAME_MEMBER_DATA, stringValue)
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_MEMBER_DATA, null)
@@ -163,12 +167,12 @@ internal class B2BSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_ORGANIZATION_DATA)
             }
             return stringValue?.let {
-                moshi.adapter(OrganizationData::class.java).fromJson(it)
+                moshiOrganizationDataAdapter.fromJson(it)
             }
         }
         internal set(value) {
             value?.let {
-                val stringValue = moshi.adapter(OrganizationData::class.java).toJson(it)
+                val stringValue = moshiOrganizationDataAdapter.toJson(it)
                 storageHelper.saveValue(PREFERENCES_NAME_ORGANIZATION_DATA, stringValue)
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_ORGANIZATION_DATA, null)
