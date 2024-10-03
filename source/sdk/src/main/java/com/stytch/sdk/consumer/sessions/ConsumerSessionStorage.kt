@@ -60,7 +60,7 @@ internal class ConsumerSessionStorage(
             }
             return longValue?.let { Date(it) } ?: Date(0L)
         }
-        set(value) {
+        private set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
         }
 

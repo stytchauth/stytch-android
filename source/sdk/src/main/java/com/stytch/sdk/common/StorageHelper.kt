@@ -63,9 +63,25 @@ internal object StorageHelper {
         }
     }
 
-    internal fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
+    internal fun getBoolean(
+        name: String,
+        default: Boolean = false,
+    ): Boolean =
+        try {
+            sharedPreferences.getBoolean(name, default)
+        } catch (ex: Exception) {
+            default
+        }
 
-    internal fun getLong(name: String): Long = sharedPreferences.getLong(name, 0L)
+    internal fun getLong(
+        name: String,
+        default: Long = 0L,
+    ): Long =
+        try {
+            sharedPreferences.getLong(name, default)
+        } catch (ex: Exception) {
+            default
+        }
 
     /**
      * Load and decrypt value from SharedPreferences
