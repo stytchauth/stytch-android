@@ -15,13 +15,13 @@ public interface Member {
     /**
      * Exposes a flow of member data
      */
-    public val onChange: StateFlow<MemberData?>
+    public suspend fun onChange(): StateFlow<StytchMember>
 
     /**
      * Assign a callback that will be called when the member data changes
      */
 
-    public fun onChange(callback: (MemberData?) -> Unit)
+    public fun onChange(callback: (StytchMember) -> Unit)
 
     /**
      * Wraps Stytch’s organization/members/me endpoint.

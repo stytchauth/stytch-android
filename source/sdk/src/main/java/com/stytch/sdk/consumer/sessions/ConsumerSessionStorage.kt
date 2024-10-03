@@ -8,7 +8,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.PREFERENCES_NAME_USER_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
-import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
+import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
@@ -22,12 +22,7 @@ internal class ConsumerSessionStorage(
     private val storageHelper: StorageHelper,
     private val externalScope: CoroutineScope,
 ) {
-    private val moshi =
-        Moshi
-            .Builder()
-            .add(SessionData::class.java)
-            .add(UserData::class.java)
-            .build()
+    private val moshi = Moshi.Builder().build()
 
     var sessionToken: String?
         private set(value) {
@@ -74,8 +69,7 @@ internal class ConsumerSessionStorage(
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
                 val sessionData = moshi.adapter(SessionData::class.java).fromJson(it)
-                val expirationDate =
-                    sessionData?.expiresAt?.let { expiresAt -> ISO_DATE_FORMATTER.parse(expiresAt) } ?: Date(0L)
+                val expirationDate = sessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
                     revoke()

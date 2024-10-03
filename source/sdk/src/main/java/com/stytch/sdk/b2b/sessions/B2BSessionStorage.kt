@@ -14,7 +14,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_ORGANIZATION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
-import com.stytch.sdk.common.utils.ISO_DATE_FORMATTER
+import com.stytch.sdk.common.utils.getDateOrMin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,13 +25,7 @@ internal class B2BSessionStorage(
     private val storageHelper: StorageHelper,
     private val externalScope: CoroutineScope,
 ) {
-    private val moshi =
-        Moshi
-            .Builder()
-            .add(MemberData::class)
-            .add(B2BSessionData::class)
-            .add(OrganizationData::class)
-            .build()
+    private val moshi = Moshi.Builder().build()
 
     var sessionToken: String?
         private set(value) {
@@ -117,8 +111,7 @@ internal class B2BSessionStorage(
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
                 val memberSessionData = moshi.adapter(B2BSessionData::class.java).fromJson(it)
-                val expirationDate =
-                    memberSessionData?.expiresAt?.let { expiresAt -> ISO_DATE_FORMATTER.parse(expiresAt) } ?: Date(0L)
+                val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
                     revoke()

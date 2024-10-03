@@ -11,7 +11,10 @@ import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,13 +26,24 @@ internal class SessionsImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
-    private val callbacks = mutableListOf<(SessionData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchSession) -> Unit>()
 
-    override val onChange: StateFlow<SessionData?> = sessionStorage.sessionFlow
+    private fun stytchSessionMapper(session: SessionData?): StytchSession =
+        session?.let {
+            StytchSession.Available(
+                lastValidatedAt = sessionStorage.lastValidatedAt,
+                sessionData = it,
+            )
+        } ?: StytchSession.Unavailable
+
+    override suspend fun onChange(): StateFlow<StytchSession> =
+        sessionStorage.sessionFlow
+            .map { stytchSessionMapper(it) }
+            .stateIn(externalScope, SharingStarted.Eagerly, stytchSessionMapper(sessionStorage.session))
 
     init {
         externalScope.launch {
-            onChange.collect {
+            onChange().collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -37,7 +51,7 @@ internal class SessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (SessionData?) -> Unit) {
+    override fun onChange(callback: (StytchSession) -> Unit) {
         callbacks.add(callback)
     }
 

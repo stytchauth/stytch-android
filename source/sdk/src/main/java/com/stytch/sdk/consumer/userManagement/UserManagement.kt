@@ -17,13 +17,13 @@ public interface UserManagement {
     /**
      * Exposes a flow of user data
      */
-    public val onChange: StateFlow<UserData?>
+    public suspend fun onChange(): StateFlow<StytchUser>
 
     /**
      * Assign a callback that will be called when the user data changes
      */
 
-    public fun onChange(callback: (UserData?) -> Unit)
+    public fun onChange(callback: (StytchUser) -> Unit)
 
     /**
      * Fetches a user from the current session

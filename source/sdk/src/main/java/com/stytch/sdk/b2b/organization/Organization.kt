@@ -32,13 +32,13 @@ public interface Organization {
     /**
      * Exposes a flow of organization data
      */
-    public val onChange: StateFlow<OrganizationData?>
+    public suspend fun onChange(): StateFlow<StytchOrganization>
 
     /**
      * Assign a callback that will be called when the organization data changes
      */
 
-    public fun onChange(callback: (OrganizationData?) -> Unit)
+    public fun onChange(callback: (StytchOrganization) -> Unit)
 
     /**
      * Wraps Stytch’s organization/me endpoint.

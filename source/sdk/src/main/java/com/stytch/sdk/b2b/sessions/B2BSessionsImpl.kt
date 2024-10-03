@@ -12,7 +12,10 @@ import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,13 +27,24 @@ internal class B2BSessionsImpl internal constructor(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Sessions,
 ) : B2BSessions {
-    private val callbacks = mutableListOf<(B2BSessionData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchMemberSession) -> Unit>()
 
-    override val onChange: StateFlow<B2BSessionData?> = sessionStorage.sessionFlow
+    private fun stytchMemberSessionMapper(session: B2BSessionData?): StytchMemberSession =
+        session?.let {
+            StytchMemberSession.Available(
+                lastValidatedAt = sessionStorage.lastValidatedAt,
+                memberSessionData = session,
+            )
+        } ?: StytchMemberSession.Unavailable
+
+    override suspend fun onChange(): StateFlow<StytchMemberSession> =
+        sessionStorage.sessionFlow
+            .map { stytchMemberSessionMapper(it) }
+            .stateIn(externalScope, SharingStarted.Eagerly, stytchMemberSessionMapper(sessionStorage.memberSession))
 
     init {
         externalScope.launch {
-            onChange.collect {
+            onChange().collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -38,7 +52,7 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (B2BSessionData?) -> Unit) {
+    override fun onChange(callback: (StytchMemberSession) -> Unit) {
         callbacks.add(callback)
     }
 

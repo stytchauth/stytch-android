@@ -17,13 +17,13 @@ public interface B2BSessions {
     /**
      * Exposes a flow of session data
      */
-    public val onChange: StateFlow<B2BSessionData?>
+    public suspend fun onChange(): StateFlow<StytchMemberSession>
 
     /**
      * Assign a callback that will be called when the session data changes
      */
 
-    public fun onChange(callback: (B2BSessionData?) -> Unit)
+    public fun onChange(callback: (StytchMemberSession) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data

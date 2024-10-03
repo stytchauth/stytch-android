@@ -10,7 +10,10 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,13 +25,24 @@ internal class MemberImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Member,
 ) : Member {
-    private val callbacks = mutableListOf<(MemberData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchMember) -> Unit>()
 
-    override val onChange: StateFlow<MemberData?> = sessionStorage.memberFlow
+    private fun stytchMemberMapper(member: MemberData?): StytchMember =
+        member?.let {
+            StytchMember.Available(
+                lastValidatedAt = sessionStorage.lastValidatedAt,
+                memberData = member,
+            )
+        } ?: StytchMember.Unavailable
+
+    override suspend fun onChange(): StateFlow<StytchMember> =
+        sessionStorage.memberFlow
+            .map { stytchMemberMapper(it) }
+            .stateIn(externalScope, SharingStarted.Eagerly, stytchMemberMapper(sessionStorage.member))
 
     init {
         externalScope.launch {
-            onChange.collect {
+            onChange().collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -36,7 +50,7 @@ internal class MemberImpl(
         }
     }
 
-    override fun onChange(callback: (MemberData?) -> Unit) {
+    override fun onChange(callback: (StytchMember) -> Unit) {
         callbacks.add(callback)
     }
 

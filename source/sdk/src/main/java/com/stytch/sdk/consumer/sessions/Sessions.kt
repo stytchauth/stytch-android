@@ -15,13 +15,13 @@ public interface Sessions {
     /**
      * Exposes a flow of session data
      */
-    public val onChange: StateFlow<SessionData?>
+    public suspend fun onChange(): StateFlow<StytchSession>
 
     /**
      * Assign a callback that will be called when the session data changes
      */
 
-    public fun onChange(callback: (SessionData?) -> Unit)
+    public fun onChange(callback: (StytchSession) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data

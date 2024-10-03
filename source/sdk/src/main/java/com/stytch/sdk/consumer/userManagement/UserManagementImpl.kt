@@ -11,7 +11,10 @@ import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,13 +26,24 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    private val callbacks = mutableListOf<(UserData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchUser) -> Unit>()
 
-    override val onChange: StateFlow<UserData?> = sessionStorage.userFlow
+    private fun stytchUserMapper(userData: UserData?): StytchUser =
+        userData?.let {
+            StytchUser.Available(
+                lastValidatedAt = sessionStorage.lastValidatedAt,
+                userData = it,
+            )
+        } ?: StytchUser.Unavailable
+
+    override suspend fun onChange(): StateFlow<StytchUser> =
+        sessionStorage.userFlow
+            .map { stytchUserMapper(it) }
+            .stateIn(externalScope, SharingStarted.Eagerly, stytchUserMapper(sessionStorage.user))
 
     init {
         externalScope.launch {
-            onChange.collect {
+            onChange().collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -37,7 +51,7 @@ internal class UserManagementImpl(
         }
     }
 
-    override fun onChange(callback: (UserData?) -> Unit) {
+    override fun onChange(callback: (StytchUser) -> Unit) {
         callbacks.add(callback)
     }
 
