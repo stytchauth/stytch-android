@@ -24,8 +24,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -64,7 +64,7 @@ internal class CryptoWalletImplTest {
 
     @Test
     fun `CryptoWallet authenticateStart with no active session delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns mockk(relaxed = true)
             impl.authenticateStart(mockk(relaxed = true))
@@ -73,7 +73,7 @@ internal class CryptoWalletImplTest {
 
     @Test
     fun `CryptoWallet authenticateStart with an active session delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery { mockApi.authenticateStartSecondary(any(), any()) } returns mockk(relaxed = true)
             impl.authenticateStart(mockk(relaxed = true))
@@ -91,7 +91,7 @@ internal class CryptoWalletImplTest {
 
     @Test
     fun `CryptoWallet authenticate delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
             impl.authenticate(mockk(relaxed = true))
             coVerify(exactly = 1) { mockApi.authenticate(any(), any(), any(), any()) }

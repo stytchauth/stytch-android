@@ -4,11 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
+import com.squareup.moshi.Moshi
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
-import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
-import com.stytch.sdk.b2b.oauth.OAuth
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -23,6 +23,7 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -44,22 +45,16 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class StytchB2BClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
     private val dispatcher = Dispatchers.Unconfined
-
-    @MockK
-    private lateinit var mockMagicLinks: B2BMagicLinks
-
-    @MockK
-    private lateinit var mockOAuth: OAuth
 
     @MockK
     private lateinit var mockPKCEPairManager: PKCEPairManager
@@ -96,6 +91,8 @@ internal class StytchB2BClientTest {
         coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
         every { StorageHelper.loadValue(any()) } returns "{}"
+        every { StorageHelper.saveValue(any(), any()) } just runs
+        every { StorageHelper.saveLong(any(), any()) } just runs
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
@@ -176,8 +173,35 @@ internal class StytchB2BClientTest {
             StytchB2BClient.configure(mContextMock, "")
             coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate(any()) }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
-            // yes session data == yes authentication/updater
-            every { StorageHelper.loadValue(any()) } returns "some-session-data"
+            // yes session data, but expired, no authentication/updater
+            val mockExpiredSession =
+                mockk<B2BSessionData>(relaxed = true) {
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(0L))
+                }
+            val mockExpiredSessionJSON =
+                Moshi
+                    .Builder()
+                    .build()
+                    .adapter(B2BSessionData::class.java)
+                    .lenient()
+                    .toJson(mockExpiredSession)
+            every { StorageHelper.loadValue(any()) } returns mockExpiredSessionJSON
+            StytchB2BClient.configure(mContextMock, "")
+            coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate() }
+            verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
+            // yes session data, and valid, yes authentication/updater
+            val mockValidSession =
+                mockk<B2BSessionData>(relaxed = true) {
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(Date().time + 1000))
+                }
+            val mockValidSessionJSON =
+                Moshi
+                    .Builder()
+                    .build()
+                    .adapter(B2BSessionData::class.java)
+                    .lenient()
+                    .toJson(mockValidSession)
+            every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
             StytchB2BClient.configure(mContextMock, "")
             coVerify(exactly = 1) { StytchB2BApi.Sessions.authenticate() }
             verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
@@ -186,7 +210,7 @@ internal class StytchB2BClientTest {
 
     @Test
     fun `should report the initialization state after configuration and initialization is complete`() {
-        runTest {
+        runBlocking {
             val mockResponse: StytchResult<SessionsAuthenticateResponseData> =
                 mockk {
                     every { launchSessionUpdater(any(), any()) } just runs

@@ -26,8 +26,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -74,7 +74,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticateWithOTP(any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
@@ -92,7 +92,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms loginOrCreate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.loginOrCreateByOTPWithSMS(any(), any(), any(), any()) } returns mockk(relaxed = true)
             impl.sms.loginOrCreate(mockk(relaxed = true))
             coVerify { mockApi.loginOrCreateByOTPWithSMS(any(), any(), any(), any()) }
@@ -108,7 +108,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms send with active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery { mockApi.sendOTPWithSMSSecondary(any(), any()) } returns mockk(relaxed = true)
             impl.sms.send(
@@ -122,7 +122,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl sms send with no active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery { mockApi.sendOTPWithSMSPrimary(any(), any()) } returns mockk(relaxed = true)
             impl.sms.send(
@@ -151,7 +151,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp loginOrCreate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.loginOrCreateUserByOTPWithWhatsApp(any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.loginOrCreate(mockk(relaxed = true))
             coVerify { mockApi.loginOrCreateUserByOTPWithWhatsApp(any(), any()) }
@@ -167,7 +167,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp send with no active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
@@ -181,7 +181,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl whatsapp send with active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
@@ -210,7 +210,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email loginOrCreate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockApi.loginOrCreateUserByOTPWithEmail(
                     any(),
@@ -233,7 +233,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email send with no active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery { mockApi.sendOTPWithEmailPrimary(any(), any(), any(), any()) } returns mockk(relaxed = true)
             impl.email.send(
@@ -249,7 +249,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTPImpl email send with active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery { mockApi.sendOTPWithEmailSecondary(any(), any(), any(), any()) } returns mockk(relaxed = true)
             impl.email.send(

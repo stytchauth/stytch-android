@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.otp
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -26,8 +28,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -36,6 +38,12 @@ import java.security.KeyStore
 internal class OTPImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.OTP
+
+    @MockK
+    private lateinit var mockSharedPreferences: SharedPreferences
+
+    @MockK
+    private lateinit var mockSharedPreferencesEditor: Editor
 
     private lateinit var spiedSessionStorage: B2BSessionStorage
 
@@ -50,7 +58,12 @@ internal class OTPImplTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
-        every { StorageHelper.saveValue(any(), any()) } just runs
+        every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0L
+        every { mockSharedPreferencesEditor.apply() } just runs
+        StorageHelper.sharedPreferences = mockSharedPreferences
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
@@ -72,7 +85,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTP SMS Send delegates to the API`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.sendSMSOTP(any(), any(), any(), any()) } returns successfulBaseResponse
             val response = impl.sms.send(mockk(relaxed = true))
             assert(response is StytchResult.Success)
@@ -89,7 +102,7 @@ internal class OTPImplTest {
 
     @Test
     fun `OTP SMS Authenticate delegates to the API and updates session`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticateSMSOTP(any(), any(), any(), any(), any()) } returns successfulAuthResponse
             val response = impl.sms.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Success)

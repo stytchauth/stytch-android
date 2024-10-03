@@ -21,6 +21,7 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -52,7 +53,7 @@ internal class AuthenticationViewModelTest {
 
     @Test
     fun `authenticateThirdPartyOAuth emits the expected event based on intent when success`() =
-        runTest(dispatcher) {
+        runBlocking(dispatcher) {
             val resultData = StytchResult.Success<CommonAuthenticationData>(mockk())
             coEvery { mockStytchClient.handle(any(), any()) } returns
                 mockk<DeeplinkHandledStatus.Handled>(relaxed = true) {
@@ -78,7 +79,7 @@ internal class AuthenticationViewModelTest {
 
     @Test
     fun `authenticateThirdPartyOAuth emits the expected event based on exception when failed`() =
-        runTest(dispatcher) {
+        runBlocking(dispatcher) {
             val eventFlow =
                 async {
                     viewModel.eventFlow.first()

@@ -29,8 +29,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -84,7 +84,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate returns error if codeverifier fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Error)
@@ -92,7 +92,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
@@ -112,7 +112,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.email.loginOrCreate(emailMagicLinkParameters)
             assert(response is StytchResult.Error)
@@ -120,7 +120,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email loginOrCreate delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
                 mockApi.loginOrCreate(any(), any(), any(), any(), any(), any(), any())
@@ -138,7 +138,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email send with active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery {
                 mockApi.sendSecondary(any(), any(), any(), any(), any(), any(), any(), any())
@@ -156,7 +156,7 @@ internal class MagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email send with no active session delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery {
                 mockApi.sendPrimary(any(), any(), any(), any(), any(), any(), any(), any())

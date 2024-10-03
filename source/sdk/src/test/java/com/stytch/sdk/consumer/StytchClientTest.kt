@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
+import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
@@ -17,9 +18,11 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
+import com.stytch.sdk.consumer.network.models.SessionData
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -41,12 +44,12 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class StytchClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -86,7 +89,9 @@ internal class StytchClientTest {
         MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
-        every { StorageHelper.loadValue(any()) } returns "some-value"
+        every { StorageHelper.loadValue(any()) } returns "{}"
+        every { StorageHelper.saveValue(any(), any()) } just runs
+        every { StorageHelper.saveLong(any(), any()) } just runs
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
@@ -167,17 +172,41 @@ internal class StytchClientTest {
             StytchClient.configure(mContextMock, "")
             coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
-            // yes session data == yes authentication/updater
-            every { StorageHelper.loadValue(any()) } returns "some-session-data"
+            // yes session data, but expired, no authentication/updater
+            val mockExpiredSession =
+                mockk<SessionData>(relaxed = true) {
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(0L))
+                }
+            val mockExpiredSessionJSON =
+                Moshi
+                    .Builder()
+                    .build()
+                    .adapter(SessionData::class.java)
+                    .lenient()
+                    .toJson(mockExpiredSession)
+            every { StorageHelper.loadValue(any()) } returns mockExpiredSessionJSON
             StytchClient.configure(mContextMock, "")
-            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
-            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
+            coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
+            // yes session data, and valid, yes authentication/updater
+            val mockValidSession =
+                mockk<SessionData>(relaxed = true) {
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(Date().time + 1000))
+                }
+            val mockValidSessionJSON =
+                Moshi
+                    .Builder()
+                    .build()
+                    .adapter(SessionData::class.java)
+                    .lenient()
+                    .toJson(mockValidSession)
+            every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
         }
     }
 
     @Test
     fun `should report the initialization state after configuration and initialization is complete`() {
-        runTest {
+        runBlocking {
             val mockResponse: StytchResult<AuthData> =
                 mockk {
                     every { launchSessionUpdater(any(), any()) } just runs

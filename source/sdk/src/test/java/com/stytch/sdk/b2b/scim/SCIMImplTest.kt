@@ -29,8 +29,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -86,7 +86,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl createConnection delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.createConnection(mockk(relaxed = true))
             assert(response is StytchResult.Success)
             coVerify { mockApi.createConnection(any(), any()) }
@@ -101,7 +101,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl updateConnection delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.updateConnection(mockk(relaxed = true))
             assert(response is StytchResult.Success)
             coVerify { mockApi.updateConnection(any(), any(), any(), any()) }
@@ -116,7 +116,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl deleteConnection delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.deleteConnection("connection-id")
             assert(response is StytchResult.Success)
             coVerify { mockApi.deleteConection(any()) }
@@ -131,7 +131,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl getConnection delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.getConnection()
             assert(response is StytchResult.Success)
             coVerify { mockApi.getConnection() }
@@ -146,7 +146,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl getConnectionGroups delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.getConnectionGroups(mockk(relaxed = true))
             assert(response is StytchResult.Success)
             coVerify { mockApi.getConnectionGroups(any(), any()) }
@@ -161,7 +161,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl rotateStart delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.rotateStart("connection-id")
             assert(response is StytchResult.Success)
             coVerify { mockApi.rotateStart(any()) }
@@ -176,7 +176,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl rotateCancel delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.rotateCancel("connection-id")
             assert(response is StytchResult.Success)
             coVerify { mockApi.rotateCancel(any()) }
@@ -191,7 +191,7 @@ internal class SCIMImplTest {
 
     @Test
     fun `SCIMImpl rotateComplete delegates to api`() =
-        runTest {
+        runBlocking {
             val response = impl.rotateComplete("connection-id")
             assert(response is StytchResult.Success)
             coVerify { mockApi.rotateComplete(any()) }

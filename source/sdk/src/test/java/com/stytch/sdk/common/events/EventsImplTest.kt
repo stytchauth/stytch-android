@@ -12,8 +12,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -58,7 +58,7 @@ internal class EventsImplTest {
 
     @Test
     fun `EventsImpl logEvent delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockEventsAPI.logEvent(any(), any(), any(), any(), any(), any(), any()) } returns mockk()
             val mockDetails = mapOf("test-key" to "test value")
             impl.logEvent("test-event", mockDetails)
