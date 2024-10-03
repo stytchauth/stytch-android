@@ -3,11 +3,10 @@ package com.stytch.stytchexampleapp
 import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
-import com.stytch.sdk.consumer.sessions.StytchSession
-import com.stytch.sdk.consumer.userManagement.StytchUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,14 +29,14 @@ class MainViewModel : ViewModel() {
                     StytchClient.sessions.onChange(),
                 ) { isInitialized, stytchUser, stytchSession ->
                     val userData =
-                        if (stytchUser is StytchUser.Available) {
-                            stytchUser.userData
+                        if (stytchUser is StytchObject.Available) {
+                            stytchUser.value
                         } else {
                             null
                         }
                     val sessionData =
-                        if (stytchSession is StytchSession.Available) {
-                            stytchSession.sessionData
+                        if (stytchSession is StytchObject.Available) {
+                            stytchSession.value
                         } else {
                             null
                         }

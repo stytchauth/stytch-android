@@ -136,6 +136,9 @@ internal class ConsumerSessionStorage(
     private val _userFlow = MutableStateFlow(user)
     val userFlow = _userFlow.asStateFlow()
 
+    private val _lastValidatedAtFlow = MutableStateFlow(lastValidatedAt)
+    val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
+
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
 

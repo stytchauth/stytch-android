@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.common.StytchObject
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.CompletableFuture
 
@@ -15,13 +16,13 @@ public interface Member {
     /**
      * Exposes a flow of member data
      */
-    public suspend fun onChange(): StateFlow<StytchMember>
+    public suspend fun onChange(): StateFlow<StytchObject<MemberData>>
 
     /**
      * Assign a callback that will be called when the member data changes
      */
 
-    public fun onChange(callback: (StytchMember) -> Unit)
+    public fun onChange(callback: (StytchObject<MemberData>) -> Unit)
 
     /**
      * Wraps Stytch’s organization/members/me endpoint.

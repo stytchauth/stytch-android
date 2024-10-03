@@ -1,7 +1,9 @@
 package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
@@ -13,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
@@ -26,20 +28,15 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    private val callbacks = mutableListOf<(StytchUser) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObject<UserData>) -> Unit>()
 
-    private fun stytchUserMapper(userData: UserData?): StytchUser =
-        userData?.let {
-            StytchUser.Available(
-                lastValidatedAt = sessionStorage.lastValidatedAt,
-                userData = it,
+    override suspend fun onChange(): StateFlow<StytchObject<UserData>> =
+        combine(sessionStorage.userFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<UserData>(sessionStorage.user, sessionStorage.lastValidatedAt),
             )
-        } ?: StytchUser.Unavailable
-
-    override suspend fun onChange(): StateFlow<StytchUser> =
-        sessionStorage.userFlow
-            .map { stytchUserMapper(it) }
-            .stateIn(externalScope, SharingStarted.Eagerly, stytchUserMapper(sessionStorage.user))
 
     init {
         externalScope.launch {
@@ -51,7 +48,7 @@ internal class UserManagementImpl(
         }
     }
 
-    override fun onChange(callback: (StytchUser) -> Unit) {
+    override fun onChange(callback: (StytchObject<UserData>) -> Unit) {
         callbacks.add(callback)
     }
 

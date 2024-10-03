@@ -7,12 +7,14 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
@@ -25,20 +27,15 @@ internal class MemberImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Member,
 ) : Member {
-    private val callbacks = mutableListOf<(StytchMember) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObject<MemberData>) -> Unit>()
 
-    private fun stytchMemberMapper(member: MemberData?): StytchMember =
-        member?.let {
-            StytchMember.Available(
-                lastValidatedAt = sessionStorage.lastValidatedAt,
-                memberData = member,
+    override suspend fun onChange(): StateFlow<StytchObject<MemberData>> =
+        combine(sessionStorage.memberFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper(sessionStorage.member, sessionStorage.lastValidatedAt),
             )
-        } ?: StytchMember.Unavailable
-
-    override suspend fun onChange(): StateFlow<StytchMember> =
-        sessionStorage.memberFlow
-            .map { stytchMemberMapper(it) }
-            .stateIn(externalScope, SharingStarted.Eagerly, stytchMemberMapper(sessionStorage.member))
 
     init {
         externalScope.launch {
@@ -50,7 +47,7 @@ internal class MemberImpl(
         }
     }
 
-    override fun onChange(callback: (StytchMember) -> Unit) {
+    override fun onChange(callback: (StytchObject<MemberData>) -> Unit) {
         callbacks.add(callback)
     }
 

@@ -7,14 +7,16 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
@@ -27,20 +29,15 @@ internal class B2BSessionsImpl internal constructor(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Sessions,
 ) : B2BSessions {
-    private val callbacks = mutableListOf<(StytchMemberSession) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObject<B2BSessionData>) -> Unit>()
 
-    private fun stytchMemberSessionMapper(session: B2BSessionData?): StytchMemberSession =
-        session?.let {
-            StytchMemberSession.Available(
-                lastValidatedAt = sessionStorage.lastValidatedAt,
-                memberSessionData = session,
+    override suspend fun onChange(): StateFlow<StytchObject<B2BSessionData>> =
+        combine(sessionStorage.sessionFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<B2BSessionData>(sessionStorage.memberSession, sessionStorage.lastValidatedAt),
             )
-        } ?: StytchMemberSession.Unavailable
-
-    override suspend fun onChange(): StateFlow<StytchMemberSession> =
-        sessionStorage.sessionFlow
-            .map { stytchMemberSessionMapper(it) }
-            .stateIn(externalScope, SharingStarted.Eagerly, stytchMemberSessionMapper(sessionStorage.memberSession))
 
     init {
         externalScope.launch {
@@ -52,7 +49,7 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (StytchMemberSession) -> Unit) {
+    override fun onChange(callback: (StytchObject<B2BSessionData>) -> Unit) {
         callbacks.add(callback)
     }
 

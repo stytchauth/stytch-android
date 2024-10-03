@@ -213,6 +213,9 @@ internal class B2BSessionStorage(
     private val _organizationFlow = MutableStateFlow(organization)
     val organizationFlow = _organizationFlow.asStateFlow()
 
+    private val _lastValidatedAtFlow = MutableStateFlow(lastValidatedAt)
+    val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
+
     /**
      * @throws Exception if failed to save data
      */

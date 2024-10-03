@@ -2,9 +2,11 @@ package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -13,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
@@ -26,20 +28,15 @@ internal class SessionsImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
-    private val callbacks = mutableListOf<(StytchSession) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObject<SessionData>) -> Unit>()
 
-    private fun stytchSessionMapper(session: SessionData?): StytchSession =
-        session?.let {
-            StytchSession.Available(
-                lastValidatedAt = sessionStorage.lastValidatedAt,
-                sessionData = it,
+    override suspend fun onChange(): StateFlow<StytchObject<SessionData>> =
+        combine(sessionStorage.sessionFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<SessionData>(sessionStorage.session, sessionStorage.lastValidatedAt),
             )
-        } ?: StytchSession.Unavailable
-
-    override suspend fun onChange(): StateFlow<StytchSession> =
-        sessionStorage.sessionFlow
-            .map { stytchSessionMapper(it) }
-            .stateIn(externalScope, SharingStarted.Eagerly, stytchSessionMapper(sessionStorage.session))
 
     init {
         externalScope.launch {
@@ -51,7 +48,7 @@ internal class SessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (StytchSession) -> Unit) {
+    override fun onChange(callback: (StytchObject<SessionData>) -> Unit) {
         callbacks.add(callback)
     }
 

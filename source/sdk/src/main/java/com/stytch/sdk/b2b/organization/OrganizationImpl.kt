@@ -15,11 +15,14 @@ import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObject
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
@@ -33,20 +36,15 @@ internal class OrganizationImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Organization,
 ) : Organization {
-    private val callbacks = mutableListOf<(StytchOrganization) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObject<OrganizationData>) -> Unit>()
 
-    private fun stytchOrganizationMapper(organization: OrganizationData?): StytchOrganization =
-        organization?.let {
-            StytchOrganization.Available(
-                lastValidatedAt = sessionStorage.lastValidatedAt,
-                organizationData = organization,
+    override suspend fun onChange(): StateFlow<StytchObject<OrganizationData>> =
+        combine(sessionStorage.organizationFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<OrganizationData>(sessionStorage.organization, sessionStorage.lastValidatedAt),
             )
-        } ?: StytchOrganization.Unavailable
-
-    override suspend fun onChange(): StateFlow<StytchOrganization> =
-        sessionStorage.organizationFlow
-            .map { stytchOrganizationMapper(it) }
-            .stateIn(externalScope, SharingStarted.Eagerly, stytchOrganizationMapper(sessionStorage.organization))
 
     init {
         externalScope.launch {
@@ -58,7 +56,7 @@ internal class OrganizationImpl(
         }
     }
 
-    override fun onChange(callback: (StytchOrganization) -> Unit) {
+    override fun onChange(callback: (StytchObject<OrganizationData>) -> Unit) {
         callbacks.add(callback)
     }
 
