@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.sessions
 
+import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_DATA
@@ -7,6 +8,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.PREFERENCES_NAME_USER_DATA
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
@@ -70,7 +72,13 @@ internal class ConsumerSessionStorage(
             }
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
-                val sessionData = moshiSessionDataAdapter.fromJson(it)
+                val sessionData =
+                    try {
+                        moshiSessionDataAdapter.fromJson(it)
+                    } catch (e: JsonDataException) {
+                        StytchLog.e(e.message ?: "Error parsing persisted SessionData")
+                        null
+                    }
                 val expirationDate = sessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
@@ -100,7 +108,12 @@ internal class ConsumerSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_USER_DATA)
             }
             return stringValue?.let {
-                moshiUserDataAdapter.fromJson(it)
+                try {
+                    moshiUserDataAdapter.fromJson(it)
+                } catch (e: JsonDataException) {
+                    StytchLog.e(e.message ?: "Error parsing persisted UserData")
+                    null
+                }
             }
         }
         internal set(value) {

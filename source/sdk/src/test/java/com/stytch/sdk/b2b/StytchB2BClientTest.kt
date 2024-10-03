@@ -95,7 +95,7 @@ internal class StytchB2BClientTest {
         MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.getClient(any(), any()) } returns Result.success(mockk(relaxed = true))
         every { StorageHelper.initialize(any()) } just runs
-        every { StorageHelper.loadValue(any()) } returns ""
+        every { StorageHelper.loadValue(any()) } returns "{}"
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())

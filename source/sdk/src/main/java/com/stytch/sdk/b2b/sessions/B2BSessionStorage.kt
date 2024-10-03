@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import com.stytch.sdk.b2b.network.models.B2BSessionData
@@ -15,6 +16,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_ORGANIZATION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.utils.getDateOrMin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,7 +116,13 @@ internal class B2BSessionStorage(
             }
             return stringValue?.let {
                 // convert it back to a data class, check the expiration date, expire it if expired
-                val memberSessionData = moshiB2BSessionDataAdapter.fromJson(it)
+                val memberSessionData =
+                    try {
+                        moshiB2BSessionDataAdapter.fromJson(it)
+                    } catch (e: JsonDataException) {
+                        StytchLog.e(e.message ?: "Error parsing persisted B2BSessionData")
+                        null
+                    }
                 val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
                 val now = Date()
                 if (expirationDate.before(now)) {
@@ -144,7 +152,12 @@ internal class B2BSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_MEMBER_DATA)
             }
             return stringValue?.let {
-                moshiMemberDataAdapter.fromJson(it)
+                try {
+                    moshiMemberDataAdapter.fromJson(it)
+                } catch (e: JsonDataException) {
+                    StytchLog.e(e.message ?: "Error parsing persisted MemberData")
+                    null
+                }
             }
         }
         internal set(value) {
@@ -167,7 +180,12 @@ internal class B2BSessionStorage(
                 stringValue = storageHelper.loadValue(PREFERENCES_NAME_ORGANIZATION_DATA)
             }
             return stringValue?.let {
-                moshiOrganizationDataAdapter.fromJson(it)
+                try {
+                    moshiOrganizationDataAdapter.fromJson(it)
+                } catch (e: JsonDataException) {
+                    StytchLog.e(e.message ?: "Error parsing persisted OrganizationData")
+                    null
+                }
             }
         }
         internal set(value) {
