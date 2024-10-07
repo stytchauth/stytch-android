@@ -30,6 +30,9 @@ internal class OAuthImpl(
 ) : OAuth {
     override val google: OAuth.Provider = ProviderImpl("google")
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
+    override val hubspot: OAuth.Provider = ProviderImpl("hubspot")
+    override val slack: OAuth.Provider = ProviderImpl("slack")
+    override val github: OAuth.Provider = ProviderImpl("github")
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
     override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse {
