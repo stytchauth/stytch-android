@@ -134,6 +134,21 @@
               </div>
             </div>
           </div>
+<a data-name="-1482658259%2FFunctions%2F-1093964584" anchor-label="createConnectionCompletable" id="-1482658259%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-connection-completable.html"><span>create</span><wbr><span>Connection</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1482658259%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="create-connection-completable.html"><span class="token function">createConnectionCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-create-connection-parameters/index.html">SCIM.CreateConnectionParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-create-connection-response/index.html">SCIMCreateConnectionResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Creates a new SCIM connection. This method wraps the {@link https://stytch.com/docs/b2b/api/create-scim-connection create-connection} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-617993525%2FFunctions%2F-1093964584" anchor-label="deleteConnection" id="-617993525%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -149,17 +164,47 @@
               </div>
             </div>
           </div>
-<a data-name="725717324%2FFunctions%2F-1093964584" anchor-label="getConnection" id="725717324%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+<a data-name="-657814124%2FFunctions%2F-1093964584" anchor-label="deleteConnectionCompletable" id="-657814124%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="get-connection.html"><span>get</span><wbr><span><span>Connection</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="725717324%2FFunctions%2F-1093964584"></span>
+                  <div><a href="delete-connection-completable.html"><span>delete</span><wbr><span>Connection</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-657814124%2FFunctions%2F-1093964584"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="get-connection.html"><span class="token function">getConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-connection.html"><span class="token function">getConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the SCIM connection for an organization. This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection get-connection} endpoint. The caller must have permission to view SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="delete-connection-completable.html"><span class="token function">deleteConnectionCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-delete-connection-response/index.html">SCIMDeleteConnectionResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Deletes an existing SCIM connection. This method wraps the {@link https://stytch.com/docs/b2b/api/delete-scim-connection delete-connection} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="453809893%2FFunctions%2F-1093964584" anchor-label="getConnection" id="453809893%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-connection.html"><span>get</span><wbr><span><span>Connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="453809893%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="get-connection.html"><span class="token function">getConnection</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-connection.html"><span class="token function">getConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the SCIM connection for an organization. This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection get-connection} endpoint. The caller must have permission to view SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1129124613%2FFunctions%2F-1093964584" anchor-label="getConnectionCompletable" id="-1129124613%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-connection-completable.html"><span>get</span><wbr><span>Connection</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1129124613%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-connection-completable.html"><span class="token function">getConnectionCompletable</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-response/index.html">SCIMGetConnectionResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets the SCIM connection for an organization. This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection get-connection} endpoint. The caller must have permission to view SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -179,6 +224,21 @@
               </div>
             </div>
           </div>
+<a data-name="-1492142515%2FFunctions%2F-1093964584" anchor-label="getConnectionGroupsCompletable" id="-1492142515%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-connection-groups-completable.html"><span>get</span><wbr><span>Connection</span><wbr><span>Groups</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1492142515%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-connection-groups-completable.html"><span class="token function">getConnectionGroupsCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-get-connection-groups-parameters/index.html">SCIM.GetConnectionGroupsParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-get-connection-groups-response/index.html">SCIMGetConnectionGroupsResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Gets all groups associated with an organization's SCIM connection. This method wraps the {@link https://stytch.com/docs/b2b/api/get-scim-connection-groups get-connection-groups} endpoint. The caller must have permission to view SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="1523856919%2FFunctions%2F-1093964584" anchor-label="rotateCancel" id="1523856919%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -190,6 +250,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="rotate-cancel.html"><span class="token function">rotateCancel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-rotate-cancel-response/index.html">SCIMRotateCancelResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="rotate-cancel.html"><span class="token function">rotateCancel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-rotate-cancel-response/index.html">SCIMRotateCancelResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Cancels the SCIM bearer token rotate, removing the new bearer token issued. This method wraps the {@link https://stytch.com/docs/b2b/api/scim-rotate-token-cancel cancel-rotation} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-507709880%2FFunctions%2F-1093964584" anchor-label="rotateCancelCompletable" id="-507709880%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rotate-cancel-completable.html"><span>rotate</span><wbr><span>Cancel</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-507709880%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="rotate-cancel-completable.html"><span class="token function">rotateCancelCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-rotate-cancel-response/index.html">SCIMRotateCancelResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Cancels the SCIM bearer token rotate, removing the new bearer token issued. This method wraps the {@link https://stytch.com/docs/b2b/api/scim-rotate-token-cancel cancel-rotation} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -209,6 +284,21 @@
               </div>
             </div>
           </div>
+<a data-name="294095913%2FFunctions%2F-1093964584" anchor-label="rotateCompleteCompletable" id="294095913%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rotate-complete-completable.html"><span>rotate</span><wbr><span>Complete</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="294095913%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="rotate-complete-completable.html"><span class="token function">rotateCompleteCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-rotate-complete-response/index.html">SCIMRotateCompleteResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Completes the SCIM bearer token rotate, removing the old bearer token from operation. This method wraps the {@link https://stytch.com/docs/b2b/api/scim-rotate-token-complete complete-rotation} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-1327051367%2FFunctions%2F-1093964584" anchor-label="rotateStart" id="-1327051367%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -224,6 +314,21 @@
               </div>
             </div>
           </div>
+<a data-name="860127062%2FFunctions%2F-1093964584" anchor-label="rotateStartCompletable" id="860127062%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="rotate-start-completable.html"><span>rotate</span><wbr><span>Start</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="860127062%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="rotate-start-completable.html"><span class="token function">rotateStartCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">connectionId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-rotate-start-response/index.html">SCIMRotateStartResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Starts the SCIM bearer token rotation process. This method wraps the {@link https://stytch.com/docs/b2b/api/scim-rotate-token-start start-rotation} endpoint. The caller must have permission to modify SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 <a data-name="-511766967%2FFunctions%2F-1093964584" anchor-label="updateConnection" id="-511766967%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
@@ -235,6 +340,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="update-connection.html"><span class="token function">updateConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-update-connection-parameters/index.html">SCIM.UpdateConnectionParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-update-connection-response/index.html">SCIMUpdateConnectionResponse</a></div><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="update-connection.html"><span class="token function">updateConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-update-connection-parameters/index.html">SCIM.UpdateConnectionParameters</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-update-connection-response/index.html">SCIMUpdateConnectionResponse</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Updates an existing SCIM connection. This method wraps the {@link https://stytch.com/docs/b2b/api/update-scim-connection update-connection} endpoint. If attempting to modify the <code class="lang-kotlin">scim_group_implicit_role_assignments</code> the caller must have the <code class="lang-kotlin">update.settings.implicit-roles</code> permission on the <code class="lang-kotlin">stytch.organization</code> resource. For all other fields, the caller must have the <code class="lang-kotlin">update</code> permission on the <code class="lang-kotlin">stytch.scim</code> resource. SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1524692115%2FFunctions%2F-1093964584" anchor-label="updateConnectionCompletable" id="1524692115%2FFunctions%2F-1093964584" data-filterable-set=":source:sdk:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":source:sdk:dokkaHtmlPartial/release" data-filterable-set=":source:sdk:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update-connection-completable.html"><span>update</span><wbr><span>Connection</span><wbr><span><span>Completable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1524692115%2FFunctions%2F-1093964584"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":source:sdk:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="update-connection-completable.html"><span class="token function">updateConnectionCompletable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parameters<span class="token operator">: </span><a href="-update-connection-parameters/index.html">SCIM.UpdateConnectionParameters</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/concurrent/CompletableFuture.html">CompletableFuture</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.stytch.sdk.b2b/-s-c-i-m-update-connection-response/index.html">SCIMUpdateConnectionResponse</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Updates an existing SCIM connection. This method wraps the {@link https://stytch.com/docs/b2b/api/update-scim-connection update-connection} endpoint. If attempting to modify the <code class="lang-kotlin">scim_group_implicit_role_assignments</code> the caller must have the <code class="lang-kotlin">update.settings.implicit-roles</code> permission on the <code class="lang-kotlin">stytch.organization</code> resource. For all other fields, the caller must have the <code class="lang-kotlin">update</code> permission on the <code class="lang-kotlin">stytch.scim</code> resource. SCIM via the project's RBAC policy &amp; their role assignments.</p></div></div></div>
                 </div>
               </div>
             </div>
