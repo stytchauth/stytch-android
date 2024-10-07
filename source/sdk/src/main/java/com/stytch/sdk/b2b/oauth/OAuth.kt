@@ -146,6 +146,21 @@ public interface OAuth {
     public val microsoft: Provider
 
     /**
+     * Exposes an instance of the HubSpot OAuth implementation
+     */
+    public val hubspot: Provider
+
+    /**
+     * Exposes an instance of the Slack OAuth implementation
+     */
+    public val slack: Provider
+
+    /**
+     * Exposes an instance of the GitHub OAuth implementation
+     */
+    public val github: Provider
+
+    /**
      * Exposes an instance of the Discovery OAuth implementation
      */
     public val discovery: Discovery

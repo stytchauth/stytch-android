@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.stytch.sdk.common.network.models.AuthenticationFactor
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.common.network.models.IBasicData
 import kotlinx.parcelize.Parcelize
@@ -134,7 +133,7 @@ public data class B2BSessionData(
     @Json(name = "expires_at")
     val expiresAt: String,
     @Json(name = "authentication_factors")
-    val authenticationFactors: List<AuthenticationFactor>,
+    val authenticationFactors: List<B2BAuthenticationFactor>,
     @Json(name = "custom_claims")
     val customClaims: @RawValue Map<String, Any?>?,
     val roles: List<String>,
@@ -1206,3 +1205,61 @@ public data class B2BSCIMRotateCancelResponseData(
     val connection: SCIMConnection,
 ) : IBasicData,
     Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BAuthenticationFactor(
+    @Json(name = "delivery_method")
+    val deliveryMethod: String,
+    val type: String,
+    @Json(name = "last_authenticated_at")
+    val lastAuthenticatedAt: String,
+    @Json(name = "email_factor")
+    val emailFactor: EmailFactor?,
+    @Json(name = "phone_number_factor")
+    val phoneFactor: PhoneFactor?,
+    @Json(name = "google_oauth_factor")
+    val googleOAuthFactor: OAuthFactor?,
+    @Json(name = "microsoft_oauth_factor")
+    val microsoftOAuthFactor: OAuthFactor?,
+    @Json(name = "github_oauth_factor")
+    val githubOAuthFactor: OAuthFactor?,
+    @Json(name = "hubspot_oauth_factor")
+    val hubspotOAuthFactor: OAuthFactor?,
+    @Json(name = "slack_oauth_factor")
+    val slackOAuthFactor: OAuthFactor?,
+) : Parcelable {
+    @Keep
+    @JsonClass(generateAdapter = true)
+    @Parcelize
+    public data class EmailFactor(
+        @Json(name = "email_id")
+        val emailId: String,
+        @Json(name = "email_address")
+        val emailAddress: String,
+    ) : Parcelable
+
+    @Keep
+    @JsonClass(generateAdapter = true)
+    @Parcelize
+    public data class PhoneFactor(
+        @Json(name = "phone_id")
+        val phoneId: String,
+        @Json(name = "phone_number")
+        val phoneNumber: String,
+    ) : Parcelable
+
+    @Keep
+    @JsonClass(generateAdapter = true)
+    @Parcelize
+    public data class OAuthFactor(
+        val id: String,
+        @Json(name = "email_id")
+        val emailId: String? = null,
+        @Json(name = "provider_subject")
+        val providerSubject: String,
+        @Json(name = "provider_tenant_id")
+        val providerTenantId: String? = null,
+    ) : Parcelable
+}
