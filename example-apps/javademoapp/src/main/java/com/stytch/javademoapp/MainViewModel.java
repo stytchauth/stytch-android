@@ -3,6 +3,7 @@ package com.stytch.javademoapp;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.stytch.sdk.common.StytchObjectInfo;
 import com.stytch.sdk.common.StytchResult;
 import com.stytch.sdk.common.network.models.BasicData;
 import com.stytch.sdk.consumer.StytchClient;
@@ -36,7 +37,11 @@ public class MainViewModel extends ViewModel {
         return Unit.INSTANCE;
     }
 
-    private Unit handleUserChange(UserData userData) {
+    private Unit handleUserChange(StytchObjectInfo<UserData> stytchUser) {
+        UserData userData = null;
+        if (stytchUser instanceof StytchObjectInfo.Available) {
+            userData = ((StytchObjectInfo.Available<UserData>) stytchUser).getValue();
+        }
         StytchState newState = new StytchState(
             true,
             StytchClient.getSessions().getSync(),
@@ -46,7 +51,11 @@ public class MainViewModel extends ViewModel {
         return Unit.INSTANCE;
     }
 
-    private Unit handleSessionChange(SessionData sessionData) {
+    private Unit handleSessionChange(StytchObjectInfo<SessionData> stytchSession) {
+        SessionData sessionData = null;
+        if (stytchSession instanceof StytchObjectInfo.Available) {
+            sessionData = ((StytchObjectInfo.Available<SessionData>) stytchSession).getValue();
+        }
         StytchState newState = new StytchState(
             true,
             sessionData,

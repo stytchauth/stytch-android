@@ -1,5 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
+import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
@@ -31,6 +33,10 @@ internal class SessionStorageTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
+        every { mockStorageHelper.loadValue(any()) } returns "{}"
+        every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.saveLong(any(), any()) } just runs
+        every { mockStorageHelper.getLong(any()) } returns 0
         storage = ConsumerSessionStorage(mockStorageHelper, TestScope())
     }
 
@@ -79,7 +85,8 @@ internal class SessionStorageTest {
             sessionJwt = "mySessionJwt",
             session = mockedSessionData,
         )
-        assert(storage.session == mockedSessionData)
+        verify { mockStorageHelper.saveValue(PREFERENCES_NAME_SESSION_DATA, any()) }
+        verify { mockStorageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, any()) }
     }
 
     @Test

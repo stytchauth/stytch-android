@@ -150,8 +150,12 @@ public object StytchB2BClient {
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
-                    StytchB2BApi.Sessions.authenticate(null).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
+                    sessionStorage.memberSession?.let {
+                        // if we have a session, it's expiration date has already been validated, now attempt
+                        // to validate it with the Stytch servers
+                        StytchB2BApi.Sessions.authenticate(null).apply {
+                            launchSessionUpdater(dispatchers, sessionStorage)
+                        }
                     }
                 }
                 _isInitialized.value = true

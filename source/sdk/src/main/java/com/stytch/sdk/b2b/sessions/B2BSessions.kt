@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.network.models.Locale
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +18,13 @@ public interface B2BSessions {
     /**
      * Exposes a flow of session data
      */
-    public val onChange: StateFlow<B2BSessionData?>
+    public val onChange: StateFlow<StytchObjectInfo<B2BSessionData>>
 
     /**
      * Assign a callback that will be called when the session data changes
      */
 
-    public fun onChange(callback: (B2BSessionData?) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<B2BSessionData>) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data

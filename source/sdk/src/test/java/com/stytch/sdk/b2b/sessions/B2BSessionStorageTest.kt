@@ -1,6 +1,8 @@
 package com.stytch.sdk.b2b.sessions
 
 import com.stytch.sdk.b2b.network.models.B2BSessionData
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
+import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_SESSION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
@@ -31,6 +33,10 @@ internal class B2BSessionStorageTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
+        every { mockStorageHelper.loadValue(any()) } returns "{}"
+        every { mockStorageHelper.saveValue(any(), any()) } just runs
+        every { mockStorageHelper.saveLong(any(), any()) } just runs
+        every { mockStorageHelper.getLong(any()) } returns 0
         storage = B2BSessionStorage(mockStorageHelper, TestScope())
     }
 
@@ -81,7 +87,8 @@ internal class B2BSessionStorageTest {
             sessionJwt = "mySessionJwt",
             session = mockedSessionData,
         )
-        assert(storage.memberSession == mockedSessionData)
+        verify { mockStorageHelper.saveValue(PREFERENCES_NAME_MEMBER_SESSION_DATA, any()) }
+        verify { mockStorageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, any()) }
     }
 
     @Test

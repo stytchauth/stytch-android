@@ -25,8 +25,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -79,7 +79,7 @@ internal class GoogleOneTapImplTest {
 
     @Test
     fun `GoogleOneTapImpl start returns error if nonce fails to generate`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Testing")
             val result = impl.start(startParameters)
             assert(result is StytchResult.Error)
@@ -96,7 +96,7 @@ internal class GoogleOneTapImplTest {
 
     @Test
     fun `GoogleOneTapImpl start returns error if returned an unexpected credential type`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockGoogleCredentialManagerProvider.getSignInWithGoogleCredential(
                     any(),
@@ -119,7 +119,7 @@ internal class GoogleOneTapImplTest {
 
     @Test
     fun `GoogleOneTapImpl start returns error if create credential fails`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockGoogleCredentialManagerProvider.getSignInWithGoogleCredential(
                     any(),
@@ -146,7 +146,7 @@ internal class GoogleOneTapImplTest {
 
     @Test
     fun `GoogleOneTapImpl delegates to api if everything is successful`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockGoogleCredentialManagerProvider.getSignInWithGoogleCredential(
                     any(),

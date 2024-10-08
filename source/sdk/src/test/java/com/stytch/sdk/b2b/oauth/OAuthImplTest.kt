@@ -27,12 +27,13 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class OAuthImplTest {
     @MockK
@@ -61,6 +62,7 @@ internal class OAuthImplTest {
         mockkObject(StytchB2BApi)
         every { StytchB2BApi.isInitialized } returns true
         every { mockSessionStorage.intermediateSessionToken } returns null
+        every { mockSessionStorage.lastValidatedAt } returns Date(0)
         StytchB2BClient.deviceInfo = mockk(relaxed = true)
         StytchB2BClient.appSessionId = "app-session-id"
         impl =
@@ -81,7 +83,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if PKCE is missing`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -90,7 +92,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if api call fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Error(
@@ -105,7 +107,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns success if api call succeeds`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Success(

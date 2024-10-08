@@ -1,7 +1,9 @@
 package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
@@ -11,7 +13,10 @@ import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,9 +28,15 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    private val callbacks = mutableListOf<(UserData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<UserData>) -> Unit>()
 
-    override val onChange: StateFlow<UserData?> = sessionStorage.userFlow
+    override val onChange: StateFlow<StytchObjectInfo<UserData>> =
+        combine(sessionStorage.userFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<UserData>(sessionStorage.user, sessionStorage.lastValidatedAt),
+            )
 
     init {
         externalScope.launch {
@@ -37,7 +48,7 @@ internal class UserManagementImpl(
         }
     }
 
-    override fun onChange(callback: (UserData?) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<UserData>) -> Unit) {
         callbacks.add(callback)
     }
 

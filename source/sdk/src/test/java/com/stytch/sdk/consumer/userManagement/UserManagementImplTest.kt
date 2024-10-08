@@ -27,12 +27,13 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class UserManagementImplTest {
     @MockK
@@ -58,6 +59,9 @@ internal class UserManagementImplTest {
         every { mockSessionStorage.user = any() } just runs
         every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAtFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.user } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAt } returns Date(0L)
         impl =
             UserManagementImpl(
                 externalScope = TestScope(),
@@ -75,7 +79,7 @@ internal class UserManagementImplTest {
 
     @Test
     fun `UserManagementImpl getUser delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.getUser() } returns StytchResult.Success(mockk(relaxed = true))
             val response = impl.getUser()
             assert(response is StytchResult.Success)
@@ -110,7 +114,7 @@ internal class UserManagementImplTest {
 
     @Test
     fun `UserManagementImpl deleteFactor delegates to api for all supported factors`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.deleteEmailById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deletePhoneNumberById(any()) } returns StytchResult.Success(mockk(relaxed = true))
             coEvery {
@@ -142,7 +146,7 @@ internal class UserManagementImplTest {
 
     @Test
     fun `UserManagementImpl updateUser delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.updateUser(any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
             val response = impl.update(mockk(relaxed = true))
             assert(response is StytchResult.Success)
@@ -159,7 +163,7 @@ internal class UserManagementImplTest {
 
     @Test
     fun `UserManagementImpl searchUsers delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.searchUsers(any()) } returns StytchResult.Success(mockk(relaxed = true))
             val response = impl.search(mockk(relaxed = true))
             assert(response is StytchResult.Success)
