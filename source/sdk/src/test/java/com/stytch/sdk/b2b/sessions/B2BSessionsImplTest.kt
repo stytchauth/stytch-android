@@ -35,6 +35,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class B2BSessionsImplTest {
     @MockK
@@ -63,6 +64,9 @@ internal class B2BSessionsImplTest {
         every { mockSessionStorage.memberFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.organizationFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAtFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.memberSession } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAt } returns Date(0L)
         impl =
             B2BSessionsImpl(
                 externalScope = TestScope(),

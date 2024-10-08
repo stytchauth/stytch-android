@@ -33,6 +33,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class UserManagementImplTest {
     @MockK
@@ -58,6 +59,9 @@ internal class UserManagementImplTest {
         every { mockSessionStorage.user = any() } just runs
         every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAtFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.user } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAt } returns Date(0L)
         impl =
             UserManagementImpl(
                 externalScope = TestScope(),

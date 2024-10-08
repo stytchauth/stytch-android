@@ -32,6 +32,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class SessionsImplTest {
     @MockK
@@ -58,6 +59,9 @@ internal class SessionsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAtFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.session } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAt } returns Date(0L)
         impl =
             SessionsImpl(
                 externalScope = TestScope(),
