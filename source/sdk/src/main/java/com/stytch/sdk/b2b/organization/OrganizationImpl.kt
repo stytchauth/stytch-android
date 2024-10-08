@@ -15,7 +15,7 @@ import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
@@ -36,9 +35,9 @@ internal class OrganizationImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Organization,
 ) : Organization {
-    private val callbacks = mutableListOf<(StytchObject<OrganizationData>) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<OrganizationData>) -> Unit>()
 
-    override suspend fun onChange(): StateFlow<StytchObject<OrganizationData>> =
+    override val onChange: StateFlow<StytchObjectInfo<OrganizationData>> =
         combine(sessionStorage.organizationFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
             .stateIn(
                 externalScope,
@@ -48,7 +47,7 @@ internal class OrganizationImpl(
 
     init {
         externalScope.launch {
-            onChange().collect {
+            onChange.collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -56,7 +55,7 @@ internal class OrganizationImpl(
         }
     }
 
-    override fun onChange(callback: (StytchObject<OrganizationData>) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<OrganizationData>) -> Unit) {
         callbacks.add(callback)
     }
 

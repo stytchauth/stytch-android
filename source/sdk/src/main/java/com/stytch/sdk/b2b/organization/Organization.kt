@@ -21,7 +21,7 @@ import com.stytch.sdk.b2b.network.models.MfaPolicy
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.CompletableFuture
 
@@ -33,13 +33,13 @@ public interface Organization {
     /**
      * Exposes a flow of organization data
      */
-    public suspend fun onChange(): StateFlow<StytchObject<OrganizationData>>
+    public val onChange: StateFlow<StytchObjectInfo<OrganizationData>>
 
     /**
      * Assign a callback that will be called when the organization data changes
      */
 
-    public fun onChange(callback: (StytchObject<OrganizationData>) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<OrganizationData>) -> Unit)
 
     /**
      * Wraps Stytch’s organization/me endpoint.

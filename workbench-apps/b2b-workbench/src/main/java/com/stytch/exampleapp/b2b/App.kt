@@ -18,17 +18,17 @@ class App : Application() {
             publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
         )
         CoroutineScope(Dispatchers.Main).launch {
-            StytchB2BClient.sessions.onChange().collect {
+            StytchB2BClient.sessions.onChange.collect {
                 println("Collected session data: $it")
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            StytchB2BClient.member.onChange().collect {
+            StytchB2BClient.member.onChange.collect {
                 println("Collected member data: $it")
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            StytchB2BClient.organization.onChange().collect {
+            StytchB2BClient.organization.onChange.collect {
                 println("Collected organization data: $it")
             }
         }

@@ -2,22 +2,22 @@ package com.stytch.sdk.common
 
 import java.util.Date
 
-public sealed interface StytchObject<out T> {
-    public data object Unavailable : StytchObject<Nothing>
+public sealed interface StytchObjectInfo<out T> {
+    public data object Unavailable : StytchObjectInfo<Nothing>
 
     public data class Available<out T>(
         val lastValidatedAt: Date,
         val value: T,
-    ) : StytchObject<T>
+    ) : StytchObjectInfo<T>
 }
 
 internal inline fun <reified T> stytchObjectMapper(
     value: T?,
     lastValidatedAt: Date,
-): StytchObject<T> =
+): StytchObjectInfo<T> =
     value?.let {
-        StytchObject.Available(
+        StytchObjectInfo.Available(
             lastValidatedAt = lastValidatedAt,
             value = value,
         )
-    } ?: StytchObject.Unavailable
+    } ?: StytchObjectInfo.Unavailable

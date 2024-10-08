@@ -7,7 +7,7 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
@@ -29,9 +29,9 @@ internal class B2BSessionsImpl internal constructor(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Sessions,
 ) : B2BSessions {
-    private val callbacks = mutableListOf<(StytchObject<B2BSessionData>) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<B2BSessionData>) -> Unit>()
 
-    override suspend fun onChange(): StateFlow<StytchObject<B2BSessionData>> =
+    override val onChange: StateFlow<StytchObjectInfo<B2BSessionData>> =
         combine(sessionStorage.sessionFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
             .stateIn(
                 externalScope,
@@ -41,7 +41,7 @@ internal class B2BSessionsImpl internal constructor(
 
     init {
         externalScope.launch {
-            onChange().collect {
+            onChange.collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -49,7 +49,7 @@ internal class B2BSessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (StytchObject<B2BSessionData>) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<B2BSessionData>) -> Unit) {
         callbacks.add(callback)
     }
 

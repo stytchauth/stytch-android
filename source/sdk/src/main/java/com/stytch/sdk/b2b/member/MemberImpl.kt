@@ -7,7 +7,7 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
@@ -27,9 +27,9 @@ internal class MemberImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Member,
 ) : Member {
-    private val callbacks = mutableListOf<(StytchObject<MemberData>) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<MemberData>) -> Unit>()
 
-    override suspend fun onChange(): StateFlow<StytchObject<MemberData>> =
+    override val onChange: StateFlow<StytchObjectInfo<MemberData>> =
         combine(sessionStorage.memberFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
             .stateIn(
                 externalScope,
@@ -39,7 +39,7 @@ internal class MemberImpl(
 
     init {
         externalScope.launch {
-            onChange().collect {
+            onChange.collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -47,7 +47,7 @@ internal class MemberImpl(
         }
     }
 
-    override fun onChange(callback: (StytchObject<MemberData>) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<MemberData>) -> Unit) {
         callbacks.add(callback)
     }
 

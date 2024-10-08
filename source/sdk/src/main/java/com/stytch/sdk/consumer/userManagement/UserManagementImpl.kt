@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.DeleteFactorResponse
@@ -28,9 +28,9 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    private val callbacks = mutableListOf<(StytchObject<UserData>) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<UserData>) -> Unit>()
 
-    override suspend fun onChange(): StateFlow<StytchObject<UserData>> =
+    override val onChange: StateFlow<StytchObjectInfo<UserData>> =
         combine(sessionStorage.userFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
             .stateIn(
                 externalScope,
@@ -40,7 +40,7 @@ internal class UserManagementImpl(
 
     init {
         externalScope.launch {
-            onChange().collect {
+            onChange.collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -48,7 +48,7 @@ internal class UserManagementImpl(
         }
     }
 
-    override fun onChange(callback: (StytchObject<UserData>) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<UserData>) -> Unit) {
         callbacks.add(callback)
     }
 

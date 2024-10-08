@@ -11,7 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.consumer.StytchClient
@@ -42,7 +42,7 @@ internal class AuthenticationActivity : ComponentActivity() {
                 details = mapOf("options" to uiConfig.productConfig),
             )
             StytchClient.user.onChange {
-                if (it is StytchObject.Available) {
+                if (it is StytchObjectInfo.Available) {
                     returnAuthenticationResult(StytchResult.Success(it.value))
                 }
             }

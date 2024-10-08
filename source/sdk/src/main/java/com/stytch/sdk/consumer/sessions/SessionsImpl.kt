@@ -2,7 +2,7 @@ package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
@@ -28,9 +28,9 @@ internal class SessionsImpl internal constructor(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.Sessions,
 ) : Sessions {
-    private val callbacks = mutableListOf<(StytchObject<SessionData>) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<SessionData>) -> Unit>()
 
-    override suspend fun onChange(): StateFlow<StytchObject<SessionData>> =
+    override val onChange: StateFlow<StytchObjectInfo<SessionData>> =
         combine(sessionStorage.sessionFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
             .stateIn(
                 externalScope,
@@ -40,7 +40,7 @@ internal class SessionsImpl internal constructor(
 
     init {
         externalScope.launch {
-            onChange().collect {
+            onChange.collect {
                 callbacks.forEach { callback ->
                     callback(it)
                 }
@@ -48,7 +48,7 @@ internal class SessionsImpl internal constructor(
         }
     }
 
-    override fun onChange(callback: (StytchObject<SessionData>) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<SessionData>) -> Unit) {
         callbacks.add(callback)
     }
 

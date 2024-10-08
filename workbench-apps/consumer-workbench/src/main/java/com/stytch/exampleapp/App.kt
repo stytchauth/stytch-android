@@ -20,12 +20,12 @@ class App : Application() {
             println("Stytch has been initialized and configured and is ready for use")
         }
         CoroutineScope(Dispatchers.Main).launch {
-            StytchClient.sessions.onChange().collect {
+            StytchClient.sessions.onChange.collect {
                 println("Collected session data: $it")
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            StytchClient.user.onChange().collect {
+            StytchClient.user.onChange.collect {
                 println("Collected user data: $it")
             }
         }

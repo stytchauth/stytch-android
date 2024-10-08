@@ -39,11 +39,11 @@ StytchClient.sessions.updateSession(
     sessionJwt="my-session-jwt"
 )
 ```
-Lastly, to listen for session or user state changes, you can either subscribe to the appropriate `onChange` flow, or provide a callback to the `onChange` method. These callbacks/flows will emit a `StytchObject<T>` result type when the underlying data changes. If the desired data exists, it will emit a `StytchObject<T>.Available` result, containing a `value` property (representing the desired data) and a `lastValidatedAt` property (representing the last time that the data was validated with Stytch's servers). If the data is not present, it will instead emit a `StytchObject.Unavailable` result.
+Lastly, to listen for session or user state changes, you can either subscribe to the appropriate `onChange` flow, or provide a callback to the `onChange` method. These callbacks/flows will emit a `StytchObjectInfo<T>` result type when the underlying data changes. If the desired data exists, it will emit a `StytchObjectInfo<T>.Available` result, containing a `value` property (representing the desired data) and a `lastValidatedAt` property (representing the last time that the data was validated with Stytch's servers). If the data is not present, it will instead emit a `StytchObject.Unavailable` result.
 ```kotlin
 viewModelScope.launch {
     StytchClient.sessions.onChange().collect {
-        // it: StytchObject<SessionData>
+        // it: StytchObjectInfo<SessionData>
         when(it) {
             is StytchObject.Available -> println("User has an active session")
             is StytchObject.Unavailable -> println("No active session")
@@ -52,7 +52,7 @@ viewModelScope.launch {
 }
 viewModelScope.launch {
     StytchClient.user.onChange().collect {
-        // it: StytchObject<UserData>
+        // it: StytchObjectInfo<UserData>
         when(it) {
             is StytchObject.Available -> println("User exists")
             is StytchObject.Unavailable -> println("There is no user")
@@ -62,14 +62,14 @@ viewModelScope.launch {
 ```
 ```kotlin
 StytchClient.sessions.onChange {
-    // it: StytchObject<SessionData>
+    // it: StytchObjectInfo<SessionData>
     when(it) {
         is StytchObject.Available -> println("User has an active session")
         is StytchObject.Unavailable -> println("No active session")
     }
 }
 StytchClient.user.onChange {
-    // it: StytchObject<UserData>
+    // it: StytchObjectInfo<UserData>
     when(it) {
         is StytchObject.Available -> println("User exists")
         is StytchObject.Unavailable -> println("There is no user")

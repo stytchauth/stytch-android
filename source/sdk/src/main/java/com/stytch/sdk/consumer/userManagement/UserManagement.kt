@@ -1,6 +1,6 @@
 package com.stytch.sdk.consumer.userManagement
 
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
@@ -18,13 +18,13 @@ public interface UserManagement {
     /**
      * Exposes a flow of user data
      */
-    public suspend fun onChange(): StateFlow<StytchObject<UserData>>
+    public val onChange: StateFlow<StytchObjectInfo<UserData>>
 
     /**
      * Assign a callback that will be called when the user data changes
      */
 
-    public fun onChange(callback: (StytchObject<UserData>) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<UserData>) -> Unit)
 
     /**
      * Fetches a user from the current session

@@ -3,7 +3,7 @@ package com.stytch.stytchexampleapp
 import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.common.StytchObject
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
@@ -25,17 +25,17 @@ class MainViewModel : ViewModel() {
             authenticationState =
                 combine(
                     StytchClient.isInitialized,
-                    StytchClient.user.onChange(),
-                    StytchClient.sessions.onChange(),
+                    StytchClient.user.onChange,
+                    StytchClient.sessions.onChange,
                 ) { isInitialized, stytchUser, stytchSession ->
                     val userData =
-                        if (stytchUser is StytchObject.Available) {
+                        if (stytchUser is StytchObjectInfo.Available) {
                             stytchUser.value
                         } else {
                             null
                         }
                     val sessionData =
-                        if (stytchSession is StytchObject.Available) {
+                        if (stytchSession is StytchObjectInfo.Available) {
                             stytchSession.value
                         } else {
                             null
