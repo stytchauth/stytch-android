@@ -106,6 +106,9 @@ internal class B2BSessionStorage(
         }
         private set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
+            externalScope.launch {
+                _lastValidatedAtFlow.emit(value)
+            }
         }
 
     var memberSession: B2BSessionData?
