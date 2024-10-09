@@ -100,6 +100,7 @@ internal class StytchClientTest {
         StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchClient.dfpProvider = mockk()
         StytchClient.pkcePairManager = mockPKCEPairManager
+        StytchClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -15,6 +15,7 @@ import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
@@ -77,7 +78,7 @@ import java.util.UUID
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
-    internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
+    internal lateinit var sessionStorage: ConsumerSessionStorage
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
     internal var bootstrapData: BootstrapData = BootstrapData()
@@ -122,6 +123,7 @@ public object StytchClient {
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
+            sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
             StytchApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =
@@ -242,7 +244,7 @@ public object StytchClient {
     }
 
     internal fun assertInitialized() {
-        if (!StytchApi.isInitialized) {
+        if (!StytchApi.isInitialized || !::sessionStorage.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchClient")
         }
     }
@@ -255,7 +257,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val magicLinks: MagicLinks =
+    public val magicLinks: MagicLinks by StytchLazyDelegate(::assertInitialized) {
         MagicLinksImpl(
             externalScope,
             dispatchers,
@@ -263,10 +265,7 @@ public object StytchClient {
             StytchApi.MagicLinks.Email,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [OTP] interface which provides methods for sending and authenticating
@@ -276,17 +275,14 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val otps: OTP =
+    public val otps: OTP by StytchLazyDelegate(::assertInitialized) {
         OTPImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.OTP,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating, creating, resetting,
@@ -296,7 +292,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passwords: Passwords =
+    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
         PasswordsImpl(
             externalScope,
             dispatchers,
@@ -304,10 +300,7 @@ public object StytchClient {
             StytchApi.Passwords,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Sessions] interface which provides methods for authenticating, updating, or revoking
@@ -317,17 +310,14 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val sessions: Sessions =
+    public val sessions: Sessions by StytchLazyDelegate(::assertInitialized) {
         SessionsImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.Sessions,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Biometrics] interface which provides methods for detecting biometric availability,
@@ -337,7 +327,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val biometrics: Biometrics =
+    public val biometrics: Biometrics by StytchLazyDelegate(::assertInitialized) {
         BiometricsImpl(
             externalScope,
             dispatchers,
@@ -348,10 +338,7 @@ public object StytchClient {
         ) { biometricRegistrationId ->
             user.deleteFactor(UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId))
         }
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [UserManagement] interface which provides methods for retrieving an authenticated
@@ -361,17 +348,14 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val user: UserManagement =
+    public val user: UserManagement by StytchLazyDelegate(::assertInitialized) {
         UserManagementImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.UserManagement,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [OAuth] interface which provides methods for authenticating a user via a native
@@ -381,7 +365,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val oauth: OAuth =
+    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
         OAuthImpl(
             externalScope,
             dispatchers,
@@ -389,10 +373,7 @@ public object StytchClient {
             StytchApi.OAuth,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Passkeys] interface which provides methods for registering and authenticating
@@ -402,17 +383,14 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passkeys: Passkeys =
+    public val passkeys: Passkeys by StytchLazyDelegate(::assertInitialized) {
         PasskeysImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.WebAuthn,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
@@ -422,11 +400,9 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val dfp: DFP
-        get() {
-            assertInitialized()
-            return DFPImpl(dfpProvider, dispatchers, externalScope)
-        }
+    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
+        DFPImpl(dfpProvider, dispatchers, externalScope)
+    }
 
     /**
      * Exposes an instance of the [CryptoWallet] interface which provides methods for authenticating with a crypto
@@ -436,17 +412,14 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val crypto: CryptoWallet =
+    public val crypto: CryptoWallet by StytchLazyDelegate(::assertInitialized) {
         CryptoWalletImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.Crypto,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [TOTP] interface which provides methods for creating, authenticating, and recovering
@@ -456,23 +429,18 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val totp: TOTP =
+    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
         TOTPImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.TOTP,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
-    internal val events: Events
-        get() {
-            assertInitialized()
-            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
-        }
+    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
+        EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
+    }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

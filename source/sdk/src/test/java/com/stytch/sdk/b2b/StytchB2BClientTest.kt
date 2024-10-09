@@ -101,6 +101,7 @@ internal class StytchB2BClientTest {
         StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
         StytchB2BClient.dfpProvider = mockk()
         StytchB2BClient.pkcePairManager = mockPKCEPairManager
+        StytchB2BClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
