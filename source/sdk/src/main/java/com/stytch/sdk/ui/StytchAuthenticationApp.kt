@@ -44,16 +44,6 @@ internal fun StytchAuthenticationApp(
         onInvalidConfig(StytchUIInvalidConfiguration(stringResource(id = R.string.eml_and_otp_error)))
         return
     }
-    if (
-        !productConfig.products.contains(StytchProduct.PASSWORDS) &&
-        // no passwords
-        !productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
-        // no EML
-        !productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // no Email OTP
-    ) {
-        onInvalidConfig(StytchUIInvalidConfiguration(stringResource(id = R.string.misconfigured_products_and_options)))
-        return
-    }
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Color(LocalStytchTheme.current.backgroundColor),

@@ -13,8 +13,4 @@ internal class StytchAuthenticationAppRobot(
     fun isEMLAndOTPError(error: StytchUIInvalidConfiguration) {
         assert(error.message == getString(R.string.eml_and_otp_error))
     }
-
-    fun isMisconfiguredError(error: StytchUIInvalidConfiguration) {
-        assert(error.message == getString(R.string.misconfigured_products_and_options))
-    }
 }
