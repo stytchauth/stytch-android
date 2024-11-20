@@ -20,6 +20,7 @@ class OTPViewModel : ViewModel() {
     var memberIdState by mutableStateOf(TextFieldValue(""))
     var phoneNumberState by mutableStateOf(TextFieldValue(""))
     var codeState by mutableStateOf(TextFieldValue(""))
+    var memberEmailState by mutableStateOf(TextFieldValue(""))
 
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
@@ -54,6 +55,58 @@ class OTPViewModel : ViewModel() {
                             code = codeState.text,
                             setMFAEnrollment = SetMFAEnrollment.ENROLL,
                             sessionDurationMinutes = 30,
+                        ),
+                    ).toFriendlyDisplay()
+        }
+    }
+
+    fun emailLoginOrCreate() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.otp.email
+                    .loginOrSignup(
+                        OTP.Email.LoginOrSignupParameters(
+                            organizationId = orgIdState.text,
+                            emailAddress = memberEmailState.text,
+                        ),
+                    ).toFriendlyDisplay()
+        }
+    }
+
+    fun emailAuthenticate() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.otp.email
+                    .authenticate(
+                        OTP.Email.AuthenticateParameters(
+                            code = codeState.text,
+                            organizationId = orgIdState.text,
+                            emailAddress = memberEmailState.text,
+                        ),
+                    ).toFriendlyDisplay()
+        }
+    }
+
+    fun emailDiscoverySend() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.otp.email.discovery
+                    .send(
+                        OTP.Email.Discovery.SendParameters(
+                            emailAddress = memberEmailState.text,
+                        ),
+                    ).toFriendlyDisplay()
+        }
+    }
+
+    fun emailDiscoveryAuthenticate() {
+        viewModelScope.launchAndToggleLoadingState {
+            _currentResponse.value =
+                StytchB2BClient.otp.email.discovery
+                    .authenticate(
+                        OTP.Email.Discovery.AuthenticateParameters(
+                            code = codeState.text,
+                            emailAddress = memberEmailState.text,
                         ),
                     ).toFriendlyDisplay()
         }

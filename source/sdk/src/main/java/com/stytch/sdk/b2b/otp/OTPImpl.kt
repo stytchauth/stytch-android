@@ -11,6 +11,7 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -183,7 +184,17 @@ internal class OTPImpl(
                             code = parameters.code,
                             emailAddress = parameters.emailAddress,
                         ).apply {
-                            launchSessionUpdater(dispatchers, sessionStorage)
+                            if (this is StytchResult.Success) {
+                                // This endpoint doesn't send back a full "Needs MFA" response, ONLY the bare minimum
+                                // so we have to do it manually since we can't use `launchSessionUpdater`
+                                sessionStorage.updateSession(
+                                    sessionToken = null,
+                                    sessionJwt = null,
+                                    session = null,
+                                    intermediateSessionToken = this.value.intermediateSessionToken,
+                                )
+                                sessionStorage.member = null
+                            }
                         }
                 }
 

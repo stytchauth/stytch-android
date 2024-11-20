@@ -1327,21 +1327,6 @@ public data class B2BDiscoveryOTPEmailAuthenticateResponseData(
     val statusCode: Int,
     @Json(name = "request_id")
     val requestId: String,
-    @Json(name = "member_session")
-    override val memberSession: B2BSessionData?,
-    @Json(name = "session_jwt")
-    override val sessionJwt: String,
-    @Json(name = "session_token")
-    override val sessionToken: String,
-    @Json(name = "member_id")
-    override val memberId: String,
-    override val member: MemberData,
-    override val organization: OrganizationData,
-    @Json(name = "member_authenticated")
-    override val memberAuthenticated: Boolean,
     @Json(name = "intermediate_session_token")
-    override val intermediateSessionToken: String?,
-    @Json(name = "mfa_required")
-    override val mfaRequired: MFARequired?,
-) : Parcelable,
-    IB2BAuthDataWithMFA
+    val intermediateSessionToken: String?,
+) : Parcelable
