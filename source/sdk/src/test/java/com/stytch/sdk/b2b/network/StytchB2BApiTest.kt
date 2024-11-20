@@ -873,7 +873,8 @@ internal class StytchB2BApiTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
+            fun mockApiCall(): StytchDataResponse<Boolean> =
+                throw StytchAPIError(errorType = "", message = "", statusCode = 400)
             val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }

@@ -734,7 +734,8 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
+            fun mockApiCall(): StytchDataResponse<Boolean> =
+                throw StytchAPIError(errorType = "", message = "", statusCode = 400)
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
