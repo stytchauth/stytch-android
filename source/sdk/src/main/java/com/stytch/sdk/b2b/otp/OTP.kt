@@ -157,15 +157,15 @@ public interface OTP {
             )
 
         /**
-         * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-         * @param parameters required to receive a SMS OTP
+         * Send a one-time passcode (OTP) to a user using email address
+         * @param parameters required to receive an email loginOrSignup OTP
          * @return [EmailOTPLoginOrSignupResponse]
          */
         public suspend fun loginOrSignup(parameters: LoginOrSignupParameters): EmailOTPLoginOrSignupResponse
 
         /**
-         * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-         * @param parameters required to receive a SMS OTP
+         * Send a one-time passcode (OTP) to a user using email address
+         * @param parameters required to receive an email loginOrSignup OTP
          * @param callback a callback that receives a [EmailOTPLoginOrSignupResponse]
          */
         public fun loginOrSignup(
@@ -174,8 +174,8 @@ public interface OTP {
         )
 
         /**
-         * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-         * @param parameters required to receive a SMS OTP
+         * Send a one-time passcode (OTP) to a user using email address
+         * @param parameters required to receive an email loginOrSignup OTP
          * @return [EmailOTPLoginOrSignupResponse]
          */
         public fun loginOrSignupCompletable(
@@ -183,7 +183,7 @@ public interface OTP {
         ): CompletableFuture<EmailOTPLoginOrSignupResponse>
 
         /**
-         * A data class wrapping the parameters needed to authenticate an SMS OTP
+         * A data class wrapping the parameters needed to authenticate an Email OTP
          * @property code The code to authenticate
          * @property organizationId The ID of the organization the member belongs to
          * @property emailAddress The email address of the member
@@ -204,15 +204,15 @@ public interface OTP {
             )
 
         /**
-         * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-         * @param parameters required to authenticate an SMS OTP
+         * Authenticate a one-time passcode (OTP) sent to a user via Email.
+         * @param parameters required to authenticate an Email OTP
          * @return [EmailOTPAuthenticateResponse]
          */
         public suspend fun authenticate(parameters: AuthenticateParameters): EmailOTPAuthenticateResponse
 
         /**
-         * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-         * @param parameters required to authenticate an SMS OTP
+         * Authenticate a one-time passcode (OTP) sent to a user via Email.
+         * @param parameters required to authenticate an Email OTP
          * @param callback a callback that receives a [EmailOTPAuthenticateResponse]
          */
         public fun authenticate(
@@ -221,8 +221,8 @@ public interface OTP {
         )
 
         /**
-         * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-         * @param parameters required to authenticate an SMS OTP
+         * Authenticate a one-time passcode (OTP) sent to a user via Email.
+         * @param parameters required to authenticate an Email OTP
          * @return [EmailOTPAuthenticateResponse]
          */
         public fun authenticateCompletable(
@@ -234,7 +234,7 @@ public interface OTP {
          */
         public interface Discovery {
             /**
-             * A data class wrapping the parameters needed to send an SMS OTP
+             * A data class wrapping the parameters needed to send an Email Discovery OTP
              * @property emailAddress The email address of the member
              * @property loginTemplateId Use a custom template for login emails. By default, it will use your default
              * email template. The template must be a template using our built-in customizations or a custom HTML email
@@ -253,15 +253,15 @@ public interface OTP {
                 )
 
             /**
-             * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-             * @param parameters required to receive a SMS OTP
+             * Send a one-time passcode (OTP) to a user using their email address.
+             * @param parameters required to receive a Email OTP
              * @return [EmailOTPDiscoverySendResponse]
              */
             public suspend fun send(parameters: SendParameters): EmailOTPDiscoverySendResponse
 
             /**
-             * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-             * @param parameters required to receive a SMS OTP
+             * Send a one-time passcode (OTP) to a user using their email address.
+             * @param parameters required to receive a Email OTP
              * @param callback a callback that receives a [EmailOTPDiscoverySendResponse]
              */
             public fun send(
@@ -270,14 +270,14 @@ public interface OTP {
             )
 
             /**
-             * Send a one-time passcode (OTP) to a user using their phone number via SMS.
-             * @param parameters required to receive a SMS OTP
+             * Send a one-time passcode (OTP) to a user using their email address.
+             * @param parameters required to receive a Email OTP
              * @return [EmailOTPDiscoverySendResponse]
              */
             public fun sendCompletable(parameters: SendParameters): CompletableFuture<EmailOTPDiscoverySendResponse>
 
             /**
-             * A data class wrapping the parameters needed to authenticate an SMS OTP
+             * A data class wrapping the parameters needed to authenticate an Email Discovery OTP
              * @property code The OTP to authenticate
              * @property emailAddress The email address of the member
              */
@@ -289,15 +289,15 @@ public interface OTP {
                 )
 
             /**
-             * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-             * @param parameters required to authenticate an SMS OTP
+             * Authenticate a one-time passcode (OTP) sent to a user via email.
+             * @param parameters required to authenticate an Email Discovery OTP
              * @return [EmailOTPDiscoveryAuthenticateResponse]
              */
             public suspend fun authenticate(parameters: AuthenticateParameters): EmailOTPDiscoveryAuthenticateResponse
 
             /**
-             * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-             * @param parameters required to authenticate an SMS OTP
+             * Authenticate a one-time passcode (OTP) sent to a user via email.
+             * @param parameters required to authenticate an Email Discovery OTP
              * @param callback a callback that receives a [EmailOTPDiscoveryAuthenticateResponse]
              */
             public fun authenticate(
@@ -306,8 +306,8 @@ public interface OTP {
             )
 
             /**
-             * Authenticate a one-time passcode (OTP) sent to a user via SMS.
-             * @param parameters required to authenticate an SMS OTP
+             * Authenticate a one-time passcode (OTP) sent to a user via email.
+             * @param parameters required to authenticate an Email Discovery OTP
              * @return [EmailOTPDiscoveryAuthenticateResponse]
              */
             public fun authenticateCompletable(
