@@ -265,6 +265,30 @@ internal interface StytchB2BApiService : ApiService {
     suspend fun authenticateSMSOTP(
         @Body request: B2BRequests.OTP.SMS.AuthenticateRequest,
     ): B2BResponses.OTP.SMS.AuthenticateResponse
+
+    @POST("b2b/otps/email/login_or_signup")
+    @DFPPAEnabled
+    suspend fun otpEmailLoginOrSignup(
+        @Body request: B2BRequests.OTP.Email.LoginOrSignupRequest,
+    ): B2BResponses.OTP.Email.LoginOrSignupResponse
+
+    @POST("b2b/otps/email/authenticate")
+    @DFPPAEnabled
+    suspend fun otpEmailAuthenticate(
+        @Body request: B2BRequests.OTP.Email.AuthenticateRequest,
+    ): B2BResponses.OTP.Email.AuthenticateResponse
+
+    @POST("b2b/otps/email/discovery/send")
+    @DFPPAEnabled
+    suspend fun otpEmailDiscoverySend(
+        @Body request: B2BRequests.OTP.Email.Discovery.SendRequest,
+    ): B2BResponses.OTP.Email.Discovery.SendResponse
+
+    @POST("b2b/otps/email/discovery/authenticate")
+    @DFPPAEnabled
+    suspend fun otpEmailDiscoveryAuthenticate(
+        @Body request: B2BRequests.OTP.Email.Discovery.AuthenticateRequest,
+    ): B2BResponses.OTP.Email.Discovery.AuthenticateResponse
     //endregion OTP
 
     //region TOTP

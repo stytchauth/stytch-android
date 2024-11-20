@@ -1,6 +1,10 @@
 package com.stytch.sdk.b2b.otp
 
 import com.stytch.sdk.b2b.BasicResponse
+import com.stytch.sdk.b2b.EmailOTPAuthenticateResponse
+import com.stytch.sdk.b2b.EmailOTPDiscoveryAuthenticateResponse
+import com.stytch.sdk.b2b.EmailOTPDiscoverySendResponse
+import com.stytch.sdk.b2b.EmailOTPLoginOrSignupResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -21,6 +25,7 @@ internal class OTPImpl(
     private val api: StytchB2BApi.OTP,
 ) : OTP {
     override val sms: OTP.SMS = SMSImpl()
+    override val email: OTP.Email = EmailImpl()
 
     private inner class SMSImpl : OTP.SMS {
         override suspend fun send(parameters: OTP.SMS.SendParameters): BasicResponse {
@@ -85,5 +90,110 @@ internal class OTPImpl(
                 .async {
                     authenticate(parameters)
                 }.asCompletableFuture()
+    }
+
+    private inner class EmailImpl : OTP.Email {
+        override val discovery: OTP.Email.Discovery = EmailDiscoveryImpl()
+
+        override suspend fun loginOrSignup(
+            parameters: OTP.Email.LoginOrSignupParameters,
+        ): EmailOTPLoginOrSignupResponse =
+            withContext(dispatchers.io) {
+                api.otpEmailLoginOrSignup(
+                    organizationId = parameters.organizationId,
+                    emailAddress = parameters.emailAddress,
+                    loginTemplateId = parameters.loginTemplateId,
+                    signupTemplateId = parameters.signupTemplateId,
+                    locale = parameters.locale,
+                )
+            }
+
+        override fun loginOrSignup(
+            parameters: OTP.Email.LoginOrSignupParameters,
+            callback: (EmailOTPLoginOrSignupResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(loginOrSignup(parameters))
+            }
+        }
+
+        override fun loginOrSignupCompletable(
+            parameters: OTP.Email.LoginOrSignupParameters,
+        ): CompletableFuture<EmailOTPLoginOrSignupResponse> =
+            externalScope.async { loginOrSignup(parameters) }.asCompletableFuture()
+
+        override suspend fun authenticate(parameters: OTP.Email.AuthenticateParameters): EmailOTPAuthenticateResponse =
+            withContext(dispatchers.io) {
+                api.otpEmailAuthenticate(
+                    organizationId = parameters.organizationId,
+                    emailAddress = parameters.emailAddress,
+                    locale = parameters.locale,
+                    code = parameters.code,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                )
+            }
+
+        override fun authenticate(
+            parameters: OTP.Email.AuthenticateParameters,
+            callback: (EmailOTPAuthenticateResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(authenticate(parameters))
+            }
+        }
+
+        override fun authenticateCompletable(
+            parameters: OTP.Email.AuthenticateParameters,
+        ): CompletableFuture<EmailOTPAuthenticateResponse> =
+            externalScope.async { authenticate(parameters) }.asCompletableFuture()
+
+        private inner class EmailDiscoveryImpl : OTP.Email.Discovery {
+            override suspend fun send(parameters: OTP.Email.Discovery.SendParameters): EmailOTPDiscoverySendResponse =
+                withContext(dispatchers.io) {
+                    api.otpEmailDiscoverySend(
+                        emailAddress = parameters.emailAddress,
+                        loginTemplateId = parameters.loginTemplateId,
+                        locale = parameters.locale,
+                    )
+                }
+
+            override fun send(
+                parameters: OTP.Email.Discovery.SendParameters,
+                callback: (EmailOTPDiscoverySendResponse) -> Unit,
+            ) {
+                externalScope.launch(dispatchers.ui) {
+                    callback(send(parameters))
+                }
+            }
+
+            override fun sendCompletable(
+                parameters: OTP.Email.Discovery.SendParameters,
+            ): CompletableFuture<EmailOTPDiscoverySendResponse> =
+                externalScope.async { send(parameters) }.asCompletableFuture()
+
+            override suspend fun authenticate(
+                parameters: OTP.Email.Discovery.AuthenticateParameters,
+            ): EmailOTPDiscoveryAuthenticateResponse =
+                withContext(dispatchers.io) {
+                    api.otpEmailDiscoveryAuthenticate(
+                        code = parameters.code,
+                        emailAddress = parameters.emailAddress,
+                    )
+                }
+
+            override fun authenticate(
+                parameters: OTP.Email.Discovery.AuthenticateParameters,
+                callback: (EmailOTPDiscoveryAuthenticateResponse) -> Unit,
+            ) {
+                externalScope.launch(dispatchers.ui) {
+                    callback(authenticate(parameters))
+                }
+            }
+
+            override fun authenticateCompletable(
+                parameters: OTP.Email.Discovery.AuthenticateParameters,
+            ): CompletableFuture<EmailOTPDiscoveryAuthenticateResponse> =
+                externalScope.async { authenticate(parameters) }.asCompletableFuture()
+        }
     }
 }

@@ -475,6 +475,55 @@ internal object B2BRequests {
                 val intermediateSessionToken: String? = null,
             )
         }
+
+        object Email {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class LoginOrSignupRequest(
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "email_address")
+                val emailAddress: String,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String? = null,
+                @Json(name = "signup_template_id")
+                val signupTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                val code: String,
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "email_address")
+                val emailAddress: String,
+                val locale: Locale? = null,
+                @Json(name = "session_duration_minutes")
+                val sessionDurationMinutes: Int,
+            )
+
+            object Discovery {
+                @Keep
+                @JsonClass(generateAdapter = true)
+                data class SendRequest(
+                    @Json(name = "email_address")
+                    val emailAddress: String,
+                    @Json(name = "login_template_id")
+                    val loginTemplateId: String? = null,
+                    val locale: Locale? = null,
+                )
+
+                @Keep
+                @JsonClass(generateAdapter = true)
+                data class AuthenticateRequest(
+                    val code: String,
+                    @Json(name = "email_address")
+                    val emailAddress: String,
+                )
+            }
+        }
     }
 
     object TOTP {

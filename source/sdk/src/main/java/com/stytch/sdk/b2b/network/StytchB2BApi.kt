@@ -12,7 +12,10 @@ import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
+import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BOTPsEmailLoginOrSignupResponseData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
@@ -915,6 +918,74 @@ internal object StytchB2BApi {
                         sessionDurationMinutes = sessionDurationMinutes,
                         intermediateSessionToken = intermediateSessionToken,
                     ),
+                )
+            }
+
+        suspend fun otpEmailLoginOrSignup(
+            organizationId: String,
+            emailAddress: String,
+            loginTemplateId: String?,
+            signupTemplateId: String?,
+            locale: Locale?,
+        ): StytchResult<B2BOTPsEmailLoginOrSignupResponseData> =
+            safeB2BApiCall {
+                apiService.otpEmailLoginOrSignup(
+                    B2BRequests.OTP.Email.LoginOrSignupRequest(
+                        organizationId = organizationId,
+                        emailAddress = emailAddress,
+                        loginTemplateId = loginTemplateId,
+                        signupTemplateId = signupTemplateId,
+                        locale = locale,
+                    ),
+                )
+            }
+
+        suspend fun otpEmailAuthenticate(
+            code: String,
+            organizationId: String,
+            emailAddress: String,
+            locale: Locale?,
+            sessionDurationMinutes: Int,
+        ): StytchResult<B2BOTPsEmailAuthenticateResponseData> =
+            safeB2BApiCall {
+                apiService.otpEmailAuthenticate(
+                    B2BRequests.OTP.Email.AuthenticateRequest(
+                        code = code,
+                        organizationId = organizationId,
+                        emailAddress = emailAddress,
+                        locale = locale,
+                        sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+
+        suspend fun otpEmailDiscoverySend(
+            emailAddress: String,
+            loginTemplateId: String?,
+            locale: Locale?,
+        ): StytchResult<B2BDiscoveryOTPEmailSendResponseData> =
+            safeB2BApiCall {
+                apiService.otpEmailDiscoverySend(
+                    B2BRequests.OTP.Email.Discovery
+                        .SendRequest(
+                            emailAddress = emailAddress,
+                            loginTemplateId = loginTemplateId,
+                            locale = locale,
+                        ),
+                )
+            }
+
+        suspend fun otpEmailDiscoveryAuthenticate(
+            code: String,
+            emailAddress: String,
+        ): StytchResult<DiscoveryAuthenticateResponseData> =
+            safeB2BApiCall {
+                apiService.otpEmailDiscoveryAuthenticate(
+                    B2BRequests.OTP.Email.Discovery
+                        .AuthenticateRequest(
+                            code = code,
+                            emailAddress = emailAddress,
+                        ),
                 )
             }
     }
