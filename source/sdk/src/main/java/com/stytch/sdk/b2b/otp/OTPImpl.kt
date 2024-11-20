@@ -124,13 +124,16 @@ internal class OTPImpl(
 
         override suspend fun authenticate(parameters: OTP.Email.AuthenticateParameters): EmailOTPAuthenticateResponse =
             withContext(dispatchers.io) {
-                api.otpEmailAuthenticate(
-                    organizationId = parameters.organizationId,
-                    emailAddress = parameters.emailAddress,
-                    locale = parameters.locale,
-                    code = parameters.code,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                )
+                api
+                    .otpEmailAuthenticate(
+                        organizationId = parameters.organizationId,
+                        emailAddress = parameters.emailAddress,
+                        locale = parameters.locale,
+                        code = parameters.code,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             }
 
         override fun authenticate(
@@ -175,10 +178,13 @@ internal class OTPImpl(
                 parameters: OTP.Email.Discovery.AuthenticateParameters,
             ): EmailOTPDiscoveryAuthenticateResponse =
                 withContext(dispatchers.io) {
-                    api.otpEmailDiscoveryAuthenticate(
-                        code = parameters.code,
-                        emailAddress = parameters.emailAddress,
-                    )
+                    api
+                        .otpEmailDiscoveryAuthenticate(
+                            code = parameters.code,
+                            emailAddress = parameters.emailAddress,
+                        ).apply {
+                            launchSessionUpdater(dispatchers, sessionStorage)
+                        }
                 }
 
             override fun authenticate(

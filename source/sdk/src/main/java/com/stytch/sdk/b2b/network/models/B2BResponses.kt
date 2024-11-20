@@ -266,8 +266,8 @@ internal object B2BResponses {
                 @Keep
                 @JsonClass(generateAdapter = true)
                 class AuthenticateResponse(
-                    data: DiscoveryAuthenticateResponseData,
-                ) : StytchDataResponse<DiscoveryAuthenticateResponseData>(data)
+                    data: B2BDiscoveryOTPEmailAuthenticateResponseData,
+                ) : StytchDataResponse<B2BDiscoveryOTPEmailAuthenticateResponseData>(data)
             }
         }
     }

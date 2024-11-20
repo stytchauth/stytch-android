@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
@@ -978,7 +979,7 @@ internal object StytchB2BApi {
         suspend fun otpEmailDiscoveryAuthenticate(
             code: String,
             emailAddress: String,
-        ): StytchResult<DiscoveryAuthenticateResponseData> =
+        ): StytchResult<B2BDiscoveryOTPEmailAuthenticateResponseData> =
             safeB2BApiCall {
                 apiService.otpEmailDiscoveryAuthenticate(
                     B2BRequests.OTP.Email.Discovery

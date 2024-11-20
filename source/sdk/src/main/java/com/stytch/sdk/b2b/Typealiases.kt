@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b
 
+import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
@@ -337,4 +338,4 @@ public typealias EmailOTPDiscoverySendResponse = StytchResult<B2BDiscoveryOTPEma
 /**
  * Type alias for StytchResult<DiscoveryAuthenticateResponseData> used for Discovery Email OTP Authenticate responses
  */
-public typealias EmailOTPDiscoveryAuthenticateResponse = StytchResult<DiscoveryAuthenticateResponseData>
+public typealias EmailOTPDiscoveryAuthenticateResponse = StytchResult<B2BDiscoveryOTPEmailAuthenticateResponseData>
