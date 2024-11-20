@@ -3,9 +3,17 @@ package com.stytch.sdk.b2b.otp
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.BasicResponse
+import com.stytch.sdk.b2b.EmailOTPAuthenticateResponse
+import com.stytch.sdk.b2b.EmailOTPDiscoveryAuthenticateResponse
+import com.stytch.sdk.b2b.EmailOTPDiscoverySendResponse
+import com.stytch.sdk.b2b.EmailOTPLoginOrSignupResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
+import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BOTPsEmailLoginOrSignupResponseData
 import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StorageHelper
@@ -51,6 +59,23 @@ internal class OTPImplTest {
     private val dispatcher = Dispatchers.Unconfined
     private val successfulBaseResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
     private val successfulAuthResponse = StytchResult.Success<SMSAuthenticateResponseData>(mockk(relaxed = true))
+    private val mockEmailOTPLoginOrSignupResponse =
+        StytchResult.Success<B2BOTPsEmailLoginOrSignupResponseData>(
+            mockk(relaxed = true),
+        )
+    private val mockEmailOTPAuthenticateResponse =
+        StytchResult.Success<B2BOTPsEmailAuthenticateResponseData>(
+            mockk(relaxed = true),
+        )
+    private val mockEmailOTPDiscoverySendResponse =
+        StytchResult.Success<B2BDiscoveryOTPEmailSendResponseData>(
+            mockk(relaxed = true),
+        )
+    private val mockEmailOTPDiscoveryAuthenticateResponse =
+        StytchResult
+            .Success<B2BDiscoveryOTPEmailAuthenticateResponseData>(
+                mockk(relaxed = true),
+            )
 
     @Before
     fun before() {
@@ -115,6 +140,82 @@ internal class OTPImplTest {
         coEvery { mockApi.authenticateSMSOTP(any(), any(), any(), any(), any()) } returns successfulAuthResponse
         val mockCallback = spyk<(SMSAuthenticateResponse) -> Unit>()
         impl.sms.authenticate(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `OTP Email loginOrSignup delegates to the API`() =
+        runBlocking {
+            coEvery { mockApi.otpEmailLoginOrSignup(any(), any(), any(), any(), any()) } returns
+                mockEmailOTPLoginOrSignupResponse
+            val response = impl.email.loginOrSignup(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.otpEmailLoginOrSignup(any(), any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `OTP Email loginOrSignup with callback calls callback`() {
+        coEvery { mockApi.otpEmailLoginOrSignup(any(), any(), any(), any(), any()) } returns
+            mockEmailOTPLoginOrSignupResponse
+        val mockCallback = spyk<(EmailOTPLoginOrSignupResponse) -> Unit>()
+        impl.email.loginOrSignup(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `OTP Email authenticate delegates to the API`() =
+        runBlocking {
+            coEvery { mockApi.otpEmailAuthenticate(any(), any(), any(), any(), any()) } returns
+                mockEmailOTPAuthenticateResponse
+            val response = impl.email.authenticate(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.otpEmailAuthenticate(any(), any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `OTP Email authenticate with callback calls callback`() {
+        coEvery { mockApi.otpEmailAuthenticate(any(), any(), any(), any(), any()) } returns
+            mockEmailOTPAuthenticateResponse
+        val mockCallback = spyk<(EmailOTPAuthenticateResponse) -> Unit>()
+        impl.email.authenticate(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `OTP Email Discovery Send delegates to the API`() =
+        runBlocking {
+            coEvery { mockApi.otpEmailDiscoverySend(any(), any(), any()) } returns
+                mockEmailOTPDiscoverySendResponse
+            val response = impl.email.discovery.send(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.otpEmailDiscoverySend(any(), any(), any()) }
+        }
+
+    @Test
+    fun `OTP Email Discovery Send with callback calls callback`() {
+        coEvery { mockApi.otpEmailDiscoverySend(any(), any(), any()) } returns
+            mockEmailOTPDiscoverySendResponse
+        val mockCallback = spyk<(EmailOTPDiscoverySendResponse) -> Unit>()
+        impl.email.discovery.send(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `OTP Email Discovery authenticate delegates to the API`() =
+        runBlocking {
+            coEvery { mockApi.otpEmailDiscoveryAuthenticate(any(), any()) } returns
+                mockEmailOTPDiscoveryAuthenticateResponse
+            val response = impl.email.discovery.authenticate(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.otpEmailDiscoveryAuthenticate(any(), any()) }
+        }
+
+    @Test
+    fun `OTP Email Discovery authenticate with callback calls callback`() {
+        coEvery { mockApi.otpEmailDiscoveryAuthenticate(any(), any()) } returns
+            mockEmailOTPDiscoveryAuthenticateResponse
+        val mockCallback = spyk<(EmailOTPDiscoveryAuthenticateResponse) -> Unit>()
+        impl.email.discovery.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 }

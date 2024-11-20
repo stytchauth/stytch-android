@@ -835,6 +835,42 @@ internal class StytchB2BApiTest {
             coVerify { StytchB2BApi.apiService.scimRotateComplete(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailLoginOrSignup calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailLoginOrSignup(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailLoginOrSignup("", "", null, null, null)
+            coVerify { StytchB2BApi.apiService.otpEmailLoginOrSignup(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailAuthenticate calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailAuthenticate("", "", "", null, 30)
+            coVerify { StytchB2BApi.apiService.otpEmailAuthenticate(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailDiscoverySend calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailDiscoverySend(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailDiscoverySend("", null, null)
+            coVerify { StytchB2BApi.apiService.otpEmailDiscoverySend(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailDiscoveryAuthenticate calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailDiscoveryAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailDiscoveryAuthenticate("", "")
+            coVerify { StytchB2BApi.apiService.otpEmailDiscoveryAuthenticate(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `safeApiCall throws exception when StytchB2BClient is not initialized`(): Unit =
         runBlocking {
