@@ -1137,6 +1137,104 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check OTP Email loginOrSignup request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.Email.LoginOrSignupRequest(
+                    organizationId = "my-organization-id",
+                    emailAddress = EMAIL,
+                    loginTemplateId = "login-template-id",
+                    signupTemplateId = "signup-template-id",
+                    locale = Locale.EN,
+                )
+            requestIgnoringResponseException {
+                apiService.otpEmailLoginOrSignup(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/email/login_or_signup",
+                expectedBody =
+                    mapOf(
+                        "organization_id" to parameters.organizationId,
+                        "email_address" to parameters.emailAddress,
+                        "login_template_id" to parameters.loginTemplateId,
+                        "signup_template_id" to parameters.signupTemplateId,
+                        "locale" to parameters.locale?.jsonName,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP Email authenticate request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.Email.AuthenticateRequest(
+                    code = "my cool code",
+                    organizationId = "my-organization-id",
+                    emailAddress = EMAIL,
+                    locale = Locale.EN,
+                    sessionDurationMinutes = 20,
+                )
+            requestIgnoringResponseException {
+                apiService.otpEmailAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/email/authenticate",
+                expectedBody =
+                    mapOf(
+                        "code" to parameters.code,
+                        "organization_id" to parameters.organizationId,
+                        "email_address" to parameters.emailAddress,
+                        "locale" to parameters.locale?.jsonName,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP Email Discovery send request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.Email.Discovery.SendRequest(
+                    locale = Locale.EN,
+                    loginTemplateId = "login-template-id",
+                    emailAddress = EMAIL,
+                )
+            requestIgnoringResponseException {
+                apiService.otpEmailDiscoverySend(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/email/discovery/send",
+                expectedBody =
+                    mapOf(
+                        "locale" to parameters.locale?.jsonName,
+                        "login_template_id" to parameters.loginTemplateId,
+                        "email_address" to parameters.emailAddress,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check OTP Email Discovery authenticate request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.OTP.Email.Discovery.AuthenticateRequest(
+                    code = "my cool code",
+                    emailAddress = EMAIL,
+                )
+            requestIgnoringResponseException {
+                apiService.otpEmailDiscoveryAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/otps/email/discovery/authenticate",
+                expectedBody =
+                    mapOf(
+                        "email_address" to parameters.emailAddress,
+                        "code" to parameters.code,
+                    ),
+            )
+        }
+    }
     //endregion OTP
 
     //region TOTP

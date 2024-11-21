@@ -96,7 +96,7 @@ internal class OAuthImplTest {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "something_went_wrong", message = "testing"),
+                    StytchAPIError(errorType = "something_went_wrong", message = "testing", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)

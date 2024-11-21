@@ -1263,3 +1263,70 @@ public data class B2BAuthenticationFactor(
         val providerTenantId: String? = null,
     ) : Parcelable
 }
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BOTPsEmailLoginOrSignupResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BOTPsEmailAuthenticateResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "member_session")
+    override val memberSession: B2BSessionData?,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    @Json(name = "member_id")
+    override val memberId: String,
+    override val member: MemberData,
+    override val organization: OrganizationData,
+    @Json(name = "member_authenticated")
+    override val memberAuthenticated: Boolean,
+    @Json(name = "intermediate_session_token")
+    override val intermediateSessionToken: String?,
+    @Json(name = "mfa_required")
+    override val mfaRequired: MFARequired?,
+    @Json(name = "method_id")
+    val methodId: String,
+) : IB2BAuthDataWithMFA,
+    Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BDiscoveryOTPEmailSendResponseData(
+    @Json(name = "status_code")
+    override val statusCode: Int,
+    @Json(name = "request_id")
+    override val requestId: String,
+) : Parcelable,
+    IBasicData
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BDiscoveryOTPEmailAuthenticateResponseData(
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String?,
+) : Parcelable

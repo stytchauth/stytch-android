@@ -69,6 +69,18 @@ fun OTPScreen(viewModel: OTPViewModel) {
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
+                value = viewModel.memberEmailState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.member_email))
+                },
+                onValueChange = {
+                    viewModel.memberEmailState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = viewModel.codeState,
                 singleLine = true,
                 label = {
@@ -88,6 +100,26 @@ fun OTPScreen(viewModel: OTPViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.otp_sms_authenticate),
                 onClick = viewModel::authenticate,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.otp_email_loginOrCreate),
+                onClick = viewModel::emailLoginOrCreate,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.otp_email_authenticate),
+                onClick = viewModel::emailAuthenticate,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.otp_email_discovery_send),
+                onClick = viewModel::emailDiscoverySend,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.otp_email_discovery_authenticate),
+                onClick = viewModel::emailDiscoveryAuthenticate,
             )
         }
         Column(

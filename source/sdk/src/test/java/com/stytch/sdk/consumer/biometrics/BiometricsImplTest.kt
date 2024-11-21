@@ -226,7 +226,7 @@ internal class BiometricsImplTest {
             } returns Pair(base64EncodedString, base64EncodedString)
             coEvery { mockApi.registerStart(base64EncodedString) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = ""),
+                    StytchAPIError(errorType = "", message = "", statusCode = 400),
                 )
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -377,7 +377,7 @@ internal class BiometricsImplTest {
             } returns "publicKey"
             coEvery { mockApi.authenticateStart("publicKey") } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = ""),
+                    StytchAPIError(errorType = "", message = "", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)

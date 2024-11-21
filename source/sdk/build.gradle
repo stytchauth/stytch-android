@@ -10,7 +10,7 @@ plugins {
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.29.2'
+  PUBLISH_VERSION = '0.30.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
