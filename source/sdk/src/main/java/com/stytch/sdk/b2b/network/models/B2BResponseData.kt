@@ -1328,5 +1328,5 @@ public data class B2BDiscoveryOTPEmailAuthenticateResponseData(
     @Json(name = "request_id")
     val requestId: String,
     @Json(name = "intermediate_session_token")
-    val intermediateSessionToken: String?,
+    val intermediateSessionToken: String,
 ) : Parcelable
