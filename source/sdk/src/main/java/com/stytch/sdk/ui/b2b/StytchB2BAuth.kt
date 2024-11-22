@@ -12,7 +12,7 @@ internal interface StytchB2BAuth {
     fun authenticate(options: StytchB2BUIConfig)
 }
 
-internal class StytchAuthHandler(
+internal class StytchB2BAuthHandler(
     private val activity: ComponentActivity,
     private val onAuthenticated: (StytchResult<*>) -> Unit,
 ) : StytchB2BAuth by StytchB2BAuthImpl(

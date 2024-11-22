@@ -24,7 +24,7 @@ public class StytchB2BUI private constructor(
     private val activity: ComponentActivity
     private val styles: StytchStyles
     private val productConfig: StytchB2BProductConfig
-    private val authHandler: StytchAuthHandler
+    private val authHandler: StytchB2BAuthHandler
 
     internal val bootstrapData: BootstrapData
         get() = StytchB2BClient.bootstrapData
@@ -35,7 +35,7 @@ public class StytchB2BUI private constructor(
         this.activity = activity
         this.styles = styles ?: StytchStyles()
         this.productConfig = productConfig ?: StytchB2BProductConfig()
-        this.authHandler = StytchAuthHandler(activity, onAuthenticated)
+        this.authHandler = StytchB2BAuthHandler(activity, onAuthenticated)
     }
 
     /**
