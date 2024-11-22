@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.data
 
 import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.ui.shared.data.StytchStyles
 
 internal val DEFAULT_STYTCH_UI_CONFIG =
     StytchUIConfig(

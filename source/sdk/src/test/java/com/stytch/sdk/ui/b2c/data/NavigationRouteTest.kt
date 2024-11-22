@@ -1,6 +1,5 @@
-package com.stytch.sdk.ui.data
+package com.stytch.sdk.ui.b2c.data
 
-import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.screens.EMLConfirmationScreen
 import com.stytch.sdk.ui.b2c.screens.NewUserScreen
 import com.stytch.sdk.ui.b2c.screens.OTPConfirmationScreen

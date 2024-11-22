@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.screens
+package com.stytch.sdk.ui.b2c.screens
 
 import android.text.format.DateUtils
 import androidx.lifecycle.SavedStateHandle
@@ -9,7 +9,6 @@ import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.otp.OTP
-import com.stytch.sdk.ui.b2c.screens.OTPConfirmationScreenViewModel
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails

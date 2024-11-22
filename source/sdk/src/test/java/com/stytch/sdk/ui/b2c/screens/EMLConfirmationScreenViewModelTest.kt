@@ -1,11 +1,10 @@
-package com.stytch.sdk.ui.screens
+package com.stytch.sdk.ui.b2c.screens
 
 import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.ui.b2c.screens.EMLConfirmationScreenViewModel
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.PasswordOptions

@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.screens
+package com.stytch.sdk.ui.b2c.screens
 
 import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
@@ -10,7 +10,6 @@ import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.StrengthPolicy
-import com.stytch.sdk.ui.b2c.screens.NewUserScreenViewModel
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails
