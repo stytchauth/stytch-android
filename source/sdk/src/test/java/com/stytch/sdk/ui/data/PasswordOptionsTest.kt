@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import com.stytch.sdk.consumer.passwords.Passwords
+import com.stytch.sdk.ui.b2c.data.PasswordOptions
 import org.junit.Test
 
 internal class PasswordOptionsTest {

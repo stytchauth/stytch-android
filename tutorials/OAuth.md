@@ -31,10 +31,11 @@ android {
 }
 ```
 Third, create the activity result handler in your main activity:
+
 ```kotlin
 class MainActivity : FragmentActivity() {
     ...
-    public override fun onActivityResult(
+    override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
         data: Intent?,

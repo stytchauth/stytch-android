@@ -1,7 +1,6 @@
 package com.stytch.sdk.ui.screens
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
@@ -11,9 +10,10 @@ import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.StrengthPolicy
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
-import com.stytch.sdk.ui.data.OTPDetails
+import com.stytch.sdk.ui.b2c.screens.NewUserScreenViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.data.OTPDetails
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

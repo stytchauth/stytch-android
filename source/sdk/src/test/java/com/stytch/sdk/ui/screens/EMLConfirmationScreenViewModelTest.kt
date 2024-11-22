@@ -5,11 +5,12 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
-import com.stytch.sdk.ui.data.PasswordOptions
-import com.stytch.sdk.ui.data.PasswordResetDetails
-import com.stytch.sdk.ui.data.PasswordResetType
+import com.stytch.sdk.ui.b2c.screens.EMLConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.data.PasswordOptions
+import com.stytch.sdk.ui.b2c.data.PasswordResetDetails
+import com.stytch.sdk.ui.b2c.data.PasswordResetType
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

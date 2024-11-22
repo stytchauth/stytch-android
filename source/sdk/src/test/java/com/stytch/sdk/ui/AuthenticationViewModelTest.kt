@@ -9,8 +9,9 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.common.sso.SSOError.Companion.SSO_EXCEPTION
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.AuthenticationViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

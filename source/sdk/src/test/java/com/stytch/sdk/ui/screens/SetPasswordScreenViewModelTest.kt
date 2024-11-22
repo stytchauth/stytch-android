@@ -8,8 +8,9 @@ import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.StrengthPolicy
+import com.stytch.sdk.ui.b2c.screens.SetPasswordScreenViewModel
 import com.stytch.sdk.ui.data.EmailState
-import com.stytch.sdk.ui.data.EventState
+import com.stytch.sdk.ui.b2c.data.EventState
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

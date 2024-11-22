@@ -1,11 +1,12 @@
 package com.stytch.sdk.ui.data
 
-import com.stytch.sdk.ui.screens.EMLConfirmationScreen
-import com.stytch.sdk.ui.screens.NewUserScreen
-import com.stytch.sdk.ui.screens.OTPConfirmationScreen
-import com.stytch.sdk.ui.screens.PasswordResetSentScreen
-import com.stytch.sdk.ui.screens.ReturningUserScreen
-import com.stytch.sdk.ui.screens.SetPasswordScreen
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.screens.EMLConfirmationScreen
+import com.stytch.sdk.ui.b2c.screens.NewUserScreen
+import com.stytch.sdk.ui.b2c.screens.OTPConfirmationScreen
+import com.stytch.sdk.ui.b2c.screens.PasswordResetSentScreen
+import com.stytch.sdk.ui.b2c.screens.ReturningUserScreen
+import com.stytch.sdk.ui.b2c.screens.SetPasswordScreen
 import io.mockk.mockk
 import org.junit.Test
 

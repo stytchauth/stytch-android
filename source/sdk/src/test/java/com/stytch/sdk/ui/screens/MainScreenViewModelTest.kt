@@ -5,15 +5,15 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
-import com.stytch.sdk.ui.data.OAuthProvider
-import com.stytch.sdk.ui.data.OTPDetails
-import com.stytch.sdk.ui.data.OTPMethods
-import com.stytch.sdk.ui.data.OTPOptions
-import com.stytch.sdk.ui.data.PasswordResetType
-import com.stytch.sdk.ui.data.StytchProduct
-import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.b2c.screens.MainScreenViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.data.OAuthProvider
+import com.stytch.sdk.ui.b2c.data.OTPDetails
+import com.stytch.sdk.ui.b2c.data.OTPMethods
+import com.stytch.sdk.ui.b2c.data.OTPOptions
+import com.stytch.sdk.ui.b2c.data.PasswordResetType
+import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -243,7 +243,7 @@ internal class MainScreenViewModelTest {
                 }
             val configShouldSendEmailOTP: StytchProductConfig =
                 mockk {
-                    every { products } returns listOf(StytchProduct.OTP)
+                    every { products } returns listOf(com.stytch.sdk.ui.b2c.data.StytchProduct.OTP)
                     every { otpOptions } returns
                         mockk {
                             every { methods } returns listOf(OTPMethods.EMAIL)
@@ -261,7 +261,7 @@ internal class MainScreenViewModelTest {
                 }
             val configShouldSendEml: StytchProductConfig =
                 mockk {
-                    every { products } returns listOf(StytchProduct.EMAIL_MAGIC_LINKS)
+                    every { products } returns listOf(com.stytch.sdk.ui.b2c.data.StytchProduct.EMAIL_MAGIC_LINKS)
                     every { emailMagicLinksOptions } returns mockk(relaxed = true)
                 }
             viewModel.onEmailAddressSubmit(configShouldSendEml, this)

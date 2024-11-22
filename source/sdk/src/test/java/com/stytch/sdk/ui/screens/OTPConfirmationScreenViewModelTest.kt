@@ -9,10 +9,11 @@ import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.otp.OTP
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
-import com.stytch.sdk.ui.data.OTPDetails
-import com.stytch.sdk.ui.data.PasswordResetType
+import com.stytch.sdk.ui.b2c.screens.OTPConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.data.OTPDetails
+import com.stytch.sdk.ui.b2c.data.PasswordResetType
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

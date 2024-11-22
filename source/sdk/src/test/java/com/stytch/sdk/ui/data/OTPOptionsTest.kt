@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.data
 
 import com.stytch.sdk.consumer.otp.OTP
+import com.stytch.sdk.ui.b2c.data.OTPOptions
 import org.junit.Test
 
 internal class OTPOptionsTest {

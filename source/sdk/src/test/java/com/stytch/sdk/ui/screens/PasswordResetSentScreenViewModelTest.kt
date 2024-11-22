@@ -6,10 +6,10 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.ui.data.EventState
-import com.stytch.sdk.ui.data.NavigationRoute
+import com.stytch.sdk.ui.b2c.screens.PasswordResetSentScreenViewModel
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import io.mockk.MockKAnnotations
-import io.mockk.MockKSettings.relaxed
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

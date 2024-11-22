@@ -15,14 +15,15 @@ When the Stytch Android SDK is initialized, it decrypts the persisted session to
 It is then good practice when using the Stytch Android SDK to access any data that may have been updated via the heartbeat call through their cached values. Otherwise if you hold onto a reference of a response that contains authentication information in it, like token or user, you risk the those values returned in the response becoming stale. Values updated via the heartbeat are: `SessionData`, `UserData`, `B2BSessionData`, `MemberData` `OrganizationData`, `sessionToken` and  `sessionJwt`. 
 
 Examples for retrieving these cached values:
+
 ```kotlin
 // tokens
-val sessionToken: String? = StytchClient.sessions.sessionToken
-val sessionJwt: String? = StytchClient.sessions.sessionJwt
+val sessionToken: String = StytchClient.sessions.sessionToken
+val sessionJwt: String = StytchClient.sessions.sessionJwt
 
 // consumer objects
-val sessionData: SessionData? = StytchClient.sessions.getSync()
-val userData: UserData? = StytchClient.user.getSyncUser()
+val sessionData: SessionData = StytchClient.sessions.getSync()
+val userData: UserData = StytchClient.user.getSyncUser()
 ```
 
 ### Observing Stytch Object Information
@@ -30,11 +31,12 @@ val userData: UserData? = StytchClient.user.getSyncUser()
 To unify the publishing of various Stytch object types such as `SessionData`, `UserData`, `B2BSessionData`, `MemberData`, and `OrganizationData`, the SDK provides the `StytchObjectInfo<T>` type. This generic type handles the publishing of objects in a way that avoids having to publish null values.
 * If an object is available for publishing, `StytchObjectInfo.Available` is emitted, containing a `value` property of type `T` representing the desired data and a `lastValidatedAt` property, representing the last time that the data was validated with Stytch's servers. The receiver can then determine if the object is within their acceptable time tolerance for use.
 * If there is no object to publish, `StytchObjectInfo.Unavailable` will be emitted instead. This ensures that the flow/callback never needs to send a null value.
-```kotlin
-public sealed interface StytchObjectInfo<out T> {
-    public data object Unavailable : StytchObjectInfo<Nothing>
 
-    public data class Available<out T>(
+```kotlin
+ sealed interface StytchObjectInfo<out T> {
+    data object Unavailable : StytchObjectInfo<Nothing>
+
+    data class Available<out T>(
         val lastValidatedAt: Date,
         val value: T,
     ) : StytchObjectInfo<T>
