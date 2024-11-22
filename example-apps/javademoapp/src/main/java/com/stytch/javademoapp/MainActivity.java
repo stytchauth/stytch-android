@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.stytch.sdk.common.StytchResult;
 import com.stytch.sdk.consumer.StytchClient;
-import com.stytch.sdk.ui.StytchUI;
+import com.stytch.sdk.ui.b2c.StytchUI;
 import com.stytch.sdk.ui.b2c.data.EmailMagicLinksOptions;
 import com.stytch.sdk.ui.b2c.data.OAuthOptions;
 import com.stytch.sdk.ui.b2c.data.OAuthProvider;
