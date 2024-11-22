@@ -30,6 +30,8 @@
                     android:host="@string/host" />
             </intent-filter>
         </activity>
+        <activity android:name="com.stytch.exampleapp.b2b.HeadlessWorkbenchActivity"  android:exported="false" />
+        <activity android:name="com.stytch.exampleapp.b2b.UIWorkbenchActivity"  android:exported="false" />
     </application>
 
 </manifest>

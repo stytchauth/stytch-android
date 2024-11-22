@@ -17,8 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.R
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
@@ -42,12 +40,14 @@ internal fun StytchB2BAuthenticationApp(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
         ) {
+            /*
             Navigator(listOfNotNull(screen)) { navigator ->
                 screen?.let {
                     navigator.push(it)
                 }
                 CurrentScreen()
             }
+             */
             if (!bootstrapData.disableSDKWatermark) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
