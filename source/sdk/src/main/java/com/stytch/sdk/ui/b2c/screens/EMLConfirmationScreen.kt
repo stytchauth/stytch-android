@@ -28,6 +28,9 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EMLDetails
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.StytchProduct
+import com.stytch.sdk.ui.b2c.theme.LocalStytchProductConfig
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
@@ -35,9 +38,6 @@ import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchAlertDialog
 import com.stytch.sdk.ui.shared.components.StytchTextButton
-import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 

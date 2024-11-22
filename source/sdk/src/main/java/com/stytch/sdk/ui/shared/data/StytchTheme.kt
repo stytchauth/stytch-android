@@ -76,6 +76,7 @@ public data class StytchTheme
         val disabledInputTextColor: Int = STEEL,
         val dialogTextColor: Int = CHARCOAL,
         val hideHeaderText: Boolean = false,
+        val logoUrl: String? = null,
     ) : Parcelable {
         internal companion object {
             fun defaultDarkTheme(): StytchTheme =

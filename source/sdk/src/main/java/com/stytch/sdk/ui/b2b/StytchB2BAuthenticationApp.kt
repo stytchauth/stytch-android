@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.b2c
+package com.stytch.sdk.ui.b2b
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,30 +20,17 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.R
-import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.ui.b2c.data.OTPMethods
-import com.stytch.sdk.ui.b2c.data.StytchProduct
-import com.stytch.sdk.ui.b2c.data.StytchProductConfig
-import com.stytch.sdk.ui.b2c.screens.MainScreen
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.theme.LocalStytchTheme
 
 @Composable
-internal fun StytchAuthenticationApp(
+internal fun StytchB2BAuthenticationApp(
     modifier: Modifier = Modifier,
     bootstrapData: BootstrapData,
-    productConfig: StytchProductConfig,
+    productConfig: StytchB2BProductConfig,
     screen: AndroidScreen? = null,
-    onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit,
 ) {
-    if (
-        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
-        // EML
-        productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // Email OTP
-    ) {
-        onInvalidConfig(StytchUIInvalidConfiguration(stringResource(id = R.string.eml_and_otp_error)))
-        return
-    }
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Color(LocalStytchTheme.current.backgroundColor),
@@ -55,7 +42,7 @@ internal fun StytchAuthenticationApp(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
         ) {
-            Navigator(listOfNotNull(MainScreen, screen)) { navigator ->
+            Navigator(listOfNotNull(screen)) { navigator ->
                 screen?.let {
                     navigator.push(it)
                 }

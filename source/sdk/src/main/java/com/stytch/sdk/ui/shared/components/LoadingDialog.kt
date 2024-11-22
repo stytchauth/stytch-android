@@ -9,7 +9,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.window.Dialog
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
 
 @Composable
 internal fun LoadingDialog() {

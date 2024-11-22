@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
 import com.stytch.sdk.consumer.network.models.LUDSRequirements
-import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.b2c.theme.LocalStytchBootstrapData
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
 
 @Composable
 internal fun LUDSIndicator(

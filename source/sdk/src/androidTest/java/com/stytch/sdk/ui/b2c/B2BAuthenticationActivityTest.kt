@@ -8,7 +8,7 @@ import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import org.junit.Rule
 import org.junit.Test
 
-internal class AuthenticationActivityTest {
+internal class B2BAuthenticationActivityTest {
     @get:Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 

@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.shared.theme
+package com.stytch.sdk.ui.b2b.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,14 +11,15 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.ui.b2c.data.StytchProductConfig
-import com.stytch.sdk.ui.b2c.data.StytchUIConfig
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.shared.data.StytchTheme
+import com.stytch.sdk.ui.shared.theme.StytchTypography
 
 @Composable
-internal fun StytchTheme(
+internal fun StytchB2BThemeProvider(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    config: StytchUIConfig,
+    config: StytchB2BUIConfig,
     content: @Composable () -> Unit,
 ) {
     val stytchTheme =
@@ -60,9 +61,9 @@ internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography>
         StytchTypography()
     }
 
-internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchProductConfig> =
+internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchB2BProductConfig> =
     staticCompositionLocalOf {
-        StytchProductConfig()
+        StytchB2BProductConfig()
     }
 
 internal val LocalStytchBootstrapData: ProvidableCompositionLocal<BootstrapData> =

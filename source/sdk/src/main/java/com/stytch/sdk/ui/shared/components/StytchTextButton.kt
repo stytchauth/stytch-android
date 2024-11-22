@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
 
 @Composable
 internal fun StytchTextButton(

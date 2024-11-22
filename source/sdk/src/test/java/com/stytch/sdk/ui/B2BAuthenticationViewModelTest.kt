@@ -31,7 +31,7 @@ import org.junit.Test
 import java.security.KeyStore
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class AuthenticationViewModelTest {
+internal class B2BAuthenticationViewModelTest {
     private val savedStateHandle = SavedStateHandle()
     private val dispatcher = UnconfinedTestDispatcher()
     private lateinit var viewModel: AuthenticationViewModel

@@ -13,7 +13,7 @@ import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.StytchAuthenticationApp
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.StytchUIConfig
-import com.stytch.sdk.ui.shared.theme.StytchTheme
+import com.stytch.sdk.ui.b2c.theme.StytchB2BThemeProvider
 
 internal abstract class BaseRobotScreen(
     val composeTestRule: AndroidComposeTestRule<ActivityScenarioRule<AuthenticationActivity>, AuthenticationActivity>,
@@ -42,7 +42,7 @@ internal abstract class BaseRobotScreen(
         composeTestRule.activity.setContent {}
         composeTestRule.waitForIdle()
         composeTestRule.activity.setContent {
-            StytchTheme(config = uiConfig) {
+            StytchB2BThemeProvider(config = uiConfig) {
                 StytchAuthenticationApp(
                     bootstrapData = uiConfig.bootstrapData,
                     screen = screen,

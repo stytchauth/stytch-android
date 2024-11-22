@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
 
 @Composable
 internal fun Body2Text(

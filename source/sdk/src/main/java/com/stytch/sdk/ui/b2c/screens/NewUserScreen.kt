@@ -24,6 +24,7 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.OTPMethods
 import com.stytch.sdk.ui.b2c.data.StytchProduct
+import com.stytch.sdk.ui.b2c.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
@@ -31,7 +32,6 @@ import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
-import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 

@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.b2c
+package com.stytch.sdk.ui.b2b
 
 import android.content.Context
 import android.content.Intent
@@ -6,23 +6,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
-import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.ui.b2c.data.EventState
-import com.stytch.sdk.ui.b2c.data.StytchUIConfig
-import com.stytch.sdk.ui.b2c.theme.StytchThemeProvider
-import kotlinx.coroutines.launch
+import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
+import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 
-internal class AuthenticationActivity : ComponentActivity() {
-    private val viewModel: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
-    private lateinit var uiConfig: StytchUIConfig
+internal class B2BAuthenticationActivity : ComponentActivity() {
+    private val viewModel: B2BAuthenticationViewModel by viewModels { B2BAuthenticationViewModel.Factory }
+    private lateinit var uiConfig: StytchB2BUIConfig
     internal lateinit var savedStateHandle: SavedStateHandle
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,17 +31,18 @@ internal class AuthenticationActivity : ComponentActivity() {
                 return@onCreate
             }
         // log render_login_screen
-        if (StytchClient.isInitialized.value) {
-            StytchClient.events.logEvent(
+        if (StytchB2BClient.isInitialized.value) {
+            StytchB2BClient.events.logEvent(
                 eventName = "render_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
             )
-            StytchClient.user.onChange {
+            StytchB2BClient.member.onChange {
                 if (it is StytchObjectInfo.Available) {
                     returnAuthenticationResult(StytchResult.Success(it.value))
                 }
             }
         }
+        /* TBD
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel
@@ -60,18 +56,18 @@ internal class AuthenticationActivity : ComponentActivity() {
                     }
             }
         }
+         */
         savedStateHandle = viewModel.savedStateHandle
         renderApplicationAtScreen()
     }
 
     private fun renderApplicationAtScreen(screen: AndroidScreen? = null) {
         setContent {
-            StytchThemeProvider(config = uiConfig) {
-                StytchAuthenticationApp(
+            StytchB2BThemeProvider(config = uiConfig) {
+                StytchB2BAuthenticationApp(
                     bootstrapData = uiConfig.bootstrapData,
                     screen = screen,
                     productConfig = uiConfig.productConfig,
-                    onInvalidConfig = { returnAuthenticationResult(StytchResult.Error(it)) },
                 )
             }
         }
@@ -92,11 +88,11 @@ internal class AuthenticationActivity : ComponentActivity() {
     }
 
     internal fun returnAuthenticationResult(result: StytchResult<*>) {
-        if (StytchClient.isInitialized.value) {
+        if (StytchB2BClient.isInitialized.value) {
             when (result) {
-                is StytchResult.Success -> StytchClient.events.logEvent("ui_authentication_success")
+                is StytchResult.Success -> StytchB2BClient.events.logEvent("ui_authentication_success")
                 is StytchResult.Error ->
-                    StytchClient.events.logEvent(
+                    StytchB2BClient.events.logEvent(
                         eventName = "ui_authentication_failure",
                         details = null,
                         error = result.exception,
@@ -131,14 +127,14 @@ internal class AuthenticationActivity : ComponentActivity() {
     }
 
     internal companion object {
-        internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_UI_CONFIG"
+        internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_B2B_UI_CONFIG"
         internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
         internal const val STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID = 5552
 
         internal fun createIntent(
             context: Context,
-            uiConfig: StytchUIConfig,
-        ) = Intent(context, AuthenticationActivity::class.java).apply {
+            uiConfig: StytchB2BUIConfig,
+        ) = Intent(context, B2BAuthenticationActivity::class.java).apply {
             putExtra(STYTCH_UI_CONFIG_KEY, uiConfig)
         }
     }
