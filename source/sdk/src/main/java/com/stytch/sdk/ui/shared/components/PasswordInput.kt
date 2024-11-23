@@ -22,8 +22,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
-import com.stytch.sdk.consumer.network.models.StrengthPolicy
-import com.stytch.sdk.ui.b2c.data.PasswordState
+import com.stytch.sdk.common.network.models.StrengthPolicy
+import com.stytch.sdk.ui.shared.data.PasswordState
 
 @Composable
 internal fun PasswordInput(

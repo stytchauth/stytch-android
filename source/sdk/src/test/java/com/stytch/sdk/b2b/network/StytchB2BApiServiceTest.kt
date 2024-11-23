@@ -10,7 +10,7 @@ import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.MfaMethods
 import com.stytch.sdk.b2b.network.models.MfaPolicy
-import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
+import com.stytch.sdk.b2b.network.models.RBACImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
@@ -1463,7 +1463,7 @@ internal class StytchB2BApiServiceTest {
                     identityProvider = "my-identity-provider",
                     scimGroupImplicitRoleAssignments =
                         listOf(
-                            SCIMGroupImplicitRoleAssignment(
+                            RBACImplicitRoleAssignment(
                                 roleId = "my-role-id",
                                 groupId = "my-group-id",
                             ),

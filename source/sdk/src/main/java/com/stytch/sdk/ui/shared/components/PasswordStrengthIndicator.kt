@@ -23,9 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
-import com.stytch.sdk.consumer.network.models.Feedback
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
+import com.stytch.sdk.common.network.models.Feedback
+import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 
 private const val MAX_SCORE = 3
 

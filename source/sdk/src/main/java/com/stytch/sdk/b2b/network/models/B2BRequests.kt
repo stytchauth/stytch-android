@@ -639,7 +639,7 @@ internal object B2BRequests {
             @Json(name = "identity_provider")
             val identityProvider: String?,
             @Json(name = "scim_group_implicit_role_assignments")
-            val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+            val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>?,
         )
 
         @Keep

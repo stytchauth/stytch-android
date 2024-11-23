@@ -5,7 +5,10 @@ import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.common.network.models.IBasicData
+import com.stytch.sdk.common.network.models.LUDSRequirements
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -223,10 +226,22 @@ public data class OrganizationData(
     val emailJitProvisioning: EmailJitProvisioning?,
     @Json(name = "email_invites")
     val emailInvites: EmailInvites?,
+    @Json(name = "oauth_tenant_jit_provisioning")
+    val oauthTenantJitProvisioning: OAuthTenantJitProvisioning?,
+    @Json(name = "allowed_oauth_tenants")
+    val allowedOauthTenants: Map<String, List<String>>?,
     @Json(name = "auth_methods")
     val authMethods: AuthMethods?,
     @Json(name = "allowed_auth_methods")
     val allowedAuthMethods: List<AllowedAuthMethods>?,
+    @Json(name = "mfa_methods")
+    val mfaMethods: MfaMethods?,
+    @Json(name = "allowed_mfa_methods")
+    val allowedMfaMethods: List<MfaMethod>?,
+    @Json(name = "mfa_policy")
+    val mfaPolicy: MfaPolicy?,
+    @Json(name = "rbac_email_implicit_role_assignments")
+    val rbacEmailImplicitRoleAssignment: RBACImplicitRoleAssignment?,
 ) : Parcelable
 
 @Keep
@@ -350,40 +365,14 @@ public data class StrengthCheckResponseData(
     @Json(name = "breached_password")
     val breachedPassword: Boolean,
     @Json(name = "strength_policy")
-    val strengthPolicy: String,
+    val strengthPolicy: StrengthPolicy,
     @Json(name = "breach_detection_on_create")
     val breachDetectionOnCreate: Boolean,
     @Json(name = "zxcvbn_feedback")
-    val zxcvbnFeedback: ZXCVBNFeedback,
+    val zxcvbnFeedback: Feedback,
     @Json(name = "luds_feedback")
-    val ludsFeedback: LUDSFeedback,
-) : Parcelable {
-    @Keep
-    @JsonClass(generateAdapter = true)
-    @Parcelize
-    public data class ZXCVBNFeedback(
-        val suggestions: List<String>,
-        val warning: String,
-    ) : Parcelable
-
-    @Keep
-    @JsonClass(generateAdapter = true)
-    @Parcelize
-    public data class LUDSFeedback(
-        @Json(name = "has_lower_case")
-        val hasLowerCase: Boolean,
-        @Json(name = "has_upper_case")
-        val hasUpperCase: Boolean,
-        @Json(name = "has_digit")
-        val hasDigit: Boolean,
-        @Json(name = "has_symbol")
-        val hasSymbol: Boolean,
-        @Json(name = "missing_complexity")
-        val missingComplexity: Int,
-        @Json(name = "missing_characters")
-        val missingCharacters: Int,
-    ) : Parcelable
-}
+    val ludsFeedback: LUDSRequirements,
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -1004,13 +993,13 @@ public interface BaseSCIMConnection {
     public val baseUrl: String
 
     @Json(name = "scim_group_implicit_role_assignments")
-    public val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>
+    public val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>
 }
 
 @Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
-public data class SCIMGroupImplicitRoleAssignment(
+public data class RBACImplicitRoleAssignment(
     @Json(name = "role_id")
     val roleId: String,
     @Json(name = "group_id")
@@ -1033,7 +1022,7 @@ public data class SCIMConnection(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
     @Json(name = "bearer_token_last_four")
     val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
@@ -1061,7 +1050,7 @@ public data class SCIMConnectionWithBearerToken(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
     @Json(name = "bearer_token")
     val bearerToken: String,
     @Json(name = "bearer_token_expires_at")
@@ -1085,7 +1074,7 @@ public data class SCIMConnectionWithNextBearerToken(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
     @Json(name = "next_bearer_token")
     val nextBearerToken: String?,
     @Json(name = "next_bearer_token_expires_at")

@@ -4,16 +4,15 @@ import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
-import com.stytch.sdk.ui.shared.data.StytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchB2BProductConfig
+import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
+import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import com.stytch.sdk.ui.shared.theme.StytchTypography
 
 @Composable
@@ -30,7 +29,7 @@ internal fun StytchB2BThemeProvider(
     val view = LocalView.current
     val rememberedStytchTheme = remember { stytchTheme }
     val rememberedStytchTypography = remember { StytchTypography() }
-    val rememberedStytchProductConfig = remember { config.productConfig }
+    val rememberedStytchB2BProductConfig = remember { config.productConfig }
     val rememberedStytchBootstrapData = remember { config.bootstrapData }
 
     if (!view.isInEditMode) {
@@ -44,29 +43,9 @@ internal fun StytchB2BThemeProvider(
     CompositionLocalProvider(
         LocalStytchTheme provides rememberedStytchTheme,
         LocalStytchTypography provides rememberedStytchTypography,
-        LocalStytchProductConfig provides rememberedStytchProductConfig,
+        LocalStytchB2BProductConfig provides rememberedStytchB2BProductConfig,
         LocalStytchBootstrapData provides rememberedStytchBootstrapData,
     ) {
         content()
     }
 }
-
-internal val LocalStytchTheme: ProvidableCompositionLocal<StytchTheme> =
-    staticCompositionLocalOf {
-        StytchTheme.defaultLightTheme()
-    }
-
-internal val LocalStytchTypography: ProvidableCompositionLocal<StytchTypography> =
-    staticCompositionLocalOf {
-        StytchTypography()
-    }
-
-internal val LocalStytchProductConfig: ProvidableCompositionLocal<StytchB2BProductConfig> =
-    staticCompositionLocalOf {
-        StytchB2BProductConfig()
-    }
-
-internal val LocalStytchBootstrapData: ProvidableCompositionLocal<BootstrapData> =
-    staticCompositionLocalOf {
-        BootstrapData()
-    }

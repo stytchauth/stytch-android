@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2c.data
 
 import android.os.Parcelable
 import com.stytch.sdk.ui.shared.data.EmailState
+import com.stytch.sdk.ui.shared.data.PasswordState
 import com.stytch.sdk.ui.shared.data.PhoneNumberState
 import kotlinx.parcelize.Parcelize
 

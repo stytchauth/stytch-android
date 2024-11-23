@@ -17,6 +17,12 @@ public enum class EmailJitProvisioning {
 }
 
 @JsonClass(generateAdapter = false)
+public enum class OAuthTenantJitProvisioning {
+    RESTRICTED,
+    NOT_ALLOWED,
+}
+
+@JsonClass(generateAdapter = false)
 public enum class EmailInvites {
     ALL_ALLOWED,
     RESTRICTED,

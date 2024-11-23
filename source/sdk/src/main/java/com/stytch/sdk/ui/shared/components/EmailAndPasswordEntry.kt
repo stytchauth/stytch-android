@@ -11,8 +11,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2c.data.PasswordState
 import com.stytch.sdk.ui.shared.data.EmailState
+import com.stytch.sdk.ui.shared.data.PasswordState
 
 @Composable
 internal fun EmailAndPasswordEntry(
