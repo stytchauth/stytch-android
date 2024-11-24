@@ -34,19 +34,13 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             )
         }
         setContent {
-            val uiState = viewModel.uiState.collectAsState()
+            val uiState = viewModel.state.collectAsState()
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
                     state = uiState.value,
                     bootstrapData = uiConfig.bootstrapData,
                     productConfig = uiConfig.productConfig,
-                    performAuthenticationRequest = viewModel::performAuthenticationRequest,
-                    performGenericRequest = viewModel::performGenericRequest,
-                    updateEmailState = viewModel::updateEmailState,
-                    updatePasswordState = viewModel::updatePasswordState,
-                    setAuthFlowType = viewModel::setAuthFlowType,
-                    setActiveOrganization = viewModel::setActiveOrganization,
-                    setDiscoveredOrganizations = viewModel::setDiscoveredOrganizations,
+                    useCases = viewModel.useCases,
                 )
             }
         }

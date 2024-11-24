@@ -21,38 +21,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
-import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
-import com.stytch.sdk.b2b.network.models.OrganizationData
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.network.models.CommonAuthenticationData
-import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
+import com.stytch.sdk.ui.b2b.usecases.UseCases
+import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
-import com.stytch.sdk.ui.shared.data.EmailState
-import com.stytch.sdk.ui.shared.data.PasswordState
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
     state: B2BUIState,
-    performAuthenticationRequest: (suspend () -> StytchResult<CommonAuthenticationData>) -> Unit,
-    performGenericRequest: suspend (suspend () -> StytchResult<Any>) -> StytchResult<Any>,
-    updateEmailState: (EmailState) -> Unit,
-    updatePasswordState: (PasswordState) -> Unit,
-    setAuthFlowType: (AuthFlowType) -> Unit,
-    setActiveOrganization: (OrganizationData) -> Unit,
-    setDiscoveredOrganizations: (List<DiscoveredOrganization>) -> Unit,
     modifier: Modifier = Modifier,
     bootstrapData: BootstrapData,
     productConfig: StytchB2BProductConfig,
+    useCases: UseCases,
 ) {
     val navController = rememberNavController()
     val startDestination = Routes.Main
     LaunchedEffect(state.currentRoute) {
-        navController.navigate(state.currentRoute)
+        if (state.currentRoute != startDestination) {
+            navController.navigate(state.currentRoute)
+        }
     }
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -77,6 +68,18 @@ internal fun StytchB2BAuthenticationApp(
                 }
                 composable<Routes.Main> {
                     PageTitle(text = "Main")
+                    EmailAndPasswordEntry(
+                        emailState = state.emailState,
+                        onEmailAddressChanged = { useCases.useUpdateMemberEmailAddress(it) },
+                        passwordState = state.passwordState,
+                        onPasswordChanged = {
+                            useCases.useUpdateMemberPassword(it)
+                            useCases.usePasswordsStrengthCheck()
+                        },
+                        onSubmit = {
+                            println("DONE")
+                        },
+                    )
                 }
                 composable<Routes.MFAEnrollmentSelection> {
                     PageTitle(text = "MFAEnrollmentSelection")
