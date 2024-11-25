@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 
 internal class B2BAuthenticationViewModel(
-    // expose the savedstatehandle so that all sub-viewmodels use the same top-level one
+    // expose the savedstatehandle so that all viewmodels use the same top-level one
     val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel(savedStateHandle) {
     companion object {

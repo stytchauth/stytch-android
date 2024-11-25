@@ -32,7 +32,16 @@ public interface IB2BAuthDataWithMFA : CommonAuthenticationData {
     public val memberAuthenticated: Boolean
     public val intermediateSessionToken: String?
     public val mfaRequired: MFARequired?
+    public val primaryRequired: PrimaryRequired?
 }
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PrimaryRequired(
+    @Json(name = "allowed_auth_methods")
+    val allowedAuthMethods: List<AllowedAuthMethods>?,
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -116,6 +125,8 @@ public data class B2BEMLAuthenticateData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -278,6 +289,8 @@ public data class PasswordsAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -307,6 +320,8 @@ public data class EmailResetResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -336,6 +351,8 @@ public data class PasswordResetByExistingPasswordResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -434,6 +451,8 @@ public data class IntermediateSessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -461,6 +480,8 @@ public data class OrganizationCreateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -502,6 +523,8 @@ public data class SSOAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -529,6 +552,8 @@ public data class SessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -754,6 +779,8 @@ public data class OAuthAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -1290,6 +1317,8 @@ public data class B2BOTPsEmailAuthenticateResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "method_id")
     val methodId: String,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 

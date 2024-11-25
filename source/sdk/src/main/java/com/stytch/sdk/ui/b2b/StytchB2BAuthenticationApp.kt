@@ -25,7 +25,6 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.screens.TestScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchB2BProductConfig
@@ -69,7 +68,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "Error")
                 }
                 composable<Routes.Main> {
-                    TestScreen(savedStateHandle = savedStateHandle)
+                    PageTitle(text = "Main")
                 }
                 composable<Routes.MFAEnrollmentSelection> {
                     PageTitle(text = "MFAEnrollmentSelection")

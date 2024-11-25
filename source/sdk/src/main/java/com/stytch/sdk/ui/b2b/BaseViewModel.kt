@@ -9,6 +9,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.NavigateTo
 import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
 import kotlinx.coroutines.Dispatchers
@@ -51,11 +52,7 @@ internal open class BaseViewModel(
     private fun <T : CommonAuthenticationData> handleAuthenticationSuccessResponse(data: T) {
         when (data) {
             is IB2BAuthData -> dispatch(NavigateTo(state.value.postAuthScreen))
-            is IB2BAuthDataWithMFA -> handleMemberNeedsMFA(data)
+            is IB2BAuthDataWithMFA -> dispatch(HandleStepUpAuthentication(data))
         }
-    }
-
-    private fun handleMemberNeedsMFA(data: IB2BAuthDataWithMFA) {
-        // MFA Reducer logic goes here
     }
 }

@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2b.domain
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.NavigateTo
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
@@ -83,6 +84,9 @@ internal class B2BUIStateMachine(
                     state.mutate {
                         copy(currentRoute = action.route)
                     }
+                }
+                on<HandleStepUpAuthentication> { action, state ->
+                    handleResponseThatNeedsAdditionalAuthentication(state, action.response)
                 }
             }
         }

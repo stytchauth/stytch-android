@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.data
 
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
+import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
@@ -55,4 +56,8 @@ internal data class SetStytchError(
 
 internal data class NavigateTo(
     val route: Route,
+) : B2BUIAction
+
+internal data class HandleStepUpAuthentication(
+    val response: IB2BAuthDataWithMFA,
 ) : B2BUIAction
