@@ -1,17 +1,20 @@
 package com.stytch.sdk.ui.b2b.usecases
 
-import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
-import kotlinx.coroutines.CoroutineScope
+import com.stytch.sdk.ui.b2b.Dispatch
+import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
+import kotlinx.coroutines.flow.StateFlow
 
 internal class UseUpdateMemberPassword(
-    val scope: CoroutineScope,
-    override val stateMachine: B2BUIStateMachine,
-) : BaseUseCase(scope, stateMachine) {
+    private val state: StateFlow<B2BUIState>,
+    private val dispatch: Dispatch,
+) {
     operator fun invoke(password: String) {
-        val state = stateMachine.state.value
-        stateMachine.updatePasswordState(
-            state.passwordState.copy(
-                password = password,
+        dispatch(
+            UpdatePasswordState(
+                state.value.passwordState.copy(
+                    password = password,
+                ),
             ),
         )
     }

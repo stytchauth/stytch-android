@@ -1,93 +1,90 @@
 package com.stytch.sdk.ui.b2b.domain
 
-import androidx.lifecycle.SavedStateHandle
-import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
-import com.stytch.sdk.b2b.network.models.IB2BAuthData
-import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
-import com.stytch.sdk.b2b.network.models.OrganizationData
-import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.errors.StytchError
-import com.stytch.sdk.common.network.models.CommonAuthenticationData
-import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.MFAPrimaryInfoState
-import com.stytch.sdk.ui.b2b.data.MFASMSState
-import com.stytch.sdk.ui.b2b.data.MFATOTPState
-import com.stytch.sdk.ui.b2b.navigation.Route
-import com.stytch.sdk.ui.shared.data.EmailState
-import com.stytch.sdk.ui.shared.data.PasswordState
+import com.stytch.sdk.ui.b2b.data.NavigateTo
+import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
+import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
+import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
+import com.stytch.sdk.ui.b2b.data.SetLoading
+import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
+import com.stytch.sdk.ui.b2b.data.SetStytchError
+import com.stytch.sdk.ui.b2b.data.UpdateEmailState
+import com.stytch.sdk.ui.b2b.data.UpdateMfaPrimaryInfoState
+import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
+import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
+import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-internal class B2BUIStateMachine private constructor(
-    private val savedStateHandle: SavedStateHandle,
-) {
-    val state = savedStateHandle.getStateFlow(B2BUIState.SAVED_STATE_KEY, B2BUIState())
-
-    fun updateEmailState(emailState: EmailState) = state.value.copy(emailState = emailState).emit()
-
-    fun updatePasswordState(passwordState: PasswordState) = state.value.copy(passwordState = passwordState).emit()
-
-    fun setAuthFlowType(authFlowType: AuthFlowType) = state.value.copy(authFlowType = authFlowType).emit()
-
-    fun setActiveOrganization(organization: OrganizationData) =
-        state.value.copy(activeOrganization = organization).emit()
-
-    fun setDiscoveredOrganizations(discoveredOrganizations: List<DiscoveredOrganization>) =
-        state.value.copy(discoveredOrganizations = discoveredOrganizations).emit()
-
-    fun updateMfaPrimaryInfoState(mfaPrimaryInfoState: MFAPrimaryInfoState) =
-        state.value.copy(mfaPrimaryInfoState = mfaPrimaryInfoState).emit()
-
-    fun updateMfaSmsState(mfaSmsState: MFASMSState) = state.value.copy(mfaSSMSState = mfaSmsState).emit()
-
-    fun updateMfaTotpState(mfaTotpState: MFATOTPState) = state.value.copy(mfaTOTPState = mfaTotpState).emit()
-
-    fun setPostAuthScreen(route: Route) = state.value.copy(postAuthScreen = route).emit()
-
-    fun setLoading(value: Boolean) = state.value.copy(isLoading = value).emit()
-
-    fun setStytchError(stytchError: StytchError) = state.value.copy(stytchError = stytchError).emit()
-
-    fun setCurrentRoute(route: Route) = state.value.copy(currentRoute = route).emit()
-
-    fun <T : CommonAuthenticationData> handleAuthenticationResponse(result: StytchResult<T>) {
-        when (result) {
-            is StytchResult.Success -> handleAuthenticationSuccessResponse(result.value)
-            is StytchResult.Error -> handleAuthenticationErrorResponse(result.exception)
-        }
-    }
-
-    private fun <T : CommonAuthenticationData> handleAuthenticationSuccessResponse(data: T) {
-        when (data) {
-            is IB2BAuthData -> handleMemberIsFullyAuthenticated(data)
-            is IB2BAuthDataWithMFA -> handleMemberNeedsMFA(data)
-        }
-    }
-
-    private fun handleAuthenticationErrorResponse(error: StytchError) = setStytchError(error)
-
-    private fun handleMemberIsFullyAuthenticated(data: IB2BAuthData) = setCurrentRoute(state.value.postAuthScreen)
-
-    private fun handleMemberNeedsMFA(data: IB2BAuthDataWithMFA) {
-        // MFA Reducer logic goes here
-    }
-
-    private fun B2BUIState.emit() {
-        savedStateHandle[B2BUIState.SAVED_STATE_KEY] = this
-    }
-
-    companion object {
-        @Volatile
-        private var instance: B2BUIStateMachine? = null
-
-        fun getInstance(savedStateHandle: SavedStateHandle): B2BUIStateMachine {
-            if (instance == null) {
-                synchronized(this) {
-                    if (instance == null) {
-                        instance = B2BUIStateMachine(savedStateHandle)
+@OptIn(ExperimentalCoroutinesApi::class)
+internal class B2BUIStateMachine(
+    initialState: B2BUIState,
+) : FlowReduxStateMachine<B2BUIState, B2BUIAction>(initialState) {
+    init {
+        spec {
+            inState<B2BUIState> {
+                on<UpdateEmailState> { action, state ->
+                    state.mutate {
+                        copy(emailState = action.emailState)
+                    }
+                }
+                on<UpdatePasswordState> { action, state ->
+                    state.mutate {
+                        copy(passwordState = action.passwordState)
+                    }
+                }
+                on<SetAuthFlowType> { action, state ->
+                    state.mutate {
+                        copy(authFlowType = action.authFlowType)
+                    }
+                }
+                on<SetActiveOrganization> { action, state ->
+                    state.mutate {
+                        copy(activeOrganization = action.organization)
+                    }
+                }
+                on<SetDiscoveredOrganizations> { action, state ->
+                    state.mutate {
+                        copy(discoveredOrganizations = action.discoveredOrganizations)
+                    }
+                }
+                on<UpdateMfaPrimaryInfoState> { action, state ->
+                    state.mutate {
+                        copy(mfaPrimaryInfoState = action.mfaPrimaryInfoState)
+                    }
+                }
+                on<UpdateMfaSmsState> { action, state ->
+                    state.mutate {
+                        copy(mfaSMSState = action.mfaSmsState)
+                    }
+                }
+                on<UpdateMfaTotpState> { action, state ->
+                    state.mutate {
+                        copy(mfaTOTPState = action.mfaTotpState)
+                    }
+                }
+                on<SetPostAuthScreen> { action, state ->
+                    state.mutate {
+                        copy(postAuthScreen = action.route)
+                    }
+                }
+                on<SetLoading> { action, state ->
+                    state.mutate {
+                        copy(isLoading = action.value)
+                    }
+                }
+                on<SetStytchError> { action, state ->
+                    state.mutate {
+                        copy(stytchError = action.stytchError)
+                    }
+                }
+                on<NavigateTo> { action, state ->
+                    state.mutate {
+                        copy(currentRoute = action.route)
                     }
                 }
             }
-            return instance!!
         }
     }
 }

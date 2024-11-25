@@ -24,7 +24,7 @@ internal data class B2BUIState(
     val activeOrganization: OrganizationData? = null,
     val discoveredOrganizations: List<DiscoveredOrganization>? = null,
     val mfaPrimaryInfoState: MFAPrimaryInfoState? = null,
-    val mfaSSMSState: MFASMSState? = null,
+    val mfaSMSState: MFASMSState? = null,
     val mfaTOTPState: MFATOTPState? = null,
     val postAuthScreen: Route = Routes.Success,
 ) : Parcelable {

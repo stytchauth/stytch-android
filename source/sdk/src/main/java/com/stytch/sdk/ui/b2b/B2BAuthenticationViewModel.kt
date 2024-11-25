@@ -1,15 +1,21 @@
 package com.stytch.sdk.ui.b2b
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
-import com.stytch.sdk.ui.b2b.usecases.UseCases
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 
 internal class B2BAuthenticationViewModel(
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    private val stateMachine = B2BUIStateMachine.getInstance(savedStateHandle)
-    val state = stateMachine.state
-    val useCases = UseCases.getInstance(viewModelScope, stateMachine)
+    // expose the savedstatehandle so that all sub-viewmodels use the same top-level one
+    val savedStateHandle: SavedStateHandle,
+) : BaseViewModel(savedStateHandle) {
+    companion object {
+        val Factory: ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    B2BAuthenticationViewModel(createSavedStateHandle())
+                }
+            }
+    }
 }

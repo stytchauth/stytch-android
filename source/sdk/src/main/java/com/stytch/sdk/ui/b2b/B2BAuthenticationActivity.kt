@@ -12,11 +12,13 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal class B2BAuthenticationActivity : ComponentActivity() {
-    private val viewModel: B2BAuthenticationViewModel by viewModels()
+    private val viewModel: B2BAuthenticationViewModel by viewModels { B2BAuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchB2BUIConfig
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
@@ -34,13 +36,12 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             )
         }
         setContent {
-            val uiState = viewModel.state.collectAsState()
+            val state = viewModel.state.collectAsState()
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
-                    state = uiState.value,
-                    bootstrapData = uiConfig.bootstrapData,
-                    productConfig = uiConfig.productConfig,
-                    useCases = viewModel.useCases,
+                    state = state,
+                    dispatch = viewModel::dispatch,
+                    savedStateHandle = viewModel.savedStateHandle,
                 )
             }
         }

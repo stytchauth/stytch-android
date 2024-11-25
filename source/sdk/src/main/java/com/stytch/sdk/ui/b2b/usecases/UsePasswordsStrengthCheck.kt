@@ -5,29 +5,37 @@ import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.passwords.Passwords
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.common.network.models.Feedback
-import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
+import com.stytch.sdk.ui.b2b.Dispatch
+import com.stytch.sdk.ui.b2b.PerformRequest
+import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetStytchError
+import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
 import com.stytch.sdk.ui.shared.data.PasswordState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 internal class UsePasswordsStrengthCheck(
-    val scope: CoroutineScope,
-    override val stateMachine: B2BUIStateMachine,
-) : BaseUseCase(scope, stateMachine) {
+    private val scope: CoroutineScope,
+    private val state: StateFlow<B2BUIState>,
+    private val dispatch: Dispatch,
+    private val request: PerformRequest<StrengthCheckResponseData>,
+) {
     operator fun invoke() {
-        val state = stateMachine.state.value
-        scope.launch {
-            performGenericRequest {
+        scope.launch(Dispatchers.IO) {
+            request {
                 StytchB2BClient.passwords.strengthCheck(
                     Passwords.StrengthCheckParameters(
-                        email = state.emailState.emailAddress,
-                        password = state.passwordState.password,
+                        email = state.value.emailState.emailAddress,
+                        password = state.value.passwordState.password,
                     ),
                 )
             }.onSuccess {
-                stateMachine.updatePasswordState(it.toPasswordState(stateMachine.state.value.passwordState))
+                val newPasswordState = it.toPasswordState(state.value.passwordState)
+                dispatch(UpdatePasswordState(newPasswordState))
             }.onFailure {
-                stateMachine.setStytchError(it as StytchError)
+                dispatch(SetStytchError(it as StytchError))
             }
         }
     }

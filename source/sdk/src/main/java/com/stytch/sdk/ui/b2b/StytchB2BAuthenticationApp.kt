@@ -12,38 +12,40 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
-import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.usecases.UseCases
-import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
+import com.stytch.sdk.ui.b2b.screens.TestScreen
+import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
+import com.stytch.sdk.ui.shared.theme.LocalStytchB2BProductConfig
+import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
-    state: B2BUIState,
+    state: State<B2BUIState?>,
+    dispatch: Dispatch,
+    savedStateHandle: SavedStateHandle,
     modifier: Modifier = Modifier,
-    bootstrapData: BootstrapData,
-    productConfig: StytchB2BProductConfig,
-    useCases: UseCases,
 ) {
     val navController = rememberNavController()
+    val bootstrapData = LocalStytchBootstrapData.current
+    val productConfig = LocalStytchB2BProductConfig.current
     val startDestination = Routes.Main
-    LaunchedEffect(state.currentRoute) {
-        if (state.currentRoute != startDestination) {
-            navController.navigate(state.currentRoute)
-        }
+    val currentState = state.value ?: return
+    LaunchedEffect(currentState.currentRoute) {
+        navController.navigate(currentState.currentRoute)
     }
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -67,19 +69,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "Error")
                 }
                 composable<Routes.Main> {
-                    PageTitle(text = "Main")
-                    EmailAndPasswordEntry(
-                        emailState = state.emailState,
-                        onEmailAddressChanged = { useCases.useUpdateMemberEmailAddress(it) },
-                        passwordState = state.passwordState,
-                        onPasswordChanged = {
-                            useCases.useUpdateMemberPassword(it)
-                            useCases.usePasswordsStrengthCheck()
-                        },
-                        onSubmit = {
-                            println("DONE")
-                        },
-                    )
+                    TestScreen(savedStateHandle = savedStateHandle)
                 }
                 composable<Routes.MFAEnrollmentSelection> {
                     PageTitle(text = "MFAEnrollmentSelection")
@@ -135,6 +125,9 @@ internal fun StytchB2BAuthenticationApp(
                     )
                 }
             }
+        }
+        if (state.value?.isLoading == true) {
+            LoadingDialog()
         }
     }
 }
