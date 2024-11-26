@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 
 @Composable
 internal fun SocialLoginButton(

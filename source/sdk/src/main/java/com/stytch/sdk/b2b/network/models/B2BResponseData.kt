@@ -5,7 +5,10 @@ import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
+import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.common.network.models.IBasicData
+import com.stytch.sdk.common.network.models.LUDSRequirements
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -29,7 +32,16 @@ public interface IB2BAuthDataWithMFA : CommonAuthenticationData {
     public val memberAuthenticated: Boolean
     public val intermediateSessionToken: String?
     public val mfaRequired: MFARequired?
+    public val primaryRequired: PrimaryRequired?
 }
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PrimaryRequired(
+    @Json(name = "allowed_auth_methods")
+    val allowedAuthMethods: List<AllowedAuthMethods>?,
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -113,6 +125,8 @@ public data class B2BEMLAuthenticateData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -168,6 +182,35 @@ public data class MemberData(
     val untrustedMetadata: @RawValue Map<String, Any?>?,
     @Json(name = "sso_registrations")
     val ssoRegistrations: List<SSORegistration>,
+    @Json(name = "member_password_id")
+    val memberPasswordId: String?,
+    @Json(name = "email_address_verified")
+    val emailAddressVerified: Boolean,
+    @Json(name = "retired_email_addresses")
+    val retiredEmailAddresses: List<RetiredEmailAddress>?,
+    @Json(name = "is_breakglass")
+    val isBreakglass: Boolean,
+    @Json(name = "mfa_enrolled")
+    val mfaEnrolled: Boolean,
+    @Json(name = "mfa_phone_number")
+    val mfaPhoneNumber: String?,
+    @Json(name = "mfa_phone_number_verified")
+    val mfaPhoneNumberVerified: Boolean,
+    @Json(name = "default_mfa_method")
+    val defaultMfaMethod: String,
+    @Json(name = "totp_registration_id")
+    val totpRegistrationId: String?,
+    // val roles: List<MemberRole>?, TODO: Add this
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RetiredEmailAddress(
+    @Json(name = "email_id")
+    val emailId: String?,
+    @Json(name = "email_address")
+    val emailAddress: String?,
 ) : Parcelable
 
 @Keep
@@ -223,10 +266,22 @@ public data class OrganizationData(
     val emailJitProvisioning: EmailJitProvisioning?,
     @Json(name = "email_invites")
     val emailInvites: EmailInvites?,
+    @Json(name = "oauth_tenant_jit_provisioning")
+    val oauthTenantJitProvisioning: OAuthTenantJitProvisioning?,
+    @Json(name = "allowed_oauth_tenants")
+    val allowedOauthTenants: Map<String, List<String>>?,
     @Json(name = "auth_methods")
     val authMethods: AuthMethods?,
     @Json(name = "allowed_auth_methods")
     val allowedAuthMethods: List<AllowedAuthMethods>?,
+    @Json(name = "mfa_methods")
+    val mfaMethods: MfaMethods?,
+    @Json(name = "allowed_mfa_methods")
+    val allowedMfaMethods: List<MfaMethod>?,
+    @Json(name = "mfa_policy")
+    val mfaPolicy: MfaPolicy?,
+    @Json(name = "rbac_email_implicit_role_assignments")
+    val rbacEmailImplicitRoleAssignment: List<RBACEmailImplicitRoleAssignment>?,
 ) : Parcelable
 
 @Keep
@@ -263,6 +318,8 @@ public data class PasswordsAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -292,6 +349,8 @@ public data class EmailResetResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -321,6 +380,8 @@ public data class PasswordResetByExistingPasswordResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -350,40 +411,14 @@ public data class StrengthCheckResponseData(
     @Json(name = "breached_password")
     val breachedPassword: Boolean,
     @Json(name = "strength_policy")
-    val strengthPolicy: String,
+    val strengthPolicy: StrengthPolicy,
     @Json(name = "breach_detection_on_create")
     val breachDetectionOnCreate: Boolean,
     @Json(name = "zxcvbn_feedback")
-    val zxcvbnFeedback: ZXCVBNFeedback,
+    val zxcvbnFeedback: Feedback,
     @Json(name = "luds_feedback")
-    val ludsFeedback: LUDSFeedback,
-) : Parcelable {
-    @Keep
-    @JsonClass(generateAdapter = true)
-    @Parcelize
-    public data class ZXCVBNFeedback(
-        val suggestions: List<String>,
-        val warning: String,
-    ) : Parcelable
-
-    @Keep
-    @JsonClass(generateAdapter = true)
-    @Parcelize
-    public data class LUDSFeedback(
-        @Json(name = "has_lower_case")
-        val hasLowerCase: Boolean,
-        @Json(name = "has_upper_case")
-        val hasUpperCase: Boolean,
-        @Json(name = "has_digit")
-        val hasDigit: Boolean,
-        @Json(name = "has_symbol")
-        val hasSymbol: Boolean,
-        @Json(name = "missing_complexity")
-        val missingComplexity: Int,
-        @Json(name = "missing_characters")
-        val missingCharacters: Int,
-    ) : Parcelable
-}
+    val ludsFeedback: LUDSRequirements,
+) : Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -445,6 +480,8 @@ public data class IntermediateSessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -472,6 +509,8 @@ public data class OrganizationCreateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -513,6 +552,8 @@ public data class SSOAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -540,6 +581,8 @@ public data class SessionExchangeResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -765,6 +808,8 @@ public data class OAuthAuthenticateResponseData(
     override val intermediateSessionToken: String?,
     @Json(name = "mfa_required")
     override val mfaRequired: MFARequired?,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -1015,6 +1060,15 @@ public data class SCIMGroupImplicitRoleAssignment(
     val roleId: String,
     @Json(name = "group_id")
     val groupId: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACEmailImplicitRoleAssignment(
+    @Json(name = "role_id")
+    val roleId: String,
+    val domain: String,
 ) : Parcelable
 
 @Keep
@@ -1301,6 +1355,8 @@ public data class B2BOTPsEmailAuthenticateResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "method_id")
     val methodId: String,
+    @Json(name = "primary_required")
+    override val primaryRequired: PrimaryRequired?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 

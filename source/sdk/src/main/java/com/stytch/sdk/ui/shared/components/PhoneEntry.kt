@@ -32,8 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import com.stytch.sdk.ui.shared.utils.PhoneNumberVisualTransformation
 
 @OptIn(ExperimentalMaterial3Api::class)

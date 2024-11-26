@@ -1,8 +1,8 @@
-package com.stytch.sdk.ui.b2c.data
+package com.stytch.sdk.ui.shared.data
 
 import android.os.Parcelable
-import com.stytch.sdk.consumer.network.models.Feedback
-import com.stytch.sdk.consumer.network.models.StrengthPolicy
+import com.stytch.sdk.common.network.models.Feedback
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

@@ -26,7 +26,7 @@ import com.stytch.sdk.ui.b2c.data.OTPMethods
 import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.b2c.screens.MainScreen
-import com.stytch.sdk.ui.b2c.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 
 @Composable
 internal fun StytchAuthenticationApp(

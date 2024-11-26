@@ -6,20 +6,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.lifecycle.SavedStateHandle
-import cafe.adriel.voyager.androidx.AndroidScreen
+import androidx.compose.runtime.collectAsState
 import com.stytch.sdk.b2b.StytchB2BClient
-import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal class B2BAuthenticationActivity : ComponentActivity() {
     private val viewModel: B2BAuthenticationViewModel by viewModels { B2BAuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchB2BUIConfig
-    internal lateinit var savedStateHandle: SavedStateHandle
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         uiConfig = intent.getParcelableExtra(STYTCH_UI_CONFIG_KEY)
@@ -30,54 +29,20 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                 )
                 return@onCreate
             }
-        // log render_login_screen
         if (StytchB2BClient.isInitialized.value) {
             StytchB2BClient.events.logEvent(
-                eventName = "render_login_screen",
+                eventName = "render_b2b_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
             )
-            StytchB2BClient.member.onChange {
-                if (it is StytchObjectInfo.Available) {
-                    returnAuthenticationResult(StytchResult.Success(it.value))
-                }
-            }
         }
-        /* TBD
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel
-                    .eventFlow
-                    .collect {
-                        when (it) {
-                            is EventState.Authenticated -> returnAuthenticationResult(it.result)
-                            is EventState.Exit -> exitWithoutAuthenticating()
-                            is EventState.NavigationRequested -> renderApplicationAtScreen(it.navigationRoute.screen)
-                        }
-                    }
-            }
-        }
-         */
-        savedStateHandle = viewModel.savedStateHandle
-        renderApplicationAtScreen()
-    }
-
-    private fun renderApplicationAtScreen(screen: AndroidScreen? = null) {
         setContent {
+            val state = viewModel.state.collectAsState()
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
-                    bootstrapData = uiConfig.bootstrapData,
-                    screen = screen,
-                    productConfig = uiConfig.productConfig,
+                    state = state,
+                    dispatch = viewModel::dispatch,
+                    savedStateHandle = viewModel.savedStateHandle,
                 )
-            }
-        }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        if (intent.action == Intent.ACTION_VIEW) {
-            intent.data?.let {
-                viewModel.handleDeepLink(it, uiConfig.productConfig.sessionOptions)
             }
         }
     }
@@ -87,7 +52,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    internal fun returnAuthenticationResult(result: StytchResult<*>) {
+    private fun returnAuthenticationResult(result: StytchResult<*>) {
         if (StytchB2BClient.isInitialized.value) {
             when (result) {
                 is StytchResult.Success -> StytchB2BClient.events.logEvent("ui_authentication_success")
@@ -112,24 +77,9 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         finish()
     }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        intent: Intent?,
-    ) {
-        super.onActivityResult(requestCode, resultCode, intent)
-        when (requestCode) {
-            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID ->
-                intent?.let {
-                    viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
-                }
-        }
-    }
-
     internal companion object {
         internal const val STYTCH_UI_CONFIG_KEY = "STYTCH_B2B_UI_CONFIG"
         internal const val STYTCH_RESULT_KEY = "STYTCH_RESULT"
-        internal const val STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID = 5552
 
         internal fun createIntent(
             context: Context,

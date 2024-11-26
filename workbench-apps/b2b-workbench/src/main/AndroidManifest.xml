@@ -21,7 +21,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:label="@string/deep_link_title">
+        </activity>
+        <activity android:name="com.stytch.exampleapp.b2b.HeadlessWorkbenchActivity"  android:exported="true">
+            <intent-filter android:label="Headless">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -30,8 +32,16 @@
                     android:host="@string/host" />
             </intent-filter>
         </activity>
-        <activity android:name="com.stytch.exampleapp.b2b.HeadlessWorkbenchActivity"  android:exported="false" />
-        <activity android:name="com.stytch.exampleapp.b2b.UIWorkbenchActivity"  android:exported="false" />
+        <activity android:name="com.stytch.exampleapp.b2b.UIWorkbenchActivity"  android:exported="true">
+            <intent-filter android:label="UI">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="app"
+                    android:host="@string/host" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
