@@ -59,6 +59,7 @@ public enum class AllowedAuthMethods(
     HUBSPOT_OAUTH("hubspot_oauth"),
     GITHUB_OAUTH("github_oauth"),
     SLACK_OAUTH("slack_oauth"),
+    EMAIL_OTP("email_otp"),
 }
 
 @JsonClass(generateAdapter = false)

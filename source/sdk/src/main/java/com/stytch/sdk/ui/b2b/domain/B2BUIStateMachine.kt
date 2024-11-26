@@ -7,6 +7,7 @@ import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.NavigateTo
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
+import com.stytch.sdk.ui.b2b.data.SetDeeplinkToken
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
@@ -16,6 +17,7 @@ import com.stytch.sdk.ui.b2b.data.UpdateMfaPrimaryInfoState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
 import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
+import com.stytch.sdk.ui.b2b.data.UpdatePhoneNumberState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,6 +35,11 @@ internal class B2BUIStateMachine(
                 on<UpdatePasswordState> { action, state ->
                     state.mutate {
                         copy(passwordState = action.passwordState)
+                    }
+                }
+                on<UpdatePhoneNumberState> { action, state ->
+                    state.mutate {
+                        copy(phoneNumberState = action.phoneNumberState)
                     }
                 }
                 on<SetAuthFlowType> { action, state ->
@@ -78,6 +85,11 @@ internal class B2BUIStateMachine(
                 on<SetStytchError> { action, state ->
                     state.mutate {
                         copy(stytchError = action.stytchError)
+                    }
+                }
+                on<SetDeeplinkToken> { action, state ->
+                    state.mutate {
+                        copy(token = action.token)
                     }
                 }
                 on<NavigateTo> { action, state ->

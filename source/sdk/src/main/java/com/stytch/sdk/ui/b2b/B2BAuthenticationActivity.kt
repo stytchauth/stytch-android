@@ -15,7 +15,6 @@ import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal class B2BAuthenticationActivity : ComponentActivity() {
-    private val viewModel: B2BAuthenticationViewModel by viewModels { B2BAuthenticationViewModel.Factory }
     private lateinit var uiConfig: StytchB2BUIConfig
 
     @ExperimentalCoroutinesApi
@@ -33,6 +32,11 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             StytchB2BClient.events.logEvent(
                 eventName = "render_b2b_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
+            )
+        }
+        val viewModel: B2BAuthenticationViewModel by viewModels {
+            B2BAuthenticationViewModel.create(
+                uiConfig.productConfig,
             )
         }
         setContent {
