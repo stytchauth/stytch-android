@@ -20,7 +20,7 @@ internal class UseMagicLinksDiscoverySend(
                 StytchB2BClient.magicLinks.email.discoverySend(
                     B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
                         emailAddress = state.value.emailState.emailAddress,
-                        discoveryRedirectUrl = "", // TODO
+                        discoveryRedirectUrl = getRedirectUrl(),
                     ),
                 )
             }
