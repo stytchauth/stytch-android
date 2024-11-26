@@ -281,7 +281,7 @@ public data class OrganizationData(
     @Json(name = "mfa_policy")
     val mfaPolicy: MfaPolicy?,
     @Json(name = "rbac_email_implicit_role_assignments")
-    val rbacEmailImplicitRoleAssignment: List<RBACImplicitRoleAssignment>?,
+    val rbacEmailImplicitRoleAssignment: List<RBACEmailImplicitRoleAssignment>?,
 ) : Parcelable
 
 @Keep
@@ -1049,17 +1049,26 @@ public interface BaseSCIMConnection {
     public val baseUrl: String
 
     @Json(name = "scim_group_implicit_role_assignments")
-    public val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>
+    public val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>
 }
 
 @Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
-public data class RBACImplicitRoleAssignment(
+public data class SCIMGroupImplicitRoleAssignment(
     @Json(name = "role_id")
     val roleId: String,
     @Json(name = "group_id")
     val groupId: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RBACEmailImplicitRoleAssignment(
+    @Json(name = "role_id")
+    val roleId: String,
+    val domain: String,
 ) : Parcelable
 
 @Keep
@@ -1078,7 +1087,7 @@ public data class SCIMConnection(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "bearer_token_last_four")
     val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
@@ -1106,7 +1115,7 @@ public data class SCIMConnectionWithBearerToken(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "bearer_token")
     val bearerToken: String,
     @Json(name = "bearer_token_expires_at")
@@ -1130,7 +1139,7 @@ public data class SCIMConnectionWithNextBearerToken(
     @Json(name = "base_url")
     override val baseUrl: String,
     @Json(name = "scim_group_implicit_role_assignments")
-    override val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>,
+    override val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>,
     @Json(name = "next_bearer_token")
     val nextBearerToken: String?,
     @Json(name = "next_bearer_token_expires_at")

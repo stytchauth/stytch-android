@@ -51,10 +51,10 @@ import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.network.models.PasswordResetByExistingPasswordResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
-import com.stytch.sdk.b2b.network.models.RBACImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.RecoveryCodeGetResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRecoverResponseData
 import com.stytch.sdk.b2b.network.models.RecoveryCodeRotateResponseData
+import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
 import com.stytch.sdk.b2b.network.models.SMSAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SSOAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
@@ -1140,7 +1140,7 @@ internal object StytchB2BApi {
             connectionId: String,
             displayName: String?,
             identityProvider: String?,
-            scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>?,
+            scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
         ): SCIMUpdateConnectionResponse =
             safeB2BApiCall {
                 apiService.scimUpdateConnection(

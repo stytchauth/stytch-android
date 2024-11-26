@@ -8,7 +8,7 @@ import com.stytch.sdk.b2b.SCIMRotateCancelResponse
 import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
 import com.stytch.sdk.b2b.SCIMRotateStartResponse
 import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
-import com.stytch.sdk.b2b.network.models.RBACImplicitRoleAssignment
+import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -38,7 +38,7 @@ public interface SCIM {
         val connectionId: String,
         val displayName: String? = null,
         val identityProvider: String? = null,
-        val scimGroupImplicitRoleAssignments: List<RBACImplicitRoleAssignment>? = null,
+        val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>? = null,
     )
 
     /**
