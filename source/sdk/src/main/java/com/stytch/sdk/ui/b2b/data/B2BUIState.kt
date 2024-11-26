@@ -27,6 +27,7 @@ internal data class B2BUIState(
     val mfaSMSState: MFASMSState? = null,
     val mfaTOTPState: MFATOTPState? = null,
     val postAuthScreen: Route = Routes.Success,
+    val token: String? = null,
 ) : Parcelable {
     internal companion object {
         const val SAVED_STATE_KEY = "StytchB2BUIState"

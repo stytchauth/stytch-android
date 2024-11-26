@@ -63,6 +63,10 @@ internal data class SetB2BError(
     val b2bError: B2BErrorType,
 ) : B2BUIAction
 
+internal data class SetDeeplinkToken(
+    val token: String?,
+) : B2BUIAction
+
 internal data class NavigateTo(
     val route: Route,
 ) : B2BUIAction
