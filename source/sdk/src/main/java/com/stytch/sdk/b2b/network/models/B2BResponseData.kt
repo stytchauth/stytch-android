@@ -182,6 +182,35 @@ public data class MemberData(
     val untrustedMetadata: @RawValue Map<String, Any?>?,
     @Json(name = "sso_registrations")
     val ssoRegistrations: List<SSORegistration>,
+    @Json(name = "member_password_id")
+    val memberPasswordId: String?,
+    @Json(name = "email_address_verified")
+    val emailAddressVerified: Boolean,
+    @Json(name = "retired_email_addresses")
+    val retiredEmailAddresses: List<RetiredEmailAddress>?,
+    @Json(name = "is_breakglass")
+    val isBreakglass: Boolean,
+    @Json(name = "mfa_enrolled")
+    val mfaEnrolled: Boolean,
+    @Json(name = "mfa_phone_number")
+    val mfaPhoneNumber: String?,
+    @Json(name = "mfa_phone_number_verified")
+    val mfaPhoneNumberVerified: Boolean,
+    @Json(name = "default_mfa_method")
+    val defaultMfaMethod: String,
+    @Json(name = "totp_registration_id")
+    val totpRegistrationId: String?,
+    // val roles: List<MemberRole>?, TODO: Add this
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class RetiredEmailAddress(
+    @Json(name = "email_id")
+    val emailId: String?,
+    @Json(name = "email_address")
+    val emailAddress: String?,
 ) : Parcelable
 
 @Keep
@@ -252,7 +281,7 @@ public data class OrganizationData(
     @Json(name = "mfa_policy")
     val mfaPolicy: MfaPolicy?,
     @Json(name = "rbac_email_implicit_role_assignments")
-    val rbacEmailImplicitRoleAssignment: RBACImplicitRoleAssignment?,
+    val rbacEmailImplicitRoleAssignment: List<RBACImplicitRoleAssignment>?,
 ) : Parcelable
 
 @Keep
