@@ -16,6 +16,7 @@ import com.stytch.sdk.ui.b2b.data.UpdateMfaPrimaryInfoState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
 import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
+import com.stytch.sdk.ui.b2b.data.UpdatePhoneNumberState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,6 +34,11 @@ internal class B2BUIStateMachine(
                 on<UpdatePasswordState> { action, state ->
                     state.mutate {
                         copy(passwordState = action.passwordState)
+                    }
+                }
+                on<UpdatePhoneNumberState> { action, state ->
+                    state.mutate {
+                        copy(phoneNumberState = action.phoneNumberState)
                     }
                 }
                 on<SetAuthFlowType> { action, state ->

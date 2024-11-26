@@ -2,11 +2,12 @@ package com.stytch.sdk.ui.b2b.data
 
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
-import com.stytch.sdk.b2b.network.models.OrganizationData
+import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.shared.data.EmailState
 import com.stytch.sdk.ui.shared.data.PasswordState
+import com.stytch.sdk.ui.shared.data.PhoneNumberState
 
 internal sealed interface B2BUIAction
 
@@ -18,12 +19,16 @@ internal data class UpdatePasswordState(
     val passwordState: PasswordState,
 ) : B2BUIAction
 
+internal data class UpdatePhoneNumberState(
+    val phoneNumberState: PhoneNumberState,
+) : B2BUIAction
+
 internal data class SetAuthFlowType(
     val authFlowType: AuthFlowType,
 ) : B2BUIAction
 
 internal data class SetActiveOrganization(
-    val organization: OrganizationData,
+    val organization: InternalOrganizationData,
 ) : B2BUIAction
 
 internal data class SetDiscoveredOrganizations(
@@ -52,6 +57,10 @@ internal data class SetLoading(
 
 internal data class SetStytchError(
     val stytchError: StytchError,
+) : B2BUIAction
+
+internal data class SetB2BError(
+    val b2bError: B2BErrorType,
 ) : B2BUIAction
 
 internal data class NavigateTo(

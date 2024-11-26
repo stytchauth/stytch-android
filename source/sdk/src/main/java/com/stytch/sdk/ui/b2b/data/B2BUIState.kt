@@ -2,7 +2,7 @@ package com.stytch.sdk.ui.b2b.data
 
 import android.os.Parcelable
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
-import com.stytch.sdk.b2b.network.models.OrganizationData
+import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -21,7 +21,7 @@ internal data class B2BUIState(
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),
     val passwordState: PasswordState = PasswordState(),
     val authFlowType: AuthFlowType = AuthFlowType.ORGANIZATION,
-    val activeOrganization: OrganizationData? = null,
+    val activeOrganization: InternalOrganizationData? = null,
     val discoveredOrganizations: List<DiscoveredOrganization>? = null,
     val mfaPrimaryInfoState: MFAPrimaryInfoState? = null,
     val mfaSMSState: MFASMSState? = null,
