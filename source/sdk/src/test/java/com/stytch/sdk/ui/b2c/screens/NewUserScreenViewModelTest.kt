@@ -4,12 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.CreateResponse
-import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
-import com.stytch.sdk.consumer.network.models.StrengthPolicy
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails

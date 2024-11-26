@@ -2,7 +2,7 @@ package com.stytch.sdk.ui.b2b.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.sql.Date
+import java.util.Date
 
 @Parcelize
 internal data class MFASMSState(

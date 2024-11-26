@@ -3,11 +3,11 @@ package com.stytch.sdk.ui.b2c.screens
 import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.network.models.Feedback
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.network.models.Feedback
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
-import com.stytch.sdk.consumer.network.models.StrengthPolicy
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.shared.data.EmailState
 import io.mockk.MockKAnnotations

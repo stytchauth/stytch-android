@@ -76,6 +76,7 @@ android {
             'stytchOAuthRedirectScheme': 'test://',
             'stytchOAuthRedirectHost': 'oauth',
             'STYTCH_PUBLIC_TOKEN': 'test',
+            'STYTCH_B2B_PUBLIC_TOKEN': 'test'
         ]
     }
     unitTestVariants.all {
@@ -83,6 +84,7 @@ android {
             'stytchOAuthRedirectScheme': 'test://',
             'stytchOAuthRedirectHost': 'oauth',
             'STYTCH_PUBLIC_TOKEN': 'test',
+            'STYTCH_B2B_PUBLIC_TOKEN': 'test'
         ]
     }
 }
