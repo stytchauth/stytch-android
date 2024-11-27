@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.TestScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
@@ -46,7 +47,10 @@ internal fun StytchB2BAuthenticationApp(
         createViewModel(modelClass as Class<ViewModel>) as T
 
     LaunchedEffect(state.value.currentRoute) {
-        navController.navigate(state.value.currentRoute)
+        state.value.currentRoute?.let {
+            navController.navigate(it)
+            dispatch(SetNextRoute(null))
+        }
     }
     Surface(
         modifier = modifier.fillMaxSize(),

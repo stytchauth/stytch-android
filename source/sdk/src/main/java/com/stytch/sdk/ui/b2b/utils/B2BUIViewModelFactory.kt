@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.screens.TestScreenViewModel
-import com.stytch.sdk.ui.b2b.screens.TestScreenViewModel2
 import kotlinx.coroutines.flow.StateFlow
 
 internal class B2BUIViewModelFactory(
@@ -15,7 +14,6 @@ internal class B2BUIViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when (modelClass) {
             TestScreenViewModel::class.java -> TestScreenViewModel(state, dispatchAction) as T
-            TestScreenViewModel2::class.java -> TestScreenViewModel2(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }

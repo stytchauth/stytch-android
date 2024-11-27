@@ -8,7 +8,7 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.NavigateTo
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordsStrengthCheck
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
@@ -43,7 +43,7 @@ internal fun TestScreen(
                 viewModel.usePasswordsStrengthCheck()
             },
             onSubmit = {
-                viewModel.dispatch(NavigateTo(Routes.Success))
+                viewModel.dispatch(SetNextRoute(Routes.Success))
             },
         )
     }

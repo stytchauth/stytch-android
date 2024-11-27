@@ -6,7 +6,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.NavigateTo
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +30,7 @@ internal class UseOTPSMSSend(
                     ),
                 )
             }.onSuccess {
-                dispatch(NavigateTo(Routes.SMSOTPEntry))
+                dispatch(SetNextRoute(Routes.SMSOTPEntry))
             }
         }
     }
