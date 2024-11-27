@@ -1,6 +1,5 @@
 package com.stytch.sdk.ui.b2b
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
@@ -11,36 +10,18 @@ import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.NavigateTo
-import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
-import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal open class BaseViewModel(
-    savedStateHandle: SavedStateHandle,
-    internal val productConfig: StytchB2BProductConfig,
+    private val state: StateFlow<B2BUIState>,
+    private val dispatchAction: suspend (B2BUIAction) -> Unit,
 ) : ViewModel() {
-    val state =
-        savedStateHandle.getStateFlow(
-            B2BUIState.SAVED_STATE_KEY,
-            B2BUIState(
-                uiIncludedMfaMethods = productConfig.mfaProductInclude,
-            ),
-        )
-    private val stateMachine = B2BUIStateMachine(state.value)
-
-    init {
-        viewModelScope.launch {
-            stateMachine.state.collect { newState ->
-                savedStateHandle[B2BUIState.SAVED_STATE_KEY] = newState
-            }
-        }
-    }
-
     internal fun dispatch(action: B2BUIAction) {
         viewModelScope.launch {
-            stateMachine.dispatch(action)
+            dispatchAction(action)
         }
     }
 

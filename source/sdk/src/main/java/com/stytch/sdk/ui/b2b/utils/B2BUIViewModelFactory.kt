@@ -1,17 +1,21 @@
 package com.stytch.sdk.ui.b2b.utils
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.data.B2BUIAction
+import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.screens.TestScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.TestScreenViewModel2
+import kotlinx.coroutines.flow.StateFlow
 
-public class B2BUIViewModelFactory(
-    private val savedStateHandle: SavedStateHandle,
-    private val productConfig: StytchB2BProductConfig,
+internal class B2BUIViewModelFactory(
+    private val state: StateFlow<B2BUIState>,
+    private val dispatchAction: suspend (B2BUIAction) -> Unit,
 ) : ViewModelProvider.AndroidViewModelFactory() {
-    public override fun <T : ViewModel> create(modelClass: Class<T>): T =
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when (modelClass) {
-            // TestScreenViewModel::class.java -> TestScreenViewModel(savedStateHandle) as T
+            TestScreenViewModel::class.java -> TestScreenViewModel(state, dispatchAction) as T
+            TestScreenViewModel2::class.java -> TestScreenViewModel2(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }
