@@ -54,6 +54,7 @@ private fun handleAdditionalPrimaryAuthRequired(
                 activeOrganization = response.organization.toInternalOrganizationData(),
                 emailState = emailState.copy(emailAddress = response.member.email, validEmail = true),
                 currentRoute = Routes.Main,
+                primaryAuthMethods = primaryAuthMethods,
                 mfaPrimaryInfoState =
                     MFAPrimaryInfoState(
                         enrolledMfaMethods = emptyList(),

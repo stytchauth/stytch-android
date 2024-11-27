@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.data
 
 import android.os.Parcelable
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.b2b.network.models.MfaMethod
@@ -31,6 +32,7 @@ internal data class B2BUIState(
     val token: String? = null,
     val b2BErrorType: B2BErrorType? = null,
     val uiIncludedMfaMethods: List<MfaMethod> = emptyList(),
+    val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
 ) : Parcelable {
     internal companion object {
         const val SAVED_STATE_KEY = "StytchB2BUIState"
