@@ -134,6 +134,13 @@ private fun handleUserIsEnrolledInMfa(
                     currentRoute = Routes.TOTPEntry,
                 )
             }
+            MfaMethod.NONE -> {
+                // We should never get here, but just in case, we'll send them to enrollment selection
+                copy(
+                    mfaPrimaryInfoState = mfaPrimaryInfoState,
+                    currentRoute = Routes.MFAEnrollmentSelection,
+                )
+            }
         }
     }
 }
