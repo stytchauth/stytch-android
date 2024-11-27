@@ -9,6 +9,7 @@ import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkToken
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
+import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.data.SetStytchError
@@ -85,6 +86,11 @@ internal class B2BUIStateMachine(
                 on<SetStytchError> { action, state ->
                     state.mutate {
                         copy(stytchError = action.stytchError)
+                    }
+                }
+                on<SetGenericError> { action, state ->
+                    state.mutate {
+                        copy(errorToastText = action.errorText)
                     }
                 }
                 on<SetDeeplinkToken> { action, state ->

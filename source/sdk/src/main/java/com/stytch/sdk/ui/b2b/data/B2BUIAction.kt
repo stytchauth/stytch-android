@@ -56,11 +56,15 @@ internal data class SetLoading(
 ) : B2BUIAction
 
 internal data class SetStytchError(
-    val stytchError: StytchError,
+    val stytchError: StytchError?,
 ) : B2BUIAction
 
 internal data class SetB2BError(
-    val b2bError: B2BErrorType,
+    val b2bError: B2BErrorType?,
+) : B2BUIAction
+
+internal data class SetGenericError(
+    val errorText: String?,
 ) : B2BUIAction
 
 internal data class SetDeeplinkToken(
