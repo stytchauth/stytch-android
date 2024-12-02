@@ -68,6 +68,7 @@ public enum class MfaMethod(
 ) : IEnumValue {
     SMS("sms_otp"),
     TOTP("totp"),
+    NONE(""),
 }
 
 @JsonClass(generateAdapter = false)

@@ -21,7 +21,13 @@ internal open class BaseViewModel(
     savedStateHandle: SavedStateHandle,
     internal val productConfig: StytchB2BProductConfig,
 ) : ViewModel() {
-    val state = savedStateHandle.getStateFlow(B2BUIState.SAVED_STATE_KEY, B2BUIState())
+    val state =
+        savedStateHandle.getStateFlow(
+            B2BUIState.SAVED_STATE_KEY,
+            B2BUIState(
+                uiIncludedMfaMethods = productConfig.mfaProductInclude,
+            ),
+        )
     private val stateMachine = B2BUIStateMachine(state.value)
 
     init {
