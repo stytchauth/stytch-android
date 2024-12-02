@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2b.data
 import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.ui.shared.data.SessionOptions
 import kotlinx.parcelize.Parcelize
 
@@ -27,9 +28,9 @@ public data class StytchB2BProductConfig
         val directLoginForSingleMembership: DirectLoginForSingleMembershipOptions? = null,
         val disableCreateOrganization: Boolean = false,
         val mfaProductOrder: List<StytchB2BMFAProduct> = emptyList(),
-        val mfaProductInclude: List<StytchB2BMFAProduct> =
+        val mfaProductInclude: List<MfaMethod> =
             listOf(
-                StytchB2BMFAProduct.SMS,
-                StytchB2BMFAProduct.TOTP,
+                MfaMethod.SMS,
+                MfaMethod.TOTP,
             ),
     ) : Parcelable

@@ -197,7 +197,7 @@ public data class MemberData(
     @Json(name = "mfa_phone_number_verified")
     val mfaPhoneNumberVerified: Boolean,
     @Json(name = "default_mfa_method")
-    val defaultMfaMethod: String,
+    val defaultMfaMethod: MfaMethod?,
     @Json(name = "totp_registration_id")
     val totpRegistrationId: String?,
     // val roles: List<MemberRole>?, TODO: Add this
