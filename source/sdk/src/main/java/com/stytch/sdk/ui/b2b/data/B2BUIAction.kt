@@ -71,8 +71,8 @@ internal data class SetDeeplinkToken(
     val token: String?,
 ) : B2BUIAction
 
-internal data class NavigateTo(
-    val route: Route,
+internal data class SetNextRoute(
+    val route: Route?,
 ) : B2BUIAction
 
 internal data class HandleStepUpAuthentication(

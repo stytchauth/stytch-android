@@ -35,17 +35,15 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             )
         }
         val viewModel: B2BAuthenticationViewModel by viewModels {
-            B2BAuthenticationViewModel.create(
-                uiConfig.productConfig,
-            )
+            B2BAuthenticationViewModel.create(uiConfig.productConfig)
         }
         setContent {
-            val state = viewModel.state.collectAsState()
+            val state = viewModel.stateFlow.collectAsState()
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
                     state = state,
                     dispatch = viewModel::dispatch,
-                    savedStateHandle = viewModel.savedStateHandle,
+                    createViewModel = viewModel::createViewModel,
                 )
             }
         }

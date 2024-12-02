@@ -4,13 +4,13 @@ import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
-import com.stytch.sdk.ui.b2b.data.NavigateTo
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkToken
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetLoading
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.data.UpdateEmailState
@@ -98,7 +98,7 @@ internal class B2BUIStateMachine(
                         copy(token = action.token)
                     }
                 }
-                on<NavigateTo> { action, state ->
+                on<SetNextRoute> { action, state ->
                     state.mutate {
                         copy(currentRoute = action.route)
                     }
