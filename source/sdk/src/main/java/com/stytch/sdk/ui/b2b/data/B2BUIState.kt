@@ -15,7 +15,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class B2BUIState(
-    val currentRoute: Route? = Routes.Main,
+    val currentRoute: Route? = null,
     val isLoading: Boolean = false,
     val stytchError: StytchError? = null,
     val errorToastText: String? = null,

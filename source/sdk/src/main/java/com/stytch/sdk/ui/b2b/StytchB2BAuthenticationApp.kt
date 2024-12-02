@@ -26,6 +26,7 @@ import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
+import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.TestScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -71,7 +72,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "EmailConfirmation")
                 }
                 composable<Routes.Error> {
-                    PageTitle(text = "Error")
+                    ErrorScreen(state = state)
                 }
                 composable<Routes.Main> {
                     TestScreen(state = state, createViewModel = ::createViewModelHelper)
