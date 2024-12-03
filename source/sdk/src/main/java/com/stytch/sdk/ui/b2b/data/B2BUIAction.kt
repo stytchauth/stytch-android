@@ -78,3 +78,7 @@ internal data class SetNextRoute(
 internal data class HandleStepUpAuthentication(
     val response: IB2BAuthDataWithMFA,
 ) : B2BUIAction
+
+internal data class SetIsSearchingForOrganizationBySlug(
+    val isSearchingForOrganizationBySlug: Boolean,
+) : B2BUIAction

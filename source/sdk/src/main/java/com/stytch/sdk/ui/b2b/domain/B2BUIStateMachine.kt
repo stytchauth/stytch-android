@@ -6,9 +6,11 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkToken
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetGenericError
+import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
@@ -19,6 +21,7 @@ import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
 import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
 import com.stytch.sdk.ui.b2b.data.UpdatePhoneNumberState
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -93,6 +96,14 @@ internal class B2BUIStateMachine(
                         copy(errorToastText = action.errorText)
                     }
                 }
+                on<SetB2BError> { action, state ->
+                    state.mutate {
+                        copy(
+                            currentRoute = Routes.Error,
+                            b2BErrorType = action.b2bError,
+                        )
+                    }
+                }
                 on<SetDeeplinkToken> { action, state ->
                     state.mutate {
                         copy(token = action.token)
@@ -105,6 +116,13 @@ internal class B2BUIStateMachine(
                 }
                 on<HandleStepUpAuthentication> { action, state ->
                     handleResponseThatNeedsAdditionalAuthentication(state, action.response)
+                }
+                on<SetIsSearchingForOrganizationBySlug> { action, state ->
+                    state.mutate {
+                        copy(
+                            isSearchingForOrganizationBySlug = action.isSearchingForOrganizationBySlug,
+                        )
+                    }
                 }
             }
         }

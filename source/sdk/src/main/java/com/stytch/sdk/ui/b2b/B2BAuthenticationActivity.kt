@@ -6,10 +6,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,6 +41,24 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         }
         setContent {
             val state = viewModel.stateFlow.collectAsState()
+            val organizationSlug = uiConfig.productConfig.organizationSlug
+            val activeOrganization = state.value.activeOrganization
+            val isSearchingForOrganizationBySlug = state.value.isSearchingForOrganizationBySlug
+            val authFlowType = state.value.authFlowType
+            LaunchedEffect(
+                organizationSlug,
+                activeOrganization,
+                isSearchingForOrganizationBySlug,
+                authFlowType,
+            ) {
+                if (organizationSlug != null &&
+                    activeOrganization == null &&
+                    !isSearchingForOrganizationBySlug &&
+                    authFlowType == AuthFlowType.ORGANIZATION
+                ) {
+                    viewModel.performInitialOrgBySlugSearch(organizationSlug)
+                }
+            }
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
                     state = state,
