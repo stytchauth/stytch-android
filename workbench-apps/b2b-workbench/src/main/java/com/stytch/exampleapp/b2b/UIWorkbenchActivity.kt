@@ -61,6 +61,20 @@ class UIWorkbenchActivity : ComponentActivity() {
                 )
                 onAuthenticated(::onAuthentication)
             }.build()
+    private val noEMLNoMFA =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        products = defaultConfig.products.filterNot { it == StytchB2BProduct.EMAIL_MAGIC_LINKS },
+                        organizationSlug = "no-mfa",
+                        authFlowType = AuthFlowType.ORGANIZATION,
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
     private val enforcedMfaOrgConfig =
         StytchB2BUI
             .Builder()
@@ -96,6 +110,9 @@ class UIWorkbenchActivity : ComponentActivity() {
                 }
                 Button(onClick = noMfaOrgConfig::authenticate) {
                     Text("Launch NoMFA Org-Specific Authentication")
+                }
+                Button(onClick = noEMLNoMFA::authenticate) {
+                    Text("Launch NoMFA with No EML Org-Specific Authentication")
                 }
                 Button(onClick = enforcedMfaOrgConfig::authenticate) {
                     Text("Launch Enforced-Mfa Org-Specific Authentication")

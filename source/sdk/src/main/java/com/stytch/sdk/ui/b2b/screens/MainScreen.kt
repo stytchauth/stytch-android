@@ -1,45 +1,103 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import android.app.Activity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import coil3.compose.AsyncImage
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.B2BOAuthProviders
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ProductComponent
+import com.stytch.sdk.ui.b2b.data.SetLoading
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.data.generateProductComponentsOrdering
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseEffectiveAuthConfig
-import com.stytch.sdk.ui.b2b.usecases.UsePasswordsStrengthCheck
+import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksDiscoverySend
+import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksEmailLoginOrSignup
+import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
+import com.stytch.sdk.ui.b2b.usecases.UseOAuthStart
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
+import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
+import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
+import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
+import com.stytch.sdk.ui.shared.components.EmailEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
+import com.stytch.sdk.ui.shared.components.SocialLoginButton
+import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 internal class MainScreenViewModel(
-    state: StateFlow<B2BUIState>,
+    internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction, productConfig) {
+    val useGetEffectiveAuthConfig = UseEffectiveAuthConfig(state, productConfig)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
-    val usePasswordsStrengthCheck = UsePasswordsStrengthCheck(viewModelScope, state, ::dispatch, ::request)
-    val useGetEffectiveAuthConfig = UseEffectiveAuthConfig(state, productConfig)
+    val useMagicLinksEmailLoginOrSignup =
+        UseMagicLinksEmailLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val useMagicLinksDiscoverySend = UseMagicLinksDiscoverySend(viewModelScope, state, ::dispatch, ::request)
+    val useSSOStart = UseSSOStart()
+    val useOAuthStart = UseOAuthStart(state)
+    val useSearchMember = UseSearchMember(::request)
+    val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, productConfig, ::request)
+    val useNonMemberPasswordReset =
+        UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
+
+    fun handleEmailPasswordSubmit() {
+        val emailAddress = state.value.emailState.emailAddress
+        val organization = state.value.activeOrganization
+        if (emailAddress.isBlank() || organization == null) return
+        viewModelScope.launch {
+            dispatch(SetLoading(true))
+            useSearchMember(
+                emailAddress = emailAddress,
+                organizationId = organization.organizationId,
+            ).onSuccess { response ->
+                dispatch(SetLoading(false))
+                if (!response.member?.memberPasswordId.isNullOrEmpty()) {
+                    usePasswordsAuthenticate()
+                } else {
+                    useNonMemberPasswordReset()
+                }
+            }.onFailure {
+                dispatch(SetLoading(false))
+            }
+        }
+    }
 }
 
 @Composable
@@ -54,6 +112,7 @@ internal fun MainScreen(
     val authFlowType = state.value.authFlowType
     val organization = state.value.activeOrganization
     val products = viewModel.useGetEffectiveAuthConfig.products.toList()
+    val oauthProviderSettings = viewModel.useGetEffectiveAuthConfig.oauthProviderSettings.toList()
     val productComponentsOrdering = products.generateProductComponentsOrdering(authFlowType, organization)
     val title =
         when (authFlowType) {
@@ -62,6 +121,7 @@ internal fun MainScreen(
         }
     val showVerifyEmailCopy = emailAddress.isNotEmpty() && emailVerified == false && primaryAuthMethods.isNotEmpty()
     val theme = LocalStytchTheme.current
+    val context = LocalContext.current as Activity
     Column {
         Row {
             AsyncImage(
@@ -88,14 +148,94 @@ internal fun MainScreen(
         }
         productComponentsOrdering.map { productComponent: ProductComponent ->
             when (productComponent) {
-                ProductComponent.MagicLinkEmailForm -> BodyText(text = "MagicLinkEmailForm")
-                ProductComponent.MagicLinkEmailDiscoveryForm -> BodyText(text = "MagicLinkEmailDiscoveryForm")
-                ProductComponent.OAuthButtons -> BodyText(text = "OAuth buttons")
-                ProductComponent.SSOButtons -> BodyText(text = "SSO buttons")
-                ProductComponent.PasswordsEmailForm -> BodyText(text = "PasswordsEmailForm")
-                ProductComponent.PasswordEMLCombined -> BodyText(text = "PasswordEMLCombined")
+                ProductComponent.MagicLinkEmailForm -> {
+                    EmailEntry(
+                        emailState = state.value.emailState,
+                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
+                        onEmailAddressSubmit = { viewModel.useMagicLinksEmailLoginOrSignup() },
+                    )
+                }
+                ProductComponent.MagicLinkEmailDiscoveryForm -> {
+                    EmailEntry(
+                        emailState = state.value.emailState,
+                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
+                        onEmailAddressSubmit = { viewModel.useMagicLinksDiscoverySend() },
+                    )
+                }
+                ProductComponent.OAuthButtons -> {
+                    oauthProviderSettings.map { provider ->
+                        SocialLoginButton(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                            iconDrawable = provider.type.toPainterResource(),
+                            iconDescription = provider.type.name,
+                            text = "Continue with ${provider.type.name}",
+                            onClick = { viewModel.useOAuthStart(context = context, providerConfig = provider) },
+                        )
+                    }
+                }
+                ProductComponent.SSOButtons -> {
+                    organization?.ssoActiveConnections?.map { provider ->
+                        StytchTextButton(
+                            text = "Continue with ${provider.displayName}",
+                            onClick = { viewModel.useSSOStart(context, provider.connectionId) },
+                        )
+                    }
+                }
+                ProductComponent.PasswordsEmailForm -> {
+                    EmailAndPasswordEntry(
+                        emailState = state.value.emailState,
+                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
+                        passwordState = state.value.passwordState,
+                        onPasswordChanged = { viewModel.useUpdateMemberPassword(it) },
+                        onSubmit = viewModel::handleEmailPasswordSubmit,
+                    )
+                    val signInText =
+                        buildAnnotatedString {
+                            append("Having trouble signing in? ")
+                            append(
+                                AnnotatedString(
+                                    text = "Get help",
+                                    spanStyle = SpanStyle(fontWeight = FontWeight.Bold),
+                                ),
+                            )
+                        }
+                    BodyText(
+                        text = signInText,
+                        textAlign = TextAlign.Center,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 32.dp)
+                                .clickable {
+                                    viewModel.dispatch(SetNextRoute(Routes.PasswordForgot))
+                                },
+                    )
+                }
+                ProductComponent.PasswordEMLCombined -> {
+                    EmailEntry(
+                        emailState = state.value.emailState,
+                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
+                        onEmailAddressSubmit = { viewModel.useMagicLinksEmailLoginOrSignup() },
+                    )
+                    StytchTextButton(text = "Use a password instead") {
+                        viewModel.dispatch(SetNextRoute(Routes.PasswordAuthenticate))
+                    }
+                }
                 ProductComponent.Divider -> DividerWithText(text = "or")
             }
         }
     }
 }
+
+@Composable
+private fun B2BOAuthProviders.toPainterResource(): Painter =
+    when (this) {
+        B2BOAuthProviders.GOOGLE -> painterResource(id = R.drawable.google)
+        B2BOAuthProviders.MICROSOFT -> painterResource(id = R.drawable.microsoft)
+        B2BOAuthProviders.GITHUB -> painterResource(id = R.drawable.github)
+        B2BOAuthProviders.SLACK -> painterResource(id = R.drawable.slack)
+        B2BOAuthProviders.HUBSPOT -> painterResource(id = R.drawable.hubspot)
+    }
