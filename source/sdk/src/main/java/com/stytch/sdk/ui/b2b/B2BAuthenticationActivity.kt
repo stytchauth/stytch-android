@@ -12,12 +12,16 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 internal class B2BAuthenticationActivity : ComponentActivity() {
     private lateinit var uiConfig: StytchB2BUIConfig
+    private val viewModel: B2BAuthenticationViewModel by viewModels {
+        B2BAuthenticationViewModel.create(uiConfig.productConfig)
+    }
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +39,6 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                 eventName = "render_b2b_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
             )
-        }
-        val viewModel: B2BAuthenticationViewModel by viewModels {
-            B2BAuthenticationViewModel.create(uiConfig.productConfig)
         }
         setContent {
             val state = viewModel.stateFlow.collectAsState()
@@ -65,6 +66,15 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                     dispatch = viewModel::dispatch,
                     createViewModel = viewModel::createViewModel,
                 )
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent.data?.let {
+                viewModel.dispatch(SetDeeplinkTokenPair(StytchB2BClient.parseDeeplink(it)))
             }
         }
     }

@@ -7,7 +7,7 @@ import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
-import com.stytch.sdk.ui.b2b.data.SetDeeplinkToken
+import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
@@ -104,9 +104,9 @@ internal class B2BUIStateMachine(
                         )
                     }
                 }
-                on<SetDeeplinkToken> { action, state ->
+                on<SetDeeplinkTokenPair> { action, state ->
                     state.mutate {
-                        copy(token = action.token)
+                        copy(deeplinkTokenPair = action.deeplinkTokenPair)
                     }
                 }
                 on<SetNextRoute> { action, state ->

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
 
@@ -16,6 +17,12 @@ internal class B2BUIViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
         when (modelClass) {
             MainScreenViewModel::class.java -> MainScreenViewModel(state, dispatchAction, productConfig) as T
+            DeepLinkParserScreenViewModel::class.java ->
+                DeepLinkParserScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
             else -> super.create(modelClass)
         }
 }

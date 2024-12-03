@@ -30,6 +30,7 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
+import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
@@ -55,6 +56,8 @@ internal fun StytchB2BAuthenticationApp(
     val activeOrganization = state.value.activeOrganization
     val currentRoute = state.value.currentRoute
     val authFlowType = state.value.authFlowType
+    val deeplinkTokenPair = state.value.deeplinkTokenPair
+    val startDestination = if (deeplinkTokenPair != null) Routes.DeeplinkParser else Routes.Main
 
     LaunchedEffect(currentRoute) {
         currentRoute?.let {
@@ -93,7 +96,10 @@ internal fun StytchB2BAuthenticationApp(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
         ) {
-            NavHost(navController = navController, startDestination = Routes.Main) {
+            NavHost(navController = navController, startDestination = startDestination) {
+                composable<Routes.DeeplinkParser> {
+                    DeepLinkParserScreen(state = state, createViewModel = ::createViewModelHelper)
+                }
                 composable<Routes.Discovery> {
                     PageTitle(text = "Discovery")
                 }

@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2b.data
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
+import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.shared.data.EmailState
@@ -67,8 +68,8 @@ internal data class SetGenericError(
     val errorText: String?,
 ) : B2BUIAction
 
-internal data class SetDeeplinkToken(
-    val token: String?,
+internal data class SetDeeplinkTokenPair(
+    val deeplinkTokenPair: DeeplinkTokenPair?,
 ) : B2BUIAction
 
 internal data class SetNextRoute(

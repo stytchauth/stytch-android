@@ -20,7 +20,7 @@ internal class UsePasswordResetByEmail(
             request {
                 StytchB2BClient.passwords.resetByEmail(
                     Passwords.ResetByEmailParameters(
-                        token = state.value.token ?: "",
+                        token = state.value.deeplinkTokenPair?.token ?: "",
                         password = state.value.passwordState.password,
                     ),
                 )
