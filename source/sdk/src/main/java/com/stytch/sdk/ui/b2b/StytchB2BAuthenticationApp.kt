@@ -32,6 +32,7 @@ import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
+import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
@@ -105,7 +106,11 @@ internal fun StytchB2BAuthenticationApp(
                     DiscoveryScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.EmailConfirmation> {
-                    PageTitle(text = "EmailConfirmation")
+                    EmailConfirmationScreen(
+                        state = state,
+                        route = Routes.EmailConfirmation,
+                        createViewModel = ::createViewModelHelper,
+                    )
                 }
                 composable<Routes.Error> {
                     ErrorScreen(state = state)
@@ -126,13 +131,21 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "PasswordReset")
                 }
                 composable<Routes.PasswordResetVerifyConfirmation> {
-                    PageTitle(text = "PasswordResetVerifyConfirmation")
+                    EmailConfirmationScreen(
+                        state = state,
+                        route = Routes.PasswordResetVerifyConfirmation,
+                        createViewModel = ::createViewModelHelper,
+                    )
                 }
                 composable<Routes.PasswordSetNew> {
                     PageTitle(text = "PasswordSetNew")
                 }
                 composable<Routes.PasswordSetNewConfirmation> {
-                    PageTitle(text = "PasswordSetNewConfirmation")
+                    EmailConfirmationScreen(
+                        state = state,
+                        route = Routes.PasswordSetNewConfirmation,
+                        createViewModel = ::createViewModelHelper,
+                    )
                 }
                 composable<Routes.RecoveryCodeEntry> {
                     PageTitle(text = "RecoveryCodeEntry")

@@ -83,3 +83,5 @@ internal data class HandleStepUpAuthentication(
 internal data class SetIsSearchingForOrganizationBySlug(
     val isSearchingForOrganizationBySlug: Boolean,
 ) : B2BUIAction
+
+internal data object ResetEverything : B2BUIAction

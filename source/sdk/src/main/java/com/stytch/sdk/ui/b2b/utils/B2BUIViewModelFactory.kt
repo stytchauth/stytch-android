@@ -7,6 +7,7 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
 
@@ -24,7 +25,13 @@ internal class B2BUIViewModelFactory(
                     dispatchAction,
                     productConfig,
                 ) as T
-            DiscoveryScreenViewModel::class.java -> DiscoveryScreenViewModel(state, dispatchAction, productConfig) as T
+            DiscoveryScreenViewModel::class.java -> DiscoveryScreenViewModel(state, dispatchAction) as T
+            EmailConfirmationScreenViewModel::class.java ->
+                EmailConfirmationScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
             else -> super.create(modelClass)
         }
 }

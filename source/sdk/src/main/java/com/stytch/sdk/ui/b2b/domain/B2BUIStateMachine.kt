@@ -4,6 +4,7 @@ import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
@@ -121,6 +122,15 @@ internal class B2BUIStateMachine(
                     state.mutate {
                         copy(
                             isSearchingForOrganizationBySlug = action.isSearchingForOrganizationBySlug,
+                        )
+                    }
+                }
+                on<ResetEverything> { _, state ->
+                    // These are configured post-launch, so we can't just do _all_ defaults
+                    val uiIncludedMfaMethods = state.snapshot.uiIncludedMfaMethods
+                    state.mutate {
+                        B2BUIState().copy(
+                            uiIncludedMfaMethods = uiIncludedMfaMethods,
                         )
                     }
                 }
