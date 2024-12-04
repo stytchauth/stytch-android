@@ -157,7 +157,10 @@ internal class OAuthImpl(
                     ).apply {
                         pkcePairManager.clearPKCECodePair()
                         when (this) {
-                            is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                            is StytchResult.Success -> {
+                                StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                                sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                            }
                             is StytchResult.Error ->
                                 StytchB2BClient.events.logEvent(
                                     "b2b_discovery_oauth_failure",

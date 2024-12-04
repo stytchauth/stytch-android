@@ -31,6 +31,7 @@ import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
+import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
@@ -101,7 +102,7 @@ internal fun StytchB2BAuthenticationApp(
                     DeepLinkParserScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.Discovery> {
-                    PageTitle(text = "Discovery")
+                    DiscoveryScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.EmailConfirmation> {
                     PageTitle(text = "EmailConfirmation")

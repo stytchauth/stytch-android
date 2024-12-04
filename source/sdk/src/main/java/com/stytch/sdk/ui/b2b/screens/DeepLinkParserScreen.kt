@@ -26,7 +26,7 @@ internal class DeepLinkParserScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
-) : BaseViewModel(state, dispatchAction, productConfig) {
+) : BaseViewModel(state, dispatchAction) {
     private val useMagicLinksAuthenticate = UseMagicLinksAuthenticate(viewModelScope, ::request)
     private val useMagicLinksDiscoveryAuthenticate =
         UseMagicLinksDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)

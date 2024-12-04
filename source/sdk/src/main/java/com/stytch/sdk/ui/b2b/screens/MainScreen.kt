@@ -63,7 +63,7 @@ internal class MainScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
-) : BaseViewModel(state, dispatchAction, productConfig) {
+) : BaseViewModel(state, dispatchAction) {
     val useGetEffectiveAuthConfig = UseEffectiveAuthConfig(state, productConfig)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
@@ -219,7 +219,13 @@ internal fun MainScreen(
                     EmailEntry(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.useMagicLinksEmailLoginOrSignup() },
+                        onEmailAddressSubmit = {
+                            if (state.value.activeOrganization != null || state.value.mfaPrimaryInfoState != null) {
+                                viewModel.useMagicLinksEmailLoginOrSignup()
+                            } else {
+                                viewModel.useMagicLinksDiscoverySend()
+                            }
+                        },
                     )
                     StytchTextButton(text = "Use a password instead") {
                         viewModel.dispatch(SetNextRoute(Routes.PasswordAuthenticate))

@@ -58,7 +58,7 @@ internal class B2BSessionStorage(
         }
 
     var intermediateSessionToken: String?
-        private set(value) {
+        internal set(value) {
             storageHelper.saveValue(PREFERENCES_NAME_IST, value)
             // Set the IST expiration when persisting an IST
             intermediateSessionTokenExpiration =

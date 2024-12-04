@@ -10,7 +10,6 @@ import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +18,6 @@ import kotlinx.coroutines.withContext
 internal open class BaseViewModel(
     private val state: StateFlow<B2BUIState>,
     private val dispatchAction: suspend (B2BUIAction) -> Unit,
-    private val productConfig: StytchB2BProductConfig,
 ) : ViewModel() {
     internal fun dispatch(action: B2BUIAction) {
         viewModelScope.launch {
