@@ -171,14 +171,15 @@ internal fun MainScreen(
                                     .padding(vertical = 8.dp),
                             iconDrawable = provider.type.toPainterResource(),
                             iconDescription = provider.type.name,
-                            text = "Continue with ${provider.type.name}",
+                            text = "Continue with ${provider.type.toTitle()}",
                             onClick = { viewModel.useOAuthStart(context = context, providerConfig = provider) },
                         )
                     }
                 }
                 ProductComponent.SSOButtons -> {
                     organization?.ssoActiveConnections?.map { provider ->
-                        StytchTextButton(
+                        SocialLoginButton(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             text = "Continue with ${provider.displayName}",
                             onClick = { viewModel.useSSOStart(context, provider.connectionId) },
                         )
@@ -238,4 +239,13 @@ private fun B2BOAuthProviders.toPainterResource(): Painter =
         B2BOAuthProviders.GITHUB -> painterResource(id = R.drawable.github)
         B2BOAuthProviders.SLACK -> painterResource(id = R.drawable.slack)
         B2BOAuthProviders.HUBSPOT -> painterResource(id = R.drawable.hubspot)
+    }
+
+private fun B2BOAuthProviders.toTitle(): String =
+    when (this) {
+        B2BOAuthProviders.GOOGLE -> "Google"
+        B2BOAuthProviders.MICROSOFT -> "Microsoft"
+        B2BOAuthProviders.GITHUB -> "Github"
+        B2BOAuthProviders.SLACK -> "Slack"
+        B2BOAuthProviders.HUBSPOT -> "Hubspot"
     }
