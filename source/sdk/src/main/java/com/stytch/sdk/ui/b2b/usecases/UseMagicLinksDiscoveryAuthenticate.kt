@@ -6,7 +6,9 @@ import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.UpdateEmailState
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +39,7 @@ internal class UseMagicLinksDiscoveryAuthenticate(
                     ),
                 )
                 dispatch(SetDiscoveredOrganizations(it.discoveredOrganizations))
+                dispatch(SetNextRoute(Routes.Discovery))
             }
         }
     }

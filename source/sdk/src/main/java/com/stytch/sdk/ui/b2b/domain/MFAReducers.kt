@@ -52,7 +52,12 @@ private fun handleAdditionalPrimaryAuthRequired(
             copy(
                 authFlowType = AuthFlowType.ORGANIZATION,
                 activeOrganization = response.organization.toInternalOrganizationData(),
-                emailState = emailState.copy(emailAddress = response.member.email, validEmail = true),
+                emailState =
+                    emailState.copy(
+                        emailAddress = response.member.email,
+                        validEmail = true,
+                        emailVerified = response.member.emailAddressVerified,
+                    ),
                 currentRoute = Routes.Main,
                 primaryAuthMethods = primaryAuthMethods,
                 mfaPrimaryInfoState =

@@ -438,6 +438,10 @@ public data class DiscoveredOrganization(
     val membership: Membership,
     @Json(name = "member_authenticated")
     val memberAuthenticated: Boolean,
+    @Json(name = "primary_required")
+    val primaryRequired: PrimaryRequired?,
+    @Json(name = "mfa_required")
+    val mfaRequired: MFARequired?,
 ) : Parcelable
 
 @Keep

@@ -6,9 +6,9 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.NavigateTo
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetLoading
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.extensions.emailEligibleForJITProvisioning
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -47,7 +47,7 @@ internal class UseNonMemberPasswordReset(
                 )
             }.onSuccess {
                 dispatch(SetLoading(false))
-                dispatch(NavigateTo(Routes.PasswordResetVerifyConfirmation))
+                dispatch(SetNextRoute(Routes.PasswordResetVerifyConfirmation))
             }.onFailure {
                 dispatch(SetLoading(false))
                 dispatch(SetGenericError("We were unable to verify your email. Please contact your admin."))

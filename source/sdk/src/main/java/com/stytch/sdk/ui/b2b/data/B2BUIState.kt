@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -15,7 +16,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class B2BUIState(
-    val currentRoute: Route? = Routes.Main,
+    val currentRoute: Route? = null,
     val isLoading: Boolean = false,
     val stytchError: StytchError? = null,
     val errorToastText: String? = null,
@@ -29,10 +30,11 @@ internal data class B2BUIState(
     val mfaSMSState: MFASMSState? = null,
     val mfaTOTPState: MFATOTPState? = null,
     val postAuthScreen: Route = Routes.Success,
-    val token: String? = null,
+    val deeplinkTokenPair: DeeplinkTokenPair? = null,
     val b2BErrorType: B2BErrorType? = null,
     val uiIncludedMfaMethods: List<MfaMethod> = emptyList(),
     val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
+    val isSearchingForOrganizationBySlug: Boolean = false,
 ) : Parcelable {
     internal companion object {
         const val SAVED_STATE_KEY = "StytchB2BUIState"

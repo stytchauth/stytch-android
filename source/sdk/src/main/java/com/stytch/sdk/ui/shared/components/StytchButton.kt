@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.shared.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ internal fun StytchButton(
                 contentColor = Color(theme.buttonTextColor),
                 disabledContentColor = Color(theme.disabledButtonTextColor),
             ),
+        shape = RoundedCornerShape(theme.buttonBorderRadius)
     ) {
         Text(
             text = text,

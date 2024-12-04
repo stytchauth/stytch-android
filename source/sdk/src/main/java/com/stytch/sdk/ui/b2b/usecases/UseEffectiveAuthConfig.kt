@@ -87,7 +87,7 @@ internal class UseEffectiveAuthConfig(
             // If there are restrictions, filter the auth methods from the UI config
             val restrictedAuthMethodsInUiConfig =
                 flattenedConfiguredAuthMethods.filter {
-                    restrictedAuthMethods.contains(it)
+                    restrictedAuthMethods.isEmpty() || restrictedAuthMethods.contains(it)
                 }
 
             // Use the filtered methods unless there are none _and_ the restrictions
@@ -103,7 +103,7 @@ internal class UseEffectiveAuthConfig(
                     productsToAuthMethods.keys.toList(),
                     oauthProvidersToAuthMethods.keys.toList(),
                 ).filter {
-                    restrictedAuthMethods.contains(it)
+                    restrictedAuthMethods.isEmpty() || restrictedAuthMethods.contains(it)
                 }
             }
 

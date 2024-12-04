@@ -31,3 +31,23 @@ internal fun BodyText(
         modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
     )
 }
+
+@Composable
+internal fun BodyText(
+    modifier: Modifier = Modifier,
+    text: String,
+    textAlign: TextAlign = TextAlign.Start,
+    color: Color? = null,
+) {
+    val theme = LocalStytchTheme.current
+    val type = LocalStytchTypography.current
+    Text(
+        text = text,
+        style =
+            type.body.copy(
+                textAlign = textAlign,
+                color = color ?: Color(theme.primaryTextColor),
+            ),
+        modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
+    )
+}

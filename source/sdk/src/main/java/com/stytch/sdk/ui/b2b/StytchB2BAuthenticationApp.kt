@@ -21,12 +21,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.screens.TestScreen
+import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
+import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
+import com.stytch.sdk.ui.b2b.screens.ErrorScreen
+import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -40,16 +47,43 @@ internal fun StytchB2BAuthenticationApp(
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
+    val currentBackStackEntryState = navController.currentBackStackEntryAsState()
     val bootstrapData = LocalStytchBootstrapData.current
-    val startDestination = Routes.Main
 
     fun <T : ViewModel> createViewModelHelper(modelClass: Class<T>): T =
         createViewModel(modelClass as Class<ViewModel>) as T
 
-    LaunchedEffect(state.value.currentRoute) {
-        state.value.currentRoute?.let {
+    val isSearchingForOrganizationBySlug = state.value.isSearchingForOrganizationBySlug
+    val activeOrganization = state.value.activeOrganization
+    val currentRoute = state.value.currentRoute
+    val authFlowType = state.value.authFlowType
+    val deeplinkTokenPair = state.value.deeplinkTokenPair
+    val startDestination = if (deeplinkTokenPair != null) Routes.DeeplinkParser else Routes.Main
+
+    LaunchedEffect(currentRoute) {
+        currentRoute?.let {
             navController.navigate(it)
-            dispatch(SetNextRoute(null))
+        }
+    }
+
+    LaunchedEffect(currentBackStackEntryState.value) {
+        dispatch(SetNextRoute(null))
+    }
+
+    LaunchedEffect(
+        isSearchingForOrganizationBySlug,
+        activeOrganization,
+        currentRoute,
+        authFlowType,
+    ) {
+        if (
+            !isSearchingForOrganizationBySlug &&
+            activeOrganization == null &&
+            currentRoute == Routes.Main &&
+            authFlowType == AuthFlowType.ORGANIZATION
+        ) {
+            // Trying to launch an org flow without an org
+            dispatch(SetB2BError(B2BErrorType.Organization))
         }
     }
     Surface(
@@ -64,17 +98,20 @@ internal fun StytchB2BAuthenticationApp(
                     .verticalScroll(rememberScrollState()),
         ) {
             NavHost(navController = navController, startDestination = startDestination) {
+                composable<Routes.DeeplinkParser> {
+                    DeepLinkParserScreen(state = state, createViewModel = ::createViewModelHelper)
+                }
                 composable<Routes.Discovery> {
-                    PageTitle(text = "Discovery")
+                    DiscoveryScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.EmailConfirmation> {
                     PageTitle(text = "EmailConfirmation")
                 }
                 composable<Routes.Error> {
-                    PageTitle(text = "Error")
+                    ErrorScreen(state = state)
                 }
                 composable<Routes.Main> {
-                    TestScreen(state = state, createViewModel = ::createViewModelHelper)
+                    MainScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.MFAEnrollmentSelection> {
                     PageTitle(text = "MFAEnrollmentSelection")
