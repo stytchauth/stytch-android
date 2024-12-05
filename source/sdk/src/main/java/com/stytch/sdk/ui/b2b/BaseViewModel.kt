@@ -11,6 +11,7 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.SetStytchError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ internal open class BaseViewModel(
                 }
                 is StytchResult.Error -> {
                     dispatch(SetLoading(false))
+                    dispatch(SetStytchError(response.exception))
                     Result.failure(response.exception)
                 }
             }

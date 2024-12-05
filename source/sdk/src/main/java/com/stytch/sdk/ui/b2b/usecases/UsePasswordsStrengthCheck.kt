@@ -3,12 +3,10 @@ package com.stytch.sdk.ui.b2b.usecases
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.passwords.Passwords
-import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.data.UpdatePasswordState
 import com.stytch.sdk.ui.shared.data.PasswordState
 import kotlinx.coroutines.CoroutineScope
@@ -34,8 +32,6 @@ internal class UsePasswordsStrengthCheck(
             }.onSuccess {
                 val newPasswordState = it.toPasswordState(state.value.passwordState)
                 dispatch(UpdatePasswordState(newPasswordState))
-            }.onFailure {
-                dispatch(SetStytchError(it as StytchError))
             }
         }
     }

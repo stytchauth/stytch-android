@@ -3,11 +3,9 @@ package com.stytch.sdk.ui.b2b.usecases
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
 import com.stytch.sdk.b2b.passwords.Passwords
-import com.stytch.sdk.common.extensions.toStytchError
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +30,6 @@ internal class UsePasswordAuthenticate(
                         sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
                     ),
                 )
-            }.onFailure {
-                dispatch(SetStytchError(it.toStytchError()))
             }
         }
     }
