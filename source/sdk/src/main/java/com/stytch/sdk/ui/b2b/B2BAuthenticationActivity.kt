@@ -14,6 +14,7 @@ import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -46,6 +47,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             val activeOrganization = state.value.activeOrganization
             val isSearchingForOrganizationBySlug = state.value.isSearchingForOrganizationBySlug
             val authFlowType = state.value.authFlowType
+            val currentRoute = state.value.currentRoute
             LaunchedEffect(
                 organizationSlug,
                 activeOrganization,
@@ -58,6 +60,11 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                     authFlowType == AuthFlowType.ORGANIZATION
                 ) {
                     viewModel.performInitialOrgBySlugSearch(organizationSlug)
+                }
+            }
+            LaunchedEffect(currentRoute) {
+                if (currentRoute == Routes.Success) {
+                    // TODO: returnAuthenticationResult(), but figure out what we want/need to contract to be
                 }
             }
             StytchB2BThemeProvider(config = uiConfig) {

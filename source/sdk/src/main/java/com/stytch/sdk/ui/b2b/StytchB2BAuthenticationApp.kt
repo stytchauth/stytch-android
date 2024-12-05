@@ -39,6 +39,7 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
+import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -164,7 +165,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "SMSOTPEntry")
                 }
                 composable<Routes.Success> {
-                    PageTitle(text = "Success")
+                    SuccessScreen()
                 }
                 composable<Routes.TOTPEnrollment> {
                     PageTitle(text = "TOTPEnrollment")
