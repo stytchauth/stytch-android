@@ -10,6 +10,7 @@ import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +49,12 @@ internal class B2BUIViewModelFactory(
                 ) as T
             PasswordAuthenticateScreenViewModel::class.java ->
                 PasswordAuthenticateScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            PasswordForgotScreenViewModel::class.java ->
+                PasswordForgotScreenViewModel(
                     state,
                     dispatchAction,
                     productConfig,

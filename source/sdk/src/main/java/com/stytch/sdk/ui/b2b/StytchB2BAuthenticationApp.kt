@@ -36,6 +36,7 @@ import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
+import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
@@ -128,7 +129,7 @@ internal fun StytchB2BAuthenticationApp(
                     PasswordAuthenticateScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordForgot> {
-                    PageTitle(text = "PasswordForgot")
+                    PasswordForgotScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordReset> {
                     PasswordResetScreen(state = state, createViewModel = ::createViewModelHelper)
