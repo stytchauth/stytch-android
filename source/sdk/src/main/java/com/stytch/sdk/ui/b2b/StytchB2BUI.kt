@@ -2,8 +2,8 @@ package com.stytch.sdk.ui.b2b
 
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.StytchB2BClient
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.BootstrapData
+import com.stytch.sdk.ui.b2b.data.AuthenticationResult
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.shared.data.StytchStyles
@@ -19,7 +19,7 @@ public class StytchB2BUI private constructor(
     activity: ComponentActivity?,
     styles: StytchStyles?,
     productConfig: StytchB2BProductConfig?,
-    onAuthenticated: ((StytchResult<*>) -> Unit)?,
+    onAuthenticated: ((AuthenticationResult) -> Unit)?,
 ) {
     private val activity: ComponentActivity
     private val styles: StytchStyles
@@ -57,7 +57,7 @@ public class StytchB2BUI private constructor(
      */
     public class Builder {
         private var activity: ComponentActivity? = null
-        private var onAuthenticated: ((StytchResult<*>) -> Unit)? = null
+        private var onAuthenticated: ((AuthenticationResult) -> Unit)? = null
         private var styles: StytchStyles? = null
         private var productConfig: StytchB2BProductConfig? = null
 
@@ -74,7 +74,7 @@ public class StytchB2BUI private constructor(
          * Sets the handler that will be notified of authenticate results
          * @param onAuthenticated the handler that will be notified
          */
-        public fun onAuthenticated(onAuthenticated: (StytchResult<*>) -> Unit): Builder =
+        public fun onAuthenticated(onAuthenticated: (AuthenticationResult) -> Unit): Builder =
             apply {
                 this.onAuthenticated = onAuthenticated
             }

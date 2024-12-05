@@ -9,9 +9,9 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.stytch.sdk.b2b.StytchB2BClient
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.AuthenticationResult
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -31,7 +31,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
             ?: run {
                 returnAuthenticationResult(
-                    StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided")),
+                    AuthenticationResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided")),
                 )
                 return@onCreate
             }
@@ -64,7 +64,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             }
             LaunchedEffect(currentRoute) {
                 if (currentRoute == Routes.Success) {
-                    // TODO: returnAuthenticationResult(), but figure out what we want/need to contract to be
+                    returnAuthenticationResult(AuthenticationResult.Authenticated)
                 }
             }
             StytchB2BThemeProvider(config = uiConfig) {
@@ -91,15 +91,15 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun returnAuthenticationResult(result: StytchResult<*>) {
+    private fun returnAuthenticationResult(result: AuthenticationResult) {
         if (StytchB2BClient.isInitialized.value) {
             when (result) {
-                is StytchResult.Success -> StytchB2BClient.events.logEvent("ui_authentication_success")
-                is StytchResult.Error ->
+                is AuthenticationResult.Authenticated -> StytchB2BClient.events.logEvent("ui_authentication_success")
+                is AuthenticationResult.Error ->
                     StytchB2BClient.events.logEvent(
                         eventName = "ui_authentication_failure",
                         details = null,
-                        error = result.exception,
+                        error = result.error,
                     )
             }
         }
