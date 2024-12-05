@@ -8,6 +8,7 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
@@ -33,19 +34,23 @@ internal class PasswordForgotScreenViewModel(
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
 
     fun onSubmit() {
+        dispatch(SetLoading(true))
         viewModelScope.launch {
             val organizationId = state.value.activeOrganization?.organizationId ?: return@launch
             useSearchMember(
                 emailAddress = state.value.emailState.emailAddress,
                 organizationId = organizationId,
             ).onSuccess {
+                dispatch(SetLoading(false))
                 if (it.member?.memberPasswordId.isNullOrEmpty()) {
                     // no memberPasswordId == no password, so drop them in the nonMemberReset flow
                     return@onSuccess useNonMemberPasswordReset()
                 }
                 // there IS a password for this user, so send them a reset
                 usePasswordResetByEmailStart()
-            }.onFailure { }
+            }.onFailure {
+                dispatch(SetLoading(false))
+            }
         }
     }
 }

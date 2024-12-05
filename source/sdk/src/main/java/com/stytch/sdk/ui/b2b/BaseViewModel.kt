@@ -9,6 +9,7 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
+import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -27,14 +28,19 @@ internal open class BaseViewModel(
 
     internal suspend inline fun <T> request(crossinline request: suspend () -> StytchResult<T>): Result<T> =
         withContext(Dispatchers.IO) {
+            dispatch(SetLoading(true))
             when (val response = request()) {
                 is StytchResult.Success -> {
+                    dispatch(SetLoading(false))
                     if (response.value is CommonAuthenticationData) {
                         handleAuthenticationSuccessResponse(response.value)
                     }
                     Result.success(response.value)
                 }
-                is StytchResult.Error -> Result.failure(response.exception)
+                is StytchResult.Error -> {
+                    dispatch(SetLoading(false))
+                    Result.failure(response.exception)
+                }
             }
         }
 
