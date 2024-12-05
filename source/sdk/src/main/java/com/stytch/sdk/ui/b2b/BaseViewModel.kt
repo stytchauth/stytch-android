@@ -27,19 +27,31 @@ internal open class BaseViewModel(
         }
     }
 
-    internal suspend inline fun <T> request(crossinline request: suspend () -> StytchResult<T>): Result<T> =
+    internal suspend inline fun <T> request(crossinline clientRequest: suspend () -> StytchResult<T>): Result<T> =
+        request(true, clientRequest)
+
+    internal suspend inline fun <T> request(
+        shouldSetLoadingIndicator: Boolean,
+        crossinline request: suspend () -> StytchResult<T>,
+    ): Result<T> =
         withContext(Dispatchers.IO) {
-            dispatch(SetLoading(true))
+            if (shouldSetLoadingIndicator) {
+                dispatch(SetLoading(true))
+            }
             when (val response = request()) {
                 is StytchResult.Success -> {
-                    dispatch(SetLoading(false))
+                    if (shouldSetLoadingIndicator) {
+                        dispatch(SetLoading(false))
+                    }
                     if (response.value is CommonAuthenticationData) {
                         handleAuthenticationSuccessResponse(response.value)
                     }
                     Result.success(response.value)
                 }
                 is StytchResult.Error -> {
-                    dispatch(SetLoading(false))
+                    if (shouldSetLoadingIndicator) {
+                        dispatch(SetLoading(false))
+                    }
                     dispatch(SetStytchError(response.exception))
                     Result.failure(response.exception)
                 }
