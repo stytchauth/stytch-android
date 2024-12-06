@@ -7,9 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.b2b.StytchB2BUI
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.AuthenticationResult
 import com.stytch.sdk.ui.b2b.data.B2BOAuthOptions
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviderConfig
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviders
@@ -124,9 +124,9 @@ class UIWorkbenchActivity : ComponentActivity() {
         }
     }
 
-    private fun onAuthentication(result: StytchResult<*>) {
+    private fun onAuthentication(result: AuthenticationResult) {
         when (result) {
-            is StytchResult.Success -> {
+            is AuthenticationResult.Authenticated -> {
                 Toast
                     .makeText(
                         this@UIWorkbenchActivity,
@@ -134,8 +134,8 @@ class UIWorkbenchActivity : ComponentActivity() {
                         Toast.LENGTH_LONG,
                     ).show()
             }
-            is StytchResult.Error -> {
-                Toast.makeText(this@UIWorkbenchActivity, result.exception.message, Toast.LENGTH_LONG).show()
+            is AuthenticationResult.Error -> {
+                Toast.makeText(this@UIWorkbenchActivity, result.error.message, Toast.LENGTH_LONG).show()
             }
         }
     }
