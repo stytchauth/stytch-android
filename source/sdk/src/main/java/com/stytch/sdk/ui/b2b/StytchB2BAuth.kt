@@ -5,7 +5,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.b2b.data.AuthenticationResult
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 
 internal interface StytchB2BAuth {
@@ -14,7 +14,7 @@ internal interface StytchB2BAuth {
 
 internal class StytchB2BAuthHandler(
     private val activity: ComponentActivity,
-    private val onAuthenticated: (StytchResult<*>) -> Unit,
+    private val onAuthenticated: (AuthenticationResult) -> Unit,
 ) : StytchB2BAuth by StytchB2BAuthImpl(
         registry = activity.activityResultRegistry,
         lifecycleOwner = activity,
@@ -24,7 +24,7 @@ internal class StytchB2BAuthHandler(
 private class StytchB2BAuthImpl(
     private val registry: ActivityResultRegistry,
     lifecycleOwner: LifecycleOwner,
-    private val onAuthenticated: (StytchResult<*>) -> Unit,
+    private val onAuthenticated: (AuthenticationResult) -> Unit,
 ) : DefaultLifecycleObserver,
     StytchB2BAuth {
     private lateinit var resultLauncher: ActivityResultLauncher<StytchB2BUIConfig>

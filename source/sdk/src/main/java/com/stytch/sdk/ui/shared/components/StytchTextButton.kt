@@ -13,6 +13,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 @Composable
 internal fun StytchTextButton(
     text: String,
+    color: Int? = null,
     onClick: () -> Unit,
 ) {
     val type = LocalStytchTypography.current
@@ -25,7 +26,7 @@ internal fun StytchTextButton(
             text = text,
             style =
                 type.buttonLabel.copy(
-                    color = Color(theme.primaryTextColor),
+                    color = Color(color ?: theme.primaryTextColor),
                     textAlign = TextAlign.Center,
                 ),
         )

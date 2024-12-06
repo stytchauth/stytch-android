@@ -20,9 +20,10 @@ internal fun EmailAndPasswordEntry(
     onEmailAddressChanged: (String) -> Unit,
     passwordState: PasswordState,
     onPasswordChanged: (String) -> Unit,
+    allowInvalidSubmission: Boolean? = false,
     onSubmit: () -> Unit,
 ) {
-    val isSubmittable = emailState.validEmail == true && passwordState.validPassword
+    val isSubmittable = allowInvalidSubmission == true || (emailState.validEmail == true && passwordState.validPassword)
     val semantics = stringResource(id = R.string.semantics_email_password_entry)
     Column(
         modifier = Modifier.semantics { contentDescription = semantics },

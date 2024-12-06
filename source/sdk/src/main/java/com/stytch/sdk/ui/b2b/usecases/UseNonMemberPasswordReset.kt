@@ -7,7 +7,6 @@ import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetGenericError
-import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.extensions.emailEligibleForJITProvisioning
@@ -32,7 +31,6 @@ internal class UseNonMemberPasswordReset(
                     "${organization.organizationName}. If you think this is a mistake, contact your admin."
             return dispatch(SetGenericError(errorText))
         }
-        dispatch(SetLoading(true))
         scope.launch(Dispatchers.IO) {
             request {
                 StytchB2BClient.magicLinks.email.loginOrSignup(
@@ -46,10 +44,8 @@ internal class UseNonMemberPasswordReset(
                     ),
                 )
             }.onSuccess {
-                dispatch(SetLoading(false))
                 dispatch(SetNextRoute(Routes.PasswordResetVerifyConfirmation))
             }.onFailure {
-                dispatch(SetLoading(false))
                 dispatch(SetGenericError("We were unable to verify your email. Please contact your admin."))
             }
         }

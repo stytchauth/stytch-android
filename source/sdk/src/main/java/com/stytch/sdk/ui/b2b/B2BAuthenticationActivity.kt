@@ -9,11 +9,12 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.stytch.sdk.b2b.StytchB2BClient
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.AuthenticationResult
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.theme.StytchB2BThemeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -30,7 +31,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             ?: savedInstanceState?.getParcelable(STYTCH_UI_CONFIG_KEY)
             ?: run {
                 returnAuthenticationResult(
-                    StytchResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided")),
+                    AuthenticationResult.Error(StytchUIInvalidConfiguration("No UI Configuration Provided")),
                 )
                 return@onCreate
             }
@@ -46,6 +47,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             val activeOrganization = state.value.activeOrganization
             val isSearchingForOrganizationBySlug = state.value.isSearchingForOrganizationBySlug
             val authFlowType = state.value.authFlowType
+            val currentRoute = state.value.currentRoute
             LaunchedEffect(
                 organizationSlug,
                 activeOrganization,
@@ -58,6 +60,11 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                     authFlowType == AuthFlowType.ORGANIZATION
                 ) {
                     viewModel.performInitialOrgBySlugSearch(organizationSlug)
+                }
+            }
+            LaunchedEffect(currentRoute) {
+                if (currentRoute == Routes.Success) {
+                    returnAuthenticationResult(AuthenticationResult.Authenticated)
                 }
             }
             StytchB2BThemeProvider(config = uiConfig) {
@@ -84,15 +91,15 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun returnAuthenticationResult(result: StytchResult<*>) {
+    private fun returnAuthenticationResult(result: AuthenticationResult) {
         if (StytchB2BClient.isInitialized.value) {
             when (result) {
-                is StytchResult.Success -> StytchB2BClient.events.logEvent("ui_authentication_success")
-                is StytchResult.Error ->
+                is AuthenticationResult.Authenticated -> StytchB2BClient.events.logEvent("ui_authentication_success")
+                is AuthenticationResult.Error ->
                     StytchB2BClient.events.logEvent(
                         eventName = "ui_authentication_failure",
                         details = null,
-                        error = result.exception,
+                        error = result.error,
                     )
             }
         }

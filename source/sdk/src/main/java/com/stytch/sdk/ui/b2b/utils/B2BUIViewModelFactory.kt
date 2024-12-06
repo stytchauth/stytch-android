@@ -9,6 +9,10 @@ import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 internal class B2BUIViewModelFactory(
@@ -28,6 +32,29 @@ internal class B2BUIViewModelFactory(
             DiscoveryScreenViewModel::class.java -> DiscoveryScreenViewModel(state, dispatchAction) as T
             EmailConfirmationScreenViewModel::class.java ->
                 EmailConfirmationScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            PasswordSetNewScreenViewModel::class.java ->
+                PasswordSetNewScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            PasswordResetScreenViewModel::class.java ->
+                PasswordResetScreenViewModel(
+                    state,
+                    dispatchAction,
+                ) as T
+            PasswordAuthenticateScreenViewModel::class.java ->
+                PasswordAuthenticateScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            PasswordForgotScreenViewModel::class.java ->
+                PasswordForgotScreenViewModel(
                     state,
                     dispatchAction,
                     productConfig,

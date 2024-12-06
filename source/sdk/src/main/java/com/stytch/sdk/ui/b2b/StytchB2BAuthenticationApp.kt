@@ -35,6 +35,11 @@ import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
+import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
+import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
+import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
+import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
+import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -122,13 +127,13 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "MFAEnrollmentSelection")
                 }
                 composable<Routes.PasswordAuthenticate> {
-                    PageTitle(text = "PasswordAuthenticate")
+                    PasswordAuthenticateScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordForgot> {
-                    PageTitle(text = "PasswordForgot")
+                    PasswordForgotScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordReset> {
-                    PageTitle(text = "PasswordReset")
+                    PasswordResetScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordResetVerifyConfirmation> {
                     EmailConfirmationScreen(
@@ -138,7 +143,7 @@ internal fun StytchB2BAuthenticationApp(
                     )
                 }
                 composable<Routes.PasswordSetNew> {
-                    PageTitle(text = "PasswordSetNew")
+                    PasswordSetNewScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordSetNewConfirmation> {
                     EmailConfirmationScreen(
@@ -160,7 +165,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "SMSOTPEntry")
                 }
                 composable<Routes.Success> {
-                    PageTitle(text = "Success")
+                    SuccessScreen()
                 }
                 composable<Routes.TOTPEnrollment> {
                     PageTitle(text = "TOTPEnrollment")

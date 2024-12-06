@@ -73,7 +73,7 @@ internal class MainScreenViewModel(
     val useSSOStart = UseSSOStart()
     val useOAuthStart = UseOAuthStart(state)
     val useSearchMember = UseSearchMember(::request)
-    val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, productConfig, ::request)
+    val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
 
