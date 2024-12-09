@@ -8,6 +8,7 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
@@ -55,6 +56,12 @@ internal class B2BUIViewModelFactory(
                 ) as T
             PasswordForgotScreenViewModel::class.java ->
                 PasswordForgotScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            MFAEnrollmentSelectionScreenViewModel::class.java ->
+                MFAEnrollmentSelectionScreenViewModel(
                     state,
                     dispatchAction,
                     productConfig,

@@ -34,6 +34,7 @@ import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
+import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
@@ -124,7 +125,7 @@ internal fun StytchB2BAuthenticationApp(
                     MainScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.MFAEnrollmentSelection> {
-                    PageTitle(text = "MFAEnrollmentSelection")
+                    MFAEnrollmentSelectionScreen(createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordAuthenticate> {
                     PasswordAuthenticateScreen(state = state, createViewModel = ::createViewModelHelper)

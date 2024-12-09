@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.b2b.sessions.B2BSessions
 import com.stytch.sdk.ui.b2b.StytchB2BUI
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.AuthenticationResult
@@ -119,6 +121,9 @@ class UIWorkbenchActivity : ComponentActivity() {
                 }
                 Button(onClick = discoveryConfig::authenticate) {
                     Text("Launch Discovery Flow Authentication")
+                }
+                Button(onClick = { StytchB2BClient.sessions.revoke(B2BSessions.RevokeParams(true)) {} }) {
+                    Text("Log out")
                 }
             }
         }
