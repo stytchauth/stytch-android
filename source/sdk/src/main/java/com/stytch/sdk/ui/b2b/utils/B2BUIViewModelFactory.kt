@@ -14,6 +14,7 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 internal class B2BUIViewModelFactory(
@@ -66,6 +67,8 @@ internal class B2BUIViewModelFactory(
                     dispatchAction,
                     productConfig,
                 ) as T
+            TOTPEnrollmentScreenViewModel::class.java ->
+                TOTPEnrollmentScreenViewModel(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }

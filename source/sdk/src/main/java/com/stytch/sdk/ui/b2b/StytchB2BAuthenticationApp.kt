@@ -41,6 +41,7 @@ import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
+import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -169,7 +170,7 @@ internal fun StytchB2BAuthenticationApp(
                     SuccessScreen()
                 }
                 composable<Routes.TOTPEnrollment> {
-                    PageTitle(text = "TOTPEnrollment")
+                    TOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.TOTPEntry> {
                     PageTitle(text = "TOTPEntry")

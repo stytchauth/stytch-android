@@ -233,7 +233,7 @@ private fun LoggingInView(color: Color) {
 }
 
 @Composable
-private fun LoadingView(color: Color) {
+internal fun LoadingView(color: Color) {
     CircularProgressIndicator(color = color)
 }
 
