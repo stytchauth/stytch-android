@@ -8,11 +8,14 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 internal class B2BUIViewModelFactory(
@@ -59,6 +62,16 @@ internal class B2BUIViewModelFactory(
                     dispatchAction,
                     productConfig,
                 ) as T
+            MFAEnrollmentSelectionScreenViewModel::class.java ->
+                MFAEnrollmentSelectionScreenViewModel(
+                    state,
+                    dispatchAction,
+                    productConfig,
+                ) as T
+            TOTPEnrollmentScreenViewModel::class.java ->
+                TOTPEnrollmentScreenViewModel(state, dispatchAction) as T
+            TOTPEntryScreenViewModel::class.java ->
+                TOTPEntryScreenViewModel(state, dispatchAction, productConfig) as T
             else -> super.create(modelClass)
         }
 }

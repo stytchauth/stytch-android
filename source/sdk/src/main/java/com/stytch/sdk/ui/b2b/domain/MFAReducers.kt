@@ -167,11 +167,12 @@ private fun handleUserMustEnrollInMfa(
         )
     }
 
-private fun getEnabledMethods(
-    mfaPrimaryInfoState: MFAPrimaryInfoState,
+internal val ALL_MFA_METHODS = setOf(MfaMethod.TOTP, MfaMethod.SMS)
+
+internal fun getEnabledMethods(
+    orgSupportedMethods: List<MfaMethod>,
     uiIncludedMfaMethods: List<MfaMethod>,
 ): Set<MfaMethod> {
-    val orgSupportedMethods = mfaPrimaryInfoState.organizationMfaOptionsSupported
     // If the org only supported a restricted set of methods, use that
     if (orgSupportedMethods.isNotEmpty()) {
         return orgSupportedMethods.toSet()
@@ -180,7 +181,7 @@ private fun getEnabledMethods(
     return if (uiIncludedMfaMethods.isNotEmpty()) {
         uiIncludedMfaMethods.toSet()
     } else {
-        setOf(MfaMethod.TOTP, MfaMethod.SMS)
+        ALL_MFA_METHODS
     }
 }
 
@@ -190,7 +191,7 @@ private fun getNextEnrollmentScreen(
 ): Route {
     val enabledMethods =
         getEnabledMethods(
-            mfaPrimaryInfoState,
+            mfaPrimaryInfoState.organizationMfaOptionsSupported,
             uiIncludedMfaMethods,
         )
     var nextRoute: Route? = null

@@ -28,7 +28,10 @@ internal fun BodyText(
                 textAlign = textAlign,
                 color = color ?: Color(theme.primaryTextColor),
             ),
-        modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp),
     )
 }
 
@@ -39,15 +42,10 @@ internal fun BodyText(
     textAlign: TextAlign = TextAlign.Start,
     color: Color? = null,
 ) {
-    val theme = LocalStytchTheme.current
-    val type = LocalStytchTypography.current
-    Text(
-        text = text,
-        style =
-            type.body.copy(
-                textAlign = textAlign,
-                color = color ?: Color(theme.primaryTextColor),
-            ),
-        modifier = modifier.fillMaxWidth().padding(bottom = 32.dp),
+    BodyText(
+        modifier = modifier,
+        text = AnnotatedString(text),
+        textAlign = textAlign,
+        color = color,
     )
 }
