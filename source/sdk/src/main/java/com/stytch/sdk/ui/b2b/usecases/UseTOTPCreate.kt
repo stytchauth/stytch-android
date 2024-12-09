@@ -8,8 +8,10 @@ import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.MFATOTPState
+import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.data.TOTPEnrollmentState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -36,10 +38,12 @@ internal class UseTOTPCreate(
                     ),
                 )
             }.onSuccess {
+                dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
                 dispatch(
                     UpdateMfaTotpState(
                         MFATOTPState(
                             isCreating = false,
+                            isEnrolling = true,
                             enrollmentState =
                                 TOTPEnrollmentState(
                                     secret = it.secret,
@@ -54,6 +58,7 @@ internal class UseTOTPCreate(
                     UpdateMfaTotpState(
                         MFATOTPState(
                             isCreating = false,
+                            isEnrolling = false,
                             error = it.toStytchError(),
                             enrollmentState = null,
                         ),

@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 internal data class MFATOTPState(
     val isCreating: Boolean = false,
+    val isEnrolling: Boolean = false,
     val error: StytchError? = null,
     val enrollmentState: TOTPEnrollmentState? = null,
 ) : Parcelable
