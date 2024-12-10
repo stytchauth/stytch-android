@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -77,7 +77,7 @@ internal fun TOTPEnrollmentScreen(
     createViewModel: CreateViewModel<TOTPEnrollmentScreenViewModel>,
     viewModel: TOTPEnrollmentScreenViewModel = createViewModel(TOTPEnrollmentScreenViewModel::class.java),
 ) {
-    val totpState = viewModel.totpState.collectAsState().value
+    val totpState = viewModel.totpState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
     val clipboardManager = LocalClipboardManager.current
     if (totpState == null || totpState.isCreating) {

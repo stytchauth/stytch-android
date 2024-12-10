@@ -18,7 +18,6 @@ import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.EmailInput
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -61,7 +60,6 @@ internal fun PasswordForgotScreen(
     createViewModel: CreateViewModel<PasswordForgotScreenViewModel>,
     viewModel: PasswordForgotScreenViewModel = createViewModel(PasswordForgotScreenViewModel::class.java),
 ) {
-    val theme = LocalStytchTheme.current
     Column {
         PageTitle(text = "Check your email for help signing in!")
         BodyText(

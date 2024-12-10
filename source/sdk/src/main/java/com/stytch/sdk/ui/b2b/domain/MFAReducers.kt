@@ -2,6 +2,9 @@ package com.stytch.sdk.ui.b2b.domain
 
 import com.freeletics.flowredux.dsl.ChangedState
 import com.freeletics.flowredux.dsl.State
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
@@ -57,6 +60,11 @@ private fun handleAdditionalPrimaryAuthRequired(
                         emailAddress = response.member.email,
                         validEmail = true,
                         emailVerified = response.member.emailAddressVerified,
+                    ),
+                phoneNumberState =
+                    phoneNumberState.copy(
+                        countryCode = response.member.mfaPhoneNumber?.extractCountryCode() ?: "1",
+                        phoneNumber = response.member.mfaPhoneNumber?.extractPhoneNumber() ?: "",
                     ),
                 currentRoute = Routes.Main,
                 primaryAuthMethods = primaryAuthMethods,
@@ -132,6 +140,11 @@ private fun handleUserIsEnrolledInMfa(
                                 },
                         ),
                     currentRoute = Routes.SMSOTPEntry,
+                    phoneNumberState =
+                        phoneNumberState.copy(
+                            countryCode = mfaPrimaryInfoState.memberPhoneNumber?.extractCountryCode() ?: "1",
+                            phoneNumber = mfaPrimaryInfoState.memberPhoneNumber?.extractPhoneNumber() ?: "",
+                        ),
                 )
             }
             MfaMethod.TOTP -> {
@@ -204,3 +217,14 @@ private fun getNextEnrollmentScreen(
     }
     return nextRoute ?: Routes.MFAEnrollmentSelection
 }
+
+private fun String.parsePhoneNumber(): PhoneNumber? =
+    try {
+        PhoneNumberUtil.getInstance().parse(this, null)
+    } catch (_: NumberParseException) {
+        null
+    }
+
+private fun String.extractCountryCode(): String? = parsePhoneNumber()?.countryCode?.toString()
+
+private fun String.extractPhoneNumber(): String? = parsePhoneNumber()?.nationalNumber?.toString()
