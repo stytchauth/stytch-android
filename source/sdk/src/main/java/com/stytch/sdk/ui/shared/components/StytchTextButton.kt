@@ -13,15 +13,17 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 
 @Composable
 internal fun StytchTextButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
     text: String,
     color: Int? = null,
     onClick: () -> Unit,
 ) {
-    StytchTextButton(text = AnnotatedString(text), color = color, onClick = onClick)
+    StytchTextButton(modifier = modifier, text = AnnotatedString(text), color = color, onClick = onClick)
 }
 
 @Composable
 internal fun StytchTextButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
     text: AnnotatedString,
     color: Int? = null,
     onClick: () -> Unit,
@@ -29,7 +31,7 @@ internal fun StytchTextButton(
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
     TextButton(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         onClick = onClick,
     ) {
         Text(

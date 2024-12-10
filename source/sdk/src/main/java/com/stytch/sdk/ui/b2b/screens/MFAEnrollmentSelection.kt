@@ -12,12 +12,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -92,7 +92,7 @@ internal fun MFAEnrollmentSelectionScreen(
     viewModel: MFAEnrollmentSelectionScreenViewModel =
         createViewModel(MFAEnrollmentSelectionScreenViewModel::class.java),
 ) {
-    val sortedOptions = viewModel.sortedMfaMethods.collectAsState()
+    val sortedOptions = viewModel.sortedMfaMethods.collectAsStateWithLifecycle()
     val theme = LocalStytchTheme.current
     Column {
         PageTitle(text = "Set up Multi-Factor Authentication")

@@ -40,11 +40,14 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreen
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreen
+import com.stytch.sdk.ui.b2b.screens.SMSOTPEnrollmentScreen
+import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
-import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 
@@ -156,16 +159,16 @@ internal fun StytchB2BAuthenticationApp(
                     )
                 }
                 composable<Routes.RecoveryCodeEntry> {
-                    PageTitle(text = "RecoveryCodeEntry")
+                    RecoveryCodesEntryScreen(createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.RecoveryCodeSave> {
-                    PageTitle(text = "RecoveryCodeSave")
+                    RecoveryCodesSaveScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.SMSOTPEnrollment> {
-                    PageTitle(text = "SMSOTPEnrollment")
+                    SMSOTPEnrollmentScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.SMSOTPEntry> {
-                    PageTitle(text = "SMSOTPEntry")
+                    SMSOTPEntryScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.Success> {
                     SuccessScreen()

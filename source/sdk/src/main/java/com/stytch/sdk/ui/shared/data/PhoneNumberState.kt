@@ -19,4 +19,13 @@ internal data class PhoneNumberState(
             }
         return PhoneNumberUtil.getInstance().format(phone, PhoneNumberUtil.PhoneNumberFormat.E164)
     }
+
+    fun formatted(): String {
+        val phone =
+            Phonenumber.PhoneNumber().apply {
+                countryCode = this@PhoneNumberState.countryCode.toInt()
+                nationalNumber = (this@PhoneNumberState.phoneNumber).toLong()
+            }
+        return PhoneNumberUtil.getInstance().format(phone, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
+    }
 }

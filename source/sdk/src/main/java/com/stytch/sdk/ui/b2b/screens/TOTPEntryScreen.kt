@@ -3,13 +3,13 @@ package com.stytch.sdk.ui.b2b.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -87,7 +87,7 @@ internal fun TOTPEntryScreen(
     createViewModel: CreateViewModel<TOTPEntryScreenViewModel>,
     viewModel: TOTPEntryScreenViewModel = createViewModel(TOTPEntryScreenViewModel::class.java),
 ) {
-    val totpEntryState = viewModel.totpEntryState.collectAsState().value
+    val totpEntryState = viewModel.totpEntryState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
     Column {
         PageTitle(text = "Enter verification code")

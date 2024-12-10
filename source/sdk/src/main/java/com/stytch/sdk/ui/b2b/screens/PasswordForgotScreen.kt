@@ -1,8 +1,13 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -18,7 +23,6 @@ import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.EmailInput
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
-import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -61,7 +65,6 @@ internal fun PasswordForgotScreen(
     createViewModel: CreateViewModel<PasswordForgotScreenViewModel>,
     viewModel: PasswordForgotScreenViewModel = createViewModel(PasswordForgotScreenViewModel::class.java),
 ) {
-    val theme = LocalStytchTheme.current
     Column {
         PageTitle(text = "Check your email for help signing in!")
         BodyText(
@@ -70,9 +73,11 @@ internal fun PasswordForgotScreen(
                     "if you have one.",
         )
         EmailInput(
+            modifier = Modifier.fillMaxWidth(),
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
         )
+        Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = state.value.emailState.validEmail == true,
             text = "Continue",

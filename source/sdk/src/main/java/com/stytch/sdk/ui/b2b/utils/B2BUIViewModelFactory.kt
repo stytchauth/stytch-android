@@ -14,6 +14,10 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.SMSOTPEnrollmentScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -72,6 +76,14 @@ internal class B2BUIViewModelFactory(
                 TOTPEnrollmentScreenViewModel(state, dispatchAction) as T
             TOTPEntryScreenViewModel::class.java ->
                 TOTPEntryScreenViewModel(state, dispatchAction, productConfig) as T
+            RecoveryCodesSaveScreenViewModel::class.java ->
+                RecoveryCodesSaveScreenViewModel(state, dispatchAction) as T
+            RecoveryCodesEntryScreenViewModel::class.java ->
+                RecoveryCodesEntryScreenViewModel(state, dispatchAction, productConfig) as T
+            SMSOTPEnrollmentScreenViewModel::class.java ->
+                SMSOTPEnrollmentScreenViewModel(state, dispatchAction) as T
+            SMSOTPEntryScreenViewModel::class.java ->
+                SMSOTPEntryScreenViewModel(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }
