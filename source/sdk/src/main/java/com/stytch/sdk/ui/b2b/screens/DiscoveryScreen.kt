@@ -41,12 +41,11 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.extensions.jitEligible
 import com.stytch.sdk.ui.b2b.extensions.shouldAllowDirectLoginToOrganization
 import com.stytch.sdk.ui.b2b.extensions.toInternalOrganizationData
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryIntermediateSessionExchange
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryOrganizationCreate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
@@ -150,24 +149,24 @@ internal fun DiscoveryScreen(
         }
     }
 
-    if (isExchangingState.value) {
-        return LoggingInView(color = Color(theme.inputTextColor))
-    }
-
-    if (isCreatingState.value) {
-        return LoadingView(color = Color(theme.inputTextColor))
-    }
-
-    if (state.value.discoveredOrganizations.isNullOrEmpty()) {
-        return NoOrganizationsDiscovered(
-            state = state,
-            createOrganzationsEnabled = createOrganzationsEnabled,
-            onCreateOrganization = viewModel::createOrganization,
-            isCreatingOrganization = isCreatingState.value,
-            onGoBack = { viewModel.dispatch(SetNextRoute(Routes.Main)) },
-        )
-    }
     Column {
+        if (isExchangingState.value) {
+            return LoggingInView(color = Color(theme.inputTextColor))
+        }
+
+        if (isCreatingState.value) {
+            return LoadingView(color = Color(theme.inputTextColor))
+        }
+
+        if (state.value.discoveredOrganizations.isNullOrEmpty()) {
+            return NoOrganizationsDiscovered(
+                state = state,
+                createOrganzationsEnabled = createOrganzationsEnabled,
+                onCreateOrganization = viewModel::createOrganization,
+                isCreatingOrganization = isCreatingState.value,
+                onGoBack = { viewModel.dispatch(ResetEverything) },
+            )
+        }
         PageTitle(text = "Select an organization to continue")
         Column(modifier = Modifier.fillMaxWidth()) {
             state.value.discoveredOrganizations?.map { discoveredOrganization ->
@@ -261,9 +260,10 @@ private fun NoOrganizationsDiscovered(
     if (createOrganzationsEnabled && !config.disableCreateOrganization) {
         PageTitle(text = "Create an organization to get started")
         StytchButton(enabled = true, text = "Create an organization", onClick = ::handleDiscoveryOrganizationCreate)
+        Spacer(modifier = Modifier.height(16.dp))
         BodyText(
             text =
-                "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake?" +
+                "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake? " +
                     "Try a different email address, or contact your admin.",
         )
         return
