@@ -2,7 +2,6 @@ package com.stytch.sdk.ui.b2b.screens
 
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +56,7 @@ import com.stytch.sdk.ui.shared.components.StytchButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchB2BProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -196,7 +197,11 @@ internal fun DiscoveryScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         ArrowText(type = discoveredOrganization.membership.type)
-                        Image(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = Color(theme.primaryTextColor),
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -228,7 +233,7 @@ private fun LoggingInView(color: Color) {
 }
 
 @Composable
-private fun LoadingView(color: Color) {
+internal fun LoadingView(color: Color) {
     CircularProgressIndicator(color = color)
 }
 
@@ -314,6 +319,7 @@ private fun Logo(
 @Composable
 private fun ArrowText(type: String) {
     val theme = LocalStytchTheme.current
+    val typography = LocalStytchTypography.current
     val text =
         if (jitEligible.contains(type) || type == "pending_member") {
             "Join"
@@ -322,5 +328,12 @@ private fun ArrowText(type: String) {
         } else {
             ""
         }
-    Text(text = text, color = Color(theme.primaryTextColor))
+    Text(
+        text = text,
+        style =
+            typography.body.copy(
+                color = Color(theme.primaryTextColor),
+                fontWeight = FontWeight.Bold,
+            ),
+    )
 }

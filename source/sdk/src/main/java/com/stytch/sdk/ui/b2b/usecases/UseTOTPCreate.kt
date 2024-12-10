@@ -3,11 +3,12 @@ package com.stytch.sdk.ui.b2b.usecases
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.totp.TOTP
+import com.stytch.sdk.common.extensions.toStytchError
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.MFATOTPState
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.data.TOTPEnrollmentState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaTotpState
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -23,8 +24,12 @@ internal class UseTOTPCreate(
     private val request: PerformRequest<TOTPCreateResponseData>,
 ) {
     operator fun invoke() {
-        if (state.value.mfaTOTPState?.isCreating == true) return navigateToCodeEntry()
         scope.launch(Dispatchers.IO) {
+            dispatch(
+                UpdateMfaTotpState(
+                    MFATOTPState(isCreating = true),
+                ),
+            )
             request {
                 StytchB2BClient.totp.create(
                     TOTP.CreateParameters(
@@ -33,10 +38,12 @@ internal class UseTOTPCreate(
                     ),
                 )
             }.onSuccess {
+                dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
                 dispatch(
                     UpdateMfaTotpState(
                         MFATOTPState(
-                            isCreating = true,
+                            isCreating = false,
+                            isEnrolling = true,
                             enrollmentState =
                                 TOTPEnrollmentState(
                                     secret = it.secret,
@@ -46,21 +53,18 @@ internal class UseTOTPCreate(
                         ),
                     ),
                 )
-                navigateToCodeEntry()
             }.onFailure {
                 dispatch(
                     UpdateMfaTotpState(
                         MFATOTPState(
                             isCreating = false,
+                            isEnrolling = false,
+                            error = it.toStytchError(),
                             enrollmentState = null,
                         ),
                     ),
                 )
             }
         }
-    }
-
-    private fun navigateToCodeEntry() {
-        dispatch(SetNextRoute(Routes.TOTPEntry))
     }
 }

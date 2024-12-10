@@ -34,12 +34,15 @@ import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
+import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
+import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
+import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -124,7 +127,7 @@ internal fun StytchB2BAuthenticationApp(
                     MainScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.MFAEnrollmentSelection> {
-                    PageTitle(text = "MFAEnrollmentSelection")
+                    MFAEnrollmentSelectionScreen(createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.PasswordAuthenticate> {
                     PasswordAuthenticateScreen(state = state, createViewModel = ::createViewModelHelper)
@@ -168,10 +171,10 @@ internal fun StytchB2BAuthenticationApp(
                     SuccessScreen()
                 }
                 composable<Routes.TOTPEnrollment> {
-                    PageTitle(text = "TOTPEnrollment")
+                    TOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.TOTPEntry> {
-                    PageTitle(text = "TOTPEntry")
+                    TOTPEntryScreen(createViewModel = ::createViewModelHelper)
                 }
             }
             if (!bootstrapData.disableSDKWatermark) {

@@ -20,7 +20,7 @@ internal fun IB2BAuthDataWithMFA.getAuthMethodsForMember(): List<AllowedAuthMeth
 
 internal fun IB2BAuthDataWithMFA.getEnrolledMfaMethods(): List<MfaMethod> {
     val enrolledMfaMethods = mutableListOf<MfaMethod>()
-    if (member.totpRegistrationId != null) {
+    if (!member.totpRegistrationId.isNullOrEmpty()) {
         enrolledMfaMethods.add(MfaMethod.TOTP)
     }
     if (member.mfaPhoneNumberVerified) {
