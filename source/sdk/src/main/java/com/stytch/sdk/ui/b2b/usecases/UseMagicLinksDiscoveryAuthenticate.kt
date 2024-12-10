@@ -4,7 +4,9 @@ import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.UpdateEmailState
@@ -40,6 +42,8 @@ internal class UseMagicLinksDiscoveryAuthenticate(
                 )
                 dispatch(SetDiscoveredOrganizations(it.discoveredOrganizations))
                 dispatch(SetNextRoute(Routes.Discovery))
+            }.onFailure {
+                dispatch(SetB2BError(B2BErrorType.Default))
             }
         }
     }
