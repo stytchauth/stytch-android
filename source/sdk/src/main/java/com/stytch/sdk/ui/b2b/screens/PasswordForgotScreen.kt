@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -66,7 +67,7 @@ internal fun PasswordForgotScreen(
     viewModel: PasswordForgotScreenViewModel = createViewModel(PasswordForgotScreenViewModel::class.java),
 ) {
     Column {
-        PageTitle(text = "Check your email for help signing in!")
+        PageTitle(textAlign = TextAlign.Left, text = "Check your email for help signing in!")
         BodyText(
             text =
                 "We'll email you a login link to sign in to your account directly or reset your password " +

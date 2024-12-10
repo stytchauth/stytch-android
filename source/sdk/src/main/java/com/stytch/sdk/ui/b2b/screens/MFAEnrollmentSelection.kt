@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stytch.sdk.b2b.network.models.MfaMethod
@@ -95,7 +96,7 @@ internal fun MFAEnrollmentSelectionScreen(
     val sortedOptions = viewModel.sortedMfaMethods.collectAsStateWithLifecycle()
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(text = "Set up Multi-Factor Authentication")
+        PageTitle(textAlign = TextAlign.Left, text = "Set up Multi-Factor Authentication")
         BodyText(
             text = "Your organization requires an additional form of verification to make your account more secure.",
         )

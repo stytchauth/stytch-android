@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -39,7 +40,7 @@ internal fun RecoveryCodesEntryScreen(
 ) {
     var recoveryCode by remember { mutableStateOf("") }
     Column {
-        PageTitle(text = "Enter backup code")
+        PageTitle(textAlign = TextAlign.Left, text = "Enter backup code")
         BodyText(text = "Enter one of the backup codes you saved when setting up your authenticator app.")
         StytchInput(modifier = Modifier.fillMaxWidth(), value = recoveryCode, onValueChange = { recoveryCode = it })
         Spacer(modifier = Modifier.height(16.dp))

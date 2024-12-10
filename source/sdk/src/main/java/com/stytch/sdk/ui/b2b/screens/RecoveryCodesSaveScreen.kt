@@ -79,7 +79,7 @@ internal fun RecoveryCodesSaveScreen(
     val context = LocalContext.current
     var didSaveCodesSomehow by remember { mutableStateOf(false) }
     Column {
-        PageTitle(text = "Save your backup codes!")
+        PageTitle(textAlign = TextAlign.Left, text = "Save your backup codes!")
         BodyText(text = "This is the only time you will be able to access and save your backup codes.")
         Box(
             modifier =

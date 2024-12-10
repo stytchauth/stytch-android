@@ -12,6 +12,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -48,7 +49,7 @@ internal fun PasswordAuthenticateScreen(
 ) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(text = "Log in with email and password")
+        PageTitle(textAlign = TextAlign.Left, text = "Log in with email and password")
         EmailAndPasswordEntry(
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },

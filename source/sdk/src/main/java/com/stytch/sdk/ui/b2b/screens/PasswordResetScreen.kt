@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
@@ -37,7 +38,7 @@ internal fun PasswordResetScreen(
     viewModel: PasswordResetScreenViewModel = createViewModel(PasswordResetScreenViewModel::class.java),
 ) {
     Column {
-        PageTitle(text = "Set a new password")
+        PageTitle(textAlign = TextAlign.Left, text = "Set a new password")
         PasswordInput(
             label = "Password",
             passwordState = state.value.passwordState,

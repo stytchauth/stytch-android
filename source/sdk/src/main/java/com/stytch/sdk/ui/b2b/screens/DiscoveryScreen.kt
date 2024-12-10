@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -167,7 +168,7 @@ internal fun DiscoveryScreen(
                 onGoBack = { viewModel.dispatch(ResetEverything) },
             )
         }
-        PageTitle(text = "Select an organization to continue")
+        PageTitle(textAlign = TextAlign.Left, text = "Select an organization to continue")
         Column(modifier = Modifier.fillMaxWidth()) {
             state.value.discoveredOrganizations?.map { discoveredOrganization ->
                 Row(
@@ -227,7 +228,7 @@ internal fun DiscoveryScreen(
 
 @Composable
 private fun LoggingInView(color: Color) {
-    PageTitle(text = "Logging In...")
+    PageTitle(textAlign = TextAlign.Left, text = "Logging In...")
     CircularProgressIndicator(color = color)
 }
 
@@ -258,7 +259,7 @@ private fun NoOrganizationsDiscovered(
     }
 
     if (createOrganzationsEnabled && !config.disableCreateOrganization) {
-        PageTitle(text = "Create an organization to get started")
+        PageTitle(textAlign = TextAlign.Left, text = "Create an organization to get started")
         StytchButton(enabled = true, text = "Create an organization", onClick = ::handleDiscoveryOrganizationCreate)
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
@@ -269,7 +270,10 @@ private fun NoOrganizationsDiscovered(
         return
     }
 
-    PageTitle(text = "${state.value.emailState.emailAddress} does not belong to any organizations.")
+    PageTitle(
+        textAlign = TextAlign.Left,
+        text = "${state.value.emailState.emailAddress} does not belong to any organizations.",
+    )
     BodyText(text = "Make sure your email address is correct. Otherwise, you might need to be invited by your admin.")
     StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
 }

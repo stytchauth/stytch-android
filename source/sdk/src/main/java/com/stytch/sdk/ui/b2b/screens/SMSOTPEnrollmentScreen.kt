@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2b.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -31,7 +32,7 @@ internal fun SMSOTPEnrollmentScreen(
 ) {
     val phoneNumberState = state.value.phoneNumberState
     Column {
-        PageTitle(text = "Enter your phone number to set up Multi-Factor Authentication")
+        PageTitle(textAlign = TextAlign.Left, text = "Enter your phone number to set up Multi-Factor Authentication")
         BodyText(
             text = "Your organization requires an additional form of verification to make your account more secure.",
         )

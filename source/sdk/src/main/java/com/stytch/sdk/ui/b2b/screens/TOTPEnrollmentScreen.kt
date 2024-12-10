@@ -90,7 +90,7 @@ internal fun TOTPEnrollmentScreen(
     val secretChunked = secret.chunked(4).joinToString(" ")
     var didCopyCode by remember { mutableStateOf(false) }
     Column {
-        PageTitle(text = "Copy the code below to link your authenticator app")
+        PageTitle(textAlign = TextAlign.Left, text = "Copy the code below to link your authenticator app")
         BodyText(
             text =
                 "Enter the key below into your authenticator app. " +

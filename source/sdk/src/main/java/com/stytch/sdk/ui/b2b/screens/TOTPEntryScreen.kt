@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -90,7 +91,7 @@ internal fun TOTPEntryScreen(
     val totpEntryState = viewModel.totpEntryState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(text = "Enter verification code")
+        PageTitle(textAlign = TextAlign.Left, text = "Enter verification code")
         BodyText(text = "Enter the 6-digit code from your authenticator app.")
         OTPEntry(errorMessage = totpEntryState.errorMessage, onCodeComplete = viewModel::validateCode)
 

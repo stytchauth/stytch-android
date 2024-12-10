@@ -80,7 +80,7 @@ internal fun SMSOTPEntryScreen(
     }
 
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        PageTitle(text = "Enter passcode")
+        PageTitle(textAlign = TextAlign.Left, text = "Enter passcode")
         BodyText(
             text =
                 buildAnnotatedString {
