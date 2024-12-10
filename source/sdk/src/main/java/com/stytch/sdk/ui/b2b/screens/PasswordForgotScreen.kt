@@ -1,8 +1,13 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -68,9 +73,11 @@ internal fun PasswordForgotScreen(
                     "if you have one.",
         )
         EmailInput(
+            modifier = Modifier.fillMaxWidth(),
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
         )
+        Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = state.value.emailState.validEmail == true,
             text = "Continue",
