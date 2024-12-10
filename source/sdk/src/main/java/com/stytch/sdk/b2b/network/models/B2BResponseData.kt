@@ -824,7 +824,7 @@ public data class OAuthProviderValues(
     @Json(name = "access_token")
     val accessToken: String,
     @Json(name = "id_token")
-    val idToken: String,
+    val idToken: String? = null,
     @Json(name = "refresh_token")
     val refreshToken: String? = null,
     val scopes: List<String> = emptyList(),
