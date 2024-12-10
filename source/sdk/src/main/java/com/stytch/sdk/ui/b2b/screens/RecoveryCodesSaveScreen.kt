@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +39,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -49,7 +52,7 @@ internal class RecoveryCodesSaveScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
 ) : BaseViewModel(state, dispatchAction) {
     fun acknowledgeSave() {
-        dispatch(SetNextRoute(state.value.postAuthScreen))
+        dispatch(SetNextRoute(Routes.Success))
     }
 }
 
@@ -74,6 +77,7 @@ internal fun RecoveryCodesSaveScreen(
         }
     val shareIntent = Intent.createChooser(sendIntent, null)
     val context = LocalContext.current
+    var didSaveCodesSomehow by remember { mutableStateOf(false) }
     Column {
         PageTitle(text = "Save your backup codes!")
         BodyText(text = "This is the only time you will be able to access and save your backup codes.")
@@ -94,7 +98,7 @@ internal fun RecoveryCodesSaveScreen(
             ) {
                 backupCodes.forEach { code ->
                     Text(
-                        modifier = Modifier.fillMaxWidth(0.8f).padding(bottom = 8.dp),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                         text = code,
                         style =
                             TextStyle(
@@ -117,12 +121,14 @@ internal fun RecoveryCodesSaveScreen(
         ) {
             StytchTextButton(modifier = Modifier.weight(1f), text = "Download codes") {
                 context.startActivity(shareIntent)
+                didSaveCodesSomehow = true
             }
             StytchTextButton(modifier = Modifier.weight(1f), text = "Copy all") {
                 clipboardManager.setText(AnnotatedString(allCodesJoined))
+                didSaveCodesSomehow = true
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        StytchButton(text = "Done", enabled = true, onClick = viewModel::acknowledgeSave)
+        StytchButton(text = "Done", enabled = didSaveCodesSomehow, onClick = viewModel::acknowledgeSave)
     }
 }

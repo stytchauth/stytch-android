@@ -14,6 +14,7 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreenViewModel
@@ -75,6 +76,8 @@ internal class B2BUIViewModelFactory(
                 TOTPEntryScreenViewModel(state, dispatchAction, productConfig) as T
             RecoveryCodesSaveScreenViewModel::class.java ->
                 RecoveryCodesSaveScreenViewModel(state, dispatchAction) as T
+            RecoveryCodesEntryScreenViewModel::class.java ->
+                RecoveryCodesEntryScreenViewModel(state, dispatchAction, productConfig) as T
             else -> super.create(modelClass)
         }
 }

@@ -15,8 +15,8 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 internal fun StytchButton(
     modifier: Modifier = Modifier,
     text: String = "",
-    onClick: () -> Unit = { },
     enabled: Boolean,
+    onClick: () -> Unit = { },
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
@@ -31,7 +31,7 @@ internal fun StytchButton(
                 contentColor = Color(theme.buttonTextColor),
                 disabledContentColor = Color(theme.disabledButtonTextColor),
             ),
-        shape = RoundedCornerShape(theme.buttonBorderRadius)
+        shape = RoundedCornerShape(theme.buttonBorderRadius),
     ) {
         Text(
             text = text,
