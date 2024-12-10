@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -74,7 +75,15 @@ internal fun StytchB2BAuthenticationApp(
 
     LaunchedEffect(currentRoute) {
         currentRoute?.let {
-            navController.navigate(it)
+            navController.navigate(it) {
+                // If the user has already completed one form of primary auth, disable going back to a previous page
+                if (state.value.mfaPrimaryInfoState != null) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = false
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 
