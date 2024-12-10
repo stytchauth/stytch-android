@@ -48,6 +48,7 @@ import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
+import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
@@ -188,6 +189,9 @@ internal fun StytchB2BAuthenticationApp(
                 composable<Routes.TOTPEntry> {
                     TOTPEntryScreen(createViewModel = ::createViewModelHelper)
                 }
+            }
+            state.value.stytchError?.let {
+                FormFieldStatus(text = it.message, isError = true)
             }
             if (!bootstrapData.disableSDKWatermark) {
                 Row(

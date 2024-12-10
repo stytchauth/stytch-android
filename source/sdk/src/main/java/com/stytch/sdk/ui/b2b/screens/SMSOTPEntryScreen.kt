@@ -88,10 +88,7 @@ internal fun SMSOTPEntryScreen(
                     append(recipientFormatted)
                 },
         )
-        OTPEntry(
-            errorMessage = state.value.stytchError?.message,
-            onCodeComplete = { viewModel.useOTPSMSAuthenticate(it) },
-        )
+        OTPEntry(onCodeComplete = { viewModel.useOTPSMSAuthenticate(it) })
         Text(
             text = stringResource(id = R.string.code_expires_in, expirationTimeFormatted),
             textAlign = TextAlign.Start,

@@ -41,7 +41,6 @@ internal fun SMSOTPEnrollmentScreen(
             phoneNumber = phoneNumberState.phoneNumber,
             onPhoneNumberChanged = { viewModel.useUpdateMemberPhoneNumber(null, it) },
             onPhoneNumberSubmit = { viewModel.useSmsOtpSend() },
-            statusText = state.value.stytchError?.message,
         )
     }
 }
