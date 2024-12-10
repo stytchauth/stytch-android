@@ -40,6 +40,7 @@ import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
+import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
@@ -159,7 +160,7 @@ internal fun StytchB2BAuthenticationApp(
                     PageTitle(text = "RecoveryCodeEntry")
                 }
                 composable<Routes.RecoveryCodeSave> {
-                    PageTitle(text = "RecoveryCodeSave")
+                    RecoveryCodesSaveScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.SMSOTPEnrollment> {
                     PageTitle(text = "SMSOTPEnrollment")
