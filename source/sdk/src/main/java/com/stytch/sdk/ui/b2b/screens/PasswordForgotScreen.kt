@@ -33,7 +33,8 @@ internal class PasswordForgotScreenViewModel(
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
     val useSearchMember = UseSearchMember(::request)
-    val usePasswordResetByEmailStart = UsePasswordResetByEmailStart(viewModelScope, state, productConfig, ::request)
+    val usePasswordResetByEmailStart =
+        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)

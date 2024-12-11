@@ -23,7 +23,8 @@ internal class PasswordSetNewScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmailStart = UsePasswordResetByEmailStart(viewModelScope, state, productConfig, ::request)
+    val usePasswordResetByEmailStart =
+        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
 }
 
 @Composable

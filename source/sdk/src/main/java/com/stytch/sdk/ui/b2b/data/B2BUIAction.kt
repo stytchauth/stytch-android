@@ -72,6 +72,10 @@ internal data class SetDeeplinkTokenPair(
     val deeplinkTokenPair: DeeplinkTokenPair?,
 ) : B2BUIAction
 
+internal data class SetDidParseDeepLink(
+    val didParseDeeplink: Boolean,
+) : B2BUIAction
+
 internal data class SetNextRoute(
     val route: Route?,
 ) : B2BUIAction
