@@ -79,7 +79,7 @@ internal class OrganizationImplTest {
         every { mockSharedPreferences.getLong(any(), any()) } returns 0
         every { mockSharedPreferencesEditor.apply() } just runs
         StorageHelper.sharedPreferences = mockSharedPreferences
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             OrganizationImpl(
                 externalScope = TestScope(),
