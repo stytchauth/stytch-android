@@ -258,7 +258,7 @@ private fun NoOrganizationsDiscovered(
         return
     }
 
-    if (createOrganzationsEnabled && !config.disableCreateOrganization) {
+    if (createOrganzationsEnabled && config.allowCreateOrganization) {
         PageTitle(textAlign = TextAlign.Left, text = "Create an organization to get started")
         StytchButton(enabled = true, text = "Create an organization", onClick = ::handleDiscoveryOrganizationCreate)
         Spacer(modifier = Modifier.height(16.dp))
