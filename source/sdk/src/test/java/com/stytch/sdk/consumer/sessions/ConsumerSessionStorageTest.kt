@@ -18,7 +18,6 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestScope
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
@@ -47,7 +46,7 @@ internal class ConsumerSessionStorageTest {
         StorageHelper.sharedPreferences = mockSharedPreferences
         every { StorageHelper.loadValue(any()) } returns null
         every { StorageHelper.saveValue(any(), any()) } just runs
-        impl = ConsumerSessionStorage(StorageHelper, TestScope())
+        impl = ConsumerSessionStorage(StorageHelper)
     }
 
     @Test(expected = StytchNoCurrentSessionError::class)

@@ -127,7 +127,7 @@ public object StytchB2BClient {
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
-            sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
+            sessionStorage = B2BSessionStorage(StorageHelper)
             StytchB2BApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =

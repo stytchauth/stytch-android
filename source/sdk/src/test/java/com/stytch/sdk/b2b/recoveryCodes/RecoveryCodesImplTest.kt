@@ -71,7 +71,7 @@ internal class RecoveryCodesImplTest {
         every { mockSharedPreferences.getLong(any(), any()) } returns 0L
         every { mockSharedPreferencesEditor.apply() } just runs
         StorageHelper.sharedPreferences = mockSharedPreferences
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             RecoveryCodesImpl(
                 externalScope = TestScope(),

@@ -16,7 +16,6 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkAll
 import io.mockk.verify
-import kotlinx.coroutines.test.TestScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -37,7 +36,7 @@ internal class SessionStorageTest {
         every { mockStorageHelper.saveValue(any(), any()) } just runs
         every { mockStorageHelper.saveLong(any(), any()) } just runs
         every { mockStorageHelper.getLong(any()) } returns 0
-        storage = ConsumerSessionStorage(mockStorageHelper, TestScope())
+        storage = ConsumerSessionStorage(mockStorageHelper)
     }
 
     @After
