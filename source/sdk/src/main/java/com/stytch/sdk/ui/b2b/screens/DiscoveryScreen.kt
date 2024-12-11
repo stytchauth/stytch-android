@@ -267,6 +267,7 @@ private fun NoOrganizationsDiscovered(
                 "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake? " +
                     "Try a different email address, or contact your admin.",
         )
+        StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
         return
     }
 
