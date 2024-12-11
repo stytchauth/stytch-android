@@ -123,7 +123,7 @@ public object StytchClient {
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
-            sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
+            sessionStorage = ConsumerSessionStorage(StorageHelper)
             StytchApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =
