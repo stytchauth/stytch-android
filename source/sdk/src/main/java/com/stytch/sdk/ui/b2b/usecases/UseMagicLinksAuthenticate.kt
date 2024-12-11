@@ -7,6 +7,7 @@ import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
+import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +25,10 @@ internal class UseMagicLinksAuthenticate(
                         token = token,
                     ),
                 )
+            }.onSuccess {
+                dispatch(SetDeeplinkTokenPair(null))
             }.onFailure {
+                dispatch(SetDeeplinkTokenPair(null))
                 dispatch(SetB2BError(B2BErrorType.EmailMagicLink))
             }
         }

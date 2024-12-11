@@ -26,7 +26,7 @@ internal class PasswordResetScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmail = UsePasswordResetByEmail(viewModelScope, state, ::request)
+    val usePasswordResetByEmail = UsePasswordResetByEmail(viewModelScope, state, ::dispatch, ::request)
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val usePasswordStrengthCheck = UsePasswordsStrengthCheck(viewModelScope, state, ::dispatch, ::request)
 }

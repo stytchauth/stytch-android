@@ -72,9 +72,8 @@ internal fun StytchB2BAuthenticationApp(
     val currentRoute = state.value.currentRoute
     val authFlowType = state.value.authFlowType
     val deeplinkTokenPair = state.value.deeplinkTokenPair
-    val didParseDeepLink = state.value.didParseDeepLink
     val startDestination =
-        if (deeplinkTokenPair != null && !didParseDeepLink) {
+        if (deeplinkTokenPair != null) {
             Routes.DeeplinkParser
         } else {
             currentRoute ?: Routes.Loading
@@ -83,12 +82,9 @@ internal fun StytchB2BAuthenticationApp(
     LaunchedEffect(currentRoute) {
         currentRoute?.let {
             navController.navigate(it) {
-                // If the user has already completed one form of primary auth, disable going back to a previous page
-                if (state.value.mfaPrimaryInfoState != null) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = false
-                        inclusive = true
-                    }
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = false
+                    inclusive = true
                 }
             }
         }

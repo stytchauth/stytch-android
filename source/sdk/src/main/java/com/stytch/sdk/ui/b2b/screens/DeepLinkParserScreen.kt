@@ -12,7 +12,6 @@ import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
-import com.stytch.sdk.ui.b2b.data.SetDidParseDeepLink
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -34,8 +33,8 @@ internal class DeepLinkParserScreenViewModel(
         UseMagicLinksDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
     private val useOAuthDiscoveryAuthenticate =
         UseOAuthDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
-    private val useOAuthAuthenticate = UseOAuthAuthenticate(viewModelScope, ::request)
-    private val useSSOAuthenticate = UseSSOAuthenticate(viewModelScope, productConfig, ::request)
+    private val useOAuthAuthenticate = UseOAuthAuthenticate(viewModelScope, ::dispatch, ::request)
+    private val useSSOAuthenticate = UseSSOAuthenticate(viewModelScope, ::dispatch, productConfig, ::request)
 
     internal fun handleDeepLink(pair: DeeplinkTokenPair) {
         if (pair.token.isNullOrEmpty()) return
@@ -48,7 +47,6 @@ internal class DeepLinkParserScreenViewModel(
             B2BTokenType.SSO -> useSSOAuthenticate(pair.token)
             B2BTokenType.UNKNOWN -> dispatch(SetB2BError(B2BErrorType.Default))
         }
-        dispatch(SetDidParseDeepLink(true))
     }
 }
 

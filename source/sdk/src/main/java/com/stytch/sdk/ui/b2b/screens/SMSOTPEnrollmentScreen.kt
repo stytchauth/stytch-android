@@ -9,8 +9,11 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPhoneNumber
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.PhoneEntry
@@ -32,6 +35,7 @@ internal fun SMSOTPEnrollmentScreen(
 ) {
     val phoneNumberState = state.value.phoneNumberState
     Column {
+        BackButton(onClick = { viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection)) })
         PageTitle(textAlign = TextAlign.Left, text = "Enter your phone number to set up Multi-Factor Authentication")
         BodyText(
             text = "Your organization requires an additional form of verification to make your account more secure.",

@@ -31,7 +31,6 @@ internal data class B2BUIState(
     val mfaTOTPState: MFATOTPState? = null,
     val postAuthScreen: Route = Routes.Success,
     val deeplinkTokenPair: DeeplinkTokenPair? = null,
-    val didParseDeepLink: Boolean = false,
     val b2BErrorType: B2BErrorType? = null,
     val uiIncludedMfaMethods: List<MfaMethod> = emptyList(),
     val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
