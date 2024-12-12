@@ -8,6 +8,7 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.ErrorScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.MainScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreenViewModel
@@ -84,6 +85,8 @@ internal class B2BUIViewModelFactory(
                 SMSOTPEnrollmentScreenViewModel(state, dispatchAction) as T
             SMSOTPEntryScreenViewModel::class.java ->
                 SMSOTPEntryScreenViewModel(state, dispatchAction) as T
+            ErrorScreenViewModel::class.java ->
+                ErrorScreenViewModel(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }

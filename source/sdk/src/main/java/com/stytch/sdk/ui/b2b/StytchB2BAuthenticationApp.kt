@@ -141,7 +141,7 @@ internal fun StytchB2BAuthenticationApp(
                     )
                 }
                 composable<Routes.Error> {
-                    ErrorScreen(state = state)
+                    ErrorScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.Main> {
                     MainScreen(state = state, createViewModel = ::createViewModelHelper)
