@@ -40,7 +40,8 @@ android {
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
             'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
-            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]',
+            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]', // if using B2C, else empty string
+            'STYTCH_B2B_PUBLIC_TOKEN': '[STYTCH_B2B_PUBLIC_TOKEN'], // if using B2B, else empty string
         ]
         ...
     }
