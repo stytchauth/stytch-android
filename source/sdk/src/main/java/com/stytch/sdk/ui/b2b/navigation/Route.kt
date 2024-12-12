@@ -11,6 +11,10 @@ internal sealed interface Route : Parcelable
 internal object Routes {
     @Serializable
     @Parcelize
+    internal data object Loading : Route, Parcelable
+
+    @Serializable
+    @Parcelize
     internal data object DeeplinkParser : Route, Parcelable
 
     @Serializable

@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.shared.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,8 +17,9 @@ import com.stytch.sdk.ui.shared.data.EmailState
 internal fun EmailInput(
     modifier: Modifier = Modifier,
     emailState: EmailState,
-    onEmailAddressChanged: (String) -> Unit,
     label: String? = null,
+    keyboardActions: KeyboardActions? = null,
+    onEmailAddressChanged: (String) -> Unit,
 ) {
     val emailAddress = emailState.emailAddress
     val isError = emailState.errorMessage != null || emailState.validEmail == false
@@ -35,6 +37,7 @@ internal fun EmailInput(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Done,
                 ),
+            keyboardActions = keyboardActions,
             label = label,
             readOnly = emailState.readOnly,
         )

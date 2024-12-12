@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
@@ -47,6 +48,7 @@ import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
 import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
+import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailShouldBeValidated
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
@@ -76,6 +78,7 @@ internal class MainScreenViewModel(
     val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
 
     fun handleEmailPasswordSubmit() {
         val emailAddress = state.value.emailState.emailAddress
@@ -96,6 +99,14 @@ internal class MainScreenViewModel(
             }.onFailure {
                 dispatch(SetLoading(false))
             }
+        }
+    }
+
+    fun passwordEMLCombinedSubmit() {
+        if (state.value.activeOrganization != null || state.value.mfaPrimaryInfoState != null) {
+            useMagicLinksEmailLoginOrSignup()
+        } else {
+            useMagicLinksDiscoverySend()
         }
     }
 }
@@ -153,6 +164,11 @@ internal fun MainScreen(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
                         onEmailAddressSubmit = { viewModel.useMagicLinksEmailLoginOrSignup() },
+                        keyboardActions =
+                            KeyboardActions(onDone = {
+                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
+                                viewModel.useMagicLinksEmailLoginOrSignup()
+                            }),
                     )
                 }
                 ProductComponent.MagicLinkEmailDiscoveryForm -> {
@@ -160,6 +176,11 @@ internal fun MainScreen(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
                         onEmailAddressSubmit = { viewModel.useMagicLinksDiscoverySend() },
+                        keyboardActions =
+                            KeyboardActions(onDone = {
+                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
+                                viewModel.useMagicLinksDiscoverySend()
+                            }),
                     )
                 }
                 ProductComponent.OAuthButtons -> {
@@ -192,6 +213,7 @@ internal fun MainScreen(
                         passwordState = state.value.passwordState,
                         onPasswordChanged = { viewModel.useUpdateMemberPassword(it) },
                         onSubmit = viewModel::handleEmailPasswordSubmit,
+                        onEmailAddressDone = { viewModel.useUpdateMemberEmailShouldBeValidated(true) },
                     )
                     val signInText =
                         buildAnnotatedString {
@@ -219,13 +241,12 @@ internal fun MainScreen(
                     EmailEntry(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = {
-                            if (state.value.activeOrganization != null || state.value.mfaPrimaryInfoState != null) {
-                                viewModel.useMagicLinksEmailLoginOrSignup()
-                            } else {
-                                viewModel.useMagicLinksDiscoverySend()
-                            }
-                        },
+                        onEmailAddressSubmit = { viewModel.passwordEMLCombinedSubmit() },
+                        keyboardActions =
+                            KeyboardActions(onDone = {
+                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
+                                viewModel.passwordEMLCombinedSubmit()
+                            }),
                     )
                     StytchTextButton(text = "Use a password instead") {
                         viewModel.dispatch(SetNextRoute(Routes.PasswordAuthenticate))

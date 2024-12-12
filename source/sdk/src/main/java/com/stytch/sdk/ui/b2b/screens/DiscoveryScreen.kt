@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,15 +42,15 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.extensions.jitEligible
 import com.stytch.sdk.ui.b2b.extensions.shouldAllowDirectLoginToOrganization
 import com.stytch.sdk.ui.b2b.extensions.toInternalOrganizationData
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryIntermediateSessionExchange
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryOrganizationCreate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -150,25 +151,26 @@ internal fun DiscoveryScreen(
         }
     }
 
-    if (isExchangingState.value) {
-        return LoggingInView(color = Color(theme.inputTextColor))
-    }
-
-    if (isCreatingState.value) {
-        return LoadingView(color = Color(theme.inputTextColor))
-    }
-
-    if (state.value.discoveredOrganizations.isNullOrEmpty()) {
-        return NoOrganizationsDiscovered(
-            state = state,
-            createOrganzationsEnabled = createOrganzationsEnabled,
-            onCreateOrganization = viewModel::createOrganization,
-            isCreatingOrganization = isCreatingState.value,
-            onGoBack = { viewModel.dispatch(SetNextRoute(Routes.Main)) },
-        )
-    }
     Column {
-        PageTitle(text = "Select an organization to continue")
+        if (isExchangingState.value) {
+            return LoggingInView(color = Color(theme.inputTextColor))
+        }
+
+        if (isCreatingState.value) {
+            return LoadingView(color = Color(theme.inputTextColor))
+        }
+
+        if (state.value.discoveredOrganizations.isNullOrEmpty()) {
+            return NoOrganizationsDiscovered(
+                state = state,
+                createOrganzationsEnabled = createOrganzationsEnabled,
+                onCreateOrganization = viewModel::createOrganization,
+                isCreatingOrganization = isCreatingState.value,
+                onGoBack = { viewModel.dispatch(ResetEverything) },
+            )
+        }
+        BackButton(onClick = { viewModel.dispatch(ResetEverything) })
+        PageTitle(textAlign = TextAlign.Left, text = "Select an organization to continue")
         Column(modifier = Modifier.fillMaxWidth()) {
             state.value.discoveredOrganizations?.map { discoveredOrganization ->
                 Row(
@@ -228,7 +230,7 @@ internal fun DiscoveryScreen(
 
 @Composable
 private fun LoggingInView(color: Color) {
-    PageTitle(text = "Logging In...")
+    PageTitle(textAlign = TextAlign.Left, text = "Logging In...")
     CircularProgressIndicator(color = color)
 }
 
@@ -258,18 +260,23 @@ private fun NoOrganizationsDiscovered(
         return
     }
 
-    if (createOrganzationsEnabled && !config.disableCreateOrganization) {
-        PageTitle(text = "Create an organization to get started")
+    if (createOrganzationsEnabled && config.allowCreateOrganization) {
+        PageTitle(textAlign = TextAlign.Left, text = "Create an organization to get started")
         StytchButton(enabled = true, text = "Create an organization", onClick = ::handleDiscoveryOrganizationCreate)
+        Spacer(modifier = Modifier.height(16.dp))
         BodyText(
             text =
-                "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake?" +
+                "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake? " +
                     "Try a different email address, or contact your admin.",
         )
+        StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
         return
     }
 
-    PageTitle(text = "${state.value.emailState.emailAddress} does not belong to any organizations.")
+    PageTitle(
+        textAlign = TextAlign.Left,
+        text = "${state.value.emailState.emailAddress} does not belong to any organizations.",
+    )
     BodyText(text = "Make sure your email address is correct. Otherwise, you might need to be invited by your admin.")
     StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
 }

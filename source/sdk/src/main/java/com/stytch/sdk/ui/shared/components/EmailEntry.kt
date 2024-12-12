@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 @Composable
 internal fun EmailEntry(
     emailState: EmailState,
+    keyboardActions: KeyboardActions? = null,
     onEmailAddressChanged: (String) -> Unit,
     onEmailAddressSubmit: () -> Unit,
 ) {
@@ -29,12 +31,13 @@ internal fun EmailEntry(
         onEmailAddressChanged = onEmailAddressChanged,
         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
         label = stringResource(id = R.string.email),
+        keyboardActions = keyboardActions,
     )
     StytchButton(
         onClick = onEmailAddressSubmit,
         modifier = Modifier.height(45.dp),
         text = stringResource(id = R.string.button_continue),
-        enabled = emailState.validEmail == true,
+        enabled = !emailState.shouldValidateEmail || emailState.validEmail == true,
     )
 }
 

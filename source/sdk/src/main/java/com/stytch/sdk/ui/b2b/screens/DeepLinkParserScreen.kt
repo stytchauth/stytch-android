@@ -8,9 +8,10 @@ import com.stytch.sdk.b2b.B2BTokenType
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -27,13 +28,13 @@ internal class DeepLinkParserScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    private val useMagicLinksAuthenticate = UseMagicLinksAuthenticate(viewModelScope, ::request)
+    private val useMagicLinksAuthenticate = UseMagicLinksAuthenticate(viewModelScope, ::dispatch, ::request)
     private val useMagicLinksDiscoveryAuthenticate =
         UseMagicLinksDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
     private val useOAuthDiscoveryAuthenticate =
         UseOAuthDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
-    private val useOAuthAuthenticate = UseOAuthAuthenticate(viewModelScope, ::request)
-    private val useSSOAuthenticate = UseSSOAuthenticate(viewModelScope, productConfig, ::request)
+    private val useOAuthAuthenticate = UseOAuthAuthenticate(viewModelScope, ::dispatch, ::request)
+    private val useSSOAuthenticate = UseSSOAuthenticate(viewModelScope, ::dispatch, productConfig, ::request)
 
     internal fun handleDeepLink(pair: DeeplinkTokenPair) {
         if (pair.token.isNullOrEmpty()) return
@@ -44,9 +45,8 @@ internal class DeepLinkParserScreenViewModel(
             B2BTokenType.DISCOVERY_OAUTH -> useOAuthDiscoveryAuthenticate(pair.token)
             B2BTokenType.OAUTH -> useOAuthAuthenticate(pair.token)
             B2BTokenType.SSO -> useSSOAuthenticate(pair.token)
-            B2BTokenType.UNKNOWN -> {}
+            B2BTokenType.UNKNOWN -> dispatch(SetB2BError(B2BErrorType.Default))
         }
-        dispatch(SetDeeplinkTokenPair(null))
     }
 }
 

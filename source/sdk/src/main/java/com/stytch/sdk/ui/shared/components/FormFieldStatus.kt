@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun FormFieldStatus(
@@ -17,9 +19,16 @@ internal fun FormFieldStatus(
     isError: Boolean = false,
     text: String,
     textAlign: TextAlign = TextAlign.Start,
+    autoDismiss: (() -> Unit)? = null,
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
+    LaunchedEffect(Unit) {
+        if (autoDismiss != null) {
+            delay(3000L)
+            autoDismiss.invoke()
+        }
+    }
     Text(
         text = text,
         style =

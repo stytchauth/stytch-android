@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.shared.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Visibility
@@ -29,6 +30,7 @@ import com.stytch.sdk.ui.shared.data.PasswordState
 internal fun PasswordInput(
     passwordState: PasswordState,
     onPasswordChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions? = null,
     label: String? = null,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
@@ -42,6 +44,7 @@ internal fun PasswordInput(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done,
                 ),
+            keyboardActions = keyboardActions,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             label = label,
             trailingIcon = {

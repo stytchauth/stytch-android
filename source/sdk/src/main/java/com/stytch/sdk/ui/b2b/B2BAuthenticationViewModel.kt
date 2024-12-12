@@ -10,10 +10,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.searchManager.SearchManager
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
+import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
@@ -45,6 +47,10 @@ internal class B2BAuthenticationViewModel(
                 savedStateHandle[B2BUIState.SAVED_STATE_KEY] = newState
             }
         }
+        dispatch(SetAuthFlowType(productConfig.authFlowType))
+        if (productConfig.authFlowType == AuthFlowType.DISCOVERY && stateFlow.value.currentRoute == null) {
+            dispatch(SetNextRoute(Routes.Main))
+        }
     }
 
     internal fun performInitialOrgBySlugSearch(slug: String) {
@@ -64,7 +70,10 @@ internal class B2BAuthenticationViewModel(
                     dispatch(SetIsSearchingForOrganizationBySlug(false))
                     dispatch(SetNextRoute(Routes.Main))
                 }
-                is StytchResult.Error -> dispatch(SetStytchError(response.exception))
+                is StytchResult.Error -> {
+                    dispatch(SetIsSearchingForOrganizationBySlug(false))
+                    dispatch(SetStytchError(response.exception))
+                }
             }
         }
     }

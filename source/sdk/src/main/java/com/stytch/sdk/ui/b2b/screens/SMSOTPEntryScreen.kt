@@ -29,8 +29,11 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.OTPEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -69,6 +72,7 @@ internal fun SMSOTPEntryScreen(
     var countdownSeconds by remember { mutableLongStateOf(OTP_EXPIRATION_SECONDS) }
     var expirationTimeFormatted by remember { mutableStateOf("2:00") }
     val coroutineScope = rememberCoroutineScope()
+    val isEnrolling = state.value.mfaSMSState?.isEnrolling ?: false
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             while (countdownSeconds > 0) {
@@ -80,7 +84,12 @@ internal fun SMSOTPEntryScreen(
     }
 
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        PageTitle(text = "Enter passcode")
+        if (isEnrolling) {
+            BackButton {
+                viewModel.dispatch(SetNextRoute(Routes.SMSOTPEnrollment))
+            }
+        }
+        PageTitle(textAlign = TextAlign.Left, text = "Enter passcode")
         BodyText(
             text =
                 buildAnnotatedString {
@@ -88,10 +97,7 @@ internal fun SMSOTPEntryScreen(
                     append(recipientFormatted)
                 },
         )
-        OTPEntry(
-            errorMessage = state.value.stytchError?.message,
-            onCodeComplete = { viewModel.useOTPSMSAuthenticate(it) },
-        )
+        OTPEntry(onCodeComplete = { viewModel.useOTPSMSAuthenticate(it) })
         Text(
             text = stringResource(id = R.string.code_expires_in, expirationTimeFormatted),
             textAlign = TextAlign.Start,
@@ -115,7 +121,7 @@ internal fun SMSOTPEntryScreen(
             onCancelClick = { showResendDialog = false },
             acceptText = stringResource(id = R.string.send_code),
             onAcceptClick = {
-                viewModel.useOTPSMSSend()
+                viewModel.useOTPSMSSend(isEnrolling)
                 countdownSeconds = OTP_EXPIRATION_SECONDS
                 showResendDialog = false
             },

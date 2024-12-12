@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.domain
 
 import com.freeletics.flowredux.dsl.FlowReduxStateMachine
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
@@ -112,7 +113,12 @@ internal class B2BUIStateMachine(
                 }
                 on<SetNextRoute> { action, state ->
                     state.mutate {
-                        copy(currentRoute = action.route)
+                        copy(
+                            currentRoute = action.route,
+                            isLoading = false,
+                            stytchError = null,
+                            b2BErrorType = null,
+                        )
                     }
                 }
                 on<HandleStepUpAuthentication> { action, state ->
@@ -128,8 +134,11 @@ internal class B2BUIStateMachine(
                 on<ResetEverything> { _, state ->
                     // These are configured post-launch, so we can't just do _all_ defaults
                     val uiIncludedMfaMethods = state.snapshot.uiIncludedMfaMethods
+                    val authFlowType = state.snapshot.authFlowType
                     state.mutate {
                         B2BUIState().copy(
+                            authFlowType = authFlowType,
+                            currentRoute = if (authFlowType == AuthFlowType.DISCOVERY) Routes.Main else null,
                             uiIncludedMfaMethods = uiIncludedMfaMethods,
                         )
                     }

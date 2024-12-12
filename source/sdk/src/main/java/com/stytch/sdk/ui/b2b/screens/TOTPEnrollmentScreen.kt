@@ -41,8 +41,10 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseTOTPCreate
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -61,6 +63,8 @@ internal class TOTPEnrollmentScreenViewModel(
     private val useTOTPCreate = UseTOTPCreate(viewModelScope, state, ::dispatch, ::request)
 
     init {
+        // if we're enrolling, make sure we always set the postauthscreen to recoverycodesave
+        dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
         if (state.value.mfaTOTPState == null) {
             // kick off account creation
             useTOTPCreate()
@@ -90,7 +94,8 @@ internal fun TOTPEnrollmentScreen(
     val secretChunked = secret.chunked(4).joinToString(" ")
     var didCopyCode by remember { mutableStateOf(false) }
     Column {
-        PageTitle(text = "Copy the code below to link your authenticator app")
+        BackButton(onClick = { viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection)) })
+        PageTitle(textAlign = TextAlign.Left, text = "Copy the code below to link your authenticator app")
         BodyText(
             text =
                 "Enter the key below into your authenticator app. " +

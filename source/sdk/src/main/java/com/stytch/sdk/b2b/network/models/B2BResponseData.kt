@@ -536,13 +536,11 @@ public data class DiscoveryAuthenticateResponseData(
 public data class SSOAuthenticateResponseData(
     @Json(name = "organization_id")
     val organizationId: String,
-    @Json(name = "method_id")
-    val methodId: String,
     @Json(name = "session_jwt")
     override val sessionJwt: String,
     @Json(name = "session_token")
     override val sessionToken: String,
-    @Json(name = "session")
+    @Json(name = "member_session")
     override val memberSession: B2BSessionData?,
     @Json(name = "reset_session")
     val resetSession: Boolean,
@@ -824,7 +822,7 @@ public data class OAuthProviderValues(
     @Json(name = "access_token")
     val accessToken: String,
     @Json(name = "id_token")
-    val idToken: String,
+    val idToken: String? = null,
     @Json(name = "refresh_token")
     val refreshToken: String? = null,
     val scopes: List<String> = emptyList(),

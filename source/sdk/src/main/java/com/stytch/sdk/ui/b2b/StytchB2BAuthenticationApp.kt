@@ -13,27 +13,29 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
+import com.stytch.sdk.ui.b2b.screens.LoadingView
 import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
 import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
@@ -47,20 +49,21 @@ import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
+import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
+    modifier: Modifier = Modifier,
     state: State<B2BUIState>,
     dispatch: Dispatch,
     createViewModel: CreateViewModel<ViewModel>,
-    modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
-    val currentBackStackEntryState = navController.currentBackStackEntryAsState()
     val bootstrapData = LocalStytchBootstrapData.current
+    val theme = LocalStytchTheme.current
 
     fun <T : ViewModel> createViewModelHelper(modelClass: Class<T>): T =
         createViewModel(modelClass as Class<ViewModel>) as T
@@ -70,16 +73,22 @@ internal fun StytchB2BAuthenticationApp(
     val currentRoute = state.value.currentRoute
     val authFlowType = state.value.authFlowType
     val deeplinkTokenPair = state.value.deeplinkTokenPair
-    val startDestination = if (deeplinkTokenPair != null) Routes.DeeplinkParser else Routes.Main
+    val startDestination =
+        if (deeplinkTokenPair != null) {
+            Routes.DeeplinkParser
+        } else {
+            currentRoute ?: Routes.Loading
+        }
 
     LaunchedEffect(currentRoute) {
         currentRoute?.let {
-            navController.navigate(it)
+            navController.navigate(it) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = false
+                    inclusive = true
+                }
+            }
         }
-    }
-
-    LaunchedEffect(currentBackStackEntryState.value) {
-        dispatch(SetNextRoute(null))
     }
 
     LaunchedEffect(
@@ -110,6 +119,15 @@ internal fun StytchB2BAuthenticationApp(
                     .verticalScroll(rememberScrollState()),
         ) {
             NavHost(navController = navController, startDestination = startDestination) {
+                composable<Routes.Loading> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        LoadingView(color = Color(theme.primaryTextColor))
+                    }
+                }
                 composable<Routes.DeeplinkParser> {
                     DeepLinkParserScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
@@ -124,7 +142,7 @@ internal fun StytchB2BAuthenticationApp(
                     )
                 }
                 composable<Routes.Error> {
-                    ErrorScreen(state = state)
+                    ErrorScreen(state = state, createViewModel = ::createViewModelHelper)
                 }
                 composable<Routes.Main> {
                     MainScreen(state = state, createViewModel = ::createViewModelHelper)
@@ -179,6 +197,11 @@ internal fun StytchB2BAuthenticationApp(
                 composable<Routes.TOTPEntry> {
                     TOTPEntryScreen(createViewModel = ::createViewModelHelper)
                 }
+            }
+            state.value.stytchError?.let {
+                FormFieldStatus(text = it.message, isError = true, autoDismiss = {
+                    dispatch(SetStytchError(null))
+                })
             }
             if (!bootstrapData.disableSDKWatermark) {
                 Row(

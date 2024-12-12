@@ -7,6 +7,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -27,7 +28,8 @@ internal class EmailConfirmationScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmailStart = UsePasswordResetByEmailStart(viewModelScope, state, productConfig, ::request)
+    val usePasswordResetByEmailStart =
+        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
 
     fun resetEverything() = dispatch(ResetEverything)
 }
@@ -119,7 +121,7 @@ private fun EmailVerification(
     onBottomTextClicked: () -> Unit,
 ) {
     Column {
-        PageTitle(text = title)
+        PageTitle(textAlign = TextAlign.Left, text = title)
         BodyText(text = message)
         StytchTextButton(text = bottomText.text, onClick = onBottomTextClicked)
     }

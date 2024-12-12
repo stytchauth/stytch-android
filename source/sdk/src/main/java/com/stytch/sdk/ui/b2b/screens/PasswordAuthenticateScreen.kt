@@ -12,6 +12,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -24,7 +25,7 @@ import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
-import com.stytch.sdk.ui.shared.components.BodyText
+import com.stytch.sdk.ui.shared.components.Body2Text
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
@@ -48,7 +49,7 @@ internal fun PasswordAuthenticateScreen(
 ) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(text = "Log in with email and password")
+        PageTitle(textAlign = TextAlign.Left, text = "Log in with email and password")
         EmailAndPasswordEntry(
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
@@ -58,7 +59,7 @@ internal fun PasswordAuthenticateScreen(
             onSubmit = { viewModel.usePasswordAuthenticate() },
         )
         Spacer(modifier = Modifier.height(16.dp))
-        BodyText(
+        Body2Text(
             text =
                 buildAnnotatedString {
                     append("Having trouble signing in? ")

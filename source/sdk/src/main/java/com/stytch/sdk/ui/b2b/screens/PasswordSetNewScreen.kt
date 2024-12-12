@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -22,7 +23,8 @@ internal class PasswordSetNewScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmailStart = UsePasswordResetByEmailStart(viewModelScope, state, productConfig, ::request)
+    val usePasswordResetByEmailStart =
+        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
 }
 
 @Composable
@@ -33,7 +35,7 @@ internal fun PasswordSetNewScreen(
 ) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(text = "Check your email!")
+        PageTitle(textAlign = TextAlign.Left, text = "Check your email!")
         BodyText(
             text = "A login link was sent to you at ${state.value.emailState.emailAddress}",
             color = Color(theme.secondaryTextColor),

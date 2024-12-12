@@ -40,6 +40,7 @@ internal fun StytchInput(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     placeholder: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = OutlinedTextFieldDefaults.contentPadding(),
     textAlign: TextAlign = TextAlign.Start,
@@ -49,6 +50,7 @@ internal fun StytchInput(
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
     val interactionSource = remember { MutableInteractionSource() }
+    val actions = keyboardActions ?: KeyboardActions(onDone = { focusManager.clearFocus() })
     val colors =
         OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color(theme.inputBackgroundColor),
@@ -80,7 +82,7 @@ internal fun StytchInput(
             ),
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        keyboardActions = actions,
         interactionSource = interactionSource,
         singleLine = true,
         maxLines = 1,

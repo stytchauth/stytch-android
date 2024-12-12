@@ -15,13 +15,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -33,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import kotlin.math.max
 
 private const val OTP_LENGTH = 6
 
@@ -43,8 +49,20 @@ internal fun OTPEntry(
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    val finalCode = remember { mutableStateListOf("", "", "", "", "", "") }
+    var finalCode by remember { mutableStateOf(listOf("", "", "", "", "", "")) }
     val semantics = stringResource(id = R.string.semantics_otp_entry)
+
+    fun handleBackspace(index: Int) {
+        var clearIndex = index
+        if (finalCode[index].isEmpty()) {
+            // did we press backspace on an empty input? then pop back to the previous one and delete _that_
+            clearIndex = max(0, index - 1)
+        }
+        val codes = finalCode.toMutableList()
+        codes[clearIndex] = ""
+        finalCode = codes
+        focusManager.moveFocus(FocusDirection.Previous)
+    }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -56,11 +74,19 @@ internal fun OTPEntry(
                 .semantics { contentDescription = semantics },
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        finalCode.asIterable().forEachIndexed { i, value ->
+        finalCode.forEachIndexed { i, value ->
             var modifier =
                 Modifier
                     .width(48.dp)
                     .height(48.dp)
+                    .onKeyEvent { event ->
+                        if (event.key == Key.Backspace) {
+                            handleBackspace(i)
+                            true
+                        } else {
+                            false
+                        }
+                    }
             if (i == 0) {
                 modifier = modifier.focusRequester(focusRequester)
             }
@@ -70,17 +96,21 @@ internal fun OTPEntry(
                 value = value,
                 isError = errorMessage != null,
                 onValueChange = { newValue ->
-                    if (newValue.length <= 1) {
-                        finalCode[i] = newValue
-                        if (finalCode.filter { it.isNotBlank() }.size == OTP_LENGTH) {
-                            onCodeComplete(finalCode.joinToString(""))
+                    val codes = finalCode.toMutableList()
+                    if (newValue.length > 1) {
+                        // pasting in a whole code?
+                        newValue.split("").filterNot { it.isEmpty() }.forEachIndexed { index, s ->
+                            codes[index] = s
                         }
-                        if (newValue.length == 1 && i < (OTP_LENGTH - 1)) {
+                    } else {
+                        codes[i] = newValue
+                        if (i < (OTP_LENGTH - 1)) {
                             focusManager.moveFocus(FocusDirection.Next)
                         }
-                        if (newValue.isEmpty() && i > 0) {
-                            focusManager.moveFocus(FocusDirection.Previous)
-                        }
+                    }
+                    finalCode = codes
+                    if (finalCode.filter { it.isNotEmpty() }.size == OTP_LENGTH) {
+                        onCodeComplete(finalCode.joinToString(""))
                     }
                 },
                 keyboardOptions =
