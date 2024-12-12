@@ -21,12 +21,16 @@ import com.stytch.sdk.ui.shared.data.PasswordState
 internal fun EmailAndPasswordEntry(
     emailState: EmailState,
     onEmailAddressChanged: (String) -> Unit,
+    onEmailAddressDone: (() -> Unit)? = null,
     passwordState: PasswordState,
     onPasswordChanged: (String) -> Unit,
     allowInvalidSubmission: Boolean? = false,
     onSubmit: () -> Unit,
 ) {
-    val isSubmittable = allowInvalidSubmission == true || (emailState.validEmail == true && passwordState.validPassword)
+    val isSubmittable =
+        allowInvalidSubmission == true ||
+            !emailState.shouldValidateEmail ||
+            (emailState.validEmail == true && passwordState.validPassword)
     val semantics = stringResource(id = R.string.semantics_email_password_entry)
     val localFocusManager = LocalFocusManager.current
     Column(
@@ -40,7 +44,11 @@ internal fun EmailAndPasswordEntry(
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
             label = stringResource(id = R.string.email),
-            keyboardActions = KeyboardActions(onDone = { localFocusManager.moveFocus(FocusDirection.Next) }),
+            keyboardActions =
+                KeyboardActions(onDone = {
+                    onEmailAddressDone?.invoke()
+                    localFocusManager.moveFocus(FocusDirection.Next)
+                }),
         )
         PasswordInput(
             passwordState = passwordState,

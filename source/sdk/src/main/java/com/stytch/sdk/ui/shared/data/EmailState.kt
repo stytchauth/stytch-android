@@ -10,4 +10,5 @@ internal data class EmailState(
     val validEmail: Boolean? = null,
     val errorMessage: String? = null,
     val readOnly: Boolean = false,
+    val shouldValidateEmail: Boolean = false,
 ) : Parcelable

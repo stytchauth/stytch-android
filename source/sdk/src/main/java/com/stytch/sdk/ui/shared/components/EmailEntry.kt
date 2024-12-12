@@ -37,7 +37,7 @@ internal fun EmailEntry(
         onClick = onEmailAddressSubmit,
         modifier = Modifier.height(45.dp),
         text = stringResource(id = R.string.button_continue),
-        enabled = emailState.validEmail == true,
+        enabled = !emailState.shouldValidateEmail || emailState.validEmail == true,
     )
 }
 

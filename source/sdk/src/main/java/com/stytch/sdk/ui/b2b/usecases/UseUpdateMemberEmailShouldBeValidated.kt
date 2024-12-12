@@ -6,20 +6,21 @@ import com.stytch.sdk.ui.b2b.data.UpdateEmailState
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.flow.StateFlow
 
-internal class UseUpdateMemberEmailAddress(
+internal class UseUpdateMemberEmailShouldBeValidated(
     private val state: StateFlow<B2BUIState>,
     private val dispatch: Dispatch,
 ) {
-    operator fun invoke(emailAddress: String) {
+    operator fun invoke(shouldBeValidated: Boolean) {
         dispatch(
             UpdateEmailState(
                 state.value.emailState.copy(
-                    emailAddress = emailAddress,
+                    shouldValidateEmail = shouldBeValidated,
                     validEmail =
-                        if (state.value.emailState.shouldValidateEmail) {
-                            emailAddress.isValidEmailAddress()
+                        if (shouldBeValidated) {
+                            state.value.emailState.emailAddress
+                                .isValidEmailAddress()
                         } else {
-                            null
+                            state.value.emailState.validEmail
                         },
                 ),
             ),
