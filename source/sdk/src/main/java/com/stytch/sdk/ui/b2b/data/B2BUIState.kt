@@ -20,7 +20,7 @@ internal data class B2BUIState(
     val isLoading: Boolean = false,
     val stytchError: StytchError? = null,
     val errorToastText: String? = null,
-    val emailState: EmailState = EmailState(),
+    val emailState: EmailState = EmailState(shouldValidateEmail = false),
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),
     val passwordState: PasswordState = PasswordState(),
     val authFlowType: AuthFlowType = AuthFlowType.ORGANIZATION,
