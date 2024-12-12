@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,8 @@ import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseTOTPAuthenticate
+import com.stytch.sdk.ui.shared.components.BackButton
+import com.stytch.sdk.ui.shared.components.Body2Text
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.OTPEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -91,6 +94,9 @@ internal fun TOTPEntryScreen(
     val totpEntryState = viewModel.totpEntryState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
     Column {
+        if (totpEntryState.isEnrolling) {
+            BackButton { viewModel.dispatch(SetNextRoute(Routes.TOTPEnrollment)) }
+        }
         PageTitle(textAlign = TextAlign.Left, text = "Enter verification code")
         BodyText(text = "Enter the 6-digit code from your authenticator app.")
         OTPEntry(errorMessage = totpEntryState.errorMessage, onCodeComplete = viewModel::validateCode)
@@ -108,8 +114,11 @@ internal fun TOTPEntryScreen(
                 onClick = viewModel::useRecoveryCode,
             )
         } else {
-            BodyText(
-                text = "If the verification code doesn’t work, go back to your authenticator app to get a new code.",
+            Body2Text(
+                text =
+                    AnnotatedString(
+                        "If the verification code doesn’t work, go back to your authenticator app to get a new code.",
+                    ),
             )
         }
 

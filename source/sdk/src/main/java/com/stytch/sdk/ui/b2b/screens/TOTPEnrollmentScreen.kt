@@ -41,6 +41,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseTOTPCreate
 import com.stytch.sdk.ui.shared.components.BackButton
@@ -62,6 +63,8 @@ internal class TOTPEnrollmentScreenViewModel(
     private val useTOTPCreate = UseTOTPCreate(viewModelScope, state, ::dispatch, ::request)
 
     init {
+        // if we're enrolling, make sure we always set the postauthscreen to recoverycodesave
+        dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
         if (state.value.mfaTOTPState == null) {
             // kick off account creation
             useTOTPCreate()

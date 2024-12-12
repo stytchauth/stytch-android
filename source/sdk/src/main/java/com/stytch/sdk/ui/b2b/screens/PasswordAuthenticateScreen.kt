@@ -25,7 +25,7 @@ import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
-import com.stytch.sdk.ui.shared.components.BodyText
+import com.stytch.sdk.ui.shared.components.Body2Text
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
@@ -59,7 +59,7 @@ internal fun PasswordAuthenticateScreen(
             onSubmit = { viewModel.usePasswordAuthenticate() },
         )
         Spacer(modifier = Modifier.height(16.dp))
-        BodyText(
+        Body2Text(
             text =
                 buildAnnotatedString {
                     append("Having trouble signing in? ")

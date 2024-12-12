@@ -38,21 +38,23 @@ internal fun ErrorScreen(
 ) {
     val b2bError = state.value.b2BErrorType ?: return
     val orgName = state.value.activeOrganization?.organizationName ?: "the organization"
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    Column {
         // Only show a back button if it's _not_ organization not found, as all others are potentially user-recoverable
         if (b2bError != B2BErrorType.Organization) {
             BackButton { viewModel.dispatch(ResetEverything) }
         }
-        PageTitle(text = "Looks like there was an error!")
-        Image(
-            painter = painterResource(id = R.drawable.big_error_circle),
-            contentDescription = "Error",
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        BodyText(text = b2bError.description.format(orgName), textAlign = TextAlign.Center)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            PageTitle(text = "Looks like there was an error!")
+            Image(
+                painter = painterResource(id = R.drawable.big_error_circle),
+                contentDescription = "Error",
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            BodyText(text = b2bError.description.format(orgName), textAlign = TextAlign.Center)
+        }
     }
 }

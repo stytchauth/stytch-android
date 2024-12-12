@@ -6,7 +6,7 @@ import java.util.Date
 
 @Parcelize
 internal data class MFASMSState(
-    val isSending: Boolean = false,
+    val isEnrolling: Boolean = false,
     val codeExpiration: Date? = null,
     val formattedDestination: String? = null,
 ) : Parcelable

@@ -45,7 +45,7 @@ internal fun SMSOTPEnrollmentScreen(
             onCountryCodeChanged = { viewModel.useUpdateMemberPhoneNumber(it, null) },
             phoneNumber = phoneNumberState.phoneNumber,
             onPhoneNumberChanged = { viewModel.useUpdateMemberPhoneNumber(null, it) },
-            onPhoneNumberSubmit = { viewModel.useSmsOtpSend() },
+            onPhoneNumberSubmit = { viewModel.useSmsOtpSend(true) },
         )
     }
 }
