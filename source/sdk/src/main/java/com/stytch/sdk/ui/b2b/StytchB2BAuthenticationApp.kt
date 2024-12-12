@@ -29,6 +29,7 @@ import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
+import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
@@ -198,7 +199,9 @@ internal fun StytchB2BAuthenticationApp(
                 }
             }
             state.value.stytchError?.let {
-                FormFieldStatus(text = it.message, isError = true)
+                FormFieldStatus(text = it.message, isError = true, autoDismiss = {
+                    dispatch(SetStytchError(null))
+                })
             }
             if (!bootstrapData.disableSDKWatermark) {
                 Row(

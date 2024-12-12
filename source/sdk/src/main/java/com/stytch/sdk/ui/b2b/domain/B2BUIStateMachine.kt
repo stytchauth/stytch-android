@@ -113,7 +113,12 @@ internal class B2BUIStateMachine(
                 }
                 on<SetNextRoute> { action, state ->
                     state.mutate {
-                        copy(currentRoute = action.route)
+                        copy(
+                            currentRoute = action.route,
+                            isLoading = false,
+                            stytchError = null,
+                            b2BErrorType = null,
+                        )
                     }
                 }
                 on<HandleStepUpAuthentication> { action, state ->
