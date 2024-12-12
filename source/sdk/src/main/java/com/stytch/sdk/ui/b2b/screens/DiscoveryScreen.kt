@@ -50,6 +50,7 @@ import com.stytch.sdk.ui.b2b.extensions.toInternalOrganizationData
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryIntermediateSessionExchange
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryOrganizationCreate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -168,6 +169,7 @@ internal fun DiscoveryScreen(
                 onGoBack = { viewModel.dispatch(ResetEverything) },
             )
         }
+        BackButton(onClick = { viewModel.dispatch(ResetEverything) })
         PageTitle(textAlign = TextAlign.Left, text = "Select an organization to continue")
         Column(modifier = Modifier.fillMaxWidth()) {
             state.value.discoveredOrganizations?.map { discoveredOrganization ->
