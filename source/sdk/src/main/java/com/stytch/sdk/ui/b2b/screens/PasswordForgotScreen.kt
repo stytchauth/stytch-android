@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
@@ -78,6 +79,7 @@ internal fun PasswordForgotScreen(
             modifier = Modifier.fillMaxWidth(),
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
+            keyboardActions = KeyboardActions(onDone = { viewModel.onSubmit() }),
         )
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(

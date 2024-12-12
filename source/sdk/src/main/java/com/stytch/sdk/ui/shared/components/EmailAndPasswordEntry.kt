@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -25,6 +28,7 @@ internal fun EmailAndPasswordEntry(
 ) {
     val isSubmittable = allowInvalidSubmission == true || (emailState.validEmail == true && passwordState.validPassword)
     val semantics = stringResource(id = R.string.semantics_email_password_entry)
+    val localFocusManager = LocalFocusManager.current
     Column(
         modifier = Modifier.semantics { contentDescription = semantics },
     ) {
@@ -36,11 +40,13 @@ internal fun EmailAndPasswordEntry(
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
             label = stringResource(id = R.string.email),
+            keyboardActions = KeyboardActions(onDone = { localFocusManager.moveFocus(FocusDirection.Next) }),
         )
         PasswordInput(
             passwordState = passwordState,
             onPasswordChanged = onPasswordChanged,
             label = stringResource(id = R.string.password),
+            keyboardActions = KeyboardActions(onDone = { onSubmit() }),
         )
         StytchButton(
             onClick = onSubmit,
