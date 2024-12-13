@@ -11,4 +11,5 @@ internal data class MFAPrimaryInfoState(
     val memberPhoneNumber: String? = null,
     val organizationId: String,
     val organizationMfaOptionsSupported: List<MfaMethod>,
+    val smsImplicitlySent: Boolean,
 ) : Parcelable

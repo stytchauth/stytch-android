@@ -35,8 +35,8 @@ internal class UseOTPSMSSend(
             }.onSuccess {
                 dispatch(
                     UpdateMfaSmsState(
-                        state.value.mfaSMSState?.copy(isEnrolling = isEnrolling)
-                            ?: MFASMSState(isEnrolling = isEnrolling),
+                        state.value.mfaSMSState?.copy(isEnrolling = isEnrolling, didSend = true)
+                            ?: MFASMSState(isEnrolling = isEnrolling, didSend = true),
                     ),
                 )
                 if (isEnrolling) {

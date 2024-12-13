@@ -53,6 +53,15 @@ internal class SMSOTPEntryScreenViewModel(
 ) : BaseViewModel(state, dispatchAction) {
     val useOTPSMSSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, ::request)
     val useOTPSMSAuthenticate = UseOTPSMSAuthenticate(viewModelScope, state, ::request)
+
+    init {
+        val smsImplicitlySent = state.value.mfaPrimaryInfoState?.smsImplicitlySent == true
+        val didSend = state.value.mfaSMSState?.didSend == true
+        // If we haven't already sent one ourselves, and an SMS message was not already sent by the server, send it now
+        if (!didSend && !smsImplicitlySent) {
+            useOTPSMSSend(false)
+        }
+    }
 }
 
 @Composable

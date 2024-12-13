@@ -75,6 +75,7 @@ private fun handleAdditionalPrimaryAuthRequired(
                         memberPhoneNumber = response.member.mfaPhoneNumber,
                         organizationId = response.organization.organizationId,
                         organizationMfaOptionsSupported = emptyList(),
+                        smsImplicitlySent = false,
                     ),
             )
         if (primaryAuthMethods.isEmpty()) {
@@ -101,6 +102,7 @@ private fun handleMFARequired(
             memberPhoneNumber = response.member.mfaPhoneNumber,
             organizationId = response.organization.organizationId,
             organizationMfaOptionsSupported = response.getOrganizationMfaOptionsSupported(),
+            smsImplicitlySent = smsImplicitlySent,
         )
     val entryMethod: MfaMethod? =
         if (smsImplicitlySent) {
