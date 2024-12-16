@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2b.usecases
 
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviderConfig
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviders
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -118,6 +119,11 @@ internal class UseEffectiveAuthConfig(
                 .mapNotNull { authMethod ->
                     if (authMethod in oauthProvidersToAuthMethods.values) {
                         StytchB2BProduct.OAUTH
+                    } else if (
+                        authMethod == AllowedAuthMethods.PASSWORD && state.value.authFlowType == AuthFlowType.DISCOVERY
+                    ) {
+                        // If we're in a discovery flow, do not show passwords as an allowed auth method
+                        null
                     } else {
                         productsToAuthMethods.getKeyByValue(authMethod)
                     }
