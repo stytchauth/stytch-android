@@ -23,6 +23,7 @@ import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
 import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
+import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailShouldBeValidated
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.EmailInput
@@ -42,6 +43,7 @@ internal class PasswordForgotScreenViewModel(
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
+    val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
 
     fun onSubmit() {
         dispatch(SetLoading(true))
@@ -88,11 +90,15 @@ internal fun PasswordForgotScreen(
             modifier = Modifier.fillMaxWidth(),
             emailState = state.value.emailState,
             onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-            keyboardActions = KeyboardActions(onDone = { viewModel.onSubmit() }),
+            keyboardActions =
+                KeyboardActions(onDone = {
+                    viewModel.useUpdateMemberEmailShouldBeValidated(true)
+                    viewModel.onSubmit()
+                }),
         )
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
-            enabled = state.value.emailState.validEmail == true,
+            enabled = !state.value.emailState.shouldValidateEmail || state.value.emailState.validEmail == true,
             text = "Continue",
             onClick = { viewModel.onSubmit() },
         )
