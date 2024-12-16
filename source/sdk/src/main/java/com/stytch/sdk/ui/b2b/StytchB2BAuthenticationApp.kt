@@ -108,15 +108,14 @@ internal fun StytchB2BAuthenticationApp(
         }
     }
     Surface(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         color = Color(LocalStytchTheme.current.backgroundColor),
     ) {
         Column(
             modifier =
                 Modifier
                     .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxSize(),
         ) {
             NavHost(navController = navController, startDestination = startDestination) {
                 composable<Routes.Loading> {
