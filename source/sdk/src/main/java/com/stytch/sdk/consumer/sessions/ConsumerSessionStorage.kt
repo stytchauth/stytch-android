@@ -14,19 +14,24 @@ import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.util.Date
 
 internal class ConsumerSessionStorage(
     private val storageHelper: StorageHelper,
-    private val externalScope: CoroutineScope,
 ) {
     private val moshi = Moshi.Builder().build()
     private val moshiSessionDataAdapter = moshi.adapter(SessionData::class.java).lenient()
     private val moshiUserDataAdapter = moshi.adapter(UserData::class.java).lenient()
+
+    private val _sessionFlow = MutableStateFlow<SessionData?>(null)
+    private val _userFlow = MutableStateFlow<UserData?>(null)
+    private val _lastValidatedAtFlow = MutableStateFlow<Date>(Date(0L))
+
+    val sessionFlow = _sessionFlow.asStateFlow()
+    val userFlow = _userFlow.asStateFlow()
+    val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
 
     var sessionToken: String?
         private set(value) {
@@ -62,9 +67,7 @@ internal class ConsumerSessionStorage(
         }
         private set(value) {
             storageHelper.saveLong(PREFERENCES_NAME_LAST_VALIDATED_AT, value.time)
-            externalScope.launch {
-                _lastValidatedAtFlow.emit(value)
-            }
+            _lastValidatedAtFlow.tryEmit(value)
         }
 
     var session: SessionData?
@@ -99,9 +102,7 @@ internal class ConsumerSessionStorage(
                 storageHelper.saveValue(PREFERENCES_NAME_SESSION_DATA, null)
             }
             lastValidatedAt = Date()
-            externalScope.launch {
-                _sessionFlow.emit(value)
-            }
+            _sessionFlow.tryEmit(value)
         }
 
     var user: UserData?
@@ -128,24 +129,19 @@ internal class ConsumerSessionStorage(
                 storageHelper.saveValue(PREFERENCES_NAME_USER_DATA, null)
             }
             lastValidatedAt = Date()
-            externalScope.launch {
-                _userFlow.emit(value)
-            }
+            _userFlow.tryEmit(value)
         }
-
-    private val _sessionFlow = MutableStateFlow(session)
-    val sessionFlow = _sessionFlow.asStateFlow()
-
-    private val _userFlow = MutableStateFlow(user)
-    val userFlow = _userFlow.asStateFlow()
-
-    private val _lastValidatedAtFlow = MutableStateFlow(lastValidatedAt)
-    val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
 
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
 
     var methodId: String? = null
+
+    init {
+        _sessionFlow.tryEmit(session)
+        _userFlow.tryEmit(user)
+        _lastValidatedAtFlow.tryEmit(lastValidatedAt)
+    }
 
     /**
      * @throws Exception if failed to save data

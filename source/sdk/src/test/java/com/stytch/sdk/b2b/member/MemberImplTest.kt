@@ -67,7 +67,7 @@ internal class MemberImplTest {
         every { mockSharedPreferencesEditor.apply() } just runs
         every { mockSharedPreferences.getLong(any(), any()) } returns 0
         StorageHelper.sharedPreferences = mockSharedPreferences
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             MemberImpl(
                 externalScope = TestScope(),
