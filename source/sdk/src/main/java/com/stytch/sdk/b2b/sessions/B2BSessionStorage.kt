@@ -245,7 +245,6 @@ internal class B2BSessionStorage(
             sessionJwt = null
             memberSession = null
             member = null
-            intermediateSessionToken = null
             lastValidatedAt = Date(0L)
         }
     }
