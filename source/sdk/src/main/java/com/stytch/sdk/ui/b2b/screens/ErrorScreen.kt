@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,9 @@ internal fun ErrorScreen(
 ) {
     val b2bError = state.value.b2BErrorType ?: return
     val orgName = state.value.activeOrganization?.organizationName ?: "the organization"
+    BackHandler(enabled = b2bError != B2BErrorType.Organization) {
+        viewModel.dispatch(ResetEverything)
+    }
     Column {
         // Only show a back button if it's _not_ organization not found, as all others are potentially user-recoverable
         if (b2bError != B2BErrorType.Organization) {

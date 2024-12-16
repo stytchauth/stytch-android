@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import android.text.format.DateUtils
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -91,7 +92,9 @@ internal fun SMSOTPEntryScreen(
             }
         }
     }
-
+    BackHandler(enabled = isEnrolling) {
+        viewModel.dispatch(SetNextRoute(Routes.SMSOTPEnrollment))
+    }
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         if (isEnrolling) {
             BackButton {

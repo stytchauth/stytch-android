@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -93,6 +94,9 @@ internal fun TOTPEnrollmentScreen(
     val secret = (totpState.enrollmentState?.secret ?: "").lowercase()
     val secretChunked = secret.chunked(4).joinToString(" ")
     var didCopyCode by remember { mutableStateOf(false) }
+    BackHandler(enabled = true) {
+        viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection))
+    }
     Column {
         BackButton(onClick = { viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection)) })
         PageTitle(textAlign = TextAlign.Left, text = "Copy the code below to link your authenticator app")

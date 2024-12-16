@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -139,6 +140,10 @@ internal fun DiscoveryScreen(
     fun handleDiscoveryOrganizationCreate() {
         if (isCreatingState.value) return
         viewModel.createOrganization()
+    }
+
+    BackHandler(enabled = true) {
+        viewModel.dispatch(ResetEverything)
     }
 
     LaunchedEffect(shouldDirectLoginConfigEnabled, state.value.discoveredOrganizations) {

@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -93,6 +94,9 @@ internal fun TOTPEntryScreen(
 ) {
     val totpEntryState = viewModel.totpEntryState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
+    BackHandler(enabled = totpEntryState.isEnrolling) {
+        viewModel.dispatch(SetNextRoute(Routes.TOTPEnrollment))
+    }
     Column {
         if (totpEntryState.isEnrolling) {
             BackButton { viewModel.dispatch(SetNextRoute(Routes.TOTPEnrollment)) }

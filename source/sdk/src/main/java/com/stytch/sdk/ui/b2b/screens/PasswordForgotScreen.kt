@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,6 +71,9 @@ internal fun PasswordForgotScreen(
     createViewModel: CreateViewModel<PasswordForgotScreenViewModel>,
     viewModel: PasswordForgotScreenViewModel = createViewModel(PasswordForgotScreenViewModel::class.java),
 ) {
+    BackHandler(enabled = true) {
+        viewModel.dispatch(ResetEverything)
+    }
     Column {
         BackButton {
             viewModel.dispatch(ResetEverything)

@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -36,6 +37,9 @@ internal fun PasswordSetNewScreen(
     viewModel: PasswordSetNewScreenViewModel = createViewModel(PasswordSetNewScreenViewModel::class.java),
 ) {
     val theme = LocalStytchTheme.current
+    BackHandler(enabled = true) {
+        viewModel.dispatch(ResetEverything)
+    }
     Column {
         BackButton {
             viewModel.dispatch(ResetEverything)

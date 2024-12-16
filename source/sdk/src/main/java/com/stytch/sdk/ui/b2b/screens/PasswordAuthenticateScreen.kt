@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +51,9 @@ internal fun PasswordAuthenticateScreen(
     viewModel: PasswordAuthenticateScreenViewModel = createViewModel(PasswordAuthenticateScreenViewModel::class.java),
 ) {
     val theme = LocalStytchTheme.current
+    BackHandler(enabled = true) {
+        viewModel.dispatch(ResetEverything)
+    }
     Column {
         BackButton { viewModel.dispatch(ResetEverything) }
         PageTitle(textAlign = TextAlign.Left, text = "Log in with email and password")

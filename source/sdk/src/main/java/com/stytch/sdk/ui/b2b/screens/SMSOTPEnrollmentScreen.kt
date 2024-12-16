@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -34,6 +35,9 @@ internal fun SMSOTPEnrollmentScreen(
     viewModel: SMSOTPEnrollmentScreenViewModel = createViewModel(SMSOTPEnrollmentScreenViewModel::class.java),
 ) {
     val phoneNumberState = state.value.phoneNumberState
+    BackHandler(enabled = true) {
+        viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection))
+    }
     Column {
         BackButton(onClick = { viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection)) })
         PageTitle(textAlign = TextAlign.Left, text = "Enter your phone number to set up Multi-Factor Authentication")
