@@ -15,12 +15,14 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
 import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.EmailInput
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -69,6 +71,9 @@ internal fun PasswordForgotScreen(
     viewModel: PasswordForgotScreenViewModel = createViewModel(PasswordForgotScreenViewModel::class.java),
 ) {
     Column {
+        BackButton {
+            viewModel.dispatch(ResetEverything)
+        }
         PageTitle(textAlign = TextAlign.Left, text = "Check your email for help signing in!")
         BodyText(
             text =

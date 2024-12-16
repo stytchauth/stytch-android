@@ -14,9 +14,11 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmail
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordsStrengthCheck
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.PasswordInput
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -38,6 +40,9 @@ internal fun PasswordResetScreen(
     viewModel: PasswordResetScreenViewModel = createViewModel(PasswordResetScreenViewModel::class.java),
 ) {
     Column {
+        BackButton {
+            viewModel.dispatch(ResetEverything)
+        }
         PageTitle(textAlign = TextAlign.Left, text = "Set a new password")
         PasswordInput(
             label = "Password",

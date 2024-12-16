@@ -19,12 +19,14 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
+import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.Body2Text
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -49,6 +51,7 @@ internal fun PasswordAuthenticateScreen(
 ) {
     val theme = LocalStytchTheme.current
     Column {
+        BackButton { viewModel.dispatch(ResetEverything) }
         PageTitle(textAlign = TextAlign.Left, text = "Log in with email and password")
         EmailAndPasswordEntry(
             emailState = state.value.emailState,
