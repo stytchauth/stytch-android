@@ -81,7 +81,7 @@ internal class UseEffectiveAuthConfig(
     private val authMethodsToShow: List<AllowedAuthMethods>
         get() {
             // If there are no restrictions, use the auth methods from the UI config as-is
-            if (restrictedAuthMethods.isNotEmpty()) {
+            if (restrictedAuthMethods.isEmpty()) {
                 return flattenedConfiguredAuthMethods
             }
 
