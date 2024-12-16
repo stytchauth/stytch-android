@@ -99,7 +99,7 @@ internal fun OTPEntry(
                     val codes = finalCode.toMutableList()
                     if (newValue.length > 1) {
                         // pasting in a whole code?
-                        newValue.split("").filterNot { it.isEmpty() }.forEachIndexed { index, s ->
+                        newValue.split("").filterNot { it.isEmpty() }.take(OTP_LENGTH).forEachIndexed { index, s ->
                             codes[index] = s
                         }
                     } else {
