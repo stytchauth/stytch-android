@@ -127,9 +127,8 @@ internal fun DiscoveryScreen(
             ) {
                 viewModel.useSSOStart(context, organization.ssoDefaultConnectionId)
             } else {
-                viewModel.dispatch(
-                    SetActiveOrganization(discoveredOrganization.organization.toInternalOrganizationData()),
-                )
+                viewModel.dispatch(SetActiveOrganization(organization.toInternalOrganizationData()))
+                viewModel.exchangeSessionForOrganization(organizationId = organization.organizationId)
             }
         } else {
             if (isExchangingState.value) return
