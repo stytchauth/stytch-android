@@ -88,6 +88,7 @@ public object StytchB2BClient {
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
     internal var bootstrapData: BootstrapData = BootstrapData()
+    internal lateinit var publicToken: String
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -125,6 +126,7 @@ public object StytchB2BClient {
     ) {
         try {
             deviceInfo = context.getDeviceInfo()
+            this.publicToken = publicToken
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             sessionStorage = B2BSessionStorage(StorageHelper)

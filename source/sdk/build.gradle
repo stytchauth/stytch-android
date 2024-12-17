@@ -6,11 +6,12 @@ plugins {
     id 'kotlin-kapt'
     id "org.jetbrains.dokka"
     id 'kotlin-parcelize'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
 }
 
 ext {
   PUBLISH_GROUP_ID = 'com.stytch.sdk'
-  PUBLISH_VERSION = '0.30.1'
+  PUBLISH_VERSION = '0.31.0'
   PUBLISH_ARTIFACT_ID = 'sdk'
 }
 
@@ -75,6 +76,7 @@ android {
             'stytchOAuthRedirectScheme': 'test://',
             'stytchOAuthRedirectHost': 'oauth',
             'STYTCH_PUBLIC_TOKEN': 'test',
+            'STYTCH_B2B_PUBLIC_TOKEN': 'test'
         ]
     }
     unitTestVariants.all {
@@ -82,6 +84,7 @@ android {
             'stytchOAuthRedirectScheme': 'test://',
             'stytchOAuthRedirectHost': 'oauth',
             'STYTCH_PUBLIC_TOKEN': 'test',
+            'STYTCH_B2B_PUBLIC_TOKEN': 'test'
         ]
     }
 }
@@ -178,6 +181,12 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "com.googlecode.libphonenumber:libphonenumber:8.12.52"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.10"
+    implementation "androidx.navigation:navigation-compose:2.8.4"
+    implementation 'com.freeletics.flowredux:flowredux-jvm:1.2.2'
+    implementation 'com.freeletics.flowredux:compose:1.2.2'
+    implementation "io.coil-kt.coil3:coil-compose:3.0.4"
+    implementation "io.coil-kt.coil3:coil-network-okhttp:3.0.4"
 
     // Test depdendencies
     testImplementation 'junit:junit:4.13.2'

@@ -65,8 +65,13 @@ internal class B2BSessionStorage(
         }
 
     var intermediateSessionToken: String?
-        private set(value) {
+        internal set(value) {
             storageHelper.saveValue(PREFERENCES_NAME_IST, value)
+            // IST and session tokens are mutually exclusive. If this is set, null out the others
+            if (value != null) {
+                sessionToken = null
+                sessionJwt = null
+            }
             // Set the IST expiration when persisting an IST
             intermediateSessionTokenExpiration =
                 if (value != null) {
@@ -223,8 +228,8 @@ internal class B2BSessionStorage(
         intermediateSessionToken: String? = null,
     ) {
         synchronized(this) {
-            this.sessionToken = sessionToken
-            this.sessionJwt = sessionJwt
+            this.sessionToken = if (intermediateSessionToken == null) sessionToken else null
+            this.sessionJwt = if (intermediateSessionToken == null) sessionJwt else null
             this.memberSession = session
             this.intermediateSessionToken = intermediateSessionToken
         }
@@ -239,7 +244,6 @@ internal class B2BSessionStorage(
             sessionJwt = null
             memberSession = null
             member = null
-            intermediateSessionToken = null
             lastValidatedAt = Date(0L)
         }
     }

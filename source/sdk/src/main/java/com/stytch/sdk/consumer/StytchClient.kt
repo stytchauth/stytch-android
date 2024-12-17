@@ -166,6 +166,7 @@ public object StytchClient {
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
+            println(ex)
             events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",

@@ -19,6 +19,7 @@ android {
         manifestPlaceholders["stytchOAuthRedirectScheme"] = "stytchjavademoapp"
         manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
         manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = publicToken
+        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
 
         buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
     }

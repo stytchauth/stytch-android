@@ -14,16 +14,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.ui.StytchUI
-import com.stytch.sdk.ui.data.EmailMagicLinksOptions
-import com.stytch.sdk.ui.data.GoogleOAuthOptions
-import com.stytch.sdk.ui.data.OAuthOptions
-import com.stytch.sdk.ui.data.OAuthProvider
-import com.stytch.sdk.ui.data.OTPMethods
-import com.stytch.sdk.ui.data.OTPOptions
-import com.stytch.sdk.ui.data.PasswordOptions
-import com.stytch.sdk.ui.data.StytchProduct
-import com.stytch.sdk.ui.data.StytchProductConfig
+import com.stytch.sdk.ui.b2c.StytchUI
+import com.stytch.sdk.ui.b2c.data.EmailMagicLinksOptions
+import com.stytch.sdk.ui.b2c.data.GoogleOAuthOptions
+import com.stytch.sdk.ui.b2c.data.OAuthOptions
+import com.stytch.sdk.ui.b2c.data.OAuthProvider
+import com.stytch.sdk.ui.b2c.data.OTPMethods
+import com.stytch.sdk.ui.b2c.data.OTPOptions
+import com.stytch.sdk.ui.b2c.data.PasswordOptions
+import com.stytch.sdk.ui.b2c.data.StytchProduct
+import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.uiworkbench.ui.theme.StytchAndroidSDKTheme
 
 class UiWorkbenchActivity : ComponentActivity() {
