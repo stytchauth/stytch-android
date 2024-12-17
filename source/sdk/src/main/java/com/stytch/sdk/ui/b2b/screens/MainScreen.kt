@@ -30,10 +30,12 @@ import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviders
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ProductComponent
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
@@ -133,6 +135,10 @@ internal fun MainScreen(
     val showVerifyEmailCopy = emailAddress.isNotEmpty() && emailVerified == false && primaryAuthMethods.isNotEmpty()
     val theme = LocalStytchTheme.current
     val context = LocalContext.current as Activity
+    if (products.isEmpty()) {
+        viewModel.dispatch(SetB2BError(B2BErrorType.NoAuthenticationMethodsFound))
+        return
+    }
     Column {
         Row {
             AsyncImage(

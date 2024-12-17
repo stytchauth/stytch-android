@@ -14,4 +14,5 @@ internal enum class B2BErrorType(
     CannotJoinOrgDueToAuthPolicy(
         "Unable to join due to %s's authentication policy. Please contact your admin for more information.",
     ),
+    NoAuthenticationMethodsFound("Invalid product configuration detected"),
 }

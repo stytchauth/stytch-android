@@ -39,12 +39,13 @@ internal fun ErrorScreen(
 ) {
     val b2bError = state.value.b2BErrorType ?: return
     val orgName = state.value.activeOrganization?.organizationName ?: "the organization"
-    BackHandler(enabled = b2bError != B2BErrorType.Organization) {
+    val hasBackButton = !listOf(B2BErrorType.Organization, B2BErrorType.NoAuthenticationMethodsFound).contains(b2bError)
+    BackHandler(enabled = hasBackButton) {
         viewModel.dispatch(ResetEverything)
     }
     Column {
         // Only show a back button if it's _not_ organization not found, as all others are potentially user-recoverable
-        if (b2bError != B2BErrorType.Organization) {
+        if (hasBackButton) {
             BackButton { viewModel.dispatch(ResetEverything) }
         }
         Column(
