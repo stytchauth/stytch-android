@@ -5,13 +5,13 @@ import android.app.Application
 import android.os.Bundle
 import java.lang.ref.WeakReference
 
-internal class ActivityProvider(application: Application) : Application.ActivityLifecycleCallbacks {
+internal class ActivityProvider(
+    application: Application,
+) : Application.ActivityLifecycleCallbacks {
     @Suppress("ktlint:standard:backing-property-naming")
     private var _currentActivity = WeakReference<Activity>(null)
     internal val currentActivity: Activity?
         get() = _currentActivity.get()
-
-    private var lastResumedActivityName: String? = null
 
     init {
         application.registerActivityLifecycleCallbacks(this)
@@ -21,26 +21,23 @@ internal class ActivityProvider(application: Application) : Application.Activity
         activity: Activity,
         bundle: Bundle?,
     ) {
-        _currentActivity = WeakReference(activity)
+        // noop
     }
 
     override fun onActivityStarted(activity: Activity) {
-        _currentActivity = WeakReference(activity)
+        // noop
     }
 
     override fun onActivityResumed(activity: Activity) {
-        lastResumedActivityName = activity.localClassName
         _currentActivity = WeakReference(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {
-        if (lastResumedActivityName != activity.localClassName) return
-        _currentActivity = WeakReference(null)
+        // noop
     }
 
     override fun onActivityStopped(activity: Activity) {
-        if (lastResumedActivityName != activity.localClassName) return
-        _currentActivity = WeakReference(null)
+        // noop
     }
 
     override fun onActivitySaveInstanceState(
@@ -51,7 +48,6 @@ internal class ActivityProvider(application: Application) : Application.Activity
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if (lastResumedActivityName != activity.localClassName) return
-        _currentActivity = WeakReference(null)
+        // noop
     }
 }
