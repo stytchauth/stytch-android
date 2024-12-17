@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.BaseResponse
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.SessionData
@@ -15,13 +16,13 @@ public interface Sessions {
     /**
      * Exposes a flow of session data
      */
-    public val onChange: StateFlow<SessionData?>
+    public val onChange: StateFlow<StytchObjectInfo<SessionData>>
 
     /**
      * Assign a callback that will be called when the session data changes
      */
 
-    public fun onChange(callback: (SessionData?) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<SessionData>) -> Unit)
 
     /**
      * @throws StytchFailedToDecryptDataError if failed to decrypt data

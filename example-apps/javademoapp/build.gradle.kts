@@ -5,12 +5,12 @@ val publicToken = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
 
 android {
     namespace = "com.stytch.javademoapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.stytch.javademoapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -19,6 +19,7 @@ android {
         manifestPlaceholders["stytchOAuthRedirectScheme"] = "stytchjavademoapp"
         manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
         manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = publicToken
+        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
 
         buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
     }

@@ -7,8 +7,6 @@
 ## Introduction
 [Stytch](https://stytch.com) offers a comprehensive mobile authentication solution that simplifies integration with its API using our mobile SDKs. As the only authentication provider with a complete set of APIs, Stytch enables the creation of custom end-to-end authentication flows tailored to your mobile tech stack. With two integration options, `Stytch` and `StytchUI`, Stytch's SDKs allow you to craft an authentication experience that flexibility integrates into your app. `Stytch` offers a fully customizable headless API integration to suit your specific needs, while `StytchUI` provides a configurable view to expedite the integration process.
 
-Note: Currently `StytchUI` only supports our consumer client, B2B UI coming soon! 
-
 ## Getting Started and SDK Installation
 If you are completely new to Stytch, prior to using the SDK you will first need to visit [Stytch's homepage](https://stytch.com), sign up, and create a new project in the [dashboard](https://stytch.com/dashboard/home). You'll then need to adjust your [SDK configuration](https://stytch.com/dashboard/sdk-configuration) — adding your app's application id to `Authorized applications` and enabling any `Auth methods` you wish to use.
 
@@ -40,7 +38,8 @@ android {
         manifestPlaceholders = [
             'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
             'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
-            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]',
+            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]', // if using B2C, else empty string
+            'STYTCH_B2B_PUBLIC_TOKEN': '[STYTCH_B2B_PUBLIC_TOKEN'], // if using B2B, else empty string
         ]
         ...
     }

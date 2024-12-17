@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.stytch.exampleapp.b2b"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -19,6 +19,7 @@ android {
         manifestPlaceholders["stytchOAuthRedirectScheme"] = "app"
         manifestPlaceholders["stytchOAuthRedirectHost"] = "b2bOAuth"
         manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
+        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
     }
 
     buildFeatures {

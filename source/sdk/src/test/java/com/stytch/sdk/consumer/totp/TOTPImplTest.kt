@@ -27,8 +27,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -68,7 +68,7 @@ internal class TOTPImplTest {
 
     @Test
     fun `TOTP Create delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.create(any()) } returns mockk(relaxed = true)
             impl.create(mockk(relaxed = true))
             coVerify(exactly = 1) { mockApi.create(any()) }
@@ -85,7 +85,7 @@ internal class TOTPImplTest {
 
     @Test
     fun `TOTP Authenticate delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticate(any(), any()) } returns successfulAuthResponse
             impl.authenticate(mockk(relaxed = true))
             coVerify(exactly = 1) { mockApi.authenticate(any(), any()) }
@@ -104,7 +104,7 @@ internal class TOTPImplTest {
 
     @Test
     fun `TOTP RecoveryCodes delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.recoveryCodes() } returns mockk(relaxed = true)
             impl.recoveryCodes()
             coVerify(exactly = 1) { mockApi.recoveryCodes() }
@@ -121,7 +121,7 @@ internal class TOTPImplTest {
 
     @Test
     fun `TOTP Recover delegates to appropriate api method`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.recover(any(), any()) } returns successfulRecoverResponse
             impl.recover(mockk(relaxed = true))
             coVerify(exactly = 1) { mockApi.recover(any(), any()) }

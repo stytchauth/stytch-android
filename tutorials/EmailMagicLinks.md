@@ -84,7 +84,7 @@ val result = StytchClient.magicLinks.email.loginOrCreate(
     EmailMagicLinks.Parameters(email = "user@email.com")
 )
 // retrieve the PKCE code pair that was generated
-val pkceCodePair: PKCECodePair? = StytchClient.getPKCECodePair()
+val pkceCodePair: PKCECodePair = StytchClient.getPKCECodePair()
 // pass the code pair to your backend
 ...
 ```

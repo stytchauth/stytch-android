@@ -34,8 +34,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -84,7 +84,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO authenticate returns error if codeverifier fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Error)
@@ -92,7 +92,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             val mockResponse = StytchResult.Success<SSOAuthenticateResponseData>(mockk(relaxed = true))
             coEvery { mockApi.authenticate(any(), any(), any(), any()) } returns mockResponse
@@ -113,7 +113,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO getConnections delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.getConnections() } returns mockk(relaxed = true)
             impl.getConnections()
             coVerify { mockApi.getConnections() }
@@ -129,7 +129,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO deleteConnection delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.deleteConnection(any()) } returns mockk(relaxed = true)
             val connectionId = "my-connection-id"
             impl.deleteConnection(connectionId)
@@ -146,7 +146,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO saml create delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.samlCreateConnection(any()) } returns mockk(relaxed = true)
             val parameters = SSO.SAML.CreateParameters(displayName = "my cool display name")
             impl.saml.createConnection(parameters)
@@ -163,7 +163,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO saml update delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.samlUpdateConnection(any()) } returns mockk(relaxed = true)
             val parameters = SSO.SAML.UpdateParameters(connectionId = "connection-id")
             impl.saml.updateConnection(parameters)
@@ -181,7 +181,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO saml updateConnectionByUrl delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.samlUpdateByUrl(any(), any()) } returns mockk(relaxed = true)
             val parameters =
                 SSO.SAML.UpdateByURLParameters(
@@ -208,7 +208,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO saml deleteVerificationCertificate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.samlDeleteVerificationCertificate(any(), any()) } returns mockk(relaxed = true)
             val parameters =
                 SSO.SAML.DeleteVerificationCertificateParameters(
@@ -239,7 +239,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO oidc create delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.oidcCreateConnection(any()) } returns mockk(relaxed = true)
             val parameters = SSO.OIDC.CreateParameters(displayName = "my cool display name")
             impl.oidc.createConnection(parameters)
@@ -256,7 +256,7 @@ internal class SSOImplTest {
 
     @Test
     fun `SSO oidc update delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.oidcUpdateConnection(any()) } returns mockk(relaxed = true)
             val parameters = SSO.OIDC.UpdateParameters(connectionId = "connection-id")
             impl.oidc.updateConnection(parameters)

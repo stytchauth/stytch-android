@@ -242,6 +242,34 @@ internal object B2BResponses {
                 data: SMSAuthenticateResponseData,
             ) : StytchDataResponse<SMSAuthenticateResponseData>(data)
         }
+
+        object Email {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class LoginOrSignupResponse(
+                data: B2BOTPsEmailLoginOrSignupResponseData,
+            ) : StytchDataResponse<B2BOTPsEmailLoginOrSignupResponseData>(data)
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class AuthenticateResponse(
+                data: B2BOTPsEmailAuthenticateResponseData,
+            ) : StytchDataResponse<B2BOTPsEmailAuthenticateResponseData>(data)
+
+            object Discovery {
+                @Keep
+                @JsonClass(generateAdapter = true)
+                class SendResponse(
+                    data: B2BDiscoveryOTPEmailSendResponseData,
+                ) : StytchDataResponse<B2BDiscoveryOTPEmailSendResponseData>(data)
+
+                @Keep
+                @JsonClass(generateAdapter = true)
+                class AuthenticateResponse(
+                    data: B2BDiscoveryOTPEmailAuthenticateResponseData,
+                ) : StytchDataResponse<B2BDiscoveryOTPEmailAuthenticateResponseData>(data)
+            }
+        }
     }
 
     object TOTP {

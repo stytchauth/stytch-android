@@ -8,6 +8,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+  OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+  SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+  SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+  SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+  SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+
 jobs:
     check:
         name: Check versions and tags
@@ -62,6 +70,8 @@ jobs:
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
+                git config --local user.name "CI"
+                git config --local user.email "ci@stytch.com"
                 git tag -a "${{needs.check.outputs.this_version}}" -m "${{needs.check.outputs.this_version}}"
                 git push --follow-tags
             - name: Create Release

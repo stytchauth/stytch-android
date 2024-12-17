@@ -53,7 +53,6 @@
     <string name="cancel">Cancel</string>
     <string name="success">Success!</string>
     <string name="logged_in">You have successfully logged in.</string>
-    <string name="misconfigured_products_and_options">You must have at least one primary authentication factor (Passwords, EML, or Email OTP) enabled</string>
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
     <string name="strong_password">Great job! This is a strong password.</string>

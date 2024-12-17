@@ -14,8 +14,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -45,7 +45,7 @@ internal class SearchManagerImplTest {
 
     @Test
     fun `SearchManager searchOrganizations delegates to the api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.searchOrganizations(any()) } returns mockk(relaxed = true)
             impl.searchOrganization(mockk(relaxed = true))
             coVerify { mockApi.searchOrganizations(any()) }
@@ -61,7 +61,7 @@ internal class SearchManagerImplTest {
 
     @Test
     fun `SearchManager searchMembers delegates to the api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.searchMembers(any(), any()) } returns mockk(relaxed = true)
             impl.searchMember(mockk(relaxed = true))
             coVerify { mockApi.searchMembers(any(), any()) }

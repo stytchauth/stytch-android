@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.recoveryCodes
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.RecoveryCodesGetResponse
 import com.stytch.sdk.b2b.RecoveryCodesRecoverResponse
 import com.stytch.sdk.b2b.RecoveryCodesRotateResponse
@@ -28,8 +30,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -38,6 +40,12 @@ import java.security.KeyStore
 internal class RecoveryCodesImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.RecoveryCodes
+
+    @MockK
+    private lateinit var mockSharedPreferences: SharedPreferences
+
+    @MockK
+    private lateinit var mockSharedPreferencesEditor: Editor
 
     private lateinit var spiedSessionStorage: B2BSessionStorage
 
@@ -57,7 +65,13 @@ internal class RecoveryCodesImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0L
+        every { mockSharedPreferencesEditor.apply() } just runs
+        StorageHelper.sharedPreferences = mockSharedPreferences
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             RecoveryCodesImpl(
                 externalScope = TestScope(),
@@ -75,7 +89,7 @@ internal class RecoveryCodesImplTest {
 
     @Test
     fun `RecoveryCodes get delegates to the api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.get() } returns successfulGetResponse
             val response = impl.get()
             assert(response is StytchResult.Success)
@@ -92,7 +106,7 @@ internal class RecoveryCodesImplTest {
 
     @Test
     fun `RecoveryCodes rotate delegates to the api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.rotate() } returns successfulRotateResponse
             val response = impl.rotate()
             assert(response is StytchResult.Success)
@@ -109,7 +123,7 @@ internal class RecoveryCodesImplTest {
 
     @Test
     fun `RecoveryCodes recover delegates to the api and updates the session`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.recover(any(), any(), any(), any()) } returns successfulRecoverResponse
             val response = impl.recover(mockk(relaxed = true))
             assert(response is StytchResult.Success)

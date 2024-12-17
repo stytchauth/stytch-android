@@ -9,12 +9,12 @@ val googleOAuthClientId = rootProject.extra["UI_GOOGLE_CLIENT_ID"] as String
 
 android {
     namespace = "com.stytch.uiworkbench"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.stytch.uiworkbench"
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -28,6 +28,7 @@ android {
                 "stytchOAuthRedirectScheme" to "uiworkbench",
                 "stytchOAuthRedirectHost" to "oauth",
                 "STYTCH_PUBLIC_TOKEN" to publicToken,
+                "STYTCH_B2B_PUBLIC_TOKEN" to "",
             ),
         )
     }

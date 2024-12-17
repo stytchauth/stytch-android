@@ -72,8 +72,11 @@ internal class B2BMagicLinksImpl internal constructor(
                 .authenticate(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
-                ).also {
+                ).apply {
                     pkcePairManager.clearPKCECodePair()
+                    if (this is StytchResult.Success) {
+                        sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                    }
                 }
         }
     }

@@ -27,8 +27,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -107,7 +107,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if PKCE is missing`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -116,11 +116,11 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns correct error if api call fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "something_went_wrong", message = "testing"),
+                    StytchAPIError(errorType = "something_went_wrong", message = "testing", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -131,7 +131,7 @@ internal class OAuthImplTest {
 
     @Test
     fun `authenticate returns success if api call succeeds`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticateWithThirdPartyToken(any(), any(), any()) } returns
                 StytchResult.Success(

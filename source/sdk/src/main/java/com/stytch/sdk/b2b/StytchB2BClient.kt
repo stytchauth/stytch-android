@@ -46,6 +46,7 @@ import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
@@ -83,10 +84,11 @@ import java.util.UUID
 public object StytchB2BClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
-    internal val sessionStorage = B2BSessionStorage(StorageHelper, externalScope)
+    internal lateinit var sessionStorage: B2BSessionStorage
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
     internal var bootstrapData: BootstrapData = BootstrapData()
+    internal lateinit var publicToken: String
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -124,8 +126,10 @@ public object StytchB2BClient {
     ) {
         try {
             deviceInfo = context.getDeviceInfo()
+            this.publicToken = publicToken
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
+            sessionStorage = B2BSessionStorage(StorageHelper)
             StytchB2BApi.configure(publicToken, deviceInfo)
             val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =
@@ -150,8 +154,12 @@ public object StytchB2BClient {
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
-                    StytchB2BApi.Sessions.authenticate(null).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
+                    sessionStorage.memberSession?.let {
+                        // if we have a session, it's expiration date has already been validated, now attempt
+                        // to validate it with the Stytch servers
+                        StytchB2BApi.Sessions.authenticate(null).apply {
+                            launchSessionUpdater(dispatchers, sessionStorage)
+                        }
                     }
                 }
                 _isInitialized.value = true
@@ -247,7 +255,7 @@ public object StytchB2BClient {
     }
 
     internal fun assertInitialized() {
-        if (!StytchB2BApi.isInitialized) {
+        if (!StytchB2BApi.isInitialized || !::sessionStorage.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
     }
@@ -260,7 +268,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val magicLinks: B2BMagicLinks =
+    public val magicLinks: B2BMagicLinks by StytchLazyDelegate(::assertInitialized) {
         B2BMagicLinksImpl(
             externalScope,
             dispatchers,
@@ -269,10 +277,7 @@ public object StytchB2BClient {
             StytchB2BApi.MagicLinks.Discovery,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [B2BSessions] interface which provides methods for authenticating, updating, or
@@ -282,17 +287,14 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val sessions: B2BSessions =
+    public val sessions: B2BSessions by StytchLazyDelegate(::assertInitialized) {
         B2BSessionsImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchB2BApi.Sessions,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Organization] interface which provides methods for retrieving the current
@@ -302,17 +304,14 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val organization: Organization =
+    public val organization: Organization by StytchLazyDelegate(::assertInitialized) {
         OrganizationImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchB2BApi.Organization,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Member] interface which provides methods for retrieving the current authenticated
@@ -322,17 +321,14 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val member: Member =
+    public val member: Member by StytchLazyDelegate(::assertInitialized) {
         MemberImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchB2BApi.Member,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating passwords, resetting
@@ -342,7 +338,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val passwords: Passwords =
+    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
         PasswordsImpl(
             externalScope,
             dispatchers,
@@ -350,10 +346,7 @@ public object StytchB2BClient {
             StytchB2BApi.Passwords,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [Discovery] interface which provides methods for creating and discovering
@@ -363,23 +356,20 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val discovery: Discovery =
+    public val discovery: Discovery by StytchLazyDelegate(::assertInitialized) {
         DiscoveryImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchB2BApi.Discovery,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [SSO] interface which provides methods for authenticating SSO sessions
      */
     @JvmStatic
-    public val sso: SSO =
+    public val sso: SSO by StytchLazyDelegate(::assertInitialized) {
         SSOImpl(
             externalScope,
             dispatchers,
@@ -387,10 +377,7 @@ public object StytchB2BClient {
             StytchB2BApi.SSO,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
@@ -400,16 +387,13 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val dfp: DFP by lazy {
-        assertInitialized()
+    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
         DFPImpl(dfpProvider, dispatchers, externalScope)
     }
 
-    internal val events: Events
-        get() {
-            assertInitialized()
-            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
-        }
+    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
+        EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
+    }
 
     /**
      * Exposes an instance of the [OTP] interface which provides a method for sending and authenticating OTP codes
@@ -418,11 +402,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val otp: OTP = OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
-        get() {
-            assertInitialized()
-            return field
-        }
+    public val otp: OTP by StytchLazyDelegate(::assertInitialized) {
+        OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
+    }
 
     /**
      * Exposes an instance of the [TOTP] interface which provides a method for creating and authenticating TOTP codes
@@ -431,11 +413,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val totp: TOTP = TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
-        get() {
-            assertInitialized()
-            return field
-        }
+    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
+        TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
+    }
 
     /**
      * Exposes an instance of the [RecoveryCodes] interface which provides methods for getting, rotating, and
@@ -445,12 +425,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val recoveryCodes: RecoveryCodes =
+    public val recoveryCodes: RecoveryCodes by StytchLazyDelegate(::assertInitialized) {
         RecoveryCodesImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.RecoveryCodes)
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [OAuth] interface which provides a method for starting and authenticating OAuth and
@@ -460,12 +437,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val oauth: OAuth =
+    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
         OAuthImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OAuth, pkcePairManager)
-        get() {
-            assertInitialized()
-            return field
-        }
+    }
 
     /**
      * Exposes an instance of the [RBAC] interface which provides methods for checking a member's permissions
@@ -473,11 +447,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val rbac: RBAC = RBACImpl(externalScope, dispatchers, sessionStorage)
-        get() {
-            assertInitialized()
-            return field
-        }
+    public val rbac: RBAC by StytchLazyDelegate(::assertInitialized) {
+        RBACImpl(externalScope, dispatchers, sessionStorage)
+    }
 
     /**
      * Exposes an instance of the [SearchManager] interface which provides methods to search organizations and members
@@ -485,11 +457,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val searchManager: SearchManager = SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
-        get() {
-            assertInitialized()
-            return field
-        }
+    public val searchManager: SearchManager by StytchLazyDelegate(::assertInitialized) {
+        SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
+    }
 
     /**
      * Exposes an instance of the [SCIM] interface which provides methods for creating, getting, updating, deleting, and
@@ -498,11 +468,9 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val scim: SCIM = SCIMImpl(externalScope, dispatchers, StytchB2BApi.SCIM)
-        get() {
-            assertInitialized()
-            return field
-        }
+    public val scim: SCIM by StytchLazyDelegate(::assertInitialized) {
+        SCIMImpl(externalScope, dispatchers, StytchB2BApi.SCIM)
+    }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported

@@ -18,8 +18,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -55,7 +55,7 @@ internal class DiscoveryImplTest {
 
     @Test
     fun `DiscoveryImpl organizations delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.discoverOrganizations(any()) } returns StytchResult.Success(mockk(relaxed = true))
             val response = impl.listOrganizations()
             assert(response is StytchResult.Success)
@@ -72,7 +72,7 @@ internal class DiscoveryImplTest {
 
     @Test
     fun `DiscoveryImpl exchangeSession delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.exchangeSession(any(), any(), any()) } returns StytchResult.Success(mockk(relaxed = true))
             val response = impl.exchangeIntermediateSession(mockk(relaxed = true))
             assert(response is StytchResult.Success)
@@ -89,7 +89,7 @@ internal class DiscoveryImplTest {
 
     @Test
     fun `DiscoveryImpl create delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockApi.createOrganization(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
             } returns StytchResult.Success(mockk(relaxed = true))

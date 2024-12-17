@@ -30,6 +30,9 @@ internal class OAuthImpl(
 ) : OAuth {
     override val google: OAuth.Provider = ProviderImpl("google")
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
+    override val hubspot: OAuth.Provider = ProviderImpl("hubspot")
+    override val slack: OAuth.Provider = ProviderImpl("slack")
+    override val github: OAuth.Provider = ProviderImpl("github")
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
     override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse {
@@ -154,7 +157,10 @@ internal class OAuthImpl(
                     ).apply {
                         pkcePairManager.clearPKCECodePair()
                         when (this) {
-                            is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                            is StytchResult.Success -> {
+                                StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                                sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                            }
                             is StytchResult.Error ->
                                 StytchB2BClient.events.logEvent(
                                     "b2b_discovery_oauth_failure",

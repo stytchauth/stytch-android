@@ -37,8 +37,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -112,7 +112,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if insecure keystore and allowFallbackToCleartext is false`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns false
             val mockRegisterParameters: Biometrics.RegisterParameters =
                 mockk(relaxed = true) {
@@ -125,7 +125,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if no session is found`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every {
@@ -138,7 +138,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register removes existing registration (local and remote) if found`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.loadValue(any()) } returns "biometric-registration-id"
             every { mockStorageHelper.preferenceExists(any()) } returns true
@@ -163,7 +163,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register removes existing registration (local only) if unexpected exception occurs`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.loadValue(any()) } returns null
             every { mockStorageHelper.preferenceExists(any()) } returns true
@@ -183,7 +183,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if biometrics fail`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
@@ -197,7 +197,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if keys could not be generated`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
@@ -214,7 +214,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if registerStart fails`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
@@ -226,7 +226,7 @@ internal class BiometricsImplTest {
             } returns Pair(base64EncodedString, base64EncodedString)
             coEvery { mockApi.registerStart(base64EncodedString) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = ""),
+                    StytchAPIError(errorType = "", message = "", statusCode = 400),
                 )
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -236,7 +236,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns correct error if challenge signing fails`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
@@ -263,7 +263,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `register returns success if everything succeeds and saves required preferences`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
@@ -306,7 +306,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate wraps unexpected exceptions in StytchResult Error class`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } throws RuntimeException("Testing")
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -315,7 +315,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if biometrics are not available`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns false
             every { mockStorageHelper.loadValue(any()) } returns null
             val result = impl.authenticate(mockk(relaxed = true))
@@ -325,7 +325,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if biometrics fails`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockBiometricsProvider.ensureSecretKeyIsAvailable(any()) } just runs
             every {
@@ -342,7 +342,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if public key cannot be derived from private key`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockBiometricsProvider.ensureSecretKeyIsAvailable(any()) } just runs
             every {
@@ -362,7 +362,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if authenticateStart fails`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockBiometricsProvider.ensureSecretKeyIsAvailable(any()) } just runs
             every {
@@ -377,7 +377,7 @@ internal class BiometricsImplTest {
             } returns "publicKey"
             coEvery { mockApi.authenticateStart("publicKey") } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = ""),
+                    StytchAPIError(errorType = "", message = "", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -387,7 +387,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns correct error if challenge signing fails`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockBiometricsProvider.ensureSecretKeyIsAvailable(any()) } just runs
             every {
@@ -417,7 +417,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `authenticate returns success if everything succeeds`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockBiometricsProvider.ensureSecretKeyIsAvailable(any()) } just runs
             every {
@@ -471,7 +471,7 @@ internal class BiometricsImplTest {
 
     @Test
     fun `removeRegistration delegates to storageHelper and deletes registration from user as appropriate`() =
-        runTest {
+        runBlocking {
             every { mockStorageHelper.loadValue(any()) } returns "lastUsedRegistrationId"
             every { mockStorageHelper.deletePreference(any()) } returns true
             coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)

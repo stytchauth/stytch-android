@@ -486,3 +486,42 @@ public data class CaptchaSettings(
 @JsonClass(generateAdapter = true)
 @Parcelize
 public class NoResponseData : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class LUDSRequirements(
+    @Json(name = "has_lower_case")
+    val hasLowerCase: Boolean,
+    @Json(name = "has_upper_case")
+    val hasUpperCase: Boolean,
+    @Json(name = "has_digit")
+    val hasDigit: Boolean,
+    @Json(name = "has_symbol")
+    val hasSymbol: Boolean,
+    @Json(name = "missing_complexity")
+    val missingComplexity: Int,
+    @Json(name = "missing_characters")
+    val missingCharacters: Int,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = false)
+public enum class StrengthPolicy {
+    @Json(name = "zxcvbn")
+    ZXCVBN,
+
+    @Json(name = "luds")
+    LUDS,
+}
+
+// The feedback response types are different for B2B/B2C. B2C combines both in one object, B2B separates them
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class Feedback(
+    val suggestions: List<String>, // ZXCVBN
+    val warning: String, // ZXCVBN
+    @Json(name = "luds_requirements")
+    val ludsRequirements: LUDSRequirements? = null, // B2C LUDS
+) : Parcelable

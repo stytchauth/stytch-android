@@ -25,8 +25,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -75,7 +75,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `register returns error if passkeys are unsupported`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns false
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -84,7 +84,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `register returns error if registerStart api call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             coEvery { mockApi.registerStart(any(), any(), any(), any()) } returns StytchResult.Error(mockk())
             val result = impl.register(mockk(relaxed = true))
@@ -96,7 +96,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `register returns error if createPublicKeyCredential call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             coEvery {
                 mockApi.registerStart(any(), any(), any(), any())
@@ -111,7 +111,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `register returns error if register api call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             coEvery {
                 mockApi.registerStart(any(), any(), any(), any())
@@ -133,7 +133,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `register calls launchSessionUpdater and returns success if registration flow succeeds`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             coEvery {
                 mockApi.registerStart(any(), any(), any(), any())
@@ -165,7 +165,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate returns error if passkeys are unsupported`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns false
             val result = impl.authenticate(mockk())
             require(result is StytchResult.Error)
@@ -174,7 +174,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate returns error if authenticateStartSecondary api call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
             coEvery { mockApi.authenticateStartSecondary(any(), any()) } returns StytchResult.Error(mockk())
@@ -188,7 +188,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate returns error if authenticateStartPrimary api call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery { mockApi.authenticateStartPrimary(any(), any()) } returns StytchResult.Error(mockk())
@@ -202,7 +202,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate returns error if getPublicKeyCredential call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery {
@@ -222,7 +222,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate returns error if authenticate api call fails`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery {
@@ -243,7 +243,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `authenticate calls launchSessionUpdater and returns success if authentication flow succeeds`() =
-        runTest {
+        runBlocking {
             every { impl.isSupported } returns true
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
             coEvery {
@@ -274,7 +274,7 @@ internal class PasskeysImplTest {
 
     @Test
     fun `update delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.update(any(), any()) } returns mockk(relaxed = true)
             impl.update(Passkeys.UpdateParameters(id = "registration-id", name = "new name"))
             coVerify { mockApi.update("registration-id", "new name") }

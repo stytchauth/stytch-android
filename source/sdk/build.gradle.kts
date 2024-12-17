@@ -8,16 +8,17 @@ plugins {
     id("kotlin-parcelize")
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinPluginCompose)
+    alias(libs.plugins.serialization)
 }
 
 extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
-extra["PUBLISH_VERSION"] = "0.27.1"
+extra["PUBLISH_VERSION"] = "0.31.0"
 extra["PUBLISH_ARTIFACT_ID"] = "sdk"
 
 apply("${rootProject.projectDir}/scripts/publish-module.gradle")
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 23
@@ -53,7 +54,7 @@ android {
         freeCompilerArgs += "-Xexplicit-api=strict"
     }
     testOptions {
-        targetSdk = 33
+        targetSdk = 35
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
@@ -61,7 +62,7 @@ android {
     }
     namespace = "com.stytch.sdk"
     lint {
-        targetSdk = 33
+        targetSdk = 35
         disable.add("OldTargetApi")
     }
     buildFeatures {
@@ -75,11 +76,13 @@ android {
         mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
         mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
         mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
+        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
     }
     unitTestVariants.all {
         mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
         mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
         mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
+        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
     }
 }
 
@@ -175,6 +178,12 @@ dependencies {
     implementation(libs.material.icons.extended)
     debugImplementation(libs.ui.tooling)
     implementation(libs.libphonenumber)
+    implementation(libs.navigation.compose)
+    implementation(libs.serialization)
+    implementation(libs.flowRedux.jvm)
+    implementation(libs.flowRedux.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     // Test depdendencies
     testImplementation(libs.junit)
