@@ -3,7 +3,9 @@ The UI SDK automatically handles all necessary OAuth, Email Magic Link, and Pass
 
 The Stytch UI uses the Builder pattern to initialize the UI, and allows you to fully customize the look, feel, and supported products.
 
-Within your host activity, define the UI and any configuration options you would like. An example is below:
+Within your host activity, define the UI and any configuration options you would like. Examples for both the Consumer and B2B UI are below:
+
+## Consumer UI
 ```kotlin
 import com.stytch.sdk.ui.StytchUI
 
@@ -44,7 +46,50 @@ private val stytchUi = StytchUI.Builder().apply {
     }
 }.build()
 ```
-Then, simply call the `authenticate` method from your UI to launch the Stytch UI:
+
+## B2B UI
+```kotlin
+import com.stytch.sdk.ui.StytchUI
+
+private val stytchUi = 
+    StytchB2BUI
+        .Builder()
+        .apply {
+            activity(this@UIWorkbenchActivity)
+            productConfig(
+                StytchB2BProductConfig(
+                    products =
+                        listOf(
+                            StytchB2BProduct.EMAIL_MAGIC_LINKS,
+                            StytchB2BProduct.OAUTH,
+                            StytchB2BProduct.PASSWORDS,
+                            StytchB2BProduct.SSO,
+                        ),
+                    oauthOptions =
+                        B2BOAuthOptions(
+                            providers =
+                                listOf(
+                                    B2BOAuthProviderConfig(type = B2BOAuthProviders.GOOGLE),
+                                    B2BOAuthProviderConfig(type = B2BOAuthProviders.GITHUB),
+                                ),
+                        ),
+                )
+            )
+            onAuthenticated {
+                when (it) {
+                    is AuthenticationResult.Authenticated -> {
+                        Toast.makeText(this@MyActivity, "Authentication Succeeded", Toast.LENGTH_LONG).show()
+                    }
+                    is AuthenticationResult.Error -> {
+                        Toast.makeText(this@MyActivity, it.exception.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }.build()
+```
+
+
+Then, no matter which version you are using, simply call the `authenticate` method from your UI to launch the Stytch UI:
 ```kotlin
 Button(modifier = Modifier.fillMaxSize(), onClick = stytchUi::authenticate) {
    Text("Launch Authentication")
