@@ -110,7 +110,6 @@ internal class B2BUIStateMachine(
                         copy(
                             currentRoute = action.route,
                             isLoading = false,
-                            stytchError = null,
                             b2BErrorType = null,
                         )
                     }
