@@ -8,12 +8,14 @@ import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 internal class UseOAuthAuthenticate(
     private val scope: CoroutineScope,
+    private val productConfig: StytchB2BProductConfig,
     private val dispatch: Dispatch,
     private val request: PerformRequest<OAuthAuthenticateResponseData>,
 ) {
@@ -23,6 +25,7 @@ internal class UseOAuthAuthenticate(
                 StytchB2BClient.oauth.authenticate(
                     OAuth.AuthenticateParameters(
                         oauthToken = token,
+                        sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
                     ),
                 )
             }.onSuccess {
