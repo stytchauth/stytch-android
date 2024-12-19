@@ -27,11 +27,7 @@ internal fun DividerWithText(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            thickness = 1.dp,
-            color = Color(theme.disabledTextColor),
-        )
+        HorizontalDivider(modifier = Modifier.weight(1f), thickness = 1.dp, color = Color(theme.disabledTextColor))
         Text(
             text = text,
             modifier = Modifier.weight(0.5f),
@@ -41,10 +37,6 @@ internal fun DividerWithText(
                     color = Color(theme.disabledTextColor),
                 ),
         )
-        HorizontalDivider(
-            modifier = Modifier.weight(1f),
-            thickness = 1.dp,
-            color = Color(theme.disabledTextColor),
-        )
+        HorizontalDivider(modifier = Modifier.weight(1f), thickness = 1.dp, color = Color(theme.disabledTextColor))
     }
 }

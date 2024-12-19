@@ -62,7 +62,7 @@ import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -77,7 +77,7 @@ import java.util.UUID
  */
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
+    internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
     internal lateinit var sessionStorage: ConsumerSessionStorage
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider

@@ -27,9 +27,7 @@ internal class CaptchaProviderImpl(
     init {
         scope.launch(Dispatchers.Main) {
             siteKey?.let {
-                Recaptcha.getClient(application, it).onSuccess { client ->
-                    recaptchaClient = client
-                }
+                recaptchaClient = Recaptcha.fetchClient(application, it)
             }
         }
     }
