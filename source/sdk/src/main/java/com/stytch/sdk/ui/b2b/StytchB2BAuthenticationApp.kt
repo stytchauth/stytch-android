@@ -29,7 +29,7 @@ import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
-import com.stytch.sdk.ui.b2b.data.SetStytchError
+import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
@@ -197,9 +197,9 @@ internal fun StytchB2BAuthenticationApp(
                     TOTPEntryScreen(createViewModel = ::createViewModelHelper)
                 }
             }
-            state.value.stytchError?.let {
-                FormFieldStatus(text = it.message, isError = true, autoDismiss = {
-                    dispatch(SetStytchError(null))
+            state.value.errorToastText?.let {
+                FormFieldStatus(text = it, isError = true, autoDismiss = {
+                    dispatch(SetGenericError(null))
                 })
             }
             if (!bootstrapData.disableSDKWatermark) {

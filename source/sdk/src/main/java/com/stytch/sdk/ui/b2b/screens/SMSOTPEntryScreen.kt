@@ -31,6 +31,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
@@ -51,9 +52,10 @@ private const val ONE_SECOND = 1000L
 internal class SMSOTPEntryScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
+    productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
     val useOTPSMSSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, ::request)
-    val useOTPSMSAuthenticate = UseOTPSMSAuthenticate(viewModelScope, state, ::request)
+    val useOTPSMSAuthenticate = UseOTPSMSAuthenticate(viewModelScope, productConfig, state, ::request)
 
     init {
         val smsImplicitlySent = state.value.mfaPrimaryInfoState?.smsImplicitlySent == true

@@ -16,6 +16,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmail
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordsStrengthCheck
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
@@ -28,8 +29,9 @@ import kotlinx.coroutines.flow.StateFlow
 internal class PasswordResetScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
+    productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmail = UsePasswordResetByEmail(viewModelScope, state, ::dispatch, ::request)
+    val usePasswordResetByEmail = UsePasswordResetByEmail(viewModelScope, productConfig, state, ::dispatch, ::request)
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val usePasswordStrengthCheck = UsePasswordsStrengthCheck(viewModelScope, state, ::dispatch, ::request)
 }

@@ -73,7 +73,8 @@ internal class MainScreenViewModel(
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val useMagicLinksEmailLoginOrSignup =
         UseMagicLinksEmailLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useMagicLinksDiscoverySend = UseMagicLinksDiscoverySend(viewModelScope, state, ::dispatch, ::request)
+    val useMagicLinksDiscoverySend =
+        UseMagicLinksDiscoverySend(viewModelScope, productConfig, state, ::dispatch, ::request)
     val useSSOStart = UseSSOStart()
     val useOAuthStart = UseOAuthStart(state)
     val useSearchMember = UseSearchMember(::request)
