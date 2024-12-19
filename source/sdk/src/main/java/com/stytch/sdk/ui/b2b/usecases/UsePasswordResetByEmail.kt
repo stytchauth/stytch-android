@@ -9,6 +9,7 @@ import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 internal class UsePasswordResetByEmail(
     private val scope: CoroutineScope,
+    private val productConfig: StytchB2BProductConfig,
     private val state: StateFlow<B2BUIState>,
     private val dispatch: Dispatch,
     private val request: PerformRequest<EmailResetResponseData>,
@@ -27,6 +29,7 @@ internal class UsePasswordResetByEmail(
                     Passwords.ResetByEmailParameters(
                         token = state.value.deeplinkTokenPair?.token ?: "",
                         password = state.value.passwordState.password,
+                        sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
                     ),
                 )
             }.onSuccess {
