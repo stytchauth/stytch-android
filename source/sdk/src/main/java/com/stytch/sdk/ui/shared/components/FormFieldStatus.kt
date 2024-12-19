@@ -25,7 +25,7 @@ internal fun FormFieldStatus(
     val type = LocalStytchTypography.current
     LaunchedEffect(Unit) {
         if (autoDismiss != null) {
-            delay(3000L)
+            delay(5000L)
             autoDismiss.invoke()
         }
     }
