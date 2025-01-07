@@ -34,6 +34,8 @@ import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
+import com.stytch.sdk.ui.b2b.screens.EmailMethodSelectionScreen
+import com.stytch.sdk.ui.b2b.screens.EmailOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.LoadingView
 import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
@@ -195,6 +197,12 @@ internal fun StytchB2BAuthenticationApp(
                 }
                 composable<Routes.TOTPEntry> {
                     TOTPEntryScreen(createViewModel = ::createViewModelHelper)
+                }
+                composable<Routes.EmailMethodSelection> {
+                    EmailMethodSelectionScreen(createViewModel = ::createViewModelHelper)
+                }
+                composable<Routes.EmailOTPEntry> {
+                    EmailOTPEntryScreen(createViewModel = ::createViewModelHelper)
                 }
             }
             state.value.errorToastText?.let {

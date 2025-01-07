@@ -38,10 +38,13 @@ import com.stytch.sdk.ui.b2b.data.ProductComponent
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.data.generateProductComponentsOrdering
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseEffectiveAuthConfig
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoverySend
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPLoginOrSignup
 import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksDiscoverySend
 import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksEmailLoginOrSignup
 import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
@@ -82,6 +85,10 @@ internal class MainScreenViewModel(
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
+    val useEmailOTPLoginOrSignup = UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val useEmailOTPDiscoverySend = UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val enableEml = productConfig.products.contains(StytchB2BProduct.EMAIL_MAGIC_LINKS)
+    private val enableOtp = productConfig.products.contains(StytchB2BProduct.EMAIL_OTP)
 
     fun handleEmailPasswordSubmit() {
         val emailAddress = state.value.emailState.emailAddress
@@ -105,11 +112,23 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun passwordEMLCombinedSubmit() {
+    fun handleEmailSubmit() {
         if (state.value.activeOrganization != null || state.value.mfaPrimaryInfoState != null) {
-            useMagicLinksEmailLoginOrSignup()
+            if (enableEml && enableOtp) {
+                dispatch(SetNextRoute(Routes.EmailMethodSelection))
+            } else if (enableEml) {
+                useMagicLinksEmailLoginOrSignup()
+            } else if (enableOtp) {
+                useEmailOTPLoginOrSignup()
+            }
         } else {
-            useMagicLinksDiscoverySend()
+            if (enableEml && enableOtp) {
+                dispatch(SetNextRoute(Routes.EmailMethodSelection))
+            } else if (enableEml) {
+                useMagicLinksDiscoverySend()
+            } else if (enableOtp) {
+                useEmailOTPDiscoverySend()
+            }
         }
     }
 }
@@ -166,27 +185,27 @@ internal fun MainScreen(
         }
         productComponentsOrdering.map { productComponent: ProductComponent ->
             when (productComponent) {
-                ProductComponent.MagicLinkEmailForm -> {
+                ProductComponent.EmailForm -> {
                     EmailEntry(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.useMagicLinksEmailLoginOrSignup() },
+                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
                         keyboardActions =
                             KeyboardActions(onDone = {
                                 viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.useMagicLinksEmailLoginOrSignup()
+                                viewModel.handleEmailSubmit()
                             }),
                     )
                 }
-                ProductComponent.MagicLinkEmailDiscoveryForm -> {
+                ProductComponent.EmailDiscoveryForm -> {
                     EmailEntry(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.useMagicLinksDiscoverySend() },
+                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
                         keyboardActions =
                             KeyboardActions(onDone = {
                                 viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.useMagicLinksDiscoverySend()
+                                viewModel.handleEmailSubmit()
                             }),
                     )
                 }
@@ -248,11 +267,11 @@ internal fun MainScreen(
                     EmailEntry(
                         emailState = state.value.emailState,
                         onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.passwordEMLCombinedSubmit() },
+                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
                         keyboardActions =
                             KeyboardActions(onDone = {
                                 viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.passwordEMLCombinedSubmit()
+                                viewModel.handleEmailSubmit()
                             }),
                     )
                     StytchTextButton(text = "Use a password instead") {

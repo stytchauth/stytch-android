@@ -57,19 +57,21 @@ internal fun List<StytchB2BProduct>.generateProductComponentsOrdering(
     authFlowType: AuthFlowType,
     organization: InternalOrganizationData?,
 ): List<ProductComponent> {
-    val displayEmlAndPasswordsTogether =
-        containsAll(listOf(StytchB2BProduct.EMAIL_MAGIC_LINKS, StytchB2BProduct.PASSWORDS))
+    val containsEmail = contains(StytchB2BProduct.EMAIL_MAGIC_LINKS) || contains(StytchB2BProduct.EMAIL_OTP)
+    val displayEmlAndPasswordsTogether = containsEmail && contains(StytchB2BProduct.PASSWORDS)
     val components =
         mapNotNull { product ->
             when (product) {
-                StytchB2BProduct.EMAIL_MAGIC_LINKS -> {
+                StytchB2BProduct.EMAIL_MAGIC_LINKS,
+                StytchB2BProduct.EMAIL_OTP,
+                -> {
                     if (displayEmlAndPasswordsTogether) {
                         ProductComponent.PasswordEMLCombined
                     } else {
                         if (authFlowType == AuthFlowType.ORGANIZATION) {
-                            ProductComponent.MagicLinkEmailForm
+                            ProductComponent.EmailForm
                         } else {
-                            ProductComponent.MagicLinkEmailDiscoveryForm
+                            ProductComponent.EmailDiscoveryForm
                         }
                     }
                 }

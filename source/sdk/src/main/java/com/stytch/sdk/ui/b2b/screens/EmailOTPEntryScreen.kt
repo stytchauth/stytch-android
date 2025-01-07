@@ -1,14 +1,11 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import android.text.format.DateUtils
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,19 +20,19 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
-import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSAuthenticate
-import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
-import com.stytch.sdk.ui.shared.components.BackButton
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPAuthenticate
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoveryAuthenticate
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoverySend
+import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPLoginOrSignup
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.OTPEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -43,48 +40,81 @@ import com.stytch.sdk.ui.shared.components.StytchAlertDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-internal const val OTP_EXPIRATION_SECONDS = (2 * 60).toLong()
-internal const val ONE_SECOND = 1000L
-
-internal class SMSOTPEntryScreenViewModel(
+internal class EmailOTPEntryScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val useOTPSMSSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, ::request)
-    val useOTPSMSAuthenticate = UseOTPSMSAuthenticate(viewModelScope, productConfig, state, ::request)
+    private val _emailOtpEntryState =
+        MutableStateFlow(
+            EmailOTPEntryScreenState(
+                emailAddress = state.value.emailState.emailAddress,
+            ),
+        )
+    val emailOtpEntryState = _emailOtpEntryState.asStateFlow()
+    val useEmailOTPLoginOrSignup = UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val useEmailOTPDiscoverySend = UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val useEmailOTPAuthenticate = UseEmailOTPAuthenticate(productConfig, state, ::request)
+    val useEmailOTPDiscoveryAuthenticate = UseEmailOTPDiscoveryAuthenticate(state, ::request)
 
-    init {
-        val smsImplicitlySent = state.value.mfaPrimaryInfoState?.smsImplicitlySent == true
-        val didSend = state.value.mfaSMSState?.didSend == true
-        // If we haven't already sent one ourselves, and an SMS message was not already sent by the server, send it now
-        if (!didSend && !smsImplicitlySent) {
-            useOTPSMSSend(false)
+    fun handleSubmit(code: String) {
+        viewModelScope.launch {
+            if (state.value.authFlowType == AuthFlowType.ORGANIZATION) {
+                useEmailOTPAuthenticate(code).onFailure {
+                    handleFailure()
+                }
+            } else {
+                useEmailOTPDiscoveryAuthenticate(code).onFailure {
+                    handleFailure()
+                }
+            }
         }
+    }
+
+    fun handleResend() {
+        if (state.value.authFlowType == AuthFlowType.ORGANIZATION) {
+            useEmailOTPLoginOrSignup()
+        } else {
+            useEmailOTPDiscoverySend()
+        }
+    }
+
+    private fun handleFailure() {
+        _emailOtpEntryState.value =
+            _emailOtpEntryState.value.copy(
+                errorMessage = "Invalid passcode, please try again.",
+            )
     }
 }
 
+internal data class EmailOTPEntryScreenState(
+    val emailAddress: String,
+    val errorMessage: String? = null,
+)
+
 @Composable
-internal fun SMSOTPEntryScreen(
-    state: State<B2BUIState>,
-    createViewModel: CreateViewModel<SMSOTPEntryScreenViewModel>,
-    viewModel: SMSOTPEntryScreenViewModel = createViewModel(SMSOTPEntryScreenViewModel::class.java),
+internal fun EmailOTPEntryScreen(
+    createViewModel: CreateViewModel<EmailOTPEntryScreenViewModel>,
+    viewModel: EmailOTPEntryScreenViewModel =
+        createViewModel(EmailOTPEntryScreenViewModel::class.java),
 ) {
-    val type = LocalStytchTypography.current
+    val emailOtpEntryState = viewModel.emailOtpEntryState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
+    val type = LocalStytchTypography.current
     val recipientFormatted =
         AnnotatedString(
-            text = " ${state.value.phoneNumberState.formatted()}",
+            text = " ${emailOtpEntryState.emailAddress}",
             spanStyle = SpanStyle(fontWeight = FontWeight.W700),
         )
     var showResendDialog by remember { mutableStateOf(false) }
     var countdownSeconds by remember { mutableLongStateOf(OTP_EXPIRATION_SECONDS) }
     var expirationTimeFormatted by remember { mutableStateOf("2:00") }
     val coroutineScope = rememberCoroutineScope()
-    val isEnrolling = state.value.mfaSMSState?.isEnrolling ?: false
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             while (countdownSeconds > 0) {
@@ -94,16 +124,8 @@ internal fun SMSOTPEntryScreen(
             }
         }
     }
-    BackHandler(enabled = isEnrolling) {
-        viewModel.dispatch(SetNextRoute(Routes.SMSOTPEnrollment))
-    }
-    Column(modifier = Modifier.padding(bottom = 32.dp)) {
-        if (isEnrolling) {
-            BackButton {
-                viewModel.dispatch(SetNextRoute(Routes.SMSOTPEnrollment))
-            }
-        }
-        PageTitle(textAlign = TextAlign.Left, text = "Enter passcode")
+    Column {
+        PageTitle(textAlign = TextAlign.Left, text = "Enter verification code")
         BodyText(
             text =
                 buildAnnotatedString {
@@ -111,7 +133,7 @@ internal fun SMSOTPEntryScreen(
                     append(recipientFormatted)
                 },
         )
-        OTPEntry(onCodeComplete = { viewModel.useOTPSMSAuthenticate(it) })
+        OTPEntry(errorMessage = emailOtpEntryState.errorMessage, onCodeComplete = viewModel::handleSubmit)
         Text(
             text = stringResource(id = R.string.code_expires_in, expirationTimeFormatted),
             textAlign = TextAlign.Start,
@@ -135,7 +157,7 @@ internal fun SMSOTPEntryScreen(
             onCancelClick = { showResendDialog = false },
             acceptText = stringResource(id = R.string.send_code),
             onAcceptClick = {
-                viewModel.useOTPSMSSend(isEnrolling)
+                viewModel.handleResend()
                 countdownSeconds = OTP_EXPIRATION_SECONDS
                 showResendDialog = false
             },
