@@ -15,10 +15,14 @@ internal class UseEmailOTPAuthenticate(
 ) {
     suspend operator fun invoke(code: String) =
         request {
+            val orgId =
+                state.value.mfaPrimaryInfoState?.organizationId
+                    ?: state.value.activeOrganization?.organizationId
+                    ?: ""
             StytchB2BClient.otp.email.authenticate(
                 OTP.Email.AuthenticateParameters(
                     code = code,
-                    organizationId = state.value.mfaPrimaryInfoState?.organizationId ?: "",
+                    organizationId = orgId,
                     emailAddress = state.value.emailState.emailAddress,
                     sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
                 ),

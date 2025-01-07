@@ -18,7 +18,6 @@ import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoverySend
 import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPLoginOrSignup
 import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksDiscoverySend
 import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksEmailLoginOrSignup
-import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import kotlinx.coroutines.flow.StateFlow
@@ -63,9 +62,6 @@ internal fun EmailMethodSelectionScreen(
     val theme = LocalStytchTheme.current
     Column {
         PageTitle(textAlign = TextAlign.Left, text = "Select how you’d like to continue.")
-        BodyText(
-            text = "Your organization requires an additional form of verification to make your account more secure.",
-        )
         Column {
             EMAIL_METHODS.forEach { method ->
                 when (method) {
