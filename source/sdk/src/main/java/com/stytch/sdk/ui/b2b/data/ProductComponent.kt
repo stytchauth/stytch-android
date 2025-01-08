@@ -1,8 +1,8 @@
 package com.stytch.sdk.ui.b2b.data
 
 internal enum class ProductComponent {
-    MagicLinkEmailForm,
-    MagicLinkEmailDiscoveryForm,
+    EmailForm,
+    EmailDiscoveryForm,
     OAuthButtons,
     SSOButtons,
     PasswordsEmailForm,

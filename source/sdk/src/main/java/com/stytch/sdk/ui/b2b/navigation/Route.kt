@@ -88,4 +88,12 @@ internal object Routes {
     @Serializable
     @Parcelize
     internal data object TOTPEntry : Route, Parcelable
+
+    @Serializable
+    @Parcelize
+    internal data object EmailOTPEntry : Route, Parcelable
+
+    @Serializable
+    @Parcelize
+    internal data object EmailMethodSelection : Route, Parcelable
 }

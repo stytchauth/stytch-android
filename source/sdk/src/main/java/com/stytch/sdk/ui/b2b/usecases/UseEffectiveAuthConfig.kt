@@ -16,6 +16,7 @@ private val productsToAuthMethods: Map<StytchB2BProduct, AllowedAuthMethods?> =
         StytchB2BProduct.SSO to AllowedAuthMethods.SSO,
         StytchB2BProduct.EMAIL_MAGIC_LINKS to AllowedAuthMethods.MAGIC_LINK,
         StytchB2BProduct.PASSWORDS to AllowedAuthMethods.PASSWORD,
+        StytchB2BProduct.EMAIL_OTP to AllowedAuthMethods.EMAIL_OTP,
     )
 
 private val oauthProvidersToAuthMethods: Map<B2BOAuthProviders, AllowedAuthMethods> =

@@ -23,4 +23,9 @@ public enum class StytchB2BProduct {
      * An enum value representing the OAuth Product
      */
     OAUTH,
+
+    /**
+     * An enum value representing the Email OTP Product
+     */
+    EMAIL_OTP,
 }

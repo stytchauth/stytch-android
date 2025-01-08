@@ -107,7 +107,7 @@ internal fun MFAEnrollmentSelectionScreen(
                     MfaMethod.SMS -> "Text me a code"
                     MfaMethod.NONE -> null
                 }?.let { title ->
-                    MfaMethodSelector(title = title, onClick = { viewModel.selectMfaMethod(mfaMethod) })
+                    MenuItemWithRightArrow(title = title, onClick = { viewModel.selectMfaMethod(mfaMethod) })
                     HorizontalDivider(
                         thickness = 1.dp,
                         color = Color(theme.inputBorderColor),
@@ -119,7 +119,7 @@ internal fun MFAEnrollmentSelectionScreen(
 }
 
 @Composable
-private fun MfaMethodSelector(
+internal fun MenuItemWithRightArrow(
     title: String,
     onClick: () -> Unit,
 ) {
