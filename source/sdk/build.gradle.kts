@@ -212,6 +212,6 @@ tasks.register("printVersion") {
     group = "Documentation"
     description = "Prints the version of the SDK. Used for autoreleasing the SDK from GitHub"
     doLast {
-        println(extra["PUBLISH_VERSION"])
+        println(project.extra["PUBLISH_VERSION"])
     }
 }
