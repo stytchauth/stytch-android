@@ -12,6 +12,7 @@ import com.stytch.sdk.ui.b2c.data.OTPDetails
 import com.stytch.sdk.ui.b2c.data.OTPMethods
 import com.stytch.sdk.ui.b2c.data.OTPOptions
 import com.stytch.sdk.ui.b2c.data.PasswordResetType
+import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -205,7 +206,7 @@ internal class MainScreenViewModelTest {
                 async {
                     viewModel.eventFlow.first()
                 }
-            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            viewModel.onEmailAddressSubmit(StytchProductConfig(products = listOf(StytchProduct.PASSWORDS)), this)
             assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.NewUser))
         }
 
@@ -217,7 +218,7 @@ internal class MainScreenViewModelTest {
                 async {
                     viewModel.eventFlow.first()
                 }
-            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            viewModel.onEmailAddressSubmit(StytchProductConfig(products = listOf(StytchProduct.PASSWORDS)), this)
             assert(eventFlow.await() == EventState.NavigationRequested(NavigationRoute.ReturningUser))
         }
 
@@ -242,7 +243,7 @@ internal class MainScreenViewModelTest {
                 }
             val configShouldSendEmailOTP: StytchProductConfig =
                 mockk {
-                    every { products } returns listOf(com.stytch.sdk.ui.b2c.data.StytchProduct.OTP)
+                    every { products } returns listOf(StytchProduct.OTP, StytchProduct.PASSWORDS)
                     every { otpOptions } returns
                         mockk {
                             every { methods } returns listOf(OTPMethods.EMAIL)
@@ -260,7 +261,7 @@ internal class MainScreenViewModelTest {
                 }
             val configShouldSendEml: StytchProductConfig =
                 mockk {
-                    every { products } returns listOf(com.stytch.sdk.ui.b2c.data.StytchProduct.EMAIL_MAGIC_LINKS)
+                    every { products } returns listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS)
                     every { emailMagicLinksOptions } returns mockk(relaxed = true)
                 }
             viewModel.onEmailAddressSubmit(configShouldSendEml, this)
@@ -275,7 +276,7 @@ internal class MainScreenViewModelTest {
                 }
             val configShouldSendPasswordReset: StytchProductConfig =
                 mockk {
-                    every { products } returns listOf()
+                    every { products } returns listOf(StytchProduct.PASSWORDS)
                     every { passwordOptions } returns mockk(relaxed = true)
                 }
             viewModel.onEmailAddressSubmit(configShouldSendPasswordReset, this)
@@ -285,10 +286,17 @@ internal class MainScreenViewModelTest {
         }
 
     @Test
+    fun `onEmailAddressSubmit doesn't do user search if passwords are not configured`() =
+        runTest(dispatcher) {
+            viewModel.onEmailAddressSubmit(StytchProductConfig(products = emptyList()), this)
+            coVerify(exactly = 0) { viewModel.getUserType(any()) }
+        }
+
+    @Test
     fun `onEmailAddressSubmit delegates and updates state for unknown users`() =
         runTest(dispatcher) {
             coEvery { viewModel.getUserType(any()) } returns null
-            viewModel.onEmailAddressSubmit(mockk(relaxed = true), this)
+            viewModel.onEmailAddressSubmit(StytchProductConfig(products = listOf(StytchProduct.PASSWORDS)), this)
             assert(viewModel.uiState.value.genericErrorMessage == "Failed to get user type")
         }
 
