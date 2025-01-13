@@ -144,6 +144,31 @@ internal class MainScreenViewModel(
             )
     }
 
+    private suspend fun handleEMLorEOTPSubmission(
+        emailAddress: String,
+        productConfig: StytchProductConfig,
+    ): NavigationRoute? {
+        val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
+        val hasEOTP =
+            productConfig.products.contains(StytchProduct.OTP) &&
+                productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+        return if (hasEOTP) {
+            // send Email OTP
+            sendEmailOTPForReturningUserAndGetNavigationRoute(
+                emailAddress = emailAddress,
+                otpOptions = productConfig.otpOptions,
+            )
+        } else if (hasEML) {
+            // send EML
+            sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
+                emailAddress = emailAddress,
+                emailMagicLinksOptions = productConfig.emailMagicLinksOptions,
+            )
+        } else {
+            null
+        }
+    }
+
     fun onEmailAddressSubmit(
         productConfig: StytchProductConfig,
         scope: CoroutineScope = viewModelScope,
@@ -151,42 +176,40 @@ internal class MainScreenViewModel(
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val emailAddress = uiState.value.emailState.emailAddress
-            when (getUserType(emailAddress)) {
-                UserType.NEW -> NavigationRoute.NewUser
-                UserType.PASSWORD -> NavigationRoute.ReturningUser
-                UserType.PASSWORDLESS -> {
-                    if (
-                        productConfig.products.contains(StytchProduct.OTP) &&
-                        productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
-                    ) {
-                        // send Email OTP
-                        sendEmailOTPForReturningUserAndGetNavigationRoute(
-                            emailAddress = emailAddress,
-                            otpOptions = productConfig.otpOptions,
-                        )
-                    } else if (productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)) {
-                        // send EML
-                        sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
-                            emailAddress = emailAddress,
-                            emailMagicLinksOptions = productConfig.emailMagicLinksOptions,
-                        )
-                    } else {
-                        // no Email OTP or EML, so set password
-                        sendResetPasswordForReturningUserAndGetNavigationRoute(
-                            emailAddress = emailAddress,
-                            passwordOptions = productConfig.passwordOptions,
-                        )
+            val hasPasswords = productConfig.products.contains(StytchProduct.PASSWORDS)
+            val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
+            val hasEOTP =
+                productConfig.products.contains(StytchProduct.OTP) &&
+                    productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
+            val nextNavigationRoute =
+                if (hasPasswords) {
+                    when (getUserType(emailAddress)) {
+                        UserType.NEW -> NavigationRoute.NewUser
+                        UserType.PASSWORD -> NavigationRoute.ReturningUser
+                        UserType.PASSWORDLESS -> {
+                            if (hasEOTP || hasEML) {
+                                handleEMLorEOTPSubmission(emailAddress, productConfig)
+                            } else {
+                                // no Email OTP or EML, so set password
+                                sendResetPasswordForReturningUserAndGetNavigationRoute(
+                                    emailAddress = emailAddress,
+                                    passwordOptions = productConfig.passwordOptions,
+                                )
+                            }
+                        }
+                        else -> {
+                            savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+                                uiState.value.copy(
+                                    showLoadingDialog = false,
+                                    genericErrorMessage = "Failed to get user type",
+                                )
+                            null
+                        }
                     }
+                } else {
+                    handleEMLorEOTPSubmission(emailAddress, productConfig)
                 }
-                else -> {
-                    savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
-                        uiState.value.copy(
-                            showLoadingDialog = false,
-                            genericErrorMessage = "Failed to get user type",
-                        )
-                    null
-                }
-            }?.let {
+            nextNavigationRoute?.let {
                 _eventFlow.emit(EventState.NavigationRequested(it))
             }
             savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
