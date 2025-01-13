@@ -17,6 +17,12 @@ public enum class EmailJitProvisioning {
 }
 
 @JsonClass(generateAdapter = false)
+public enum class OAuthTenantJitProvisioning {
+    RESTRICTED,
+    NOT_ALLOWED,
+}
+
+@JsonClass(generateAdapter = false)
 public enum class EmailInvites {
     ALL_ALLOWED,
     RESTRICTED,
@@ -42,18 +48,27 @@ public enum class MfaPolicy {
 }
 
 @JsonClass(generateAdapter = false)
-public enum class AllowedAuthMethods(override val jsonName: String) : IEnumValue {
+public enum class AllowedAuthMethods(
+    override val jsonName: String,
+) : IEnumValue {
     SSO("sso"),
     MAGIC_LINK("magic_link"),
     PASSWORD("password"),
     GOOGLE_OAUTH("google_oauth"),
     MICROSOFT_OAUTH("microsoft_oauth"),
+    HUBSPOT_OAUTH("hubspot_oauth"),
+    GITHUB_OAUTH("github_oauth"),
+    SLACK_OAUTH("slack_oauth"),
+    EMAIL_OTP("email_otp"),
 }
 
 @JsonClass(generateAdapter = false)
-public enum class MfaMethod(override val jsonName: String) : IEnumValue {
+public enum class MfaMethod(
+    override val jsonName: String,
+) : IEnumValue {
     SMS("sms_otp"),
     TOTP("totp"),
+    NONE(""),
 }
 
 @JsonClass(generateAdapter = false)
@@ -63,7 +78,9 @@ public enum class SearchOperator {
 }
 
 @JsonClass(generateAdapter = false)
-public enum class SetMFAEnrollment(override val jsonName: String) : IEnumValue {
+public enum class SetMFAEnrollment(
+    override val jsonName: String,
+) : IEnumValue {
     ENROLL("enroll"),
     UNENROLL("unenroll"),
 }

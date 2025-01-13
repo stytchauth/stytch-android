@@ -1,7 +1,9 @@
 package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
 import com.stytch.sdk.consumer.UpdateUserResponse
@@ -10,9 +12,15 @@ import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class UserManagementImpl(
     private val externalScope: CoroutineScope,
@@ -20,9 +28,15 @@ internal class UserManagementImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.UserManagement,
 ) : UserManagement {
-    private val callbacks = mutableListOf<(UserData?) -> Unit>()
+    private val callbacks = mutableListOf<(StytchObjectInfo<UserData>) -> Unit>()
 
-    override val onChange: StateFlow<UserData?> = sessionStorage.userFlow
+    override val onChange: StateFlow<StytchObjectInfo<UserData>> =
+        combine(sessionStorage.userFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
+            .stateIn(
+                externalScope,
+                SharingStarted.WhileSubscribed(),
+                stytchObjectMapper<UserData>(sessionStorage.user, sessionStorage.lastValidatedAt),
+            )
 
     init {
         externalScope.launch {
@@ -34,7 +48,7 @@ internal class UserManagementImpl(
         }
     }
 
-    override fun onChange(callback: (UserData?) -> Unit) {
+    override fun onChange(callback: (StytchObjectInfo<UserData>) -> Unit) {
         callbacks.add(callback)
     }
 
@@ -49,6 +63,12 @@ internal class UserManagementImpl(
             callback(result)
         }
     }
+
+    override fun getUserCompletable(): CompletableFuture<UserResponse> =
+        externalScope
+            .async {
+                getUser()
+            }.asCompletableFuture()
 
     override fun getSyncUser(): UserData? = sessionStorage.user
 
@@ -79,6 +99,12 @@ internal class UserManagementImpl(
         }
     }
 
+    override fun deleteFactorCompletable(factor: UserAuthenticationFactor): CompletableFuture<DeleteFactorResponse> =
+        externalScope
+            .async {
+                deleteFactor(factor)
+            }.asCompletableFuture()
+
     override suspend fun update(params: UserManagement.UpdateParams): UpdateUserResponse =
         withContext(dispatchers.io) {
             api.updateUser(
@@ -97,6 +123,12 @@ internal class UserManagementImpl(
         }
     }
 
+    override fun updateCompletable(params: UserManagement.UpdateParams): CompletableFuture<UpdateUserResponse> =
+        externalScope
+            .async {
+                update(params)
+            }.asCompletableFuture()
+
     override suspend fun search(params: UserManagement.SearchParams): SearchUserResponse =
         withContext(dispatchers.io) {
             api.searchUsers(email = params.email)
@@ -110,4 +142,10 @@ internal class UserManagementImpl(
             callback(search(params))
         }
     }
+
+    override fun searchCompletable(params: UserManagement.SearchParams): CompletableFuture<SearchUserResponse> =
+        externalScope
+            .async {
+                search(params)
+            }.asCompletableFuture()
 }

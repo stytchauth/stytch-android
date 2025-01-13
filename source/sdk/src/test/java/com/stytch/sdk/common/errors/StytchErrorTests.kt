@@ -13,6 +13,7 @@ internal class StytchErrorTests {
                 errorType = "error_name",
                 message = "error_description",
                 url = "https://stytch.com",
+                statusCode = 400,
             )
         assert(error.requestId == "request-id-1234")
         assert(error.errorType == "error_name")

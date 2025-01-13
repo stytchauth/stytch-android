@@ -29,8 +29,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -89,7 +89,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate delegates to api when code verifier is found`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns mockk(relaxed = true)
             coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
@@ -101,7 +101,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl authenticate delegates to api when code verifier is not found`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             coEvery { mockEmailApi.authenticate(any(), any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
@@ -122,7 +122,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email loginOrCreate returns error if generateCodeChallenge fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.email.loginOrSignup(emailMagicLinkParameters)
             assert(response is StytchResult.Error)
@@ -130,7 +130,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email loginOrCreate delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
                 mockEmailApi.loginOrSignupByEmail(any(), any(), any(), any(), any(), any(), any(), any())
@@ -148,7 +148,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email invite delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockEmailApi.invite(any(), any(), any(), any(), any(), any(), any())
             } returns mockMemberResponse
@@ -168,7 +168,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl email sendDiscovery returns error if generateCodeChallenge fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.email.discoverySend(mockk(relaxed = true))
             assert(response is StytchResult.Error)
@@ -176,7 +176,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery send delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery { mockDiscoveryApi.send(any(), any(), any(), any(), any()) } returns mockBaseResponse
             impl.email.discoverySend(mockk(relaxed = true))
@@ -192,7 +192,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery authenticate returns error if retrieveCodeVerifier fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.discoveryAuthenticate(mockk(relaxed = true))
             assert(response is StytchResult.Error)
@@ -200,7 +200,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns mockk(relaxed = true)
             coEvery { mockDiscoveryApi.authenticate(any(), any()) } returns mockk(relaxed = true)
             impl.discoveryAuthenticate(mockk(relaxed = true))
@@ -210,6 +210,7 @@ internal class B2BMagicLinksImplTest {
 
     @Test
     fun `MagicLinksImpl discovery authenticate with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(DiscoveryEMLAuthResponse) -> Unit>()
         impl.discoveryAuthenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

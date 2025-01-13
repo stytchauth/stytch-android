@@ -36,8 +36,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -86,7 +86,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             val mockkResponse = StytchResult.Success<PasswordsAuthenticateResponseData>(mockk(relaxed = true))
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.authenticate(mockk(relaxed = true))
@@ -106,7 +106,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmailStart returns error if generateHashedCodeChallenge fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.resetByEmailStart(mockk(relaxed = true))
             assert(response is StytchResult.Error)
@@ -114,7 +114,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmailStart delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
             coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockkResponse
@@ -155,14 +155,15 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmail returns error if codeVerifier fails`() =
-        runTest {
+        runBlocking {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Error)
         }
 
     @Test
     fun `PasswordsImpl resetByEmail delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             val mockkResponse = StytchResult.Success<EmailResetResponseData>(mockk(relaxed = true))
             coEvery { mockApi.resetByEmail(any(), any(), any(), any(), any(), any()) } returns mockkResponse
@@ -187,7 +188,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByExisting delegates to api`() =
-        runTest {
+        runBlocking {
             val mockkResponse = StytchResult.Success<PasswordResetByExistingPasswordResponseData>(mockk(relaxed = true))
             coEvery { mockApi.resetByExisting(any(), any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.resetByExisting(mockk(relaxed = true))
@@ -207,7 +208,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetBySession delegates to api`() =
-        runTest {
+        runBlocking {
             val mockkResponse = StytchResult.Success<SessionResetResponseData>(mockk(relaxed = true))
             coEvery { mockApi.resetBySession(any(), any()) } returns mockkResponse
             val response = impl.resetBySession(mockk(relaxed = true))
@@ -226,7 +227,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl strengthCheck delegates to api`() =
-        runTest {
+        runBlocking {
             val mockkResponse = StytchResult.Success<StrengthCheckResponseData>(mockk(relaxed = true))
             coEvery { mockApi.strengthCheck(any(), any()) } returns mockkResponse
             val response = impl.strengthCheck(mockk(relaxed = true))

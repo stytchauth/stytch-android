@@ -7,8 +7,11 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class TOTPImpl(
     private val externalScope: CoroutineScope,
@@ -21,7 +24,7 @@ internal class TOTPImpl(
             api.create(
                 organizationId = parameters.organizationId,
                 memberId = parameters.memberId,
-                expirationMinutes = parameters.expirationMinutes?.toInt(),
+                expirationMinutes = parameters.expirationMinutes,
                 intermediateSessionToken = sessionStorage.intermediateSessionToken,
             )
         }
@@ -35,19 +38,26 @@ internal class TOTPImpl(
         }
     }
 
+    override fun createCompletable(parameters: TOTP.CreateParameters): CompletableFuture<TOTPCreateResponse> =
+        externalScope
+            .async {
+                create(parameters)
+            }.asCompletableFuture()
+
     override suspend fun authenticate(parameters: TOTP.AuthenticateParameters): TOTPAuthenticateResponse =
         withContext(dispatchers.io) {
-            api.authenticate(
-                organizationId = parameters.organizationId,
-                memberId = parameters.memberId,
-                code = parameters.code,
-                setMFAEnrollment = parameters.setMFAEnrollment,
-                setDefaultMfaMethod = parameters.setDefaultMFAMethod,
-                sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-            ).apply {
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
+            api
+                .authenticate(
+                    organizationId = parameters.organizationId,
+                    memberId = parameters.memberId,
+                    code = parameters.code,
+                    setMFAEnrollment = parameters.setMFAEnrollment,
+                    setDefaultMfaMethod = parameters.setDefaultMFAMethod,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
     override fun authenticate(
@@ -58,4 +68,12 @@ internal class TOTPImpl(
             callback(authenticate(parameters))
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: TOTP.AuthenticateParameters,
+    ): CompletableFuture<TOTPAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 }

@@ -32,7 +32,7 @@ Each endpoint is explained in their respective READMEs and inline-documentation,
 ### **Configuration**
 As mentioned in the [toplevel README](/README.md), before making any Stytch authentication requests, you must configure the `StytchClient`:
 ```kotlin
-StytchClient.configure(context: Context, publicToken: String)
+StytchClient.configure(context, publicToken)
 ```
 This configures the API for authenticating requests and the encrypted storage helper for persisting session data across app launches.
 

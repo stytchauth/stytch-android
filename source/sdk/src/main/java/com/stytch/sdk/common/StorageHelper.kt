@@ -2,6 +2,7 @@ package com.stytch.sdk.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
@@ -9,7 +10,9 @@ private const val PREFERENCES_FILE_NAME = "stytch_preferences"
 
 internal object StorageHelper {
     internal val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
-    private lateinit var sharedPreferences: SharedPreferences
+
+    @VisibleForTesting
+    internal lateinit var sharedPreferences: SharedPreferences
 
     fun initialize(context: Context) {
         keyStore.load(null)
@@ -60,9 +63,25 @@ internal object StorageHelper {
         }
     }
 
-    internal fun getBoolean(name: String): Boolean = sharedPreferences.getBoolean(name, false)
+    internal fun getBoolean(
+        name: String,
+        default: Boolean = false,
+    ): Boolean =
+        try {
+            sharedPreferences.getBoolean(name, default)
+        } catch (ex: Exception) {
+            default
+        }
 
-    internal fun getLong(name: String): Long = sharedPreferences.getLong(name, 0L)
+    internal fun getLong(
+        name: String,
+        default: Long = 0L,
+    ): Long =
+        try {
+            sharedPreferences.getLong(name, default)
+        } catch (ex: Exception) {
+            default
+        }
 
     /**
      * Load and decrypt value from SharedPreferences

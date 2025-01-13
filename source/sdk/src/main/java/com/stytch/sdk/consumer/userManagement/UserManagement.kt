@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.userManagement
 
+import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
@@ -7,6 +8,7 @@ import com.stytch.sdk.consumer.UpdateUserResponse
 import com.stytch.sdk.consumer.UserResponse
 import com.stytch.sdk.consumer.network.models.UserData
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
@@ -16,13 +18,13 @@ public interface UserManagement {
     /**
      * Exposes a flow of user data
      */
-    public val onChange: StateFlow<UserData?>
+    public val onChange: StateFlow<StytchObjectInfo<UserData>>
 
     /**
      * Assign a callback that will be called when the user data changes
      */
 
-    public fun onChange(callback: (UserData?) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<UserData>) -> Unit)
 
     /**
      * Fetches a user from the current session
@@ -35,6 +37,12 @@ public interface UserManagement {
      * @param callback A callback that receives a [UserResponse]
      */
     public fun getUser(callback: (UserResponse) -> Unit)
+
+    /**
+     * Fetches a user from the current session
+     * @return [UserResponse]
+     */
+    public fun getUserCompletable(): CompletableFuture<UserResponse>
 
     /**
      * Get user from memory without making a network call
@@ -58,14 +66,22 @@ public interface UserManagement {
     )
 
     /**
+     * Deletes a [UserAuthenticationFactor] from the currently authenticated user
+     * @return [DeleteFactorResponse]
+     */
+    public fun deleteFactorCompletable(factor: UserAuthenticationFactor): CompletableFuture<DeleteFactorResponse>
+
+    /**
      * Data class used for wrapping parameters used with User updates
      * @property name the name of the user
      * @property untrustedMetadata a map of untrusted metadata to assign to the user
      */
-    public data class UpdateParams(
-        val name: NameData? = null,
-        val untrustedMetadata: Map<String, Any>? = null,
-    )
+    public data class UpdateParams
+        @JvmOverloads
+        constructor(
+            val name: NameData? = null,
+            val untrustedMetadata: Map<String, Any>? = null,
+        )
 
     /**
      * Updates the currently authenticated user
@@ -83,6 +99,13 @@ public interface UserManagement {
         params: UpdateParams,
         callback: (UpdateUserResponse) -> Unit,
     )
+
+    /**
+     * Updates the currently authenticated user
+     * @param params required to udpate the user
+     * @return [UpdateUserResponse]
+     */
+    public fun updateCompletable(params: UpdateParams): CompletableFuture<UpdateUserResponse>
 
     /**
      * Data class used for wrapping parameters used for searching Users
@@ -108,4 +131,11 @@ public interface UserManagement {
         params: SearchParams,
         callback: (SearchUserResponse) -> Unit,
     )
+
+    /**
+     * Searches for the specified user
+     * @param params required for searching users
+     * @return [SearchUserResponse]
+     */
+    public fun searchCompletable(params: SearchParams): CompletableFuture<SearchUserResponse>
 }

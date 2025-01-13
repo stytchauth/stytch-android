@@ -32,8 +32,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -98,7 +98,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticate(any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
@@ -116,7 +116,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl create delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
             val response = impl.create(createParameters)
             assert(response is StytchResult.Success)
@@ -134,7 +134,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmailStart returns error if generateHashedCodeChallenge fails`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } throws RuntimeException("Test")
             val response = impl.resetByEmailStart(resetByEmailStartParameters)
             assert(response is StytchResult.Error)
@@ -142,7 +142,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmailStart delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             coEvery {
                 mockApi.resetByEmailStart(
@@ -172,14 +172,15 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmail returns error if codeVerifier fails`() =
-        runTest {
+        runBlocking {
+            every { mockPKCEPairManager.getPKCECodePair() } returns null
             val response = impl.resetByEmail(resetByEmailParameters)
             assert(response is StytchResult.Error)
         }
 
     @Test
     fun `PasswordsImpl resetByEmail delegates to api`() =
-        runTest {
+        runBlocking {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
             coEvery { mockApi.resetByEmail(any(), any(), any(), any()) } returns successfulAuthResponse
             impl.resetByEmail(resetByEmailParameters)
@@ -190,6 +191,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByEmail with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns null
         val mockCallback = spyk<(AuthResponse) -> Unit>()
         impl.resetByEmail(resetByEmailParameters, mockCallback)
         verify { mockCallback.invoke(any()) }
@@ -197,7 +199,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetBySession delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.resetBySession(any(), any()) } returns mockk()
             impl.resetBySession(resetBySessionParameters)
             coVerify { mockApi.resetBySession(any(), any()) }
@@ -213,7 +215,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl resetByExistingPassword delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.resetByExisting(any(), any(), any(), any()) } returns successfulAuthResponse
             impl.resetByExistingPassword(mockk(relaxed = true))
             coVerify { mockApi.resetByExisting(any(), any(), any(), any()) }
@@ -230,7 +232,7 @@ internal class PasswordsImplTest {
 
     @Test
     fun `PasswordsImpl strengthCheck delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.strengthCheck(any(), any()) } returns mockk()
             impl.strengthCheck(strengthCheckParameters)
             coVerify { mockApi.strengthCheck(any(), any()) }

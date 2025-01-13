@@ -4,6 +4,7 @@ import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
+import java.util.concurrent.CompletableFuture
 
 /**
  * The CryptoWallet interface provides methods for authenticating a user using one of the supported Crypto Wallets
@@ -27,12 +28,14 @@ public interface CryptoWallet {
      * @property signature The signature from the message.
      * @property sessionDurationMinutes the length of time in minutes that a session should be minted for
      */
-    public data class AuthenticateParameters(
-        val cryptoWalletAddress: String,
-        val cryptoWalletType: CryptoWalletType,
-        val signature: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val cryptoWalletAddress: String,
+            val cryptoWalletType: CryptoWalletType,
+            val signature: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Begin a crypto wallet authentication flow
@@ -52,6 +55,15 @@ public interface CryptoWallet {
     )
 
     /**
+     * Begin a crypto wallet authentication flow
+     * @param parameters the parameters required to begin a crypto wallet authentication flow
+     * @return [CryptoWalletAuthenticateStartResponse]
+     */
+    public fun authenticateStartCompletable(
+        parameters: AuthenticateStartParameters,
+    ): CompletableFuture<CryptoWalletAuthenticateStartResponse>
+
+    /**
      * Complete a crypto wallet authentication flow
      * @param parameters the parameters required to complete a crypto wallet authentication flow
      * @return [AuthResponse]
@@ -67,4 +79,11 @@ public interface CryptoWallet {
         parameters: AuthenticateParameters,
         callback: (AuthResponse) -> Unit,
     )
+
+    /**
+     * Complete a crypto wallet authentication flow
+     * @param parameters the parameters required to complete a crypto wallet authentication flow
+     * @return [AuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<AuthResponse>
 }

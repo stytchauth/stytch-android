@@ -7,13 +7,13 @@ import com.stytch.sdk.utils.API_ERROR_RESPONSE_STRING
 import com.stytch.sdk.utils.createHttpExceptionReturningString
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 internal class SafeApiCallTest {
     @Test
     fun `A successful request returns StytchResult_Success`() =
-        runTest {
+        runBlocking {
             val result =
                 safeApiCall({}) {
                     mockk<CommonResponses.Bootstrap.BootstrapResponse>(relaxed = true)
@@ -23,7 +23,7 @@ internal class SafeApiCallTest {
 
     @Test
     fun `An unsuccessful request returns StytchResult_Error`() =
-        runTest {
+        runBlocking {
             val result =
                 safeApiCall({}) {
                     mockk<CommonResponses.Bootstrap.BootstrapResponse> {

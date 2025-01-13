@@ -26,12 +26,13 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 internal class SessionsImplTest {
     @MockK
@@ -44,7 +45,7 @@ internal class SessionsImplTest {
     private val dispatcher = Dispatchers.Unconfined
 
     private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
-    private val authParameters = Sessions.AuthParams(sessionDurationMinutes = 30U)
+    private val authParameters = Sessions.AuthParams(sessionDurationMinutes = 30)
 
     @Before
     fun before() {
@@ -58,6 +59,9 @@ internal class SessionsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockSessionStorage.userFlow } returns mockk(relaxed = true)
         every { mockSessionStorage.sessionFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAtFlow } returns mockk(relaxed = true)
+        every { mockSessionStorage.session } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastValidatedAt } returns Date(0L)
         impl =
             SessionsImpl(
                 externalScope = TestScope(),
@@ -97,7 +101,7 @@ internal class SessionsImplTest {
 
     @Test
     fun `SessionsImpl authenticate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticate(any()) } returns successfulAuthResponse
             val response = impl.authenticate(authParameters)
             assert(response is StytchResult.Success)
@@ -115,7 +119,7 @@ internal class SessionsImplTest {
 
     @Test
     fun `SessionsImpl revoke delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.revoke() } returns mockk()
             impl.revoke()
             coVerify { mockApi.revoke() }
@@ -123,7 +127,7 @@ internal class SessionsImplTest {
 
     @Test
     fun `SessionsImpl revoke does not revoke a local session if a network error occurs and forceClear is not true`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.revoke() } returns StytchResult.Error(mockk(relaxed = true))
             impl.revoke()
             verify(exactly = 0) { mockSessionStorage.revoke() }
@@ -131,7 +135,7 @@ internal class SessionsImplTest {
 
     @Test
     fun `SessionsImpl revoke does revoke a local session if a network error occurs and forceClear is true`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.revoke() } returns StytchResult.Error(mockk(relaxed = true))
             impl.revoke(Sessions.RevokeParams(true))
             verify { mockSessionStorage.revoke() }
@@ -139,7 +143,7 @@ internal class SessionsImplTest {
 
     @Test
     fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
             every { mockSessionStorage.revoke() } throws RuntimeException("Test")
             val result = impl.revoke(Sessions.RevokeParams(true))

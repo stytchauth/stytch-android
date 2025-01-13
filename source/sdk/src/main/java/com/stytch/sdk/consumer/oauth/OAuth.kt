@@ -4,6 +4,7 @@ import android.app.Activity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The OAuth interface provides methods for authenticating a user via a native Google OneTap prompt or any of the
@@ -121,12 +122,14 @@ public interface OAuth {
          * @property autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
-        public data class StartParameters(
-            val context: Activity,
-            val clientId: String,
-            val autoSelectEnabled: Boolean = false,
-            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        )
+        public data class StartParameters
+            @JvmOverloads
+            constructor(
+                val context: Activity,
+                val clientId: String,
+                val autoSelectEnabled: Boolean = false,
+                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            )
 
         /**
          * Begin a Google OneTap login flow. Returns an authenticated session if the flow was successfully initiated.
@@ -148,6 +151,15 @@ public interface OAuth {
             parameters: StartParameters,
             callback: (NativeOAuthResponse) -> Unit,
         )
+
+        /**
+         * Begin a Google OneTap login flow. Returns an authenticated session if the flow was successfully initiated.
+         * If this returns an error, it means the Google OneTap flow is not available (no play services on device
+         * or user signed out), and you can fallback to the ThirdParty/Legacy Google OAuth flow
+         * @param parameters required to begin the OneTap flow
+         * @return NativeOAuthResponse
+         */
+        public fun startCompletable(parameters: StartParameters): CompletableFuture<NativeOAuthResponse>
 
         /**
          * Sign a user out of Google Play Services
@@ -180,24 +192,28 @@ public interface OAuth {
          * @property customScopes Any additional scopes to be requested from the identity provider
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
          */
-        public data class StartParameters(
-            val context: Activity,
-            val oAuthRequestIdentifier: Int,
-            val loginRedirectUrl: String? = null,
-            val signupRedirectUrl: String? = null,
-            val customScopes: List<String>? = null,
-            val providerParams: Map<String, String>? = null,
-        )
+        public data class StartParameters
+            @JvmOverloads
+            constructor(
+                val context: Activity,
+                val oAuthRequestIdentifier: Int,
+                val loginRedirectUrl: String? = null,
+                val signupRedirectUrl: String? = null,
+                val customScopes: List<String>? = null,
+                val providerParams: Map<String, String>? = null,
+            )
 
         /**
          * Data class used for wrapping parameters to authenticate a third party OAuth flow
          * @property token is the token returned from the provider
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
-        public data class AuthenticateParameters(
-            val token: String,
-            val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        )
+        public data class AuthenticateParameters
+            @JvmOverloads
+            constructor(
+                val token: String,
+                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            )
 
         /**
          * Begin a ThirdParty OAuth flow
@@ -222,4 +238,13 @@ public interface OAuth {
         parameters: ThirdParty.AuthenticateParameters,
         callback: (OAuthAuthenticatedResponse) -> Unit,
     )
+
+    /**
+     * Authenticate a ThirdParty OAuth flow
+     * @param parameters required to authenticate the OAuth flow
+     * @return [OAuthAuthenticatedResponse]
+     */
+    public fun authenticateCompletable(
+        parameters: ThirdParty.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticatedResponse>
 }

@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.biometrics
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Biometrics interface provides methods for detecting biometric availability, registering, authenticating, and
@@ -20,13 +21,15 @@ public interface Biometrics {
      * @property allowDeviceCredentials opts-in to allowing the use of non-biometric device credentials (PIN, Pattern)
      * as a fallback (on Android versions greater than Q)
      */
-    public data class RegisterParameters(
-        val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val allowFallbackToCleartext: Boolean = false,
-        val promptData: PromptData? = null,
-        val allowDeviceCredentials: Boolean = false,
-    )
+    public data class RegisterParameters
+        @JvmOverloads
+        constructor(
+            val context: FragmentActivity,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val allowFallbackToCleartext: Boolean = false,
+            val promptData: PromptData? = null,
+            val allowDeviceCredentials: Boolean = false,
+        )
 
     /**
      * Data class used for wrapping parameters used with Biometrics authentication flow
@@ -35,11 +38,13 @@ public interface Biometrics {
      * @property promptData is an optional biometric prompt configuration. If one is not provided a default will be
      * created
      */
-    public data class AuthenticateParameters(
-        val context: FragmentActivity,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val promptData: PromptData? = null,
-    )
+    public data class AuthenticateParameters
+        @JvmOverloads
+        constructor(
+            val context: FragmentActivity,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val promptData: PromptData? = null,
+        )
 
     /**
      * Data class used for wrapping parameters used to create a biometric prompt
@@ -87,6 +92,13 @@ public interface Biometrics {
     public fun removeRegistration(callback: (Boolean) -> Unit)
 
     /**
+     * Clears existing biometric registrations stored on device. Useful when removing a user from a given device.
+     * Returns true if the registration was successfully removed from device.
+     * @return Boolean
+     */
+    public fun removeRegistrationCompletable(): CompletableFuture<Boolean>
+
+    /**
      * Indicates if the device is device has a reliable version of the Android KeyStore. If it does not, there may be
      * issues creating encryption keys, as well as implications on where these keys are stored. The safest approach is
      * to not offer biometrics if this returns `false`, but it is possible to force a registration with an unreliable
@@ -117,6 +129,15 @@ public interface Biometrics {
     )
 
     /**
+     * When a valid/active session exists, this method will add a biometric registration for the current user.
+     * The user will later be able to start a new session with biometrics or use biometrics as an additional
+     * authentication factor.
+     * @param parameters required to register a biometrics key
+     * @return [BiometricsAuthResponse]
+     */
+    public fun registerCompletable(parameters: RegisterParameters): CompletableFuture<BiometricsAuthResponse>
+
+    /**
      * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
      * biometric reader and returns an updated session object by either starting a new session or adding the biometric
      * factor to an existing session.
@@ -136,4 +157,13 @@ public interface Biometrics {
         parameters: AuthenticateParameters,
         callback: (response: BiometricsAuthResponse) -> Unit,
     )
+
+    /**
+     * If a valid biometric registration exists, this method confirms the current device owner via the device's built-in
+     * biometric reader and returns an updated session object by either starting a new session or adding the biometric
+     * factor to an existing session.
+     * @param parameters required to authenticate a biometrics key
+     * @return [BiometricsAuthResponse]
+     */
+    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<BiometricsAuthResponse>
 }

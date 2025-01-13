@@ -17,13 +17,21 @@ internal fun HttpException.toStytchError(): StytchError {
         try {
             // if we can parse this out to a StytchErrorResponse, it's an API error
             source?.let {
-                Moshi.Builder().build().adapter(StytchErrorResponse::class.java).fromJson(it)
+                Moshi
+                    .Builder()
+                    .build()
+                    .adapter(StytchErrorResponse::class.java)
+                    .fromJson(it)
             }
         } catch (t: Throwable) {
             try {
                 // if we can parse this out to a StytchSchemaError, it's a schema error
                 source?.let {
-                    Moshi.Builder().build().adapter(StytchSchemaError::class.java).fromJson(it)
+                    Moshi
+                        .Builder()
+                        .build()
+                        .adapter(StytchSchemaError::class.java)
+                        .fromJson(it)
                 }
             } catch (t: Throwable) {
                 // Can't parse anything, assume it's a network error
@@ -38,6 +46,7 @@ internal fun HttpException.toStytchError(): StytchError {
                 message = parsedErrorResponse.errorMessage ?: "",
                 url = parsedErrorResponse.errorUrl,
                 requestId = parsedErrorResponse.requestId,
+                statusCode = parsedErrorResponse.statusCode,
             )
         is StytchSchemaError ->
             StytchAPISchemaError(

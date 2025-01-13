@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.searchManager
 
 import com.stytch.sdk.b2b.B2BSearchMemberResponse
 import com.stytch.sdk.b2b.B2BSearchOrganizationResponse
+import java.util.concurrent.CompletableFuture
 
 /**
  * The SearchManager interface provides methods for searching for organizations and members
@@ -33,6 +34,15 @@ public interface SearchManager {
     )
 
     /**
+     * Search for an organization
+     * @param parameters the parameters needed to make the search request
+     * @return [B2BSearchOrganizationResponse]
+     */
+    public fun searchOrganizationCompletable(
+        parameters: SearchOrganizationParameters,
+    ): CompletableFuture<B2BSearchOrganizationResponse>
+
+    /**
      * A data class wrapping the parameters used for a Search Members call
      * @property emailAddress the email address of the member to search for
      * @property organizationId the id of the organization the member belongs to
@@ -58,4 +68,11 @@ public interface SearchManager {
         parameters: SearchMemberParameters,
         callback: (B2BSearchMemberResponse) -> Unit,
     )
+
+    /**
+     * Search for an organization member
+     * @param parameters the parameters needed to make the search request
+     * @return [B2BSearchMemberResponse]
+     */
+    public fun searchMemberCompletable(parameters: SearchMemberParameters): CompletableFuture<B2BSearchMemberResponse>
 }

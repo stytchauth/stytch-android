@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.member
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.DeleteMemberAuthenticationFactorResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.UpdateMemberResponse
@@ -7,6 +9,9 @@ import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MemberResponseData
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
+import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -16,14 +21,17 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +41,12 @@ internal class MemberImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.Member
 
+    @MockK
+    private lateinit var mockSharedPreferences: SharedPreferences
+
+    @MockK
+    private lateinit var mockSharedPreferencesEditor: Editor
+
     private lateinit var spiedSessionStorage: B2BSessionStorage
 
     private lateinit var impl: MemberImpl
@@ -41,10 +55,19 @@ internal class MemberImplTest {
 
     @Before
     fun before() {
-        MockKAnnotations.init(this, true, true)
         mockkStatic(KeyStore::class)
+        mockkObject(EncryptionManager)
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.encryptString(any()) } returns ""
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        MockKAnnotations.init(this, true, true)
+        every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.apply() } just runs
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0
+        StorageHelper.sharedPreferences = mockSharedPreferences
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             MemberImpl(
                 externalScope = TestScope(),
@@ -62,12 +85,15 @@ internal class MemberImplTest {
 
     @Test
     fun `Member get delegates to api and caches the result`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.getMember() } returns successfulMemberResponse
+            every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+            every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
             val response = impl.get()
             assert(response is StytchResult.Success)
             coVerify { mockApi.getMember() }
-            assert(spiedSessionStorage.member == successfulMemberResponse.value.member)
+            verify { mockSharedPreferencesEditor.putString(PREFERENCES_NAME_MEMBER_DATA, any()) }
+            verify { mockSharedPreferencesEditor.putLong(PREFERENCES_NAME_LAST_VALIDATED_AT, any()) }
         }
 
     @Test
@@ -89,7 +115,7 @@ internal class MemberImplTest {
 
     @Test
     fun `Member update delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.updateMember(any(), any(), any(), any(), any()) } returns mockk(relaxed = true)
             impl.update(mockk(relaxed = true))
             coVerify { mockApi.updateMember(any(), any(), any(), any(), any()) }
@@ -105,7 +131,7 @@ internal class MemberImplTest {
 
     @Test
     fun `Member deleteFactor delegates to api for all supported factors`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.deleteMFAPhoneNumber() } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deleteMFATOTP() } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockApi.deletePassword(any()) } returns StytchResult.Success(mockk(relaxed = true))

@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.totp
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.TOTPAuthenticateResponse
 import com.stytch.sdk.b2b.TOTPCreateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -26,8 +28,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -36,6 +38,12 @@ import java.security.KeyStore
 internal class TOTPImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.TOTP
+
+    @MockK
+    private lateinit var mockSharedPreferences: SharedPreferences
+
+    @MockK
+    private lateinit var mockSharedPreferencesEditor: Editor
 
     private lateinit var spiedSessionStorage: B2BSessionStorage
 
@@ -54,7 +62,13 @@ internal class TOTPImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0L
+        every { mockSharedPreferencesEditor.apply() } just runs
+        StorageHelper.sharedPreferences = mockSharedPreferences
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             TOTPImpl(
                 externalScope = TestScope(),
@@ -72,9 +86,9 @@ internal class TOTPImplTest {
 
     @Test
     fun `TOTP create delegates to the API`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
-            val response = impl.create(TOTP.CreateParameters("", "", 30U))
+            val response = impl.create(TOTP.CreateParameters("", "", 30))
             assert(response is StytchResult.Success)
             coVerify { mockApi.create(any(), any(), any()) }
         }
@@ -83,13 +97,13 @@ internal class TOTPImplTest {
     fun `TOTP create with callback calls callback`() {
         coEvery { mockApi.create(any(), any(), any()) } returns successfulCreateResponse
         val mockCallback = spyk<(TOTPCreateResponse) -> Unit>()
-        impl.create(TOTP.CreateParameters("", "", 30U), mockCallback)
+        impl.create(TOTP.CreateParameters("", "", 30), mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
     @Test
     fun `TOTP Authenticate delegates to the API and updates session`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any(), any()) } returns successfulAuthResponse
             val response = impl.authenticate(mockk(relaxed = true))
             assert(response is StytchResult.Success)

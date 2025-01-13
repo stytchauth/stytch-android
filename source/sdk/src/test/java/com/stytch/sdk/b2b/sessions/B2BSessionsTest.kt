@@ -15,13 +15,13 @@ internal class B2BSessionsTest {
         val params =
             B2BSessions.ExchangeParameters(
                 organizationId = "test-123",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
         val expected =
             B2BSessions.ExchangeParameters(
                 organizationId = "test-123",
                 locale = null,
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
         assert(params == expected)
     }

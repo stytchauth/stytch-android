@@ -9,10 +9,12 @@ import com.stytch.sdk.common.network.models.BiometricRegistrations
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.common.network.models.CryptoWalletData
 import com.stytch.sdk.common.network.models.EmailData
+import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.Password
 import com.stytch.sdk.common.network.models.PhoneNumber
 import com.stytch.sdk.common.network.models.Provider
+import com.stytch.sdk.common.network.models.StrengthPolicy
 import com.stytch.sdk.common.network.models.TOTP
 import com.stytch.sdk.common.network.models.WebAuthNRegistrations
 import com.stytch.sdk.common.utils.IEnumValue
@@ -46,7 +48,8 @@ public data class AuthData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val user: UserData,
-) : IAuthData, Parcelable
+) : IAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -133,7 +136,8 @@ public data class CreateResponse(
     val emailId: String,
     @Json(name = "user_id")
     val userId: String,
-) : IAuthData, Parcelable
+) : IAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -151,7 +155,8 @@ public data class BiometricsAuthData(
     override val user: UserData,
     @Json(name = "biometric_registration_id")
     val biometricRegistrationId: String,
-) : IAuthData, Parcelable
+) : IAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -186,7 +191,8 @@ public data class OAuthData(
     val providerType: String,
     @Json(name = "provider_values")
     val providerValues: OAuthProviderValues,
-) : IAuthData, Parcelable {
+) : IAuthData,
+    Parcelable {
     @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
@@ -213,35 +219,8 @@ public data class NativeOAuthData(
     override val user: UserData,
     @Json(name = "user_created")
     override val userCreated: Boolean,
-) : INativeOAuthData, Parcelable
-
-@Keep
-@JsonClass(generateAdapter = true)
-@Parcelize
-public data class Feedback(
-    val suggestions: List<String>,
-    val warning: String,
-    @Json(name = "luds_requirements")
-    val ludsRequirements: LUDSRequirements?,
-) : Parcelable
-
-@Keep
-@JsonClass(generateAdapter = true)
-@Parcelize
-public data class LUDSRequirements(
-    @Json(name = "has_lower_case")
-    val hasLowerCase: Boolean,
-    @Json(name = "has_upper_case")
-    val hasUpperCase: Boolean,
-    @Json(name = "has_digit")
-    val hasDigit: Boolean,
-    @Json(name = "has_symbol")
-    val hasSymbol: Boolean,
-    @Json(name = "missing_complexity")
-    val missingComplexity: Int,
-    @Json(name = "missing_characters")
-    val missingCharacters: Int,
-) : Parcelable
+) : INativeOAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -260,16 +239,6 @@ public data class StrengthCheckResponse(
     @Json(name = "strength_policy")
     val strengthPolicy: StrengthPolicy,
 ) : Parcelable
-
-@Keep
-@JsonClass(generateAdapter = false)
-public enum class StrengthPolicy {
-    @Json(name = "zxcvbn")
-    ZXCVBN,
-
-    @Json(name = "luds")
-    LUDS,
-}
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -329,7 +298,8 @@ public data class WebAuthnRegisterData(
     override val user: UserData,
     @Json(name = "webauthn_registration_id")
     val webauthnRegistrationId: String,
-) : Parcelable, IAuthData
+) : Parcelable,
+    IAuthData
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -354,7 +324,10 @@ public data class WebAuthnUpdateResponseData(
 @Keep
 @JsonClass(generateAdapter = false)
 @Parcelize
-public enum class CryptoWalletType(override val jsonName: String) : IEnumValue, Parcelable {
+public enum class CryptoWalletType(
+    override val jsonName: String,
+) : IEnumValue,
+    Parcelable {
     ETHEREUM("ethereum"),
     SOLANA("solana"),
 }
@@ -391,7 +364,8 @@ public data class TOTPAuthenticateResponseData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val user: UserData,
-) : IAuthData, Parcelable
+) : IAuthData,
+    Parcelable
 
 @Keep
 @JsonClass(generateAdapter = true)
@@ -425,4 +399,5 @@ public data class TOTPRecoverResponseData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val user: UserData,
-) : IAuthData, Parcelable
+) : IAuthData,
+    Parcelable

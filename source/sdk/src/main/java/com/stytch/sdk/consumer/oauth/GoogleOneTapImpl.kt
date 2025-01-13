@@ -21,8 +21,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal interface GoogleCredentialManagerProvider {
     suspend fun getSignInWithGoogleCredential(
@@ -95,13 +98,14 @@ internal class GoogleOneTapImpl(
                     return@withContext StytchResult.Error(UnexpectedCredentialType(credentialType = credential.type))
                 }
                 val googleIdTokenCredential = credentialManagerProvider.createTokenCredential(credential.data)
-                return@withContext api.authenticateWithGoogleIdToken(
-                    idToken = googleIdTokenCredential.idToken,
-                    nonce = nonce,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ).apply {
-                    launchSessionUpdater(dispatchers, sessionStorage)
-                }
+                return@withContext api
+                    .authenticateWithGoogleIdToken(
+                        idToken = googleIdTokenCredential.idToken,
+                        nonce = nonce,
+                        sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ).apply {
+                        launchSessionUpdater(dispatchers, sessionStorage)
+                    }
             }
         } catch (e: GoogleIdTokenParsingException) {
             StytchLog.e("Received an invalid google id token response: $e")
@@ -120,6 +124,14 @@ internal class GoogleOneTapImpl(
             callback(result)
         }
     }
+
+    override fun startCompletable(
+        parameters: OAuth.GoogleOneTap.StartParameters,
+    ): CompletableFuture<NativeOAuthResponse> =
+        externalScope
+            .async {
+                start(parameters)
+            }.asCompletableFuture()
 
     override fun signOut(activity: Activity) {
         externalScope.launch(dispatchers.io) {

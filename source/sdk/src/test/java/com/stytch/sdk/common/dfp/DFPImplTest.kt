@@ -10,8 +10,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -42,7 +42,7 @@ internal class DFPImplTest {
 
     @Test
     fun `getTelemetryId delegates to provider`() =
-        runTest {
+        runBlocking {
             impl.getTelemetryId()
             coVerify(exactly = 1) { dfpProvider.getTelemetryId() }
         }

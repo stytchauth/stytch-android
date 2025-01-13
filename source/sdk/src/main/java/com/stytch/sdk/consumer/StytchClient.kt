@@ -6,6 +6,7 @@ import android.net.Uri
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
+import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
@@ -14,6 +15,7 @@ import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
@@ -59,7 +61,7 @@ import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -74,23 +76,14 @@ import java.util.UUID
  */
 public object StytchClient {
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal var externalScope: CoroutineScope = GlobalScope // TODO: SDK-614
-    internal val sessionStorage = ConsumerSessionStorage(StorageHelper, externalScope)
+    internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
+    internal lateinit var sessionStorage: ConsumerSessionStorage
     internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     internal lateinit var dfpProvider: DFPProvider
-
-    /**
-     * Exposes your applications current bootstrapping data, as configured in the Stytch Dashboard
-     */
-    public var bootstrapData: BootstrapData = BootstrapData()
-        internal set
+    internal var bootstrapData: BootstrapData = BootstrapData()
+    internal lateinit var publicToken: String
 
     private lateinit var smsRetriever: StytchSMSRetriever
-
-    /**
-     * The public token that the StytchClient is configured to use
-     */
-    public lateinit var publicToken: String
 
     private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -98,6 +91,7 @@ public object StytchClient {
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
+    @JvmStatic
     public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
     @VisibleForTesting
@@ -112,9 +106,11 @@ public object StytchClient {
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param options Optional options to configure the StytchClient
      * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
+    @JvmStatic
     public fun configure(
         context: Context,
         publicToken: String,
@@ -126,6 +122,7 @@ public object StytchClient {
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
+            sessionStorage = ConsumerSessionStorage(StorageHelper)
             StytchApi.configure(publicToken, deviceInfo)
             dfpProvider =
                 DFPProviderImpl(
@@ -154,8 +151,12 @@ public object StytchClient {
                 )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
-                    StytchApi.Sessions.authenticate(null).apply {
-                        launchSessionUpdater(dispatchers, sessionStorage)
+                    sessionStorage.session?.let {
+                        // if we have a session, it's expiration date has already been validated, now attempt
+                        // to validate it with the Stytch servers
+                        StytchApi.Sessions.authenticate(null).apply {
+                            launchSessionUpdater(dispatchers, sessionStorage)
+                        }
                     }
                 }
                 _isInitialized.value = true
@@ -163,12 +164,64 @@ public object StytchClient {
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
+            println(ex)
             events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",
                 exception = ex,
             )
         }
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        publicToken: String,
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        configure(context, publicToken, StytchClientOptions(), callback)
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param options Optional options to configure the StytchClient
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        publicToken: String,
+        options: StytchClientOptions = StytchClientOptions(),
+    ) {
+        configure(context, publicToken, options) {}
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param publicToken Available via the Stytch dashboard in the API keys section
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        publicToken: String,
+    ) {
+        configure(context, publicToken, StytchClientOptions()) {}
     }
 
     private fun configureSmsRetriever(context: Context) {
@@ -190,7 +243,7 @@ public object StytchClient {
     }
 
     internal fun assertInitialized() {
-        if (!StytchApi.isInitialized) {
+        if (!StytchApi.isInitialized || !::sessionStorage.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchClient")
         }
     }
@@ -202,7 +255,8 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var magicLinks: MagicLinks =
+    @JvmStatic
+    public val magicLinks: MagicLinks by StytchLazyDelegate(::assertInitialized) {
         MagicLinksImpl(
             externalScope,
             dispatchers,
@@ -210,11 +264,7 @@ public object StytchClient {
             StytchApi.MagicLinks.Email,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [OTP] interface which provides methods for sending and authenticating
@@ -223,18 +273,15 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var otps: OTP =
+    @JvmStatic
+    public val otps: OTP by StytchLazyDelegate(::assertInitialized) {
         OTPImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.OTP,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [Passwords] interface which provides methods for authenticating, creating, resetting,
@@ -243,7 +290,8 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var passwords: Passwords =
+    @JvmStatic
+    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
         PasswordsImpl(
             externalScope,
             dispatchers,
@@ -251,11 +299,7 @@ public object StytchClient {
             StytchApi.Passwords,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [Sessions] interface which provides methods for authenticating, updating, or revoking
@@ -264,18 +308,15 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var sessions: Sessions =
+    @JvmStatic
+    public val sessions: Sessions by StytchLazyDelegate(::assertInitialized) {
         SessionsImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.Sessions,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [Biometrics] interface which provides methods for detecting biometric availability,
@@ -284,7 +325,8 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var biometrics: Biometrics =
+    @JvmStatic
+    public val biometrics: Biometrics by StytchLazyDelegate(::assertInitialized) {
         BiometricsImpl(
             externalScope,
             dispatchers,
@@ -295,11 +337,7 @@ public object StytchClient {
         ) { biometricRegistrationId ->
             user.deleteFactor(UserAuthenticationFactor.BiometricRegistration(biometricRegistrationId))
         }
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [UserManagement] interface which provides methods for retrieving an authenticated
@@ -308,18 +346,15 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var user: UserManagement =
+    @JvmStatic
+    public val user: UserManagement by StytchLazyDelegate(::assertInitialized) {
         UserManagementImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.UserManagement,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [OAuth] interface which provides methods for authenticating a user via a native
@@ -328,7 +363,8 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var oauth: OAuth =
+    @JvmStatic
+    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
         OAuthImpl(
             externalScope,
             dispatchers,
@@ -336,11 +372,7 @@ public object StytchClient {
             StytchApi.OAuth,
             pkcePairManager,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [Passkeys] interface which provides methods for registering and authenticating
@@ -349,18 +381,15 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var passkeys: Passkeys =
+    @JvmStatic
+    public val passkeys: Passkeys by StytchLazyDelegate(::assertInitialized) {
         PasskeysImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.WebAuthn,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [DFP] interface which provides a method for retrieving a dfp_telemetry_id for use
@@ -369,11 +398,10 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public val dfp: DFP
-        get() {
-            assertInitialized()
-            return DFPImpl(dfpProvider, dispatchers, externalScope)
-        }
+    @JvmStatic
+    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
+        DFPImpl(dfpProvider, dispatchers, externalScope)
+    }
 
     /**
      * Exposes an instance of the [CryptoWallet] interface which provides methods for authenticating with a crypto
@@ -382,18 +410,15 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var crypto: CryptoWallet =
+    @JvmStatic
+    public val crypto: CryptoWallet by StytchLazyDelegate(::assertInitialized) {
         CryptoWalletImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.Crypto,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
     /**
      * Exposes an instance of the [TOTP] interface which provides methods for creating, authenticating, and recovering
@@ -402,24 +427,19 @@ public object StytchClient {
      * @throws [StytchSDKNotConfiguredError] if you attempt to access this property before calling
      * StytchClient.configure()
      */
-    public var totp: TOTP =
+    @JvmStatic
+    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
         TOTPImpl(
             externalScope,
             dispatchers,
             sessionStorage,
             StytchApi.TOTP,
         )
-        get() {
-            assertInitialized()
-            return field
-        }
-        internal set
+    }
 
-    internal val events: Events
-        get() {
-            assertInitialized()
-            return EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
-        }
+    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
+        EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
+    }
 
     /**
      * Call this method to parse out and authenticate deeplinks that your application receives. The currently supported
@@ -437,9 +457,10 @@ public object StytchClient {
      * @param sessionDurationMinutes desired session duration in minutes
      * @return [DeeplinkHandledStatus]
      */
+    @JvmStatic
     public suspend fun handle(
         uri: Uri,
-        sessionDurationMinutes: UInt,
+        sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
         assertInitialized()
         return withContext(dispatchers.io) {
@@ -492,9 +513,10 @@ public object StytchClient {
      * @param sessionDurationMinutes desired session duration in minutes
      * @param callback A callback that receives a [DeeplinkHandledStatus]
      */
+    @JvmStatic
     public fun handle(
         uri: Uri,
-        sessionDurationMinutes: UInt,
+        sessionDurationMinutes: Int,
         callback: (response: DeeplinkHandledStatus) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
@@ -512,6 +534,7 @@ public object StytchClient {
      * @param uri intent.data from deep link
      * @return Boolean
      */
+    @JvmStatic
     public fun canHandle(uri: Uri): Boolean =
         ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
 
@@ -526,7 +549,18 @@ public object StytchClient {
     /**
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
+    @JvmStatic
     public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever(sessionDurationMinutes: UInt) = smsRetriever.start(sessionDurationMinutes)
+    internal fun startSmsRetriever(sessionDurationMinutes: Int) = smsRetriever.start(sessionDurationMinutes)
+
+    /**
+     * Retrieve the token and a concrete token type from a deeplink
+     */
+    @JvmStatic
+    public fun parseDeeplink(uri: Uri): DeeplinkTokenPair =
+        DeeplinkTokenPair(
+            tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
+            token = uri.getQueryParameter(QUERY_TOKEN),
+        )
 }

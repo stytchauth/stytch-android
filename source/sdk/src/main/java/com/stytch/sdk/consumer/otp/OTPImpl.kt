@@ -10,8 +10,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OTPImpl internal constructor(
     private val externalScope: CoroutineScope,
@@ -51,6 +54,12 @@ internal class OTPImpl internal constructor(
         }
     }
 
+    override fun authenticateCompletable(parameters: OTP.AuthParameters): CompletableFuture<AuthResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
+
     private inner class SmsOTPImpl : OTP.SmsOTP {
         override suspend fun loginOrCreate(parameters: OTP.SmsOTP.Parameters): LoginOrCreateOTPResponse {
             val result: LoginOrCreateOTPResponse
@@ -84,6 +93,14 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun loginOrCreateCompletable(
+            parameters: OTP.SmsOTP.Parameters,
+        ): CompletableFuture<LoginOrCreateOTPResponse> =
+            externalScope
+                .async {
+                    loginOrCreate(parameters)
+                }.asCompletableFuture()
 
         override suspend fun send(parameters: OTP.SmsOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
@@ -124,6 +141,12 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun sendCompletable(parameters: OTP.SmsOTP.Parameters): CompletableFuture<OTPSendResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
     }
 
     private inner class WhatsAppOTPImpl : OTP.WhatsAppOTP {
@@ -150,6 +173,14 @@ internal class OTPImpl internal constructor(
             }
         }
 
+        override fun loginOrCreateCompletable(
+            parameters: OTP.WhatsAppOTP.Parameters,
+        ): CompletableFuture<LoginOrCreateOTPResponse> =
+            externalScope
+                .async {
+                    loginOrCreate(parameters)
+                }.asCompletableFuture()
+
         override suspend fun send(parameters: OTP.WhatsAppOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
                 if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -174,6 +205,12 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun sendCompletable(parameters: OTP.WhatsAppOTP.Parameters): CompletableFuture<OTPSendResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
     }
 
     private inner class EmailOTPImpl : OTP.EmailOTP {
@@ -201,6 +238,14 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun loginOrCreateCompletable(
+            parameters: OTP.EmailOTP.Parameters,
+        ): CompletableFuture<LoginOrCreateOTPResponse> =
+            externalScope
+                .async {
+                    loginOrCreate(parameters)
+                }.asCompletableFuture()
 
         override suspend fun send(parameters: OTP.EmailOTP.Parameters): OTPSendResponse =
             withContext(dispatchers.io) {
@@ -230,5 +275,11 @@ internal class OTPImpl internal constructor(
                 callback(result)
             }
         }
+
+        override fun sendCompletable(parameters: OTP.EmailOTP.Parameters): CompletableFuture<OTPSendResponse> =
+            externalScope
+                .async {
+                    send(parameters)
+                }.asCompletableFuture()
     }
 }

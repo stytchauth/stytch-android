@@ -18,16 +18,22 @@ internal const val CODE_CHALLENGE_BYTE_COUNT = 32
  * The default time that a created session will be valid. This is used if you do not provide a session duration
  * to an authentication call, and defaults to the shortest valid session duration supported by Stytch (5 minutes)
  */
-public const val DEFAULT_SESSION_TIME_MINUTES: UInt = 5u
+public const val DEFAULT_SESSION_TIME_MINUTES: Int = 5
 
 /**
  * The default time that an OTP code will be valid. This is used if you do not provide an expiration duration
  * to an OTP loginOrCreate or send call
  */
-public const val DEFAULT_OTP_EXPIRATION_TIME_MINUTES: UInt = 10u
+public const val DEFAULT_OTP_EXPIRATION_TIME_MINUTES: Int = 10
 
 internal const val PREFERENCES_NAME_SESSION_JWT = "session_jwt"
 internal const val PREFERENCES_NAME_SESSION_TOKEN = "session_token"
 internal const val PREFERENCES_NAME_IST = "intermediate_session_token"
 internal const val PREFERENCES_NAME_IST_EXPIRATION = "intermediate_session_token_expiration"
+internal const val PREFERENCES_NAME_LAST_VALIDATED_AT = "stytch_last_validated_at"
+internal const val PREFERENCES_NAME_SESSION_DATA = "stytch_session_data"
+internal const val PREFERENCES_NAME_USER_DATA = "stytch_user_data"
+internal const val PREFERENCES_NAME_MEMBER_SESSION_DATA = "stytch_member_session_data"
+internal const val PREFERENCES_NAME_MEMBER_DATA = "stytch_member_data"
+internal const val PREFERENCES_NAME_ORGANIZATION_DATA = "stytch_organization_data"
 internal const val IST_EXPIRATION_TIME = 10 * 60 * 1000L // 10 minutes

@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PasswordsViewModel(application: Application) : AndroidViewModel(application) {
+class PasswordsViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
         get() = _currentResponse
@@ -27,27 +29,28 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
     var newPasswordTextState by mutableStateOf(TextFieldValue(""))
     var tokenTextState by mutableStateOf(TextFieldValue(""))
 
-    val emailIsValid
+    private val emailIsValid
         get() = isValidEmail(emailTextState.text)
 
     var showEmailError by mutableStateOf(false)
-    var showTokenError by mutableStateOf(false)
+    private var showTokenError by mutableStateOf(false)
 
     fun checkPassword() {
         if (emailIsValid) {
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.passwords.strengthCheck(
-                        Passwords.StrengthCheckParameters(
-                            emailTextState.text,
-                            passwordTextState.text,
-                        ),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.passwords.strengthCheck(
+                            Passwords.StrengthCheckParameters(
+                                emailTextState.text,
+                                passwordTextState.text,
+                            ),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -55,19 +58,20 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun authenticate() {
         if (emailIsValid) {
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.passwords.authenticate(
-                        Passwords.AuthParameters(
-                            emailTextState.text,
-                            passwordTextState.text,
-                        ),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.passwords.authenticate(
+                            Passwords.AuthParameters(
+                                emailTextState.text,
+                                passwordTextState.text,
+                            ),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -75,19 +79,20 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun createAccount() {
         if (emailIsValid) {
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.passwords.create(
-                        Passwords.CreateParameters(
-                            emailTextState.text,
-                            passwordTextState.text,
-                        ),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.passwords.create(
+                            Passwords.CreateParameters(
+                                emailTextState.text,
+                                passwordTextState.text,
+                            ),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -95,18 +100,19 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun resetPasswordByEmailStart() {
         if (emailIsValid) {
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.passwords.resetByEmailStart(
-                        Passwords.ResetByEmailStartParameters(
-                            emailTextState.text,
-                        ),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.passwords.resetByEmailStart(
+                            Passwords.ResetByEmailStartParameters(
+                                emailTextState.text,
+                            ),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showEmailError = true
         }
@@ -114,54 +120,58 @@ class PasswordsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun resetPasswordByEmail() {
         if (tokenTextState.text.isNotBlank()) {
-            viewModelScope.launch {
-                _loadingState.value = true
-                val result =
-                    StytchClient.passwords.resetByEmail(
-                        Passwords.ResetByEmailParameters(
-                            tokenTextState.text,
-                            passwordTextState.text,
-                        ),
-                    )
-                _currentResponse.value = result.toFriendlyDisplay()
-            }.invokeOnCompletion {
-                _loadingState.value = false
-            }
+            viewModelScope
+                .launch {
+                    _loadingState.value = true
+                    val result =
+                        StytchClient.passwords.resetByEmail(
+                            Passwords.ResetByEmailParameters(
+                                tokenTextState.text,
+                                passwordTextState.text,
+                            ),
+                        )
+                    _currentResponse.value = result.toFriendlyDisplay()
+                }.invokeOnCompletion {
+                    _loadingState.value = false
+                }
         } else {
             showTokenError = true
         }
     }
 
     fun resetPasswordBySession() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            val result =
-                StytchClient.passwords.resetBySession(
-                    Passwords.ResetBySessionParameters(
-                        passwordTextState.text,
-                        5U,
-                    ),
-                )
-            _currentResponse.value = result.toFriendlyDisplay()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                val result =
+                    StytchClient.passwords.resetBySession(
+                        Passwords.ResetBySessionParameters(
+                            passwordTextState.text,
+                            5,
+                        ),
+                    )
+                _currentResponse.value = result.toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 
     fun resetByExisting() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            _currentResponse.value =
-                StytchClient.passwords.resetByExistingPassword(
-                    Passwords.ResetByExistingPasswordParameters(
-                        email = emailTextState.text,
-                        existingPassword = passwordTextState.text,
-                        newPassword = newPasswordTextState.text,
-                        sessionDurationMinutes = 5U,
-                    ),
-                ).toFriendlyDisplay()
-        }.invokeOnCompletion {
-            _loadingState.value = false
-        }
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                _currentResponse.value =
+                    StytchClient.passwords
+                        .resetByExistingPassword(
+                            Passwords.ResetByExistingPasswordParameters(
+                                email = emailTextState.text,
+                                existingPassword = passwordTextState.text,
+                                newPassword = newPasswordTextState.text,
+                                sessionDurationMinutes = 5,
+                            ),
+                        ).toFriendlyDisplay()
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 }

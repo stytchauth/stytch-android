@@ -14,6 +14,7 @@ import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.network.models.Locale
+import java.util.concurrent.CompletableFuture
 
 /**
  * Single-Sign On (SSO) refers to the ability for a user to use a single identity to authenticate and gain access to
@@ -39,13 +40,15 @@ public interface SSO {
      * finish the login. The URL must be configured as a Sign Up URL in the Redirect URL page. If the field is not
      * specified, the default Sign Up URL will be used.
      */
-    public data class StartParams(
-        val context: Activity,
-        val ssoAuthRequestIdentifier: Int,
-        val connectionId: String,
-        val loginRedirectUrl: String? = null,
-        val signupRedirectUrl: String? = null,
-    )
+    public data class StartParams
+        @JvmOverloads
+        constructor(
+            val context: Activity,
+            val ssoAuthRequestIdentifier: Int,
+            val connectionId: String,
+            val loginRedirectUrl: String? = null,
+            val signupRedirectUrl: String? = null,
+        )
 
     /**
      * Start an SSO authentication flow
@@ -61,11 +64,13 @@ public interface SSO {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
-    public data class AuthenticateParams(
-        val ssoToken: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val locale: Locale? = null,
-    )
+    public data class AuthenticateParams
+        @JvmOverloads
+        constructor(
+            val ssoToken: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val locale: Locale? = null,
+        )
 
     /**
      * Authenticate a user given a token. This endpoint verifies that the user completed the SSO Authentication flow by
@@ -87,6 +92,14 @@ public interface SSO {
     )
 
     /**
+     * Authenticate a user given a token. This endpoint verifies that the user completed the SSO Authentication flow by
+     * verifying that the token is valid and hasn't expired.
+     * @param params required for making an authenticate call
+     * @return [SSOAuthenticateResponse]
+     */
+    public fun authenticateCompletable(params: AuthenticateParams): CompletableFuture<SSOAuthenticateResponse>
+
+    /**
      *  Get all SSO Connections owned by the organization.
      *  This method wraps the {@link https://stytch.com/docs/b2b/api/get-sso-connections Get SSO Connections} API
      *  endpoint.
@@ -103,6 +116,15 @@ public interface SSO {
      *  @param callback a callback that receives a [B2BSSOGetConnectionsResponse]
      */
     public fun getConnections(callback: (B2BSSOGetConnectionsResponse) -> Unit)
+
+    /**
+     *  Get all SSO Connections owned by the organization.
+     *  This method wraps the {@link https://stytch.com/docs/b2b/api/get-sso-connections Get SSO Connections} API
+     *  endpoint.
+     *  The caller must have permission to call this endpoint via the project's RBAC policy & their role assignments.
+     *  @return [B2BSSOGetConnectionsResponse]
+     */
+    public fun getConnectionsCompletable(): CompletableFuture<B2BSSOGetConnectionsResponse>
 
     /**
      * Delete an existing SSO connection.
@@ -122,6 +144,13 @@ public interface SSO {
     )
 
     /**
+     * Delete an existing SSO connection.
+     * @param connectionId The ID of the connection to delete
+     * @return [B2BSSODeleteConnectionResponse]
+     */
+    public fun deleteConnectionCompletable(connectionId: String): CompletableFuture<B2BSSODeleteConnectionResponse>
+
+    /**
      * Exposes an instance of the [SAML] interface
      */
     public val saml: SAML
@@ -139,9 +168,11 @@ public interface SSO {
          * Data class used for wrapping the parameters for a SAML creation request
          * @property displayName A human-readable display name for the connection.
          */
-        public data class CreateParameters(
-            val displayName: String? = null,
-        )
+        public data class CreateParameters
+            @JvmOverloads
+            constructor(
+                val displayName: String? = null,
+            )
 
         /**
          * Create a new SAML Connection.
@@ -159,6 +190,15 @@ public interface SSO {
             parameters: CreateParameters,
             callback: (B2BSSOSAMLCreateConnectionResponse) -> Unit,
         )
+
+        /**
+         * Create a new SAML Connection.
+         * @param parameters The parameters required to create a new SAML connection
+         * @return [B2BSSOSAMLCreateConnectionResponse]
+         */
+        public fun createConnectionCompletable(
+            parameters: CreateParameters,
+        ): CompletableFuture<B2BSSOSAMLCreateConnectionResponse>
 
         /**
          * Data class used for wrapping the parameters for a SAML update request
@@ -179,16 +219,18 @@ public interface SSO {
          * implicit role assignments, you must add a "groups" key to your SAML connection's attribute_mapping. Make sure
          * that your IdP is configured to correctly send the group information.
          */
-        public data class UpdateParameters(
-            val connectionId: String,
-            val idpEntityId: String? = null,
-            val displayName: String? = null,
-            val attributeMapping: Map<String, String>? = null,
-            val idpSsoUrl: String? = null,
-            val x509Certificate: String? = null,
-            val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
-            val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
-        )
+        public data class UpdateParameters
+            @JvmOverloads
+            constructor(
+                val connectionId: String,
+                val idpEntityId: String? = null,
+                val displayName: String? = null,
+                val attributeMapping: Map<String, String>? = null,
+                val idpSsoUrl: String? = null,
+                val x509Certificate: String? = null,
+                val samlConnectionImplicitRoleAssignment: List<ConnectionRoleAssignment>? = null,
+                val samlGroupImplicitRoleAssignment: List<GroupRoleAssignment>? = null,
+            )
 
         /**
          * Update a SAML Connection.
@@ -206,6 +248,15 @@ public interface SSO {
             parameters: UpdateParameters,
             callback: (B2BSSOSAMLUpdateConnectionResponse) -> Unit,
         )
+
+        /**
+         * Update a SAML Connection.
+         * @param parameters The parameters required to update SAML connection
+         * @return [B2BSSOSAMLUpdateConnectionResponse]
+         */
+        public fun updateConnectionCompletable(
+            parameters: UpdateParameters,
+        ): CompletableFuture<B2BSSOSAMLUpdateConnectionResponse>
 
         /**
          * Data class used for wrapping the parameters for a SAML update by URL request
@@ -235,6 +286,15 @@ public interface SSO {
             parameters: UpdateByURLParameters,
             callback: (B2BSSOSAMLUpdateConnectionByURLResponse) -> Unit,
         )
+
+        /**
+         * Update a SAML Connection by URL.
+         * @param parameters The parameters required to update a SAML connection by URL
+         * @return [B2BSSOSAMLUpdateConnectionByURLResponse]
+         */
+        public fun updateConnectionByUrlCompletable(
+            parameters: UpdateByURLParameters,
+        ): CompletableFuture<B2BSSOSAMLUpdateConnectionByURLResponse>
 
         /**
          * Data class used for wrapping the parameters to delete a SAML verification certificate
@@ -268,6 +328,17 @@ public interface SSO {
             parameters: DeleteVerificationCertificateParameters,
             callback: (B2BSSOSAMLDeleteVerificationCertificateResponse) -> Unit,
         )
+
+        /**
+         * Delete a SAML verification certificate.
+         * You may need to do this when rotating certificates from your IdP, since Stytch allows a maximum of 5
+         * certificates per connection. There must always be at least one certificate per active connection.
+         * @param parameters The parameters required to delete a SAML verification certificate.
+         * @return [B2BSSOSAMLDeleteVerificationCertificateResponse]
+         */
+        public fun deleteVerificationCertificateCompletable(
+            parameters: DeleteVerificationCertificateParameters,
+        ): CompletableFuture<B2BSSOSAMLDeleteVerificationCertificateResponse>
     }
 
     /**
@@ -278,9 +349,11 @@ public interface SSO {
          * Data class used for wrapping the parameters for an OIDC creation request
          * @property displayName A human-readable display name for the connection.
          */
-        public data class CreateParameters(
-            val displayName: String? = null,
-        )
+        public data class CreateParameters
+            @JvmOverloads
+            constructor(
+                val displayName: String? = null,
+            )
 
         /**
          * Create a new OIDC Connection.
@@ -300,6 +373,15 @@ public interface SSO {
         )
 
         /**
+         * Create a new OIDC Connection.
+         * @param parameters The parameters required to create a new OIDC connection
+         * @return [B2BSSOOIDCCreateConnectionResponse]
+         */
+        public fun createConnectionCompletable(
+            parameters: CreateParameters,
+        ): CompletableFuture<B2BSSOOIDCCreateConnectionResponse>
+
+        /**
          * Data class used for wrapping the parameters for an OIDC update request
          * @property connectionId Globally unique UUID that identifies a specific OIDC Connection.
          * @property displayName  A human-readable display name for the connection.
@@ -317,17 +399,19 @@ public interface SSO {
          * @property jwksUrl The location of the IdP's JSON Web Key Set, used to verify credentials issued by the IdP.
          * This will be provided by the IdP.
          */
-        public data class UpdateParameters(
-            val connectionId: String,
-            val displayName: String? = null,
-            val issuer: String? = null,
-            val clientId: String? = null,
-            val clientSecret: String? = null,
-            val authorizationUrl: String? = null,
-            val tokenUrl: String? = null,
-            val userInfoUrl: String? = null,
-            val jwksUrl: String? = null,
-        )
+        public data class UpdateParameters
+            @JvmOverloads
+            constructor(
+                val connectionId: String,
+                val displayName: String? = null,
+                val issuer: String? = null,
+                val clientId: String? = null,
+                val clientSecret: String? = null,
+                val authorizationUrl: String? = null,
+                val tokenUrl: String? = null,
+                val userInfoUrl: String? = null,
+                val jwksUrl: String? = null,
+            )
 
         /**
          * Update an OIDC Connection.
@@ -345,5 +429,14 @@ public interface SSO {
             parameters: UpdateParameters,
             callback: (B2BSSOOIDCUpdateConnectionResponse) -> Unit,
         )
+
+        /**
+         * Update an OIDC Connection.
+         * @param parameters The parameters required to update an OIDC connection
+         * @return [B2BSSOOIDCUpdateConnectionResponse]
+         */
+        public fun updateConnectionCompletable(
+            parameters: UpdateParameters,
+        ): CompletableFuture<B2BSSOOIDCUpdateConnectionResponse>
     }
 }

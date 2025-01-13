@@ -21,7 +21,7 @@ public data class StytchUIActivityFailed(
 /**
  * Thrown when there was an error parsing the activity intent
  */
-public object StytchUINoDataFromIntent : StytchUIError(
+public data object StytchUINoDataFromIntent : StytchUIError(
     message = "Failed to retrieve data from intent",
 )
 

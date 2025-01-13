@@ -475,6 +475,55 @@ internal object B2BRequests {
                 val intermediateSessionToken: String? = null,
             )
         }
+
+        object Email {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class LoginOrSignupRequest(
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "email_address")
+                val emailAddress: String,
+                @Json(name = "login_template_id")
+                val loginTemplateId: String? = null,
+                @Json(name = "signup_template_id")
+                val signupTemplateId: String? = null,
+                val locale: Locale? = null,
+            )
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                val code: String,
+                @Json(name = "organization_id")
+                val organizationId: String,
+                @Json(name = "email_address")
+                val emailAddress: String,
+                val locale: Locale? = null,
+                @Json(name = "session_duration_minutes")
+                val sessionDurationMinutes: Int,
+            )
+
+            object Discovery {
+                @Keep
+                @JsonClass(generateAdapter = true)
+                data class SendRequest(
+                    @Json(name = "email_address")
+                    val emailAddress: String,
+                    @Json(name = "login_template_id")
+                    val loginTemplateId: String? = null,
+                    val locale: Locale? = null,
+                )
+
+                @Keep
+                @JsonClass(generateAdapter = true)
+                data class AuthenticateRequest(
+                    val code: String,
+                    @Json(name = "email_address")
+                    val emailAddress: String,
+                )
+            }
+        }
     }
 
     object TOTP {
@@ -567,6 +616,44 @@ internal object B2BRequests {
             val emailAddress: String,
             @Json(name = "organization_id")
             val organizationId: String,
+        )
+    }
+
+    object SCIM {
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMCreateConnection(
+            @Json(name = "display_name")
+            val displayName: String?,
+            @Json(name = "identity_provider")
+            val identityProvider: String?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMUpdateConnection(
+            @Json(name = "connection_id")
+            val connectionId: String,
+            @Json(name = "display_name")
+            val displayName: String?,
+            @Json(name = "identity_provider")
+            val identityProvider: String?,
+            @Json(name = "scim_group_implicit_role_assignments")
+            val scimGroupImplicitRoleAssignments: List<SCIMGroupImplicitRoleAssignment>?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMGetConnectionGroups(
+            val limit: Int?,
+            val cursor: String?,
+        )
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        data class B2BSCIMRotateConnectionRequest(
+            @Json(name = "connection_id")
+            val connectionId: String,
         )
     }
 }

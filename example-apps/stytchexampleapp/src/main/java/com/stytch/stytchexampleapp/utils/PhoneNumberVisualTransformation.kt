@@ -7,6 +7,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import kotlin.math.max
 
 internal class PhoneNumberVisualTransformation(
     countryCode: String,
@@ -62,7 +63,7 @@ internal class PhoneNumberVisualTransformation(
             } else {
                 originalToTransformed.add(index)
             }
-            transformedToOriginal.add(index - specialCharsCount)
+            transformedToOriginal.add(max(index - specialCharsCount, 0))
         }
         originalToTransformed.add(originalToTransformed.maxOrNull()?.plus(1) ?: 0)
         transformedToOriginal.add(transformedToOriginal.maxOrNull()?.plus(1) ?: 0)

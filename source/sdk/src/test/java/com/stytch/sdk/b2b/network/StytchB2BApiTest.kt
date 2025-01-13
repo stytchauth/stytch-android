@@ -27,7 +27,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -92,7 +92,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi MagicLinks Email loginOrCreate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.loginOrSignupByEmail(any()) } returns mockk(relaxed = true)
             StytchB2BApi.MagicLinks.Email.loginOrSignupByEmail("", "", "", "", "", "", "", null)
@@ -101,16 +101,16 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi MagicLinks Email authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticate(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.MagicLinks.Email.authenticate("", 30U, "")
+            StytchB2BApi.MagicLinks.Email.authenticate("", 30, "")
             coVerify { StytchB2BApi.apiService.authenticate(any()) }
         }
 
     @Test
     fun `StytchB2BApi MagicLinks Email invite calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.sendInviteMagicLink(any()) } returns mockk(relaxed = true)
             StytchB2BApi.MagicLinks.Email.invite("email@address.com")
@@ -119,7 +119,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi MagicLinks Discovery send calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.sendDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
             StytchB2BApi.MagicLinks.Discovery.send("", "", "", "", Locale.EN)
@@ -128,7 +128,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi MagicLinks Discovery authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticateDiscoveryMagicLink(any()) } returns mockk(relaxed = true)
             StytchB2BApi.MagicLinks.Discovery.authenticate("", "")
@@ -137,16 +137,16 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Sessions authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticateSessions(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Sessions.authenticate(30U)
+            StytchB2BApi.Sessions.authenticate(30)
             coVerify { StytchB2BApi.apiService.authenticateSessions(any()) }
         }
 
     @Test
     fun `StytchB2BApi Sessions revoke calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.revokeSessions() } returns mockk(relaxed = true)
             StytchB2BApi.Sessions.revoke()
@@ -155,16 +155,16 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Sessions exchange calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.exchangeSession(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Sessions.exchange(organizationId = "test-123", sessionDurationMinutes = 30U)
+            StytchB2BApi.Sessions.exchange(organizationId = "test-123", sessionDurationMinutes = 30)
             coVerify { StytchB2BApi.apiService.exchangeSession(any()) }
         }
 
     @Test
     fun `StytchB2BApi Organizations getOrganization calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.getOrganization() } returns mockk(relaxed = true)
             StytchB2BApi.Organization.getOrganization()
@@ -173,7 +173,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organizations update calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.updateOrganization(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Organization.updateOrganization()
@@ -182,7 +182,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organizations delete calls appropriate apiService method()`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deleteOrganization() } returns mockk(relaxed = true)
             StytchB2BApi.Organization.deleteOrganization()
@@ -191,7 +191,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organizations member delete calls appropriate apiService method()`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deleteOrganizationMember(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Organization.deleteOrganizationMember("my-member-id")
@@ -200,7 +200,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organizations member reactivate calls appropriate apiService method()`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.reactivateOrganizationMember(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Organization.reactivateOrganizationMember("my-member-id")
@@ -209,7 +209,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization deleteOrganizationMemberMFAPhoneNumber calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery {
                 StytchB2BApi.apiService.deleteOrganizationMemberMFAPhoneNumber(
@@ -222,7 +222,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization deleteOrganizationMemberMFATOTP calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deleteOrganizationMemberMFATOTP(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Organization.deleteOrganizationMemberMFATOTP("my-member-id")
@@ -231,7 +231,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization deleteOrganizationMemberPassword calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery {
                 StytchB2BApi.apiService.deleteOrganizationMemberPassword(
@@ -244,7 +244,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization createOrganizationMember calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.createMember(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Organization.createOrganizationMember(
@@ -262,7 +262,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization updateOrganizationMember calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery {
                 StytchB2BApi.apiService.updateOrganizationMember(
@@ -287,7 +287,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Organization searchMembers calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery {
                 StytchB2BApi.apiService.searchMembers(any())
@@ -298,7 +298,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Member get calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.getMember() } returns mockk(relaxed = true)
             StytchB2BApi.Member.getMember()
@@ -307,7 +307,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Member update calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.updateMember(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Member.updateMember("", emptyMap(), false, "", MfaMethod.SMS)
@@ -316,7 +316,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Member deleteMFAPhoneNumber calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deleteMFAPhoneNumber() } returns mockk(relaxed = true)
             StytchB2BApi.Member.deleteMFAPhoneNumber()
@@ -325,7 +325,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Member deleteMFATOTP calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deleteMFATOTP() } returns mockk(relaxed = true)
             StytchB2BApi.Member.deleteMFATOTP()
@@ -334,7 +334,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Member deletePassword calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.deletePassword("passwordId") } returns mockk(relaxed = true)
             StytchB2BApi.Member.deletePassword("passwordId")
@@ -343,7 +343,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticatePassword(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.authenticate("", "", "")
@@ -352,7 +352,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords resetByEmailStart calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.resetPasswordByEmailStart(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.resetByEmailStart(
@@ -369,7 +369,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords resetByEmail calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.resetPasswordByEmail(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.resetByEmail(passwordResetToken = "", password = "", codeVerifier = "")
@@ -378,7 +378,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords resetByExisting calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.resetPasswordByExisting(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.resetByExisting(
@@ -392,7 +392,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords resetBySession calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.resetPasswordBySession(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.resetBySession(organizationId = "", password = "")
@@ -401,7 +401,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Passwords strengthCheck calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.passwordStrengthCheck(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.strengthCheck(email = "", password = "")
@@ -410,7 +410,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Discovery discoverOrganizations calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.discoverOrganizations(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Discovery.discoverOrganizations(null)
@@ -419,20 +419,20 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Discovery exchangeSession calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.intermediateSessionExchange(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Discovery.exchangeSession(
                 intermediateSessionToken = "",
                 organizationId = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
             )
             coVerify { StytchB2BApi.apiService.intermediateSessionExchange(any()) }
         }
 
     @Test
     fun `StytchB2BApi Discovery createOrganization calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.createOrganization(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Discovery.createOrganization(
@@ -440,7 +440,7 @@ internal class StytchB2BApiTest {
                 organizationLogoUrl = "",
                 organizationSlug = "",
                 organizationName = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
                 ssoJitProvisioning = SsoJitProvisioning.ALL_ALLOWED,
                 emailJitProvisioning = EmailJitProvisioning.RESTRICTED,
                 emailInvites = EmailInvites.ALL_ALLOWED,
@@ -467,12 +467,12 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoAuthenticate(any()) } returns mockk(relaxed = true)
             StytchB2BApi.SSO.authenticate(
                 ssoToken = "",
-                sessionDurationMinutes = 30U,
+                sessionDurationMinutes = 30,
                 codeVerifier = "",
             )
             coVerify { StytchB2BApi.apiService.ssoAuthenticate(any()) }
@@ -480,7 +480,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO getConnections calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoGetConnections() } returns mockk(relaxed = true)
             StytchB2BApi.SSO.getConnections()
@@ -489,7 +489,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO deleteConnection calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoDeleteConnection(any()) } returns mockk(relaxed = true)
             val connectionId = "my-connection-id"
@@ -499,7 +499,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO SAML createConnection calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoSamlCreate(any()) } returns mockk(relaxed = true)
             val displayName = "my cool saml connection"
@@ -513,7 +513,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO SAML updateConnection calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoSamlUpdate(any(), any()) } returns mockk(relaxed = true)
             val connectionId = "my-connection-id"
@@ -525,7 +525,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO SAML updateConnectionByUrl calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoSamlUpdateByUrl(any(), any()) } returns mockk(relaxed = true)
             val connectionId = "my-connection-id"
@@ -538,7 +538,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO SAML samlDeleteVerificationCertificate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery {
                 StytchB2BApi.apiService.ssoSamlDeleteVerificationCertificate(
@@ -562,7 +562,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO OIDC createConnection calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoOidcCreate(any()) } returns mockk(relaxed = true)
             val displayName = "my cool oidc connection"
@@ -576,7 +576,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SSO OIDC updateConnection calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.ssoOidcUpdate(any(), any()) } returns mockk(relaxed = true)
             val connectionId = "my-cool-oidc-connection"
@@ -591,7 +591,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Bootstrap getBootstrapData calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             every { StytchB2BApi.publicToken } returns "mock-public-token"
             coEvery { StytchB2BApi.apiService.getBootstrapData("mock-public-token") } returns mockk(relaxed = true)
@@ -601,7 +601,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi Events logEvent calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             every { StytchB2BApi.publicToken } returns "mock-public-token"
             coEvery { StytchB2BApi.apiService.logEvent(any()) } returns mockk(relaxed = true)
@@ -663,7 +663,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi OTP sendSMSOTP calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.sendSMSOTP(any()) } returns mockk(relaxed = true)
             StytchB2BApi.OTP.sendSMSOTP("", "")
@@ -672,7 +672,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi OTP authenticateSMSOTP calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticateSMSOTP(any()) } returns mockk(relaxed = true)
             StytchB2BApi.OTP.authenticateSMSOTP("", "", "", null, 30)
@@ -681,7 +681,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi TOTP create calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.createTOTP(any()) } returns mockk(relaxed = true)
             StytchB2BApi.TOTP.create("", "")
@@ -690,7 +690,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi TOTP authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.authenticateTOTP(any()) } returns mockk(relaxed = true)
             StytchB2BApi.TOTP.authenticate("", "", "", null, null, 30)
@@ -699,7 +699,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi RecoveryCodes get calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.getRecoveryCodes() } returns mockk(relaxed = true)
             StytchB2BApi.RecoveryCodes.get()
@@ -708,7 +708,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi RecoveryCodes rotate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.rotateRecoveryCodes() } returns mockk(relaxed = true)
             StytchB2BApi.RecoveryCodes.rotate()
@@ -717,7 +717,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi RecoveryCodes recover calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.recoverRecoveryCodes(any()) } returns mockk(relaxed = true)
             StytchB2BApi.RecoveryCodes.recover("", "", 30, "")
@@ -726,7 +726,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi OAuth authenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.oauthAuthenticate(any()) } returns mockk(relaxed = true)
             StytchB2BApi.OAuth.authenticate("", Locale.EN, 30, "", "")
@@ -735,7 +735,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi OAuth discoveryAuthenticate calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.oauthDiscoveryAuthenticate(any()) } returns mockk(relaxed = true)
             StytchB2BApi.OAuth.discoveryAuthenticate("", "")
@@ -744,7 +744,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SearchManager searchOrganizations calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.searchOrganizations(any()) } returns mockk(relaxed = true)
             StytchB2BApi.SearchManager.searchOrganizations("organization-slug")
@@ -753,16 +753,124 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi SearchManager searchOrganizationMembers calls appropriate apiService method`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.searchOrganizationMembers(any()) } returns mockk(relaxed = true)
             StytchB2BApi.SearchManager.searchMembers("email@example.com", "organization-id")
             coVerify { StytchB2BApi.apiService.searchOrganizationMembers(any()) }
         }
 
+    @Test
+    fun `StytchB2BApi SCIM createConnection calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimCreateConnection(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.createConnection("", "")
+            coVerify { StytchB2BApi.apiService.scimCreateConnection(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM updateConnection calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimUpdateConnection(any(), any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.updateConnection("connection-id", "", "", emptyList())
+            coVerify { StytchB2BApi.apiService.scimUpdateConnection(eq("connection-id"), any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM deleteConection calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimDeleteConnection(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.deleteConection("connection-id")
+            coVerify { StytchB2BApi.apiService.scimDeleteConnection(eq("connection-id")) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM getConnection calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimGetConnection() } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.getConnection()
+            coVerify { StytchB2BApi.apiService.scimGetConnection() }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM getConnectionGroups calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimGetConnectionGroups(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.getConnectionGroups("", 1000)
+            coVerify { StytchB2BApi.apiService.scimGetConnectionGroups(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateStart calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateStart(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateStart("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateStart(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateCancel calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateCancel(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateCancel("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateCancel(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi SCIM rotateComplete calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.scimRotateComplete(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.SCIM.rotateComplete("connection-id")
+            coVerify { StytchB2BApi.apiService.scimRotateComplete(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailLoginOrSignup calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailLoginOrSignup(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailLoginOrSignup("", "", null, null, null)
+            coVerify { StytchB2BApi.apiService.otpEmailLoginOrSignup(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailAuthenticate calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailAuthenticate("", "", "", null, 30)
+            coVerify { StytchB2BApi.apiService.otpEmailAuthenticate(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailDiscoverySend calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailDiscoverySend(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailDiscoverySend("", null, null)
+            coVerify { StytchB2BApi.apiService.otpEmailDiscoverySend(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi OTP Email otpEmailDiscoveryAuthenticate calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.otpEmailDiscoveryAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.OTP.otpEmailDiscoveryAuthenticate("", "")
+            coVerify { StytchB2BApi.apiService.otpEmailDiscoveryAuthenticate(any()) }
+        }
+
     @Test(expected = StytchSDKNotConfiguredError::class)
-    fun `safeApiCall throws exception when StytchB2BClient is not initialized`() =
-        runTest {
+    fun `safeApiCall throws exception when StytchB2BClient is not initialized`(): Unit =
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns false
             val mockApiCall: suspend () -> StytchDataResponse<Boolean> = mockk()
             StytchB2BApi.safeB2BApiCall { mockApiCall() }
@@ -770,7 +878,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `safeApiCall returns success when call succeeds`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
 
             fun mockApiCall(): StytchDataResponse<Boolean> = StytchDataResponse(true)
@@ -780,7 +888,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `safeApiCall returns correct error for HttpException`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
 
             fun mockApiCall(): StytchDataResponse<Boolean> =
@@ -795,17 +903,18 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `safeApiCall returns correct error for StytchErrors`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
 
-            fun mockApiCall(): StytchDataResponse<Boolean> = throw StytchAPIError(errorType = "", message = "")
+            fun mockApiCall(): StytchDataResponse<Boolean> =
+                throw StytchAPIError(errorType = "", message = "", statusCode = 400)
             val result = StytchB2BApi.safeB2BApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
 
     @Test
     fun `safeApiCall returns correct error for other exceptions`() =
-        runTest {
+        runBlocking {
             every { StytchB2BApi.isInitialized } returns true
 
             fun mockApiCall(): StytchDataResponse<Boolean> {

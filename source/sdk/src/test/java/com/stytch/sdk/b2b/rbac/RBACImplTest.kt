@@ -23,12 +23,13 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
+import java.util.Date
 
 private val MOCK_RBAC_POLICY =
     RBACPolicy(
@@ -107,6 +108,7 @@ internal class RBACImplTest {
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StytchB2BClient)
         MockKAnnotations.init(this, true, true)
+        every { mockB2BSessionStorage.lastValidatedAt } returns Date(0)
         coEvery { StytchB2BClient.refreshBootstrapData() } just runs
         impl =
             RBACImpl(
@@ -135,7 +137,7 @@ internal class RBACImplTest {
 
     @Test
     fun `allPermissions refreshes bootstrap data`() =
-        runTest {
+        runBlocking {
             mockLoggedOutMember()
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             impl.allPermissions()
@@ -144,7 +146,7 @@ internal class RBACImplTest {
 
     @Test
     fun `allPermissions Calculates permissions for a logged-out member`() =
-        runTest {
+        runBlocking {
             mockLoggedOutMember()
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             val allPerms = impl.allPermissions()
@@ -163,7 +165,7 @@ internal class RBACImplTest {
 
     @Test
     fun `allPermissions Calculates permissions for a default member`() =
-        runTest {
+        runBlocking {
             mockMemberWithRoles(listOf("default"))
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             val allPerms = impl.allPermissions()
@@ -182,7 +184,7 @@ internal class RBACImplTest {
 
     @Test
     fun `allPermissions Calculates permissions for an admin member`() =
-        runTest {
+        runBlocking {
             mockMemberWithRoles(listOf("organization_admin"))
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             val allPerms = impl.allPermissions()
@@ -210,7 +212,7 @@ internal class RBACImplTest {
 
     @Test
     fun `isAuthorizedSync uses cached data and does not update bootstrap`() =
-        runTest {
+        runBlocking {
             mockMemberWithRoles(listOf("default"))
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY_WITHOUT_DEFAULT_ROLE
             val isAuthorized = impl.isAuthorizedSync("documents", "read")
@@ -247,7 +249,7 @@ internal class RBACImplTest {
 
     @Test
     fun `isAuthorized always refreshes the bootstrap data`() =
-        runTest {
+        runBlocking {
             mockLoggedOutMember()
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             impl.isAuthorized("documents", "read")
@@ -256,7 +258,7 @@ internal class RBACImplTest {
 
     @Test
     fun `isAuthorized Calculates permissions for a logged-out member`() =
-        runTest {
+        runBlocking {
             mockLoggedOutMember()
             val isAuthorized = impl.isAuthorized("documents", "read")
             assert(!isAuthorized)
@@ -264,7 +266,7 @@ internal class RBACImplTest {
 
     @Test
     fun `isAuthorized Calculates permissions for a default member`() =
-        runTest {
+        runBlocking {
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             mockMemberWithRoles(listOf("default"))
             val isAuthorizedToRead = impl.isAuthorized("documents", "read")
@@ -275,7 +277,7 @@ internal class RBACImplTest {
 
     @Test
     fun `isAuthorized Calculates permissions for an admin member`() =
-        runTest {
+        runBlocking {
             every { StytchB2BClient.bootstrapData.rbacPolicy } returns MOCK_RBAC_POLICY
             mockMemberWithRoles(listOf("organization_admin"))
             val isAuthorizedToRead = impl.isAuthorized("documents", "read")

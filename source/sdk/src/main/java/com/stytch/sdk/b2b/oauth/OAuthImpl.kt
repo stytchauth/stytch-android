@@ -15,8 +15,11 @@ import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -27,21 +30,24 @@ internal class OAuthImpl(
 ) : OAuth {
     override val google: OAuth.Provider = ProviderImpl("google")
     override val microsoft: OAuth.Provider = ProviderImpl("microsoft")
+    override val hubspot: OAuth.Provider = ProviderImpl("hubspot")
+    override val slack: OAuth.Provider = ProviderImpl("slack")
+    override val github: OAuth.Provider = ProviderImpl("github")
     override val discovery: OAuth.Discovery = DiscoveryImpl()
 
-    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse =
-        withContext(dispatchers.io) {
-            val pkce =
-                pkcePairManager.getPKCECodePair()?.codeVerifier
-                    ?: run {
-                        StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
-                        return@withContext StytchResult.Error(StytchMissingPKCEError(null))
-                    }
+    override suspend fun authenticate(parameters: OAuth.AuthenticateParameters): OAuthAuthenticateResponse {
+        val pkce =
+            pkcePairManager.getPKCECodePair()?.codeVerifier
+                ?: run {
+                    StytchB2BClient.events.logEvent("b2b_oauth_failure", null, StytchMissingPKCEError(null))
+                    return StytchResult.Error(StytchMissingPKCEError(null))
+                }
+        return withContext(dispatchers.io) {
             api
                 .authenticate(
                     oauthToken = parameters.oauthToken,
                     locale = parameters.locale,
-                    sessionDurationMinutes = parameters.sessionDurationMinutes.toInt(),
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
                     pkceCodeVerifier = pkce,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
@@ -58,6 +64,7 @@ internal class OAuthImpl(
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
+    }
 
     override fun authenticate(
         parameters: OAuth.AuthenticateParameters,
@@ -67,6 +74,14 @@ internal class OAuthImpl(
             callback(authenticate(parameters))
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: OAuth.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticateResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 
     private inner class ProviderImpl(
         private val providerName: String,
@@ -142,7 +157,10 @@ internal class OAuthImpl(
                     ).apply {
                         pkcePairManager.clearPKCECodePair()
                         when (this) {
-                            is StytchResult.Success -> StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                            is StytchResult.Success -> {
+                                StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
+                                sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                            }
                             is StytchResult.Error ->
                                 StytchB2BClient.events.logEvent(
                                     "b2b_discovery_oauth_failure",
@@ -161,5 +179,13 @@ internal class OAuthImpl(
                 callback(authenticate(parameters))
             }
         }
+
+        override fun authenticateCompletable(
+            parameters: OAuth.Discovery.DiscoveryAuthenticateParameters,
+        ): CompletableFuture<OAuthDiscoveryAuthenticateResponse> =
+            externalScope
+                .async {
+                    authenticate(parameters)
+                }.asCompletableFuture()
     }
 }

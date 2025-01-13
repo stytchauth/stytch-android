@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.organization
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import com.stytch.sdk.b2b.CreateMemberResponse
 import com.stytch.sdk.b2b.DeleteMemberResponse
 import com.stytch.sdk.b2b.DeleteOrganizationMemberAuthenticationFactorResponse
@@ -18,6 +20,9 @@ import com.stytch.sdk.b2b.network.models.OrganizationResponseData
 import com.stytch.sdk.b2b.network.models.OrganizationUpdateResponseData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
+import com.stytch.sdk.common.PREFERENCES_NAME_ORGANIZATION_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -36,8 +41,8 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -46,6 +51,12 @@ import java.security.KeyStore
 internal class OrganizationImplTest {
     @MockK
     private lateinit var mockApi: StytchB2BApi.Organization
+
+    @MockK
+    private lateinit var mockSharedPreferences: SharedPreferences
+
+    @MockK
+    private lateinit var mockSharedPreferencesEditor: Editor
 
     private lateinit var spiedSessionStorage: B2BSessionStorage
 
@@ -56,12 +67,19 @@ internal class OrganizationImplTest {
 
     @Before
     fun before() {
-        MockKAnnotations.init(this, true, true)
         mockkStatic(KeyStore::class)
+        mockkObject(EncryptionManager)
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.encryptString(any()) } returns ""
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
-        mockkObject(StorageHelper)
-        every { StorageHelper.saveValue(any(), any()) } just runs
-        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper, TestScope()), recordPrivateCalls = true)
+        MockKAnnotations.init(this, true, true)
+        every { mockSharedPreferences.edit() } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
+        every { mockSharedPreferences.getLong(any(), any()) } returns 0
+        every { mockSharedPreferencesEditor.apply() } just runs
+        StorageHelper.sharedPreferences = mockSharedPreferences
+        spiedSessionStorage = spyk(B2BSessionStorage(StorageHelper), recordPrivateCalls = true)
         impl =
             OrganizationImpl(
                 externalScope = TestScope(),
@@ -79,12 +97,15 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organizations getOrganization delegates to api and caches the organization`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.getOrganization() } returns successfulOrgResponse
+            every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+            every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
             val response = impl.get()
             assert(response is StytchResult.Success)
             coVerify { mockApi.getOrganization() }
-            assert(spiedSessionStorage.organization == successfulOrgResponse.value.organization)
+            verify { mockSharedPreferencesEditor.putString(PREFERENCES_NAME_ORGANIZATION_DATA, any()) }
+            verify { mockSharedPreferencesEditor.putLong(PREFERENCES_NAME_LAST_VALIDATED_AT, any()) }
         }
 
     @Test
@@ -106,7 +127,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organizations update delegates to api and caches the updated organization`() =
-        runTest {
+        runBlocking {
             val mockResponse = StytchResult.Success<OrganizationUpdateResponseData>(mockk(relaxed = true))
             coEvery {
                 mockApi.updateOrganization(
@@ -127,10 +148,13 @@ internal class OrganizationImplTest {
                     any(),
                 )
             } returns mockResponse
+            every { mockSharedPreferencesEditor.putString(any(), any()) } returns mockSharedPreferencesEditor
+            every { mockSharedPreferencesEditor.putLong(any(), any()) } returns mockSharedPreferencesEditor
             val response = impl.update(Organization.UpdateOrganizationParameters())
             assert(response is StytchResult.Success)
             coVerify { mockApi.updateOrganization() }
-            assert(spiedSessionStorage.organization == mockResponse.value.organization)
+            verify { mockSharedPreferencesEditor.putString(PREFERENCES_NAME_ORGANIZATION_DATA, any()) }
+            verify { mockSharedPreferencesEditor.putLong(PREFERENCES_NAME_LAST_VALIDATED_AT, any()) }
         }
 
     @Test
@@ -161,7 +185,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organizations delete delegates to api and clears all cached data`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.deleteOrganization() } returns successfulDeleteResponse
             val response = impl.delete()
             assert(response is StytchResult.Success)
@@ -183,7 +207,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization member delete delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.deleteOrganizationMember(any()) } returns mockk(relaxed = true)
             impl.members.delete("my-member-id")
             coVerify { mockApi.deleteOrganizationMember("my-member-id") }
@@ -199,7 +223,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization member reactivate delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.reactivateOrganizationMember(any()) } returns mockk(relaxed = true)
             impl.members.reactivate("my-member-id")
             coVerify { mockApi.reactivateOrganizationMember("my-member-id") }
@@ -227,7 +251,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization Member deleteFactor delegates to api for all supported factors`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockApi.deleteOrganizationMemberMFAPhoneNumber(
                     any(),
@@ -255,7 +279,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization member create delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockApi.createOrganizationMember(any(), any(), any(), any(), any(), any(), any(), any())
             } returns mockk(relaxed = true)
@@ -295,7 +319,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization member update delegates to api`() =
-        runTest {
+        runBlocking {
             coEvery {
                 mockApi.updateOrganizationMember(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
             } returns mockk(relaxed = true)
@@ -339,7 +363,7 @@ internal class OrganizationImplTest {
 
     @Test
     fun `Organization member search creates the expected operand values`() =
-        runTest {
+        runBlocking {
             coEvery { mockApi.search(any(), any(), any()) } returns mockk(relaxed = true)
             val memberIdsOperand =
                 Organization.OrganizationMembers.SearchQueryOperand.MemberIds(

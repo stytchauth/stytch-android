@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Discovery interface provides methods for discovering a member's available organizations, creating organizations,
@@ -43,14 +44,22 @@ public interface Discovery {
     public fun listOrganizations(callback: (DiscoverOrganizationsResponse) -> Unit)
 
     /**
+     * Discover a member's available organizations
+     * @return [DiscoverOrganizationsResponse]
+     */
+    public fun listOrganizationsCompletable(): CompletableFuture<DiscoverOrganizationsResponse>
+
+    /**
      * Data class used for wrapping parameters used with exchanging sessions between organizations.
      * @property organizationId is the organization ID of the desired organization
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
-    public data class SessionExchangeParameters(
-        val organizationId: String,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-    )
+    public data class SessionExchangeParameters
+        @JvmOverloads
+        constructor(
+            val organizationId: String,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        )
 
     /**
      * Exchange an Intermediate Session for a fully realized Member Session in a desired Organization. This operation
@@ -74,6 +83,17 @@ public interface Discovery {
         parameters: SessionExchangeParameters,
         callback: (IntermediateSessionExchangeResponse) -> Unit,
     )
+
+    /**
+     * Exchange an Intermediate Session for a fully realized Member Session in a desired Organization. This operation
+     * consumes the Intermediate Session. This endpoint can be used to accept invites and create new members via domain
+     * matching.
+     * @param parameters required for exchanging a session between organizations
+     * @return [IntermediateSessionExchangeResponse]
+     */
+    public fun exchangeIntermediateSessionCompletable(
+        parameters: SessionExchangeParameters,
+    ): CompletableFuture<IntermediateSessionExchangeResponse>
 
     /**
      * A data class used for wrapping parameters used with creating organizations
@@ -109,18 +129,20 @@ public interface Discovery {
      * @property allowedAuthMethods An array of allowed authentication methods. This list is enforced when auth_methods
      * is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .
      */
-    public data class CreateOrganizationParameters(
-        val organizationName: String? = null,
-        val organizationSlug: String? = null,
-        val organizationLogoUrl: String? = null,
-        val sessionDurationMinutes: UInt = DEFAULT_SESSION_TIME_MINUTES,
-        val ssoJitProvisioning: SsoJitProvisioning? = null,
-        val emailAllowedDomains: List<String>? = null,
-        val emailJitProvisioning: EmailJitProvisioning? = null,
-        val emailInvites: EmailInvites? = null,
-        val authMethods: AuthMethods? = null,
-        val allowedAuthMethods: List<AllowedAuthMethods>? = null,
-    )
+    public data class CreateOrganizationParameters
+        @JvmOverloads
+        constructor(
+            val organizationName: String? = null,
+            val organizationSlug: String? = null,
+            val organizationLogoUrl: String? = null,
+            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val ssoJitProvisioning: SsoJitProvisioning? = null,
+            val emailAllowedDomains: List<String>? = null,
+            val emailJitProvisioning: EmailJitProvisioning? = null,
+            val emailInvites: EmailInvites? = null,
+            val authMethods: AuthMethods? = null,
+            val allowedAuthMethods: List<AllowedAuthMethods>? = null,
+        )
 
     /**
      * Create a new organization. If an end user does not want to join any already-existing organization, or has no
@@ -144,4 +166,16 @@ public interface Discovery {
         parameters: CreateOrganizationParameters,
         callback: (OrganizationCreateResponse) -> Unit,
     )
+
+    /**
+     * Create a new organization. If an end user does not want to join any already-existing organization, or has no
+     * possible organizations to join, this endpoint can be used to create a new Organization and Member. This operation
+     * consumes the Intermediate Session. This endpoint can also be used to start an initial session for the newly
+     * created member and organization.
+     * @param parameters required for creating an organization
+     * @return [OrganizationCreateResponse]
+     */
+    public fun createOrganizationCompletable(
+        parameters: CreateOrganizationParameters,
+    ): CompletableFuture<OrganizationCreateResponse>
 }

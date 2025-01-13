@@ -5,7 +5,9 @@ import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.common.StytchObjectInfo
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.CompletableFuture
 
 /**
  * The Member interface provides methods for retrieving and updating the current authenticated member.
@@ -14,13 +16,13 @@ public interface Member {
     /**
      * Exposes a flow of member data
      */
-    public val onChange: StateFlow<MemberData?>
+    public val onChange: StateFlow<StytchObjectInfo<MemberData>>
 
     /**
      * Assign a callback that will be called when the member data changes
      */
 
-    public fun onChange(callback: (MemberData?) -> Unit)
+    public fun onChange(callback: (StytchObjectInfo<MemberData>) -> Unit)
 
     /**
      * Wraps Stytch’s organization/members/me endpoint.
@@ -33,6 +35,12 @@ public interface Member {
      * @param callback a callback that receives a [MemberResponse]
      */
     public fun get(callback: (MemberResponse) -> Unit)
+
+    /**
+     * Wraps Stytch’s organization/members/me endpoint.
+     * @return [MemberResponse]
+     */
+    public fun getCompletable(): CompletableFuture<MemberResponse>
 
     /**
      * Get member from memory without network call
@@ -53,13 +61,15 @@ public interface Member {
      *  1. Which MFA method the Member is prompted to use when logging in
      *  2. Whether An SMS will be sent automatically after completing the first leg of authentication
      */
-    public data class UpdateParams(
-        val name: String? = null,
-        val untrustedMetadata: Map<String, Any>? = null,
-        val mfaEnrolled: Boolean? = null,
-        val mfaPhoneNumber: String? = null,
-        val defaultMfaMethod: MfaMethod? = null,
-    )
+    public data class UpdateParams
+        @JvmOverloads
+        constructor(
+            val name: String? = null,
+            val untrustedMetadata: Map<String, Any>? = null,
+            val mfaEnrolled: Boolean? = null,
+            val mfaPhoneNumber: String? = null,
+            val defaultMfaMethod: MfaMethod? = null,
+        )
 
     /**
      * Updates the currently authenticated member
@@ -79,6 +89,13 @@ public interface Member {
     )
 
     /**
+     * Updates the currently authenticated member
+     * @param params required to update the member
+     * @return [UpdateMemberResponse]
+     */
+    public fun updateCompletable(params: UpdateParams): CompletableFuture<UpdateMemberResponse>
+
+    /**
      * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
      * @return [DeleteMemberAuthenticationFactorResponse]
      */
@@ -92,4 +109,12 @@ public interface Member {
         factor: MemberAuthenticationFactor,
         callback: (DeleteMemberAuthenticationFactorResponse) -> Unit,
     )
+
+    /**
+     * Deletes a [MemberAuthenticationFactor] from the currently authenticated member
+     * @return [DeleteMemberAuthenticationFactorResponse]
+     */
+    public fun deleteFactorCompletable(
+        factor: MemberAuthenticationFactor,
+    ): CompletableFuture<DeleteMemberAuthenticationFactorResponse>
 }

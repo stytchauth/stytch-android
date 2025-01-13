@@ -10,8 +10,11 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -57,18 +60,19 @@ internal class OAuthImpl(
                         StytchClient.events.logEvent("oauth_failure", null, StytchMissingPKCEError(null))
                         return@withContext StytchResult.Error(StytchMissingPKCEError(null))
                     }
-            api.authenticateWithThirdPartyToken(
-                token = parameters.token,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                codeVerifier = pkce,
-            ).apply {
-                pkcePairManager.clearPKCECodePair()
-                when (this) {
-                    is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
-                    is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
+            api
+                .authenticateWithThirdPartyToken(
+                    token = parameters.token,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    codeVerifier = pkce,
+                ).apply {
+                    pkcePairManager.clearPKCECodePair()
+                    when (this) {
+                        is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
+                        is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
+                    }
+                    launchSessionUpdater(dispatchers, sessionStorage)
                 }
-                launchSessionUpdater(dispatchers, sessionStorage)
-            }
         }
     }
 
@@ -81,4 +85,12 @@ internal class OAuthImpl(
             callback(result)
         }
     }
+
+    override fun authenticateCompletable(
+        parameters: OAuth.ThirdParty.AuthenticateParameters,
+    ): CompletableFuture<OAuthAuthenticatedResponse> =
+        externalScope
+            .async {
+                authenticate(parameters)
+            }.asCompletableFuture()
 }

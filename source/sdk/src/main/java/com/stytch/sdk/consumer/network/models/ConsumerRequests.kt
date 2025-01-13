@@ -15,6 +15,8 @@ internal object ConsumerRequests {
                 val email: String,
                 @Json(name = "login_magic_link_url")
                 val loginMagicLinkUrl: String?,
+                @Json(name = "signup_magic_link_url")
+                val signupMagicLinkUrl: String?,
                 @Json(name = "code_challenge")
                 val codeChallenge: String,
                 @Json(name = "login_template_id")
