@@ -1,7 +1,8 @@
 package com.stytch.sdk.ui.b2b.usecases
+
 import com.stytch.sdk.b2b.StytchB2BClient
-import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
-import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.b2b.network.models.B2BOTPsEmailLoginOrSignupResponseData
+import com.stytch.sdk.b2b.otp.OTP
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -13,25 +14,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-internal class UseMagicLinksDiscoverySend(
+internal class UseEmailOTPLoginOrSignup(
     private val scope: CoroutineScope,
-    private val productConfig: StytchB2BProductConfig,
     private val state: StateFlow<B2BUIState>,
     private val dispatch: Dispatch,
-    private val request: PerformRequest<BasicData>,
+    private val productConfig: StytchB2BProductConfig,
+    private val request: PerformRequest<B2BOTPsEmailLoginOrSignupResponseData>,
 ) {
     operator fun invoke() {
+        val orgId =
+            state.value.mfaPrimaryInfoState?.organizationId
+                ?: state.value.activeOrganization?.organizationId
+                ?: return
         scope.launch(Dispatchers.IO) {
             request {
-                StytchB2BClient.magicLinks.email.discoverySend(
-                    B2BMagicLinks.EmailMagicLinks.DiscoverySendParameters(
+                StytchB2BClient.otp.email.loginOrSignup(
+                    OTP.Email.LoginOrSignupParameters(
                         emailAddress = state.value.emailState.emailAddress,
-                        discoveryRedirectUrl = getRedirectUrl(),
+                        organizationId = orgId,
                         loginTemplateId = productConfig.emailMagicLinksOptions.loginTemplateId,
+                        signupTemplateId = productConfig.emailMagicLinksOptions.signupTemplateId,
                     ),
                 )
             }.onSuccess {
-                dispatch(SetNextRoute(Routes.EmailConfirmation))
+                dispatch(SetNextRoute(Routes.EmailOTPEntry))
             }
         }
     }

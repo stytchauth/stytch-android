@@ -6,7 +6,6 @@ import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.common.DeeplinkTokenPair
-import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.data.EmailState
@@ -18,7 +17,6 @@ import kotlinx.parcelize.Parcelize
 internal data class B2BUIState(
     val currentRoute: Route? = null,
     val isLoading: Boolean = false,
-    val stytchError: StytchError? = null,
     val errorToastText: String? = null,
     val emailState: EmailState = EmailState(shouldValidateEmail = false),
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),

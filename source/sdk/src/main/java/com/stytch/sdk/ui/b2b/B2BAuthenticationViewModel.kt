@@ -17,9 +17,9 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
+import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -72,7 +72,7 @@ internal class B2BAuthenticationViewModel(
                 }
                 is StytchResult.Error -> {
                     dispatch(SetIsSearchingForOrganizationBySlug(false))
-                    dispatch(SetStytchError(response.exception))
+                    dispatch(SetGenericError(response.exception.message))
                 }
             }
         }

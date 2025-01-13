@@ -9,9 +9,9 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
+import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.data.SetStytchError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -52,7 +52,7 @@ internal open class BaseViewModel(
                     if (shouldSetLoadingIndicator) {
                         dispatch(SetLoading(false))
                     }
-                    dispatch(SetStytchError(response.exception))
+                    dispatch(SetGenericError(response.exception.message))
                     Result.failure(response.exception)
                 }
             }

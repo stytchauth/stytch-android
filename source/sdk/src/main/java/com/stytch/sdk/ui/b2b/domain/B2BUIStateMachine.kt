@@ -16,7 +16,6 @@ import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
-import com.stytch.sdk.ui.b2b.data.SetStytchError
 import com.stytch.sdk.ui.b2b.data.UpdateEmailState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaPrimaryInfoState
 import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
@@ -88,11 +87,6 @@ internal class B2BUIStateMachine(
                         copy(isLoading = action.value)
                     }
                 }
-                on<SetStytchError> { action, state ->
-                    state.mutate {
-                        copy(stytchError = action.stytchError)
-                    }
-                }
                 on<SetGenericError> { action, state ->
                     state.mutate {
                         copy(errorToastText = action.errorText)
@@ -116,7 +110,6 @@ internal class B2BUIStateMachine(
                         copy(
                             currentRoute = action.route,
                             isLoading = false,
-                            stytchError = null,
                             b2BErrorType = null,
                         )
                     }

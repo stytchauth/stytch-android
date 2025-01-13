@@ -63,6 +63,53 @@ class UIWorkbenchActivity : ComponentActivity() {
                 )
                 onAuthenticated(::onAuthentication)
             }.build()
+    private val noMfaWithEOTP =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        organizationSlug = "no-mfa",
+                        authFlowType = AuthFlowType.ORGANIZATION,
+                        products = listOf(StytchB2BProduct.EMAIL_OTP),
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
+    private val noMfaWithEOTPAndEML =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        organizationSlug = "no-mfa",
+                        authFlowType = AuthFlowType.ORGANIZATION,
+                        products = listOf(StytchB2BProduct.EMAIL_OTP, StytchB2BProduct.EMAIL_MAGIC_LINKS),
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
+    private val noMfaWithEOTPAndEMLAndPasswords =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        organizationSlug = "no-mfa",
+                        authFlowType = AuthFlowType.ORGANIZATION,
+                        products =
+                            listOf(
+                                StytchB2BProduct.EMAIL_OTP,
+                                StytchB2BProduct.EMAIL_MAGIC_LINKS,
+                                StytchB2BProduct.PASSWORDS,
+                            ),
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
     private val noEMLNoMFA =
         StytchB2BUI
             .Builder()
@@ -90,6 +137,21 @@ class UIWorkbenchActivity : ComponentActivity() {
                 )
                 onAuthenticated(::onAuthentication)
             }.build()
+
+    private val enforcedMfaWithEOTP =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        organizationSlug = "enforced-mfa",
+                        authFlowType = AuthFlowType.ORGANIZATION,
+                        products = listOf(StytchB2BProduct.EMAIL_OTP),
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
     private val discoveryConfig =
         StytchB2BUI
             .Builder()
@@ -98,6 +160,19 @@ class UIWorkbenchActivity : ComponentActivity() {
                 productConfig(
                     defaultConfig.copy(
                         authFlowType = AuthFlowType.DISCOVERY,
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
+    private val discoveryConfigWithEOTP =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        authFlowType = AuthFlowType.DISCOVERY,
+                        products = listOf(StytchB2BProduct.EMAIL_OTP),
                     ),
                 )
                 onAuthenticated(::onAuthentication)
@@ -116,11 +191,26 @@ class UIWorkbenchActivity : ComponentActivity() {
                 Button(onClick = noEMLNoMFA::authenticate) {
                     Text("Launch NoMFA with No EML Org-Specific Authentication")
                 }
+                Button(onClick = noMfaWithEOTP::authenticate) {
+                    Text("Launch NoMFA with EOTP Org-Specific Authentication")
+                }
+                Button(onClick = noMfaWithEOTPAndEML::authenticate) {
+                    Text("Launch NoMFA with EML + EOTP Org-Specific Authentication")
+                }
+                Button(onClick = noMfaWithEOTPAndEMLAndPasswords::authenticate) {
+                    Text("Launch NoMFA with EML + EOTP + Passwords Org-Specific Authentication")
+                }
                 Button(onClick = enforcedMfaOrgConfig::authenticate) {
                     Text("Launch Enforced-Mfa Org-Specific Authentication")
                 }
+                Button(onClick = enforcedMfaWithEOTP::authenticate) {
+                    Text("Launch Enforced-Mfa With EOTP Org-Specific Authentication")
+                }
                 Button(onClick = discoveryConfig::authenticate) {
                     Text("Launch Discovery Flow Authentication")
+                }
+                Button(onClick = discoveryConfigWithEOTP::authenticate) {
+                    Text("Launch Discovery Flow With EOTP Authentication")
                 }
                 Button(onClick = { StytchB2BClient.sessions.revoke(B2BSessions.RevokeParams(true)) {} }) {
                     Text("Log out")

@@ -45,6 +45,7 @@ import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.extensions.jitEligible
 import com.stytch.sdk.ui.b2b.extensions.shouldAllowDirectLoginToOrganization
 import com.stytch.sdk.ui.b2b.extensions.toInternalOrganizationData
@@ -68,9 +69,11 @@ import kotlinx.coroutines.launch
 internal class DiscoveryScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
+    productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
     val useSSOStart = UseSSOStart()
-    private val useDiscoveryIntermediateSessionExchange = UseDiscoveryIntermediateSessionExchange(::request)
+    private val useDiscoveryIntermediateSessionExchange =
+        UseDiscoveryIntermediateSessionExchange(productConfig, ::request)
     private val useDiscoveryOrganizationCreate = UseDiscoveryOrganizationCreate(::request)
 
     private val _isCreatingStateFlow = MutableStateFlow(false)

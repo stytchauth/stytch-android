@@ -8,12 +8,14 @@ import com.stytch.sdk.ui.b2b.PerformRequest
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 internal class UseMagicLinksAuthenticate(
     private val scope: CoroutineScope,
+    private val productConfig: StytchB2BProductConfig,
     private val dispatch: Dispatch,
     private val request: PerformRequest<B2BEMLAuthenticateData>,
 ) {
@@ -23,6 +25,7 @@ internal class UseMagicLinksAuthenticate(
                 StytchB2BClient.magicLinks.authenticate(
                     B2BMagicLinks.AuthParameters(
                         token = token,
+                        sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
                     ),
                 )
             }.onSuccess {

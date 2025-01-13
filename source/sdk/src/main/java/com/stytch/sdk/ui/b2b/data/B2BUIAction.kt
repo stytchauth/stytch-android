@@ -4,7 +4,6 @@ import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.common.DeeplinkTokenPair
-import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.shared.data.EmailState
 import com.stytch.sdk.ui.shared.data.PasswordState
@@ -54,10 +53,6 @@ internal data class SetPostAuthScreen(
 
 internal data class SetLoading(
     val value: Boolean,
-) : B2BUIAction
-
-internal data class SetStytchError(
-    val stytchError: StytchError?,
 ) : B2BUIAction
 
 internal data class SetB2BError(
