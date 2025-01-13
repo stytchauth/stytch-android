@@ -1,8 +1,8 @@
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+apply plugin: "maven-publish"
+apply plugin: "signing"
 
 task androidSourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
+    archiveClassifier.set("sources")
     if (project.plugins.findPlugin("com.android.library")) {
         // For Android libraries
         from android.sourceSets.main.java.srcDirs
@@ -26,7 +26,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 // The coordinates of the library, being set from variables that
-                // we'll set up later
+                // we"ll set up later
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
@@ -41,28 +41,28 @@ afterEvaluate {
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'Stytch Android SDK'
-                    url = 'https://github.com/stytchauth/stytch-android'
+                    description = "Stytch Android SDK"
+                    url = "https://github.com/stytchauth/stytch-android"
                     licenses {
                         license {
-                            name = 'Stytch License'
-                            url = 'https://github.com/stytchauth/stytch-android/blob/main/LICENSE'
+                            name = "Stytch License"
+                            url = "https://github.com/stytchauth/stytch-android/blob/main/LICENSE"
                         }
                     }
                     developers {
                         developer {
-                            id = 'kyle-stytch'
-                            name = 'Kyle Dunne'
-                            email = 'kyle@stytch.com'
+                            id = "kyle-stytch"
+                            name = "Kyle Dunne"
+                            email = "kyle@stytch.com"
                         }
                     }
 
-                    // Version control info - if you're using GitHub, follow the
+                    // Version control info - if you"re using GitHub, follow the
                     // format as seen here
                     scm {
-                        connection = 'scm:git:github.com/stytchauth/stytch-android.git'
-                        developerConnection = 'scm:git:ssh://github.com/stytchauth/stytch-android.git'
-                        url = 'https://github.com/stytchauth/stytch-android/tree/main'
+                        connection = "scm:git:github.com/stytchauth/stytch-android.git"
+                        developerConnection = "scm:git:ssh://github.com/stytchauth/stytch-android.git"
+                        url = "https://github.com/stytchauth/stytch-android/tree/main"
                     }
                 }
             }
