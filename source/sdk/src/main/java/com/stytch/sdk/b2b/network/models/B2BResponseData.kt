@@ -1388,3 +1388,35 @@ public data class B2BDiscoveryOTPEmailAuthenticateResponseData(
     @Json(name = "intermediate_session_token")
     val intermediateSessionToken: String,
 ) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BPasswordDiscoveryResetByEmailResponseData(
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2BPasswordDiscoveryAuthenticateResponseData(
+    @Json(name = "email_address")
+    val emailAddress: String,
+    @Json(name = "discovered_organizations")
+    val discoveredOrganizations: List<DiscoveredOrganization>,
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "intermediate_session_token")
+    val intermediateSessionToken: String,
+) : Parcelable

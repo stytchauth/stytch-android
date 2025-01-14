@@ -344,6 +344,7 @@ public object StytchB2BClient {
             dispatchers,
             sessionStorage,
             StytchB2BApi.Passwords,
+            StytchB2BApi.Passwords.Discovery,
             pkcePairManager,
         )
     }

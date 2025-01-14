@@ -48,6 +48,9 @@ internal class PasswordsImplTest {
     private lateinit var mockApi: StytchB2BApi.Passwords
 
     @MockK
+    private lateinit var mockDiscoveryApi: StytchB2BApi.Passwords.Discovery
+
+    @MockK
     private lateinit var mockSessionStorage: B2BSessionStorage
 
     @MockK
@@ -75,6 +78,7 @@ internal class PasswordsImplTest {
                 sessionStorage = mockSessionStorage,
                 pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
+                discoveryApi = mockDiscoveryApi,
             )
     }
 

@@ -5,6 +5,8 @@ import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailLoginOrSignupResponseData
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryResetByEmailResponseData
 import com.stytch.sdk.b2b.network.models.B2BSCIMCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSCIMDeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSCIMGetConnectionGroupsResponseData
@@ -339,3 +341,15 @@ public typealias EmailOTPDiscoverySendResponse = StytchResult<B2BDiscoveryOTPEma
  * Type alias for StytchResult<DiscoveryAuthenticateResponseData> used for Discovery Email OTP Authenticate responses
  */
 public typealias EmailOTPDiscoveryAuthenticateResponse = StytchResult<B2BDiscoveryOTPEmailAuthenticateResponseData>
+
+/**
+ * Type alias for StytchResult<B2BPasswordDiscoveryResetByEmailResponseData> used for Password Discovery
+ * Reset By Email responses
+ */
+public typealias B2BPasswordDiscoveryResetByEmailResponse = StytchResult<B2BPasswordDiscoveryResetByEmailResponseData>
+
+/**
+ * Type alias for StytchResult<B2BPasswordDiscoveryAuthenticateResponseData> used for Password Discovery
+ * Authenticate responses
+ */
+public typealias B2BPasswordDiscoveryAuthenticateResponse = StytchResult<B2BPasswordDiscoveryAuthenticateResponseData>
