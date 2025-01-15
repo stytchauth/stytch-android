@@ -68,6 +68,18 @@ fun PasswordsScreen(viewModel: PasswordsViewModel) {
                 },
                 shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
             )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.passwordResetTokenState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.password_reset_token))
+                },
+                onValueChange = {
+                    viewModel.passwordResetTokenState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+            )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_resetByEmail),
@@ -92,6 +104,21 @@ fun PasswordsScreen(viewModel: PasswordsViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.button_strengthCheck),
                 onClick = viewModel::strengthCheck,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.button_discoveryResetByEmailStart),
+                onClick = viewModel::discoveryResetByEmailStart,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.button_discoveryResetByEmail),
+                onClick = viewModel::discoveryResetByEmail,
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.button_discoveryAuthenticate),
+                onClick = viewModel::discoveryAuthenticate,
             )
         }
         Column(

@@ -182,6 +182,8 @@ internal object B2BRequests {
                 val resetPasswordExpirationMinutes: Int?,
                 @Json(name = "reset_password_template_id")
                 val resetPasswordTemplateId: String?,
+                @Json(name = "pkce_code_challenge")
+                val codeChallenge: String,
             )
 
             @Keep
@@ -190,6 +192,8 @@ internal object B2BRequests {
                 @Json(name = "password_reset_token")
                 val passwordResetToken: String,
                 val password: String,
+                @Json(name = "pkce_code_verifier")
+                val codeVerifier: String?,
             )
 
             @Keep

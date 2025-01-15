@@ -11,6 +11,7 @@ internal const val AUTH_HEADER_SDK_NAME = "stytch-android"
 // Query parameters
 internal const val QUERY_TOKEN_TYPE = "stytch_token_type"
 internal const val QUERY_TOKEN = "token"
+internal const val QUERY_REDIRECT_TYPE = "stytch_redirect_type"
 
 internal const val CODE_CHALLENGE_BYTE_COUNT = 32
 

@@ -239,12 +239,19 @@ internal class PasswordsImpl internal constructor(
             parameters: Passwords.Discovery.ResetByEmailStartParameters,
         ): BaseResponse =
             withContext(dispatchers.io) {
+                val challengeCode: String
+                try {
+                    challengeCode = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
+                } catch (ex: Exception) {
+                    return@withContext StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
+                }
                 discoveryApi.resetByEmailStart(
                     emailAddress = parameters.emailAddress,
                     discoveryRedirectUrl = parameters.discoveryRedirectUrl,
                     resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
                     resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
+                    codeChallenge = challengeCode,
                 )
             }
 
@@ -271,8 +278,10 @@ internal class PasswordsImpl internal constructor(
                 discoveryApi.resetByEmail(
                     passwordResetToken = parameters.passwordResetToken,
                     password = parameters.password,
+                    codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
                 )
             }.apply {
+                pkcePairManager.clearPKCECodePair()
                 if (this is StytchResult.Success) {
                     sessionStorage.intermediateSessionToken = value.intermediateSessionToken
                 }

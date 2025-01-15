@@ -18,7 +18,7 @@ public enum class B2BTokenType : TokenType {
     MULTI_TENANT_PASSWORDS,
 
     /**
-     * A B2B Discovery Magic Link deeplink
+     * A B2B Discovery deeplink
      */
     DISCOVERY,
 
@@ -45,12 +45,11 @@ public enum class B2BTokenType : TokenType {
     ;
 
     internal companion object {
-        fun fromString(typeString: String?): B2BTokenType {
-            return try {
+        fun fromString(typeString: String?): B2BTokenType =
+            try {
                 valueOf(typeString?.uppercase(Locale.ENGLISH)!!)
             } catch (_: Exception) {
                 UNKNOWN
             }
-        }
     }
 }

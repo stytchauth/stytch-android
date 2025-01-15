@@ -1,6 +1,7 @@
 package com.stytch.sdk.common
 
 import android.os.Parcelable
+import com.stytch.sdk.b2b.B2BRedirectType
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -10,4 +11,5 @@ import kotlinx.parcelize.RawValue
 @Parcelize public data class DeeplinkTokenPair(
     val tokenType: @RawValue TokenType,
     val token: String?,
+    val redirectType: B2BRedirectType? = null,
 ) : Parcelable

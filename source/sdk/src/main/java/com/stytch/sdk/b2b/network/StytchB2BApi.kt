@@ -628,6 +628,7 @@ internal object StytchB2BApi {
                 resetPasswordRedirectUrl: String?,
                 resetPasswordExpirationMinutes: Int?,
                 resetPasswordTemplateId: String?,
+                codeChallenge: String,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmailStart(
@@ -637,6 +638,7 @@ internal object StytchB2BApi {
                             resetPasswordRedirectUrl = resetPasswordRedirectUrl,
                             resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
                             resetPasswordTemplateId = resetPasswordTemplateId,
+                            codeChallenge = codeChallenge,
                         ),
                     )
                 }
@@ -644,12 +646,14 @@ internal object StytchB2BApi {
             suspend fun resetByEmail(
                 passwordResetToken: String,
                 password: String,
+                codeVerifier: String?,
             ): StytchResult<B2BPasswordDiscoveryResetByEmailResponseData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmail(
                         B2BRequests.Passwords.Discovery.ResetByEmailRequest(
                             passwordResetToken = passwordResetToken,
                             password = password,
+                            codeVerifier = codeVerifier,
                         ),
                     )
                 }

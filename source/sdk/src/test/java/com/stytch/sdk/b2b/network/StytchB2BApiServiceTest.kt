@@ -700,6 +700,7 @@ internal class StytchB2BApiServiceTest {
                     resetPasswordRedirectUrl = "reset-password-redirect-url",
                     resetPasswordExpirationMinutes = 30,
                     resetPasswordTemplateId = "reset-password-template-id",
+                    codeChallenge = "code-challenge",
                 )
             requestIgnoringResponseException {
                 apiService.passwordDiscoveryResetByEmailStart(parameters)
@@ -712,6 +713,7 @@ internal class StytchB2BApiServiceTest {
                         "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
                         "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes,
                         "reset_password_template_id" to parameters.resetPasswordTemplateId,
+                        "pkce_code_challenge" to parameters.codeChallenge,
                     ),
             )
         }
@@ -724,6 +726,7 @@ internal class StytchB2BApiServiceTest {
                 B2BRequests.Passwords.Discovery.ResetByEmailRequest(
                     passwordResetToken = "password-reset-token",
                     password = "password",
+                    codeVerifier = "code-verifier",
                 )
             requestIgnoringResponseException {
                 apiService.passwordDiscoveryResetByEmail(parameters)
@@ -733,6 +736,7 @@ internal class StytchB2BApiServiceTest {
                     mapOf(
                         "password_reset_token" to parameters.passwordResetToken,
                         "password" to parameters.password,
+                        "pkce_code_verifier" to parameters.codeVerifier,
                     ),
             )
         }
