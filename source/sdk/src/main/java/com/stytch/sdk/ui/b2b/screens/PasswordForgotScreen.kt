@@ -20,6 +20,7 @@ import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryResetByEmailStart
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
 import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
@@ -44,11 +45,17 @@ internal class PasswordForgotScreenViewModel(
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
     val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
+    val usePasswordDiscoveryResetByEmailStart =
+        UsePasswordDiscoveryResetByEmailStart(viewModelScope, state, productConfig, ::dispatch, ::request)
 
     fun onSubmit() {
         dispatch(SetLoading(true))
+        val organizationId = state.value.activeOrganization?.organizationId
+        if (organizationId == null) {
+            usePasswordDiscoveryResetByEmailStart()
+            return
+        }
         viewModelScope.launch {
-            val organizationId = state.value.activeOrganization?.organizationId ?: return@launch
             useSearchMember(
                 emailAddress = state.value.emailState.emailAddress,
                 organizationId = organizationId,

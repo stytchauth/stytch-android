@@ -10,13 +10,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.sdk.R
+import com.stytch.sdk.b2b.B2BTokenType
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryResetByEmail
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmail
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordsStrengthCheck
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
@@ -34,6 +37,16 @@ internal class PasswordResetScreenViewModel(
     val usePasswordResetByEmail = UsePasswordResetByEmail(viewModelScope, productConfig, state, ::dispatch, ::request)
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val usePasswordStrengthCheck = UsePasswordsStrengthCheck(viewModelScope, state, ::dispatch, ::request)
+    val usePasswordDiscoveryResetByEmail =
+        UsePasswordDiscoveryResetByEmail(viewModelScope, state, ::dispatch, ::request)
+
+    fun handlePasswordReset() {
+        if (state.value.deeplinkTokenPair?.tokenType == B2BTokenType.DISCOVERY) {
+            usePasswordDiscoveryResetByEmail()
+        } else {
+            usePasswordResetByEmail()
+        }
+    }
 }
 
 @Composable
@@ -59,7 +72,7 @@ internal fun PasswordResetScreen(
             },
         )
         StytchButton(
-            onClick = { viewModel.usePasswordResetByEmail() },
+            onClick = viewModel::handlePasswordReset,
             modifier = Modifier.height(45.dp),
             text = stringResource(id = R.string.button_continue),
             enabled = state.value.passwordState.validPassword,

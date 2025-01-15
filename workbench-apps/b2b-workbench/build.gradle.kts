@@ -19,7 +19,7 @@ android {
         manifestPlaceholders["stytchOAuthRedirectScheme"] = "app"
         manifestPlaceholders["stytchOAuthRedirectHost"] = "b2bOAuth"
         manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
-        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
+        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = rootProject.ext["STYTCH_B2B_PUBLIC_TOKEN"] as String
     }
 
     buildFeatures {

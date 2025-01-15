@@ -25,6 +25,7 @@ import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPassword
 import com.stytch.sdk.ui.shared.components.BackButton
@@ -42,6 +43,16 @@ internal class PasswordAuthenticateScreenViewModel(
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
     val usePasswordAuthenticate = UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val usePasswordDiscoveryAuthenticate =
+        UsePasswordDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
+
+    fun authenticatePassword() {
+        if (state.value.activeOrganization == null) {
+            usePasswordDiscoveryAuthenticate()
+        } else {
+            usePasswordAuthenticate()
+        }
+    }
 }
 
 @Composable
@@ -63,7 +74,7 @@ internal fun PasswordAuthenticateScreen(
             passwordState = state.value.passwordState,
             onPasswordChanged = { viewModel.useUpdateMemberPassword(it) },
             allowInvalidSubmission = true,
-            onSubmit = { viewModel.usePasswordAuthenticate() },
+            onSubmit = viewModel::authenticatePassword,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Body2Text(
