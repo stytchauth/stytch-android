@@ -17,6 +17,8 @@ import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailSendResponseData
 import com.stytch.sdk.b2b.network.models.B2BEMLAuthenticateData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.B2BOTPsEmailLoginOrSignupResponseData
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryResetByEmailResponseData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
@@ -618,6 +620,57 @@ internal object StytchB2BApi {
                     ),
                 )
             }
+
+        object Discovery {
+            suspend fun resetByEmailStart(
+                emailAddress: String,
+                discoveryRedirectUrl: String?,
+                resetPasswordRedirectUrl: String?,
+                resetPasswordExpirationMinutes: Int?,
+                resetPasswordTemplateId: String?,
+                codeChallenge: String,
+            ): StytchResult<BasicData> =
+                safeB2BApiCall {
+                    apiService.passwordDiscoveryResetByEmailStart(
+                        B2BRequests.Passwords.Discovery.ResetByEmailStartRequest(
+                            emailAddress = emailAddress,
+                            discoveryRedirectUrl = discoveryRedirectUrl,
+                            resetPasswordRedirectUrl = resetPasswordRedirectUrl,
+                            resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
+                            resetPasswordTemplateId = resetPasswordTemplateId,
+                            codeChallenge = codeChallenge,
+                        ),
+                    )
+                }
+
+            suspend fun resetByEmail(
+                passwordResetToken: String,
+                password: String,
+                codeVerifier: String?,
+            ): StytchResult<B2BPasswordDiscoveryResetByEmailResponseData> =
+                safeB2BApiCall {
+                    apiService.passwordDiscoveryResetByEmail(
+                        B2BRequests.Passwords.Discovery.ResetByEmailRequest(
+                            passwordResetToken = passwordResetToken,
+                            password = password,
+                            codeVerifier = codeVerifier,
+                        ),
+                    )
+                }
+
+            suspend fun authenticate(
+                emailAddress: String,
+                password: String,
+            ): StytchResult<B2BPasswordDiscoveryAuthenticateResponseData> =
+                safeB2BApiCall {
+                    apiService.passwordDiscoveryAuthenticate(
+                        B2BRequests.Passwords.Discovery.AuthenticateRequest(
+                            emailAddress = emailAddress,
+                            password = password,
+                        ),
+                    )
+                }
+        }
     }
 
     internal object Discovery {

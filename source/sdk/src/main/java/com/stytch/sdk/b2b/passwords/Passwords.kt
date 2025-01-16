@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.passwords
 
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryAuthenticateResponse
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryResetByEmailResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
@@ -344,4 +346,149 @@ public interface Passwords {
     public fun strengthCheckCompletable(
         parameters: StrengthCheckParameters,
     ): CompletableFuture<PasswordStrengthCheckResponse>
+
+    /**
+     * Public variable that exposes an instance of [Discovery]
+     */
+    public val discovery: Discovery
+
+    public interface Discovery {
+        /**
+         * A data class used for wrapping the parameters used in a Passwords.Discovery.ResetByEmailStart call
+         * @property emailAddress - The email that requested the password reset
+         * @property discoveryRedirectUrl - The url that the Member clicks from the password reset email to skip
+         * resetting their password and directly login. This should be a url that your app receives, parses, and
+         * subsequently sends an API request to the magic link authenticate endpoint to complete the login process
+         * without reseting their password. If this value is not passed, the login redirect URL that you set in your
+         * Dashboard is used. If you have not set a default login redirect URL, an error is returned.
+         * @property resetPasswordRedirectUrl - The url that the Member clicks from the password reset email to finish
+         * the reset password flow. This should be a url that your app receives and parses before showing your app's
+         * reset password page. After the Member submits a new password to your app, it should send an API request to
+         * complete the password reset process. If this value is not passed, the default reset password redirect URL
+         * that you set in your Dashboard is used. If you have not set a default reset password redirect URL, an error
+         * is returned.
+         * @property resetPasswordExpirationMinutes - Set the expiration for the password reset, in minutes. By default,
+         * it expires in 30 minutes. The minimum expiration is 5 minutes and the maximum is 7 days (10080 mins).
+         * @property resetPasswordTemplateId - The email template ID to use for password reset. If not provided, your
+         * default email template will be sent. If providing a template ID, it must be either a template using
+         * Stytch's customizations, or a Passwords reset custom HTML template.
+         */
+        public data class ResetByEmailStartParameters(
+            val emailAddress: String,
+            val discoveryRedirectUrl: String? = null,
+            val resetPasswordRedirectUrl: String? = null,
+            val resetPasswordExpirationMinutes: Int? = null,
+            val resetPasswordTemplateId: String? = null,
+        )
+
+        /**
+         * The `resetByEmailStart` method wraps the Reset By Email Discovery Start Password API endpoint.
+         * If this method succeeds, an email will be sent to the provided email address with a link to reset the
+         * password.
+         * @param parameters - [ResetByEmailStartParameters]
+         * @return [BaseResponse]
+         */
+        public suspend fun resetByEmailStart(parameters: ResetByEmailStartParameters): BaseResponse
+
+        /**
+         * The `resetByEmailStart` method wraps the Reset By Email Discovery Start Password API endpoint.
+         * If this method succeeds, an email will be sent to the provided email address with a link to reset the
+         * password.
+         * @param parameters - [ResetByEmailStartParameters]
+         * @param callback - a callback that receives a [BaseResponse]
+         */
+        public fun resetByEmailStart(
+            parameters: ResetByEmailStartParameters,
+            callback: (BaseResponse) -> Unit,
+        )
+
+        /**
+         * The `resetByEmailStart` method wraps the Reset By Email Discovery Start Password API endpoint.
+         * If this method succeeds, an email will be sent to the provided email address with a link to reset the
+         * password.
+         * @param parameters - [ResetByEmailParameters]
+         * @return CompletableFuture<[BaseResponse]>
+         */
+        public fun resetByEmailStartCompletable(
+            parameters: ResetByEmailStartParameters,
+        ): CompletableFuture<BaseResponse>
+
+        /**
+         * A data class used for wrapping the parameters used in a Passwords.Discovery.ResetByEmail call
+         * @property passwordResetToken - The token to authenticate.
+         * @property password - The new password for the Member.
+         */
+        public data class ResetByEmailParameters(
+            val passwordResetToken: String,
+            val password: String,
+        )
+
+        /**
+         * The `resetByEmail` method wraps the Reset By Email Discovery Password API endpoint.
+         * This endpoint resets the password associated with an email and starts an intermediate session for the user.
+         * @param parameters - [ResetByEmailParameters]
+         * @return [B2BPasswordDiscoveryResetByEmailResponse]
+         */
+        public suspend fun resetByEmail(parameters: ResetByEmailParameters): B2BPasswordDiscoveryResetByEmailResponse
+
+        /**
+         * The `resetByEmail` method wraps the Reset By Email Discovery Password API endpoint.
+         * This endpoint resets the password associated with an email and starts an intermediate session for the user.
+         * @param parameters - [ResetByEmailParameters]
+         * @param callback - a callback that receives a [B2BPasswordDiscoveryResetByEmailResponse]
+         */
+        public fun resetByEmail(
+            parameters: ResetByEmailParameters,
+            callback: (B2BPasswordDiscoveryResetByEmailResponse) -> Unit,
+        )
+
+        /**
+         * The `resetByEmail` method wraps the Reset By Email Discovery Password API endpoint.
+         * This endpoint resets the password associated with an email and starts an intermediate session for the user.
+         * @param parameters - [ResetByEmailParameters]
+         * @return CompletableFuture<[B2BPasswordDiscoveryResetByEmailResponse]>
+         */
+        public fun resetByEmailCompletable(
+            parameters: ResetByEmailParameters,
+        ): CompletableFuture<B2BPasswordDiscoveryResetByEmailResponse>
+
+        /**
+         * A data class used for wrapping the parameters used in a Passwords.Discovery.Authenticate call
+         * @property emailAddress - The email attempting to login.
+         * @property password - The password for the email address.
+         */
+        public data class AuthenticateParameters(
+            val emailAddress: String,
+            val password: String,
+        )
+
+        /**
+         * The `authenticate` method wraps the Discovery Authenticate Password API endpoint.
+         * This endpoint verifies that the email has a password currently set, and that the entered password is correct.
+         * @param parameters - [AuthenticateParameters]
+         * @return [B2BPasswordDiscoveryAuthenticateResponse]
+         */
+        public suspend fun authenticate(parameters: AuthenticateParameters): B2BPasswordDiscoveryAuthenticateResponse
+
+        /**
+         * The `authenticate` method wraps the Discovery Authenticate Password API endpoint.
+         * This endpoint verifies that the email has a password currently set, and that the entered password is correct.
+         * @param parameters - [AuthenticateParameters]
+         * @param callback - a callback that receives a [B2BPasswordDiscoveryAuthenticateResponse]
+         */
+        public fun authenticate(
+            parameters: AuthenticateParameters,
+            callback: (B2BPasswordDiscoveryAuthenticateResponse) -> Unit,
+        )
+
+        /**
+         * The `authenticate` method wraps the Discovery Authenticate Password API endpoint.
+         * This endpoint verifies that the email has a password currently set, and that the entered password is correct.
+         * @param parameters - [AuthenticateParameters]
+         * @return CompletableFuture<[B2BPasswordDiscoveryAuthenticateResponse]>
+         */
+        public fun authenticateCompletable(
+            parameters: AuthenticateParameters,
+        ): CompletableFuture<B2BPasswordDiscoveryAuthenticateResponse>
+    }
 }

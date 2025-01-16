@@ -11,12 +11,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
+import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryResetByEmailStart
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -30,8 +32,18 @@ internal class EmailConfirmationScreenViewModel(
 ) : BaseViewModel(state, dispatchAction) {
     val usePasswordResetByEmailStart =
         UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val usePasswordDiscoveryResetByEmailStart =
+        UsePasswordDiscoveryResetByEmailStart(viewModelScope, state, productConfig, ::dispatch, ::request)
 
     fun resetEverything() = dispatch(ResetEverything)
+
+    fun resendPasswordResetEmail() {
+        if (state.value.authFlowType == AuthFlowType.DISCOVERY) {
+            usePasswordDiscoveryResetByEmailStart()
+        } else {
+            usePasswordResetByEmailStart()
+        }
+    }
 }
 
 @Composable
@@ -86,7 +98,7 @@ internal fun EmailConfirmationScreen(
                         ),
                     )
                 },
-            onBottomTextClicked = { viewModel.usePasswordResetByEmailStart() },
+            onBottomTextClicked = viewModel::resendPasswordResetEmail,
         )
     }
 
@@ -108,7 +120,7 @@ internal fun EmailConfirmationScreen(
                         ),
                     )
                 },
-            onBottomTextClicked = viewModel::resetEverything,
+            onBottomTextClicked = viewModel::resendPasswordResetEmail,
         )
     }
 }

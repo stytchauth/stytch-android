@@ -50,6 +50,7 @@ import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksEmailLoginOrSignup
 import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
 import com.stytch.sdk.ui.b2b.usecases.UseOAuthStart
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
+import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
 import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
@@ -82,6 +83,8 @@ internal class MainScreenViewModel(
     val useOAuthStart = UseOAuthStart(state)
     val useSearchMember = UseSearchMember(::request)
     val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
+    val usePasswordDiscoveryAuthenticate =
+        UsePasswordDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
     val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
@@ -93,21 +96,25 @@ internal class MainScreenViewModel(
     fun handleEmailPasswordSubmit() {
         val emailAddress = state.value.emailState.emailAddress
         val organization = state.value.activeOrganization
-        if (emailAddress.isBlank() || organization == null) return
+        if (emailAddress.isBlank()) return
         viewModelScope.launch {
             dispatch(SetLoading(true))
-            useSearchMember(
-                emailAddress = emailAddress,
-                organizationId = organization.organizationId,
-            ).onSuccess { response ->
-                dispatch(SetLoading(false))
-                if (!response.member?.memberPasswordId.isNullOrEmpty()) {
-                    usePasswordsAuthenticate()
-                } else {
-                    useNonMemberPasswordReset()
+            if (organization != null) {
+                useSearchMember(
+                    emailAddress = emailAddress,
+                    organizationId = organization.organizationId,
+                ).onSuccess { response ->
+                    dispatch(SetLoading(false))
+                    if (!response.member?.memberPasswordId.isNullOrEmpty()) {
+                        usePasswordsAuthenticate()
+                    } else {
+                        useNonMemberPasswordReset()
+                    }
+                }.onFailure {
+                    dispatch(SetLoading(false))
                 }
-            }.onFailure {
-                dispatch(SetLoading(false))
+            } else {
+                usePasswordDiscoveryAuthenticate()
             }
         }
     }

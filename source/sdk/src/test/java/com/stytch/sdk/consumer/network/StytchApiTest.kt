@@ -14,10 +14,13 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
+import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -33,6 +36,9 @@ import java.security.KeyStore
 
 internal class StytchApiTest {
     var mContextMock = mockk<Context>(relaxed = true)
+
+    @MockK
+    private lateinit var mockConsumerSessionStorage: ConsumerSessionStorage
 
     private val mockDeviceInfo =
         DeviceInfo(
@@ -58,9 +64,11 @@ internal class StytchApiTest {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchApi)
+        MockKAnnotations.init(this, true, true)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
+        StytchClient.sessionStorage = mockConsumerSessionStorage
     }
 
     @After

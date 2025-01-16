@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchResult
@@ -19,10 +20,12 @@ import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.Locale
+import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -38,6 +41,9 @@ import java.security.KeyStore
 
 internal class StytchB2BApiTest {
     var mContextMock = mockk<Context>(relaxed = true)
+
+    @MockK
+    private lateinit var mockB2BSessionStorage: B2BSessionStorage
 
     private val mockDeviceInfo =
         DeviceInfo(
@@ -63,8 +69,10 @@ internal class StytchB2BApiTest {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchB2BApi)
+        MockKAnnotations.init(this, true, true)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
+        StytchB2BClient.sessionStorage = mockB2BSessionStorage
     }
 
     @After
@@ -409,6 +417,33 @@ internal class StytchB2BApiTest {
             coEvery { StytchB2BApi.apiService.passwordStrengthCheck(any()) } returns mockk(relaxed = true)
             StytchB2BApi.Passwords.strengthCheck(email = "", password = "")
             coVerify { StytchB2BApi.apiService.passwordStrengthCheck(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi Passwords Discovery ResetByEmailStart calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.passwordDiscoveryResetByEmailStart(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Passwords.Discovery.resetByEmailStart("", null, null, null, null, "")
+            coVerify { StytchB2BApi.apiService.passwordDiscoveryResetByEmailStart(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi Passwords Discovery ResetByEmail calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Passwords.Discovery.resetByEmail("", "", null)
+            coVerify { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) }
+        }
+
+    @Test
+    fun `StytchB2BApi Passwords Discovery Authenticate calls appropriate apiService method`() =
+        runBlocking {
+            every { StytchB2BApi.isInitialized } returns true
+            coEvery { StytchB2BApi.apiService.passwordDiscoveryAuthenticate(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Passwords.Discovery.authenticate("", "")
+            coVerify { StytchB2BApi.apiService.passwordDiscoveryAuthenticate(any()) }
         }
 
     @Test

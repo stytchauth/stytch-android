@@ -15,11 +15,15 @@
     <string name="passwords">Passwords</string>
     <string name="existing_password">Existing Password</string>
     <string name="new_password">New Password</string>
+    <string name="password_reset_token">Password Reset Token</string>
     <string name="button_resetByEmail">Reset By Email</string>
     <string name="button_resetByExisting">Reset By Existing</string>
     <string name="button_resetBySession">Reset By Session</string>
     <string name="button_authenticate">Authenticate</string>
     <string name="button_strengthCheck">Check New Password Strength</string>
+    <string name="button_discoveryResetByEmailStart">Discovery Reset By Email Start</string>
+    <string name="button_discoveryResetByEmail">Discovery Reset By Email</string>
+    <string name="button_discoveryAuthenticate">Discovery Authenticate</string>
     <string name="discovery">Discovery</string>
     <string name="discovery_discover">Discover Organizations</string>
     <string name="send_discovery_magic_link">Send Discovery Magic Link</string>

@@ -41,6 +41,7 @@ import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.PKCECodePair
+import com.stytch.sdk.common.QUERY_REDIRECT_TYPE
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
@@ -344,6 +345,7 @@ public object StytchB2BClient {
             dispatchers,
             sessionStorage,
             StytchB2BApi.Passwords,
+            StytchB2BApi.Passwords.Discovery,
             pkcePairManager,
         )
     }
@@ -490,12 +492,12 @@ public object StytchB2BClient {
         sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
         assertInitialized()
+        val (tokenType, token, redirectType) = parseDeeplink(uri)
+        if (token.isNullOrEmpty()) {
+            return DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
+        }
         return withContext(dispatchers.io) {
-            val token = uri.getQueryParameter(QUERY_TOKEN)
-            if (token.isNullOrEmpty()) {
-                return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
-            }
-            when (val tokenType = B2BTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE))) {
+            when (tokenType) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -506,6 +508,9 @@ public object StytchB2BClient {
                 }
                 B2BTokenType.DISCOVERY -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
+                    if (redirectType == B2BRedirectType.RESET_PASSWORD) {
+                        return@withContext DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
+                    }
                     DeeplinkHandledStatus.Handled(
                         DeeplinkResponse.Discovery(
                             magicLinks.discoveryAuthenticate(
@@ -619,5 +624,6 @@ public object StytchB2BClient {
         DeeplinkTokenPair(
             tokenType = B2BTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
             token = uri.getQueryParameter(QUERY_TOKEN),
+            redirectType = B2BRedirectType.fromString(uri.getQueryParameter(QUERY_REDIRECT_TYPE)),
         )
 }

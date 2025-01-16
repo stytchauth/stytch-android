@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.b2b.B2BRedirectType
 import com.stytch.sdk.b2b.B2BTokenType
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -42,7 +43,13 @@ internal class DeepLinkParserScreenViewModel(
         when (pair.tokenType as B2BTokenType) {
             B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> useMagicLinksAuthenticate(pair.token)
             B2BTokenType.MULTI_TENANT_PASSWORDS -> dispatch(SetNextRoute(Routes.PasswordReset))
-            B2BTokenType.DISCOVERY -> useMagicLinksDiscoveryAuthenticate(pair.token)
+            B2BTokenType.DISCOVERY -> {
+                if (pair.redirectType == B2BRedirectType.RESET_PASSWORD) {
+                    dispatch(SetNextRoute(Routes.PasswordReset))
+                } else {
+                    useMagicLinksDiscoveryAuthenticate(pair.token)
+                }
+            }
             B2BTokenType.DISCOVERY_OAUTH -> useOAuthDiscoveryAuthenticate(pair.token)
             B2BTokenType.OAUTH -> useOAuthAuthenticate(pair.token)
             B2BTokenType.SSO -> useSSOAuthenticate(pair.token)
