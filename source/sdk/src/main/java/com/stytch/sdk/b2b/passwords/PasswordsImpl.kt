@@ -279,6 +279,7 @@ internal class PasswordsImpl internal constructor(
                     passwordResetToken = parameters.passwordResetToken,
                     password = parameters.password,
                     codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 )
             }.apply {
                 pkcePairManager.clearPKCECodePair()

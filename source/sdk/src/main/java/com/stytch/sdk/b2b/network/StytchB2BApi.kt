@@ -647,6 +647,7 @@ internal object StytchB2BApi {
                 passwordResetToken: String,
                 password: String,
                 codeVerifier: String?,
+                intermediateSessionToken: String?,
             ): StytchResult<B2BPasswordDiscoveryResetByEmailResponseData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmail(
@@ -654,6 +655,7 @@ internal object StytchB2BApi {
                             passwordResetToken = passwordResetToken,
                             password = password,
                             codeVerifier = codeVerifier,
+                            intermediateSessionToken = intermediateSessionToken,
                         ),
                     )
                 }

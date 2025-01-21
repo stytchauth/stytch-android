@@ -727,6 +727,7 @@ internal class StytchB2BApiServiceTest {
                     passwordResetToken = "password-reset-token",
                     password = "password",
                     codeVerifier = "code-verifier",
+                    intermediateSessionToken = "intermediate-session-token",
                 )
             requestIgnoringResponseException {
                 apiService.passwordDiscoveryResetByEmail(parameters)
@@ -737,6 +738,7 @@ internal class StytchB2BApiServiceTest {
                         "password_reset_token" to parameters.passwordResetToken,
                         "password" to parameters.password,
                         "pkce_code_verifier" to parameters.codeVerifier,
+                        "intermediate_session_token" to parameters.intermediateSessionToken,
                     ),
             )
         }

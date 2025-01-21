@@ -433,7 +433,7 @@ internal class StytchB2BApiTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Passwords.Discovery.resetByEmail("", "", null)
+            StytchB2BApi.Passwords.Discovery.resetByEmail("", "", null, "")
             coVerify { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) }
         }
 
