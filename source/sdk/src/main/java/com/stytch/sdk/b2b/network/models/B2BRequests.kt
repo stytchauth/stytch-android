@@ -194,6 +194,8 @@ internal object B2BRequests {
                 val password: String,
                 @Json(name = "pkce_code_verifier")
                 val codeVerifier: String?,
+                @Json(name = "intermediate_session_token")
+                val intermediateSessionToken: String?,
             )
 
             @Keep

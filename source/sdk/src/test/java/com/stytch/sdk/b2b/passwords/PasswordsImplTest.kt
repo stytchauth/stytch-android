@@ -283,17 +283,17 @@ internal class PasswordsImplTest {
                 StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(
                     mockk(relaxed = true),
                 )
-            coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any()) } returns mockkResponse
+            coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
             val response = impl.discovery.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockDiscoveryApi.resetByEmail(any(), any(), any()) }
+            coVerify { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl DiscoveryImpl resetByEmail with callback calls callback method`() {
         every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
         val mockkResponse = StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(mockk(relaxed = true))
-        coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any()) } returns mockkResponse
+        coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(B2BPasswordDiscoveryResetByEmailResponse) -> Unit>()
         impl.discovery.resetByEmail(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
