@@ -14,58 +14,26 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
-import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.usecases.UseNonMemberPasswordReset
-import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryResetByEmailStart
-import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
-import com.stytch.sdk.ui.b2b.usecases.UseSearchMember
+import com.stytch.sdk.ui.b2b.usecases.UseSendCorrectPasswordReset
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchTextButton
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 internal class EmailConfirmationScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmailStart =
-        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val usePasswordDiscoveryResetByEmailStart =
-        UsePasswordDiscoveryResetByEmailStart(viewModelScope, state, productConfig, ::dispatch, ::request)
-    val useSearchMember = UseSearchMember(::request)
-    val useNonMemberPasswordReset =
-        UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useSendCorrectPasswordReset =
+        UseSendCorrectPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request, ::request)
 
     fun resetEverything() = dispatch(ResetEverything)
 
-    fun resendPasswordResetEmail() {
-        val organizationId = state.value.activeOrganization?.organizationId
-        if (organizationId == null) {
-            usePasswordDiscoveryResetByEmailStart()
-        } else {
-            viewModelScope.launch {
-                useSearchMember(
-                    emailAddress = state.value.emailState.emailAddress,
-                    organizationId = organizationId,
-                ).onSuccess {
-                    dispatch(SetLoading(false))
-                    if (it.member?.memberPasswordId.isNullOrEmpty()) {
-                        // no memberPasswordId == no password, so drop them in the nonMemberReset flow
-                        return@onSuccess useNonMemberPasswordReset()
-                    }
-                    // there IS a password for this user, so send them a reset
-                    usePasswordResetByEmailStart()
-                }.onFailure {
-                    dispatch(SetLoading(false))
-                }
-            }
-        }
-    }
+    fun resendPasswordResetEmail() = useSendCorrectPasswordReset()
 }
 
 @Composable
