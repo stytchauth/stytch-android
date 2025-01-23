@@ -46,11 +46,14 @@ internal class DFPProviderImpl(
         object {
             @JavascriptInterface
             fun reportTelemetryId(telemetryId: String) {
-                activityProvider.currentActivity?.let {
-                    it.runOnUiThread {
-                        (webview.parent as? ViewGroup)?.removeView(webview)
+                activityProvider.currentActivity?.let { currentActivity ->
+                    webview?.let {
+                        currentActivity.runOnUiThread {
+                            (it.parent as? ViewGroup)?.removeView(it)
+                        }
                     }
                 }
+                webview = null
                 if (continuation.isActive) {
                     continuation.resume(telemetryId, null)
                 }
@@ -59,7 +62,7 @@ internal class DFPProviderImpl(
 
     private lateinit var continuation: CancellableContinuation<String>
 
-    private lateinit var webview: WebView
+    private var webview: WebView? = null
 
     override suspend fun getTelemetryId(): String =
         suspendCancellableCoroutine { cont ->

@@ -67,6 +67,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    debugImplementation(libs.leakCanary)
 
     // Compose
     implementation(platform(libs.compose.bom))
