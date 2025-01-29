@@ -120,6 +120,8 @@ internal fun DiscoveryScreen(
     val isCreatingState = viewModel.isCreatingStateFlow.collectAsStateWithLifecycle()
     val isExchangingState = viewModel.isExchangingStateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current as Activity
+    val shouldAutomaticallyCreateOrganization =
+        createOrganzationsEnabled && config.directCreateOrganizationForNoMembership
 
     fun handleDiscoveryOrganizationStart(discoveredOrganization: DiscoveredOrganization) {
         val organization = discoveredOrganization.organization
@@ -155,6 +157,12 @@ internal fun DiscoveryScreen(
             )
         if (directLoginOrganization != null && shouldDirectLoginConfigEnabled) {
             handleDiscoveryOrganizationStart(directLoginOrganization)
+        }
+    }
+
+    LaunchedEffect(shouldAutomaticallyCreateOrganization) {
+        if (shouldAutomaticallyCreateOrganization) {
+            handleDiscoveryOrganizationCreate()
         }
     }
 
