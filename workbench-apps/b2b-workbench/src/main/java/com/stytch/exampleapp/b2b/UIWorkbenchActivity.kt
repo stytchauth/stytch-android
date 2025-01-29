@@ -177,6 +177,19 @@ class UIWorkbenchActivity : ComponentActivity() {
                 )
                 onAuthenticated(::onAuthentication)
             }.build()
+    private val discoveryConfigWithDirectCreateOrganization =
+        StytchB2BUI
+            .Builder()
+            .apply {
+                activity(this@UIWorkbenchActivity)
+                productConfig(
+                    defaultConfig.copy(
+                        authFlowType = AuthFlowType.DISCOVERY,
+                        directCreateOrganizationForNoMembership = true,
+                    ),
+                )
+                onAuthenticated(::onAuthentication)
+            }.build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,6 +224,9 @@ class UIWorkbenchActivity : ComponentActivity() {
                 }
                 Button(onClick = discoveryConfigWithEOTP::authenticate) {
                     Text("Launch Discovery Flow With EOTP Authentication")
+                }
+                Button(onClick = discoveryConfigWithDirectCreateOrganization::authenticate) {
+                    Text("Launch Discovery Flow With Direct Create Org")
                 }
                 Button(onClick = { StytchB2BClient.sessions.revoke(B2BSessions.RevokeParams(true)) {} }) {
                     Text("Log out")
