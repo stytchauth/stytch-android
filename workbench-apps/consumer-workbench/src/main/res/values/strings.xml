@@ -46,6 +46,7 @@
     <string name="oauth_google_onetap">Login with Google OneTap</string>
     <string name="oauth_google_thirdparty">Login with Google (Legacy)</string>
     <string name="oauth_github">Login with Github</string>
+    <string name="oauth_github_oneshot">Login with Github (Oneshot)</string>
     <string name="oauth_gitlab">Login With Gitlab</string>
     <string name="oauth_linkedin">Login With Linkedin</string>
     <string name="oauth_microsoft">Login With Microsoft</string>

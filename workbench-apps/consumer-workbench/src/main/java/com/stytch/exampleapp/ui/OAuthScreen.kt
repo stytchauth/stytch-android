@@ -79,6 +79,11 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_github_oneshot),
+                onClick = { viewModel.loginWithThirdPartyOAuthOneShot(OAuthProvider.GITHUB) },
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_gitlab),
                 onClick = { viewModel.loginWithThirdPartyOAuth(context, OAuthProvider.GITLAB) },
             )

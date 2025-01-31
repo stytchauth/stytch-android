@@ -194,3 +194,11 @@ public data class UnexpectedCredentialType(
 ) : StytchSDKError(
         message = "Unexpected type of credential: $credentialType",
     )
+
+public data object NoBrowserFound : StytchSDKError("No supported browser was found on this device")
+
+public data object NoURIFound : StytchSDKError("No OAuth URI could be found in the bundle")
+
+public data object UserCanceled : StytchSDKError("The user canceled the OAuth flow")
+
+public data object NoActivityProvided : StytchSDKError("You must supply a receiver activity before calling this method")
