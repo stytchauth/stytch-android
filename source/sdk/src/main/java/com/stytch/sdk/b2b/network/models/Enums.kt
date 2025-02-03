@@ -12,12 +12,14 @@ public enum class SsoJitProvisioning {
 
 @JsonClass(generateAdapter = false)
 public enum class EmailJitProvisioning {
+    ALL_ALLOWED,
     RESTRICTED,
     NOT_ALLOWED,
 }
 
 @JsonClass(generateAdapter = false)
 public enum class OAuthTenantJitProvisioning {
+    ALL_ALLOWED,
     RESTRICTED,
     NOT_ALLOWED,
 }
