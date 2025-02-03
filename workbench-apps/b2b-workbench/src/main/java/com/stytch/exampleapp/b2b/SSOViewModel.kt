@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import kotlinx.coroutines.CoroutineScope
@@ -134,6 +135,28 @@ class SSOViewModel : ViewModel() {
                 connectionId = ssoConnectionId.text,
             )
         StytchB2BClient.sso.start(params)
+    }
+
+    fun startSSOOneShot() {
+        viewModelScope.launchAndToggleLoadingState {
+            val response =
+                StytchB2BClient.sso.getTokenForProvider(
+                    SSO.GetTokenForProviderParams(connectionId = ssoConnectionId.text),
+                )
+            _currentResponse.value =
+                when (response) {
+                    is StytchResult.Success -> {
+                        StytchB2BClient.sso
+                            .authenticate(
+                                SSO.AuthenticateParams(
+                                    ssoToken = response.value,
+                                    sessionDurationMinutes = 30,
+                                ),
+                            ).toFriendlyDisplay()
+                    }
+                    is StytchResult.Error -> response.toFriendlyDisplay()
+                }
+        }
     }
 
     fun authenticateSSO(

@@ -41,6 +41,16 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
                 text = stringResource(id = R.string.oauth_discovery_start),
                 onClick = { viewModel.startGoogleDiscoveryOAuthFlow(context) },
             )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_start_oneshot),
+                onClick = { viewModel.startGoogleOauthFlowOneShot() },
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.oauth_discovery_start_oneshot),
+                onClick = { viewModel.startGoogleDiscoveryOauthFlowOneShot() },
+            )
         }
         Column(
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),

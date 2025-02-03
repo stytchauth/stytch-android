@@ -78,6 +78,11 @@ fun SSOScreen(viewModel: SSOViewModel) {
             )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.sso_start_oneshot),
+                onClick = { viewModel.startSSOOneShot() },
+            )
+            StytchButton(
+                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.sso_get_connections),
                 onClick = viewModel::getConnections,
             )
