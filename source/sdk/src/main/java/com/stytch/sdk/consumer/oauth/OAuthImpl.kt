@@ -1,18 +1,11 @@
 package com.stytch.sdk.consumer.oauth
 
-import android.app.Activity.RESULT_CANCELED
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.errors.NoURIFound
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
-import com.stytch.sdk.common.errors.UserCanceled
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.sso.ProvidedReceiverManager
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -24,8 +17,6 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 internal class OAuthImpl(
     private val externalScope: CoroutineScope,
@@ -33,41 +24,10 @@ internal class OAuthImpl(
     private val sessionStorage: ConsumerSessionStorage,
     private val api: StytchApi.OAuth,
     private val pkcePairManager: PKCEPairManager,
+    private val providedReceiverManager: ProvidedReceiverManager = ProvidedReceiverManager,
 ) : OAuth {
-    private var oauthReceiverActivity: ComponentActivity? = null
-
-    private var continuation: Continuation<StytchResult<String>>? = null
-    private var launcher: ActivityResultLauncher<Intent>? = null
-
-    private fun getOAuthReceiver(
-        continuation: Continuation<StytchResult<String>>,
-    ): Pair<ComponentActivity?, ActivityResultLauncher<Intent>?> {
-        this.continuation = continuation
-        return Pair(oauthReceiverActivity, launcher)
-    }
-
     override fun setOAuthReceiverActivity(activity: ComponentActivity?) {
-        oauthReceiverActivity = activity
-        launcher =
-            activity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                val response =
-                    when (result.resultCode) {
-                        RESULT_OK -> {
-                            result.data?.data?.getQueryParameter(QUERY_TOKEN)?.let {
-                                StytchResult.Success(it)
-                            } ?: StytchResult.Error(NoURIFound)
-                        }
-
-                        RESULT_CANCELED -> {
-                            StytchResult.Error(UserCanceled)
-                        }
-
-                        else -> {
-                            StytchResult.Error(UserCanceled) // TODO: Fix this
-                        }
-                    }
-                continuation?.resume(response)
-            }
+        ProvidedReceiverManager.configureReceiver(activity)
     }
 
     override val googleOneTap: OAuth.GoogleOneTap =
@@ -85,7 +45,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "apple",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val amazon: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -93,7 +53,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "amazon",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val bitbucket: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -101,7 +61,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "bitbucket",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val coinbase: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -109,7 +69,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "coinbase",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val discord: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -117,7 +77,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "discord",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val facebook: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -125,7 +85,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "facebook",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val figma: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -133,7 +93,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "figma",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val github: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -141,7 +101,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "github",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val gitlab: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -149,7 +109,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "gitlab",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val google: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -157,7 +117,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "google",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val linkedin: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -165,7 +125,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "linkedin",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val microsoft: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -173,7 +133,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "microsoft",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val salesforce: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -181,7 +141,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "salesforce",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val slack: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -189,7 +149,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "slack",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val snapchat: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -197,7 +157,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "snapchat",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val tiktok: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -205,7 +165,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "tiktok",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val twitch: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -213,7 +173,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "twitch",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val twitter: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -221,7 +181,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "twitter",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
     override val yahoo: OAuth.ThirdParty =
         ThirdPartyOAuthImpl(
@@ -229,7 +189,7 @@ internal class OAuthImpl(
             dispatchers,
             pkcePairManager,
             providerName = "yahoo",
-            ::getOAuthReceiver,
+            providedReceiverManager::getReceiverConfiguration,
         )
 
     override suspend fun authenticate(parameters: OAuth.ThirdParty.AuthenticateParameters): OAuthAuthenticatedResponse {
