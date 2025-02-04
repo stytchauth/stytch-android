@@ -53,5 +53,8 @@ internal object ProvidedReceiverManager {
                 continuation?.resume(response)
                 continuation = null
             }
+        if (activity == null) {
+            continuation = null
+        }
     }
 }
