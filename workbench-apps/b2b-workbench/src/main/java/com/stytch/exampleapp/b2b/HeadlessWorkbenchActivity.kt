@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.stytch.exampleapp.b2b.theme.AppTheme
 import com.stytch.exampleapp.b2b.ui.AppScreen
+import com.stytch.sdk.b2b.StytchB2BClient
 
 internal const val SSO_REQUEST_ID = 2
 internal const val B2B_OAUTH_REQUEST = 3
@@ -26,6 +27,8 @@ class HeadlessWorkbenchActivity : FragmentActivity() {
     private val scimViewModel: SCIMViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        StytchB2BClient.oauth.setOAuthReceiverActivity(this)
+        StytchB2BClient.sso.setSSOReceiverActivity(this)
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
@@ -47,6 +50,12 @@ class HeadlessWorkbenchActivity : FragmentActivity() {
         if (intent.action == Intent.ACTION_VIEW) {
             handleIntent(intent)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        StytchB2BClient.oauth.setOAuthReceiverActivity(null)
+        StytchB2BClient.sso.setSSOReceiverActivity(null)
     }
 
     private fun handleIntent(intent: Intent) {

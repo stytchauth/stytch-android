@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import android.app.Activity
+import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
@@ -13,6 +14,7 @@ import com.stytch.sdk.b2b.SSOAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -26,6 +28,8 @@ import java.util.concurrent.CompletableFuture
  * - SAML
  */
 public interface SSO {
+    public fun setSSOReceiverActivity(activity: ComponentActivity?)
+
     /**
      * Data class used for wrapping parameters used in SSO start calls
      * @property context
@@ -55,6 +59,39 @@ public interface SSO {
      * @param params required for beginning an SSO authentication flow
      */
     public fun start(params: StartParams)
+
+    /**
+     * Data class used for wrapping parameters to start a third party OAuth flow and retrieve a token
+     * @property loginRedirectUrl The url an existing user is redirected to after authenticating with the identity
+     * provider. This should be a url that redirects back to your app. If this value is not passed, the default
+     * login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL,
+     * an error is returned.
+     * @property signupRedirectUrl The url a new user is redirected to after authenticating with the identity
+     * provider.
+     * This should be a url that redirects back to your app. If this value is not passed, the default sign-up
+     * redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an
+     * error is returned.
+     * @property customScopes Any additional scopes to be requested from the identity provider
+     * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
+     */
+    public data class GetTokenForProviderParams
+        @JvmOverloads
+        constructor(
+            val connectionId: String,
+            val loginRedirectUrl: String? = null,
+            val signupRedirectUrl: String? = null,
+        )
+
+    public suspend fun getTokenForProvider(parameters: GetTokenForProviderParams): StytchResult<String>
+
+    public fun getTokenForProvider(
+        parameters: GetTokenForProviderParams,
+        callback: (StytchResult<String>) -> Unit,
+    )
+
+    public fun getTokenForProviderCompletable(
+        parameters: GetTokenForProviderParams,
+    ): CompletableFuture<StytchResult<String>>
 
     /**
      * Data class used for wrapping parameters used in SSO Authenticate calls

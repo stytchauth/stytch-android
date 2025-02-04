@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.common.DeeplinkHandledStatus
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sso.SSOError
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.oauth.OAuth
@@ -87,6 +88,53 @@ class OAuthViewModel(
             OAuthProvider.TWITCH -> StytchClient.oauth.twitch.start(startParameters)
             OAuthProvider.YAHOO -> StytchClient.oauth.yahoo.start(startParameters)
         }
+    }
+
+    fun loginWithThirdPartyOAuthOneShot(provider: OAuthProvider) {
+        val startParameters =
+            OAuth.ThirdParty.GetTokenForProviderParams(
+                loginRedirectUrl = "app://oauth",
+                signupRedirectUrl = "app://oauth",
+            )
+        viewModelScope
+            .launch {
+                _loadingState.value = true
+                val result =
+                    when (provider) {
+                        OAuthProvider.APPLE -> StytchClient.oauth.apple.getTokenForProvider(startParameters)
+                        OAuthProvider.AMAZON -> StytchClient.oauth.amazon.getTokenForProvider(startParameters)
+                        OAuthProvider.BITBUCKET -> StytchClient.oauth.bitbucket.getTokenForProvider(startParameters)
+                        OAuthProvider.COINBASE -> StytchClient.oauth.coinbase.getTokenForProvider(startParameters)
+                        OAuthProvider.DISCORD -> StytchClient.oauth.discord.getTokenForProvider(startParameters)
+                        OAuthProvider.FACEBOOK -> StytchClient.oauth.facebook.getTokenForProvider(startParameters)
+                        OAuthProvider.GOOGLE -> StytchClient.oauth.google.getTokenForProvider(startParameters)
+                        OAuthProvider.GITHUB -> StytchClient.oauth.github.getTokenForProvider(startParameters)
+                        OAuthProvider.GITLAB -> StytchClient.oauth.gitlab.getTokenForProvider(startParameters)
+                        OAuthProvider.LINKEDIN -> StytchClient.oauth.linkedin.getTokenForProvider(startParameters)
+                        OAuthProvider.MICROSOFT -> StytchClient.oauth.microsoft.getTokenForProvider(startParameters)
+                        OAuthProvider.SALESFORCE -> StytchClient.oauth.salesforce.getTokenForProvider(startParameters)
+                        OAuthProvider.SLACK -> StytchClient.oauth.slack.getTokenForProvider(startParameters)
+                        OAuthProvider.TWITCH -> StytchClient.oauth.twitch.getTokenForProvider(startParameters)
+                        OAuthProvider.YAHOO -> StytchClient.oauth.yahoo.getTokenForProvider(startParameters)
+                    }
+                _currentResponse.value =
+                    when (result) {
+                        is StytchResult.Success -> {
+                            StytchClient.oauth
+                                .authenticate(
+                                    OAuth.ThirdParty.AuthenticateParameters(
+                                        token = result.value,
+                                        sessionDurationMinutes = 30,
+                                    ),
+                                ).toFriendlyDisplay()
+                        }
+                        is StytchResult.Error -> {
+                            result.toFriendlyDisplay()
+                        }
+                    }
+            }.invokeOnCompletion {
+                _loadingState.value = false
+            }
     }
 
     fun authenticateThirdPartyOAuth(
