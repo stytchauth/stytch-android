@@ -2177,6 +2177,6 @@ public enum class StytchAPIErrorType(public val type: String) {
         fun fromString(typeString: String?): StytchAPIErrorType =
             typeString?.uppercase(Locale.ENGLISH)?.let {
                 valueOf(it)
-            } ?: UNKNOWN
+            } ?: UNKNOWN_ERROR
     }
 }
