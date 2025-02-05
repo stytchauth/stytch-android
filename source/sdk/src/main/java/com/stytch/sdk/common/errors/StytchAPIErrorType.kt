@@ -1,7 +1,7 @@
 package com.stytch.sdk.common.errors
 import java.util.Locale
 
-@Suppress("ktlint:standard:max-line-length")
+@Suppress("MaxLineLength", "ktlint:standard:max-line-length", "ktlint:standard:parameter-wrapping")
 public enum class StytchAPIErrorType(public val type: String) {
     ACTION_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS("action_available_only_for_active_members"),
     ACTIVE_SCIM_CONNECTION_EXISTS("active_scim_connection_exists"),
@@ -735,4 +735,3 @@ public enum class StytchAPIErrorType(public val type: String) {
             } ?: UNKNOWN
     }
 }
-
