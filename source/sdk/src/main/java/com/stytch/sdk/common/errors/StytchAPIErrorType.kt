@@ -1988,8 +1988,8 @@ public enum class StytchAPIErrorType(public val type: String) {
     UNAVAILABLE_ENDPOINT(
         type = "unavailable_endpoint",
     ),
-    UNKNOWN(
-        type = "unknown",
+    UNKNOWN_ERROR(
+        type = "unknown_error",
     ),
     UNSOLICITED_OIDC_RESPONSE(
         type = "unsolicited_oidc_response",
