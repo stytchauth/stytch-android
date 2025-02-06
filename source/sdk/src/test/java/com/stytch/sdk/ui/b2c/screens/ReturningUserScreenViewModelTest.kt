@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2c.screens
 import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
@@ -109,7 +110,7 @@ internal class ReturningUserScreenViewModelTest {
                 mockk(relaxed = true) {
                     every { exception } returns
                         mockk<StytchAPIError> {
-                            every { errorType } returns "reset_password"
+                            every { errorType } returns StytchAPIErrorType.RESET_PASSWORD
                         }
                 }
             coEvery { mockStytchClient.passwords.authenticate(any()) } returns result
@@ -139,7 +140,7 @@ internal class ReturningUserScreenViewModelTest {
                 mockk(relaxed = true) {
                     every { exception } returns
                         mockk<StytchAPIError> {
-                            every { errorType } returns "reset_password"
+                            every { errorType } returns StytchAPIErrorType.RESET_PASSWORD
                         }
                 }
             coEvery { mockStytchClient.passwords.authenticate(any()) } returns result
@@ -161,7 +162,7 @@ internal class ReturningUserScreenViewModelTest {
                 mockk(relaxed = true) {
                     every { exception } returns
                         mockk<StytchAPIError> {
-                            every { errorType } returns "something_else"
+                            every { errorType } returns StytchAPIErrorType.UNKNOWN_ERROR
                             every { message } returns "Something happened in the API"
                         }
                 }

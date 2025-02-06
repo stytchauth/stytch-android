@@ -3,6 +3,7 @@ package com.stytch.sdk.common.extensions
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchAPISchemaError
 import com.stytch.sdk.common.errors.StytchAPIUnreachableError
 import com.stytch.sdk.common.errors.StytchError
@@ -42,7 +43,7 @@ internal fun HttpException.toStytchError(): StytchError {
     return when (parsedErrorResponse) {
         is StytchErrorResponse ->
             StytchAPIError(
-                errorType = parsedErrorResponse.errorType,
+                errorType = StytchAPIErrorType.fromString(parsedErrorResponse.errorType),
                 message = parsedErrorResponse.errorMessage ?: "",
                 url = parsedErrorResponse.errorUrl,
                 requestId = parsedErrorResponse.requestId,

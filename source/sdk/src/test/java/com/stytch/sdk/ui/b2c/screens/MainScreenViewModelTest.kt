@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2c.screens
 import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.ui.b2c.data.EventState
@@ -330,7 +331,11 @@ internal class MainScreenViewModelTest {
             every { mockStytchClient.publicToken } returns "publicToken"
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "Something went wrong", statusCode = 400),
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                        message = "Something went wrong",
+                        statusCode = 400,
+                    ),
                 )
             val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
@@ -360,7 +365,11 @@ internal class MainScreenViewModelTest {
         runTest(dispatcher) {
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "Something went wrong", statusCode = 400),
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                        message = "Something went wrong",
+                        statusCode = 400,
+                    ),
                 )
             val route = viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
@@ -389,7 +398,11 @@ internal class MainScreenViewModelTest {
             every { mockStytchClient.publicToken } returns "publicToken"
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "Something went wrong", statusCode = 400),
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                        message = "Something went wrong",
+                        statusCode = 400,
+                    ),
                 )
             val route = viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
             assert(route == null)
@@ -428,7 +441,11 @@ internal class MainScreenViewModelTest {
             // error state
             coEvery { mockStytchClient.otps.sms.loginOrCreate(any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "Something went wrong", statusCode = 400),
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                        message = "Something went wrong",
+                        statusCode = 400,
+                    ),
                 )
             viewModel.sendSmsOTP(mockOptions, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
@@ -467,7 +484,11 @@ internal class MainScreenViewModelTest {
             // error state
             coEvery { mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "Something went wrong", statusCode = 400),
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                        message = "Something went wrong",
+                        statusCode = 400,
+                    ),
                 )
             viewModel.sendWhatsAppOTP(mockOptions, this)
             assert(!viewModel.uiState.value.showLoadingDialog)

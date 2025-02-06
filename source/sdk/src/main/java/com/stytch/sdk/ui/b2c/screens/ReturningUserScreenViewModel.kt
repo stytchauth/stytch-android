@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
@@ -93,7 +94,7 @@ internal class ReturningUserScreenViewModel(
                 is StytchResult.Error -> {
                     when (val exception = result.exception) {
                         is StytchAPIError -> {
-                            if (exception.errorType.contains("reset_password")) {
+                            if (exception.errorType == StytchAPIErrorType.RESET_PASSWORD) {
                                 sendPasswordResetAndNavigateAppropriately(
                                     email = uiState.value.emailState.emailAddress,
                                     passwordOptions = passwordOptions,
