@@ -133,6 +133,7 @@ public object StytchB2BClient {
         try {
             deviceInfo = context.getDeviceInfo()
             this.publicToken = publicToken
+            this.stytchClientOptions = options
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             sessionStorage = B2BSessionStorage(StorageHelper)
