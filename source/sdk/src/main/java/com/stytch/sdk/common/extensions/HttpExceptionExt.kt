@@ -41,14 +41,18 @@ internal fun HttpException.toStytchError(): StytchError {
         }
     StytchLog.w("http error code: $errorCode, errorResponse: $parsedErrorResponse")
     return when (parsedErrorResponse) {
-        is StytchErrorResponse ->
+        is StytchErrorResponse -> {
+            val errorType = StytchAPIErrorType.fromString(parsedErrorResponse.errorType)
             StytchAPIError(
-                errorType = StytchAPIErrorType.fromString(parsedErrorResponse.errorType),
-                message = parsedErrorResponse.errorMessage ?: "",
+                errorType = errorType,
+                message =
+                    (if (errorType == StytchAPIErrorType.UNKNOWN_ERROR) source else parsedErrorResponse.errorMessage)
+                        ?: "",
                 url = parsedErrorResponse.errorUrl,
                 requestId = parsedErrorResponse.requestId,
                 statusCode = parsedErrorResponse.statusCode,
             )
+        }
         is StytchSchemaError ->
             StytchAPISchemaError(
                 message = "Request does not match expected schema: ${parsedErrorResponse.body}",
