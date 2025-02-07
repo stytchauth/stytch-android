@@ -9,6 +9,7 @@ import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
@@ -96,7 +97,7 @@ internal class OAuthImplTest {
             every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("code-challenge", "code-verifier")
             coEvery { mockApi.authenticate(any(), any(), any(), any(), any()) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "something_went_wrong", message = "testing", statusCode = 400),
+                    StytchAPIError(errorType = StytchAPIErrorType.UNKNOWN_ERROR, message = "testing", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)

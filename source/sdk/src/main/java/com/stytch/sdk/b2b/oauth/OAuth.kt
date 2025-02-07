@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b.oauth
 
 import android.app.Activity
+import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -12,6 +14,8 @@ import java.util.concurrent.CompletableFuture
  * configured them within your Stytch Dashboard.
  */
 public interface OAuth {
+    public fun setOAuthReceiverActivity(activity: ComponentActivity?)
+
     /**
      * An interface describing the methods and parameters available for starting an OAuth or OAuth discovery flow
      * for a specific provider
@@ -59,6 +63,28 @@ public interface OAuth {
          * Exposes an instance of the [ProviderDiscovery] interface
          */
         public val discovery: ProviderDiscovery
+
+        public data class GetTokenForProviderParams
+            @JvmOverloads
+            constructor(
+                val organizationId: String? = null,
+                val organizationSlug: String? = null,
+                val loginRedirectUrl: String? = null,
+                val signupRedirectUrl: String? = null,
+                val customScopes: List<String>? = null,
+                val providerParams: Map<String, String>? = null,
+            )
+
+        public suspend fun getTokenForProvider(parameters: GetTokenForProviderParams): StytchResult<String>
+
+        public fun getTokenForProvider(
+            parameters: GetTokenForProviderParams,
+            callback: (StytchResult<String>) -> Unit,
+        )
+
+        public fun getTokenForProviderCompletable(
+            parameters: GetTokenForProviderParams,
+        ): CompletableFuture<StytchResult<String>>
     }
 
     /**
@@ -94,6 +120,39 @@ public interface OAuth {
          * @param parameters the parameters necessary to start the flow
          */
         public fun start(parameters: DiscoveryStartParameters)
+
+        /**
+         * Data class used for wrapping parameters to start a third party OAuth flow and retrieve a token
+         * @property loginRedirectUrl The url an existing user is redirected to after authenticating with the identity
+         * provider. This should be a url that redirects back to your app. If this value is not passed, the default
+         * login redirect URL set in the Stytch Dashboard is used. If you have not set a default login redirect URL,
+         * an error is returned.
+         * @property signupRedirectUrl The url a new user is redirected to after authenticating with the identity
+         * provider.
+         * This should be a url that redirects back to your app. If this value is not passed, the default sign-up
+         * redirect URL set in the Stytch Dashboard is used. If you have not set a default sign-up redirect URL, an
+         * error is returned.
+         * @property customScopes Any additional scopes to be requested from the identity provider
+         * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
+         */
+        public data class GetTokenForProviderParams
+            @JvmOverloads
+            constructor(
+                val discoveryRedirectUrl: String? = null,
+                val customScopes: List<String>? = null,
+                val providerParams: Map<String, String>? = null,
+            )
+
+        public suspend fun getTokenForProvider(parameters: GetTokenForProviderParams): StytchResult<String>
+
+        public fun getTokenForProvider(
+            parameters: GetTokenForProviderParams,
+            callback: (StytchResult<String>) -> Unit,
+        )
+
+        public fun getTokenForProviderCompletable(
+            parameters: GetTokenForProviderParams,
+        ): CompletableFuture<StytchResult<String>>
     }
 
     /**

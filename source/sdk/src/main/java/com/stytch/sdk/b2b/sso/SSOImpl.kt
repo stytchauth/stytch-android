@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sso
 
+import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
@@ -17,14 +18,17 @@ import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.TEST_API_URL
+import com.stytch.sdk.common.errors.NoActivityProvided
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.common.sso.ProvidedReceiverManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.utils.buildUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CompletableFuture
 
@@ -34,7 +38,12 @@ internal class SSOImpl(
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.SSO,
     private val pkcePairManager: PKCEPairManager,
+    private val providedReceiverManager: ProvidedReceiverManager = ProvidedReceiverManager,
 ) : SSO {
+    override fun setSSOReceiverActivity(activity: ComponentActivity?) {
+        providedReceiverManager.configureReceiver(activity)
+    }
+
     override fun start(params: SSO.StartParams) {
         val host =
             StytchB2BClient.bootstrapData.cnameDomain?.let {
@@ -53,6 +62,51 @@ internal class SSOImpl(
         intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
         params.context.startActivityForResult(intent, params.ssoAuthRequestIdentifier)
     }
+
+    override suspend fun getTokenForProvider(parameters: SSO.GetTokenForProviderParams): StytchResult<String> =
+        suspendCancellableCoroutine { continuation ->
+            providedReceiverManager.getReceiverConfiguration(continuation).let { (activity, launcher) ->
+                if (activity == null || launcher == null) {
+                    continuation.resume(
+                        StytchResult.Error(NoActivityProvided),
+                    ) { cause, _, _ -> continuation.cancel(cause) }
+                    return@suspendCancellableCoroutine
+                }
+                val host =
+                    StytchB2BClient.bootstrapData.cnameDomain?.let {
+                        "https://$it/v1/"
+                    } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                val potentialParameters =
+                    mapOf(
+                        "connection_id" to parameters.connectionId,
+                        "public_token" to StytchB2BApi.publicToken,
+                        "pkce_code_challenge" to pkcePairManager.generateAndReturnPKCECodePair().codeChallenge,
+                        "login_redirect_url" to parameters.loginRedirectUrl,
+                        "signup_redirect_url" to parameters.signupRedirectUrl,
+                    )
+                val requestUri = buildUri("${host}public/sso/start", potentialParameters)
+                val intent = SSOManagerActivity.createBaseIntent(activity)
+                intent.putExtra(SSOManagerActivity.URI_KEY, requestUri.toString())
+                launcher.launch(intent)
+            }
+        }
+
+    override fun getTokenForProvider(
+        parameters: SSO.GetTokenForProviderParams,
+        callback: (StytchResult<String>) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            callback(getTokenForProvider(parameters))
+        }
+    }
+
+    override fun getTokenForProviderCompletable(
+        parameters: SSO.GetTokenForProviderParams,
+    ): CompletableFuture<StytchResult<String>> =
+        externalScope
+            .async {
+                getTokenForProvider(parameters)
+            }.asCompletableFuture()
 
     override suspend fun authenticate(params: SSO.AuthenticateParams): SSOAuthenticateResponse {
         val codeVerifier =

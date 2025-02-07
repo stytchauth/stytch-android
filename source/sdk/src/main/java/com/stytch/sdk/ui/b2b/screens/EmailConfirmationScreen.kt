@@ -17,7 +17,7 @@ import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
+import com.stytch.sdk.ui.b2b.usecases.UseSendCorrectPasswordReset
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchTextButton
@@ -28,10 +28,12 @@ internal class EmailConfirmationScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val usePasswordResetByEmailStart =
-        UsePasswordResetByEmailStart(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useSendCorrectPasswordReset =
+        UseSendCorrectPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request, ::request)
 
     fun resetEverything() = dispatch(ResetEverything)
+
+    fun resendPasswordResetEmail() = useSendCorrectPasswordReset()
 }
 
 @Composable
@@ -86,7 +88,7 @@ internal fun EmailConfirmationScreen(
                         ),
                     )
                 },
-            onBottomTextClicked = { viewModel.usePasswordResetByEmailStart() },
+            onBottomTextClicked = viewModel::resendPasswordResetEmail,
         )
     }
 
@@ -108,7 +110,7 @@ internal fun EmailConfirmationScreen(
                         ),
                     )
                 },
-            onBottomTextClicked = viewModel::resetEverything,
+            onBottomTextClicked = viewModel::resendPasswordResetEmail,
         )
     }
 }

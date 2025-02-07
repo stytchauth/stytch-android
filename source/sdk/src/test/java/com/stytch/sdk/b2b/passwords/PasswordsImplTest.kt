@@ -1,5 +1,7 @@
 package com.stytch.sdk.b2b.passwords
 
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryAuthenticateResponse
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryResetByEmailResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
@@ -7,6 +9,8 @@ import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryAuthenticateResponseData
+import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryResetByEmailResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
 import com.stytch.sdk.b2b.network.models.PasswordResetByExistingPasswordResponseData
 import com.stytch.sdk.b2b.network.models.PasswordsAuthenticateResponseData
@@ -48,6 +52,9 @@ internal class PasswordsImplTest {
     private lateinit var mockApi: StytchB2BApi.Passwords
 
     @MockK
+    private lateinit var mockDiscoveryApi: StytchB2BApi.Passwords.Discovery
+
+    @MockK
     private lateinit var mockSessionStorage: B2BSessionStorage
 
     @MockK
@@ -67,6 +74,7 @@ internal class PasswordsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
         every { mockSessionStorage.intermediateSessionToken } returns ""
+        every { mockSessionStorage.intermediateSessionToken = any() } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             PasswordsImpl(
@@ -75,6 +83,7 @@ internal class PasswordsImplTest {
                 sessionStorage = mockSessionStorage,
                 pkcePairManager = mockPKCEPairManager,
                 api = mockApi,
+                discoveryApi = mockDiscoveryApi,
             )
     }
 
@@ -241,6 +250,75 @@ internal class PasswordsImplTest {
         coEvery { mockApi.strengthCheck(any(), any()) } returns mockkResponse
         val mockCallback = spyk<(PasswordStrengthCheckResponse) -> Unit>()
         impl.strengthCheck(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(mockkResponse) }
+    }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl resetByEmailStart delegates to api`() =
+        runBlocking {
+            every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
+            val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
+            coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) } returns
+                mockkResponse
+            val response = impl.discovery.resetByEmailStart(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl resetByEmailStart with callback calls callback method`() {
+        every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
+        val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
+        coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) } returns mockkResponse
+        val mockCallback = spyk<(BaseResponse) -> Unit>()
+        impl.discovery.resetByEmailStart(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(mockkResponse) }
+    }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl resetByEmail delegates to api`() =
+        runBlocking {
+            every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
+            val mockkResponse =
+                StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(
+                    mockk(relaxed = true),
+                )
+            coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+            val response = impl.discovery.resetByEmail(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl resetByEmail with callback calls callback method`() {
+        every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
+        val mockkResponse = StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(mockk(relaxed = true))
+        coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+        val mockCallback = spyk<(B2BPasswordDiscoveryResetByEmailResponse) -> Unit>()
+        impl.discovery.resetByEmail(mockk(relaxed = true), mockCallback)
+        verify { mockCallback.invoke(mockkResponse) }
+    }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl authenticate delegates to api`() =
+        runBlocking {
+            val mockkResponse =
+                StytchResult.Success<B2BPasswordDiscoveryAuthenticateResponseData>(
+                    mockk(relaxed = true),
+                )
+            every { mockSessionStorage.intermediateSessionToken } returns ""
+            coEvery { mockDiscoveryApi.authenticate(any(), any()) } returns mockkResponse
+            val response = impl.discovery.authenticate(mockk(relaxed = true))
+            assert(response is StytchResult.Success)
+            coVerify { mockDiscoveryApi.authenticate(any(), any()) }
+        }
+
+    @Test
+    fun `PasswordsImpl DiscoveryImpl authenticate with callback calls callback method`() {
+        val mockkResponse = StytchResult.Success<B2BPasswordDiscoveryAuthenticateResponseData>(mockk(relaxed = true))
+        coEvery { mockDiscoveryApi.authenticate(any(), any()) } returns mockkResponse
+        val mockCallback = spyk<(B2BPasswordDiscoveryAuthenticateResponse) -> Unit>()
+        impl.discovery.authenticate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
     }
 }

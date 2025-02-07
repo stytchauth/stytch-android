@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
@@ -50,6 +51,7 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 import java.util.Date
+import java.util.UUID
 
 internal class StytchClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -131,8 +133,9 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
-        stytchClientObject.configure(mContextMock, "")
-        verify { StytchApi.configure("", deviceInfo) }
+        val publicToken = UUID.randomUUID().toString()
+        stytchClientObject.configure(mContextMock, publicToken)
+        verify { StytchApi.configure(publicToken, deviceInfo) }
     }
 
     @Test
@@ -140,14 +143,14 @@ internal class StytchClientTest {
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
-        stytchClientObject.configure(mContextMock, "")
+        stytchClientObject.configure(mContextMock, UUID.randomUUID().toString())
         verify { StorageHelper.initialize(mContextMock) }
     }
 
     @Test
     fun `should fetch bootstrap data when calling StytchClient configure`() {
         runBlocking {
-            StytchClient.configure(mContextMock, "")
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify { StytchApi.getBootstrapData() }
         }
     }
@@ -155,7 +158,7 @@ internal class StytchClientTest {
     @Test
     fun `configures DFP when calling StytchClient configure`() {
         runBlocking {
-            StytchClient.configure(mContextMock, "")
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             verify(exactly = 1) { StytchApi.configureDFP(any(), any(), any(), any()) }
         }
     }
@@ -170,7 +173,7 @@ internal class StytchClientTest {
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
             every { StorageHelper.loadValue(any()) } returns null
-            StytchClient.configure(mContextMock, "")
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, but expired, no authentication/updater
@@ -186,7 +189,7 @@ internal class StytchClientTest {
                     .lenient()
                     .toJson(mockExpiredSession)
             every { StorageHelper.loadValue(any()) } returns mockExpiredSessionJSON
-            StytchClient.configure(mContextMock, "")
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, and valid, yes authentication/updater
@@ -214,7 +217,7 @@ internal class StytchClientTest {
                 }
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
-            StytchClient.configure(mContextMock, "", StytchClientOptions(), callback)
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString(), StytchClientOptions(), callback)
             // callback is called with expected value
             verify(exactly = 1) { callback(true) }
             // isInitialized has fired
@@ -228,7 +231,98 @@ internal class StytchClientTest {
         val deviceInfo = DeviceInfo()
         val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
         every { mContextMock.getDeviceInfo() } returns deviceInfo
-        stytchClientObject.configure(mContextMock, "")
+        stytchClientObject.configure(mContextMock, UUID.randomUUID().toString())
+    }
+
+    @Test
+    fun `calling StytchClient configure with the same public token and no options short circuits`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(mContextMock, "publicToken")
+        stytchClientObject.configure(mContextMock, "publicToken")
+        stytchClientObject.configure(mContextMock, "publicToken")
+        verify(exactly = 1) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchClient configure with different public tokens and no options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(mContextMock, "publicToken1")
+        stytchClientObject.configure(mContextMock, "publicToken2")
+        stytchClientObject.configure(mContextMock, "publicToken3")
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchClient configure with the same public token and the same options short circuits`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        verify(exactly = 1) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchClient configure with different public tokens and the same options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken1",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken2",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken3",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchClient configure with the same public tokens and different options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain1.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain2.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain3.com")),
+        )
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
     }
 
     @Test(expected = StytchSDKNotConfiguredError::class)

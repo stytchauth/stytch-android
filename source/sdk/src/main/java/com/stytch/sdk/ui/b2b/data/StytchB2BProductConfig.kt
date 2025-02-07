@@ -28,6 +28,7 @@ public data class StytchB2BProductConfig
         val oauthOptions: B2BOAuthOptions = B2BOAuthOptions(),
         val directLoginForSingleMembership: DirectLoginForSingleMembershipOptions? = null,
         val allowCreateOrganization: Boolean = true,
+        val directCreateOrganizationForNoMembership: Boolean = false,
         val mfaProductOrder: List<MfaMethod> = emptyList(),
         val mfaProductInclude: List<MfaMethod> =
             listOf(

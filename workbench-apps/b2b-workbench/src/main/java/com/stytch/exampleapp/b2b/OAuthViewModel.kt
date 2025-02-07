@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.oauth.OAuth
+import com.stytch.sdk.common.StytchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,59 @@ class OAuthViewModel : ViewModel() {
                     discoveryRedirectUrl = "app://b2bexampleapp.com/",
                 ),
             )
+        }
+    }
+
+    fun startGoogleOauthFlowOneShot() {
+        viewModelScope.launchAndToggleLoadingState {
+            val result =
+                StytchB2BClient.oauth.google.getTokenForProvider(
+                    OAuth.Provider.GetTokenForProviderParams(
+                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        loginRedirectUrl = "app://b2bOAuth",
+                        signupRedirectUrl = "app://b2bOAuth",
+                    ),
+                )
+            _currentResponse.value =
+                when (result) {
+                    is StytchResult.Success -> {
+                        StytchB2BClient.oauth
+                            .authenticate(
+                                OAuth.AuthenticateParameters(
+                                    oauthToken = result.value,
+                                    sessionDurationMinutes = 30,
+                                ),
+                            ).toFriendlyDisplay()
+                    }
+                    is StytchResult.Error -> {
+                        result.toFriendlyDisplay()
+                    }
+                }
+        }
+    }
+
+    fun startGoogleDiscoveryOauthFlowOneShot() {
+        viewModelScope.launchAndToggleLoadingState {
+            val result =
+                StytchB2BClient.oauth.google.discovery.getTokenForProvider(
+                    OAuth.ProviderDiscovery.GetTokenForProviderParams(
+                        discoveryRedirectUrl = "app://b2bOAuth",
+                    ),
+                )
+            _currentResponse.value =
+                when (result) {
+                    is StytchResult.Success -> {
+                        StytchB2BClient.oauth.discovery
+                            .authenticate(
+                                OAuth.Discovery.DiscoveryAuthenticateParameters(
+                                    discoveryOauthToken = result.value,
+                                ),
+                            ).toFriendlyDisplay()
+                    }
+                    is StytchResult.Error -> {
+                        result.toFriendlyDisplay()
+                    }
+                }
         }
     }
 

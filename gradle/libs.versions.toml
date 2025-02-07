@@ -57,6 +57,7 @@ detekt = "1.23.6"
 ksp = "2.1.0-1.0.29"
 kotlinCompilerExtension="1.5.15"
 stytchDfp="0.1.0"
+leakCanary = "2.14"
 
 [libraries]
 activity = { module = "androidx.activity:activity", version.ref = "activityKtx" }
@@ -136,6 +137,8 @@ flowRedux-compose = { module = "com.freeletics.flowredux:compose", version.ref =
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 stytch-dfp = { module = "com.stytch.dfp:dfp", version.ref = "stytchDfp" }
+leakCanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary"}
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "gradle" }
 androidLibrary = { id = "com.android.library", version.ref = "gradle" }

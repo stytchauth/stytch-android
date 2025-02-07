@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.stytch.exampleapp.theme.AppTheme
 import com.stytch.exampleapp.ui.AppScreen
+import com.stytch.sdk.consumer.StytchClient
 
 private const val SMS_CONSENT_REQUEST = 2
 const val THIRD_PARTY_OAUTH_REQUEST = 4
@@ -20,6 +21,7 @@ class MainActivity : FragmentActivity() {
     private val oauthViewModel: OAuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        StytchClient.oauth.setOAuthReceiverActivity(this)
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
@@ -29,6 +31,11 @@ class MainActivity : FragmentActivity() {
         if (intent.action == Intent.ACTION_VIEW) {
             handleIntent(intent)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        StytchClient.oauth.setOAuthReceiverActivity(null)
     }
 
     private fun handleIntent(intent: Intent) {

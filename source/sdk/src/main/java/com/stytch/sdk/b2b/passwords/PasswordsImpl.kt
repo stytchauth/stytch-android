@@ -1,10 +1,13 @@
 package com.stytch.sdk.b2b.passwords
 
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryAuthenticateResponse
+import com.stytch.sdk.b2b.B2BPasswordDiscoveryResetByEmailResponse
 import com.stytch.sdk.b2b.EmailResetResponse
 import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
 import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
+import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
@@ -27,6 +30,7 @@ internal class PasswordsImpl internal constructor(
     private val dispatchers: StytchDispatchers,
     private val sessionStorage: B2BSessionStorage,
     private val api: StytchB2BApi.Passwords,
+    private val discoveryApi: StytchB2BApi.Passwords.Discovery,
     private val pkcePairManager: PKCEPairManager,
 ) : Passwords {
     override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse =
@@ -227,4 +231,107 @@ internal class PasswordsImpl internal constructor(
             .async {
                 strengthCheck(parameters)
             }.asCompletableFuture()
+
+    override val discovery: Passwords.Discovery = DiscoveryImpl()
+
+    private inner class DiscoveryImpl : Passwords.Discovery {
+        override suspend fun resetByEmailStart(
+            parameters: Passwords.Discovery.ResetByEmailStartParameters,
+        ): BaseResponse =
+            withContext(dispatchers.io) {
+                val challengeCode: String
+                try {
+                    challengeCode = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
+                } catch (ex: Exception) {
+                    return@withContext StytchResult.Error(StytchFailedToCreateCodeChallengeError(exception = ex))
+                }
+                discoveryApi.resetByEmailStart(
+                    emailAddress = parameters.emailAddress,
+                    discoveryRedirectUrl = parameters.discoveryRedirectUrl,
+                    resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
+                    resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
+                    resetPasswordTemplateId = parameters.resetPasswordTemplateId,
+                    codeChallenge = challengeCode,
+                )
+            }
+
+        override fun resetByEmailStart(
+            parameters: Passwords.Discovery.ResetByEmailStartParameters,
+            callback: (BaseResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(resetByEmailStart(parameters))
+            }
+        }
+
+        override fun resetByEmailStartCompletable(
+            parameters: Passwords.Discovery.ResetByEmailStartParameters,
+        ): CompletableFuture<BaseResponse> =
+            externalScope
+                .async { resetByEmailStart(parameters) }
+                .asCompletableFuture()
+
+        override suspend fun resetByEmail(
+            parameters: Passwords.Discovery.ResetByEmailParameters,
+        ): B2BPasswordDiscoveryResetByEmailResponse =
+            withContext(dispatchers.io) {
+                discoveryApi.resetByEmail(
+                    passwordResetToken = parameters.passwordResetToken,
+                    password = parameters.password,
+                    codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                )
+            }.apply {
+                pkcePairManager.clearPKCECodePair()
+                if (this is StytchResult.Success) {
+                    sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                }
+            }
+
+        override fun resetByEmail(
+            parameters: Passwords.Discovery.ResetByEmailParameters,
+            callback: (B2BPasswordDiscoveryResetByEmailResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(resetByEmail(parameters))
+            }
+        }
+
+        override fun resetByEmailCompletable(
+            parameters: Passwords.Discovery.ResetByEmailParameters,
+        ): CompletableFuture<B2BPasswordDiscoveryResetByEmailResponse> =
+            externalScope
+                .async { resetByEmail(parameters) }
+                .asCompletableFuture()
+
+        override suspend fun authenticate(
+            parameters: Passwords.Discovery.AuthenticateParameters,
+        ): B2BPasswordDiscoveryAuthenticateResponse =
+            withContext(dispatchers.io) {
+                discoveryApi.authenticate(
+                    emailAddress = parameters.emailAddress,
+                    password = parameters.password,
+                )
+            }.apply {
+                if (this is StytchResult.Success) {
+                    sessionStorage.intermediateSessionToken = value.intermediateSessionToken
+                }
+            }
+
+        override fun authenticate(
+            parameters: Passwords.Discovery.AuthenticateParameters,
+            callback: (B2BPasswordDiscoveryAuthenticateResponse) -> Unit,
+        ) {
+            externalScope.launch(dispatchers.ui) {
+                callback(authenticate(parameters))
+            }
+        }
+
+        override fun authenticateCompletable(
+            parameters: Passwords.Discovery.AuthenticateParameters,
+        ): CompletableFuture<B2BPasswordDiscoveryAuthenticateResponse> =
+            externalScope
+                .async { authenticate(parameters) }
+                .asCompletableFuture()
+    }
 }

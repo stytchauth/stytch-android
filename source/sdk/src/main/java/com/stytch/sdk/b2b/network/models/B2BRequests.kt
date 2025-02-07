@@ -167,6 +167,45 @@ internal object B2BRequests {
             val email: String?,
             val password: String,
         )
+
+        object Discovery {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class ResetByEmailStartRequest(
+                @Json(name = "email_address")
+                val emailAddress: String,
+                @Json(name = "discovery_redirect_url")
+                val discoveryRedirectUrl: String?,
+                @Json(name = "reset_password_redirect_url")
+                val resetPasswordRedirectUrl: String?,
+                @Json(name = "reset_password_expiration_minutes")
+                val resetPasswordExpirationMinutes: Int?,
+                @Json(name = "reset_password_template_id")
+                val resetPasswordTemplateId: String?,
+                @Json(name = "pkce_code_challenge")
+                val codeChallenge: String,
+            )
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class ResetByEmailRequest(
+                @Json(name = "password_reset_token")
+                val passwordResetToken: String,
+                val password: String,
+                @Json(name = "pkce_code_verifier")
+                val codeVerifier: String?,
+                @Json(name = "intermediate_session_token")
+                val intermediateSessionToken: String?,
+            )
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            data class AuthenticateRequest(
+                @Json(name = "email_address")
+                val emailAddress: String,
+                val password: String,
+            )
+        }
     }
 
     object Discovery {

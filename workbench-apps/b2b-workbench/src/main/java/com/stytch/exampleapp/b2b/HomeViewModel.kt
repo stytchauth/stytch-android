@@ -166,8 +166,7 @@ class HomeViewModel(
                             result.response.result.toFriendlyDisplay()
                         }
                         // This only happens for password reset deeplinks
-                        is DeeplinkHandledStatus.ManualHandlingRequired ->
-                            "Password reset token retrieved, initiate password reset flow"
+                        is DeeplinkHandledStatus.ManualHandlingRequired -> result.token
                     }
             }.invokeOnCompletion {
                 _loadingState.value = false

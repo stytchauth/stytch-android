@@ -15,11 +15,15 @@
     <string name="passwords">Passwords</string>
     <string name="existing_password">Existing Password</string>
     <string name="new_password">New Password</string>
+    <string name="password_reset_token">Password Reset Token</string>
     <string name="button_resetByEmail">Reset By Email</string>
     <string name="button_resetByExisting">Reset By Existing</string>
     <string name="button_resetBySession">Reset By Session</string>
     <string name="button_authenticate">Authenticate</string>
     <string name="button_strengthCheck">Check New Password Strength</string>
+    <string name="button_discoveryResetByEmailStart">Discovery Reset By Email Start</string>
+    <string name="button_discoveryResetByEmail">Discovery Reset By Email</string>
+    <string name="button_discoveryAuthenticate">Discovery Authenticate</string>
     <string name="discovery">Discovery</string>
     <string name="discovery_discover">Discover Organizations</string>
     <string name="send_discovery_magic_link">Send Discovery Magic Link</string>
@@ -28,6 +32,7 @@
     <string name="sso">SSO</string>
     <string name="sso_connection_id">Connection ID</string>
     <string name="sso_start">Start SSO Flow</string>
+    <string name="sso_start_oneshot">Start SSO Oneshot Flow</string>
     <string name="sso_metadata_url">Metadata URL</string>
     <string name="sso_certificate_id">Certificate ID</string>
     <string name="sso_get_connections">Get Connections</string>
@@ -73,6 +78,8 @@
     <string name="oauth">OAuth</string>
     <string name="oauth_start">Start Google OAuth flow</string>
     <string name="oauth_discovery_start">Start Google Discovery OAuth flow</string>
+    <string name="oauth_start_oneshot">Start Google OAuth Oneshot flow</string>
+    <string name="oauth_discovery_start_oneshot">Start Google Discovery OAuth Oneshot flow</string>
     <string name="organization_search">Search Orgs By Slug</string>
     <string name="organization_member_search">Search Member By Email &amp; Org Id</string>
     <string name="get_pkce_code_pair">Get PKCE Code Pair</string>

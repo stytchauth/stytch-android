@@ -150,6 +150,26 @@ internal object B2BResponses {
         class StrengthCheckResponse(
             data: StrengthCheckResponseData,
         ) : StytchDataResponse<StrengthCheckResponseData>(data)
+
+        object Discovery {
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class ResetByEmailStartResponse(
+                data: BasicData,
+            ) : StytchDataResponse<BasicData>(data)
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class ResetByEmailResponse(
+                data: B2BPasswordDiscoveryResetByEmailResponseData,
+            ) : StytchDataResponse<B2BPasswordDiscoveryResetByEmailResponseData>(data)
+
+            @Keep
+            @JsonClass(generateAdapter = true)
+            class AuthenticateResponse(
+                data: B2BPasswordDiscoveryAuthenticateResponseData,
+            ) : StytchDataResponse<B2BPasswordDiscoveryAuthenticateResponseData>(data)
+        }
     }
 
     object Discovery {

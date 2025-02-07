@@ -689,6 +689,81 @@ internal class StytchB2BApiServiceTest {
             )
         }
     }
+
+    @Test
+    fun `check Passwords Discovery resetByEmailStart request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Passwords.Discovery.ResetByEmailStartRequest(
+                    emailAddress = "robot@stytch.com",
+                    discoveryRedirectUrl = "discovery-redirect-url",
+                    resetPasswordRedirectUrl = "reset-password-redirect-url",
+                    resetPasswordExpirationMinutes = 30,
+                    resetPasswordTemplateId = "reset-password-template-id",
+                    codeChallenge = "code-challenge",
+                )
+            requestIgnoringResponseException {
+                apiService.passwordDiscoveryResetByEmailStart(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/discovery/reset/start",
+                expectedBody =
+                    mapOf(
+                        "email_address" to parameters.emailAddress,
+                        "discovery_redirect_url" to parameters.discoveryRedirectUrl,
+                        "reset_password_redirect_url" to parameters.resetPasswordRedirectUrl,
+                        "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes,
+                        "reset_password_template_id" to parameters.resetPasswordTemplateId,
+                        "pkce_code_challenge" to parameters.codeChallenge,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords Discovery resetByEmail request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Passwords.Discovery.ResetByEmailRequest(
+                    passwordResetToken = "password-reset-token",
+                    password = "password",
+                    codeVerifier = "code-verifier",
+                    intermediateSessionToken = "intermediate-session-token",
+                )
+            requestIgnoringResponseException {
+                apiService.passwordDiscoveryResetByEmail(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/discovery/reset",
+                expectedBody =
+                    mapOf(
+                        "password_reset_token" to parameters.passwordResetToken,
+                        "password" to parameters.password,
+                        "pkce_code_verifier" to parameters.codeVerifier,
+                        "intermediate_session_token" to parameters.intermediateSessionToken,
+                    ),
+            )
+        }
+    }
+
+    @Test
+    fun `check Passwords Discovery authenticate request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Passwords.Discovery.AuthenticateRequest(
+                    emailAddress = "robot@stytch.com",
+                    password = "password",
+                )
+            requestIgnoringResponseException {
+                apiService.passwordDiscoveryAuthenticate(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/passwords/discovery/authenticate",
+                expectedBody =
+                    mapOf(
+                        "email_address" to parameters.emailAddress,
+                        "password" to parameters.password,
+                    ),
+            )
+        }
+    }
     //endregion Passwords
 
     //region Discovery

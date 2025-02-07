@@ -146,9 +146,7 @@ internal class SSOManagerActivity : Activity() {
             return intent
         }
 
-        internal fun createBaseIntent(context: Context): Intent {
-            return Intent(context, SSOManagerActivity::class.java)
-        }
+        internal fun createBaseIntent(context: Context): Intent = Intent(context, SSOManagerActivity::class.java)
 
         internal const val URI_KEY = "uri"
         private const val KEY_AUTHORIZATION_STARTED = "authStarted"
