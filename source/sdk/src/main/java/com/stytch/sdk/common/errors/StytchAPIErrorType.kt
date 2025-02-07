@@ -1,7 +1,9 @@
 package com.stytch.sdk.common.errors
 import java.util.Locale
 
-public enum class StytchAPIErrorType(public val type: String) {
+public enum class StytchAPIErrorType(
+    public val type: String,
+) {
     ACTION_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
         type = "action_available_only_for_active_members",
     ),
@@ -2175,8 +2177,10 @@ public enum class StytchAPIErrorType(public val type: String) {
 
     internal companion object {
         fun fromString(typeString: String?): StytchAPIErrorType =
-            typeString?.uppercase(Locale.ENGLISH)?.let {
-                valueOf(it)
-            } ?: UNKNOWN_ERROR
+            try {
+                valueOf(typeString?.uppercase(Locale.ENGLISH)!!)
+            } catch (_: Exception) {
+                UNKNOWN_ERROR
+            }
     }
 }

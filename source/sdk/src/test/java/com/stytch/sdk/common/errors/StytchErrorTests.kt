@@ -10,13 +10,13 @@ internal class StytchErrorTests {
         val error =
             StytchAPIError(
                 requestId = "request-id-1234",
-                errorType = "error_name",
+                errorType = StytchAPIErrorType.UNKNOWN_ERROR,
                 message = "error_description",
                 url = "https://stytch.com",
                 statusCode = 400,
             )
         assert(error.requestId == "request-id-1234")
-        assert(error.errorType == "error_name")
+        assert(error.errorType == StytchAPIErrorType.UNKNOWN_ERROR)
         assert(error.message == "error_description")
         assert(error.url == "https://stytch.com")
     }

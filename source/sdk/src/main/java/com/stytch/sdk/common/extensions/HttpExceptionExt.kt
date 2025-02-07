@@ -3,6 +3,7 @@ package com.stytch.sdk.common.extensions
 import com.squareup.moshi.Moshi
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchAPISchemaError
 import com.stytch.sdk.common.errors.StytchAPIUnreachableError
 import com.stytch.sdk.common.errors.StytchError
@@ -40,14 +41,18 @@ internal fun HttpException.toStytchError(): StytchError {
         }
     StytchLog.w("http error code: $errorCode, errorResponse: $parsedErrorResponse")
     return when (parsedErrorResponse) {
-        is StytchErrorResponse ->
+        is StytchErrorResponse -> {
+            val errorType = StytchAPIErrorType.fromString(parsedErrorResponse.errorType)
             StytchAPIError(
-                errorType = parsedErrorResponse.errorType,
-                message = parsedErrorResponse.errorMessage ?: "",
+                errorType = errorType,
+                message =
+                    (if (errorType == StytchAPIErrorType.UNKNOWN_ERROR) source else parsedErrorResponse.errorMessage)
+                        ?: "",
                 url = parsedErrorResponse.errorUrl,
                 requestId = parsedErrorResponse.requestId,
                 statusCode = parsedErrorResponse.statusCode,
             )
+        }
         is StytchSchemaError ->
             StytchAPISchemaError(
                 message = "Request does not match expected schema: ${parsedErrorResponse.body}",

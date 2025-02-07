@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchBiometricAuthenticationFailed
 import com.stytch.sdk.common.errors.StytchChallengeSigningFailed
 import com.stytch.sdk.common.errors.StytchInternalError
@@ -226,7 +227,7 @@ internal class BiometricsImplTest {
             } returns Pair(base64EncodedString, base64EncodedString)
             coEvery { mockApi.registerStart(base64EncodedString) } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "", statusCode = 400),
+                    StytchAPIError(errorType = StytchAPIErrorType.UNKNOWN_ERROR, message = "", statusCode = 400),
                 )
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
@@ -377,7 +378,7 @@ internal class BiometricsImplTest {
             } returns "publicKey"
             coEvery { mockApi.authenticateStart("publicKey") } returns
                 StytchResult.Error(
-                    StytchAPIError(errorType = "", message = "", statusCode = 400),
+                    StytchAPIError(errorType = StytchAPIErrorType.UNKNOWN_ERROR, message = "", statusCode = 400),
                 )
             val result = impl.authenticate(mockk(relaxed = true))
             require(result is StytchResult.Error)

@@ -7,6 +7,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchDataResponse
@@ -743,7 +744,7 @@ internal class StytchApiTest {
             every { StytchApi.isInitialized } returns true
 
             fun mockApiCall(): StytchDataResponse<Boolean> =
-                throw StytchAPIError(errorType = "", message = "", statusCode = 400)
+                throw StytchAPIError(errorType = StytchAPIErrorType.UNKNOWN_ERROR, message = "", statusCode = 400)
             val result = StytchApi.safeConsumerApiCall { mockApiCall() }
             assert(result is StytchResult.Error)
         }
