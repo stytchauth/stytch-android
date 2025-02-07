@@ -101,6 +101,8 @@ public object StytchClient {
     @VisibleForTesting
     internal lateinit var appSessionId: String
 
+    private var stytchClientOptions: StytchClientOptions? = null
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -118,8 +120,12 @@ public object StytchClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
+            return callback(true)
+        }
         try {
             this.publicToken = publicToken
+            this.stytchClientOptions = options
             deviceInfo = context.getDeviceInfo()
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
@@ -166,7 +172,6 @@ public object StytchClient {
                 callback(_isInitialized.value)
             }
         } catch (ex: Exception) {
-            println(ex)
             events.logEvent("client_initialization_failure", null, ex)
             throw StytchInternalError(
                 message = "Failed to initialize the SDK",

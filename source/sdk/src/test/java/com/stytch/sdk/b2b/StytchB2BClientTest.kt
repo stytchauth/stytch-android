@@ -12,6 +12,7 @@ import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
@@ -51,6 +52,7 @@ import org.junit.Before
 import org.junit.Test
 import java.security.KeyStore
 import java.util.Date
+import java.util.UUID
 
 internal class StytchB2BClientTest {
     private var mContextMock = mockk<Context>(relaxed = true)
@@ -133,8 +135,9 @@ internal class StytchB2BClientTest {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
-        stytchClientObject.configure(mContextMock, "")
-        verify { StytchB2BApi.configure("", deviceInfo) }
+        val publicToken = UUID.randomUUID().toString()
+        stytchClientObject.configure(mContextMock, publicToken)
+        verify { StytchB2BApi.configure(publicToken, deviceInfo) }
     }
 
     @Test
@@ -142,14 +145,14 @@ internal class StytchB2BClientTest {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
-        stytchClientObject.configure(mContextMock, "")
+        stytchClientObject.configure(mContextMock, UUID.randomUUID().toString())
         verify { StorageHelper.initialize(mContextMock) }
     }
 
     @Test
     fun `should fetch bootstrap data when calling StytchB2BClient configure`() {
         runBlocking {
-            StytchB2BClient.configure(mContextMock, "")
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify { StytchB2BApi.getBootstrapData() }
         }
     }
@@ -157,7 +160,7 @@ internal class StytchB2BClientTest {
     @Test
     fun `configures DFP when calling StytchB2BClient configure`() {
         runBlocking {
-            StytchB2BClient.configure(mContextMock, "")
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             verify(exactly = 1) { StytchB2BApi.configureDFP(any(), any(), any(), any()) }
         }
     }
@@ -172,7 +175,7 @@ internal class StytchB2BClientTest {
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
             every { StorageHelper.loadValue(any()) } returns null
-            StytchB2BClient.configure(mContextMock, "")
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate(any()) }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, but expired, no authentication/updater
@@ -188,7 +191,7 @@ internal class StytchB2BClientTest {
                     .lenient()
                     .toJson(mockExpiredSession)
             every { StorageHelper.loadValue(any()) } returns mockExpiredSessionJSON
-            StytchB2BClient.configure(mContextMock, "")
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, and valid, yes authentication/updater
@@ -204,7 +207,7 @@ internal class StytchB2BClientTest {
                     .lenient()
                     .toJson(mockValidSession)
             every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
-            StytchB2BClient.configure(mContextMock, "")
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 1) { StytchB2BApi.Sessions.authenticate() }
             verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
         }
@@ -219,7 +222,7 @@ internal class StytchB2BClientTest {
                 }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
-            StytchB2BClient.configure(mContextMock, "", StytchClientOptions(), callback)
+            StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString(), StytchClientOptions(), callback)
             // callback is called with expected value
             verify(exactly = 1) { callback(true) }
             // isInitialized has fired
@@ -234,6 +237,97 @@ internal class StytchB2BClientTest {
         val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
+    }
+
+    @Test
+    fun `calling StytchB2BClient configure with the same public token and no options short circuits`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(mContextMock, "publicToken")
+        stytchClientObject.configure(mContextMock, "publicToken")
+        stytchClientObject.configure(mContextMock, "publicToken")
+        verify(exactly = 1) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchB2BClient configure with different public tokens and no options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(mContextMock, "publicToken1")
+        stytchClientObject.configure(mContextMock, "publicToken2")
+        stytchClientObject.configure(mContextMock, "publicToken3")
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchB2BClient configure with the same public token and the same options short circuits`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        verify(exactly = 1) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchB2BClient configure with different public tokens and the same options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken1",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken2",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken3",
+            StytchClientOptions(EndpointOptions("dfppa-domain.com")),
+        )
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
+    }
+
+    @Test
+    fun `calling StytchB2BClient configure with the same public tokens and different options doesn't short circuit`() {
+        val deviceInfo = DeviceInfo()
+        val stytchClientObject = spyk<StytchB2BClient>(recordPrivateCalls = true)
+        every { mContextMock.getDeviceInfo() } returns deviceInfo
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain1.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain2.com")),
+        )
+        stytchClientObject.configure(
+            mContextMock,
+            "publicToken",
+            StytchClientOptions(EndpointOptions("dfppa-domain3.com")),
+        )
+        verify(exactly = 3) { mContextMock.getDeviceInfo() }
     }
 
     @Test(expected = StytchSDKNotConfiguredError::class)

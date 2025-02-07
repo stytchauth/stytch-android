@@ -108,6 +108,8 @@ public object StytchB2BClient {
     @VisibleForTesting
     internal lateinit var appSessionId: String
 
+    private var stytchClientOptions: StytchClientOptions? = null
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -125,9 +127,13 @@ public object StytchB2BClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
+            return callback(true)
+        }
         try {
             deviceInfo = context.getDeviceInfo()
             this.publicToken = publicToken
+            this.stytchClientOptions = options
             appSessionId = "app-session-id-${UUID.randomUUID()}"
             StorageHelper.initialize(context)
             sessionStorage = B2BSessionStorage(StorageHelper)
