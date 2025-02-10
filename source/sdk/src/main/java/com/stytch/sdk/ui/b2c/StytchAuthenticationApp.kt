@@ -1,11 +1,13 @@
 package com.stytch.sdk.ui.b2c
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -51,22 +53,29 @@ internal fun StytchAuthenticationApp(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 32.dp, top = 64.dp, end = 32.dp, bottom = 24.dp)
+                    .padding(start = 0.dp, top = 64.dp, end = 0.dp, bottom = 0.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
         ) {
-            Navigator(listOfNotNull(MainScreen, screen)) { navigator ->
-                screen?.let {
-                    navigator.push(it)
+            Row(modifier = Modifier.fillMaxSize().weight(1f).padding(32.dp, 0.dp)) {
+                Navigator(listOfNotNull(MainScreen, screen)) { navigator ->
+                    screen?.let {
+                        navigator.push(it)
+                    }
+                    CurrentScreen()
                 }
-                CurrentScreen()
             }
             if (!bootstrapData.disableSDKWatermark) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(color = Color(255, 255, 255, 128))
+                            .padding(0.dp, 8.dp),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Image(
+                        modifier = Modifier.height(19.dp),
                         painter = painterResource(id = R.drawable.powered_by_stytch),
                         contentDescription = stringResource(id = R.string.powered_by_stytch),
                     )
