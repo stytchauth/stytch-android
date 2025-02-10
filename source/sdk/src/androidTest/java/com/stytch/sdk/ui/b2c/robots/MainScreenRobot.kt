@@ -32,29 +32,29 @@ internal class MainScreenRobot(
         composeTestRule.onAllNodesWithContentDescription(getString(R.string.semantics_oauth_button))
     }
 
-    private val emailTab: SemanticsNodeInteraction
-        get() =
-            composeTestRule.onNode(
-                hasText(getString(R.string.email)).and(
-                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-                ),
-            )
+    private val emailTab by lazy {
+        composeTestRule.onNode(
+            hasText(getString(R.string.email)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
+        )
+    }
 
-    private val textTab: SemanticsNodeInteraction
-        get() =
-            composeTestRule.onNode(
-                hasText(getString(R.string.text)).and(
-                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-                ),
-            )
+    private val textTab by lazy {
+        composeTestRule.onNode(
+            hasText(getString(R.string.text)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
+        )
+    }
 
-    private val whatsappTab: SemanticsNodeInteraction
-        get() =
-            composeTestRule.onNode(
-                hasText(getString(R.string.whatsapp)).and(
-                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-                ),
-            )
+    private val whatsappTab by lazy {
+        composeTestRule.onNode(
+            hasText(getString(R.string.whatsapp)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            ),
+        )
+    }
 
     private val emailInput by lazy {
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_input))
