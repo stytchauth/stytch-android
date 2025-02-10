@@ -17,7 +17,6 @@ import androidx.compose.ui.test.performTextInput
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2c.BaseAndroidComposeTest
 import com.stytch.sdk.ui.b2c.screens.MainScreen
-import kotlinx.coroutines.delay
 
 internal fun BaseAndroidComposeTest.mainScreenRobot(func: MainScreenRobot.() -> Unit) =
     MainScreenRobot(this).apply(func)
@@ -33,29 +32,29 @@ internal class MainScreenRobot(
         composeTestRule.onAllNodesWithContentDescription(getString(R.string.semantics_oauth_button))
     }
 
-    private val emailTab by lazy {
-        composeTestRule.onNode(
-            hasText(getString(R.string.email)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-            ),
-        )
-    }
+    private val emailTab: SemanticsNodeInteraction
+        get() =
+            composeTestRule.onNode(
+                hasText(getString(R.string.email)).and(
+                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+                ),
+            )
 
-    private val textTab by lazy {
-        composeTestRule.onNode(
-            hasText(getString(R.string.text)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-            ),
-        )
-    }
+    private val textTab: SemanticsNodeInteraction
+        get() =
+            composeTestRule.onNode(
+                hasText(getString(R.string.text)).and(
+                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+                ),
+            )
 
-    private val whatsappTab by lazy {
-        composeTestRule.onNode(
-            hasText(getString(R.string.whatsapp)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
-            ),
-        )
-    }
+    private val whatsappTab: SemanticsNodeInteraction
+        get() =
+            composeTestRule.onNode(
+                hasText(getString(R.string.whatsapp)).and(
+                    hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+                ),
+            )
 
     private val emailInput by lazy {
         composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_input))
@@ -102,24 +101,18 @@ internal class MainScreenRobot(
 
     fun emailErrorExists(shouldBeVisible: Boolean) = nodeExists(emailError, shouldBeVisible)
 
-    suspend fun tapEmailTabAndAssertIsShown() {
-        emailTab.performClick()
-        delay(500L)
-        emailTab.assertIsSelected()
+    fun tapEmailTabAndAssertIsShown() {
+        emailTab.performClick().assertIsSelected()
         emailInput.assertExists()
     }
 
-    suspend fun tapTextTabAndAssertIsShown() {
-        textTab.performClick()
-        delay(500L)
-        textTab.assertIsSelected()
+    fun tapTextTabAndAssertIsShown() {
+        textTab.performClick().assertIsSelected()
         phoneInput.assertExists()
     }
 
-    suspend fun tapWhatsAppTabAndAssertIsShown() {
-        whatsappTab.performClick()
-        delay(500L)
-        whatsappTab.assertIsSelected()
+    fun tapWhatsAppTabAndAssertIsShown() {
+        whatsappTab.performClick().assertIsSelected()
         phoneInput.assertExists()
     }
 

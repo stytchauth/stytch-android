@@ -4,7 +4,6 @@ import com.stytch.sdk.ui.b2c.BaseAndroidComposeTest
 import com.stytch.sdk.ui.b2c.data.DEFAULT_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.b2c.data.REALISTIC_STYTCH_UI_CONFIG
 import com.stytch.sdk.ui.b2c.robots.mainScreenRobot
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 internal class MainScreenTest : BaseAndroidComposeTest() {
@@ -32,21 +31,15 @@ internal class MainScreenTest : BaseAndroidComposeTest() {
             headerExists(shouldBeVisible = true)
             socialLoginButtonsExist(REALISTIC_STYTCH_UI_CONFIG.productConfig.oAuthOptions.providers.size)
             expectedTabsExist(email = true, text = true, whatsapp = true)
-            runBlocking {
-                tapEmailTabAndAssertIsShown()
-            }
+            tapEmailTabAndAssertIsShown()
             continueButtonIsEnabled(false)
             enterEmailAddress(email = "robot@stytch.com")
             emailErrorExists(shouldBeVisible = false)
             continueButtonIsEnabled(true)
-            runBlocking {
-                tapTextTabAndAssertIsShown()
-            }
+            tapTextTabAndAssertIsShown()
             enterPhoneNumber("5555550123")
             continueButtonIsEnabled(true)
-            runBlocking {
-                tapWhatsAppTabAndAssertIsShown()
-            }
+            tapWhatsAppTabAndAssertIsShown()
             verifyPhoneNumberIs("(555) 555-0123")
             continueButtonIsEnabled(true)
         }
