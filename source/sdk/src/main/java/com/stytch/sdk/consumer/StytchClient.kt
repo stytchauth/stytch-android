@@ -2,6 +2,10 @@ package com.stytch.sdk.consumer
 
 import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.Uri
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
@@ -139,24 +143,9 @@ public object StytchClient {
                     activityProvider = activityProvider,
                 )
             configureSmsRetriever(context.applicationContext)
+            configureNetworkListener(context.applicationContext)
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
-                StytchApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            context.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
                     sessionStorage.session?.let {
@@ -247,6 +236,57 @@ public object StytchClient {
                     )
                 }
             }
+    }
+
+    private fun configureNetworkListener(context: Context) {
+        val networkCallback =
+            object : ConnectivityManager.NetworkCallback() {
+                var networkWasLost = false
+
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    if (networkWasLost) {
+                        refreshBootstrapAndAPIClient(context)
+                    }
+                    networkWasLost = false
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    networkWasLost = true
+                }
+            }
+        val networkRequest =
+            NetworkRequest
+                .Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build()
+        val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        refreshBootstrapAndAPIClient(context.applicationContext)
+    }
+
+    private fun refreshBootstrapAndAPIClient(context: Context) {
+        externalScope.launch(dispatchers.io) {
+            bootstrapData =
+                when (val res = StytchApi.getBootstrapData()) {
+                    is StytchResult.Success -> res.value
+                    else -> BootstrapData()
+                }
+            StytchApi.configureDFP(
+                dfpProvider = dfpProvider,
+                captchaProvider =
+                    CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey,
+                    ),
+                bootstrapData.dfpProtectedAuthEnabled,
+                bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+            )
+        }
     }
 
     internal fun assertInitialized() {
