@@ -25,7 +25,7 @@ internal object AppLifecycleListener {
             }
         }
 
-    fun configureCallback(callback: () -> Unit) {
+    fun configure(callback: () -> Unit) {
         this.callback = callback
         ProcessLifecycleOwner.get().lifecycle.addObserver(listener)
     }

@@ -11,7 +11,7 @@ internal object NetworkChangeListener {
     var networkIsAvailable: Boolean = false
     private val networkCallback =
         object : ConnectivityManager.NetworkCallback() {
-            var networkWasLost = false
+            var networkWasLost = true // in the case of launching WHILE offline
 
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
@@ -27,21 +27,20 @@ internal object NetworkChangeListener {
                 networkWasLost = true
             }
         }
-    private val networkRequest =
-        NetworkRequest
-            .Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
 
     fun configure(
         context: Context,
         callback: () -> Unit,
     ) {
         this.callback = callback
+        val networkRequest =
+            NetworkRequest
+                .Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build()
         val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-        callback()
     }
 }

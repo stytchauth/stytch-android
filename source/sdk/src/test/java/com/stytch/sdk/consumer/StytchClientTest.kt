@@ -5,10 +5,12 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
 import com.squareup.moshi.Moshi
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.EndpointOptions
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
@@ -74,6 +76,11 @@ internal class StytchClientTest {
         )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        mockkObject(NetworkChangeListener)
+        every { NetworkChangeListener.configure(any(), any()) } just runs
+        every { NetworkChangeListener.networkIsAvailable } returns true
+        mockkObject(AppLifecycleListener)
+        every { AppLifecycleListener.configure(any()) } just runs
         val mockApplication: Application =
             mockk {
                 every { registerActivityLifecycleCallbacks(any()) } just runs

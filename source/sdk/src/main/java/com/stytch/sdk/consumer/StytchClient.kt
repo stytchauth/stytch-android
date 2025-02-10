@@ -146,7 +146,8 @@ public object StytchClient {
                 )
             configureSmsRetriever(context.applicationContext)
             NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
-            AppLifecycleListener.configureCallback(::refreshBootstrapAndAPIClient)
+            AppLifecycleListener.configure(::refreshBootstrapAndAPIClient)
+            refreshBootstrapAndAPIClient()
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
@@ -254,7 +255,7 @@ public object StytchClient {
                         dfpProvider = dfpProvider,
                         captchaProvider =
                             CaptchaProviderImpl(
-                                it.applicationContext as Application,
+                                it as Application,
                                 externalScope,
                                 bootstrapData.captchaSettings.siteKey,
                             ),

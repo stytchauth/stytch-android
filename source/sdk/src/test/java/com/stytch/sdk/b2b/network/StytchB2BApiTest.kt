@@ -11,8 +11,10 @@ import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
@@ -70,6 +72,11 @@ internal class StytchB2BApiTest {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
         mockkObject(StytchB2BApi)
+        mockkObject(NetworkChangeListener)
+        every { NetworkChangeListener.configure(any(), any()) } just runs
+        every { NetworkChangeListener.networkIsAvailable } returns true
+        mockkObject(AppLifecycleListener)
+        every { AppLifecycleListener.configure(any()) } just runs
         MockKAnnotations.init(this, true, true)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
