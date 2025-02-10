@@ -36,10 +36,10 @@ internal class MainScreenTest : BaseAndroidComposeTest() {
             enterEmailAddress(email = "robot@stytch.com")
             emailErrorExists(shouldBeVisible = false)
             continueButtonIsEnabled(true)
-            // tapTextTabAndAssertIsShown()
+            tapTextTabAndAssertIsShown()
             enterPhoneNumber("5555550123")
             continueButtonIsEnabled(true)
-            // tapWhatsAppTabAndAssertIsShown()
+            tapWhatsAppTabAndAssertIsShown()
             verifyPhoneNumberIs("(555) 555-0123")
             continueButtonIsEnabled(true)
         }
