@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.b2b.StytchB2BClient.events
 import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
@@ -242,24 +243,26 @@ public object StytchClient {
     }
 
     private fun refreshBootstrapAndAPIClient() {
-        applicationContext.get()?.let {
-            externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
-                StytchApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            it.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
+        if (NetworkChangeListener.networkIsAvailable) {
+            applicationContext.get()?.let {
+                externalScope.launch(dispatchers.io) {
+                    bootstrapData =
+                        when (val res = StytchApi.getBootstrapData()) {
+                            is StytchResult.Success -> res.value
+                            else -> BootstrapData()
+                        }
+                    StytchApi.configureDFP(
+                        dfpProvider = dfpProvider,
+                        captchaProvider =
+                            CaptchaProviderImpl(
+                                it.applicationContext as Application,
+                                externalScope,
+                                bootstrapData.captchaSettings.siteKey,
+                            ),
+                        bootstrapData.dfpProtectedAuthEnabled,
+                        bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                    )
+                }
             }
         }
     }

@@ -8,12 +8,14 @@ import android.net.NetworkRequest
 
 internal object NetworkChangeListener {
     private var callback: () -> Unit = {}
+    var networkIsAvailable: Boolean = false
     private val networkCallback =
         object : ConnectivityManager.NetworkCallback() {
             var networkWasLost = false
 
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
+                networkIsAvailable = true
                 if (networkWasLost) {
                     callback()
                 }

@@ -70,6 +70,8 @@ import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
 import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
 import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
+import com.stytch.sdk.consumer.StytchClient.events
+import com.stytch.sdk.consumer.StytchClient.parseDeeplink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -250,20 +252,22 @@ public object StytchB2BClient {
     }
 
     private fun refreshBootstrapAndAPIClient() {
-        applicationContext.get()?.let {
-            externalScope.launch(dispatchers.io) {
-                refreshBootstrapData()
-                StytchB2BApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            it.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
+        if (NetworkChangeListener.networkIsAvailable) {
+            applicationContext.get()?.let {
+                externalScope.launch(dispatchers.io) {
+                    refreshBootstrapData()
+                    StytchB2BApi.configureDFP(
+                        dfpProvider = dfpProvider,
+                        captchaProvider =
+                            CaptchaProviderImpl(
+                                it.applicationContext as Application,
+                                externalScope,
+                                bootstrapData.captchaSettings.siteKey,
+                            ),
+                        bootstrapData.dfpProtectedAuthEnabled,
+                        bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                    )
+                }
             }
         }
     }
