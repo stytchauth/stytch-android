@@ -17,6 +17,7 @@ import androidx.compose.ui.test.performTextInput
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2c.BaseAndroidComposeTest
 import com.stytch.sdk.ui.b2c.screens.MainScreen
+import kotlinx.coroutines.delay
 
 internal fun BaseAndroidComposeTest.mainScreenRobot(func: MainScreenRobot.() -> Unit) =
     MainScreenRobot(this).apply(func)
@@ -101,18 +102,24 @@ internal class MainScreenRobot(
 
     fun emailErrorExists(shouldBeVisible: Boolean) = nodeExists(emailError, shouldBeVisible)
 
-    fun tapEmailTabAndAssertIsShown() {
-        emailTab.performClick().assertIsSelected()
+    suspend fun tapEmailTabAndAssertIsShown() {
+        emailTab.performClick()
+        delay(500L)
+        emailTab.assertIsSelected()
         emailInput.assertExists()
     }
 
-    fun tapTextTabAndAssertIsShown() {
-        textTab.performClick() // .assertIsSelected()
+    suspend fun tapTextTabAndAssertIsShown() {
+        textTab.performClick()
+        delay(500L)
+        textTab.assertIsSelected()
         phoneInput.assertExists()
     }
 
-    fun tapWhatsAppTabAndAssertIsShown() {
-        whatsappTab.performClick() // .assertIsSelected()
+    suspend fun tapWhatsAppTabAndAssertIsShown() {
+        whatsappTab.performClick()
+        delay(500L)
+        whatsappTab.assertIsSelected()
         phoneInput.assertExists()
     }
 
