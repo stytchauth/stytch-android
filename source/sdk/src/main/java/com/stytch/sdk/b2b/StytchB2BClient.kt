@@ -2,10 +2,6 @@ package com.stytch.sdk.b2b
 
 import android.app.Application
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.Uri
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
@@ -38,12 +34,14 @@ import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.b2b.totp.TOTP
 import com.stytch.sdk.b2b.totp.TOTPImpl
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_REDIRECT_TYPE
 import com.stytch.sdk.common.QUERY_TOKEN
@@ -80,6 +78,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
+import java.lang.ref.WeakReference
 import java.util.UUID
 
 /**
@@ -114,6 +113,8 @@ public object StytchB2BClient {
 
     private var stytchClientOptions: StytchClientOptions? = null
 
+    private var applicationContext = WeakReference<Context>(null)
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -135,6 +136,7 @@ public object StytchB2BClient {
             return callback(true)
         }
         try {
+            applicationContext = WeakReference(context.applicationContext)
             deviceInfo = context.getDeviceInfo()
             this.publicToken = publicToken
             this.stytchClientOptions = options
@@ -150,7 +152,8 @@ public object StytchB2BClient {
                     activityProvider = activityProvider,
                 )
             configureSmsRetriever(context.applicationContext)
-            configureNetworkListener(context.applicationContext)
+            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
+            AppLifecycleListener.configureCallback(::refreshBootstrapAndAPIClient)
             externalScope.launch(dispatchers.io) {
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
@@ -246,50 +249,22 @@ public object StytchB2BClient {
             }
     }
 
-    private fun configureNetworkListener(context: Context) {
-        val networkCallback =
-            object : ConnectivityManager.NetworkCallback() {
-                var networkWasLost = false
-
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    if (networkWasLost) {
-                        refreshBootstrapAndAPIClient(context)
-                    }
-                    networkWasLost = false
-                }
-
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    networkWasLost = true
-                }
+    private fun refreshBootstrapAndAPIClient() {
+        applicationContext.get()?.let {
+            externalScope.launch(dispatchers.io) {
+                refreshBootstrapData()
+                StytchB2BApi.configureDFP(
+                    dfpProvider = dfpProvider,
+                    captchaProvider =
+                        CaptchaProviderImpl(
+                            it.applicationContext as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey,
+                        ),
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                )
             }
-        val networkRequest =
-            NetworkRequest
-                .Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .build()
-        val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-        refreshBootstrapAndAPIClient(context.applicationContext)
-    }
-
-    private fun refreshBootstrapAndAPIClient(context: Context) {
-        externalScope.launch(dispatchers.io) {
-            refreshBootstrapData()
-            StytchB2BApi.configureDFP(
-                dfpProvider = dfpProvider,
-                captchaProvider =
-                    CaptchaProviderImpl(
-                        context.applicationContext as Application,
-                        externalScope,
-                        bootstrapData.captchaSettings.siteKey,
-                    ),
-                bootstrapData.dfpProtectedAuthEnabled,
-                bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-            )
         }
     }
 
