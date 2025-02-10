@@ -70,8 +70,6 @@ import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
 import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
 import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
-import com.stytch.sdk.consumer.StytchClient.events
-import com.stytch.sdk.consumer.StytchClient.parseDeeplink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
