@@ -11,20 +11,16 @@ internal object NetworkChangeListener {
     var networkIsAvailable: Boolean = false
     private val networkCallback =
         object : ConnectivityManager.NetworkCallback() {
-            var networkWasLost = true // in the case of launching WHILE offline
-
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                networkIsAvailable = true
-                if (networkWasLost) {
+                if (!networkIsAvailable) {
                     callback()
                 }
-                networkWasLost = false
+                networkIsAvailable = true
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                networkWasLost = true
                 networkIsAvailable = false
             }
         }
