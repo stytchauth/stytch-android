@@ -162,6 +162,8 @@ dependencies {
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.play.services.auth.api.phone)
+    implementation(libs.lifecycle.common)
+    implementation(libs.lifecycle.process)
 
     // UI SDK dependencies
     implementation(libs.activity.ktx)

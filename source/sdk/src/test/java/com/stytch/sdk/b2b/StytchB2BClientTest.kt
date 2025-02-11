@@ -9,10 +9,12 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.EndpointOptions
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
@@ -75,6 +77,11 @@ internal class StytchB2BClientTest {
         )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        mockkObject(NetworkChangeListener)
+        every { NetworkChangeListener.configure(any(), any()) } just runs
+        every { NetworkChangeListener.networkIsAvailable } returns true
+        mockkObject(AppLifecycleListener)
+        every { AppLifecycleListener.configure(any()) } just runs
         val mockApplication: Application =
             mockk {
                 every { registerActivityLifecycleCallbacks(any()) } just runs

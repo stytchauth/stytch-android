@@ -3,12 +3,14 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
@@ -69,6 +71,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
+import java.lang.ref.WeakReference
 import java.util.UUID
 
 /**
@@ -103,6 +106,8 @@ public object StytchClient {
 
     private var stytchClientOptions: StytchClientOptions? = null
 
+    private var applicationContext = WeakReference<Context>(null)
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -124,6 +129,7 @@ public object StytchClient {
             return callback(true)
         }
         try {
+            applicationContext = WeakReference(context.applicationContext)
             this.publicToken = publicToken
             this.stytchClientOptions = options
             deviceInfo = context.getDeviceInfo()
@@ -139,24 +145,11 @@ public object StytchClient {
                     activityProvider = activityProvider,
                 )
             configureSmsRetriever(context.applicationContext)
+            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
+            AppLifecycleListener.configure(::refreshBootstrapAndAPIClient)
+            refreshBootstrapAndAPIClient()
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
-                StytchApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            context.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
                     sessionStorage.session?.let {
@@ -247,6 +240,31 @@ public object StytchClient {
                     )
                 }
             }
+    }
+
+    private fun refreshBootstrapAndAPIClient() {
+        if (NetworkChangeListener.networkIsAvailable) {
+            applicationContext.get()?.let {
+                externalScope.launch(dispatchers.io) {
+                    bootstrapData =
+                        when (val res = StytchApi.getBootstrapData()) {
+                            is StytchResult.Success -> res.value
+                            else -> BootstrapData()
+                        }
+                    StytchApi.configureDFP(
+                        dfpProvider = dfpProvider,
+                        captchaProvider =
+                            CaptchaProviderImpl(
+                                it as Application,
+                                externalScope,
+                                bootstrapData.captchaSettings.siteKey,
+                            ),
+                        bootstrapData.dfpProtectedAuthEnabled,
+                        bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                    )
+                }
+            }
+        }
     }
 
     internal fun assertInitialized() {

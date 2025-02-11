@@ -136,6 +136,8 @@ flowRedux-compose = { module = "com.freeletics.flowredux:compose", version.ref =
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 leakCanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary"}
+lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
+lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleRuntimeKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "gradle" }
