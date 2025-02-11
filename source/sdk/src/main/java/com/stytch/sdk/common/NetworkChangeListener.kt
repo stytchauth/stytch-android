@@ -25,6 +25,7 @@ internal object NetworkChangeListener {
             override fun onLost(network: Network) {
                 super.onLost(network)
                 networkWasLost = true
+                networkIsAvailable = false
             }
         }
 
