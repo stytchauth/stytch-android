@@ -30,6 +30,7 @@ internal class UsePasswordResetByEmail(
                         token = state.value.deeplinkTokenPair?.token ?: "",
                         password = state.value.passwordState.password,
                         sessionDurationMinutes = productConfig.sessionOptions.sessionDurationMinutes,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

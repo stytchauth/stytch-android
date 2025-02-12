@@ -85,7 +85,7 @@ internal class B2BUIViewModelFactory(
             RecoveryCodesEntryScreenViewModel::class.java ->
                 RecoveryCodesEntryScreenViewModel(state, dispatchAction, productConfig) as T
             SMSOTPEnrollmentScreenViewModel::class.java ->
-                SMSOTPEnrollmentScreenViewModel(state, dispatchAction) as T
+                SMSOTPEnrollmentScreenViewModel(state, dispatchAction, productConfig) as T
             SMSOTPEntryScreenViewModel::class.java ->
                 SMSOTPEntryScreenViewModel(state, dispatchAction, productConfig) as T
             ErrorScreenViewModel::class.java ->

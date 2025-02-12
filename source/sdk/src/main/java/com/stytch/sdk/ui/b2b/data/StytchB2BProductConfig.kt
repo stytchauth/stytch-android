@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.ui.shared.data.SessionOptions
 import kotlinx.parcelize.Parcelize
 
@@ -35,6 +36,7 @@ public data class StytchB2BProductConfig
                 MfaMethod.SMS,
                 MfaMethod.TOTP,
             ),
+        val locale: Locale? = Locale.EN,
     ) : Parcelable
 
 /*
