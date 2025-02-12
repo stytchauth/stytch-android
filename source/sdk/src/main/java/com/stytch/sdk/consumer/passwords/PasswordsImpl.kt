@@ -115,6 +115,7 @@ internal class PasswordsImpl internal constructor(
                     resetPasswordRedirectUrl = parameters.resetPasswordRedirectUrl,
                     resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
+                    locale = parameters.locale,
                 )
         }
         return result
@@ -148,6 +149,7 @@ internal class PasswordsImpl internal constructor(
                     parameters.password,
                     parameters.sessionDurationMinutes,
                     codeVerifier,
+                    parameters.locale,
                 ).apply {
                     pkcePairManager.clearPKCECodePair()
                     launchSessionUpdater(dispatchers, sessionStorage)
@@ -211,6 +213,7 @@ internal class PasswordsImpl internal constructor(
                 .resetBySession(
                     password = parameters.password,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    locale = parameters.locale,
                 ).apply {
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }

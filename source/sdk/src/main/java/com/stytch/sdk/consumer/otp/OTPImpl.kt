@@ -187,11 +187,13 @@ internal class OTPImpl internal constructor(
                     api.sendOTPWithWhatsAppSecondary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
+                        locale = parameters.locale,
                     )
                 } else {
                     api.sendOTPWithWhatsAppPrimary(
                         phoneNumber = parameters.phoneNumber,
                         expirationMinutes = parameters.expirationMinutes,
+                        locale = parameters.locale,
                     )
                 }
             }

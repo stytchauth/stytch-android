@@ -123,6 +123,7 @@ public interface Passwords {
             val resetPasswordRedirectUrl: String? = null,
             val resetPasswordExpirationMinutes: Int? = null,
             val resetPasswordTemplateId: String? = null,
+            val locale: Locale? = null,
         )
 
     /**
@@ -270,6 +271,7 @@ public interface Passwords {
     public data class ResetBySessionParameters(
         val organizationId: String,
         val password: String,
+        val locale: Locale? = null,
     )
 
     /**
@@ -379,6 +381,7 @@ public interface Passwords {
             val resetPasswordRedirectUrl: String? = null,
             val resetPasswordExpirationMinutes: Int? = null,
             val resetPasswordTemplateId: String? = null,
+            val locale: Locale? = null,
         )
 
         /**
@@ -421,6 +424,7 @@ public interface Passwords {
         public data class ResetByEmailParameters(
             val passwordResetToken: String,
             val password: String,
+            val locale: Locale? = null,
         )
 
         /**

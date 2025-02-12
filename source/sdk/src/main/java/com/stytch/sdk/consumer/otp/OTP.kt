@@ -174,6 +174,7 @@ public interface OTP {
             constructor(
                 val phoneNumber: String,
                 val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
+                val locale: Locale? = null,
             ) : Parcelable
 
         /**
