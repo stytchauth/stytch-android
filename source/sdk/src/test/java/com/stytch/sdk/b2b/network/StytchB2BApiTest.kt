@@ -382,6 +382,7 @@ internal class StytchB2BApiTest {
                 resetPasswordRedirectUrl = null,
                 resetPasswordExpirationMinutes = null,
                 resetPasswordTemplateId = null,
+                locale = null,
             )
             coVerify { StytchB2BApi.apiService.resetPasswordByEmailStart(any()) }
         }
@@ -414,7 +415,7 @@ internal class StytchB2BApiTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.resetPasswordBySession(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Passwords.resetBySession(organizationId = "", password = "")
+            StytchB2BApi.Passwords.resetBySession(organizationId = "", password = "", locale = null)
             coVerify { StytchB2BApi.apiService.resetPasswordBySession(any()) }
         }
 
@@ -432,7 +433,7 @@ internal class StytchB2BApiTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.passwordDiscoveryResetByEmailStart(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Passwords.Discovery.resetByEmailStart("", null, null, null, null, "")
+            StytchB2BApi.Passwords.Discovery.resetByEmailStart("", null, null, null, null, "", null)
             coVerify { StytchB2BApi.apiService.passwordDiscoveryResetByEmailStart(any()) }
         }
 
@@ -441,7 +442,7 @@ internal class StytchB2BApiTest {
         runBlocking {
             every { StytchB2BApi.isInitialized } returns true
             coEvery { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) } returns mockk(relaxed = true)
-            StytchB2BApi.Passwords.Discovery.resetByEmail("", "", null, "")
+            StytchB2BApi.Passwords.Discovery.resetByEmail("", "", null, "", null)
             coVerify { StytchB2BApi.apiService.passwordDiscoveryResetByEmail(any()) }
         }
 

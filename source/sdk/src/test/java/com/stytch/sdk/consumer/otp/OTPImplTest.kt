@@ -169,34 +169,34 @@ internal class OTPImplTest {
     fun `OTPImpl whatsapp send with no active session delegates to api`() =
         runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
-            coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
                     expirationMinutes = 10,
                 ),
             )
-            coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) }
+            coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl whatsapp send with active session delegates to api`() =
         runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
-            coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
                     expirationMinutes = 10,
                 ),
             )
-            coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) }
+            coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl whatsapp send with callback calls callback method`() {
         every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
-        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
