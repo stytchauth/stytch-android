@@ -246,11 +246,7 @@ public object StytchClient {
         if (NetworkChangeListener.networkIsAvailable) {
             applicationContext.get()?.let {
                 externalScope.launch(dispatchers.io) {
-                    bootstrapData =
-                        when (val res = StytchApi.getBootstrapData()) {
-                            is StytchResult.Success -> res.value
-                            else -> BootstrapData()
-                        }
+                    refreshBootstrapData()
                     StytchApi.configureDFP(
                         dfpProvider = dfpProvider,
                         captchaProvider =
@@ -264,6 +260,16 @@ public object StytchClient {
                     )
                 }
             }
+        }
+    }
+
+    internal suspend fun refreshBootstrapData() {
+        if (NetworkChangeListener.networkIsAvailable) {
+            bootstrapData =
+                when (val res = StytchApi.getBootstrapData()) {
+                    is StytchResult.Success -> res.value
+                    else -> bootstrapData
+                }
         }
     }
 
