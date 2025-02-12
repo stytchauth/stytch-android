@@ -25,6 +25,7 @@ import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import io.mockk.MockKAnnotations
@@ -48,6 +49,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -501,4 +503,29 @@ internal class StytchB2BClientTest {
         StytchB2BClient.getPKCECodePair()
         verify(exactly = 1) { mockPKCEPairManager.getPKCECodePair() }
     }
+
+    @Test
+    fun `verify bootstrap data is not overwritten by a failed bootstrap response`() =
+        runTest {
+            val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
+            assert(nonDefaultBootstrapData != BootstrapData())
+            StytchB2BClient.bootstrapData = nonDefaultBootstrapData
+            every { NetworkChangeListener.networkIsAvailable } returns true
+            coEvery { StytchB2BApi.getBootstrapData() } returns
+                StytchResult.Error(StytchInternalError(RuntimeException("something went wrong")))
+            StytchB2BClient.refreshBootstrapData()
+            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+        }
+
+    @Test
+    fun `verify bootstrap data is overwritten by a successful bootstrap response`() =
+        runTest {
+            val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
+            StytchB2BClient.bootstrapData = BootstrapData()
+            assert(StytchB2BClient.bootstrapData != nonDefaultBootstrapData)
+            every { NetworkChangeListener.networkIsAvailable } returns true
+            coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Success(nonDefaultBootstrapData)
+            StytchB2BClient.refreshBootstrapData()
+            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+        }
 }
