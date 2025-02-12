@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.otp
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
 import com.stytch.sdk.consumer.StytchClient
@@ -38,6 +39,7 @@ internal class OTPImpl internal constructor(
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
                         sessionStorage.methodId = null
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OTP
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
         }

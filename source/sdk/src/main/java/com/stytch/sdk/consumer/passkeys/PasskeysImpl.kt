@@ -16,6 +16,7 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchPasskeysNotSupportedError
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -118,6 +119,7 @@ internal class PasskeysImpl internal constructor(
                     .register(
                         publicKeyCredential = credentialResponse.registrationResponseJson,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSKEYS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             }
@@ -173,6 +175,7 @@ internal class PasskeysImpl internal constructor(
                         publicKeyCredential = credentialResponse.authenticationResponseJson,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSKEYS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             }

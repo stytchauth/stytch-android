@@ -18,6 +18,7 @@ import com.stytch.sdk.common.extensions.toBase64DecodedByteArray
 import com.stytch.sdk.common.extensions.toBase64EncodedString
 import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -169,6 +170,7 @@ internal class BiometricsImpl internal constructor(
                             storageHelper.saveValue(CIPHER_IV_KEY, cipher.iv.toBase64EncodedString())
                             storageHelper.saveBoolean(ALLOW_DEVICE_CREDENTIALS_KEY, parameters.allowDeviceCredentials)
                         }
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.BIOMETRICS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             } catch (e: StytchError) {
@@ -234,6 +236,7 @@ internal class BiometricsImpl internal constructor(
                         biometricRegistrationId = startResponse.biometricRegistrationId,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.BIOMETRICS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             } catch (e: StytchError) {

@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.totp
 
 import com.stytch.sdk.common.StytchDispatchers
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.TOTPAuthenticateResponse
 import com.stytch.sdk.consumer.TOTPCreateResponse
 import com.stytch.sdk.consumer.TOTPRecoverResponse
@@ -50,6 +51,7 @@ internal class TOTPImpl(
                     totpCode = parameters.totpCode,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.TOTP
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
@@ -95,6 +97,7 @@ internal class TOTPImpl(
                     recoveryCode = parameters.recoveryCode,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.TOTP
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

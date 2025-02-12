@@ -16,7 +16,9 @@ class App : Application() {
         StytchB2BClient.configure(
             context = applicationContext,
             publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
-        )
+        ) {
+            println("Last Auth Method Used: ${StytchB2BClient.lastAuthMethodUsed}")
+        }
         CoroutineScope(Dispatchers.Main).launch {
             StytchB2BClient.sessions.onChange.collect {
                 println("Collected session data: $it")

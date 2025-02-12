@@ -650,4 +650,11 @@ public object StytchB2BClient {
             token = uri.getQueryParameter(QUERY_TOKEN),
             redirectType = B2BRedirectType.fromString(uri.getQueryParameter(QUERY_REDIRECT_TYPE)),
         )
+
+    /**
+     * Retrieve the last used authentication method, if available
+     */
+    @JvmStatic
+    public val lastAuthMethodUsed: B2BAuthMethod?
+        get() = sessionStorage.lastAuthMethodUsed
 }

@@ -6,6 +6,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.ProvidedReceiverManager
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -211,6 +212,7 @@ internal class OAuthImpl(
                         is StytchResult.Success -> StytchClient.events.logEvent("oauth_success")
                         is StytchResult.Error -> StytchClient.events.logEvent("oauth_failure", null, this.exception)
                     }
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OAUTH
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

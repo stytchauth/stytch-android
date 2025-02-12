@@ -16,6 +16,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.UnexpectedCredentialType
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -104,6 +105,7 @@ internal class GoogleOneTapImpl(
                         nonce = nonce,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OAUTH
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             }

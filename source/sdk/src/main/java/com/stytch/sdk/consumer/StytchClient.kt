@@ -588,4 +588,11 @@ public object StytchClient {
             tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
             token = uri.getQueryParameter(QUERY_TOKEN),
         )
+
+    /**
+     * Retrieve the last used authentication method, if available
+     */
+    @JvmStatic
+    public val lastAuthMethodUsed: ConsumerAuthMethod?
+        get() = sessionStorage.lastAuthMethodUsed
 }

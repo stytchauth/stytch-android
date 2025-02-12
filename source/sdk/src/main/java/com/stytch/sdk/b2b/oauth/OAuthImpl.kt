@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.oauth
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.b2b.StytchB2BClient
@@ -75,6 +76,7 @@ internal class OAuthImpl(
                                 this.exception,
                             )
                     }
+                    sessionStorage.lastAuthMethodUsed = B2BAuthMethod.OAUTH
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
@@ -275,6 +277,7 @@ internal class OAuthImpl(
                         discoveryOauthToken = parameters.discoveryOauthToken,
                     ).apply {
                         pkcePairManager.clearPKCECodePair()
+                        sessionStorage.lastAuthMethodUsed = B2BAuthMethod.OAUTH
                         when (this) {
                             is StytchResult.Success -> {
                                 StytchB2BClient.events.logEvent("b2b_discovery_oauth_success")
