@@ -272,11 +272,13 @@ public object StytchB2BClient {
     }
 
     internal suspend fun refreshBootstrapData() {
-        bootstrapData =
-            when (val res = StytchB2BApi.getBootstrapData()) {
-                is StytchResult.Success -> res.value
-                else -> BootstrapData()
-            }
+        if (NetworkChangeListener.networkIsAvailable) {
+            bootstrapData =
+                when (val res = StytchB2BApi.getBootstrapData()) {
+                    is StytchResult.Success -> res.value
+                    else -> bootstrapData
+                }
+        }
     }
 
     internal fun assertInitialized() {

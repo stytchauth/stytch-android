@@ -249,7 +249,7 @@ public object StytchClient {
                     bootstrapData =
                         when (val res = StytchApi.getBootstrapData()) {
                             is StytchResult.Success -> res.value
-                            else -> BootstrapData()
+                            else -> bootstrapData
                         }
                     StytchApi.configureDFP(
                         dfpProvider = dfpProvider,
