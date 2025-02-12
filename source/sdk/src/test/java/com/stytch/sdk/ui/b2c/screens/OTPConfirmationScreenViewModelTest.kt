@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.IAuthData
@@ -222,7 +223,7 @@ internal class OTPConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail updates error if no email is passed`() =
         runTest(dispatcher) {
-            viewModel.sendResetPasswordEmail(null, mockk(relaxed = true), this)
+            viewModel.sendResetPasswordEmail(null, mockk(relaxed = true), Locale.EN, this)
             assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
         }
 
@@ -236,7 +237,7 @@ internal class OTPConfirmationScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
-            viewModel.sendResetPasswordEmail("my@email.com", mockk(relaxed = true), this)
+            viewModel.sendResetPasswordEmail("my@email.com", mockk(relaxed = true), Locale.EN, this)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
             require(event.navigationRoute is NavigationRoute.PasswordResetSent)
@@ -255,7 +256,7 @@ internal class OTPConfirmationScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
-            viewModel.sendResetPasswordEmail("my@email.com", mockk(relaxed = true), this)
+            viewModel.sendResetPasswordEmail("my@email.com", mockk(relaxed = true), Locale.EN, this)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }
 }

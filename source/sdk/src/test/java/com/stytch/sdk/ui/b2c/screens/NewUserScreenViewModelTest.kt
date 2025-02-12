@@ -5,6 +5,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.Feedback
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.StrengthPolicy
 import com.stytch.sdk.consumer.StytchClient
@@ -70,7 +71,7 @@ internal class NewUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
+            viewModel.sendEmailMagicLink(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -90,7 +91,7 @@ internal class NewUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailMagicLink(mockk(relaxed = true), this)
+            viewModel.sendEmailMagicLink(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
         }
@@ -110,7 +111,7 @@ internal class NewUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            viewModel.sendEmailOTP(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -131,7 +132,7 @@ internal class NewUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            viewModel.sendEmailOTP(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.emailState.errorMessage == "Something bad happened internally")
         }

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.b2c.data.EventState
@@ -103,7 +104,7 @@ internal class PasswordResetSentScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEML("", mockk(relaxed = true), this)
+            viewModel.sendEML("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -123,7 +124,7 @@ internal class PasswordResetSentScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEML("", mockk(relaxed = true), this)
+            viewModel.sendEML("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }
@@ -143,7 +144,7 @@ internal class PasswordResetSentScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP("", mockk(relaxed = true), this)
+            viewModel.sendEmailOTP("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -162,7 +163,7 @@ internal class PasswordResetSentScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP("", mockk(relaxed = true), this)
+            viewModel.sendEmailOTP("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }

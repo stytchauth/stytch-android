@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2c.data
 
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.otp.OTP
 import org.junit.Test
 
@@ -19,8 +20,9 @@ internal class OTPOptionsTest {
                 expirationMinutes = defaultOTPOptions.expirationMinutes,
                 loginTemplateId = defaultOTPOptions.loginTemplateId,
                 signupTemplateId = defaultOTPOptions.signupTemplateId,
+                locale = Locale.EN,
             )
-        assert(defaultOTPOptions.toEmailOtpParameters("my@email.com") == expected)
+        assert(defaultOTPOptions.toEmailOtpParameters("my@email.com", Locale.EN) == expected)
     }
 
     @Test
@@ -30,8 +32,9 @@ internal class OTPOptionsTest {
                 phoneNumber = "123-456-7890",
                 expirationMinutes = defaultOTPOptions.expirationMinutes,
                 enableAutofill = true,
+                locale = Locale.EN,
             )
-        assert(defaultOTPOptions.toSMSOtpParameters("123-456-7890") == expected)
+        assert(defaultOTPOptions.toSMSOtpParameters("123-456-7890", Locale.EN) == expected)
     }
 
     @Test
@@ -40,7 +43,8 @@ internal class OTPOptionsTest {
             OTP.WhatsAppOTP.Parameters(
                 phoneNumber = "123-456-7890",
                 expirationMinutes = defaultOTPOptions.expirationMinutes,
+                locale = Locale.EN,
             )
-        assert(defaultOTPOptions.toWhatsAppOtpParameters("123-456-7890") == expected)
+        assert(defaultOTPOptions.toWhatsAppOtpParameters("123-456-7890", Locale.EN) == expected)
     }
 }

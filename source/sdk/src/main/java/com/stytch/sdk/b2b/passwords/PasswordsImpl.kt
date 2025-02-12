@@ -85,6 +85,7 @@ internal class PasswordsImpl internal constructor(
                     resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
                     codeChallenge = challengeCode,
+                    locale = parameters.locale,
                 )
         }
         return result
@@ -185,6 +186,7 @@ internal class PasswordsImpl internal constructor(
             api.resetBySession(
                 organizationId = parameters.organizationId,
                 password = parameters.password,
+                locale = parameters.locale,
             )
         }
 
@@ -252,6 +254,7 @@ internal class PasswordsImpl internal constructor(
                     resetPasswordExpirationMinutes = parameters.resetPasswordExpirationMinutes,
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
                     codeChallenge = challengeCode,
+                    locale = parameters.locale,
                 )
             }
 
@@ -280,6 +283,7 @@ internal class PasswordsImpl internal constructor(
                     password = parameters.password,
                     codeVerifier = pkcePairManager.getPKCECodePair()?.codeVerifier,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    locale = parameters.locale,
                 )
             }.apply {
                 pkcePairManager.clearPKCECodePair()

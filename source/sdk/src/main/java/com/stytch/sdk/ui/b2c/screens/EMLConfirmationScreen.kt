@@ -74,7 +74,11 @@ internal data class EMLConfirmationScreen(
             onResendEML = { viewModel.resendEML(details.parameters) },
             isReturningUser = isReturningUser,
             onCreatePasswordClicked = {
-                viewModel.sendResetPasswordEmail(details.parameters.email, productConfig.passwordOptions)
+                viewModel.sendResetPasswordEmail(
+                    details.parameters.email,
+                    productConfig.passwordOptions,
+                    productConfig.locale,
+                )
             },
             productList = productConfig.products,
         )

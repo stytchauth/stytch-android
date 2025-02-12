@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2c.data
 
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import org.junit.Test
 
@@ -22,7 +23,8 @@ internal class EmailMagicLinksOptionsTest {
                 signupExpirationMinutes = options.signupExpirationMinutes,
                 loginTemplateId = options.loginTemplateId,
                 signupTemplateId = options.signupTemplateId,
+                locale = Locale.EN,
             )
-        assert(options.toParameters("my@email.com", "publicToken") == expected)
+        assert(options.toParameters("my@email.com", "publicToken", Locale.EN) == expected)
     }
 }

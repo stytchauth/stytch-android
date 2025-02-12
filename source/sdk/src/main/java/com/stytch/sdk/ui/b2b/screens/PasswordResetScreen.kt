@@ -38,7 +38,7 @@ internal class PasswordResetScreenViewModel(
     val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
     val usePasswordStrengthCheck = UsePasswordsStrengthCheck(viewModelScope, state, ::dispatch, ::request)
     val usePasswordDiscoveryResetByEmail =
-        UsePasswordDiscoveryResetByEmail(viewModelScope, state, ::dispatch, ::request)
+        UsePasswordDiscoveryResetByEmail(viewModelScope, state, ::dispatch, productConfig, ::request)
 
     fun handlePasswordReset() {
         if (state.value.deeplinkTokenPair?.tokenType == B2BTokenType.DISCOVERY) {

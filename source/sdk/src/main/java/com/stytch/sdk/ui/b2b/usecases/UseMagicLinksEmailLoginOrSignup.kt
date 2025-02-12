@@ -36,6 +36,7 @@ internal class UseMagicLinksEmailLoginOrSignup(
                         signupRedirectUrl = getRedirectUrl(),
                         loginTemplateId = productConfig.emailMagicLinksOptions.loginTemplateId,
                         signupTemplateId = productConfig.emailMagicLinksOptions.signupTemplateId,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

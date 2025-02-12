@@ -119,6 +119,7 @@ internal object B2BRequests {
             val resetPasswordTemplateId: String?,
             @Json(name = "code_challenge")
             val codeChallenge: String,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -158,6 +159,7 @@ internal object B2BRequests {
             @Json(name = "organization_id")
             val organizationId: String,
             val password: String,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -184,6 +186,7 @@ internal object B2BRequests {
                 val resetPasswordTemplateId: String?,
                 @Json(name = "pkce_code_challenge")
                 val codeChallenge: String,
+                val locale: Locale? = null,
             )
 
             @Keep
@@ -196,6 +199,7 @@ internal object B2BRequests {
                 val codeVerifier: String?,
                 @Json(name = "intermediate_session_token")
                 val intermediateSessionToken: String?,
+                val locale: Locale? = null,
             )
 
             @Keep

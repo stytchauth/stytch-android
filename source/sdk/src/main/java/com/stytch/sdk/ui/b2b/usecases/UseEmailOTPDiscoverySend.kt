@@ -28,6 +28,7 @@ internal class UseEmailOTPDiscoverySend(
                     OTP.Email.Discovery.SendParameters(
                         emailAddress = state.value.emailState.emailAddress,
                         loginTemplateId = productConfig.emailMagicLinksOptions.loginTemplateId,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

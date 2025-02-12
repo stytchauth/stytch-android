@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2c.data
 
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.passwords.Passwords
 import org.junit.Test
 
@@ -20,7 +21,8 @@ internal class PasswordOptionsTest {
                 resetPasswordRedirectUrl = "stytchui-publicToken://deeplink",
                 resetPasswordExpirationMinutes = options.resetPasswordExpirationMinutes,
                 resetPasswordTemplateId = options.resetPasswordTemplateId,
+                locale = Locale.EN,
             )
-        assert(options.toResetByEmailStartParameters("my@email.com", "publicToken") == expected)
+        assert(options.toResetByEmailStartParameters("my@email.com", "publicToken", Locale.EN) == expected)
     }
 }

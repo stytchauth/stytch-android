@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
@@ -72,6 +73,7 @@ internal class ReturningUserScreenViewModel(
     fun authenticate(
         sessionOptions: SessionOptions,
         passwordOptions: PasswordOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
@@ -98,6 +100,7 @@ internal class ReturningUserScreenViewModel(
                                 sendPasswordResetAndNavigateAppropriately(
                                     email = uiState.value.emailState.emailAddress,
                                     passwordOptions = passwordOptions,
+                                    locale = locale,
                                 )
                             } else {
                                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
@@ -123,12 +126,14 @@ internal class ReturningUserScreenViewModel(
     private suspend fun sendPasswordResetAndNavigateAppropriately(
         email: String,
         passwordOptions: PasswordOptions,
+        locale: Locale,
     ) {
         // send reset password request and nav appropriately
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = email,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
             is StytchResult.Success -> {
@@ -164,6 +169,7 @@ internal class ReturningUserScreenViewModel(
 
     fun sendEML(
         emailMagicLinksOptions: EmailMagicLinksOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
@@ -176,6 +182,7 @@ internal class ReturningUserScreenViewModel(
                 emailMagicLinksOptions.toParameters(
                     emailAddress = uiState.value.emailState.emailAddress,
                     publicToken = stytchClient.publicToken,
+                    locale = locale,
                 )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
@@ -209,6 +216,7 @@ internal class ReturningUserScreenViewModel(
 
     fun sendEmailOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
@@ -217,7 +225,7 @@ internal class ReturningUserScreenViewModel(
                 genericErrorMessage = null,
             )
         scope.launch {
-            val parameters = otpOptions.toEmailOtpParameters(uiState.value.emailState.emailAddress)
+            val parameters = otpOptions.toEmailOtpParameters(uiState.value.emailState.emailAddress, locale)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     stytchClient.events.logEvent(
@@ -250,6 +258,7 @@ internal class ReturningUserScreenViewModel(
 
     fun onForgotPasswordClicked(
         passwordOptions: PasswordOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
@@ -262,6 +271,7 @@ internal class ReturningUserScreenViewModel(
                 passwordOptions.toResetByEmailStartParameters(
                     emailAddress = uiState.value.emailState.emailAddress,
                     publicToken = stytchClient.publicToken,
+                    locale = locale,
                 )
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
                 is StytchResult.Success -> {

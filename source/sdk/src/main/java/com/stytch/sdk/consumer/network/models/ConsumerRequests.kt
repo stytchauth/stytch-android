@@ -94,6 +94,7 @@ internal object ConsumerRequests {
             val resetPasswordExpirationMinutes: Int?,
             @Json(name = "reset_password_template_id")
             val resetPasswordTemplateId: String?,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -105,6 +106,7 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
             @Json(name = "code_verifier")
             val codeVerifier: String,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -113,6 +115,7 @@ internal object ConsumerRequests {
             val password: String,
             @Json(name = "session_duration_minutes")
             val sessionDurationMinutes: Int,
+            val locale: Locale? = null,
         )
 
         @Keep
@@ -155,6 +158,7 @@ internal object ConsumerRequests {
             val phoneNumber: String,
             @Json(name = "expiration_minutes")
             val expirationMinutes: Int?,
+            val locale: Locale? = null,
         )
 
         @Keep

@@ -306,12 +306,14 @@ internal object StytchApi {
         suspend fun sendOTPWithWhatsAppPrimary(
             phoneNumber: String,
             expirationMinutes: Int?,
+            locale: Locale?,
         ): StytchResult<OTPSendResponseData> =
             safeConsumerApiCall {
                 apiService.sendOTPWithWhatsAppPrimary(
                     ConsumerRequests.OTP.WhatsApp(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes,
+                        locale = locale,
                     ),
                 )
             }
@@ -320,12 +322,14 @@ internal object StytchApi {
         suspend fun sendOTPWithWhatsAppSecondary(
             phoneNumber: String,
             expirationMinutes: Int?,
+            locale: Locale?,
         ): StytchResult<OTPSendResponseData> =
             safeConsumerApiCall {
                 apiService.sendOTPWithWhatsAppSecondary(
                     ConsumerRequests.OTP.WhatsApp(
                         phoneNumber = phoneNumber,
                         expirationMinutes = expirationMinutes,
+                        locale = locale,
                     ),
                 )
             }
@@ -335,6 +339,7 @@ internal object StytchApi {
             expirationMinutes: Int,
             loginTemplateId: String?,
             signupTemplateId: String?,
+            locale: Locale?,
         ): StytchResult<LoginOrCreateOTPData> =
             safeConsumerApiCall {
                 apiService.loginOrCreateUserByOTPWithEmail(
@@ -343,6 +348,7 @@ internal object StytchApi {
                         expirationMinutes = expirationMinutes,
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
+                        locale = locale,
                     ),
                 )
             }
@@ -439,6 +445,7 @@ internal object StytchApi {
             resetPasswordRedirectUrl: String?,
             resetPasswordExpirationMinutes: Int?,
             resetPasswordTemplateId: String?,
+            locale: Locale?,
         ): StytchResult<BasicData> =
             safeConsumerApiCall {
                 apiService.resetByEmailStart(
@@ -450,6 +457,7 @@ internal object StytchApi {
                         resetPasswordRedirectUrl,
                         resetPasswordExpirationMinutes,
                         resetPasswordTemplateId,
+                        locale,
                     ),
                 )
             }
@@ -459,6 +467,7 @@ internal object StytchApi {
             password: String,
             sessionDurationMinutes: Int,
             codeVerifier: String,
+            locale: Locale?,
         ): StytchResult<AuthData> =
             safeConsumerApiCall {
                 apiService.resetByEmail(
@@ -467,6 +476,7 @@ internal object StytchApi {
                         password,
                         sessionDurationMinutes,
                         codeVerifier,
+                        locale,
                     ),
                 )
             }
@@ -474,12 +484,14 @@ internal object StytchApi {
         suspend fun resetBySession(
             password: String,
             sessionDurationMinutes: Int,
+            locale: Locale?,
         ): StytchResult<AuthData> =
             safeConsumerApiCall {
                 apiService.resetBySession(
                     ConsumerRequests.Passwords.ResetBySessionRequest(
                         password = password,
                         sessionDurationMinutes = sessionDurationMinutes,
+                        locale = locale,
                     ),
                 )
             }

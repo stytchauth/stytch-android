@@ -175,7 +175,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithWhatsAppPrimary("", 30)
+            StytchApi.OTP.sendOTPWithWhatsAppPrimary("", 30, null)
             coVerify { StytchApi.apiService.sendOTPWithWhatsAppPrimary(any()) }
         }
 
@@ -184,7 +184,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.sendOTPWithWhatsAppSecondary("", 30)
+            StytchApi.OTP.sendOTPWithWhatsAppSecondary("", 30, null)
             coVerify { StytchApi.apiService.sendOTPWithWhatsAppSecondary(any()) }
         }
 
@@ -193,7 +193,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30, "", "")
+            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30, "", "", null)
             coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) }
         }
 
@@ -247,7 +247,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmailStart(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmailStart("", "", "", 30, "", 30, "")
+            StytchApi.Passwords.resetByEmailStart("", "", "", 30, "", 30, "", null)
             coVerify { StytchApi.apiService.resetByEmailStart(any()) }
         }
 
@@ -256,7 +256,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetByEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetByEmail("", "", 30, "")
+            StytchApi.Passwords.resetByEmail("", "", 30, "", null)
             coVerify { StytchApi.apiService.resetByEmail(any()) }
         }
 
@@ -265,7 +265,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.resetBySession(any()) } returns mockk(relaxed = true)
-            StytchApi.Passwords.resetBySession(password = "", sessionDurationMinutes = 30)
+            StytchApi.Passwords.resetBySession(password = "", sessionDurationMinutes = 30, locale = null)
             coVerify { StytchApi.apiService.resetBySession(any()) }
         }
 
