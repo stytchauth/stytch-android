@@ -47,6 +47,7 @@ internal class CryptoWalletImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             CryptoWalletImpl(
                 externalScope = TestScope(),

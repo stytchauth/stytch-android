@@ -75,6 +75,7 @@ internal class PasswordsImplTest {
         MockKAnnotations.init(this, true, true)
         every { mockSessionStorage.intermediateSessionToken } returns ""
         every { mockSessionStorage.intermediateSessionToken = any() } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             PasswordsImpl(

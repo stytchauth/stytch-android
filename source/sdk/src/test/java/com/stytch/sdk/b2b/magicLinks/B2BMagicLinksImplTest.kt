@@ -70,6 +70,7 @@ internal class B2BMagicLinksImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockB2BSessionStorage.intermediateSessionToken } returns ""
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
+        every { mockB2BSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             B2BMagicLinksImpl(
                 externalScope = TestScope(),

@@ -93,6 +93,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.saveBoolean(any(), any()) } just runs
         every { any<String>().toBase64DecodedByteArray() } returns base64DecodedByteArray
         every { any<ByteArray>().toBase64EncodedString() } returns base64EncodedString
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             BiometricsImpl(
                 externalScope = TestScope(),

@@ -65,6 +65,7 @@ internal class SSOImplTest {
         mockkStatic("com.stytch.sdk.b2b.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockB2BSessionStorage.intermediateSessionToken } returns ""
+        every { mockB2BSessionStorage.lastAuthMethodUsed = any() } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             SSOImpl(

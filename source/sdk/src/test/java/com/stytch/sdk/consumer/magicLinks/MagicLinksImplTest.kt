@@ -66,6 +66,7 @@ internal class MagicLinksImplTest {
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             MagicLinksImpl(
                 externalScope = TestScope(),
