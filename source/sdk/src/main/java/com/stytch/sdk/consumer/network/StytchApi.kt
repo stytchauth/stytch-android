@@ -339,6 +339,7 @@ internal object StytchApi {
             expirationMinutes: Int,
             loginTemplateId: String?,
             signupTemplateId: String?,
+            locale: Locale?,
         ): StytchResult<LoginOrCreateOTPData> =
             safeConsumerApiCall {
                 apiService.loginOrCreateUserByOTPWithEmail(
@@ -347,6 +348,7 @@ internal object StytchApi {
                         expirationMinutes = expirationMinutes,
                         loginTemplateId = loginTemplateId,
                         signupTemplateId = signupTemplateId,
+                        locale = locale,
                     ),
                 )
             }

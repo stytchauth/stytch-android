@@ -65,11 +65,20 @@ internal object ReturningUserScreen : AndroidScreen(), Parcelable {
             onEmailAddressChanged = viewModel::onEmailAddressChanged,
             onPasswordChanged = viewModel::onPasswordChanged,
             onEmailAndPasswordSubmitted = {
-                viewModel.authenticate(productConfig.sessionOptions, productConfig.passwordOptions)
+                viewModel.authenticate(
+                    productConfig.sessionOptions,
+                    productConfig.passwordOptions,
+                    productConfig.locale,
+                )
             },
-            sendEML = { viewModel.sendEML(productConfig.emailMagicLinksOptions) },
-            sendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
-            onForgotPasswordClicked = { viewModel.onForgotPasswordClicked(productConfig.passwordOptions) },
+            sendEML = { viewModel.sendEML(productConfig.emailMagicLinksOptions, productConfig.locale) },
+            sendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions, productConfig.locale) },
+            onForgotPasswordClicked = {
+                viewModel.onForgotPasswordClicked(
+                    productConfig.passwordOptions,
+                    productConfig.locale,
+                )
+            },
         )
     }
 }

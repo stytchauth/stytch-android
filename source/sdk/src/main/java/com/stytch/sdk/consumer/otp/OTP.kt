@@ -255,6 +255,7 @@ public interface OTP {
                 val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
                 val loginTemplateId: String? = null,
                 val signupTemplateId: String? = null,
+                val locale: Locale? = null,
             ) : Parcelable
 
         /**

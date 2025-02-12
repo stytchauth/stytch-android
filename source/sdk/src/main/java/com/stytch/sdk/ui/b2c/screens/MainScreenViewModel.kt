@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
@@ -157,12 +158,14 @@ internal class MainScreenViewModel(
             sendEmailOTPForReturningUserAndGetNavigationRoute(
                 emailAddress = emailAddress,
                 otpOptions = productConfig.otpOptions,
+                locale = productConfig.locale,
             )
         } else if (hasEML) {
             // send EML
             sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
                 emailAddress = emailAddress,
                 emailMagicLinksOptions = productConfig.emailMagicLinksOptions,
+                locale = productConfig.locale,
             )
         } else {
             null
@@ -194,6 +197,7 @@ internal class MainScreenViewModel(
                                 sendResetPasswordForReturningUserAndGetNavigationRoute(
                                     emailAddress = emailAddress,
                                     passwordOptions = productConfig.passwordOptions,
+                                    locale = productConfig.locale,
                                 )
                             }
                         }
@@ -225,11 +229,13 @@ internal class MainScreenViewModel(
     suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
+        locale: Locale,
     ): NavigationRoute? {
         val parameters =
             emailMagicLinksOptions.toParameters(
                 emailAddress = emailAddress,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
@@ -256,8 +262,9 @@ internal class MainScreenViewModel(
     suspend fun sendEmailOTPForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         otpOptions: OTPOptions,
+        locale: Locale,
     ): NavigationRoute? {
-        val parameters = otpOptions.toEmailOtpParameters(emailAddress)
+        val parameters = otpOptions.toEmailOtpParameters(emailAddress, locale)
         return when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
                 stytchClient.events.logEvent(
@@ -290,11 +297,13 @@ internal class MainScreenViewModel(
     suspend fun sendResetPasswordForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         passwordOptions: PasswordOptions,
+        locale: Locale,
     ): NavigationRoute? {
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = emailAddress,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
@@ -320,12 +329,13 @@ internal class MainScreenViewModel(
 
     fun sendSmsOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
-            val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164())
+            val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164(), locale)
             when (val result = stytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -357,12 +367,13 @@ internal class MainScreenViewModel(
 
     fun sendWhatsAppOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
-            val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164())
+            val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164(), locale)
             when (val result = stytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)

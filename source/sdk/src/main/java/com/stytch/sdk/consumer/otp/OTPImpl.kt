@@ -225,6 +225,7 @@ internal class OTPImpl internal constructor(
                         expirationMinutes = parameters.expirationMinutes,
                         loginTemplateId = parameters.loginTemplateId,
                         signupTemplateId = parameters.signupTemplateId,
+                        locale = parameters.locale,
                     )
             }
 

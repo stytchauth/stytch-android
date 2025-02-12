@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
@@ -34,6 +35,7 @@ internal class NewUserScreenViewModel(
 
     fun sendEmailMagicLink(
         emailMagicLinksOptions: EmailMagicLinksOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         val emailState = uiState.value.emailState
@@ -42,6 +44,7 @@ internal class NewUserScreenViewModel(
             emailMagicLinksOptions.toParameters(
                 emailAddress = emailState.emailAddress,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         scope.launch {
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
@@ -77,12 +80,13 @@ internal class NewUserScreenViewModel(
 
     fun sendEmailOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         val emailState = uiState.value.emailState
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
-            val parameters = otpOptions.toEmailOtpParameters(emailState.emailAddress)
+            val parameters = otpOptions.toEmailOtpParameters(emailState.emailAddress, locale)
             when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     stytchClient.events.logEvent(

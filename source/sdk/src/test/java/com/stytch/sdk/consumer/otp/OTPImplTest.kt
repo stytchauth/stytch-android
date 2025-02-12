@@ -217,15 +217,17 @@ internal class OTPImplTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns mockk(relaxed = true)
             impl.email.loginOrCreate(mockk(relaxed = true))
-            coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) }
+            coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl email loginOrCreate with callback calls callback method`() {
-        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any(), any()) } returns
+            mockk(relaxed = true)
         val mockCallback = spyk<(LoginOrCreateOTPResponse) -> Unit>()
         impl.email.loginOrCreate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

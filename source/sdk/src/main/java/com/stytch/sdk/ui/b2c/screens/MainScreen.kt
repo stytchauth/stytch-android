@@ -57,6 +57,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val productConfig = LocalStytchProductConfig.current
         val context = LocalContext.current as AuthenticationActivity
         val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
         val uiState = viewModel.uiState.collectAsState()
@@ -76,8 +77,8 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             onEmailAddressSubmit = viewModel::onEmailAddressSubmit,
             onCountryCodeChanged = viewModel::onCountryCodeChanged,
             onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-            sendSmsOtp = viewModel::sendSmsOTP,
-            sendWhatsAppOTP = viewModel::sendWhatsAppOTP,
+            sendSmsOtp = { viewModel.sendSmsOTP(it, productConfig.locale) },
+            sendWhatsAppOTP = { viewModel.sendWhatsAppOTP(it, productConfig.locale) },
             exitWithoutAuthenticating = context::exitWithoutAuthenticating,
         )
     }

@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2c.data
 import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.passwords.Passwords
 import kotlinx.parcelize.Parcelize
 
@@ -25,6 +26,7 @@ public data class PasswordOptions
         internal fun toResetByEmailStartParameters(
             emailAddress: String,
             publicToken: String,
+            locale: Locale,
         ) = Passwords.ResetByEmailStartParameters(
             email = emailAddress,
             loginRedirectUrl = "stytchui-$publicToken://deeplink",
@@ -32,5 +34,6 @@ public data class PasswordOptions
             resetPasswordRedirectUrl = "stytchui-$publicToken://deeplink",
             resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
             resetPasswordTemplateId = resetPasswordTemplateId,
+            locale = locale,
         )
     }

@@ -193,7 +193,7 @@ internal class StytchApiTest {
         runBlocking {
             every { StytchApi.isInitialized } returns true
             coEvery { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) } returns mockk(relaxed = true)
-            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30, "", "")
+            StytchApi.OTP.loginOrCreateUserByOTPWithEmail("", 30, "", "", null)
             coVerify { StytchApi.apiService.loginOrCreateUserByOTPWithEmail(any()) }
         }
 

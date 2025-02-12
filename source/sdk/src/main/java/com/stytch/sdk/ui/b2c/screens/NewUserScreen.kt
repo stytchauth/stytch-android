@@ -72,8 +72,8 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
             hasEML = hasEML,
             hasEmailOTP = hasEmailOTP,
             hasPasswords = hasPasswords,
-            onSendEML = { viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions) },
-            onSendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions) },
+            onSendEML = { viewModel.sendEmailMagicLink(productConfig.emailMagicLinksOptions, productConfig.locale) },
+            onSendEmailOTP = { viewModel.sendEmailOTP(productConfig.otpOptions, productConfig.locale) },
         )
     }
 }

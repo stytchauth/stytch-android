@@ -85,7 +85,9 @@ internal data class OTPConfirmationScreen(
             onShowResendDialog = viewModel::onShowResendDialog,
             onResendEML = { viewModel.resendOTP(resendParameters) },
             onOTPCodeComplete = { code -> viewModel.authenticateOTP(code, productConfig.sessionOptions) },
-            onCreatePasswordClicked = { viewModel.sendResetPasswordEmail(emailAddress, productConfig.passwordOptions) },
+            onCreatePasswordClicked = {
+                viewModel.sendResetPasswordEmail(emailAddress, productConfig.passwordOptions, productConfig.locale)
+            },
         )
     }
 }

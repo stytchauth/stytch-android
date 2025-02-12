@@ -79,8 +79,20 @@ internal data class PasswordResetSentScreen(
             hasEmailOTP =
                 productConfig.products.contains(StytchProduct.OTP) &&
                     productConfig.otpOptions.methods.contains(OTPMethods.EMAIL),
-            sendEML = { viewModel.sendEML(details.parameters.email, productConfig.emailMagicLinksOptions) },
-            sendEmailOTP = { viewModel.sendEmailOTP(details.parameters.email, productConfig.otpOptions) },
+            sendEML = {
+                viewModel.sendEML(
+                    details.parameters.email,
+                    productConfig.emailMagicLinksOptions,
+                    productConfig.locale,
+                )
+            },
+            sendEmailOTP = {
+                viewModel.sendEmailOTP(
+                    details.parameters.email,
+                    productConfig.otpOptions,
+                    productConfig.locale,
+                )
+            },
         )
     }
 }
