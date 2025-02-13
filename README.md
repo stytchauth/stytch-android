@@ -29,25 +29,15 @@ dependencies {
 }
 ```
 
-Lastly, you must modify your applications build.gradle(.kts) to supply three `manifestPlaceholders`; two of them are for enabling OAuth deeplinks, and one is for enabling our UI SDK. If you are not using either, you still need to supply these placeholders, but they can be blank. The OAuth manifest placeholder values can be any valid scheme or host, and do not relate to your OAuth settings in the Stytch Dashboard. These are only used internally within your app to register an OAuth receiver activity. More information is available in our [OAuth tutorial](./tutorials/OAuth.md). The STYTCH_PUBLIC_TOKEN is your public token, which you can get from your project dashboard
-```gradle
-android {
-    ...
-    defaultConfig {
-        ...
-        manifestPlaceholders = [
-            'stytchOAuthRedirectScheme': '[YOUR_AUTH_SCHEME]', // eg: 'app'
-            'stytchOAuthRedirectHost': '[YOUR_AUTH_HOST]', // eg: 'myhost'
-            'STYTCH_PUBLIC_TOKEN': '[STYTCH_PUBLIC_TOKEN]', // if using B2C, else empty string
-            'STYTCH_B2B_PUBLIC_TOKEN': '[STYTCH_B2B_PUBLIC_TOKEN'], // if using B2B, else empty string
-        ]
-        ...
-    }
-}
+Lastly, add a new string resource called `STYTCH_PUBLIC_TOKEN` with the value of your public token from the Stytch Dashboard. This will automatically enable the necessary activities for handling [OAuth deeplinks](./tutorials/OAuth.md) and our pre-built UI components, as well as automatic configuration of the Stytch client:
+```xml
+<resources>
+    <string name="STYTCH_PUBLIC_TOKEN">YOUR_PUBLIC_TOKEN</string>
+</resources>
 ```
 
 ## Configuration
-Before using any part of the Stytch SDK, you must call configure to set the application context and public token as specified in your project dashboard.
+Before using any part of the Stytch SDK, you must call configure to set the application context, which is used for retrieving the public token and registering necessary activities/receivers/deeplinks.
 
 If configuring from an Application Class:
 ``` kotlin
@@ -56,10 +46,7 @@ class App : Application() {
     override fun onCreate() {  
         super.onCreate()
         ...
-        StytchClient.configure(  
-            context = this,
-            publicToken = [STYTCH_PUBLIC_TOKEN],
-        )
+        StytchClient.configure(this)
         ...
     }
 }
@@ -72,10 +59,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate() {  
         super.onCreate()
         ...
-        StytchClient.configure(  
-            context = applicationContext,
-            publicToken = [STYTCH_PUBLIC_TOKEN],
-        )
+        StytchClient.configure(applicationContext)
         ...
     }
 }

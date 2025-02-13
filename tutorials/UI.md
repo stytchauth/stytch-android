@@ -1,5 +1,7 @@
 # StytchUI Usage
-The UI SDK automatically handles all necessary OAuth, Email Magic Link, and Password Reset deeplinks. To enable this functionality, you need to add a specific redirect URL in your [Stytch Dashboard](https://stytch.com/dashboard/redirect-urls): `stytchui-[YOUR_PUBLIC_TOKEN]://deeplink`, and set it as valid for Signups, Logins, and Password Resets.
+The UI SDK automatically handles all necessary OAuth, Email Magic Link, and Password Reset deeplinks. To enable this functionality, you need to add two specific redirect URLs in your [Stytch Dashboard](https://stytch.com/dashboard/redirect-urls):
+1. `[YOUR_PUBLIC_TOKEN]://b2c-ui` or `[YOUR_PUBLIC_TOKEN]://b2b-ui`, depending on if you are using a Consumer or B2B application, and set it as valid for all redirect types.
+2. `[YOUR_PUBLIC_TOKEN]://oauth`, for handling OAuth login and redirect URLs
 
 The Stytch UI uses the Builder pattern to initialize the UI, and allows you to fully customize the look, feel, and supported products.
 
@@ -24,8 +26,6 @@ private val stytchUi = StytchUI.Builder().apply {
                 clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
             ),
             oAuthOptions = OAuthOptions(
-                loginRedirectURL = "uiworkbench://oauth", // This should match what you defined in your manifestPlaceholders
-                signupRedirectURL = "uiworkbench://oauth", // This should match what you defined in your manifestPlaceholders
                 providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB)
             ),
             otpOptions = OTPOptions(
