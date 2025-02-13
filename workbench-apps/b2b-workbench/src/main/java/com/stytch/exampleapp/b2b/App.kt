@@ -13,7 +13,9 @@ class App : Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         Timber.plant(Timber.DebugTree())
-        StytchB2BClient.configure(applicationContext)
+        StytchB2BClient.configure(applicationContext) {
+            println("Last Auth Method Used: ${StytchB2BClient.lastAuthMethodUsed}")
+        }
         CoroutineScope(Dispatchers.Main).launch {
             StytchB2BClient.sessions.onChange.collect {
                 println("Collected session data: $it")

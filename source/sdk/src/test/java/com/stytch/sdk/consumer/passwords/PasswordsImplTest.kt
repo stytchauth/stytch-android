@@ -80,6 +80,7 @@ internal class PasswordsImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         MockKAnnotations.init(this, true, true)
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             PasswordsImpl(
                 externalScope = TestScope(),

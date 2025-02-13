@@ -7,6 +7,7 @@ import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.PasswordsCreateResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -36,6 +37,7 @@ internal class PasswordsImpl internal constructor(
                         password = parameters.password,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSWORDS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
         }
@@ -69,6 +71,7 @@ internal class PasswordsImpl internal constructor(
                         password = parameters.password,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSWORDS
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
         }

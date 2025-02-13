@@ -2,13 +2,14 @@ package com.stytch.sdk.b2b.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.common.IST_EXPIRATION_TIME
 import com.stytch.sdk.common.PREFERENCES_NAME_IST
 import com.stytch.sdk.common.PREFERENCES_NAME_IST_EXPIRATION
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_MEMBER_SESSION_DATA
@@ -29,6 +30,7 @@ internal class B2BSessionStorage(
     private val moshiB2BSessionDataAdapter = moshi.adapter(B2BSessionData::class.java).lenient()
     private val moshiMemberDataAdapter = moshi.adapter(MemberData::class.java).lenient()
     private val moshiOrganizationDataAdapter = moshi.adapter(OrganizationData::class.java).lenient()
+    private val moshiLastAuthMethodUsedAdapter = moshi.adapter(B2BAuthMethod::class.java).lenient()
 
     private val _sessionFlow = MutableStateFlow<B2BSessionData?>(null)
     private val _memberFlow = MutableStateFlow<MemberData?>(null)
@@ -206,6 +208,30 @@ internal class B2BSessionStorage(
             }
             lastValidatedAt = Date()
             _organizationFlow.tryEmit(value)
+        }
+
+    internal var lastAuthMethodUsed: B2BAuthMethod?
+        get() {
+            val stringValue: String?
+            synchronized(this) {
+                stringValue = storageHelper.loadValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED)
+            }
+            return stringValue?.let {
+                try {
+                    moshiLastAuthMethodUsedAdapter.fromJson(it)
+                } catch (e: JsonDataException) {
+                    StytchLog.e(e.message ?: "Error parsing persisted last auth method")
+                    null
+                }
+            }
+        }
+        set(value) {
+            value?.let {
+                val stringValue = moshiLastAuthMethodUsedAdapter.toJson(it)
+                storageHelper.saveValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED, stringValue)
+            } ?: run {
+                storageHelper.saveValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED, null)
+            }
         }
 
     val persistedSessionIdentifiersExist: Boolean

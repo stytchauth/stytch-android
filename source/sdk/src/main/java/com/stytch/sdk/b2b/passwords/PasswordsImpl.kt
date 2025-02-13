@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.passwords
 
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.B2BPasswordDiscoveryAuthenticateResponse
 import com.stytch.sdk.b2b.B2BPasswordDiscoveryResetByEmailResponse
 import com.stytch.sdk.b2b.EmailResetResponse
@@ -44,6 +45,7 @@ internal class PasswordsImpl internal constructor(
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                     locale = parameters.locale,
                 ).apply {
+                    sessionStorage.lastAuthMethodUsed = B2BAuthMethod.PASSWORDS
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

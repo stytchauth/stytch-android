@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.magicLinks
 
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
@@ -39,6 +40,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
                     pkcePairManager.clearPKCECodePair()
+                    sessionStorage.lastAuthMethodUsed = B2BAuthMethod.EMAIL_MAGIC_LINKS
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
@@ -73,6 +75,7 @@ internal class B2BMagicLinksImpl internal constructor(
                     token = parameters.token,
                     codeVerifier = codeVerifier,
                 ).apply {
+                    sessionStorage.lastAuthMethodUsed = B2BAuthMethod.EMAIL_MAGIC_LINKS
                     pkcePairManager.clearPKCECodePair()
                     if (this is StytchResult.Success) {
                         sessionStorage.intermediateSessionToken = value.intermediateSessionToken

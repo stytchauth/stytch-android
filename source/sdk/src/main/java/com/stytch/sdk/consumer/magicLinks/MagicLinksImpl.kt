@@ -7,6 +7,7 @@ import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -37,6 +38,7 @@ internal class MagicLinksImpl internal constructor(
                     codeVerifier,
                 ).apply {
                     pkcePairManager.clearPKCECodePair()
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.EMAIL_MAGIC_LINKS
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

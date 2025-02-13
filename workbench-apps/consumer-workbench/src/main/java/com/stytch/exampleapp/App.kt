@@ -15,6 +15,7 @@ class App : Application() {
         Timber.plant(Timber.DebugTree())
         StytchClient.configure(this) {
             println("Stytch has been initialized and configured and is ready for use")
+            println("Last Auth Method Used: ${StytchClient.lastAuthMethodUsed}")
         }
         CoroutineScope(Dispatchers.Main).launch {
             StytchClient.sessions.onChange.collect {

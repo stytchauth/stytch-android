@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.crypto
 
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -62,6 +63,7 @@ internal class CryptoWalletImpl(
                     signature = parameters.signature,
                     sessionDurationMinutes = parameters.sessionDurationMinutes,
                 ).apply {
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.CRYPTO
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
