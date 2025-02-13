@@ -1,6 +1,10 @@
 package com.stytch.exampleapp.b2b
 
 import android.app.Activity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
@@ -21,15 +25,17 @@ class OAuthViewModel : ViewModel() {
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
+    var orgIdState by mutableStateOf(TextFieldValue(""))
+
     fun startGoogleOAuthFlow(context: Activity) {
         viewModelScope.launchAndToggleLoadingState {
             StytchB2BClient.oauth.google.start(
                 OAuth.Provider.StartParameters(
                     context = context,
                     oAuthRequestIdentifier = B2B_OAUTH_REQUEST,
-                    organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
-                    loginRedirectUrl = "app://b2bexampleapp.com/",
-                    signupRedirectUrl = "app://b2bexampleapp.com/",
+                    organizationId = orgIdState.text,
+                    loginRedirectUrl = "app://b2bworkbench?type={}",
+                    signupRedirectUrl = "app://b2bworkbench?type={}",
                 ),
             )
         }
@@ -41,7 +47,7 @@ class OAuthViewModel : ViewModel() {
                 OAuth.ProviderDiscovery.DiscoveryStartParameters(
                     context = context,
                     oAuthRequestIdentifier = B2B_OAUTH_REQUEST,
-                    discoveryRedirectUrl = "app://b2bexampleapp.com/",
+                    discoveryRedirectUrl = "app://b2bworkbench?type={}",
                 ),
             )
         }
@@ -52,7 +58,7 @@ class OAuthViewModel : ViewModel() {
             val result =
                 StytchB2BClient.oauth.google.getTokenForProvider(
                     OAuth.Provider.GetTokenForProviderParams(
-                        organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                        organizationId = orgIdState.text,
                         loginRedirectUrl = "app://b2bOAuth",
                         signupRedirectUrl = "app://b2bOAuth",
                     ),

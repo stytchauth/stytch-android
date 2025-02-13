@@ -7,8 +7,6 @@ plugins {
     kotlin("kapt")
 }
 
-val publicToken: String = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
-
 android {
     namespace = "com.stytch.stytchexampleapp"
     compileSdk = 35
@@ -24,12 +22,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        manifestPlaceholders["stytchOAuthRedirectScheme"] = ""
-        manifestPlaceholders["stytchOAuthRedirectHost"] = ""
-        manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = publicToken
-        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
-
-        buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
     }
 
     buildTypes {

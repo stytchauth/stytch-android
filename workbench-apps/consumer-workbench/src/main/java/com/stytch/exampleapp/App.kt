@@ -13,10 +13,7 @@ class App : Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         Timber.plant(Timber.DebugTree())
-        StytchClient.configure(
-            context = this,
-            publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
-        ) {
+        StytchClient.configure(this) {
             println("Stytch has been initialized and configured and is ready for use")
             println("Last Auth Method Used: ${StytchClient.lastAuthMethodUsed}")
         }

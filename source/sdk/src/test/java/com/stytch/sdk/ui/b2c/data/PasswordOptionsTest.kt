@@ -16,9 +16,9 @@ internal class PasswordOptionsTest {
         val expected =
             Passwords.ResetByEmailStartParameters(
                 email = "my@email.com",
-                loginRedirectUrl = "stytchui-publicToken://deeplink",
+                loginRedirectUrl = "publicToken://b2c-ui",
                 loginExpirationMinutes = options.loginExpirationMinutes,
-                resetPasswordRedirectUrl = "stytchui-publicToken://deeplink",
+                resetPasswordRedirectUrl = "publicToken://b2c-ui",
                 resetPasswordExpirationMinutes = options.resetPasswordExpirationMinutes,
                 resetPasswordTemplateId = options.resetPasswordTemplateId,
                 locale = Locale.EN,

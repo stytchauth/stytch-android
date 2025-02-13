@@ -79,12 +79,8 @@ jobs:
          echo "Run, Build Application using script"
          ./gradlew --no-daemon assemble
       env:
-        STYTCH_PUBLIC_TOKEN: 'abc123'
         GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-        STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
-        STYTCH_B2B_ORG_ID: 'abc123'
         PASSKEYS_DOMAIN: 'abc123'
-        UI_GOOGLE_CLIENT_ID: 'abc123'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

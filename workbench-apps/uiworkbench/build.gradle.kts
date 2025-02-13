@@ -4,8 +4,7 @@ plugins {
     alias(libs.plugins.kotlinPluginCompose)
 }
 
-val publicToken = rootProject.extra["STYTCH_PUBLIC_TOKEN"] as String
-val googleOAuthClientId = rootProject.extra["UI_GOOGLE_CLIENT_ID"] as String
+val googleOAuthClientId = rootProject.extra["GOOGLE_OAUTH_CLIENT_ID"] as String
 
 android {
     namespace = "com.stytch.uiworkbench"
@@ -22,20 +21,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        // Placeholders for OAuth redirect
-        manifestPlaceholders.putAll(
-            mapOf(
-                "stytchOAuthRedirectScheme" to "uiworkbench",
-                "stytchOAuthRedirectHost" to "oauth",
-                "STYTCH_PUBLIC_TOKEN" to publicToken,
-                "STYTCH_B2B_PUBLIC_TOKEN" to "",
-            ),
-        )
     }
 
     buildTypes {
         all {
-            buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
             buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\"")
         }
         release {

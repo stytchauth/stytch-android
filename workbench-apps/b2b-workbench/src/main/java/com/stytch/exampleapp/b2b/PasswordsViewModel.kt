@@ -19,6 +19,7 @@ class PasswordsViewModel : ViewModel() {
     var existingPasswordState by mutableStateOf(TextFieldValue(""))
     var newPasswordState by mutableStateOf(TextFieldValue(""))
     var passwordResetTokenState by mutableStateOf(TextFieldValue(""))
+    var orgIdState by mutableStateOf(TextFieldValue(""))
 
     private val _currentResponse = MutableStateFlow("")
     val currentResponse: StateFlow<String>
@@ -34,7 +35,7 @@ class PasswordsViewModel : ViewModel() {
                 StytchB2BClient.passwords
                     .resetByEmailStart(
                         Passwords.ResetByEmailStartParameters(
-                            organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                            organizationId = orgIdState.text,
                             emailAddress = emailState.text,
                             loginRedirectUrl = "app://b2bexampleapp.com/",
                             resetPasswordRedirectUrl = "app://b2bexampleapp.com/",
@@ -49,7 +50,7 @@ class PasswordsViewModel : ViewModel() {
                 StytchB2BClient.passwords
                     .resetByExisting(
                         Passwords.ResetByExistingPasswordParameters(
-                            organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                            organizationId = orgIdState.text,
                             emailAddress = emailState.text,
                             existingPassword = existingPasswordState.text,
                             newPassword = newPasswordState.text,
@@ -64,7 +65,7 @@ class PasswordsViewModel : ViewModel() {
                 StytchB2BClient.passwords
                     .resetBySession(
                         Passwords.ResetBySessionParameters(
-                            organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                            organizationId = orgIdState.text,
                             password = newPasswordState.text,
                         ),
                     ).toFriendlyDisplay()
@@ -77,7 +78,7 @@ class PasswordsViewModel : ViewModel() {
                 StytchB2BClient.passwords
                     .authenticate(
                         Passwords.AuthParameters(
-                            organizationId = BuildConfig.STYTCH_B2B_ORG_ID,
+                            organizationId = orgIdState.text,
                             emailAddress = emailState.text,
                             password = existingPasswordState.text,
                         ),

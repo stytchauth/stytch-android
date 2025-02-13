@@ -13,10 +13,7 @@ class App : Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         Timber.plant(Timber.DebugTree())
-        StytchB2BClient.configure(
-            context = applicationContext,
-            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
-        ) {
+        StytchB2BClient.configure(applicationContext) {
             println("Last Auth Method Used: ${StytchB2BClient.lastAuthMethodUsed}")
         }
         CoroutineScope(Dispatchers.Main).launch {

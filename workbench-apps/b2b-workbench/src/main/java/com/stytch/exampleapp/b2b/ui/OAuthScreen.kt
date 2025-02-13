@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -31,6 +34,18 @@ fun OAuthScreen(viewModel: OAuthViewModel) {
             modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).weight(1F, false),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = viewModel.orgIdState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.b2b_org_id))
+                },
+                onValueChange = {
+                    viewModel.orgIdState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+            )
             StytchButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.oauth_start),

@@ -23,18 +23,17 @@ class RecoveryCodesViewModel : ViewModel() {
     val loadingState: StateFlow<Boolean>
         get() = _loadingState
 
-    var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
+    var orgIdState by mutableStateOf(TextFieldValue(""))
     var memberIdState by mutableStateOf(TextFieldValue(""))
     var codeState by mutableStateOf(TextFieldValue(""))
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 
     fun get() {
         viewModelScope.launchAndToggleLoadingState {
@@ -51,14 +50,15 @@ class RecoveryCodesViewModel : ViewModel() {
     fun recover() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.recoveryCodes.recover(
-                    RecoveryCodes.RecoverParameters(
-                        organizationId = orgIdState.text,
-                        memberId = memberIdState.text,
-                        sessionDurationMinutes = 30,
-                        recoveryCode = codeState.text,
-                    ),
-                ).toFriendlyDisplay()
+                StytchB2BClient.recoveryCodes
+                    .recover(
+                        RecoveryCodes.RecoverParameters(
+                            organizationId = orgIdState.text,
+                            memberId = memberIdState.text,
+                            sessionDurationMinutes = 30,
+                            recoveryCode = codeState.text,
+                        ),
+                    ).toFriendlyDisplay()
         }
     }
 }

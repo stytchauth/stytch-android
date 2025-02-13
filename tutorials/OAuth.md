@@ -8,9 +8,9 @@ To see all of the currently supported OAuth providers, check the properties of t
 ## Redirect
 Redirect OAuth/SSO is the OAuth/SSO you may be most familiar with on the web: You click a button, are redirected to the selected IdP, login, and are redirected back to the original webpage. The same concept applies with the Stytch Android SDK, except the redirects are handled in a browser activity, and the backstack is managed by the SDK.
 
-To accomplish this, the SDK uses a multi-activity pattern that handles all of the redirect and backstack management logic to ensure the backstack stays clean, and activities are finished in the correct order. If you were wondering why, in the getting started [README](../README.md), you needed to add manifest-placeholders for `stytchOAuthRedirectScheme` and `stytchOAuthRedirectHost`, it's to enable this functionality. Let's dig into those placeholders a little more.
+To accomplish this, the SDK uses a multi-activity pattern that handles all of the redirect and backstack management logic to ensure the backstack stays clean, and activities are finished in the correct order. 
 
-When you provide these placeholders, the SDK registers an activity intent-filter for our "receiver" activity. When you start a redirect-based OAuth flow, the SDK launches a "manager" activity, which launches an "authorization" activity (the best system browser we can detect on device). Depending on the outcome of that authorization activity (user sign in, user canceled, etc), the authorization activity will either `finish` itself and return to the manager activity, or launch our receiver activity (identified by the manifest-placeholders), which will in turn launch our manager activity in such a way that ensures all previous activities in the flow are removed from the backstack.
+The SDK registers an activity intent-filter for our "receiver" activity. When you start a redirect-based OAuth flow, the SDK launches a "manager" activity, which launches an "authorization" activity (the best system browser we can detect on device). Depending on the outcome of that authorization activity (user sign in, user canceled, etc), the authorization activity will either `finish` itself and return to the manager activity, or launch our receiver activity (identified by the manifest-placeholders), which will in turn launch our manager activity in such a way that ensures all previous activities in the flow are removed from the backstack.
 
 For a deeper understanding of the third-party OAuth architecture, check out the [OAuth/SSO README](../source/sdk/src/main/java/com/stytch/sdk/common/sso/README.md).
 
@@ -19,21 +19,8 @@ There are two ways to listen for the result of this flow:
 2. **Direct Token Capture -** Configure the OAuth/SSO client with your currently running activity (using `oauth.setOAuthReceiverActivity()`/`sso.setSSOReceiverActivity()`, and use the appropriate `getTokenForProvider()` method. Under the hood, this works the same way as the first option, but will return the final token to the coroutine/callback/CompletableFuture. This method is a little easier to setup, as you don't need to specify an activity result listener, or parse the returned link manually
 
 ### Example Code
-For both flows in the following examples, we're going to use a redirect path of `my-app://oauth?type={}`, so make sure to add that as a valid redirect URL for the `Login` and `Signup` types in your Stytch Dashboard's [Redirect URL settings](stytch.com/dashboard/redirect-urls). You will also need to configure an [OAuth provider](https://stytch.com/dashboard/oauth). In this example, we are using GitHub.
+For both flows in the following examples, we're going to use a redirect path of `app://oauth?type={}`, so make sure to add that as a valid redirect URL for the `Login` and `Signup` types in your Stytch Dashboard's [Redirect URL settings](stytch.com/dashboard/redirect-urls). You will also need to configure an [OAuth provider](https://stytch.com/dashboard/oauth). In this example, we are using GitHub.
 
-Next, in your app's `build.gradle(.kts)`,  add the appropriate manifest placeholders:
-```gradle
-android {
-    ...
-    defaultConfig {
-        ...
-        manifestPlaceholders = [  
-            'stytchOAuthRedirectScheme': 'my-app',
-            'stytchOAuthRedirectHost': 'oauth'
-        ]
-    }
-}
-```
 #### Activity Result Callback flow:
 For this flow,  you will need to create an activity result handler in your main activity:
 ```kotlin

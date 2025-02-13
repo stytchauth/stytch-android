@@ -17,8 +17,8 @@ internal class EmailMagicLinksOptionsTest {
         val expected =
             MagicLinks.EmailMagicLinks.Parameters(
                 email = "my@email.com",
-                loginMagicLinkUrl = "stytchui-publicToken://deeplink",
-                signupMagicLinkUrl = "stytchui-publicToken://deeplink",
+                loginMagicLinkUrl = "publicToken://b2c-ui",
+                signupMagicLinkUrl = "publicToken://b2c-ui",
                 loginExpirationMinutes = options.loginExpirationMinutes,
                 signupExpirationMinutes = options.signupExpirationMinutes,
                 loginTemplateId = options.loginTemplateId,
