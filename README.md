@@ -156,11 +156,7 @@ This repository is organized in three main parts:
 * **source/sdk/** - This is the actual source code of the Stytch Android SDK
 
 If you wish to run any of the example or workbench apps from within this repository, you should add some, or all, of the following properties to your `local.properties` file:
-* **STYTCH_PUBLIC_TOKEN** - Your Consumer Project public token. Used in both of the example apps and the consumer workbench app
 * **GOOGLE_OAUTH_CLIENT_ID** - A Google OAuth client ID, created in your Google Console (linked to `com.stytch.exampleapp`) and added to your Stytch Dashboard, used in the consumer workbench app for testing Google One Tap
-* **STYTCH_B2B_PUBLIC_TOKEN** - Your B2B Project public token. Used in the B2B workbench app
-* **STYTCH_B2B_ORG_ID** - The ID of one of your B2B organizations. This is used as a convenience property in the B2B workbench app, so you don't have to type it in manually on your device
-* **UI_GOOGLE_CLIENT_ID** - A Google OAuth client ID, created in your Google Console (linked to `com.stytch.uiworkbench`) and added to your Stytch Dashboard, used in the UI workbench app for testing Google One Tap
 * **PASSKEYS_DOMAIN** - The domain where you host your `/.well-known/assetlinks.json` file, used in the consumer workbench app to test Passkeys flows
 
 If you do not add these properties, the applications should still build, but will not function as expected.
