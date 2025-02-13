@@ -36,7 +36,7 @@ class HomeViewModel(
     val intermediateSessionToken: StateFlow<String>
         get() = _intermediateSessionToken
 
-    var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
+    var orgIdState by mutableStateOf(TextFieldValue(""))
     var emailState by mutableStateOf(TextFieldValue(""))
     var orgSlugState by mutableStateOf(TextFieldValue(""))
     var showEmailError by mutableStateOf(false)

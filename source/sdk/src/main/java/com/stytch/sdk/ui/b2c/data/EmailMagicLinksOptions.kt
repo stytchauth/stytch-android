@@ -31,8 +31,8 @@ public data class EmailMagicLinksOptions
             locale: Locale,
         ) = MagicLinks.EmailMagicLinks.Parameters(
             email = emailAddress,
-            loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
-            signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
+            loginMagicLinkUrl = "$publicToken://b2c-ui",
+            signupMagicLinkUrl = "$publicToken://b2c-ui",
             loginExpirationMinutes = loginExpirationMinutes,
             signupExpirationMinutes = signupExpirationMinutes,
             loginTemplateId = loginTemplateId,

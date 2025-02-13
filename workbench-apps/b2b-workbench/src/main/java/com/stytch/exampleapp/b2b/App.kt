@@ -13,10 +13,7 @@ class App : Application() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         Timber.plant(Timber.DebugTree())
-        StytchB2BClient.configure(
-            context = applicationContext,
-            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
-        )
+        StytchB2BClient.configure(applicationContext)
         CoroutineScope(Dispatchers.Main).launch {
             StytchB2BClient.sessions.onChange.collect {
                 println("Collected session data: $it")

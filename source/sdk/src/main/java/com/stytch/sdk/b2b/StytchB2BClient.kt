@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.R
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -50,6 +51,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLazyDelegate
+import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
@@ -120,6 +122,73 @@ public object StytchB2BClient {
      * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(context: Context) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, StytchClientOptions(), {})
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param options Optional options to configure the StytchClient
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        options: StytchClientOptions = StytchClientOptions(),
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, options, callback)
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, StytchClientOptions(), callback)
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param options Optional options to configure the StytchClient
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        options: StytchClientOptions = StytchClientOptions(),
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, options, {})
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param options Optional options to configure the StytchB2BClient
      * @param callback An optional callback that is triggered after configuration and initialization has completed
@@ -132,6 +201,7 @@ public object StytchB2BClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        StytchLog.d("Using public token=$publicToken")
         if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
             return callback(true)
         }

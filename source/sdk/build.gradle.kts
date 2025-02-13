@@ -72,18 +72,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
     }
-    testVariants.all {
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
-        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
-    }
-    unitTestVariants.all {
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
-        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
-    }
 }
 
 tasks.named<DokkaTaskPartial>("dokkaHtmlPartial").configure {

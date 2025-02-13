@@ -29,9 +29,9 @@ public data class PasswordOptions
             locale: Locale,
         ) = Passwords.ResetByEmailStartParameters(
             email = emailAddress,
-            loginRedirectUrl = "stytchui-$publicToken://deeplink",
+            loginRedirectUrl = "$publicToken://b2c-ui",
             loginExpirationMinutes = loginExpirationMinutes,
-            resetPasswordRedirectUrl = "stytchui-$publicToken://deeplink",
+            resetPasswordRedirectUrl = "$publicToken://b2c-ui",
             resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
             resetPasswordTemplateId = resetPasswordTemplateId,
             locale = locale,
