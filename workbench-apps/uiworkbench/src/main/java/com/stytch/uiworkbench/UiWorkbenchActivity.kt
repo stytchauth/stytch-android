@@ -51,8 +51,6 @@ class UiWorkbenchActivity : ComponentActivity() {
                             ),
                         oAuthOptions =
                             OAuthOptions(
-                                loginRedirectURL = "uiworkbench://oauth",
-                                signupRedirectURL = "uiworkbench://oauth",
                                 providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.APPLE, OAuthProvider.GITHUB),
                             ),
                         otpOptions =

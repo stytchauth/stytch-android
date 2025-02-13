@@ -84,8 +84,8 @@ internal class MainScreenViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = oAuthOptions?.loginRedirectURL,
-                signupRedirectUrl = oAuthOptions?.signupRedirectURL,
+                loginRedirectUrl = "${StytchClient.publicToken}://oauth",
+                signupRedirectUrl = "${StytchClient.publicToken}://oauth",
             )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)

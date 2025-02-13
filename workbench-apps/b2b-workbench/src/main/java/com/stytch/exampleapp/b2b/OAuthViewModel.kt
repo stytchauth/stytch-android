@@ -34,8 +34,8 @@ class OAuthViewModel : ViewModel() {
                     context = context,
                     oAuthRequestIdentifier = B2B_OAUTH_REQUEST,
                     organizationId = orgIdState.text,
-                    loginRedirectUrl = "app://b2bexampleapp.com/",
-                    signupRedirectUrl = "app://b2bexampleapp.com/",
+                    loginRedirectUrl = "app://b2bworkbench?type={}",
+                    signupRedirectUrl = "app://b2bworkbench?type={}",
                 ),
             )
         }
@@ -47,7 +47,7 @@ class OAuthViewModel : ViewModel() {
                 OAuth.ProviderDiscovery.DiscoveryStartParameters(
                     context = context,
                     oAuthRequestIdentifier = B2B_OAUTH_REQUEST,
-                    discoveryRedirectUrl = "app://b2bexampleapp.com/",
+                    discoveryRedirectUrl = "app://b2bworkbench?type={}",
                 ),
             )
         }
