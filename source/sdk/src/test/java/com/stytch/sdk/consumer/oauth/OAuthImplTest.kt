@@ -59,7 +59,10 @@ internal class OAuthImplTest {
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         mockkObject(StytchApi)
+        mockkObject(StytchClient)
+        every { StytchClient.events } returns mockk(relaxed = true)
         every { StytchApi.isInitialized } returns true
         StytchClient.deviceInfo = mockk(relaxed = true)
         StytchClient.appSessionId = "app-session-id"

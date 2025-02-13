@@ -64,6 +64,9 @@ internal class OAuthImplTest {
         every { StytchB2BApi.isInitialized } returns true
         every { mockSessionStorage.intermediateSessionToken } returns null
         every { mockSessionStorage.lastValidatedAt } returns Date(0)
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
+        mockkObject(StytchB2BClient)
+        every { StytchB2BClient.events } returns mockk(relaxed = true)
         StytchB2BClient.deviceInfo = mockk(relaxed = true)
         StytchB2BClient.appSessionId = "app-session-id"
         impl =

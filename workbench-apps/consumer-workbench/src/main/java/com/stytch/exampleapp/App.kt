@@ -18,6 +18,7 @@ class App : Application() {
             publicToken = BuildConfig.STYTCH_PUBLIC_TOKEN,
         ) {
             println("Stytch has been initialized and configured and is ready for use")
+            println("Last Auth Method Used: ${StytchClient.lastAuthMethodUsed}")
         }
         CoroutineScope(Dispatchers.Main).launch {
             StytchClient.sessions.onChange.collect {

@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import androidx.activity.ComponentActivity
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
@@ -121,6 +122,7 @@ internal class SSOImpl(
                     locale = params.locale,
                 ).apply {
                     pkcePairManager.clearPKCECodePair()
+                    sessionStorage.lastAuthMethodUsed = B2BAuthMethod.SSO
                     launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }

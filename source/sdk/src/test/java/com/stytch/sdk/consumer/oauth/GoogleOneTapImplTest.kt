@@ -60,6 +60,7 @@ internal class GoogleOneTapImplTest {
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk(relaxed = true)
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             GoogleOneTapImpl(
                 externalScope = TestScope(),

@@ -2,6 +2,8 @@ package com.stytch.sdk.consumer.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_DATA
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
@@ -11,6 +13,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.common.utils.getDateOrMin
+import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
@@ -24,6 +27,7 @@ internal class ConsumerSessionStorage(
     private val moshi = Moshi.Builder().build()
     private val moshiSessionDataAdapter = moshi.adapter(SessionData::class.java).lenient()
     private val moshiUserDataAdapter = moshi.adapter(UserData::class.java).lenient()
+    private val moshiLastAuthMethodUsedAdapter = moshi.adapter(ConsumerAuthMethod::class.java).lenient()
 
     private val _sessionFlow = MutableStateFlow<SessionData?>(null)
     private val _userFlow = MutableStateFlow<UserData?>(null)
@@ -130,6 +134,30 @@ internal class ConsumerSessionStorage(
             }
             lastValidatedAt = Date()
             _userFlow.tryEmit(value)
+        }
+
+    internal var lastAuthMethodUsed: ConsumerAuthMethod?
+        get() {
+            val stringValue: String?
+            synchronized(this) {
+                stringValue = storageHelper.loadValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED)
+            }
+            return stringValue?.let {
+                try {
+                    moshiLastAuthMethodUsedAdapter.fromJson(it)
+                } catch (e: JsonDataException) {
+                    StytchLog.e(e.message ?: "Error parsing persisted last auth method")
+                    null
+                }
+            }
+        }
+        set(value) {
+            value?.let {
+                val stringValue = moshiLastAuthMethodUsedAdapter.toJson(it)
+                storageHelper.saveValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED, stringValue)
+            } ?: run {
+                storageHelper.saveValue(PREFERENCES_NAME_LAST_AUTH_METHOD_USED, null)
+            }
         }
 
     val persistedSessionIdentifiersExist: Boolean
