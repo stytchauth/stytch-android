@@ -8,4 +8,11 @@ internal enum class ProductComponent {
     PasswordsEmailForm,
     PasswordEMLCombined,
     Divider,
+    ;
+
+    internal fun isInputComponent(): Boolean =
+        this == EmailForm ||
+            this == EmailDiscoveryForm ||
+            this == PasswordsEmailForm ||
+            this == PasswordEMLCombined
 }
