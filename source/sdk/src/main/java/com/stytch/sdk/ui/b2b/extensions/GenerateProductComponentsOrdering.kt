@@ -12,11 +12,13 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
 
     Rules we want to follow when generating the components:
     1. If we're displaying both email magic links or email otp and passwords, we need to display them together
-    as a single wrapped component. The index of this wrapped component is equivalent to the first index of
-    either email magic links, email otp, or passwords in the config products list.
-    2. If both buttons and input are present, display a divider above and below the input component.
-    Do not add a divider above if the input is the first component or below if it is the last.
-    3. We want to display the components in the order that they are listed in the config.
+       as a single wrapped component. The index of this wrapped component is equivalent to the first index of
+       either email magic links, email otp, or passwords in the config products list.
+    2. If multiple "button types" are present, keep them together
+    3. If both buttons and inputs are present, display a divider above and below the input component.
+       Do not add a divider above if the input is the first component or below if it is the last.
+    4. Overall, we want to display the components in the order that they are listed in the config, aside from the
+       operations described above
 */
 internal fun List<StytchB2BProduct>.generateProductComponentsOrdering(
     authFlowType: AuthFlowType,
