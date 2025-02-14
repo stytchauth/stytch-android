@@ -14,16 +14,15 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
     1. If we're displaying both email magic links or email otp and passwords, we need to display them together
        as a single wrapped component. The index of this wrapped component is equivalent to the first index of
        either email magic links, email otp, or passwords in the config products list.
-    2. If multiple "button types" are present, keep them together
-    3. If both buttons and inputs are present, display a divider above and below the input component.
+    2. If both buttons and inputs are present, display a divider above and below the input component.
        Do not add a divider above if the input is the first component or below if it is the last.
-    4. Overall, we want to display the components in the order that they are listed in the config, aside from the
+    3. Overall, we want to display the components in the order that they are listed in the config, aside from the
        operations described above
 */
 internal fun List<StytchB2BProduct>.generateProductComponentsOrdering(
     authFlowType: AuthFlowType,
     organization: InternalOrganizationData?,
-): List<ProductComponent> = mapProductsToComponents(authFlowType, organization).keepButtonsTogether().addDividers()
+): List<ProductComponent> = mapProductsToComponents(authFlowType, organization).addDividers()
 
 private fun List<StytchB2BProduct>.mapProductsToComponents(
     authFlowType: AuthFlowType,
@@ -76,19 +75,6 @@ private fun List<StytchB2BProduct>.mapProductsToComponents(
         .toSet()
         // make it a mutable list, for the next round of processing
         .toMutableList()
-}
-
-private fun MutableList<ProductComponent>.keepButtonsTogether(): MutableList<ProductComponent> {
-    val buttonTypes = filter { it.isButtonComponent() }
-    if (buttonTypes.isNotEmpty()) {
-        // get the index of the first button type
-        val firstButtonTypeIndex = indexOf(buttonTypes[0])
-        // remove all button types
-        removeAll(buttonTypes)
-        // re-add button types at the first button type index
-        addAll(firstButtonTypeIndex, buttonTypes)
-    }
-    return this
 }
 
 private fun MutableList<ProductComponent>.addDividers(): MutableList<ProductComponent> {
