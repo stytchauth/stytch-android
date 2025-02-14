@@ -40,7 +40,7 @@ import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
-import com.stytch.sdk.ui.b2b.data.generateProductComponentsOrdering
+import com.stytch.sdk.ui.b2b.extensions.generateProductComponentsOrdering
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseEffectiveAuthConfig
 import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoverySend
