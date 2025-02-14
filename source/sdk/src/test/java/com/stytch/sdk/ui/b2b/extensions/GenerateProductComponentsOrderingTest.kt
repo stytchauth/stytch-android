@@ -21,8 +21,6 @@ internal class GenerateProductComponentsOrderingTest(
                 authFlowType = testCase.authFlowType,
                 organization = testCase.organization,
             )
-        println("EXPECTED: ${testCase.expected}")
-        println("ACTUAL: $actual")
         assert(actual == testCase.expected)
     }
 
@@ -135,10 +133,9 @@ internal val TEST_INPUTS_MIDDLE =
         expected =
             listOf(
                 ProductComponent.OAuthButtons,
+                ProductComponent.SSOButtons,
                 ProductComponent.Divider,
                 ProductComponent.EmailForm,
-                ProductComponent.Divider,
-                ProductComponent.SSOButtons,
             ),
     )
 internal val TEST_INPUTS_MIDDLE_MULTIPLE_INPUTS_ONE_COMPONENT =
@@ -159,10 +156,9 @@ internal val TEST_INPUTS_MIDDLE_MULTIPLE_INPUTS_ONE_COMPONENT =
         expected =
             listOf(
                 ProductComponent.OAuthButtons,
+                ProductComponent.SSOButtons,
                 ProductComponent.Divider,
                 ProductComponent.PasswordEMLCombined,
-                ProductComponent.Divider,
-                ProductComponent.SSOButtons,
             ),
     )
 

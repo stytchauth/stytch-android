@@ -21,68 +21,89 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
 internal fun List<StytchB2BProduct>.generateProductComponentsOrdering(
     authFlowType: AuthFlowType,
     organization: InternalOrganizationData?,
-): List<ProductComponent> {
-    val finalComponentOrdering = mutableListOf<ProductComponent>()
+): List<ProductComponent> = mapProductsToComponents(authFlowType, organization).keepButtonsTogether().addDividers()
+
+private fun List<StytchB2BProduct>.mapProductsToComponents(
+    authFlowType: AuthFlowType,
+    organization: InternalOrganizationData?,
+): MutableList<ProductComponent> {
     val containsEmail = contains(StytchB2BProduct.EMAIL_MAGIC_LINKS) || contains(StytchB2BProduct.EMAIL_OTP)
     val displayEmlAndPasswordsTogether = containsEmail && contains(StytchB2BProduct.PASSWORDS)
-    // map StytchB2BProduct to appropriate ProductComponent
-    val productComponentList =
-        mapNotNull { product ->
-            when (product) {
-                StytchB2BProduct.EMAIL_MAGIC_LINKS,
-                StytchB2BProduct.EMAIL_OTP,
-                -> {
-                    if (displayEmlAndPasswordsTogether) {
-                        ProductComponent.PasswordEMLCombined
+    return mapNotNull { product ->
+        when (product) {
+            StytchB2BProduct.EMAIL_MAGIC_LINKS,
+            StytchB2BProduct.EMAIL_OTP,
+            -> {
+                if (displayEmlAndPasswordsTogether) {
+                    ProductComponent.PasswordEMLCombined
+                } else {
+                    if (authFlowType == AuthFlowType.ORGANIZATION) {
+                        ProductComponent.EmailForm
                     } else {
-                        if (authFlowType == AuthFlowType.ORGANIZATION) {
-                            ProductComponent.EmailForm
-                        } else {
-                            ProductComponent.EmailDiscoveryForm
-                        }
-                    }
-                }
-
-                StytchB2BProduct.OAUTH -> {
-                    ProductComponent.OAuthButtons
-                }
-
-                StytchB2BProduct.SSO -> {
-                    // We only need to render a component if we have a valid SSO connection
-                    organization?.let { org ->
-                        val isSSOValid = !org.ssoActiveConnections.isNullOrEmpty()
-                        if (authFlowType == AuthFlowType.ORGANIZATION && isSSOValid) {
-                            ProductComponent.SSOButtons
-                        } else {
-                            null
-                        }
-                    }
-                }
-
-                StytchB2BProduct.PASSWORDS -> {
-                    if (displayEmlAndPasswordsTogether) {
-                        ProductComponent.PasswordEMLCombined
-                    } else {
-                        ProductComponent.PasswordsEmailForm
+                        ProductComponent.EmailDiscoveryForm
                     }
                 }
             }
-        }.toSet()
-    // add dividers as necessary
-    productComponentList
-        .forEachIndexed { index, component ->
-            val componentAndDividers = mutableListOf(component)
-            if (component.isInputComponent()) {
-                if (index > 0) {
-                    // add a divider before the component
-                    componentAndDividers.add(0, ProductComponent.Divider)
-                }
-                if (index < productComponentList.size - 1) {
-                    // add a divider after the component
-                    componentAndDividers.add(ProductComponent.Divider)
+
+            StytchB2BProduct.OAUTH -> {
+                ProductComponent.OAuthButtons
+            }
+
+            StytchB2BProduct.SSO -> {
+                // We only need to render a component if we have a valid SSO connection
+                organization?.let { org ->
+                    val isSSOValid = !org.ssoActiveConnections.isNullOrEmpty()
+                    if (authFlowType == AuthFlowType.ORGANIZATION && isSSOValid) {
+                        ProductComponent.SSOButtons
+                    } else {
+                        null
+                    }
                 }
             }
-            finalComponentOrdering.addAll(componentAndDividers)
+
+            StytchB2BProduct.PASSWORDS -> {
+                if (displayEmlAndPasswordsTogether) {
+                    ProductComponent.PasswordEMLCombined
+                } else {
+                    ProductComponent.PasswordsEmailForm
+                }
+            }
         }
-    return finalComponentOrdering
+    }
+        // ensure we only have one of each product component type
+        .toSet()
+        // make it a mutable list, for the next round of processing
+        .toMutableList()
+}
+
+private fun MutableList<ProductComponent>.keepButtonsTogether(): MutableList<ProductComponent> {
+    val buttonTypes = filter { it.isButtonComponent() }
+    if (buttonTypes.isNotEmpty()) {
+        // get the index of the first button type
+        val firstButtonTypeIndex = indexOf(buttonTypes[0])
+        // remove all button types
+        removeAll(buttonTypes)
+        // re-add button types at the first button type index
+        addAll(firstButtonTypeIndex, buttonTypes)
+    }
+    return this
+}
+
+private fun MutableList<ProductComponent>.addDividers(): MutableList<ProductComponent> {
+    val output: MutableList<ProductComponent> = mutableListOf()
+    forEachIndexed { index, component ->
+        val componentAndDividers = mutableListOf(component)
+        if (component.isInputComponent()) {
+            if (index > 0) {
+                // add a divider before the component
+                componentAndDividers.add(0, ProductComponent.Divider)
+            }
+            if (index < this.size - 1) {
+                // add a divider after the component
+                componentAndDividers.add(ProductComponent.Divider)
+            }
+        }
+        output.addAll(componentAndDividers)
+    }
+    return output
 }

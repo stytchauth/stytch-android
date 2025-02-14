@@ -15,4 +15,6 @@ internal enum class ProductComponent {
             this == EmailDiscoveryForm ||
             this == PasswordsEmailForm ||
             this == PasswordEMLCombined
+
+    internal fun isButtonComponent(): Boolean = this == OAuthButtons || this == SSOButtons
 }
