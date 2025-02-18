@@ -6,13 +6,11 @@ import com.stytch.sdk.consumer.StytchClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        Timber.plant(Timber.DebugTree())
         StytchClient.configure(this) {
             println("Stytch has been initialized and configured and is ready for use")
             println("Last Auth Method Used: ${StytchClient.lastAuthMethodUsed}")

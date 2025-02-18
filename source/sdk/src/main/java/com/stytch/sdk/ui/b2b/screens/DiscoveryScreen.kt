@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2b.screens
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +29,6 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -119,7 +119,7 @@ internal fun DiscoveryScreen(
     val createOrganzationsEnabled = LocalStytchBootstrapData.current.createOrganizationEnabled
     val isCreatingState = viewModel.isCreatingStateFlow.collectAsStateWithLifecycle()
     val isExchangingState = viewModel.isExchangingStateFlow.collectAsStateWithLifecycle()
-    val context = LocalContext.current as Activity
+    val context = LocalActivity.current as Activity
     val shouldAutomaticallyCreateOrganization =
         createOrganzationsEnabled && config.directCreateOrganizationForNoMembership
 
