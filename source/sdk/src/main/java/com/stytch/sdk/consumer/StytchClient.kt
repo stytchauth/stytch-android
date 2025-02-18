@@ -313,34 +313,30 @@ public object StytchClient {
     }
 
     private fun refreshBootstrapAndAPIClient() {
-        if (NetworkChangeListener.networkIsAvailable) {
-            applicationContext.get()?.let {
-                externalScope.launch(dispatchers.io) {
-                    refreshBootstrapData()
-                    StytchApi.configureDFP(
-                        dfpProvider = dfpProvider,
-                        captchaProvider =
-                            CaptchaProviderImpl(
-                                it as Application,
-                                externalScope,
-                                bootstrapData.captchaSettings.siteKey,
-                            ),
-                        bootstrapData.dfpProtectedAuthEnabled,
-                        bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                    )
-                }
+        applicationContext.get()?.let {
+            externalScope.launch(dispatchers.io) {
+                refreshBootstrapData()
+                StytchApi.configureDFP(
+                    dfpProvider = dfpProvider,
+                    captchaProvider =
+                        CaptchaProviderImpl(
+                            it as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey,
+                        ),
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                )
             }
         }
     }
 
     internal suspend fun refreshBootstrapData() {
-        if (NetworkChangeListener.networkIsAvailable) {
-            bootstrapData =
-                when (val res = StytchApi.getBootstrapData()) {
-                    is StytchResult.Success -> res.value
-                    else -> bootstrapData
-                }
-        }
+        bootstrapData =
+            when (val res = StytchApi.getBootstrapData()) {
+                is StytchResult.Success -> res.value
+                else -> bootstrapData
+            }
     }
 
     internal fun assertInitialized() {
