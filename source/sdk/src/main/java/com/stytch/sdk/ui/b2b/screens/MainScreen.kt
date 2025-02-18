@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -161,7 +161,7 @@ internal fun MainScreen(
         }
     val showVerifyEmailCopy = emailAddress.isNotEmpty() && emailVerified == false && primaryAuthMethods.isNotEmpty()
     val theme = LocalStytchTheme.current
-    val context = LocalContext.current as Activity
+    val context = LocalActivity.current as Activity
     if (products.isEmpty()) {
         viewModel.dispatch(SetB2BError(B2BErrorType.NoAuthenticationMethodsFound))
         return

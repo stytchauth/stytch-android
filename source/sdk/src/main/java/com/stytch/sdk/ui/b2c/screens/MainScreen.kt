@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import android.os.Parcelable
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -58,7 +58,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
-        val context = LocalContext.current as AuthenticationActivity
+        val context = LocalActivity.current as AuthenticationActivity
         val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {

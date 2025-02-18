@@ -1,5 +1,6 @@
 package com.stytch.exampleapp.b2b.ui
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
@@ -26,7 +26,7 @@ import com.stytch.exampleapp.b2b.SSOViewModel
 fun SSOScreen(viewModel: SSOViewModel) {
     val responseState = viewModel.currentResponse.collectAsState()
     val loading = viewModel.loadingState.collectAsState()
-    val context = LocalContext.current as FragmentActivity
+    val context = LocalActivity.current as FragmentActivity
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

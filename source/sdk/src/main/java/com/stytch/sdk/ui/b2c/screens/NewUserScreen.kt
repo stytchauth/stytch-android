@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import android.os.Parcelable
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -9,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +41,7 @@ internal object NewUserScreen : AndroidScreen(), Parcelable {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
-        val context = LocalContext.current as AuthenticationActivity
+        val context = LocalActivity.current as AuthenticationActivity
         val hasEML = productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS)
         val hasEmailOTP =
             productConfig.products.contains(StytchProduct.OTP) &&
