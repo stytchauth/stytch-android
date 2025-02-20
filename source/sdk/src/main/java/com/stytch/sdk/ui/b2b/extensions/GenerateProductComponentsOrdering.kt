@@ -51,14 +51,13 @@ private fun List<StytchB2BProduct>.mapProductsToComponents(
             }
 
             StytchB2BProduct.SSO -> {
-                // We only need to render a component if we have a valid SSO connection
-                organization?.let { org ->
-                    val isSSOValid = !org.ssoActiveConnections.isNullOrEmpty()
-                    if (authFlowType == AuthFlowType.ORGANIZATION && isSSOValid) {
-                        ProductComponent.SSOButtons
-                    } else {
-                        null
-                    }
+                val organizationHasActiveSSOConnections =
+                    authFlowType == AuthFlowType.ORGANIZATION &&
+                        (organization?.ssoActiveConnections?.isNotEmpty() ?: false)
+                if (authFlowType == AuthFlowType.DISCOVERY || organizationHasActiveSSOConnections) {
+                    ProductComponent.SSOButtons
+                } else {
+                    null
                 }
             }
 

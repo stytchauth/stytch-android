@@ -33,6 +33,7 @@ internal data class B2BUIState(
     val uiIncludedMfaMethods: List<MfaMethod> = emptyList(),
     val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
     val isSearchingForOrganizationBySlug: Boolean = false,
+    val ssoDiscoveryState: SSODiscoveryState = SSODiscoveryState(),
 ) : Parcelable {
     internal companion object {
         const val SAVED_STATE_KEY = "StytchB2BUIState"

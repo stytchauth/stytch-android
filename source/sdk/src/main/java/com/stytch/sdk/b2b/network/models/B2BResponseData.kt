@@ -292,6 +292,8 @@ public data class SSOActiveConnection(
     val connectionId: String,
     @Json(name = "display_name")
     val displayName: String,
+    @Json(name = "identity_provider")
+    val identityProvider: String?,
 ) : Parcelable
 
 @Keep
@@ -1419,4 +1421,11 @@ public data class B2BPasswordDiscoveryAuthenticateResponseData(
     val requestId: String,
     @Json(name = "intermediate_session_token")
     val intermediateSessionToken: String,
+) : Parcelable
+
+@Keep
+@JsonClass(generateAdapter = true)
+@Parcelize
+internal data class B2BSSODiscoveryConnectionResponseData(
+    val connections: List<SSOActiveConnection>,
 ) : Parcelable

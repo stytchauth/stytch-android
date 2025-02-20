@@ -21,6 +21,7 @@ import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryAuthenticateRespons
 import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryResetByEmailResponseData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSODiscoveryConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
@@ -875,6 +876,11 @@ internal object StytchB2BApi {
                             jwksUrl = jwksUrl,
                         ),
                 )
+            }
+
+        suspend fun discoveryConnections(emailAddress: String): StytchResult<B2BSSODiscoveryConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoDiscoveryConnections(emailAddress = emailAddress)
             }
     }
 

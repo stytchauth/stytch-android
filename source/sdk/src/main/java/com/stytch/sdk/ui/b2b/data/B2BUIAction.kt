@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2b.data
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
+import com.stytch.sdk.b2b.network.models.SSOActiveConnection
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.shared.data.EmailState
@@ -80,3 +81,7 @@ internal data class SetIsSearchingForOrganizationBySlug(
 ) : B2BUIAction
 
 internal data object ResetEverything : B2BUIAction
+
+internal data class SetDiscoveredSSOConnections(
+    val connections: List<SSOActiveConnection>,
+) : B2BUIAction

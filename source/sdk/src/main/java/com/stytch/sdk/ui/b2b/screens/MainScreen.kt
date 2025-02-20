@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import coil3.compose.AsyncImage
 import com.stytch.sdk.R
+import com.stytch.sdk.b2b.network.models.SSOActiveConnection
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
@@ -90,6 +91,7 @@ internal class MainScreenViewModel(
     val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
     val useEmailOTPLoginOrSignup = UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useEmailOTPDiscoverySend = UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
+
     private val enableEml = productConfig.products.contains(StytchB2BProduct.EMAIL_MAGIC_LINKS)
     private val enableOtp = productConfig.products.contains(StytchB2BProduct.EMAIL_OTP)
 
@@ -138,6 +140,8 @@ internal class MainScreenViewModel(
             }
         }
     }
+
+    fun handleSSODiscovery() = dispatch(SetNextRoute(Routes.SSODiscoveryEmail))
 }
 
 @Composable
@@ -231,12 +235,24 @@ internal fun MainScreen(
                     }
                 }
                 ProductComponent.SSOButtons -> {
-                    organization?.ssoActiveConnections?.map { provider ->
+                    if (authFlowType == AuthFlowType.DISCOVERY) {
                         SocialLoginButton(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            text = "Continue with ${provider.displayName}",
-                            onClick = { viewModel.useSSOStart(context, provider.connectionId) },
+                            text = "Continue with SSO",
+                            iconDrawable = painterResource(R.drawable.sso),
+                            iconDescription = "SSO",
+                            onClick = viewModel::handleSSODiscovery,
                         )
+                    } else {
+                        organization?.ssoActiveConnections?.map { provider ->
+                            SocialLoginButton(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                text = "Continue with ${provider.displayName}",
+                                iconDrawable = provider.toPainterResource(),
+                                iconDescription = provider.displayName,
+                                onClick = { viewModel.useSSOStart(context, provider.connectionId) },
+                            )
+                        }
                     }
                 }
                 ProductComponent.PasswordsEmailForm -> {
@@ -308,4 +324,13 @@ private fun B2BOAuthProviders.toTitle(): String =
         B2BOAuthProviders.GITHUB -> "Github"
         B2BOAuthProviders.SLACK -> "Slack"
         B2BOAuthProviders.HUBSPOT -> "Hubspot"
+    }
+
+@Composable
+internal fun SSOActiveConnection.toPainterResource(): Painter =
+    when (this.identityProvider) {
+        "google-workspace" -> painterResource(id = R.drawable.google)
+        "microsoft-entra" -> painterResource(id = R.drawable.microsoft)
+        "okta" -> painterResource(id = R.drawable.okta)
+        else -> painterResource(id = R.drawable.sso)
     }
