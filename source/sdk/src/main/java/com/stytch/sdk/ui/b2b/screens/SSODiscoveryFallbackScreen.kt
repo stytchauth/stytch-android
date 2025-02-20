@@ -107,7 +107,7 @@ internal fun SSODiscoveryFallbackScreen(
         PageTitle(textAlign = TextAlign.Left, text = "Sorry, we couldn't find any connections")
         BodyText(
             text =
-                "Please input the Organization's unique slug to continue. If you don't know the unique slug, log in" +
+                "Please input the Organization's unique slug to continue. If you don't know the unique slug, log in " +
                     "through another method to view all of your available Organizations.",
         )
         StytchInput(
