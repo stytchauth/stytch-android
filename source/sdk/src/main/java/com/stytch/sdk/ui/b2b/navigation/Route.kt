@@ -96,4 +96,16 @@ internal object Routes {
     @Serializable
     @Parcelize
     internal data object EmailMethodSelection : Route, Parcelable
+
+    @Serializable
+    @Parcelize
+    internal data object SSODiscoveryEmail : Route, Parcelable
+
+    @Serializable
+    @Parcelize
+    internal data object SSODiscoveryFallback : Route, Parcelable
+
+    @Serializable
+    @Parcelize
+    internal data object SSODiscoveryMenu : Route, Parcelable
 }

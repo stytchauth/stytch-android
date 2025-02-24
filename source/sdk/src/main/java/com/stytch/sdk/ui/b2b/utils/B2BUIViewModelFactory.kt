@@ -21,6 +21,9 @@ import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.SMSOTPEnrollmentScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryEmailScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryFallbackScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryMenuScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreenViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -94,6 +97,12 @@ internal class B2BUIViewModelFactory(
                 EmailMethodSelectionScreeniewModel(state, dispatchAction, productConfig) as T
             EmailOTPEntryScreenViewModel::class.java ->
                 EmailOTPEntryScreenViewModel(state, dispatchAction, productConfig) as T
+            SSODiscoveryEmailScreenViewModel::class.java ->
+                SSODiscoveryEmailScreenViewModel(state, dispatchAction) as T
+            SSODiscoveryFallbackScreenViewModel::class.java ->
+                SSODiscoveryFallbackScreenViewModel(state, dispatchAction) as T
+            SSODiscoveryMenuScreenViewModel::class.java ->
+                SSODiscoveryMenuScreenViewModel(state, dispatchAction) as T
             else -> super.create(modelClass)
         }
 }

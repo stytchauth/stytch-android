@@ -50,6 +50,9 @@ import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreen
 import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreen
 import com.stytch.sdk.ui.b2b.screens.SMSOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryEmailScreen
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryFallbackScreen
+import com.stytch.sdk.ui.b2b.screens.SSODiscoveryMenuScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
@@ -206,6 +209,15 @@ internal fun StytchB2BAuthenticationApp(
                     }
                     composable<Routes.EmailOTPEntry> {
                         EmailOTPEntryScreen(createViewModel = ::createViewModelHelper)
+                    }
+                    composable<Routes.SSODiscoveryEmail> {
+                        SSODiscoveryEmailScreen(state = state, createViewModel = ::createViewModelHelper)
+                    }
+                    composable<Routes.SSODiscoveryFallback> {
+                        SSODiscoveryFallbackScreen(createViewModel = ::createViewModelHelper)
+                    }
+                    composable<Routes.SSODiscoveryMenu> {
+                        SSODiscoveryMenuScreen(state = state, createViewModel = ::createViewModelHelper)
                     }
                 }
                 state.value.errorToastText?.let {

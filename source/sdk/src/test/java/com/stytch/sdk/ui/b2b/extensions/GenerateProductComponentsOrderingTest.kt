@@ -30,7 +30,7 @@ internal class GenerateProductComponentsOrderingTest(
         fun testCases(): Collection<ProductComponentOrderingTestCase> =
             listOf(
                 TEST_NO_INPUTS,
-                TEST_NO_SSO_DISCOVERY,
+                TEST_SSO_DISCOVERY,
                 TEST_NO_SSO_WITH_NO_CONNECTIONS,
                 TEST_SSO_WITH_VALID_CONNECTIONS,
                 TEST_INPUTS_FIRST,
@@ -65,13 +65,13 @@ internal val TEST_NO_INPUTS =
         expected = listOf(ProductComponent.OAuthButtons),
     )
 
-internal val TEST_NO_SSO_DISCOVERY =
+internal val TEST_SSO_DISCOVERY =
     ProductComponentOrderingTestCase(
         name = "No SSO in Discovery",
         products = listOf(StytchB2BProduct.OAUTH, StytchB2BProduct.SSO),
         authFlowType = AuthFlowType.DISCOVERY,
         organization = null,
-        expected = listOf(ProductComponent.OAuthButtons),
+        expected = listOf(ProductComponent.OAuthButtons, ProductComponent.SSOButtons),
     )
 
 internal val TEST_NO_SSO_WITH_NO_CONNECTIONS =
