@@ -520,4 +520,58 @@ internal class MainScreenViewModelTest {
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
         }
+
+    @Test
+    fun `getProductComponents returns the expected order`() {
+        var given = listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
+        var expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OTP, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.PASSWORDS, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OAUTH, StytchProduct.EMAIL_MAGIC_LINKS)
+        expected = listOf(ProductComponent.BUTTONS, ProductComponent.DIVIDER, ProductComponent.INPUTS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.EMAIL_MAGIC_LINKS)
+        expected = listOf(ProductComponent.INPUTS)
+        assert(viewModel.getProductComponents(given) == expected)
+    }
+
+    @Test
+    fun `getTabTitleOrdering returns the expected order`() {
+        var givenProducts = listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS)
+        var givenOTPMethods = emptyList<OTPMethods>()
+        var expected = listOf(TabTypes.EMAIL)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.EMAIL)
+        expected = listOf(TabTypes.EMAIL)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.WHATSAPP, OTPMethods.EMAIL, OTPMethods.SMS)
+        expected = listOf(TabTypes.WHATSAPP, TabTypes.EMAIL, TabTypes.SMS)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.PASSWORDS, StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.WHATSAPP, OTPMethods.SMS)
+        expected = listOf(TabTypes.EMAIL, TabTypes.WHATSAPP, TabTypes.SMS)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+    }
 }

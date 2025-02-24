@@ -39,6 +39,18 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
+internal enum class ProductComponent {
+    BUTTONS,
+    INPUTS,
+    DIVIDER,
+}
+
+internal enum class TabTypes {
+    EMAIL,
+    SMS,
+    WHATSAPP,
+}
+
 internal class MainScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val stytchClient: StytchClient,
@@ -47,6 +59,57 @@ internal class MainScreenViewModel(
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    fun getProductComponents(products: List<StytchProduct>): List<ProductComponent> {
+        val hasButtons = products.contains(StytchProduct.OAUTH)
+        val hasInput =
+            products.any {
+                listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
+            }
+        val hasDivider = hasButtons && hasInput
+        return mutableListOf<ProductComponent>()
+            .apply {
+                products.forEachIndexed { index, product ->
+                    if (hasDivider && index > 0) {
+                        add(ProductComponent.DIVIDER)
+                    }
+                    if (product == StytchProduct.OAUTH) {
+                        add(ProductComponent.BUTTONS)
+                    }
+                    if (product == StytchProduct.PASSWORDS ||
+                        product == StytchProduct.EMAIL_MAGIC_LINKS ||
+                        product == StytchProduct.OTP
+                    ) {
+                        add(ProductComponent.INPUTS)
+                    }
+                }
+            }.toSet()
+            .toList()
+    }
+
+    fun getTabTitleOrdering(
+        products: List<StytchProduct>,
+        otpMethods: List<OTPMethods>,
+    ): List<TabTypes> {
+        val hasEmail =
+            products.any {
+                listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
+            }
+        return mutableListOf<TabTypes>()
+            .apply {
+                if (hasEmail) {
+                    add(TabTypes.EMAIL)
+                }
+                otpMethods.forEach { method ->
+                    when (method) {
+                        OTPMethods.SMS -> add(TabTypes.SMS)
+                        OTPMethods.EMAIL -> add(TabTypes.EMAIL)
+                        OTPMethods.WHATSAPP -> add(TabTypes.WHATSAPP)
+                    }
+                }
+            }.toSet()
+            .toList()
+    }
 
     fun onStartOAuthLogin(
         context: ComponentActivity,
