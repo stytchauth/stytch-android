@@ -10,6 +10,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.BiometricsAlreadyEnrolledError
 import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchKeystoreUnavailableError
@@ -134,7 +135,7 @@ internal class BiometricsImpl internal constructor(
                     throw StytchKeystoreUnavailableError()
                 }
                 if (isRegistrationAvailable(parameters.context)) {
-                    removeRegistration()
+                    throw BiometricsAlreadyEnrolledError
                 }
                 sessionStorage.ensureSessionIsValidOrThrow()
                 val allowedAuthenticators = getAllowedAuthenticators(parameters.allowDeviceCredentials)
