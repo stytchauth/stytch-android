@@ -34,6 +34,7 @@ internal class UseEmailOTPLoginOrSignup(
                         organizationId = orgId,
                         loginTemplateId = productConfig.emailMagicLinksOptions.loginTemplateId,
                         signupTemplateId = productConfig.emailMagicLinksOptions.signupTemplateId,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

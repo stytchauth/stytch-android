@@ -26,12 +26,8 @@ jobs:
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"
       env:
-        STYTCH_PUBLIC_TOKEN: 'abc123'
         GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-        STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
-        STYTCH_B2B_ORG_ID: 'abc123'
         PASSKEYS_DOMAIN: 'abc123'
-        UI_GOOGLE_CLIENT_ID: 'abc123'
        
         # Exclude all dependencies that originate solely in the following projects
         DEPENDENCY_GRAPH_EXCLUDE_PROJECTS: ':workbench-apps:consumer-workbench|:workbench-apps:b2b-workbench|:workbench-apps:uiworkbench|:example-apps:stytchexampleapp'       

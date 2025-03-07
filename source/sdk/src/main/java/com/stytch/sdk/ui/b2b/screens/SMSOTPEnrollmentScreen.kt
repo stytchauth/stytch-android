@@ -11,6 +11,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPhoneNumber
@@ -23,8 +24,9 @@ import kotlinx.coroutines.flow.StateFlow
 internal class SMSOTPEnrollmentScreenViewModel(
     internal val state: StateFlow<B2BUIState>,
     dispatchAction: suspend (B2BUIAction) -> Unit,
+    productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val useSmsOtpSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, ::request)
+    val useSmsOtpSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useUpdateMemberPhoneNumber = UseUpdateMemberPhoneNumber(state, ::dispatch)
 }
 

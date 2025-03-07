@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         StytchClient.configure(
             this.getApplicationContext(),
-            BuildConfig.STYTCH_PUBLIC_TOKEN,
             viewModel::handleInitializationChange
         );
 

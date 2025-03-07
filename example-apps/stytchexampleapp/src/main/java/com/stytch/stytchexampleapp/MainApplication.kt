@@ -8,6 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        StytchClient.configure(applicationContext, BuildConfig.STYTCH_PUBLIC_TOKEN)
+        StytchClient.configure(applicationContext)
     }
 }

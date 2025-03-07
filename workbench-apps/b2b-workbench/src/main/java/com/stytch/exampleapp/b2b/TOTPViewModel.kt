@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TOTPViewModel : ViewModel() {
-    var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
+    var orgIdState by mutableStateOf(TextFieldValue(""))
     var memberIdState by mutableStateOf(TextFieldValue(""))
     var codeState by mutableStateOf(TextFieldValue(""))
     private val _currentResponse = MutableStateFlow("")

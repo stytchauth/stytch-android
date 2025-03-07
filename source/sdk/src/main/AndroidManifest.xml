@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
@@ -19,8 +21,8 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <!-- These manifestPlaceholders in are defined in the application build.gradle -->
                 <data
-                    android:scheme="${stytchOAuthRedirectScheme}"
-                    android:host="${stytchOAuthRedirectHost}" />
+                    android:scheme="@string/STYTCH_PUBLIC_TOKEN"
+                    android:host="oauth" />
             </intent-filter>
         </activity>
         <activity
@@ -36,8 +38,8 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <!-- These manifestPlaceholders in are defined in the application build.gradle -->
                 <data
-                    android:scheme="stytchui-${STYTCH_PUBLIC_TOKEN}"
-                    android:host="deeplink" />
+                    android:scheme="@string/STYTCH_PUBLIC_TOKEN"
+                    android:host="b2c-ui" />
             </intent-filter>
         </activity>
         <activity
@@ -53,8 +55,8 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <!-- These manifestPlaceholders in are defined in the application build.gradle -->
                 <data
-                    android:scheme="stytchui-${STYTCH_B2B_PUBLIC_TOKEN}"
-                    android:host="deeplink" />
+                    android:scheme="@string/STYTCH_PUBLIC_TOKEN"
+                    android:host="b2b-ui" />
             </intent-filter>
         </activity>
     </application>

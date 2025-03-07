@@ -34,6 +34,18 @@ fun PasswordsScreen(viewModel: PasswordsViewModel) {
         ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
+                value = viewModel.orgIdState,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.b2b_org_id))
+                },
+                onValueChange = {
+                    viewModel.orgIdState = it
+                },
+                shape = MaterialTheme.shapes.small.copy(all = ZeroCornerSize),
+            )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = viewModel.emailState,
                 singleLine = true,
                 label = {

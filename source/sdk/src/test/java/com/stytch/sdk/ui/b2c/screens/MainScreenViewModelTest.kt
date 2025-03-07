@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.ui.b2c.data.EventState
@@ -228,13 +229,13 @@ internal class MainScreenViewModelTest {
         runTest(dispatcher) {
             coEvery { viewModel.getUserType(any()) } returns UserType.PASSWORDLESS
             coEvery {
-                viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(any(), any())
+                viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(any(), any(), any())
             } returns NavigationRoute.OTPConfirmation(mockk(), true, "")
             coEvery {
-                viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(any(), any())
+                viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(any(), any(), any())
             } returns NavigationRoute.EMLConfirmation(mockk(), true)
             coEvery {
-                viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(any(), any())
+                viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(any(), any(), any())
             } returns NavigationRoute.PasswordResetSent(mockk())
 
             // should send Email OTP
@@ -249,6 +250,7 @@ internal class MainScreenViewModelTest {
                         mockk {
                             every { methods } returns listOf(OTPMethods.EMAIL)
                         }
+                    every { locale } returns Locale.EN
                 }
             viewModel.onEmailAddressSubmit(configShouldSendEmailOTP, this)
             var event = eventFlow.await()
@@ -264,6 +266,7 @@ internal class MainScreenViewModelTest {
                 mockk {
                     every { products } returns listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS)
                     every { emailMagicLinksOptions } returns mockk(relaxed = true)
+                    every { locale } returns Locale.EN
                 }
             viewModel.onEmailAddressSubmit(configShouldSendEml, this)
             event = eventFlow.await()
@@ -279,6 +282,7 @@ internal class MainScreenViewModelTest {
                 mockk {
                     every { products } returns listOf(StytchProduct.PASSWORDS)
                     every { passwordOptions } returns mockk(relaxed = true)
+                    every { locale } returns Locale.EN
                 }
             viewModel.onEmailAddressSubmit(configShouldSendPasswordReset, this)
             event = eventFlow.await()
@@ -320,7 +324,12 @@ internal class MainScreenViewModelTest {
         runTest(dispatcher) {
             every { mockStytchClient.publicToken } returns "publicToken"
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns StytchResult.Success(mockk())
-            val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
+            val route =
+                viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
+                    "",
+                    mockk(relaxed = true),
+                    Locale.EN,
+                )
             require(route is NavigationRoute.EMLConfirmation)
             require(route.isReturningUser)
         }
@@ -337,7 +346,12 @@ internal class MainScreenViewModelTest {
                         statusCode = 400,
                     ),
                 )
-            val route = viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
+            val route =
+                viewModel.sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
+                    "",
+                    mockk(relaxed = true),
+                    Locale.EN,
+                )
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
@@ -354,6 +368,7 @@ internal class MainScreenViewModelTest {
                 viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(
                     "my@email.com",
                     mockk(relaxed = true),
+                    Locale.EN,
                 )
             require(route is NavigationRoute.OTPConfirmation)
             require(route.isReturningUser)
@@ -371,7 +386,12 @@ internal class MainScreenViewModelTest {
                         statusCode = 400,
                     ),
                 )
-            val route = viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
+            val route =
+                viewModel.sendEmailOTPForReturningUserAndGetNavigationRoute(
+                    "",
+                    mockk(relaxed = true),
+                    Locale.EN,
+                )
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
@@ -387,6 +407,7 @@ internal class MainScreenViewModelTest {
                 viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(
                     "my@email.com",
                     mockk(relaxed = true),
+                    Locale.EN,
                 )
             require(route is NavigationRoute.PasswordResetSent)
             require(route.details.resetType == PasswordResetType.NO_PASSWORD_SET)
@@ -404,7 +425,12 @@ internal class MainScreenViewModelTest {
                         statusCode = 400,
                     ),
                 )
-            val route = viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute("", mockk(relaxed = true))
+            val route =
+                viewModel.sendResetPasswordForReturningUserAndGetNavigationRoute(
+                    "",
+                    mockk(relaxed = true),
+                    Locale.EN,
+                )
             assert(route == null)
             assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
         }
@@ -417,7 +443,7 @@ internal class MainScreenViewModelTest {
             viewModel.onPhoneNumberChanged("5555555555")
             val mockOptions: OTPOptions =
                 mockk {
-                    every { toSMSOtpParameters(any()) } returns mockk()
+                    every { toSMSOtpParameters(any(), any()) } returns mockk()
                 }
             coEvery { mockStytchClient.otps.sms.loginOrCreate(any()) } returns
                 StytchResult.Success(
@@ -429,7 +455,7 @@ internal class MainScreenViewModelTest {
                 async {
                     viewModel.eventFlow.first()
                 }
-            viewModel.sendSmsOTP(mockOptions, this)
+            viewModel.sendSmsOTP(mockOptions, Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -447,7 +473,7 @@ internal class MainScreenViewModelTest {
                         statusCode = 400,
                     ),
                 )
-            viewModel.sendSmsOTP(mockOptions, this)
+            viewModel.sendSmsOTP(mockOptions, Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
         }
@@ -460,7 +486,7 @@ internal class MainScreenViewModelTest {
             viewModel.onPhoneNumberChanged("5555555555")
             val mockOptions: OTPOptions =
                 mockk {
-                    every { toWhatsAppOtpParameters(any()) } returns mockk(relaxed = true)
+                    every { toWhatsAppOtpParameters(any(), any()) } returns mockk(relaxed = true)
                 }
             coEvery { mockStytchClient.otps.whatsapp.loginOrCreate(any()) } returns
                 StytchResult.Success(
@@ -472,7 +498,7 @@ internal class MainScreenViewModelTest {
                 async {
                     viewModel.eventFlow.first()
                 }
-            viewModel.sendWhatsAppOTP(mockOptions, this)
+            viewModel.sendWhatsAppOTP(mockOptions, Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -490,8 +516,62 @@ internal class MainScreenViewModelTest {
                         statusCode = 400,
                     ),
                 )
-            viewModel.sendWhatsAppOTP(mockOptions, this)
+            viewModel.sendWhatsAppOTP(mockOptions, Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.phoneNumberState.error == "Something went wrong")
         }
+
+    @Test
+    fun `getProductComponents returns the expected order`() {
+        var given = listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
+        var expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OTP, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.PASSWORDS, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OAUTH, StytchProduct.EMAIL_MAGIC_LINKS)
+        expected = listOf(ProductComponent.BUTTONS, ProductComponent.DIVIDER, ProductComponent.INPUTS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.OAUTH)
+        expected = listOf(ProductComponent.BUTTONS)
+        assert(viewModel.getProductComponents(given) == expected)
+
+        given = listOf(StytchProduct.EMAIL_MAGIC_LINKS)
+        expected = listOf(ProductComponent.INPUTS)
+        assert(viewModel.getProductComponents(given) == expected)
+    }
+
+    @Test
+    fun `getTabTitleOrdering returns the expected order`() {
+        var givenProducts = listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS)
+        var givenOTPMethods = emptyList<OTPMethods>()
+        var expected = listOf(TabTypes.EMAIL)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.EMAIL)
+        expected = listOf(TabTypes.EMAIL)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.WHATSAPP, OTPMethods.EMAIL, OTPMethods.SMS)
+        expected = listOf(TabTypes.WHATSAPP, TabTypes.EMAIL, TabTypes.SMS)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+
+        givenProducts = listOf(StytchProduct.PASSWORDS, StytchProduct.OTP)
+        givenOTPMethods = listOf(OTPMethods.WHATSAPP, OTPMethods.SMS)
+        expected = listOf(TabTypes.EMAIL, TabTypes.WHATSAPP, TabTypes.SMS)
+        assert(viewModel.getTabTitleOrdering(givenProducts, givenOTPMethods) == expected)
+    }
 }

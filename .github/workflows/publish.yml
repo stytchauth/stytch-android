@@ -1,4 +1,4 @@
-name: Publish SDK
+name: Publish SDK (Manual)
 
 on:
   workflow_dispatch:
@@ -9,12 +9,8 @@ jobs:
     name: Release build and publish
     runs-on: ubuntu-latest
     env:
-      STYTCH_PUBLIC_TOKEN: 'abc123'
       GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-      STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
-      STYTCH_B2B_ORG_ID: 'abc123'
       PASSKEYS_DOMAIN: 'abc123'
-      UI_GOOGLE_CLIENT_ID: 'abc123'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3

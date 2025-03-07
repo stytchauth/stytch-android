@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
 import com.stytch.sdk.consumer.oauth.OAuth
@@ -38,6 +39,18 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
+internal enum class ProductComponent {
+    BUTTONS,
+    INPUTS,
+    DIVIDER,
+}
+
+internal enum class TabTypes {
+    EMAIL,
+    SMS,
+    WHATSAPP,
+}
+
 internal class MainScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val stytchClient: StytchClient,
@@ -46,6 +59,57 @@ internal class MainScreenViewModel(
 
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    fun getProductComponents(products: List<StytchProduct>): List<ProductComponent> {
+        val hasButtons = products.contains(StytchProduct.OAUTH)
+        val hasInput =
+            products.any {
+                listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
+            }
+        val hasDivider = hasButtons && hasInput
+        return mutableListOf<ProductComponent>()
+            .apply {
+                products.forEachIndexed { index, product ->
+                    if (hasDivider && index > 0) {
+                        add(ProductComponent.DIVIDER)
+                    }
+                    if (product == StytchProduct.OAUTH) {
+                        add(ProductComponent.BUTTONS)
+                    }
+                    if (product == StytchProduct.PASSWORDS ||
+                        product == StytchProduct.EMAIL_MAGIC_LINKS ||
+                        product == StytchProduct.OTP
+                    ) {
+                        add(ProductComponent.INPUTS)
+                    }
+                }
+            }.toSet()
+            .toList()
+    }
+
+    fun getTabTitleOrdering(
+        products: List<StytchProduct>,
+        otpMethods: List<OTPMethods>,
+    ): List<TabTypes> {
+        val hasEmail =
+            products.any {
+                listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
+            }
+        return mutableListOf<TabTypes>()
+            .apply {
+                if (hasEmail) {
+                    add(TabTypes.EMAIL)
+                }
+                otpMethods.forEach { method ->
+                    when (method) {
+                        OTPMethods.SMS -> add(TabTypes.SMS)
+                        OTPMethods.EMAIL -> add(TabTypes.EMAIL)
+                        OTPMethods.WHATSAPP -> add(TabTypes.WHATSAPP)
+                    }
+                }
+            }.toSet()
+            .toList()
+    }
 
     fun onStartOAuthLogin(
         context: ComponentActivity,
@@ -83,8 +147,8 @@ internal class MainScreenViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = oAuthOptions?.loginRedirectURL,
-                signupRedirectUrl = oAuthOptions?.signupRedirectURL,
+                loginRedirectUrl = "${StytchClient.publicToken}://oauth",
+                signupRedirectUrl = "${StytchClient.publicToken}://oauth",
             )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
@@ -157,12 +221,14 @@ internal class MainScreenViewModel(
             sendEmailOTPForReturningUserAndGetNavigationRoute(
                 emailAddress = emailAddress,
                 otpOptions = productConfig.otpOptions,
+                locale = productConfig.locale,
             )
         } else if (hasEML) {
             // send EML
             sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
                 emailAddress = emailAddress,
                 emailMagicLinksOptions = productConfig.emailMagicLinksOptions,
+                locale = productConfig.locale,
             )
         } else {
             null
@@ -194,6 +260,7 @@ internal class MainScreenViewModel(
                                 sendResetPasswordForReturningUserAndGetNavigationRoute(
                                     emailAddress = emailAddress,
                                     passwordOptions = productConfig.passwordOptions,
+                                    locale = productConfig.locale,
                                 )
                             }
                         }
@@ -225,11 +292,13 @@ internal class MainScreenViewModel(
     suspend fun sendEmailMagicLinkForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         emailMagicLinksOptions: EmailMagicLinksOptions,
+        locale: Locale,
     ): NavigationRoute? {
         val parameters =
             emailMagicLinksOptions.toParameters(
                 emailAddress = emailAddress,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
             is StytchResult.Success -> {
@@ -256,8 +325,9 @@ internal class MainScreenViewModel(
     suspend fun sendEmailOTPForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         otpOptions: OTPOptions,
+        locale: Locale,
     ): NavigationRoute? {
-        val parameters = otpOptions.toEmailOtpParameters(emailAddress)
+        val parameters = otpOptions.toEmailOtpParameters(emailAddress, locale)
         return when (val result = stytchClient.otps.email.loginOrCreate(parameters)) {
             is StytchResult.Success -> {
                 stytchClient.events.logEvent(
@@ -290,11 +360,13 @@ internal class MainScreenViewModel(
     suspend fun sendResetPasswordForReturningUserAndGetNavigationRoute(
         emailAddress: String,
         passwordOptions: PasswordOptions,
+        locale: Locale,
     ): NavigationRoute? {
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = emailAddress,
                 publicToken = stytchClient.publicToken,
+                locale = locale,
             )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
             is StytchResult.Success -> {
@@ -320,12 +392,13 @@ internal class MainScreenViewModel(
 
     fun sendSmsOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
-            val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164())
+            val parameters = otpOptions.toSMSOtpParameters(phoneNumberState.toE164(), locale)
             when (val result = stytchClient.otps.sms.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
@@ -357,12 +430,13 @@ internal class MainScreenViewModel(
 
     fun sendWhatsAppOTP(
         otpOptions: OTPOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = true)
         scope.launch {
             val phoneNumberState = uiState.value.phoneNumberState
-            val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164())
+            val parameters = otpOptions.toWhatsAppOtpParameters(phoneNumberState.toE164(), locale)
             when (val result = stytchClient.otps.whatsapp.loginOrCreate(parameters)) {
                 is StytchResult.Success -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)

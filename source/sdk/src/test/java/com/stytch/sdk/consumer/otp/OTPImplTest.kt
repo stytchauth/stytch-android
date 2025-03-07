@@ -56,6 +56,7 @@ internal class OTPImplTest {
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         every { mockSessionStorage.methodId = any() } just runs
         impl =
             OTPImpl(
@@ -169,34 +170,34 @@ internal class OTPImplTest {
     fun `OTPImpl whatsapp send with no active session delegates to api`() =
         runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
-            coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
                     expirationMinutes = 10,
                 ),
             )
-            coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) }
+            coVerify { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl whatsapp send with active session delegates to api`() =
         runBlocking {
             every { mockSessionStorage.persistedSessionIdentifiersExist } returns true
-            coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockApi.sendOTPWithWhatsAppSecondary(any(), any(), any()) } returns mockk(relaxed = true)
             impl.whatsapp.send(
                 OTP.WhatsAppOTP.Parameters(
                     phoneNumber = "phoneNumber",
                     expirationMinutes = 10,
                 ),
             )
-            coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any()) }
+            coVerify { mockApi.sendOTPWithWhatsAppSecondary(any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl whatsapp send with callback calls callback method`() {
         every { mockSessionStorage.persistedSessionIdentifiersExist } returns false
-        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.sendOTPWithWhatsAppPrimary(any(), any(), any()) } returns mockk(relaxed = true)
         val mockCallback = spyk<(OTPSendResponse) -> Unit>()
         impl.whatsapp.send(
             OTP.WhatsAppOTP.Parameters(
@@ -217,15 +218,17 @@ internal class OTPImplTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns mockk(relaxed = true)
             impl.email.loginOrCreate(mockk(relaxed = true))
-            coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) }
+            coVerify { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `OTPImpl email loginOrCreate with callback calls callback method`() {
-        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        coEvery { mockApi.loginOrCreateUserByOTPWithEmail(any(), any(), any(), any(), any()) } returns
+            mockk(relaxed = true)
         val mockCallback = spyk<(LoginOrCreateOTPResponse) -> Unit>()
         impl.email.loginOrCreate(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(any()) }

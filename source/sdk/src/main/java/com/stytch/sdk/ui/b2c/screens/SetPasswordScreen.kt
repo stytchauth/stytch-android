@@ -1,13 +1,13 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import android.os.Parcelable
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,7 +36,7 @@ internal data class SetPasswordScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val context = LocalContext.current as AuthenticationActivity
+        val context = LocalActivity.current as AuthenticationActivity
         val productConfig = LocalStytchProductConfig.current
         val viewModel =
             viewModel<SetPasswordScreenViewModel>(

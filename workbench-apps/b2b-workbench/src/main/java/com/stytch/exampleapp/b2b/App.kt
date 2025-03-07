@@ -6,17 +6,14 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        Timber.plant(Timber.DebugTree())
-        StytchB2BClient.configure(
-            context = applicationContext,
-            publicToken = BuildConfig.STYTCH_B2B_PUBLIC_TOKEN,
-        )
+        StytchB2BClient.configure(applicationContext) {
+            println("Last Auth Method Used: ${StytchB2BClient.lastAuthMethodUsed}")
+        }
         CoroutineScope(Dispatchers.Main).launch {
             StytchB2BClient.sessions.onChange.collect {
                 println("Collected session data: $it")

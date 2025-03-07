@@ -21,6 +21,7 @@ import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryAuthenticateRespons
 import com.stytch.sdk.b2b.network.models.B2BPasswordDiscoveryResetByEmailResponseData
 import com.stytch.sdk.b2b.network.models.B2BRequests
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSODiscoveryConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
@@ -538,6 +539,7 @@ internal object StytchB2BApi {
             resetPasswordExpirationMinutes: Int?,
             resetPasswordTemplateId: String?,
             codeChallenge: String,
+            locale: Locale?,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmailStart(
@@ -549,6 +551,7 @@ internal object StytchB2BApi {
                         resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
                         resetPasswordTemplateId = resetPasswordTemplateId,
                         codeChallenge = codeChallenge,
+                        locale = locale,
                     ),
                 )
             }
@@ -598,12 +601,14 @@ internal object StytchB2BApi {
         suspend fun resetBySession(
             organizationId: String,
             password: String,
+            locale: Locale?,
         ): StytchResult<SessionResetResponseData> =
             safeB2BApiCall {
                 apiService.resetPasswordBySession(
                     B2BRequests.Passwords.ResetBySessionRequest(
                         organizationId = organizationId,
                         password = password,
+                        locale = locale,
                     ),
                 )
             }
@@ -629,6 +634,7 @@ internal object StytchB2BApi {
                 resetPasswordExpirationMinutes: Int?,
                 resetPasswordTemplateId: String?,
                 codeChallenge: String,
+                locale: Locale?,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmailStart(
@@ -639,6 +645,7 @@ internal object StytchB2BApi {
                             resetPasswordExpirationMinutes = resetPasswordExpirationMinutes,
                             resetPasswordTemplateId = resetPasswordTemplateId,
                             codeChallenge = codeChallenge,
+                            locale = locale,
                         ),
                     )
                 }
@@ -648,6 +655,7 @@ internal object StytchB2BApi {
                 password: String,
                 codeVerifier: String?,
                 intermediateSessionToken: String?,
+                locale: Locale?,
             ): StytchResult<B2BPasswordDiscoveryResetByEmailResponseData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmail(
@@ -656,6 +664,7 @@ internal object StytchB2BApi {
                             password = password,
                             codeVerifier = codeVerifier,
                             intermediateSessionToken = intermediateSessionToken,
+                            locale = locale,
                         ),
                     )
                 }
@@ -867,6 +876,11 @@ internal object StytchB2BApi {
                             jwksUrl = jwksUrl,
                         ),
                 )
+            }
+
+        suspend fun discoveryConnections(emailAddress: String): StytchResult<B2BSSODiscoveryConnectionResponseData> =
+            safeB2BApiCall {
+                apiService.ssoDiscoveryConnections(emailAddress = emailAddress)
             }
     }
 

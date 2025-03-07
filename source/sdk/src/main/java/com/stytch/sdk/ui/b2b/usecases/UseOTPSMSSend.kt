@@ -9,6 +9,7 @@ import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.MFASMSState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.data.UpdateMfaSmsState
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +21,7 @@ internal class UseOTPSMSSend(
     private val scope: CoroutineScope,
     private val state: StateFlow<B2BUIState>,
     private val dispatch: Dispatch,
+    private val productConfig: StytchB2BProductConfig,
     private val request: PerformRequest<BasicData>,
 ) {
     operator fun invoke(isEnrolling: Boolean) {
@@ -30,6 +32,7 @@ internal class UseOTPSMSSend(
                         organizationId = state.value.mfaPrimaryInfoState?.organizationId ?: "",
                         memberId = state.value.mfaPrimaryInfoState?.memberId ?: "",
                         mfaPhoneNumber = state.value.phoneNumberState.toE164(),
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

@@ -25,9 +25,9 @@ internal class CaptchaProviderImpl(
         get() = ::recaptchaClient.isInitialized
 
     init {
-        scope.launch(Dispatchers.Main) {
-            siteKey?.let {
-                recaptchaClient = Recaptcha.fetchClient(application, it)
+        if (!siteKey.isNullOrBlank()) {
+            scope.launch(Dispatchers.Main) {
+                recaptchaClient = Recaptcha.fetchClient(application, siteKey)
             }
         }
     }

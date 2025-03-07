@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.b2c.data
 import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import kotlinx.parcelize.Parcelize
 
@@ -27,13 +28,15 @@ public data class EmailMagicLinksOptions
         internal fun toParameters(
             emailAddress: String,
             publicToken: String,
+            locale: Locale,
         ) = MagicLinks.EmailMagicLinks.Parameters(
             email = emailAddress,
-            loginMagicLinkUrl = "stytchui-$publicToken://deeplink",
-            signupMagicLinkUrl = "stytchui-$publicToken://deeplink",
+            loginMagicLinkUrl = "$publicToken://b2c-ui",
+            signupMagicLinkUrl = "$publicToken://b2c-ui",
             loginExpirationMinutes = loginExpirationMinutes,
             signupExpirationMinutes = signupExpirationMinutes,
             loginTemplateId = loginTemplateId,
             signupTemplateId = signupTemplateId,
+            locale = locale,
         )
     }

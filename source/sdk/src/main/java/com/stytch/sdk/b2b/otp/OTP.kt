@@ -281,12 +281,10 @@ public interface OTP {
              * @property code The OTP to authenticate
              * @property emailAddress The email address of the member
              */
-            public data class AuthenticateParameters
-                @JvmOverloads
-                constructor(
-                    val code: String,
-                    val emailAddress: String,
-                )
+            public data class AuthenticateParameters(
+                val code: String,
+                val emailAddress: String,
+            )
 
             /**
              * Authenticate a one-time passcode (OTP) sent to a user via email.

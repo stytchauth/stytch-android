@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class OTPViewModel : ViewModel() {
-    var orgIdState by mutableStateOf(TextFieldValue(BuildConfig.STYTCH_B2B_ORG_ID))
+    var orgIdState by mutableStateOf(TextFieldValue(""))
     var memberIdState by mutableStateOf(TextFieldValue(""))
     var phoneNumberState by mutableStateOf(TextFieldValue(""))
     var codeState by mutableStateOf(TextFieldValue(""))

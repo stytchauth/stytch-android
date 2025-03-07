@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2c.data
 
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.passwords.Passwords
 import org.junit.Test
 
@@ -15,12 +16,13 @@ internal class PasswordOptionsTest {
         val expected =
             Passwords.ResetByEmailStartParameters(
                 email = "my@email.com",
-                loginRedirectUrl = "stytchui-publicToken://deeplink",
+                loginRedirectUrl = "publicToken://b2c-ui",
                 loginExpirationMinutes = options.loginExpirationMinutes,
-                resetPasswordRedirectUrl = "stytchui-publicToken://deeplink",
+                resetPasswordRedirectUrl = "publicToken://b2c-ui",
                 resetPasswordExpirationMinutes = options.resetPasswordExpirationMinutes,
                 resetPasswordTemplateId = options.resetPasswordTemplateId,
+                locale = Locale.EN,
             )
-        assert(options.toResetByEmailStartParameters("my@email.com", "publicToken") == expected)
+        assert(options.toResetByEmailStartParameters("my@email.com", "publicToken", Locale.EN) == expected)
     }
 }

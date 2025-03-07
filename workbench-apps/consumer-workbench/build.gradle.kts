@@ -15,11 +15,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Placeholders for OAuth redirect
-        manifestPlaceholders["stytchOAuthRedirectScheme"] = "app"
-        manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
-        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
     }
 
     buildFeatures {
@@ -29,9 +24,6 @@ android {
 
     buildTypes {
         all {
-            val publicToken = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
-            buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
-
             val googleOAuthClientId = rootProject.ext["GOOGLE_OAUTH_CLIENT_ID"] as String
             buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\"")
 
@@ -85,7 +77,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
 
-    implementation(libs.timber)
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
 }

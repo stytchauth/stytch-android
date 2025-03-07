@@ -5,6 +5,7 @@ import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.BiometricsAlreadyEnrolledError
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchBiometricAuthenticationFailed
@@ -93,6 +94,7 @@ internal class BiometricsImplTest {
         every { mockStorageHelper.saveBoolean(any(), any()) } just runs
         every { any<String>().toBase64DecodedByteArray() } returns base64DecodedByteArray
         every { any<ByteArray>().toBase64EncodedString() } returns base64EncodedString
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             BiometricsImpl(
                 externalScope = TestScope(),
@@ -138,7 +140,7 @@ internal class BiometricsImplTest {
         }
 
     @Test
-    fun `register removes existing registration (local and remote) if found`() =
+    fun `register returns expected exception if previous registration is found and DOES NOT delete anything`() =
         runBlocking {
             every { mockStorageHelper.checkIfKeysetIsUsingKeystore() } returns true
             every { mockStorageHelper.loadValue(any()) } returns "biometric-registration-id"
@@ -147,19 +149,13 @@ internal class BiometricsImplTest {
             every {
                 mockBiometricsProvider.areBiometricsAvailable(any(), any())
             } returns BiometricManager.BIOMETRIC_SUCCESS
-            every { mockStorageHelper.deletePreference(any()) } returns true
-            every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
-            coEvery {
-                mockBiometricsProvider.showBiometricPromptForRegistration(any(), any(), any())
-            } throws StytchBiometricAuthenticationFailed(AUTHENTICATION_FAILED)
-            every { mockBiometricsProvider.deleteSecretKey() } just runs
-            coEvery { deleteBiometricsSpy.invoke(any()) } returns StytchResult.Success(mockk(relaxed = true))
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
-            require(result.exception is StytchBiometricAuthenticationFailed)
-            verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
-            verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            require(result.exception is BiometricsAlreadyEnrolledError)
+            verify(exactly = 0) { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
+            verify(exactly = 0) { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
+            verify(exactly = 0) { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            coVerify(exactly = 0) { deleteBiometricsSpy.invoke(any()) }
         }
 
     @Test
@@ -180,6 +176,7 @@ internal class BiometricsImplTest {
             verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
             verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
             verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            coVerify(exactly = 0) { deleteBiometricsSpy.invoke(any()) }
         }
 
     @Test

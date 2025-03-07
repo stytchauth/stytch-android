@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import android.os.Parcelable
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -34,9 +34,7 @@ import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.OAuthProvider
-import com.stytch.sdk.ui.b2c.data.OTPMethods
 import com.stytch.sdk.ui.b2c.data.OTPOptions
-import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.DividerWithText
@@ -57,7 +55,8 @@ internal object MainScreen : AndroidScreen(), Parcelable {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val context = LocalContext.current as AuthenticationActivity
+        val productConfig = LocalStytchProductConfig.current
+        val context = LocalActivity.current as AuthenticationActivity
         val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
@@ -76,9 +75,11 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             onEmailAddressSubmit = viewModel::onEmailAddressSubmit,
             onCountryCodeChanged = viewModel::onCountryCodeChanged,
             onPhoneNumberChanged = viewModel::onPhoneNumberChanged,
-            sendSmsOtp = viewModel::sendSmsOTP,
-            sendWhatsAppOTP = viewModel::sendWhatsAppOTP,
+            sendSmsOtp = { viewModel.sendSmsOTP(it, productConfig.locale) },
+            sendWhatsAppOTP = { viewModel.sendWhatsAppOTP(it, productConfig.locale) },
             exitWithoutAuthenticating = context::exitWithoutAuthenticating,
+            productComponents = viewModel.getProductComponents(productConfig.products),
+            tabTypes = viewModel.getTabTitleOrdering(productConfig.products, productConfig.otpOptions.methods),
         )
     }
 }
@@ -94,33 +95,18 @@ private fun MainScreenComposable(
     sendSmsOtp: (OTPOptions) -> Unit,
     sendWhatsAppOTP: (OTPOptions) -> Unit,
     exitWithoutAuthenticating: () -> Unit,
+    productComponents: List<ProductComponent>,
+    tabTypes: List<TabTypes>,
 ) {
     val productConfig = LocalStytchProductConfig.current
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
-    val hasButtons = productConfig.products.contains(StytchProduct.OAUTH)
-    val hasInput =
-        productConfig.products.any {
-            listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
-        }
-    val hasEmail =
-        productConfig.products.any {
-            listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.PASSWORDS).contains(it)
-        } ||
-            productConfig.otpOptions.methods.contains(OTPMethods.EMAIL)
-    val hasDivider = hasButtons && hasInput
     val tabTitles =
-        mutableListOf<String>().apply {
-            if (hasEmail) {
-                add(stringResource(id = R.string.email))
-            }
-            if (productConfig.products.contains(StytchProduct.OTP)) {
-                if (productConfig.otpOptions.methods.contains(OTPMethods.SMS)) {
-                    add(stringResource(id = R.string.text))
-                }
-                if (productConfig.otpOptions.methods.contains(OTPMethods.WHATSAPP)) {
-                    add(stringResource(id = R.string.whatsapp))
-                }
+        tabTypes.map {
+            when (it) {
+                TabTypes.EMAIL -> stringResource(id = R.string.email)
+                TabTypes.SMS -> stringResource(id = R.string.text)
+                TabTypes.WHATSAPP -> stringResource(id = R.string.whatsapp)
             }
         }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -133,86 +119,90 @@ private fun MainScreenComposable(
         if (!theme.hideHeaderText) {
             PageTitle(text = stringResource(id = R.string.sign_up_or_login))
         }
-        if (productConfig.products.contains(StytchProduct.OAUTH)) {
-            productConfig.oAuthOptions.providers.map {
-                SocialLoginButton(
-                    modifier =
-                        Modifier
-                            .padding(bottom = 12.dp)
-                            .semantics {
-                                contentDescription = semanticsOAuthButton
-                            },
-                    onClick = { onStartOAuthLogin(it, productConfig) },
-                    iconDrawable = painterResource(id = it.iconDrawable),
-                    iconDescription = stringResource(id = it.iconText),
-                    text = stringResource(id = it.text),
-                )
-            }
-        }
-        if (hasDivider) {
-            DividerWithText(
-                modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
-            )
-        }
-        if (hasInput && tabTitles.isNotEmpty()) { // sanity check
-            if (tabTitles.size > 1) {
-                val semanticTabs = stringResource(id = R.string.semantics_tabs)
-                TabRow(
-                    selectedTabIndex = selectedTabIndex,
-                    containerColor = Color(theme.backgroundColor),
-                    modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
-                    indicator = { tabPositions ->
-                        SecondaryIndicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                            color = Color(theme.primaryTextColor),
+        productComponents.map {
+            when (it) {
+                ProductComponent.BUTTONS -> {
+                    productConfig.oAuthOptions.providers.map {
+                        SocialLoginButton(
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 12.dp)
+                                    .semantics {
+                                        contentDescription = semanticsOAuthButton
+                                    },
+                            onClick = { onStartOAuthLogin(it, productConfig) },
+                            iconDrawable = painterResource(id = it.iconDrawable),
+                            iconDescription = stringResource(id = it.iconText),
+                            text = stringResource(id = it.text),
                         )
-                    },
-                ) {
-                    tabTitles.forEachIndexed { index, title ->
-                        Tab(
-                            selected = index == selectedTabIndex,
-                            onClick = { selectedTabIndex = index },
-                            modifier = Modifier.height(48.dp),
-                        ) {
-                            Text(
-                                text = title,
-                                style =
-                                    type.body2.copy(
-                                        color = Color(theme.primaryTextColor),
-                                        lineHeight = 48.sp,
-                                    ),
-                            )
-                        }
                     }
                 }
-            }
-            when (tabTitles[selectedTabIndex]) {
-                stringResource(id = R.string.email) ->
-                    EmailEntry(
-                        emailState = emailState,
-                        onEmailAddressChanged = onEmailAddressChanged,
-                        onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
+                ProductComponent.DIVIDER -> {
+                    DividerWithText(
+                        modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
+                        text = stringResource(id = R.string.or),
                     )
-                stringResource(id = R.string.text) ->
-                    PhoneEntry(
-                        countryCode = phoneState.countryCode,
-                        onCountryCodeChanged = onCountryCodeChanged,
-                        phoneNumber = phoneState.phoneNumber,
-                        onPhoneNumberChanged = onPhoneNumberChanged,
-                        onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
-                        statusText = phoneState.error,
-                    )
-                stringResource(id = R.string.whatsapp) ->
-                    PhoneEntry(
-                        countryCode = phoneState.countryCode,
-                        onCountryCodeChanged = onCountryCodeChanged,
-                        phoneNumber = phoneState.phoneNumber,
-                        onPhoneNumberChanged = onPhoneNumberChanged,
-                        onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
-                        statusText = phoneState.error,
-                    )
-                else -> Text(stringResource(id = R.string.misconfigured_otp))
+                }
+                ProductComponent.INPUTS -> {
+                    if (tabTitles.size > 1) {
+                        val semanticTabs = stringResource(id = R.string.semantics_tabs)
+                        TabRow(
+                            selectedTabIndex = selectedTabIndex,
+                            containerColor = Color(theme.backgroundColor),
+                            modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
+                            indicator = { tabPositions ->
+                                SecondaryIndicator(
+                                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                                    color = Color(theme.primaryTextColor),
+                                )
+                            },
+                        ) {
+                            tabTitles.forEachIndexed { index, title ->
+                                Tab(
+                                    selected = index == selectedTabIndex,
+                                    onClick = { selectedTabIndex = index },
+                                    modifier = Modifier.height(48.dp),
+                                ) {
+                                    Text(
+                                        text = title,
+                                        style =
+                                            type.body2.copy(
+                                                color = Color(theme.primaryTextColor),
+                                                lineHeight = 48.sp,
+                                            ),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    when (tabTitles[selectedTabIndex]) {
+                        stringResource(id = R.string.email) ->
+                            EmailEntry(
+                                emailState = emailState,
+                                onEmailAddressChanged = onEmailAddressChanged,
+                                onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
+                            )
+                        stringResource(id = R.string.text) ->
+                            PhoneEntry(
+                                countryCode = phoneState.countryCode,
+                                onCountryCodeChanged = onCountryCodeChanged,
+                                phoneNumber = phoneState.phoneNumber,
+                                onPhoneNumberChanged = onPhoneNumberChanged,
+                                onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
+                                statusText = phoneState.error,
+                            )
+                        stringResource(id = R.string.whatsapp) ->
+                            PhoneEntry(
+                                countryCode = phoneState.countryCode,
+                                onCountryCodeChanged = onCountryCodeChanged,
+                                phoneNumber = phoneState.phoneNumber,
+                                onPhoneNumberChanged = onPhoneNumberChanged,
+                                onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
+                                statusText = phoneState.error,
+                            )
+                        else -> Text(stringResource(id = R.string.misconfigured_otp))
+                    }
+                }
             }
         }
         uiState.genericErrorMessage?.let {

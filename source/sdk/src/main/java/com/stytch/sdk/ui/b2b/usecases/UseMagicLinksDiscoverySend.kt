@@ -28,6 +28,7 @@ internal class UseMagicLinksDiscoverySend(
                         emailAddress = state.value.emailState.emailAddress,
                         discoveryRedirectUrl = getRedirectUrl(),
                         loginTemplateId = productConfig.emailMagicLinksOptions.loginTemplateId,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

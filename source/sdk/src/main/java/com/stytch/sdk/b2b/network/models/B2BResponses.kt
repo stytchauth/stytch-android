@@ -246,6 +246,12 @@ internal object B2BResponses {
         class B2BSSOSAMLDeleteVerificationCertificateResponse(
             data: B2BSSOSAMLDeleteVerificationCertificateResponseData,
         ) : StytchDataResponse<B2BSSOSAMLDeleteVerificationCertificateResponseData>(data)
+
+        @Keep
+        @JsonClass(generateAdapter = true)
+        class B2BSSODiscoveryConnectionResponse(
+            data: B2BSSODiscoveryConnectionResponseData,
+        ) : StytchDataResponse<B2BSSODiscoveryConnectionResponseData>(data)
     }
 
     object OTP {

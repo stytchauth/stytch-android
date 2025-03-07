@@ -33,12 +33,8 @@ jobs:
             - name: Get current version
               id: version
               env:
-                STYTCH_PUBLIC_TOKEN: 'abc123'
                 GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-                STYTCH_B2B_PUBLIC_TOKEN: 'abc123'
-                STYTCH_B2B_ORG_ID: 'abc123'
                 PASSKEYS_DOMAIN: 'abc123'
-                UI_GOOGLE_CLIENT_ID: 'abc123'
               run: |
                 VERSION=$(./gradlew -q printVersion)
                 echo "Found version $VERSION"
@@ -58,7 +54,29 @@ jobs:
         name: Release build and publish
         needs: check
         if: needs.check.outputs.tag_exists == 'false'
-        uses: stytchauth/stytch-android/.github/workflows/publish.yml@main
+        runs-on: ubuntu-latest
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: 'abc123'
+          PASSKEYS_DOMAIN: 'abc123'
+        steps:
+          - uses: actions/checkout@v3
+          - uses: actions/setup-java@v3
+            with:
+              distribution: zulu
+              java-version: 17
+          - name: Release build
+            run: ./gradlew :source:sdk:assembleRelease
+          - name: Source jar
+            run: ./gradlew :source:sdk:androidSourcesJar
+          - name: Publish to Maven Central
+            run: ./gradlew :source:sdk:publishReleasePublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
+            env:
+              OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+              OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+              SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+              SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+              SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+              SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
     tag-and-release:
         name: Create tag and release
         runs-on: ubuntu-latest

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
@@ -73,7 +74,7 @@ internal class EMLConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail sets error message if no email address is passed`() =
         runTest(dispatcher) {
-            viewModel.sendResetPasswordEmail(null, mockk(), this)
+            viewModel.sendResetPasswordEmail(null, mockk(), Locale.EN, this)
             assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
         }
 
@@ -95,12 +96,12 @@ internal class EMLConfirmationScreenViewModelTest {
                 EventState.NavigationRequested(
                     NavigationRoute.PasswordResetSent(
                         PasswordResetDetails(
-                            mockOptions.toResetByEmailStartParameters("my@email.com", "publicToken"),
+                            mockOptions.toResetByEmailStartParameters("my@email.com", "publicToken", Locale.EN),
                             PasswordResetType.NO_PASSWORD_SET,
                         ),
                     ),
                 )
-            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
+            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, Locale.EN, this)
             coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
             assert(eventFlow.await() == expectedEvent)
         }
@@ -114,7 +115,7 @@ internal class EMLConfirmationScreenViewModelTest {
                     StytchInternalError(message = "Testing error state"),
                 )
             val mockOptions: PasswordOptions = mockk(relaxed = true)
-            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, this)
+            viewModel.sendResetPasswordEmail("my@email.com", mockOptions, Locale.EN, this)
             coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
             assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
         }

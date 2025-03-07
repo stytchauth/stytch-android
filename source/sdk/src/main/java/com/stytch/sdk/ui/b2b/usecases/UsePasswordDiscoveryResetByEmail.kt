@@ -11,6 +11,7 @@ import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ internal class UsePasswordDiscoveryResetByEmail(
     private val scope: CoroutineScope,
     private val state: StateFlow<B2BUIState>,
     private val dispatch: Dispatch,
+    private val productConfig: StytchB2BProductConfig,
     private val request: PerformRequest<B2BPasswordDiscoveryResetByEmailResponseData>,
 ) {
     operator fun invoke() {
@@ -30,6 +32,7 @@ internal class UsePasswordDiscoveryResetByEmail(
                     Passwords.Discovery.ResetByEmailParameters(
                         passwordResetToken = state.value.deeplinkTokenPair?.token ?: "",
                         password = state.value.passwordState.password,
+                        locale = productConfig.locale,
                     ),
                 )
             }.onSuccess {

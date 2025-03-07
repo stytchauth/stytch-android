@@ -94,11 +94,7 @@ tasks.dokkaHtmlMultiModule.configure {
 }
 
 // Create variables with empty default values
-extra["STYTCH_PUBLIC_TOKEN"] = ""
 extra["GOOGLE_OAUTH_CLIENT_ID"] = ""
-extra["STYTCH_B2B_PUBLIC_TOKEN"] = ""
-extra["STYTCH_B2B_ORG_ID"] = ""
-extra["UI_GOOGLE_CLIENT_ID"] = ""
 extra["PASSKEYS_DOMAIN"] = ""
 
 val localProperties = project.rootProject.file("local.properties")
@@ -112,10 +108,6 @@ if (localProperties.exists()) {
     }
 } else {
     // Use envvars
-    extra["STYTCH_PUBLIC_TOKEN"] = System.getenv("STYTCH_PUBLIC_TOKEN")
     extra["GOOGLE_OAUTH_CLIENT_ID"] = System.getenv("GOOGLE_OAUTH_CLIENT_ID")
-    extra["STYTCH_B2B_PUBLIC_TOKEN"] = System.getenv("STYTCH_B2B_PUBLIC_TOKEN")
-    extra["STYTCH_B2B_ORG_ID"] = System.getenv("STYTCH_B2B_ORG_ID")
-    extra["UI_GOOGLE_CLIENT_ID"] = System.getenv("UI_GOOGLE_CLIENT_ID")
     extra["PASSKEYS_DOMAIN"] = System.getenv("PASSKEYS_DOMAIN")
 }

@@ -9,10 +9,12 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.EndpointOptions
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
@@ -23,6 +25,7 @@ import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
+import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import io.mockk.MockKAnnotations
@@ -46,6 +49,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -75,6 +79,11 @@ internal class StytchB2BClientTest {
         )
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        mockkObject(NetworkChangeListener)
+        every { NetworkChangeListener.configure(any(), any()) } just runs
+        every { NetworkChangeListener.networkIsAvailable } returns true
+        mockkObject(AppLifecycleListener)
+        every { AppLifecycleListener.configure(any()) } just runs
         val mockApplication: Application =
             mockk {
                 every { packageName } returns "Stytch"
@@ -493,4 +502,29 @@ internal class StytchB2BClientTest {
         StytchB2BClient.getPKCECodePair()
         verify(exactly = 1) { mockPKCEPairManager.getPKCECodePair() }
     }
+
+    @Test
+    fun `verify bootstrap data is not overwritten by a failed bootstrap response`() =
+        runTest {
+            val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
+            assert(nonDefaultBootstrapData != BootstrapData())
+            StytchB2BClient.bootstrapData = nonDefaultBootstrapData
+            every { NetworkChangeListener.networkIsAvailable } returns true
+            coEvery { StytchB2BApi.getBootstrapData() } returns
+                StytchResult.Error(StytchInternalError(RuntimeException("something went wrong")))
+            StytchB2BClient.refreshBootstrapData()
+            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+        }
+
+    @Test
+    fun `verify bootstrap data is overwritten by a successful bootstrap response`() =
+        runTest {
+            val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
+            StytchB2BClient.bootstrapData = BootstrapData()
+            assert(StytchB2BClient.bootstrapData != nonDefaultBootstrapData)
+            every { NetworkChangeListener.networkIsAvailable } returns true
+            coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Success(nonDefaultBootstrapData)
+            StytchB2BClient.refreshBootstrapData()
+            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+        }
 }

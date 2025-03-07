@@ -25,7 +25,7 @@ internal class SMSOTPEntryScreenViewModel(
     dispatchAction: suspend (B2BUIAction) -> Unit,
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
-    val useOTPSMSSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, ::request)
+    val useOTPSMSSend = UseOTPSMSSend(viewModelScope, state, ::dispatch, productConfig, ::request)
     val useOTPSMSAuthenticate = UseOTPSMSAuthenticate(viewModelScope, productConfig, state, ::request)
 
     init {

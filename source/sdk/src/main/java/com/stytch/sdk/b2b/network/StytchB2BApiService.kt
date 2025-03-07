@@ -13,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 internal interface StytchB2BApiService : ApiService {
     //region Magic Links
@@ -251,6 +252,11 @@ internal interface StytchB2BApiService : ApiService {
         @Path(value = "connectionId") connectionId: String,
         @Body request: B2BRequests.SSO.OIDCUpdateRequest,
     ): B2BResponses.SSO.B2BSSOOIDCUpdateConnectionResponse
+
+    @GET("b2b/sso/discovery/connections")
+    suspend fun ssoDiscoveryConnections(
+        @Query(value = "email_address") emailAddress: String,
+    ): B2BResponses.SSO.B2BSSODiscoveryConnectionResponse
     //endregion SSO
 
     //region Bootstrap

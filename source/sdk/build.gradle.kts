@@ -12,7 +12,7 @@ plugins {
 }
 
 extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
-extra["PUBLISH_VERSION"] = "0.36.0"
+extra["PUBLISH_VERSION"] = "0.40.0"
 extra["PUBLISH_ARTIFACT_ID"] = "sdk"
 
 apply("${rootProject.projectDir}/scripts/publish-module.gradle")
@@ -71,18 +71,6 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
-    }
-    testVariants.all {
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
-        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
-    }
-    unitTestVariants.all {
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectScheme"] = "test://"
-        mergedFlavor.manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        mergedFlavor.manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = "test"
-        mergedFlavor.manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = "test"
     }
 }
 
@@ -163,6 +151,8 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.auth.api.phone)
     implementation(libs.stytch.dfp)
+    implementation(libs.lifecycle.common)
+    implementation(libs.lifecycle.process)
 
     // UI SDK dependencies
     implementation(libs.activity.ktx)

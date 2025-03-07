@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.otp
 
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.BasicResponse
 import com.stytch.sdk.b2b.EmailOTPAuthenticateResponse
 import com.stytch.sdk.b2b.EmailOTPDiscoveryAuthenticateResponse
@@ -184,6 +185,7 @@ internal class OTPImpl(
                             code = parameters.code,
                             emailAddress = parameters.emailAddress,
                         ).apply {
+                            sessionStorage.lastAuthMethodUsed = B2BAuthMethod.EMAIL_OTP
                             if (this is StytchResult.Success) {
                                 // This endpoint doesn't send back a full "Needs MFA" response, ONLY the bare minimum
                                 // so we have to do it manually since we can't use `launchSessionUpdater`

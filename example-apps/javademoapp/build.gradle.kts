@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
 }
-val publicToken = rootProject.ext["STYTCH_PUBLIC_TOKEN"] as String
 
 android {
     namespace = "com.stytch.javademoapp"
@@ -15,13 +14,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        manifestPlaceholders["stytchOAuthRedirectScheme"] = "stytchjavademoapp"
-        manifestPlaceholders["stytchOAuthRedirectHost"] = "oauth"
-        manifestPlaceholders["STYTCH_PUBLIC_TOKEN"] = publicToken
-        manifestPlaceholders["STYTCH_B2B_PUBLIC_TOKEN"] = ""
-
-        buildConfigField("String", "STYTCH_PUBLIC_TOKEN", "\"$publicToken\"")
     }
 
     buildTypes {

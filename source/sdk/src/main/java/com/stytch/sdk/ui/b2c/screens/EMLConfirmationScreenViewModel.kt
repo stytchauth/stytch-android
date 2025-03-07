@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
@@ -73,6 +74,7 @@ internal class EMLConfirmationScreenViewModel(
     fun sendResetPasswordEmail(
         emailAddress: String?,
         passwordOptions: PasswordOptions,
+        locale: Locale,
         scope: CoroutineScope = viewModelScope,
     ) {
         scope.launch {
@@ -81,6 +83,7 @@ internal class EMLConfirmationScreenViewModel(
                     passwordOptions.toResetByEmailStartParameters(
                         emailAddress = emailAddress,
                         publicToken = stytchClient.publicToken,
+                        locale = locale,
                     )
                 when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
                     is StytchResult.Success -> {

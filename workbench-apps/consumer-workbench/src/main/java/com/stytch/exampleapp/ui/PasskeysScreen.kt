@@ -1,5 +1,6 @@
 package com.stytch.exampleapp.ui
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
@@ -26,7 +26,7 @@ fun PasskeysScreen(navController: NavController) {
     val viewModel: PasskeysViewModel = viewModel()
     val loading = viewModel.loadingState.collectAsState()
     val responseState = viewModel.currentResponse.collectAsState()
-    val activity = LocalContext.current as FragmentActivity
+    val activity = LocalActivity.current as FragmentActivity
     val registrationId = viewModel.currentPasskeyRegistrationId.collectAsState()
 
     Column(

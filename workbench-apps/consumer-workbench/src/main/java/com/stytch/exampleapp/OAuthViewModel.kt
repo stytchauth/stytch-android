@@ -68,8 +68,8 @@ class OAuthViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = THIRD_PARTY_OAUTH_REQUEST,
-                loginRedirectUrl = "app://oauth",
-                signupRedirectUrl = "app://oauth",
+                loginRedirectUrl = "app://consumerworkbench/?type={}",
+                signupRedirectUrl = "app://consumerworkbench/?type={}",
             )
         when (provider) {
             OAuthProvider.APPLE -> StytchClient.oauth.apple.start(startParameters)
@@ -93,8 +93,8 @@ class OAuthViewModel(
     fun loginWithThirdPartyOAuthOneShot(provider: OAuthProvider) {
         val startParameters =
             OAuth.ThirdParty.GetTokenForProviderParams(
-                loginRedirectUrl = "app://oauth",
-                signupRedirectUrl = "app://oauth",
+                loginRedirectUrl = "app://consumerworkbench/?type={}",
+                signupRedirectUrl = "app://consumerworkbench/?type={}",
             )
         viewModelScope
             .launch {

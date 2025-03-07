@@ -3,12 +3,15 @@ package com.stytch.sdk.consumer
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import com.stytch.sdk.R
+import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
@@ -16,6 +19,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLazyDelegate
+import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
@@ -68,6 +72,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
+import java.lang.ref.WeakReference
 import java.util.UUID
 
 /**
@@ -102,6 +107,75 @@ public object StytchClient {
 
     private var stytchClientOptions: StytchClientOptions? = null
 
+    private var applicationContext = WeakReference<Context>(null)
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(context: Context) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, StytchClientOptions(), {})
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param options Optional options to configure the StytchClient
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        options: StytchClientOptions = StytchClientOptions(),
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, options, callback)
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, StytchClientOptions(), callback)
+    }
+
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param options Optional options to configure the StytchClient
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        options: StytchClientOptions = StytchClientOptions(),
+    ) {
+        val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
+        configure(context, publicToken, options, {})
+    }
+
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
@@ -119,10 +193,12 @@ public object StytchClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        StytchLog.d("Using public token=$publicToken")
         if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
             return callback(true)
         }
         try {
+            applicationContext = WeakReference(context.applicationContext)
             this.publicToken = publicToken
             this.stytchClientOptions = options
             deviceInfo = context.getDeviceInfo()
@@ -137,24 +213,11 @@ public object StytchClient {
                     dfppaDomain = options.endpointOptions.dfppaDomain,
                 )
             configureSmsRetriever(context.applicationContext)
+            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
+            AppLifecycleListener.configure(::refreshBootstrapAndAPIClient)
+            refreshBootstrapAndAPIClient()
             maybeClearBadSessionToken()
             externalScope.launch(dispatchers.io) {
-                bootstrapData =
-                    when (val res = StytchApi.getBootstrapData()) {
-                        is StytchResult.Success -> res.value
-                        else -> BootstrapData()
-                    }
-                StytchApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            context.applicationContext as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
                 // if there are session identifiers on device start the auto updater to ensure it is still valid
                 if (sessionStorage.persistedSessionIdentifiersExist) {
                     sessionStorage.session?.let {
@@ -244,6 +307,33 @@ public object StytchClient {
                         ),
                     )
                 }
+            }
+    }
+
+    private fun refreshBootstrapAndAPIClient() {
+        applicationContext.get()?.let {
+            externalScope.launch(dispatchers.io) {
+                refreshBootstrapData()
+                StytchApi.configureDFP(
+                    dfpProvider = dfpProvider,
+                    captchaProvider =
+                        CaptchaProviderImpl(
+                            it as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey,
+                        ),
+                    bootstrapData.dfpProtectedAuthEnabled,
+                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                )
+            }
+        }
+    }
+
+    internal suspend fun refreshBootstrapData() {
+        bootstrapData =
+            when (val res = StytchApi.getBootstrapData()) {
+                is StytchResult.Success -> res.value
+                else -> bootstrapData
             }
     }
 
@@ -568,4 +658,11 @@ public object StytchClient {
             tokenType = ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)),
             token = uri.getQueryParameter(QUERY_TOKEN),
         )
+
+    /**
+     * Retrieve the last used authentication method, if available
+     */
+    @JvmStatic
+    public val lastAuthMethodUsed: ConsumerAuthMethod?
+        get() = sessionStorage.lastAuthMethodUsed
 }

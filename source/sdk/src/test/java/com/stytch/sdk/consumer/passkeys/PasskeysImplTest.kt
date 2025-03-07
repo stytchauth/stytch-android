@@ -54,6 +54,7 @@ internal class PasskeysImplTest {
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)
         every { SessionAutoUpdater.startSessionUpdateJob(any(), any(), any()) } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         impl =
             spyk(
                 PasskeysImpl(

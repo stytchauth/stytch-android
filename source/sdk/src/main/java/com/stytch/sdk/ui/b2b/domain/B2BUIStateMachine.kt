@@ -6,11 +6,13 @@ import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.ResetEverything
+import com.stytch.sdk.ui.b2b.data.SSODiscoveryState
 import com.stytch.sdk.ui.b2b.data.SetActiveOrganization
 import com.stytch.sdk.ui.b2b.data.SetAuthFlowType
 import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
+import com.stytch.sdk.ui.b2b.data.SetDiscoveredSSOConnections
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetIsSearchingForOrganizationBySlug
 import com.stytch.sdk.ui.b2b.data.SetLoading
@@ -133,6 +135,21 @@ internal class B2BUIStateMachine(
                             authFlowType = authFlowType,
                             currentRoute = if (authFlowType == AuthFlowType.DISCOVERY) Routes.Main else null,
                             uiIncludedMfaMethods = uiIncludedMfaMethods,
+                        )
+                    }
+                }
+                on<SetDiscoveredSSOConnections> { action, state ->
+                    val connections = action.connections
+                    val route =
+                        if (connections.isEmpty()) {
+                            Routes.SSODiscoveryFallback
+                        } else {
+                            Routes.SSODiscoveryMenu
+                        }
+                    state.mutate {
+                        copy(
+                            currentRoute = route,
+                            ssoDiscoveryState = SSODiscoveryState(connections = connections),
                         )
                     }
                 }

@@ -6,6 +6,7 @@ import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
+import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.IAuthData
@@ -96,7 +97,7 @@ internal class ReturningUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             val expectedEvent = EventState.Authenticated(result)
-            viewModel.authenticate(mockk(relaxed = true), mockk(), this)
+            viewModel.authenticate(mockk(relaxed = true), mockk(), Locale.EN, this)
             coVerify(exactly = 1) { mockStytchClient.passwords.authenticate(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(eventFlow.await() == expectedEvent)
@@ -123,7 +124,7 @@ internal class ReturningUserScreenViewModelTest {
                 async {
                     viewModel.eventFlow.first()
                 }
-            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), this)
+            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), Locale.EN, this)
             coVerify { mockStytchClient.passwords.authenticate(any()) }
             coVerify { mockStytchClient.passwords.resetByEmailStart(any()) }
             val event = eventFlow.await()
@@ -148,7 +149,7 @@ internal class ReturningUserScreenViewModelTest {
                 StytchResult.Error(
                     StytchInternalError(message = "Testing error state"),
                 )
-            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), this)
+            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), Locale.EN, this)
             coVerify { mockStytchClient.passwords.authenticate(any()) }
             coVerify { mockStytchClient.passwords.resetByEmailStart(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
@@ -167,7 +168,7 @@ internal class ReturningUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.authenticate(any()) } returns result
-            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), this)
+            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), Locale.EN, this)
             coVerify { mockStytchClient.passwords.authenticate(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something happened in the API")
@@ -184,7 +185,7 @@ internal class ReturningUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.authenticate(any()) } returns result
-            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), this)
+            viewModel.authenticate(mockk(relaxed = true), PasswordOptions(), Locale.EN, this)
             coVerify { mockStytchClient.passwords.authenticate(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
@@ -200,7 +201,7 @@ internal class ReturningUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEML(mockk(relaxed = true), this)
+            viewModel.sendEML(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -220,7 +221,7 @@ internal class ReturningUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
-            viewModel.sendEML(mockk(relaxed = true), this)
+            viewModel.sendEML(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }
@@ -240,7 +241,7 @@ internal class ReturningUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            viewModel.sendEmailOTP(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -259,7 +260,7 @@ internal class ReturningUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
-            viewModel.sendEmailOTP(mockk(relaxed = true), this)
+            viewModel.sendEmailOTP(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }
@@ -274,7 +275,7 @@ internal class ReturningUserScreenViewModelTest {
                     viewModel.eventFlow.first()
                 }
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
-            viewModel.onForgotPasswordClicked(mockk(relaxed = true), this)
+            viewModel.onForgotPasswordClicked(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             val event = eventFlow.await()
             require(event is EventState.NavigationRequested)
@@ -294,7 +295,7 @@ internal class ReturningUserScreenViewModelTest {
                         }
                 }
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
-            viewModel.onForgotPasswordClicked(mockk(relaxed = true), this)
+            viewModel.onForgotPasswordClicked(mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
         }

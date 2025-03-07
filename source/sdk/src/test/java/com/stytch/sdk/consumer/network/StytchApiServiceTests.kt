@@ -339,6 +339,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = "000",
                     expirationMinutes = 60,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.loginOrCreateUserByOTPWithWhatsApp(parameters)
@@ -348,6 +349,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -360,6 +362,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = "000",
                     expirationMinutes = 60,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithWhatsAppPrimary(parameters)
@@ -369,6 +372,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -381,6 +385,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.OTP.WhatsApp(
                     phoneNumber = "000",
                     expirationMinutes = 60,
+                    locale = Locale.ES,
                 )
             requestIgnoringResponseException {
                 apiService.sendOTPWithWhatsAppSecondary(parameters)
@@ -390,6 +395,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "phone_number" to parameters.phoneNumber,
                         "expiration_minutes" to parameters.expirationMinutes,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -475,6 +481,7 @@ internal class StytchApiServiceTests {
                     password = "123asd",
                     sessionDurationMinutes = 60,
                     codeVerifier = "ver1",
+                    locale = Locale.PT_BR,
                 )
             requestIgnoringResponseException {
                 apiService.resetByEmail(parameters)
@@ -486,6 +493,7 @@ internal class StytchApiServiceTests {
                         "password" to parameters.password,
                         "session_duration_minutes" to parameters.sessionDurationMinutes,
                         "code_verifier" to parameters.codeVerifier,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -503,6 +511,7 @@ internal class StytchApiServiceTests {
                     resetPasswordRedirectUrl = "resetPasswordUrl",
                     resetPasswordExpirationMinutes = 23,
                     resetPasswordTemplateId = "resetPasswordTemplateId",
+                    locale = Locale.PT_BR,
                 )
             requestIgnoringResponseException {
                 apiService.resetByEmailStart(parameters)
@@ -517,6 +526,7 @@ internal class StytchApiServiceTests {
                         "login_expiration_minutes" to parameters.loginExpirationMinutes,
                         "reset_password_expiration_minutes" to parameters.resetPasswordExpirationMinutes,
                         "reset_password_template_id" to parameters.resetPasswordTemplateId,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }
@@ -529,6 +539,7 @@ internal class StytchApiServiceTests {
                 ConsumerRequests.Passwords.ResetBySessionRequest(
                     password = "my-password",
                     sessionDurationMinutes = 10,
+                    locale = Locale.EN,
                 )
             requestIgnoringResponseException {
                 apiService.resetBySession(parameters)
@@ -538,6 +549,7 @@ internal class StytchApiServiceTests {
                     mapOf(
                         "password" to parameters.password,
                         "session_duration_minutes" to parameters.sessionDurationMinutes,
+                        "locale" to parameters.locale?.jsonName,
                     ),
             )
         }

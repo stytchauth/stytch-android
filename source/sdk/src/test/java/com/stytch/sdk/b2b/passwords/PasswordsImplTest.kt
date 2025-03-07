@@ -75,6 +75,7 @@ internal class PasswordsImplTest {
         MockKAnnotations.init(this, true, true)
         every { mockSessionStorage.intermediateSessionToken } returns ""
         every { mockSessionStorage.intermediateSessionToken = any() } just runs
+        every { mockSessionStorage.lastAuthMethodUsed = any() } just runs
         every { mockPKCEPairManager.clearPKCECodePair() } just runs
         impl =
             PasswordsImpl(
@@ -126,7 +127,8 @@ internal class PasswordsImplTest {
         runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
-            coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) } returns
+                mockkResponse
             val response =
                 impl.resetByEmailStart(
                     Passwords.ResetByEmailStartParameters(
@@ -139,14 +141,15 @@ internal class PasswordsImplTest {
                     ),
                 )
             assert(response is StytchResult.Success)
-            coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) }
+            coVerify { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl resetByEmailStart with callback calls callback method`() {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
-        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any(), any()) } returns
+            mockkResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.resetByEmailStart(
             Passwords.ResetByEmailStartParameters(
@@ -219,16 +222,16 @@ internal class PasswordsImplTest {
     fun `PasswordsImpl resetBySession delegates to api`() =
         runBlocking {
             val mockkResponse = StytchResult.Success<SessionResetResponseData>(mockk(relaxed = true))
-            coEvery { mockApi.resetBySession(any(), any()) } returns mockkResponse
+            coEvery { mockApi.resetBySession(any(), any(), any()) } returns mockkResponse
             val response = impl.resetBySession(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockApi.resetBySession(any(), any()) }
+            coVerify { mockApi.resetBySession(any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl resetBySession with callback calls callback method`() {
         val mockkResponse = StytchResult.Success<SessionResetResponseData>(mockk(relaxed = true))
-        coEvery { mockApi.resetBySession(any(), any()) } returns mockkResponse
+        coEvery { mockApi.resetBySession(any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(SessionResetResponse) -> Unit>()
         impl.resetBySession(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
@@ -258,18 +261,19 @@ internal class PasswordsImplTest {
         runBlocking {
             every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
             val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
-            coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) } returns
+            coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns
                 mockkResponse
             val response = impl.discovery.resetByEmailStart(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) }
+            coVerify { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl DiscoveryImpl resetByEmailStart with callback calls callback method`() {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         val mockkResponse = StytchResult.Success<BasicData>(mockk(relaxed = true))
-        coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockDiscoveryApi.resetByEmailStart(any(), any(), any(), any(), any(), any(), any()) } returns
+            mockkResponse
         val mockCallback = spyk<(BaseResponse) -> Unit>()
         impl.discovery.resetByEmailStart(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
@@ -283,17 +287,17 @@ internal class PasswordsImplTest {
                 StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(
                     mockk(relaxed = true),
                 )
-            coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+            coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
             val response = impl.discovery.resetByEmail(mockk(relaxed = true))
             assert(response is StytchResult.Success)
-            coVerify { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) }
+            coVerify { mockDiscoveryApi.resetByEmail(any(), any(), any(), any(), any()) }
         }
 
     @Test
     fun `PasswordsImpl DiscoveryImpl resetByEmail with callback calls callback method`() {
         every { mockPKCEPairManager.getPKCECodePair() } returns PKCECodePair("", "")
         val mockkResponse = StytchResult.Success<B2BPasswordDiscoveryResetByEmailResponseData>(mockk(relaxed = true))
-        coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any()) } returns mockkResponse
+        coEvery { mockDiscoveryApi.resetByEmail(any(), any(), any(), any(), any()) } returns mockkResponse
         val mockCallback = spyk<(B2BPasswordDiscoveryResetByEmailResponse) -> Unit>()
         impl.discovery.resetByEmail(mockk(relaxed = true), mockCallback)
         verify { mockCallback.invoke(mockkResponse) }
