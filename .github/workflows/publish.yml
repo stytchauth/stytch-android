@@ -1,4 +1,4 @@
-name: Publish SDK
+name: Publish SDK (Manual)
 
 on:
   workflow_dispatch:
