@@ -204,3 +204,7 @@ public data object UserCanceled : StytchSDKError("The user canceled the OAuth fl
 public data object NoActivityProvided : StytchSDKError("You must supply a receiver activity before calling this method")
 
 public data object UnknownOAuthOrSSOError : StytchSDKError("The OAuth or SSO flow completed unexpectedly")
+
+public data object BiometricsAlreadyEnrolledError : StytchSDKError(
+    "There is already a biometric factor enrolled on this device. Fully authenticate with all factors and remove the existing registration before attempting to register again.",
+)
