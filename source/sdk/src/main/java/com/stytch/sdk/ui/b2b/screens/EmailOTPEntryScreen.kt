@@ -100,5 +100,6 @@ internal fun EmailOTPEntryScreen(
         onBack = null,
         onSubmit = viewModel::handleSubmit,
         onResend = viewModel::handleResend,
+        otpExpirationMinutes = 10,
     )
 }

@@ -30,7 +30,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val OTP_EXPIRATION_SECONDS = (2 * 60).toLong()
+private const val DEFAULT_OTP_EXIPRATION_MINUTES = 2
 private const val ONE_SECOND = 1000L
 
 @Composable
@@ -42,12 +42,13 @@ internal fun ResendableOTP(
     onSubmit: (String) -> Unit,
     onResend: () -> Unit,
     errorMessage: String? = null,
+    otpExpirationMinutes: Int = DEFAULT_OTP_EXIPRATION_MINUTES,
 ) {
     val theme = LocalStytchTheme.current
     val type = LocalStytchTypography.current
     var showResendDialog by remember { mutableStateOf(false) }
-    var countdownSeconds by remember { mutableLongStateOf(OTP_EXPIRATION_SECONDS) }
-    var expirationTimeFormatted by remember { mutableStateOf("2:00") }
+    var countdownSeconds by remember { mutableLongStateOf(otpExpirationMinutes * 60L) }
+    var expirationTimeFormatted by remember { mutableStateOf("$otpExpirationMinutes:00") }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         coroutineScope.launch {
@@ -96,7 +97,7 @@ internal fun ResendableOTP(
             acceptText = stringResource(id = R.string.send_code),
             onAcceptClick = {
                 onResend()
-                countdownSeconds = OTP_EXPIRATION_SECONDS
+                countdownSeconds = otpExpirationMinutes * 60L
                 showResendDialog = false
             },
         )
