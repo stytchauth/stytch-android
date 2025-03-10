@@ -1001,6 +1001,8 @@ public data class InternalOrganizationData(
     val organizationName: String,
     @Json(name = "organization_logo_url")
     val organizationLogoUrl: String?,
+    @Json(name = "organization_slug")
+    val organizationSlug: String,
     @Json(name = "sso_active_connections")
     val ssoActiveConnections: List<SSOActiveConnection>?,
     @Json(name = "sso_default_connection_id")
