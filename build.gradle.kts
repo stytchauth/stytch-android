@@ -84,6 +84,7 @@ tasks.register("runOnGitHub") {
         ":source:sdk:lint",
         ":source:sdk:ktlintCheck",
         ":source:sdk:testDebugUnitTest",
+        ":source:sdk:jacocoTestReport",
     )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"

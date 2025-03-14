@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinPluginCompose)
     alias(libs.plugins.serialization)
+    id("jacoco")
 }
 
 extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
@@ -41,8 +42,6 @@ android {
             isMinifyEnabled = false
             buildConfigField("Boolean", "DEBUG_MODE", "true")
             buildConfigField("String", "STYTCH_SDK_VERSION", "\"${project.extra["PUBLISH_VERSION"]}\"")
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
         }
     }
     compileOptions {
@@ -119,15 +118,6 @@ tasks.named<DokkaTaskPartial>("dokkaHtmlPartial").configure {
             }
             reportUndocumented.set(true)
         }
-        /*
-        // TODO: Switch to KTS files to make this a lot easier/more idiomatic
-        pluginsMapConfiguration.set([
-            "org.jetbrains.dokka.versioning.VersioningPlugin" : """{
-                "version": "$PUBLISH_VERSION",
-                "olderVersionsDir": "$projectDir/../../docs/docs/olderVersions/sdk"
-            }"""
-        ])
-         */
     }
 }
 
@@ -203,5 +193,29 @@ tasks.register("printVersion") {
     description = "Prints the version of the SDK. Used for autoreleasing the SDK from GitHub"
     doLast {
         println(project.extra["PUBLISH_VERSION"])
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+project.afterEvaluate {
+    tasks.register<JacocoReport>("jacocoTestReport") {
+        dependsOn(tasks.getByName("testDebugUnitTest"))
+        reports {
+            xml.required.set(true)
+        }
+        executionData(file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")))
+        val kotlinTree =
+            fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+                exclude(
+                    listOf(
+                        "**/network/models/**",
+                    ),
+                )
+            }.files
+        classDirectories.from(kotlinTree)
+        sourceDirectories.from(files(layout.projectDirectory.dir("src")))
     }
 }
