@@ -207,6 +207,7 @@ project.afterEvaluate {
             xml.required.set(true)
         }
         executionData(file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")))
+        println("JORDAN exec exists = ${file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")).exists()}")
         val kotlinTree =
             fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
                 exclude(
@@ -215,6 +216,7 @@ project.afterEvaluate {
                     ),
                 )
             }.files
+        println("JORDAN files length = ${kotlinTree.size}")
         classDirectories.from(kotlinTree)
         sourceDirectories.from(files(layout.projectDirectory.dir("src")))
     }
