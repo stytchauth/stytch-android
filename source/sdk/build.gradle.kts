@@ -200,24 +200,29 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
+tasks.register<JacocoReport>("jacocoTestReport")
+
 project.afterEvaluate {
-    tasks.register<JacocoReport>("jacocoTestReport") {
-        dependsOn(tasks.getByName("testDebugUnitTest"))
-        reports {
-            xml.required.set(true)
+    tasks.named<Test>("testDebugUnitTest").configure {
+        finalizedBy(tasks["jacocoTestReport"])
+        doLast {
+            tasks.named<JacocoReport>("jacocoTestReport") {
+                dependsOn(tasks.getByName("testDebugUnitTest"))
+                reports {
+                    xml.required.set(true)
+                }
+                executionData(file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")))
+                val kotlinTree =
+                    fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+                        exclude(
+                            listOf(
+                                "**/network/models/**",
+                            ),
+                        )
+                    }.files
+                classDirectories.from(kotlinTree)
+                sourceDirectories.from(files(layout.projectDirectory.dir("src")))
+            }
         }
-        executionData(file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")))
-        println("JORDAN exec exists = ${file(layout.buildDirectory.dir("jacoco/testDebugUnitTest.exec")).exists()}")
-        val kotlinTree =
-            fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
-                exclude(
-                    listOf(
-                        "**/network/models/**",
-                    ),
-                )
-            }.files
-        println("JORDAN files length = ${kotlinTree.size}")
-        classDirectories.from(kotlinTree)
-        sourceDirectories.from(files(layout.projectDirectory.dir("src")))
     }
 }
