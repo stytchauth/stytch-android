@@ -24,7 +24,7 @@ jobs:
       # => https://github.com/marketplace/actions/gradle-command
       - uses: gradle/gradle-build-action@v2.4.2
         with:
-          arguments: --info runOnGitHub
+          arguments: runOnGitHub
         env:
           GOOGLE_OAUTH_CLIENT_ID: 'abc123'
           PASSKEYS_DOMAIN: 'abc123'
