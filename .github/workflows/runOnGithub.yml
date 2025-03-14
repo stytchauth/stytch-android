@@ -28,3 +28,13 @@ jobs:
         env:
           GOOGLE_OAUTH_CLIENT_ID: 'abc123'
           PASSKEYS_DOMAIN: 'abc123'
+
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: |
+            ${{ github.workspace }}/source/sdk/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+          token: ${{ secrets.CODE_COVERAGE_TOKEN }}
+          update-comment: true
+          title: Code Coverage
