@@ -5,14 +5,15 @@ import com.stytch.sdk.b2b.network.models.OrganizationData
 
 internal fun OrganizationData.toInternalOrganizationData(): InternalOrganizationData =
     InternalOrganizationData(
-        organizationId,
-        organizationName,
-        organizationLogoUrl,
-        ssoActiveConnections,
-        ssoDefaultConnectionId,
-        emailAllowedDomains,
-        emailJitProvisioning,
-        emailInvites,
-        authMethods,
-        allowedAuthMethods,
+        organizationId = organizationId,
+        organizationName = organizationName,
+        organizationLogoUrl = organizationLogoUrl,
+        organizationSlug = organizationSlug,
+        ssoActiveConnections = ssoActiveConnections,
+        ssoDefaultConnectionId = ssoDefaultConnectionId,
+        emailAllowedDomains = emailAllowedDomains,
+        emailJitProvisioning = emailJitProvisioning,
+        emailInvites = emailInvites,
+        authMethods = authMethods,
+        allowedAuthMethods = allowedAuthMethods,
     )

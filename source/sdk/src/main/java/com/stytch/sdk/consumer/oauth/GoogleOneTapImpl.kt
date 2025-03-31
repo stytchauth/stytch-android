@@ -105,7 +105,7 @@ internal class GoogleOneTapImpl(
                         nonce = nonce,
                         sessionDurationMinutes = parameters.sessionDurationMinutes,
                     ).apply {
-                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OAUTH
+                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.GOOGLE_ONE_TAP
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
             }
