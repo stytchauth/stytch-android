@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -36,6 +37,7 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
+    @JacocoExcludeGenerated
     public data class AuthParameters
         @JvmOverloads
         constructor(
@@ -114,6 +116,7 @@ public interface Passwords {
      * default email template. The template must be a template using our built-in customizations or a custom HTML email
      * for Password Reset.
      */
+    @JacocoExcludeGenerated
     public data class ResetByEmailStartParameters
         @JvmOverloads
         constructor(
@@ -162,6 +165,7 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
+    @JacocoExcludeGenerated
     public data class ResetByEmailParameters
         @JvmOverloads
         constructor(
@@ -215,6 +219,7 @@ public interface Passwords {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
+    @JacocoExcludeGenerated
     public data class ResetByExistingPasswordParameters
         @JvmOverloads
         constructor(
@@ -268,6 +273,7 @@ public interface Passwords {
      * @property organizationId is the member's organization ID
      * @property password is the new password to set
      */
+    @JacocoExcludeGenerated
     public data class ResetBySessionParameters(
         val organizationId: String,
         val password: String,
@@ -313,6 +319,7 @@ public interface Passwords {
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
+    @JacocoExcludeGenerated
     public data class StrengthCheckParameters
         @JvmOverloads
         constructor(
@@ -375,6 +382,7 @@ public interface Passwords {
          * default email template will be sent. If providing a template ID, it must be either a template using
          * Stytch's customizations, or a Passwords reset custom HTML template.
          */
+        @JacocoExcludeGenerated
         public data class ResetByEmailStartParameters(
             val emailAddress: String,
             val discoveryRedirectUrl: String? = null,
@@ -421,6 +429,7 @@ public interface Passwords {
          * @property passwordResetToken - The token to authenticate.
          * @property password - The new password for the Member.
          */
+        @JacocoExcludeGenerated
         public data class ResetByEmailParameters(
             val passwordResetToken: String,
             val password: String,
@@ -461,6 +470,7 @@ public interface Passwords {
          * @property emailAddress - The email attempting to login.
          * @property password - The password for the email address.
          */
+        @JacocoExcludeGenerated
         public data class AuthenticateParameters(
             val emailAddress: String,
             val password: String,

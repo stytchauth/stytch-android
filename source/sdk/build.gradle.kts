@@ -216,7 +216,31 @@ project.afterEvaluate {
                     fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
                         exclude(
                             listOf(
+                                // ignore internal network request/response models
                                 "**/network/models/**",
+                                // ignore common ui components
+                                "**/ui/**/components/**",
+                                "**/ui/**/data/**",
+                                "**/ui/**/theme/**",
+                                "**/ui/**/utils/**",
+                                "**/ui/**/screens/**",
+                                "**/ui/**/navigation/**",
+                                "**/ui/**/usecases/**",
+                                // ignore b2b specific UI components and helpers/utils/impls
+                                "**/ui/b2b/B2BAuthenticationActivity*",
+                                "**/ui/b2b/B2BAuthenticationViewModel*",
+                                "**/ui/b2b/BaseViewModel*",
+                                "**/ui/b2b/StytchB2BAuth*",
+                                "**/ui/b2b/StytchB2BAuthenticationApp*",
+                                "**/ui/b2b/StytchB2BAuthenticationContract*",
+                                "**/ui/b2b/domain/B2BUIStateMachine*",
+                                // ignore b2c specific UI components and helpers/utils/impls
+                                "**/ui/b2c/StytchAuthenticationApp*",
+                                "**/ui/b2c/AuthenticationActivity*",
+                                "**/ui/b2c/AuthenticationViewModel*",
+                                "**/ui/b2c/StytchAuth*",
+                                "**/ui/b2c/StytchAuthenticationApp*",
+                                "**/ui/b2c/StytchAuthenticationContract*",
                             ),
                         )
                     }.files

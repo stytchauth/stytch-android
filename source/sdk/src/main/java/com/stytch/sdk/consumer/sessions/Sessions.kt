@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.sessions
 
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchObjectInfo
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.network.models.SessionData
@@ -43,6 +44,7 @@ public interface Sessions {
      * Data class used for wrapping parameters used with Sessions authentication
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParams
         @JvmOverloads
         constructor(
@@ -53,6 +55,7 @@ public interface Sessions {
      * Data class used for wrapping parameters used with Sessions revocation
      * @property forceClear if true, we will clear the local session regardless of any network errors
      */
+    @JacocoExcludeGenerated
     public data class RevokeParams
         @JvmOverloads
         constructor(

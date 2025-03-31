@@ -4,6 +4,7 @@ import com.stytch.sdk.b2b.TOTPAuthenticateResponse
 import com.stytch.sdk.b2b.TOTPCreateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -18,6 +19,7 @@ public interface TOTP {
      * within this time frame the TOTP will be unusable. Defaults to 60 (1 hour) with a minimum of 5 and a maximum of
      * 1440.
      */
+    @JacocoExcludeGenerated
     public data class CreateParameters
         @JvmOverloads
         constructor(
@@ -61,6 +63,7 @@ public interface TOTP {
      * @property setDefaultMFAMethod If set to true, sets TOTP as the member's default MFA method.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(

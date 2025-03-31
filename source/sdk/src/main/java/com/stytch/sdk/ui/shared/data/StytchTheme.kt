@@ -3,6 +3,7 @@ package com.stytch.sdk.ui.shared.data
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import kotlinx.parcelize.Parcelize
 
 private val CHARCOAL: Int = Color(0xFF19303D).toArgb()
@@ -48,6 +49,7 @@ private val INK: Int = Color(0xFFFF354D5A).toArgb()
  * @param hideHeaderText a Boolean that determines whether or not to show the header text on the main UI screen.
  */
 @Parcelize
+@JacocoExcludeGenerated
 public data class StytchTheme
     @JvmOverloads
     constructor(

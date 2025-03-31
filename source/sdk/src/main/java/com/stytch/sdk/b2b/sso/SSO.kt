@@ -15,6 +15,7 @@ import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -44,6 +45,7 @@ public interface SSO {
      * finish the login. The URL must be configured as a Sign Up URL in the Redirect URL page. If the field is not
      * specified, the default Sign Up URL will be used.
      */
+    @JacocoExcludeGenerated
     public data class StartParams
         @JvmOverloads
         constructor(
@@ -74,6 +76,7 @@ public interface SSO {
      * @property customScopes Any additional scopes to be requested from the identity provider
      * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
      */
+    @JacocoExcludeGenerated
     public data class GetTokenForProviderParams
         @JvmOverloads
         constructor(
@@ -101,6 +104,7 @@ public interface SSO {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParams
         @JvmOverloads
         constructor(
@@ -205,6 +209,7 @@ public interface SSO {
          * Data class used for wrapping the parameters for a SAML creation request
          * @property displayName A human-readable display name for the connection.
          */
+        @JacocoExcludeGenerated
         public data class CreateParameters
             @JvmOverloads
             constructor(
@@ -256,6 +261,7 @@ public interface SSO {
          * implicit role assignments, you must add a "groups" key to your SAML connection's attribute_mapping. Make sure
          * that your IdP is configured to correctly send the group information.
          */
+        @JacocoExcludeGenerated
         public data class UpdateParameters
             @JvmOverloads
             constructor(
@@ -300,6 +306,7 @@ public interface SSO {
          * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
          * @property metadataUrl A URL that points to the IdP metadata. This will be provided by the IdP.
          */
+        @JacocoExcludeGenerated
         public data class UpdateByURLParameters(
             val connectionId: String,
             val metadataUrl: String,
@@ -338,6 +345,7 @@ public interface SSO {
          * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
          * @property certificateId The ID of the certificate to be deleted.
          */
+        @JacocoExcludeGenerated
         public data class DeleteVerificationCertificateParameters(
             val connectionId: String,
             val certificateId: String,
@@ -386,6 +394,7 @@ public interface SSO {
          * Data class used for wrapping the parameters for an OIDC creation request
          * @property displayName A human-readable display name for the connection.
          */
+        @JacocoExcludeGenerated
         public data class CreateParameters
             @JvmOverloads
             constructor(
@@ -436,6 +445,7 @@ public interface SSO {
          * @property jwksUrl The location of the IdP's JSON Web Key Set, used to verify credentials issued by the IdP.
          * This will be provided by the IdP.
          */
+        @JacocoExcludeGenerated
         public data class UpdateParameters
             @JvmOverloads
             constructor(

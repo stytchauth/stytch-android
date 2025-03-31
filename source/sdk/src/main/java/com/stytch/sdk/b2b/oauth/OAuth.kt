@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -40,6 +41,7 @@ public interface OAuth {
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth
          * provider
          */
+        @JacocoExcludeGenerated
         public data class StartParameters
             @JvmOverloads
             constructor(
@@ -64,6 +66,7 @@ public interface OAuth {
          */
         public val discovery: ProviderDiscovery
 
+        @JacocoExcludeGenerated
         public data class GetTokenForProviderParams
             @JvmOverloads
             constructor(
@@ -105,6 +108,7 @@ public interface OAuth {
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth
          * provider
          */
+        @JacocoExcludeGenerated
         public data class DiscoveryStartParameters
             @JvmOverloads
             constructor(
@@ -135,6 +139,7 @@ public interface OAuth {
          * @property customScopes Any additional scopes to be requested from the identity provider
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
          */
+        @JacocoExcludeGenerated
         public data class GetTokenForProviderParams
             @JvmOverloads
             constructor(
@@ -163,6 +168,7 @@ public interface OAuth {
          * A data class wrapping the parameters necessary to authenticate an OAuth Discovery flow
          * @property discoveryOauthToken The oauth token used to finish the discovery flow
          */
+        @JacocoExcludeGenerated
         public data class DiscoveryAuthenticateParameters(
             val discoveryOauthToken: String,
         )
@@ -231,6 +237,7 @@ public interface OAuth {
      * secondary authentication requirement.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(
