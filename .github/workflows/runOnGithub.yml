@@ -37,4 +37,6 @@ jobs:
             ${{ github.workspace }}/source/sdk/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
           token: ${{ secrets.CODE_COVERAGE_TOKEN }}
           update-comment: true
+          min-coverage-overall: 70
+          min-coverage-changed-files: 80
           title: Code Coverage
