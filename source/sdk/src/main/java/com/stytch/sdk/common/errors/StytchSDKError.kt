@@ -2,6 +2,8 @@
 
 package com.stytch.sdk.common.errors
 
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+
 /**
  * A base class representing SDK specific errors or exceptions that may occur. This class should not be used directly,
  * rather we should be creating implementations for each of the known/expected errors we return.
@@ -16,6 +18,7 @@ public sealed class StytchSDKError(
  * Thrown when you try to use the SDK before it has been configured
  * @property clientName the client type that must be configured (either `StytchClient` or `StytchB2BClient`)
  */
+@JacocoExcludeGenerated
 public data class StytchSDKNotConfiguredError(
     val clientName: String,
 ) : StytchSDKError(
@@ -27,6 +30,7 @@ public data class StytchSDKNotConfiguredError(
  * @property exception an optional [Throwable] that caused this error to occur
  * @property message a string describing what went wrong
  */
+@JacocoExcludeGenerated
 public data class StytchInternalError(
     public override val exception: Throwable? = null,
     public override val message: String = "An internal error has occurred. Please contact Stytch if this occurs.",
@@ -39,6 +43,7 @@ public data class StytchInternalError(
  * Thrown when we couldn't find a code verifier on device
  * @property exception an optional [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public data class StytchMissingPKCEError(
     public override val exception: Throwable?,
 ) : StytchSDKError(
@@ -50,6 +55,7 @@ public data class StytchMissingPKCEError(
  * Thrown when we couldn't create a code challenge on device
  * @property exception the [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public data class StytchFailedToCreateCodeChallengeError(
     public override val exception: Throwable,
 ) : StytchSDKError(

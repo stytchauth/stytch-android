@@ -1,5 +1,6 @@
 package com.stytch.sdk.common
 
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.errors.StytchDeeplinkError
 
 /**
@@ -10,7 +11,10 @@ public sealed interface DeeplinkHandledStatus {
      * Indicates that a deeplink was successfully parsed from the deeplink.
      * @property response A [DeeplinkResponse] representing either the authenticated response or an error.
      */
-    public data class Handled(val response: DeeplinkResponse) : DeeplinkHandledStatus
+    @JacocoExcludeGenerated
+    public data class Handled(
+        val response: DeeplinkResponse,
+    ) : DeeplinkHandledStatus
 
     /**
      * Indicates that a deeplink was not handled by the Stytch client, either because a token could not be parsed from
@@ -21,7 +25,10 @@ public sealed interface DeeplinkHandledStatus {
      *
      * @property reason A StytchDeeplinkError explaining why the deeplink was not handled
      */
-    public data class NotHandled(val reason: StytchDeeplinkError) : DeeplinkHandledStatus
+    @JacocoExcludeGenerated
+    public data class NotHandled(
+        val reason: StytchDeeplinkError,
+    ) : DeeplinkHandledStatus
 
     /**
      * Indicates that this was a supported Stytch deeplink, but there is something more your application needs to do
@@ -33,5 +40,9 @@ public sealed interface DeeplinkHandledStatus {
      * @property type The [TokenType] that was extracted from the deeplink
      * @property token The token that was extracted from the deeplink
      */
-    public data class ManualHandlingRequired(val type: TokenType, val token: String) : DeeplinkHandledStatus
+    @JacocoExcludeGenerated
+    public data class ManualHandlingRequired(
+        val type: TokenType,
+        val token: String,
+    ) : DeeplinkHandledStatus
 }

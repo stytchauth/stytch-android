@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.crypto
 
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
@@ -16,6 +17,7 @@ public interface CryptoWallet {
      * @property cryptoWalletAddress The address to authenticate.
      * @property cryptoWalletType The type of wallet to authenticate. Currently `ethereum` and `solana` are supported.
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateStartParameters(
         val cryptoWalletAddress: String,
         val cryptoWalletType: CryptoWalletType,
@@ -28,6 +30,7 @@ public interface CryptoWallet {
      * @property signature The signature from the message.
      * @property sessionDurationMinutes the length of time in minutes that a session should be minted for
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(

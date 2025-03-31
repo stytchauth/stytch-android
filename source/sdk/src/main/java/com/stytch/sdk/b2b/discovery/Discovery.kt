@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -54,6 +55,7 @@ public interface Discovery {
      * @property organizationId is the organization ID of the desired organization
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class SessionExchangeParameters
         @JvmOverloads
         constructor(
@@ -129,6 +131,7 @@ public interface Discovery {
      * @property allowedAuthMethods An array of allowed authentication methods. This list is enforced when auth_methods
      * is set to RESTRICTED. The list's accepted values are: sso , magic_link , and password .
      */
+    @JacocoExcludeGenerated
     public data class CreateOrganizationParameters
         @JvmOverloads
         constructor(

@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import java.util.concurrent.CompletableFuture
@@ -124,6 +125,7 @@ public interface OAuth {
          * @property autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
+        @JacocoExcludeGenerated
         public data class StartParameters
             @JvmOverloads
             constructor(
@@ -196,6 +198,7 @@ public interface OAuth {
          * @property customScopes Any additional scopes to be requested from the identity provider
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
          */
+        @JacocoExcludeGenerated
         public data class StartParameters
             @JvmOverloads
             constructor(
@@ -212,6 +215,7 @@ public interface OAuth {
          * @property token is the token returned from the provider
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
+        @JacocoExcludeGenerated
         public data class AuthenticateParameters
             @JvmOverloads
             constructor(
@@ -239,6 +243,7 @@ public interface OAuth {
          * @property customScopes Any additional scopes to be requested from the identity provider
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
          */
+        @JacocoExcludeGenerated
         public data class GetTokenForProviderParams
             @JvmOverloads
             constructor(

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -13,6 +14,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
+@JacocoExcludeGenerated
 public data class SessionOptions
     @JvmOverloads
     constructor(

@@ -22,6 +22,7 @@ import com.stytch.sdk.b2b.network.models.OrganizationData
 import com.stytch.sdk.b2b.network.models.SearchOperator
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
 import com.stytch.sdk.common.StytchObjectInfo
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.CompletableFuture
 
@@ -93,6 +94,7 @@ public interface Organization {
      * @property rbacEmailImplicitRoleAssignments An array of implicit role assignments granted to members in this
      * organization whose emails match the domain.
      */
+    @JacocoExcludeGenerated
     public data class UpdateOrganizationParameters
         @JvmOverloads
         constructor(
@@ -286,6 +288,7 @@ public interface Organization {
          * that Member authenticates and becomes active. If false, new Members will be created with status active.
          * @property roles Roles to explicitly assign to this Member.
          */
+        @JacocoExcludeGenerated
         public data class CreateMemberParameters
             @JvmOverloads
             constructor(
@@ -349,6 +352,7 @@ public interface Organization {
          * 1. Which MFA method the Member is prompted to use when logging in
          * 2. Whether An SMS will be sent automatically after completing the first leg of authentication
          */
+        @JacocoExcludeGenerated
         public data class UpdateMemberParameters
             @JvmOverloads
             constructor(
@@ -410,6 +414,7 @@ public interface Organization {
          * Only an operator is required. If you include no operands, no filtering will be applied.
          * If you include no query object, it will return all Members with no filtering applied.
          */
+        @JacocoExcludeGenerated
         public data class SearchParameters
             @JvmOverloads
             constructor(
@@ -426,6 +431,7 @@ public interface Organization {
          * @property operands An array of operand objects that contains all of the filters and values to apply to your
          * search query.
          */
+        @JacocoExcludeGenerated
         public data class SearchQuery(
             val operator: SearchOperator,
             val operands: List<SearchQueryOperand>,
@@ -446,6 +452,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_ids
              */
+            @JacocoExcludeGenerated
             public data class MemberIds(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -456,6 +463,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_emails
              */
+            @JacocoExcludeGenerated
             public data class MemberEmails(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -466,6 +474,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_email_fuzzy
              */
+            @JacocoExcludeGenerated
             public data class MemberEmailFuzzy(
                 val value: String,
             ) : SearchQueryOperand(
@@ -476,6 +485,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_is_breakglass
              */
+            @JacocoExcludeGenerated
             public data class MemberIsBreakingGlass(
                 val value: Boolean,
             ) : SearchQueryOperand(
@@ -486,6 +496,7 @@ public interface Organization {
             /**
              * An operand for searching based on statuses
              */
+            @JacocoExcludeGenerated
             public data class Statuses(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -496,6 +507,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_mfa_phone_numbers
              */
+            @JacocoExcludeGenerated
             public data class MemberMFAPhoneNumbers(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -506,6 +518,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_mfa_phone_number_fuzzy
              */
+            @JacocoExcludeGenerated
             public data class MemberMFAPhoneNumberFuzzy(
                 val value: String,
             ) : SearchQueryOperand(
@@ -516,6 +529,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_password_exists
              */
+            @JacocoExcludeGenerated
             public data class MemberPasswordExists(
                 val value: Boolean,
             ) : SearchQueryOperand(
@@ -526,6 +540,7 @@ public interface Organization {
             /**
              * An operand for searching based on member_roles
              */
+            @JacocoExcludeGenerated
             public data class MemberRoles(
                 val value: List<String>,
             ) : SearchQueryOperand(
@@ -536,6 +551,7 @@ public interface Organization {
             /**
              * An operand for searching based on custom filters
              */
+            @JacocoExcludeGenerated
             public data class Custom(
                 val name: String,
                 val value: Any,

@@ -9,6 +9,7 @@ import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
 import com.stytch.sdk.b2b.SCIMRotateStartResponse
 import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
 import com.stytch.sdk.b2b.network.models.SCIMGroupImplicitRoleAssignment
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -20,6 +21,7 @@ public interface SCIM {
      * @property displayName A human-readable display name for the connection.
      * @property identityProvider The identity provider of this connection.
      */
+    @JacocoExcludeGenerated
     public data class CreateConnectionParameters(
         val displayName: String? = null,
         val identityProvider: String? = null,
@@ -34,6 +36,7 @@ public interface SCIM {
      * organization who are created via this SCIM connection and belong to the specified group. Before adding any group
      * implicit role assignments, you must first provision groups from your IdP into Stytch
      */
+    @JacocoExcludeGenerated
     public data class UpdateConnectionParameters(
         val connectionId: String,
         val displayName: String? = null,
@@ -46,6 +49,7 @@ public interface SCIM {
      * @property limit The maximum number of groups that should be returned by the API.
      * @property cursor The cursor to use to indicate where to start group results.
      */
+    @JacocoExcludeGenerated
     public data class GetConnectionGroupsParameters(
         val limit: Int? = null,
         val cursor: String? = null,

@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.passkeys
 
 import android.app.Activity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
@@ -17,6 +18,7 @@ public interface Passkeys {
      * @property activity an activity context for launching the native Passkeys UI
      * @property domain the domain of the Passkey registration. Do not include the protocol
      */
+    @JacocoExcludeGenerated
     public data class RegisterParameters(
         val activity: Activity,
         val domain: String,
@@ -28,6 +30,7 @@ public interface Passkeys {
      * @property domain the domain of the Passkey registration. Do not include the protocol
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(
@@ -41,6 +44,7 @@ public interface Passkeys {
      * @property id the id of a Passkey registration
      * @property name the name for a Passkey
      */
+    @JacocoExcludeGenerated
     public data class UpdateParameters(
         val id: String,
         val name: String,

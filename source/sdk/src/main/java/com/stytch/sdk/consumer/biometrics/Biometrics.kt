@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.biometrics
 
 import androidx.fragment.app.FragmentActivity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 import java.util.concurrent.CompletableFuture
 
@@ -21,6 +22,7 @@ public interface Biometrics {
      * @property allowDeviceCredentials opts-in to allowing the use of non-biometric device credentials (PIN, Pattern)
      * as a fallback (on Android versions greater than Q)
      */
+    @JacocoExcludeGenerated
     public data class RegisterParameters
         @JvmOverloads
         constructor(
@@ -38,6 +40,7 @@ public interface Biometrics {
      * @property promptData is an optional biometric prompt configuration. If one is not provided a default will be
      * created
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(
@@ -52,6 +55,7 @@ public interface Biometrics {
      * @property subTitle The subtitle to be displayed in the Biometric Prompt
      * @property negativeButtonText "Cancel" button text to display, if device credentials are disallowed
      */
+    @JacocoExcludeGenerated
     public data class PromptData(
         val title: String,
         val subTitle: String,

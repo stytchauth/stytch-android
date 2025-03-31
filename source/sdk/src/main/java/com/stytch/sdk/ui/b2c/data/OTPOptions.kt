@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.otp.OTP
 import kotlinx.parcelize.Parcelize
@@ -18,6 +19,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Keep
 @JsonClass(generateAdapter = true)
+@JacocoExcludeGenerated
 public data class OTPOptions
     @JvmOverloads
     constructor(
