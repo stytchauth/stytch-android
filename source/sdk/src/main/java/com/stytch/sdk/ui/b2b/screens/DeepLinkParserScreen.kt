@@ -2,7 +2,7 @@ package com.stytch.sdk.ui.b2b.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.B2BRedirectType
 import com.stytch.sdk.b2b.B2BTokenType
@@ -60,10 +60,10 @@ internal class DeepLinkParserScreenViewModel(
 
 @Composable
 internal fun DeepLinkParserScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<DeepLinkParserScreenViewModel>,
     viewModel: DeepLinkParserScreenViewModel = createViewModel(DeepLinkParserScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val deepLinkTokenPair = state.value.deeplinkTokenPair
     LaunchedEffect(deepLinkTokenPair) {
         deepLinkTokenPair?.let {

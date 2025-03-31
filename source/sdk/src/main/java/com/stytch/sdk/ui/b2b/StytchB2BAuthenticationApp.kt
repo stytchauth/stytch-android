@@ -14,7 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,14 +60,16 @@ import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
     modifier: Modifier = Modifier,
-    state: State<B2BUIState>,
+    stateFlow: StateFlow<B2BUIState>,
     dispatch: Dispatch,
     createViewModel: CreateViewModel<ViewModel>,
 ) {
+    val state = stateFlow.collectAsState()
     val navController = rememberNavController()
     val bootstrapData = LocalStytchBootstrapData.current
     val theme = LocalStytchTheme.current
@@ -136,49 +138,46 @@ internal fun StytchB2BAuthenticationApp(
                         }
                     }
                     composable<Routes.DeeplinkParser> {
-                        DeepLinkParserScreen(state = state, createViewModel = ::createViewModelHelper)
+                        DeepLinkParserScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.Discovery> {
-                        DiscoveryScreen(state = state, createViewModel = ::createViewModelHelper)
+                        DiscoveryScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.EmailConfirmation> {
                         EmailConfirmationScreen(
-                            state = state,
                             route = Routes.EmailConfirmation,
                             createViewModel = ::createViewModelHelper,
                         )
                     }
                     composable<Routes.Error> {
-                        ErrorScreen(state = state, createViewModel = ::createViewModelHelper)
+                        ErrorScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.Main> {
-                        MainScreen(state = state, createViewModel = ::createViewModelHelper)
+                        MainScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.MFAEnrollmentSelection> {
                         MFAEnrollmentSelectionScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.PasswordAuthenticate> {
-                        PasswordAuthenticateScreen(state = state, createViewModel = ::createViewModelHelper)
+                        PasswordAuthenticateScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.PasswordForgot> {
-                        PasswordForgotScreen(state = state, createViewModel = ::createViewModelHelper)
+                        PasswordForgotScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.PasswordReset> {
-                        PasswordResetScreen(state = state, createViewModel = ::createViewModelHelper)
+                        PasswordResetScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.PasswordResetVerifyConfirmation> {
                         EmailConfirmationScreen(
-                            state = state,
                             route = Routes.PasswordResetVerifyConfirmation,
                             createViewModel = ::createViewModelHelper,
                         )
                     }
                     composable<Routes.PasswordSetNew> {
-                        PasswordSetNewScreen(state = state, createViewModel = ::createViewModelHelper)
+                        PasswordSetNewScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.PasswordSetNewConfirmation> {
                         EmailConfirmationScreen(
-                            state = state,
                             route = Routes.PasswordSetNewConfirmation,
                             createViewModel = ::createViewModelHelper,
                         )
@@ -187,13 +186,13 @@ internal fun StytchB2BAuthenticationApp(
                         RecoveryCodesEntryScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.RecoveryCodeSave> {
-                        RecoveryCodesSaveScreen(state = state, createViewModel = ::createViewModelHelper)
+                        RecoveryCodesSaveScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SMSOTPEnrollment> {
-                        SMSOTPEnrollmentScreen(state = state, createViewModel = ::createViewModelHelper)
+                        SMSOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SMSOTPEntry> {
-                        SMSOTPEntryScreen(state = state, createViewModel = ::createViewModelHelper)
+                        SMSOTPEntryScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.Success> {
                         SuccessScreen()
@@ -211,13 +210,13 @@ internal fun StytchB2BAuthenticationApp(
                         EmailOTPEntryScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SSODiscoveryEmail> {
-                        SSODiscoveryEmailScreen(state = state, createViewModel = ::createViewModelHelper)
+                        SSODiscoveryEmailScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SSODiscoveryFallback> {
                         SSODiscoveryFallbackScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SSODiscoveryMenu> {
-                        SSODiscoveryMenuScreen(state = state, createViewModel = ::createViewModelHelper)
+                        SSODiscoveryMenuScreen(createViewModel = ::createViewModelHelper)
                     }
                 }
                 state.value.errorToastText?.let {

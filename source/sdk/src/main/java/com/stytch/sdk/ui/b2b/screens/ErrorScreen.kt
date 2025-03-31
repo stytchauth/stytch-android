@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
+import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -33,20 +34,29 @@ internal class ErrorScreenViewModel(
 
 @Composable
 internal fun ErrorScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<ErrorScreenViewModel>,
     viewModel: ErrorScreenViewModel = createViewModel(ErrorScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val b2bError = state.value.b2BErrorType ?: return
     val orgName = state.value.activeOrganization?.organizationName ?: "the organization"
+    ErrorScreenComposable(b2bError = b2bError, orgName = orgName, dispatch = viewModel::dispatch)
+}
+
+@Composable
+internal fun ErrorScreenComposable(
+    b2bError: B2BErrorType,
+    orgName: String,
+    dispatch: Dispatch,
+) {
+    // Only show a back button if it's _not_ organization not found, as all others are potentially user-recoverable
     val hasBackButton = !listOf(B2BErrorType.Organization, B2BErrorType.NoAuthenticationMethodsFound).contains(b2bError)
     BackHandler(enabled = hasBackButton) {
-        viewModel.dispatch(ResetEverything)
+        dispatch(ResetEverything)
     }
     Column {
-        // Only show a back button if it's _not_ organization not found, as all others are potentially user-recoverable
         if (hasBackButton) {
-            BackButton { viewModel.dispatch(ResetEverything) }
+            BackButton { dispatch(ResetEverything) }
         }
         Column(
             modifier = Modifier.fillMaxSize(),

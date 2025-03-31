@@ -25,7 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,6 +56,7 @@ import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
+import com.stytch.sdk.ui.shared.data.EmailState
 import com.stytch.sdk.ui.shared.theme.LocalStytchB2BProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
@@ -109,10 +110,10 @@ internal class DiscoveryScreenViewModel(
 
 @Composable
 internal fun DiscoveryScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<DiscoveryScreenViewModel>,
     viewModel: DiscoveryScreenViewModel = createViewModel(DiscoveryScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val config = LocalStytchB2BProductConfig.current
     val theme = LocalStytchTheme.current
     val shouldDirectLoginConfigEnabled = config.directLoginForSingleMembership?.status == true
@@ -177,7 +178,7 @@ internal fun DiscoveryScreen(
 
         if (state.value.discoveredOrganizations.isNullOrEmpty()) {
             return NoOrganizationsDiscovered(
-                state = state,
+                emailState = state.value.emailState,
                 createOrganzationsEnabled = createOrganzationsEnabled,
                 onCreateOrganization = viewModel::createOrganization,
                 isCreatingOrganization = isCreatingState.value,
@@ -256,7 +257,7 @@ internal fun LoadingView(color: Color) {
 
 @Composable
 private fun NoOrganizationsDiscovered(
-    state: State<B2BUIState>,
+    emailState: EmailState,
     createOrganzationsEnabled: Boolean,
     onCreateOrganization: () -> Unit,
     isCreatingOrganization: Boolean,
@@ -281,7 +282,7 @@ private fun NoOrganizationsDiscovered(
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
             text =
-                "${state.value.emailState.emailAddress} does not have an account. Think this is a mistake? " +
+                "${emailState.emailAddress} does not have an account. Think this is a mistake? " +
                     "Try a different email address, or contact your admin.",
         )
         StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
@@ -290,7 +291,7 @@ private fun NoOrganizationsDiscovered(
 
     PageTitle(
         textAlign = TextAlign.Left,
-        text = "${state.value.emailState.emailAddress} does not belong to any organizations.",
+        text = "${emailState.emailAddress} does not belong to any organizations.",
     )
     BodyText(text = "Make sure your email address is correct. Otherwise, you might need to be invited by your admin.")
     StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")

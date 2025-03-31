@@ -3,7 +3,7 @@ package com.stytch.sdk.ui.b2b.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
@@ -32,10 +32,10 @@ internal class PasswordSetNewScreenViewModel(
 
 @Composable
 internal fun PasswordSetNewScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<PasswordSetNewScreenViewModel>,
     viewModel: PasswordSetNewScreenViewModel = createViewModel(PasswordSetNewScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val theme = LocalStytchTheme.current
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)

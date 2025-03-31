@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +58,10 @@ internal class RecoveryCodesSaveScreenViewModel(
 
 @Composable
 internal fun RecoveryCodesSaveScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<RecoveryCodesSaveScreenViewModel>,
     viewModel: RecoveryCodesSaveScreenViewModel = createViewModel(RecoveryCodesSaveScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val theme = LocalStytchTheme.current
     val clipboardManager = LocalClipboardManager.current
     val backupCodes =

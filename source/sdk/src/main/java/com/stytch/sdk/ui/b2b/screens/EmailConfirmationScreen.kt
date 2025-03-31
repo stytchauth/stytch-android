@@ -2,7 +2,7 @@ package com.stytch.sdk.ui.b2b.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -38,11 +38,11 @@ internal class EmailConfirmationScreenViewModel(
 
 @Composable
 internal fun EmailConfirmationScreen(
-    state: State<B2BUIState>,
     route: Route,
     createViewModel: CreateViewModel<EmailConfirmationScreenViewModel>,
     viewModel: EmailConfirmationScreenViewModel = createViewModel(EmailConfirmationScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val formattedEmailAddress =
         AnnotatedString(
             text = state.value.emailState.emailAddress,

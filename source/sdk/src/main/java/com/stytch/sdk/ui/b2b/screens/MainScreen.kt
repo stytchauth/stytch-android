@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -27,11 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import coil3.compose.AsyncImage
 import com.stytch.sdk.R
+import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
+import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.b2b.network.models.SSOActiveConnection
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
+import com.stytch.sdk.ui.b2b.data.B2BOAuthProviderConfig
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviders
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -64,6 +67,8 @@ import com.stytch.sdk.ui.shared.components.EmailEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.SocialLoginButton
 import com.stytch.sdk.ui.shared.components.StytchTextButton
+import com.stytch.sdk.ui.shared.data.EmailState
+import com.stytch.sdk.ui.shared.data.PasswordState
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -74,28 +79,31 @@ internal class MainScreenViewModel(
     productConfig: StytchB2BProductConfig,
 ) : BaseViewModel(state, dispatchAction) {
     val useGetEffectiveAuthConfig = UseEffectiveAuthConfig(state, productConfig)
-    val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
-    val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
-    val useMagicLinksEmailLoginOrSignup =
+    private val useUpdateMemberEmailAddress = UseUpdateMemberEmailAddress(state, ::dispatch)
+    private val useUpdateMemberPassword = UseUpdateMemberPassword(state, ::dispatch)
+    private val useMagicLinksEmailLoginOrSignup =
         UseMagicLinksEmailLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useMagicLinksDiscoverySend =
+    private val useMagicLinksDiscoverySend =
         UseMagicLinksDiscoverySend(viewModelScope, productConfig, state, ::dispatch, ::request)
-    val useSSOStart = UseSSOStart()
-    val useOAuthStart = UseOAuthStart(state)
-    val useSearchMember = UseSearchMember(::request)
-    val usePasswordsAuthenticate = UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val usePasswordDiscoveryAuthenticate =
+    private val useSSOStart = UseSSOStart()
+    private val useOAuthStart = UseOAuthStart(state)
+    private val useSearchMember = UseSearchMember(::request)
+    private val usePasswordsAuthenticate =
+        UsePasswordAuthenticate(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val usePasswordDiscoveryAuthenticate =
         UsePasswordDiscoveryAuthenticate(viewModelScope, state, ::dispatch, ::request)
-    val useNonMemberPasswordReset =
+    private val useNonMemberPasswordReset =
         UseNonMemberPasswordReset(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
-    val useEmailOTPLoginOrSignup = UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useEmailOTPDiscoverySend = UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useUpdateMemberEmailShouldBeValidated = UseUpdateMemberEmailShouldBeValidated(state, ::dispatch)
+    private val useEmailOTPLoginOrSignup =
+        UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useEmailOTPDiscoverySend =
+        UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
 
     private val enableEml = productConfig.products.contains(StytchB2BProduct.EMAIL_MAGIC_LINKS)
     private val enableOtp = productConfig.products.contains(StytchB2BProduct.EMAIL_OTP)
 
-    fun handleEmailPasswordSubmit() {
+    private fun handleEmailPasswordSubmit() {
         val emailAddress = state.value.emailState.emailAddress
         val organization = state.value.activeOrganization
         if (emailAddress.isBlank()) return
@@ -121,7 +129,7 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun handleEmailSubmit() {
+    private fun handleEmailSubmit() {
         if (state.value.activeOrganization != null || state.value.mfaPrimaryInfoState != null) {
             if (enableEml && enableOtp) {
                 dispatch(SetNextRoute(Routes.EmailMethodSelection))
@@ -141,23 +149,97 @@ internal class MainScreenViewModel(
         }
     }
 
-    fun handleSSODiscovery() = dispatch(SetNextRoute(Routes.SSODiscoveryEmail))
+    private fun handleSSODiscovery() = dispatch(SetNextRoute(Routes.SSODiscoveryEmail))
+
+    fun handleAction(action: MainScreenAction) {
+        when (action) {
+            is MainScreenAction.DispatchGlobalAction -> dispatch(action.action)
+            is MainScreenAction.HandleEmailSubmit -> handleEmailSubmit()
+            is MainScreenAction.HandlePasswordSubmit -> handleEmailPasswordSubmit()
+            is MainScreenAction.StartSSO -> useSSOStart(action.context, action.connectionId)
+            is MainScreenAction.StartSSODiscovery -> handleSSODiscovery()
+            is MainScreenAction.StartOAuth -> useOAuthStart(action.context, action.providerConfig)
+            is MainScreenAction.SetEmailShouldBeValidated -> useUpdateMemberEmailShouldBeValidated(true)
+            is MainScreenAction.UpdateMemberEmailAddress -> useUpdateMemberEmailAddress(action.emailAddress)
+            is MainScreenAction.UpdateMemberPassword -> useUpdateMemberPassword(action.password)
+        }
+    }
 }
 
 @Composable
 internal fun MainScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<MainScreenViewModel>,
     viewModel: MainScreenViewModel = createViewModel(MainScreenViewModel::class.java),
 ) {
-    val primaryAuthMethods = state.value.primaryAuthMethods
-    val emailAddress = state.value.emailState.emailAddress
-    val emailVerified = state.value.emailState.emailVerified
-    val authFlowType = state.value.authFlowType
-    val organization = state.value.activeOrganization
-    val products = viewModel.useGetEffectiveAuthConfig.products.toList()
-    val oauthProviderSettings = viewModel.useGetEffectiveAuthConfig.oauthProviderSettings.toList()
-    val productComponentsOrdering = products.generateProductComponentsOrdering(authFlowType, organization)
+    val state = viewModel.state.collectAsState()
+    MainScreenComposable(
+        state =
+            MainScreenState(
+                primaryAuthMethods = state.value.primaryAuthMethods,
+                emailState = state.value.emailState,
+                passwordState = state.value.passwordState,
+                authFlowType = state.value.authFlowType,
+                organizationData = state.value.activeOrganization,
+                products = viewModel.useGetEffectiveAuthConfig.products.toList(),
+                oauthProviderSettings = viewModel.useGetEffectiveAuthConfig.oauthProviderSettings.toList(),
+            ),
+        action = viewModel::handleAction,
+    )
+}
+
+private data class MainScreenState(
+    val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
+    val emailState: EmailState = EmailState(),
+    val passwordState: PasswordState = PasswordState(),
+    val authFlowType: AuthFlowType = AuthFlowType.ORGANIZATION,
+    val organizationData: InternalOrganizationData? = null,
+    val products: List<StytchB2BProduct> = emptyList(),
+    val oauthProviderSettings: List<B2BOAuthProviderConfig> = emptyList(),
+)
+
+internal sealed class MainScreenAction {
+    data class DispatchGlobalAction(
+        val action: B2BUIAction,
+    ) : MainScreenAction()
+
+    data class UpdateMemberEmailAddress(
+        val emailAddress: String,
+    ) : MainScreenAction()
+
+    data object HandleEmailSubmit : MainScreenAction()
+
+    data object SetEmailShouldBeValidated : MainScreenAction()
+
+    data class UpdateMemberPassword(
+        val password: String,
+    ) : MainScreenAction()
+
+    data object HandlePasswordSubmit : MainScreenAction()
+
+    data class StartOAuth(
+        val context: Activity,
+        val providerConfig: B2BOAuthProviderConfig,
+    ) : MainScreenAction()
+
+    data class StartSSO(
+        val context: Activity,
+        val connectionId: String,
+    ) : MainScreenAction()
+
+    data object StartSSODiscovery : MainScreenAction()
+}
+
+@Composable
+private fun MainScreenComposable(
+    state: MainScreenState,
+    action: (MainScreenAction) -> Unit,
+) {
+    val primaryAuthMethods = state.primaryAuthMethods
+    val emailAddress = state.emailState.emailAddress
+    val emailVerified = state.emailState.emailVerified
+    val authFlowType = state.authFlowType
+    val organization = state.organizationData
+    val productComponentsOrdering = state.products.generateProductComponentsOrdering(authFlowType, organization)
     val title =
         when (authFlowType) {
             AuthFlowType.DISCOVERY -> "Sign up or log in"
@@ -166,8 +248,8 @@ internal fun MainScreen(
     val showVerifyEmailCopy = emailAddress.isNotEmpty() && emailVerified == false && primaryAuthMethods.isNotEmpty()
     val theme = LocalStytchTheme.current
     val context = LocalActivity.current as Activity
-    if (products.isEmpty()) {
-        viewModel.dispatch(SetB2BError(B2BErrorType.NoAuthenticationMethodsFound))
+    if (state.products.isEmpty()) {
+        action(MainScreenAction.DispatchGlobalAction(SetB2BError(B2BErrorType.NoAuthenticationMethodsFound)))
         return
     }
     Column {
@@ -198,30 +280,30 @@ internal fun MainScreen(
             when (productComponent) {
                 ProductComponent.EmailForm -> {
                     EmailEntry(
-                        emailState = state.value.emailState,
-                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
+                        emailState = state.emailState,
+                        onEmailAddressChanged = { action(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.handleEmailSubmit()
+                                action(MainScreenAction.SetEmailShouldBeValidated)
+                                action(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                 }
                 ProductComponent.EmailDiscoveryForm -> {
                     EmailEntry(
-                        emailState = state.value.emailState,
-                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
+                        emailState = state.emailState,
+                        onEmailAddressChanged = { action(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.handleEmailSubmit()
+                                action(MainScreenAction.SetEmailShouldBeValidated)
+                                action(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                 }
                 ProductComponent.OAuthButtons -> {
-                    oauthProviderSettings.map { provider ->
+                    state.oauthProviderSettings.map { provider ->
                         SocialLoginButton(
                             modifier =
                                 Modifier
@@ -230,7 +312,7 @@ internal fun MainScreen(
                             iconDrawable = provider.type.toPainterResource(),
                             iconDescription = provider.type.name,
                             text = "Continue with ${provider.type.toTitle()}",
-                            onClick = { viewModel.useOAuthStart(context = context, providerConfig = provider) },
+                            onClick = { action(MainScreenAction.StartOAuth(context, provider)) },
                         )
                     }
                 }
@@ -241,7 +323,7 @@ internal fun MainScreen(
                             text = "Continue with SSO",
                             iconDrawable = painterResource(R.drawable.sso),
                             iconDescription = "SSO",
-                            onClick = viewModel::handleSSODiscovery,
+                            onClick = { action(MainScreenAction.StartSSODiscovery) },
                         )
                     } else {
                         organization?.ssoActiveConnections?.map { provider ->
@@ -250,19 +332,19 @@ internal fun MainScreen(
                                 text = "Continue with ${provider.displayName}",
                                 iconDrawable = provider.toPainterResource(),
                                 iconDescription = provider.displayName,
-                                onClick = { viewModel.useSSOStart(context, provider.connectionId) },
+                                onClick = { action(MainScreenAction.StartSSO(context, provider.connectionId)) },
                             )
                         }
                     }
                 }
                 ProductComponent.PasswordsEmailForm -> {
                     EmailAndPasswordEntry(
-                        emailState = state.value.emailState,
-                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        passwordState = state.value.passwordState,
-                        onPasswordChanged = { viewModel.useUpdateMemberPassword(it) },
-                        onSubmit = viewModel::handleEmailPasswordSubmit,
-                        onEmailAddressDone = { viewModel.useUpdateMemberEmailShouldBeValidated(true) },
+                        emailState = state.emailState,
+                        onEmailAddressChanged = { action(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        passwordState = state.passwordState,
+                        onPasswordChanged = { action(MainScreenAction.UpdateMemberPassword(it)) },
+                        onSubmit = { action(MainScreenAction.HandlePasswordSubmit) },
+                        onEmailAddressDone = { action(MainScreenAction.SetEmailShouldBeValidated) },
                     )
                     val signInText =
                         buildAnnotatedString {
@@ -282,23 +364,25 @@ internal fun MainScreen(
                                 .fillMaxWidth()
                                 .padding(top = 32.dp)
                                 .clickable {
-                                    viewModel.dispatch(SetNextRoute(Routes.PasswordForgot))
+                                    action(
+                                        MainScreenAction.DispatchGlobalAction(SetNextRoute(Routes.PasswordForgot)),
+                                    )
                                 },
                     )
                 }
                 ProductComponent.PasswordEMLCombined -> {
                     EmailEntry(
-                        emailState = state.value.emailState,
-                        onEmailAddressChanged = { viewModel.useUpdateMemberEmailAddress(it) },
-                        onEmailAddressSubmit = { viewModel.handleEmailSubmit() },
+                        emailState = state.emailState,
+                        onEmailAddressChanged = { action(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                viewModel.useUpdateMemberEmailShouldBeValidated(true)
-                                viewModel.handleEmailSubmit()
+                                action(MainScreenAction.SetEmailShouldBeValidated)
+                                action(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                     StytchTextButton(text = "Use a password instead") {
-                        viewModel.dispatch(SetNextRoute(Routes.PasswordAuthenticate))
+                        action(MainScreenAction.DispatchGlobalAction(SetNextRoute(Routes.PasswordAuthenticate)))
                     }
                 }
                 ProductComponent.Divider -> DividerWithText(text = "or")

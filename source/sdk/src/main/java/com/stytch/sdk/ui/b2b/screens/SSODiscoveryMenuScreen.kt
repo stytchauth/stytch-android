@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,10 +31,10 @@ internal class SSODiscoveryMenuScreenViewModel(
 
 @Composable
 internal fun SSODiscoveryMenuScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<SSODiscoveryMenuScreenViewModel>,
     viewModel: SSODiscoveryMenuScreenViewModel = createViewModel(SSODiscoveryMenuScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val activity = LocalActivity.current as Activity
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)

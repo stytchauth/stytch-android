@@ -1,7 +1,7 @@
 package com.stytch.sdk.ui.b2b.screens
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
@@ -40,10 +40,10 @@ internal class SMSOTPEntryScreenViewModel(
 
 @Composable
 internal fun SMSOTPEntryScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<SMSOTPEntryScreenViewModel>,
     viewModel: SMSOTPEntryScreenViewModel = createViewModel(SMSOTPEntryScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val recipientFormatted =
         AnnotatedString(
             text = " ${state.value.phoneNumberState.formatted()}",

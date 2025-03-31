@@ -69,7 +69,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
             }
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
-                    state = state,
+                    stateFlow = viewModel.stateFlow,
                     dispatch = viewModel::dispatch,
                     createViewModel = viewModel::createViewModel,
                 )

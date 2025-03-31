@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,10 +37,10 @@ internal class SSODiscoveryEmailScreenViewModel(
 
 @Composable
 internal fun SSODiscoveryEmailScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<SSODiscoveryEmailScreenViewModel>,
     viewModel: SSODiscoveryEmailScreenViewModel = createViewModel(SSODiscoveryEmailScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)
     }

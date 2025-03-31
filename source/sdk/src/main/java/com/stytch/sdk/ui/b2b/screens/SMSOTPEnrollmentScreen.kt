@@ -3,7 +3,7 @@ package com.stytch.sdk.ui.b2b.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
@@ -32,10 +32,10 @@ internal class SMSOTPEnrollmentScreenViewModel(
 
 @Composable
 internal fun SMSOTPEnrollmentScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<SMSOTPEnrollmentScreenViewModel>,
     viewModel: SMSOTPEnrollmentScreenViewModel = createViewModel(SMSOTPEnrollmentScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val phoneNumberState = state.value.phoneNumberState
     BackHandler(enabled = true) {
         viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection))

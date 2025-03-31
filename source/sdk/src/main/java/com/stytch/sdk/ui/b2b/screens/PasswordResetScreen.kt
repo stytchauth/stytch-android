@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,10 +51,10 @@ internal class PasswordResetScreenViewModel(
 
 @Composable
 internal fun PasswordResetScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<PasswordResetScreenViewModel>,
     viewModel: PasswordResetScreenViewModel = createViewModel(PasswordResetScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)
     }

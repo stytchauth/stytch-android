@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -57,10 +57,10 @@ internal class PasswordAuthenticateScreenViewModel(
 
 @Composable
 internal fun PasswordAuthenticateScreen(
-    state: State<B2BUIState>,
     createViewModel: CreateViewModel<PasswordAuthenticateScreenViewModel>,
     viewModel: PasswordAuthenticateScreenViewModel = createViewModel(PasswordAuthenticateScreenViewModel::class.java),
 ) {
+    val state = viewModel.state.collectAsState()
     val theme = LocalStytchTheme.current
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)
