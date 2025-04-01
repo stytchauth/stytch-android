@@ -21,7 +21,6 @@ import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
@@ -207,12 +206,11 @@ public object StytchClient {
             StorageHelper.initialize(context)
             sessionStorage = ConsumerSessionStorage(StorageHelper)
             StytchApi.configure(publicToken, deviceInfo)
-            val activityProvider = ActivityProvider(context.applicationContext as Application)
             dfpProvider =
                 DFPProviderImpl(
+                    context = context.applicationContext,
                     publicToken = publicToken,
                     dfppaDomain = options.endpointOptions.dfppaDomain,
-                    activityProvider = activityProvider,
                 )
             configureSmsRetriever(context.applicationContext)
             NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
