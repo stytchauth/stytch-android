@@ -27,16 +27,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
 import com.stytch.sdk.common.DeeplinkTokenPair
+import com.stytch.sdk.ui.b2b.components.LoadingView
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
-import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
 import com.stytch.sdk.ui.b2b.screens.EmailMethodSelectionScreen
 import com.stytch.sdk.ui.b2b.screens.EmailOTPEntryScreen
-import com.stytch.sdk.ui.b2b.screens.ErrorScreen
-import com.stytch.sdk.ui.b2b.screens.LoadingView
 import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
@@ -52,6 +49,12 @@ import com.stytch.sdk.ui.b2b.screens.SSODiscoveryMenuScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreen
+import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.discovery.DiscoveryScreen
+import com.stytch.sdk.ui.b2b.screens.discovery.DiscoveryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.error.ErrorScreen
+import com.stytch.sdk.ui.b2b.screens.error.ErrorScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.main.MainScreen
 import com.stytch.sdk.ui.b2b.screens.main.MainScreenViewModel
 import com.stytch.sdk.ui.shared.components.FormFieldStatus
@@ -119,10 +122,13 @@ internal fun StytchB2BAuthenticationApp(
                         }
                     }
                     composable<Routes.DeeplinkParser> {
-                        DeepLinkParserScreen(createViewModel = ::createViewModelHelper)
+                        DeepLinkParserScreen(
+                            viewModel = createViewModelHelper(DeepLinkParserScreenViewModel::class.java),
+                            deepLinkTokenPair = rootAppState.deeplinkTokenPair,
+                        )
                     }
                     composable<Routes.Discovery> {
-                        DiscoveryScreen(createViewModel = ::createViewModelHelper)
+                        DiscoveryScreen(viewModel = createViewModelHelper(DiscoveryScreenViewModel::class.java))
                     }
                     composable<Routes.EmailConfirmation> {
                         EmailConfirmationScreen(
@@ -131,7 +137,7 @@ internal fun StytchB2BAuthenticationApp(
                         )
                     }
                     composable<Routes.Error> {
-                        ErrorScreen(createViewModel = ::createViewModelHelper)
+                        ErrorScreen(viewModel = createViewModelHelper(ErrorScreenViewModel::class.java))
                     }
                     composable<Routes.Main> {
                         MainScreen(viewModel = createViewModelHelper(MainScreenViewModel::class.java))

@@ -1,14 +1,10 @@
-package com.stytch.sdk.ui.b2b.screens
+package com.stytch.sdk.ui.b2b.screens.deepLinkParser
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.B2BRedirectType
 import com.stytch.sdk.b2b.B2BTokenType
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.BaseViewModel
-import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -21,7 +17,6 @@ import com.stytch.sdk.ui.b2b.usecases.UseMagicLinksDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseOAuthAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseOAuthDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseSSOAuthenticate
-import com.stytch.sdk.ui.shared.components.LoadingDialog
 import kotlinx.coroutines.flow.StateFlow
 
 internal class DeepLinkParserScreenViewModel(
@@ -56,19 +51,4 @@ internal class DeepLinkParserScreenViewModel(
             B2BTokenType.UNKNOWN -> dispatch(SetB2BError(B2BErrorType.Default))
         }
     }
-}
-
-@Composable
-internal fun DeepLinkParserScreen(
-    createViewModel: CreateViewModel<DeepLinkParserScreenViewModel>,
-    viewModel: DeepLinkParserScreenViewModel = createViewModel(DeepLinkParserScreenViewModel::class.java),
-) {
-    val state = viewModel.state.collectAsState()
-    val deepLinkTokenPair = state.value.deeplinkTokenPair
-    LaunchedEffect(deepLinkTokenPair) {
-        deepLinkTokenPair?.let {
-            viewModel.handleDeepLink(it)
-        }
-    }
-    LoadingDialog()
 }

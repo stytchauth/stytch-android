@@ -39,6 +39,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
+import com.stytch.sdk.ui.b2b.components.LoadingView
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.SetNextRoute

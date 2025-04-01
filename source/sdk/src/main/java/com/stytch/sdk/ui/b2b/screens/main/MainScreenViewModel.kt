@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviderConfig
@@ -148,10 +149,12 @@ internal class MainScreenViewModel(
 }
 
 internal sealed class MainScreenAction {
+    @JacocoExcludeGenerated
     data class DispatchGlobalAction(
         val action: B2BUIAction,
     ) : MainScreenAction()
 
+    @JacocoExcludeGenerated
     data class UpdateMemberEmailAddress(
         val emailAddress: String,
     ) : MainScreenAction()
@@ -160,17 +163,20 @@ internal sealed class MainScreenAction {
 
     data object SetEmailShouldBeValidated : MainScreenAction()
 
+    @JacocoExcludeGenerated
     data class UpdateMemberPassword(
         val password: String,
     ) : MainScreenAction()
 
     data object HandlePasswordSubmit : MainScreenAction()
 
+    @JacocoExcludeGenerated
     data class StartOAuth(
         val context: Activity,
         val providerConfig: B2BOAuthProviderConfig,
     ) : MainScreenAction()
 
+    @JacocoExcludeGenerated
     data class StartSSO(
         val context: Activity,
         val connectionId: String,
@@ -179,6 +185,7 @@ internal sealed class MainScreenAction {
     data object StartSSODiscovery : MainScreenAction()
 }
 
+@JacocoExcludeGenerated
 internal data class MainScreenState(
     val primaryAuthMethods: List<AllowedAuthMethods> = emptyList(),
     val emailState: EmailState = EmailState(),

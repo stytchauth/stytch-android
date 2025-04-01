@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.CreateViewModel
@@ -40,7 +40,7 @@ internal fun SSODiscoveryEmailScreen(
     createViewModel: CreateViewModel<SSODiscoveryEmailScreenViewModel>,
     viewModel: SSODiscoveryEmailScreenViewModel = createViewModel(SSODiscoveryEmailScreenViewModel::class.java),
 ) {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     BackHandler(enabled = true) {
         viewModel.dispatch(ResetEverything)
     }
