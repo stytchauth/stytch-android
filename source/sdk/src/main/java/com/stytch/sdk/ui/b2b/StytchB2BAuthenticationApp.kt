@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,11 +26,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.data.AuthFlowType
-import com.stytch.sdk.ui.b2b.data.B2BErrorType
-import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetB2BError
+import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.SetGenericError
+import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.screens.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.DiscoveryScreen
@@ -41,7 +38,6 @@ import com.stytch.sdk.ui.b2b.screens.EmailOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.LoadingView
 import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
-import com.stytch.sdk.ui.b2b.screens.MainScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
 import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
@@ -56,20 +52,27 @@ import com.stytch.sdk.ui.b2b.screens.SSODiscoveryMenuScreen
 import com.stytch.sdk.ui.b2b.screens.SuccessScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.main.MainScreen
+import com.stytch.sdk.ui.b2b.screens.main.MainScreenViewModel
 import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import kotlinx.coroutines.flow.StateFlow
+
+internal data class RootAppState(
+    val currentRoute: Route? = null,
+    val deeplinkTokenPair: DeeplinkTokenPair? = null,
+    val isLoading: Boolean = false,
+    val errorToastText: String? = null,
+)
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
     modifier: Modifier = Modifier,
-    stateFlow: StateFlow<B2BUIState>,
     dispatch: Dispatch,
+    rootAppState: RootAppState = RootAppState(),
     createViewModel: CreateViewModel<ViewModel>,
 ) {
-    val state = stateFlow.collectAsState()
     val navController = rememberNavController()
     val bootstrapData = LocalStytchBootstrapData.current
     val theme = LocalStytchTheme.current
@@ -77,43 +80,21 @@ internal fun StytchB2BAuthenticationApp(
     fun <T : ViewModel> createViewModelHelper(modelClass: Class<T>): T =
         createViewModel(modelClass as Class<ViewModel>) as T
 
-    val isSearchingForOrganizationBySlug = state.value.isSearchingForOrganizationBySlug
-    val activeOrganization = state.value.activeOrganization
-    val currentRoute = state.value.currentRoute
-    val authFlowType = state.value.authFlowType
-    val deeplinkTokenPair = state.value.deeplinkTokenPair
     val startDestination =
-        if (deeplinkTokenPair != null) {
+        if (rootAppState.deeplinkTokenPair != null) {
             Routes.DeeplinkParser
         } else {
-            currentRoute ?: Routes.Loading
+            rootAppState.currentRoute ?: Routes.Loading
         }
 
-    LaunchedEffect(currentRoute) {
-        currentRoute?.let {
+    LaunchedEffect(rootAppState.currentRoute) {
+        rootAppState.currentRoute?.let {
             navController.navigate(it) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     saveState = false
                     inclusive = true
                 }
             }
-        }
-    }
-
-    LaunchedEffect(
-        isSearchingForOrganizationBySlug,
-        activeOrganization,
-        currentRoute,
-        authFlowType,
-    ) {
-        if (
-            !isSearchingForOrganizationBySlug &&
-            activeOrganization == null &&
-            currentRoute == Routes.Main &&
-            authFlowType == AuthFlowType.ORGANIZATION
-        ) {
-            // Trying to launch an org flow without an org
-            dispatch(SetB2BError(B2BErrorType.Organization))
         }
     }
     Surface(
@@ -153,7 +134,7 @@ internal fun StytchB2BAuthenticationApp(
                         ErrorScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.Main> {
-                        MainScreen(createViewModel = ::createViewModelHelper)
+                        MainScreen(viewModel = createViewModelHelper(MainScreenViewModel::class.java))
                     }
                     composable<Routes.MFAEnrollmentSelection> {
                         MFAEnrollmentSelectionScreen(createViewModel = ::createViewModelHelper)
@@ -219,7 +200,7 @@ internal fun StytchB2BAuthenticationApp(
                         SSODiscoveryMenuScreen(createViewModel = ::createViewModelHelper)
                     }
                 }
-                state.value.errorToastText?.let {
+                rootAppState.errorToastText?.let {
                     FormFieldStatus(text = it, isError = true, autoDismiss = {
                         dispatch(SetGenericError(null))
                     })
@@ -242,7 +223,7 @@ internal fun StytchB2BAuthenticationApp(
                 }
             }
         }
-        if (state.value.isLoading) {
+        if (rootAppState.isLoading) {
             LoadingDialog()
         }
     }

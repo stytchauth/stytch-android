@@ -12,6 +12,9 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.AuthenticationResult
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
+import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetDeeplinkTokenPair
 import com.stytch.sdk.ui.b2b.data.StytchB2BUIConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -54,12 +57,16 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                 isSearchingForOrganizationBySlug,
                 authFlowType,
             ) {
-                if (organizationSlug != null &&
-                    activeOrganization == null &&
-                    !isSearchingForOrganizationBySlug &&
-                    authFlowType == AuthFlowType.ORGANIZATION
-                ) {
+                val isOrgFlowWithNoOrg = authFlowType == AuthFlowType.ORGANIZATION && activeOrganization == null
+                if (isOrgFlowWithNoOrg && organizationSlug != null && !isSearchingForOrganizationBySlug) {
+                    // search for the organization by slug
                     viewModel.performInitialOrgBySlugSearch(organizationSlug)
+                } else if (isOrgFlowWithNoOrg && !isSearchingForOrganizationBySlug && currentRoute == Routes.Main) {
+                    // Trying to launch an org flow without an org
+                    viewModel.dispatch(SetB2BError(B2BErrorType.Organization))
+                } else {
+                    // All good to render
+                    render()
                 }
             }
             LaunchedEffect(currentRoute) {
@@ -67,11 +74,17 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                     returnAuthenticationResult(AuthenticationResult.Authenticated)
                 }
             }
+        }
+    }
+
+    private fun render() {
+        setContent {
+            val state = viewModel.stateFlow.collectAsState()
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
-                    stateFlow = viewModel.stateFlow,
                     dispatch = viewModel::dispatch,
                     createViewModel = viewModel::createViewModel,
+                    rootAppState = state.value.toRootAppState(),
                 )
             }
         }
@@ -128,3 +141,11 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         }
     }
 }
+
+private fun B2BUIState.toRootAppState() =
+    RootAppState(
+        currentRoute = currentRoute,
+        deeplinkTokenPair = deeplinkTokenPair,
+        errorToastText = errorToastText,
+        isLoading = isLoading,
+    )

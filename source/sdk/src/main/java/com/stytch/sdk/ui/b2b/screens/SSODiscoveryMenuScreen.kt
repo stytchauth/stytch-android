@@ -16,6 +16,7 @@ import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
 import com.stytch.sdk.ui.b2b.data.ResetEverything
+import com.stytch.sdk.ui.b2b.extensions.toPainterResource
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.PageTitle
