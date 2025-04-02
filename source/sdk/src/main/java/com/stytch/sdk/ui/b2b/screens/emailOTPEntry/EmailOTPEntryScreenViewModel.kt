@@ -1,16 +1,11 @@
-package com.stytch.sdk.ui.b2b.screens
+package com.stytch.sdk.ui.b2b.screens.emailOTPEntry
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
-import com.stytch.sdk.ui.b2b.CreateViewModel
-import com.stytch.sdk.ui.b2b.components.ResendableOTP
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
@@ -34,16 +29,22 @@ internal class EmailOTPEntryScreenViewModel(
     private val _emailOtpEntryState =
         MutableStateFlow(
             EmailOTPEntryScreenState(
-                emailAddress = state.value.emailState.emailAddress,
+                recipientFormatted =
+                    AnnotatedString(
+                        text = " ${state.value.emailState.emailAddress}",
+                        spanStyle = SpanStyle(fontWeight = FontWeight.W700),
+                    ),
             ),
         )
     val emailOtpEntryState = _emailOtpEntryState.asStateFlow()
-    val useEmailOTPLoginOrSignup = UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useEmailOTPDiscoverySend = UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
-    val useEmailOTPAuthenticate = UseEmailOTPAuthenticate(productConfig, state, ::request)
-    val useEmailOTPDiscoveryAuthenticate = UseEmailOTPDiscoveryAuthenticate(state, ::request)
+    private val useEmailOTPLoginOrSignup =
+        UseEmailOTPLoginOrSignup(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useEmailOTPDiscoverySend =
+        UseEmailOTPDiscoverySend(viewModelScope, state, ::dispatch, productConfig, ::request)
+    private val useEmailOTPAuthenticate = UseEmailOTPAuthenticate(productConfig, state, ::request)
+    private val useEmailOTPDiscoveryAuthenticate = UseEmailOTPDiscoveryAuthenticate(state, ::request)
 
-    fun handleSubmit(code: String) {
+    private fun handleSubmit(code: String) {
         viewModelScope.launch {
             if (state.value.authFlowType == AuthFlowType.ORGANIZATION) {
                 useEmailOTPAuthenticate(code).onFailure {
@@ -60,7 +61,7 @@ internal class EmailOTPEntryScreenViewModel(
         }
     }
 
-    fun handleResend() {
+    private fun handleResend() {
         if (state.value.authFlowType == AuthFlowType.ORGANIZATION) {
             useEmailOTPLoginOrSignup()
         } else {
@@ -74,32 +75,26 @@ internal class EmailOTPEntryScreenViewModel(
                 errorMessage = "Invalid passcode, please try again.",
             )
     }
+
+    fun handle(action: EmailOTPEntryScreenAction) {
+        when (action) {
+            EmailOTPEntryScreenAction.Resend -> handleResend()
+            is EmailOTPEntryScreenAction.Submit -> handleSubmit(action.code)
+        }
+    }
 }
 
+@JacocoExcludeGenerated
 internal data class EmailOTPEntryScreenState(
-    val emailAddress: String,
+    val recipientFormatted: AnnotatedString,
     val errorMessage: String? = null,
 )
 
-@Composable
-internal fun EmailOTPEntryScreen(
-    createViewModel: CreateViewModel<EmailOTPEntryScreenViewModel>,
-    viewModel: EmailOTPEntryScreenViewModel =
-        createViewModel(EmailOTPEntryScreenViewModel::class.java),
-) {
-    val emailOtpEntryState = viewModel.emailOtpEntryState.collectAsStateWithLifecycle().value
-    val recipientFormatted =
-        AnnotatedString(
-            text = " ${emailOtpEntryState.emailAddress}",
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
-    ResendableOTP(
-        title = "Enter verification code",
-        recipient = recipientFormatted,
-        isEnrolling = false,
-        onBack = null,
-        onSubmit = viewModel::handleSubmit,
-        onResend = viewModel::handleResend,
-        otpExpirationMinutes = 10,
-    )
+internal sealed class EmailOTPEntryScreenAction {
+    data object Resend : EmailOTPEntryScreenAction()
+
+    @JacocoExcludeGenerated
+    data class Submit(
+        val code: String,
+    ) : EmailOTPEntryScreenAction()
 }

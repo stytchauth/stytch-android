@@ -69,17 +69,18 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                     render()
                 }
             }
-            LaunchedEffect(currentRoute) {
-                if (currentRoute == Routes.Success) {
-                    returnAuthenticationResult(AuthenticationResult.Authenticated)
-                }
-            }
         }
     }
 
     private fun render() {
         setContent {
             val state = viewModel.stateFlow.collectAsState()
+            val currentRoute = state.value.currentRoute
+            LaunchedEffect(currentRoute) {
+                if (currentRoute == Routes.Success) {
+                    returnAuthenticationResult(AuthenticationResult.Authenticated)
+                }
+            }
             StytchB2BThemeProvider(config = uiConfig) {
                 StytchB2BAuthenticationApp(
                     dispatch = viewModel::dispatch,

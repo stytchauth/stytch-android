@@ -31,17 +31,6 @@ import com.stytch.sdk.ui.b2b.components.LoadingView
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.screens.EmailConfirmationScreen
-import com.stytch.sdk.ui.b2b.screens.EmailMethodSelectionScreen
-import com.stytch.sdk.ui.b2b.screens.EmailOTPEntryScreen
-import com.stytch.sdk.ui.b2b.screens.MFAEnrollmentSelectionScreen
-import com.stytch.sdk.ui.b2b.screens.PasswordAuthenticateScreen
-import com.stytch.sdk.ui.b2b.screens.PasswordForgotScreen
-import com.stytch.sdk.ui.b2b.screens.PasswordResetScreen
-import com.stytch.sdk.ui.b2b.screens.PasswordSetNewScreen
-import com.stytch.sdk.ui.b2b.screens.RecoveryCodesEntryScreen
-import com.stytch.sdk.ui.b2b.screens.RecoveryCodesSaveScreen
-import com.stytch.sdk.ui.b2b.screens.SMSOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.SSODiscoveryEmailScreen
 import com.stytch.sdk.ui.b2b.screens.SSODiscoveryFallbackScreen
@@ -53,21 +42,37 @@ import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.discovery.DiscoveryScreen
 import com.stytch.sdk.ui.b2b.screens.discovery.DiscoveryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.emailConfirmation.EmailConfirmationScreen
+import com.stytch.sdk.ui.b2b.screens.emailConfirmation.EmailConfirmationScreenRoute
+import com.stytch.sdk.ui.b2b.screens.emailConfirmation.EmailConfirmationScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.emailMethodSelection.EmailMethodSelectionScreen
+import com.stytch.sdk.ui.b2b.screens.emailMethodSelection.EmailMethodSelectionScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.emailOTPEntry.EmailOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.emailOTPEntry.EmailOTPEntryScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.error.ErrorScreen
 import com.stytch.sdk.ui.b2b.screens.error.ErrorScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.main.MainScreen
 import com.stytch.sdk.ui.b2b.screens.main.MainScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.mfaEnrollmentSelection.MFAEnrollmentSelectionScreen
+import com.stytch.sdk.ui.b2b.screens.mfaEnrollmentSelection.MFAEnrollmentSelectionScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.passwordAuthenticate.PasswordAuthenticateScreen
+import com.stytch.sdk.ui.b2b.screens.passwordAuthenticate.PasswordAuthenticateScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.passwordForgot.PasswordForgotScreen
+import com.stytch.sdk.ui.b2b.screens.passwordForgot.PasswordForgotScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.passwordReset.PasswordResetScreen
+import com.stytch.sdk.ui.b2b.screens.passwordReset.PasswordResetScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.passwordSetNew.PasswordSetNewScreen
+import com.stytch.sdk.ui.b2b.screens.passwordSetNew.PasswordSetNewScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.recoveryCodesEntry.RecoveryCodesEntryScreen
+import com.stytch.sdk.ui.b2b.screens.recoveryCodesEntry.RecoveryCodesEntryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.recoveryCodesSave.RecoveryCodesSaveScreen
+import com.stytch.sdk.ui.b2b.screens.recoveryCodesSave.RecoveryCodesSaveScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.smsOTPEnrollment.SMSOTPEnrollmentScreen
+import com.stytch.sdk.ui.b2b.screens.smsOTPEnrollment.SMSOTPEnrollmentScreenViewModel
 import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-
-internal data class RootAppState(
-    val currentRoute: Route? = null,
-    val deeplinkTokenPair: DeeplinkTokenPair? = null,
-    val isLoading: Boolean = false,
-    val errorToastText: String? = null,
-)
 
 @Composable
 internal fun StytchB2BAuthenticationApp(
@@ -132,9 +137,17 @@ internal fun StytchB2BAuthenticationApp(
                     }
                     composable<Routes.EmailConfirmation> {
                         EmailConfirmationScreen(
-                            route = Routes.EmailConfirmation,
-                            createViewModel = ::createViewModelHelper,
+                            route = EmailConfirmationScreenRoute.EmailConfirmation,
+                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
                         )
+                    }
+                    composable<Routes.EmailMethodSelection> {
+                        EmailMethodSelectionScreen(
+                            viewModel = createViewModelHelper(EmailMethodSelectionScreenViewModel::class.java),
+                        )
+                    }
+                    composable<Routes.EmailOTPEntry> {
+                        EmailOTPEntryScreen(viewModel = createViewModelHelper(EmailOTPEntryScreenViewModel::class.java))
                     }
                     composable<Routes.Error> {
                         ErrorScreen(viewModel = createViewModelHelper(ErrorScreenViewModel::class.java))
@@ -143,58 +156,57 @@ internal fun StytchB2BAuthenticationApp(
                         MainScreen(viewModel = createViewModelHelper(MainScreenViewModel::class.java))
                     }
                     composable<Routes.MFAEnrollmentSelection> {
-                        MFAEnrollmentSelectionScreen(createViewModel = ::createViewModelHelper)
+                        MFAEnrollmentSelectionScreen(
+                            viewModel = createViewModelHelper(MFAEnrollmentSelectionScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.PasswordAuthenticate> {
-                        PasswordAuthenticateScreen(createViewModel = ::createViewModelHelper)
+                        PasswordAuthenticateScreen(
+                            viewModel = createViewModelHelper(PasswordAuthenticateScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.PasswordForgot> {
-                        PasswordForgotScreen(createViewModel = ::createViewModelHelper)
+                        PasswordForgotScreen(
+                            viewModel = createViewModelHelper(PasswordForgotScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.PasswordReset> {
-                        PasswordResetScreen(createViewModel = ::createViewModelHelper)
+                        PasswordResetScreen(viewModel = createViewModelHelper(PasswordResetScreenViewModel::class.java))
                     }
                     composable<Routes.PasswordResetVerifyConfirmation> {
                         EmailConfirmationScreen(
-                            route = Routes.PasswordResetVerifyConfirmation,
-                            createViewModel = ::createViewModelHelper,
+                            route = EmailConfirmationScreenRoute.PasswordResetVerifyConfirmation,
+                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
                         )
                     }
                     composable<Routes.PasswordSetNew> {
-                        PasswordSetNewScreen(createViewModel = ::createViewModelHelper)
+                        PasswordSetNewScreen(
+                            viewModel = createViewModelHelper(PasswordSetNewScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.PasswordSetNewConfirmation> {
                         EmailConfirmationScreen(
-                            route = Routes.PasswordSetNewConfirmation,
-                            createViewModel = ::createViewModelHelper,
+                            route = EmailConfirmationScreenRoute.PasswordSetNewConfirmation,
+                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
                         )
                     }
                     composable<Routes.RecoveryCodeEntry> {
-                        RecoveryCodesEntryScreen(createViewModel = ::createViewModelHelper)
+                        RecoveryCodesEntryScreen(
+                            viewModel = createViewModelHelper(RecoveryCodesEntryScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.RecoveryCodeSave> {
-                        RecoveryCodesSaveScreen(createViewModel = ::createViewModelHelper)
+                        RecoveryCodesSaveScreen(
+                            viewModel = createViewModelHelper(RecoveryCodesSaveScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.SMSOTPEnrollment> {
-                        SMSOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
+                        SMSOTPEnrollmentScreen(
+                            viewModel = createViewModelHelper(SMSOTPEnrollmentScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.SMSOTPEntry> {
                         SMSOTPEntryScreen(createViewModel = ::createViewModelHelper)
-                    }
-                    composable<Routes.Success> {
-                        SuccessScreen()
-                    }
-                    composable<Routes.TOTPEnrollment> {
-                        TOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
-                    }
-                    composable<Routes.TOTPEntry> {
-                        TOTPEntryScreen(createViewModel = ::createViewModelHelper)
-                    }
-                    composable<Routes.EmailMethodSelection> {
-                        EmailMethodSelectionScreen(createViewModel = ::createViewModelHelper)
-                    }
-                    composable<Routes.EmailOTPEntry> {
-                        EmailOTPEntryScreen(createViewModel = ::createViewModelHelper)
                     }
                     composable<Routes.SSODiscoveryEmail> {
                         SSODiscoveryEmailScreen(createViewModel = ::createViewModelHelper)
@@ -204,6 +216,15 @@ internal fun StytchB2BAuthenticationApp(
                     }
                     composable<Routes.SSODiscoveryMenu> {
                         SSODiscoveryMenuScreen(createViewModel = ::createViewModelHelper)
+                    }
+                    composable<Routes.Success> {
+                        SuccessScreen()
+                    }
+                    composable<Routes.TOTPEnrollment> {
+                        TOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
+                    }
+                    composable<Routes.TOTPEntry> {
+                        TOTPEntryScreen(createViewModel = ::createViewModelHelper)
                     }
                 }
                 rootAppState.errorToastText?.let {
@@ -234,3 +255,10 @@ internal fun StytchB2BAuthenticationApp(
         }
     }
 }
+
+internal data class RootAppState(
+    val currentRoute: Route? = null,
+    val deeplinkTokenPair: DeeplinkTokenPair? = null,
+    val isLoading: Boolean = false,
+    val errorToastText: String? = null,
+)

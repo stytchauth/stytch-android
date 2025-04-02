@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.b2b.screens
+package com.stytch.sdk.ui.b2b.screens.recoveryCodesSave
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -34,40 +34,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.BaseViewModel
-import com.stytch.sdk.ui.b2b.CreateViewModel
-import com.stytch.sdk.ui.b2b.data.B2BUIAction
-import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
 import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import kotlinx.coroutines.flow.StateFlow
 
-internal class RecoveryCodesSaveScreenViewModel(
-    internal val state: StateFlow<B2BUIState>,
-    dispatchAction: suspend (B2BUIAction) -> Unit,
-) : BaseViewModel(state, dispatchAction) {
-    fun acknowledgeSave() {
-        dispatch(SetNextRoute(Routes.Success))
-    }
+@Composable
+internal fun RecoveryCodesSaveScreen(viewModel: RecoveryCodesSaveScreenViewModel) {
+    val state = viewModel.recoveryCodesSaveState.collectAsState()
+    RecoveryCodesSaveScreenComposable(
+        backupCodes = state.value.backupCodes,
+        dispatch = viewModel::handle,
+    )
 }
 
 @Composable
-internal fun RecoveryCodesSaveScreen(
-    createViewModel: CreateViewModel<RecoveryCodesSaveScreenViewModel>,
-    viewModel: RecoveryCodesSaveScreenViewModel = createViewModel(RecoveryCodesSaveScreenViewModel::class.java),
+private fun RecoveryCodesSaveScreenComposable(
+    backupCodes: List<String>,
+    dispatch: (RecoveryCodesSaveAction) -> Unit,
 ) {
-    val state = viewModel.state.collectAsState()
     val theme = LocalStytchTheme.current
     val clipboardManager = LocalClipboardManager.current
-    val backupCodes =
-        state.value.mfaTOTPState
-            ?.enrollmentState
-            ?.recoveryCodes ?: emptyList()
     val allCodesJoined = backupCodes.joinToString("\n")
     val sendIntent: Intent =
         Intent().apply {
@@ -129,6 +117,8 @@ internal fun RecoveryCodesSaveScreen(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        StytchButton(text = "Done", enabled = didSaveCodesSomehow, onClick = viewModel::acknowledgeSave)
+        StytchButton(text = "Done", enabled = didSaveCodesSomehow, onClick = {
+            dispatch(RecoveryCodesSaveAction.AcknowledgeSave)
+        })
     }
 }
