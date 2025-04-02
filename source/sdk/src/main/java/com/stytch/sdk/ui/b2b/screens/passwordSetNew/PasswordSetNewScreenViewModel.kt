@@ -5,6 +5,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordResetByEmailStart
 import com.stytch.sdk.ui.shared.data.EmailState
@@ -32,7 +33,7 @@ internal class PasswordSetNewScreenViewModel(
     fun handle(action: PasswordSetNewAction) {
         when (action) {
             PasswordSetNewAction.ResetByEmailStart -> usePasswordResetByEmailStart()
-            is PasswordSetNewAction.DispatchGlobalAction -> dispatch((action.action))
+            PasswordSetNewAction.ResetEverything -> dispatch(ResetEverything)
         }
     }
 }
@@ -45,8 +46,5 @@ internal data class PasswordSetNewScreenState(
 internal sealed class PasswordSetNewAction {
     data object ResetByEmailStart : PasswordSetNewAction()
 
-    @JacocoExcludeGenerated
-    data class DispatchGlobalAction(
-        val action: B2BUIAction,
-    ) : PasswordSetNewAction()
+    data object ResetEverything : PasswordSetNewAction()
 }

@@ -33,11 +33,11 @@ private fun PasswordForgotScreenComposable(
     dispatch: (PasswordForgotAction) -> Unit,
 ) {
     BackHandler(enabled = true) {
-        dispatch(PasswordForgotAction.DispatchGlobalAction(ResetEverything))
+        dispatch(PasswordForgotAction.ResetEverything)
     }
     Column {
         BackButton {
-            dispatch(PasswordForgotAction.DispatchGlobalAction(ResetEverything))
+            dispatch(PasswordForgotAction.ResetEverything)
         }
         PageTitle(textAlign = TextAlign.Left, text = "Check your email for help signing in!")
         BodyText(

@@ -15,9 +15,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.stytch.sdk.ui.b2b.data.ResetEverything
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.Body2Text
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
@@ -40,11 +37,11 @@ private fun PasswordAuthenticateScreenComposable(
 ) {
     val theme = LocalStytchTheme.current
     BackHandler(enabled = true) {
-        dispatch(PasswordAuthenticateAction.DispatchGlobalAction(ResetEverything))
+        dispatch(PasswordAuthenticateAction.ResetEverything)
     }
     Column {
         BackButton {
-            dispatch(PasswordAuthenticateAction.DispatchGlobalAction(ResetEverything))
+            dispatch(PasswordAuthenticateAction.ResetEverything)
         }
         PageTitle(textAlign = TextAlign.Left, text = "Log in with email and password")
         EmailAndPasswordEntry(
@@ -70,7 +67,7 @@ private fun PasswordAuthenticateScreenComposable(
             color = Color(theme.secondaryTextColor),
             modifier =
                 Modifier.clickable {
-                    dispatch(PasswordAuthenticateAction.DispatchGlobalAction(SetNextRoute(Routes.PasswordForgot)))
+                    dispatch(PasswordAuthenticateAction.GoToPasswordForgot)
                 },
         )
     }

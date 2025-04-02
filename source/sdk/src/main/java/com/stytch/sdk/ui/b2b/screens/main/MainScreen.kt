@@ -28,12 +28,9 @@ import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.ProductComponent
-import com.stytch.sdk.ui.b2b.data.SetB2BError
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.extensions.generateProductComponentsOrdering
 import com.stytch.sdk.ui.b2b.extensions.toPainterResource
 import com.stytch.sdk.ui.b2b.extensions.toTitle
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
@@ -48,14 +45,14 @@ internal fun MainScreen(viewModel: MainScreenViewModel) {
     val state = viewModel.mainScreenState.collectAsState()
     MainScreenComposable(
         state = state.value,
-        action = viewModel::handleAction,
+        dispatch = viewModel::handle,
     )
 }
 
 @Composable
 private fun MainScreenComposable(
     state: MainScreenState,
-    action: (MainScreenAction) -> Unit,
+    dispatch: (MainScreenAction) -> Unit,
 ) {
     val primaryAuthMethods = state.primaryAuthMethods
     val emailAddress = state.emailState.emailAddress
@@ -72,7 +69,7 @@ private fun MainScreenComposable(
     val theme = LocalStytchTheme.current
     val context = LocalActivity.current as Activity
     if (state.products.isEmpty()) {
-        action(MainScreenAction.DispatchGlobalAction(SetB2BError(B2BErrorType.NoAuthenticationMethodsFound)))
+        dispatch(MainScreenAction.SetB2BError(B2BErrorType.NoAuthenticationMethodsFound))
         return
     }
     Column {
@@ -104,36 +101,24 @@ private fun MainScreenComposable(
                 ProductComponent.EmailForm -> {
                     EmailEntry(
                         emailState = state.emailState,
-                        onEmailAddressChanged = {
-                            action(
-                                MainScreenAction.UpdateMemberEmailAddress(
-                                    it,
-                                ),
-                            )
-                        },
-                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
+                        onEmailAddressChanged = { dispatch(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { dispatch(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                action(MainScreenAction.SetEmailShouldBeValidated)
-                                action(MainScreenAction.HandleEmailSubmit)
+                                dispatch(MainScreenAction.SetEmailShouldBeValidated)
+                                dispatch(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                 }
                 ProductComponent.EmailDiscoveryForm -> {
                     EmailEntry(
                         emailState = state.emailState,
-                        onEmailAddressChanged = {
-                            action(
-                                MainScreenAction.UpdateMemberEmailAddress(
-                                    it,
-                                ),
-                            )
-                        },
-                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
+                        onEmailAddressChanged = { dispatch(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { dispatch(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                action(MainScreenAction.SetEmailShouldBeValidated)
-                                action(MainScreenAction.HandleEmailSubmit)
+                                dispatch(MainScreenAction.SetEmailShouldBeValidated)
+                                dispatch(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                 }
@@ -147,7 +132,7 @@ private fun MainScreenComposable(
                             iconDrawable = provider.type.toPainterResource(),
                             iconDescription = provider.type.name,
                             text = "Continue with ${provider.type.toTitle()}",
-                            onClick = { action(MainScreenAction.StartOAuth(context, provider)) },
+                            onClick = { dispatch(MainScreenAction.StartOAuth(context, provider)) },
                         )
                     }
                 }
@@ -158,7 +143,7 @@ private fun MainScreenComposable(
                             text = "Continue with SSO",
                             iconDrawable = painterResource(R.drawable.sso),
                             iconDescription = "SSO",
-                            onClick = { action(MainScreenAction.StartSSODiscovery) },
+                            onClick = { dispatch(MainScreenAction.StartSSODiscovery) },
                         )
                     } else {
                         organization?.ssoActiveConnections?.map { provider ->
@@ -168,7 +153,7 @@ private fun MainScreenComposable(
                                 iconDrawable = provider.toPainterResource(),
                                 iconDescription = provider.displayName,
                                 onClick = {
-                                    action(
+                                    dispatch(
                                         MainScreenAction.StartSSO(
                                             context,
                                             provider.connectionId,
@@ -182,17 +167,11 @@ private fun MainScreenComposable(
                 ProductComponent.PasswordsEmailForm -> {
                     EmailAndPasswordEntry(
                         emailState = state.emailState,
-                        onEmailAddressChanged = {
-                            action(
-                                MainScreenAction.UpdateMemberEmailAddress(
-                                    it,
-                                ),
-                            )
-                        },
+                        onEmailAddressChanged = { dispatch(MainScreenAction.UpdateMemberEmailAddress(it)) },
                         passwordState = state.passwordState,
-                        onPasswordChanged = { action(MainScreenAction.UpdateMemberPassword(it)) },
-                        onSubmit = { action(MainScreenAction.HandlePasswordSubmit) },
-                        onEmailAddressDone = { action(MainScreenAction.SetEmailShouldBeValidated) },
+                        onPasswordChanged = { dispatch(MainScreenAction.UpdateMemberPassword(it)) },
+                        onSubmit = { dispatch(MainScreenAction.HandlePasswordSubmit) },
+                        onEmailAddressDone = { dispatch(MainScreenAction.SetEmailShouldBeValidated) },
                     )
                     val signInText =
                         buildAnnotatedString {
@@ -212,31 +191,23 @@ private fun MainScreenComposable(
                                 .fillMaxWidth()
                                 .padding(top = 32.dp)
                                 .clickable {
-                                    action(
-                                        MainScreenAction.DispatchGlobalAction(SetNextRoute(Routes.PasswordForgot)),
-                                    )
+                                    dispatch(MainScreenAction.GoToPasswordForgot)
                                 },
                     )
                 }
                 ProductComponent.PasswordEMLCombined -> {
                     EmailEntry(
                         emailState = state.emailState,
-                        onEmailAddressChanged = {
-                            action(
-                                MainScreenAction.UpdateMemberEmailAddress(
-                                    it,
-                                ),
-                            )
-                        },
-                        onEmailAddressSubmit = { action(MainScreenAction.HandleEmailSubmit) },
+                        onEmailAddressChanged = { dispatch(MainScreenAction.UpdateMemberEmailAddress(it)) },
+                        onEmailAddressSubmit = { dispatch(MainScreenAction.HandleEmailSubmit) },
                         keyboardActions =
                             KeyboardActions(onDone = {
-                                action(MainScreenAction.SetEmailShouldBeValidated)
-                                action(MainScreenAction.HandleEmailSubmit)
+                                dispatch(MainScreenAction.SetEmailShouldBeValidated)
+                                dispatch(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
                     StytchTextButton(text = "Use a password instead") {
-                        action(MainScreenAction.DispatchGlobalAction(SetNextRoute(Routes.PasswordAuthenticate)))
+                        dispatch(MainScreenAction.GoToPasswordAuthenticate)
                     }
                 }
                 ProductComponent.Divider -> DividerWithText(text = "or")

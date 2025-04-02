@@ -31,11 +31,11 @@ private fun PasswordResetScreenComposable(
     dispatch: (PasswordResetAction) -> Unit,
 ) {
     BackHandler(enabled = true) {
-        dispatch(PasswordResetAction.DispatchGlobalAction(ResetEverything))
+        dispatch(PasswordResetAction.ResetEverything)
     }
     Column {
         BackButton {
-            dispatch(PasswordResetAction.DispatchGlobalAction(ResetEverything))
+            dispatch(PasswordResetAction.ResetEverything)
         }
         PageTitle(textAlign = TextAlign.Left, text = "Set a new password")
         PasswordInput(

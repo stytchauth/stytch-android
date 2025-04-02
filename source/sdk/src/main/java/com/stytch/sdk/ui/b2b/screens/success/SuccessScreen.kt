@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.b2b.screens
+package com.stytch.sdk.ui.b2b.screens.success
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

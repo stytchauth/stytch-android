@@ -29,11 +29,11 @@ private fun PasswordSetNewScreenComposable(
 ) {
     val theme = LocalStytchTheme.current
     BackHandler(enabled = true) {
-        dispatch(PasswordSetNewAction.DispatchGlobalAction(ResetEverything))
+        dispatch(PasswordSetNewAction.ResetEverything)
     }
     Column {
         BackButton {
-            dispatch(PasswordSetNewAction.DispatchGlobalAction(ResetEverything))
+            dispatch(PasswordSetNewAction.ResetEverything)
         }
         PageTitle(textAlign = TextAlign.Left, text = "Check your email!")
         BodyText(

@@ -1,4 +1,4 @@
-package com.stytch.sdk.ui.b2b.screens
+package com.stytch.sdk.ui.b2b.screens.totpEnrollment
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -35,71 +35,47 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.BaseViewModel
-import com.stytch.sdk.ui.b2b.CreateViewModel
 import com.stytch.sdk.ui.b2b.components.LoadingView
-import com.stytch.sdk.ui.b2b.data.B2BUIAction
-import com.stytch.sdk.ui.b2b.data.B2BUIState
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.data.SetPostAuthScreen
-import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.usecases.UseTOTPCreate
+import com.stytch.sdk.ui.b2b.data.MFATOTPState
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
-internal class TOTPEnrollmentScreenViewModel(
-    internal val state: StateFlow<B2BUIState>,
-    dispatchAction: suspend (B2BUIAction) -> Unit,
-) : BaseViewModel(state, dispatchAction) {
-    private val _totpState = MutableStateFlow(state.value.mfaTOTPState)
-    val totpState = _totpState.asStateFlow()
-
-    private val useTOTPCreate = UseTOTPCreate(viewModelScope, state, ::dispatch, ::request)
-
-    init {
-        // if we're enrolling, make sure we always set the postauthscreen to recoverycodesave
-        dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
-        if (state.value.mfaTOTPState == null) {
-            // kick off account creation
-            useTOTPCreate()
-        }
-    }
-
-    fun goToCodeEntry() {
-        dispatch(SetNextRoute(Routes.TOTPEntry))
-    }
+@Composable
+internal fun TOTPEnrollmentScreen(viewModel: TOTPEnrollmentScreenViewModel) {
+    val totpState = viewModel.totpState.collectAsStateWithLifecycle()
+    TOTPEnrollmentScreenComposable(
+        state = totpState.value,
+        dispatch = viewModel::handle,
+    )
 }
 
 @Composable
-internal fun TOTPEnrollmentScreen(
-    createViewModel: CreateViewModel<TOTPEnrollmentScreenViewModel>,
-    viewModel: TOTPEnrollmentScreenViewModel = createViewModel(TOTPEnrollmentScreenViewModel::class.java),
+private fun TOTPEnrollmentScreenComposable(
+    state: MFATOTPState?,
+    dispatch: (TOTPEnrollmentScreenAction) -> Unit,
 ) {
-    val totpState = viewModel.totpState.collectAsStateWithLifecycle().value
     val theme = LocalStytchTheme.current
     val clipboardManager = LocalClipboardManager.current
-    if (totpState == null || totpState.isCreating) {
+    if (state == null || state.isCreating) {
         return LoadingView(color = Color(theme.inputTextColor))
     }
-    if (totpState.error != null) {
-        return BodyText(text = totpState.error.message)
+    if (state.error != null) {
+        return BodyText(text = state.error.message)
     }
-    val secret = (totpState.enrollmentState?.secret ?: "").lowercase()
+    val secret = (state.enrollmentState?.secret ?: "").lowercase()
     val secretChunked = secret.chunked(4).joinToString(" ")
     var didCopyCode by remember { mutableStateOf(false) }
     BackHandler(enabled = true) {
-        viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection))
+        dispatch(TOTPEnrollmentScreenAction.GoToMFAEnrollment)
     }
     Column {
-        BackButton(onClick = { viewModel.dispatch(SetNextRoute(Routes.MFAEnrollmentSelection)) })
+        BackButton(onClick = {
+            dispatch(TOTPEnrollmentScreenAction.GoToMFAEnrollment)
+        })
         PageTitle(textAlign = TextAlign.Left, text = "Copy the code below to link your authenticator app")
         BodyText(
             text =
@@ -150,6 +126,10 @@ internal fun TOTPEnrollmentScreen(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        StytchButton(enabled = didCopyCode, text = "Continue", onClick = viewModel::goToCodeEntry)
+        StytchButton(
+            enabled = didCopyCode,
+            text = "Continue",
+            onClick = { dispatch(TOTPEnrollmentScreenAction.GoToCodeEntry) },
+        )
     }
 }

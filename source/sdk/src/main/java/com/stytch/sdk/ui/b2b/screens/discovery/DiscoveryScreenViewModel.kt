@@ -7,6 +7,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryIntermediateSessionExchange
 import com.stytch.sdk.ui.b2b.usecases.UseDiscoveryOrganizationCreate
@@ -67,9 +68,9 @@ internal class DiscoveryScreenViewModel(
         }
     }
 
-    fun handleAction(action: DiscoveryScreenActions) {
+    fun handle(action: DiscoveryScreenActions) {
         when (action) {
-            is DiscoveryScreenActions.DispatchGlobalAction -> dispatch(action.action)
+            DiscoveryScreenActions.ResetEverything -> dispatch(ResetEverything)
             is DiscoveryScreenActions.CreateOrganization -> createOrganization()
             is DiscoveryScreenActions.ExchangeSessionForOrganization ->
                 exchangeSessionForOrganization(action.organizationId)
@@ -87,10 +88,7 @@ internal data class DiscoveryScreenState(
 )
 
 internal sealed class DiscoveryScreenActions {
-    @JacocoExcludeGenerated
-    internal data class DispatchGlobalAction(
-        val action: B2BUIAction,
-    ) : DiscoveryScreenActions()
+    data object ResetEverything : DiscoveryScreenActions()
 
     internal data object CreateOrganization : DiscoveryScreenActions()
 

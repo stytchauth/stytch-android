@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
-import com.stytch.sdk.ui.b2b.data.SetNextRoute
-import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -28,11 +26,11 @@ private fun SMSOTPEnrollmentScreenComposable(
     dispatch: (SMSOTPEnrollmentAction) -> Unit,
 ) {
     BackHandler(enabled = true) {
-        dispatch(SMSOTPEnrollmentAction.DispatchGlobalAction(SetNextRoute(Routes.MFAEnrollmentSelection)))
+        dispatch(SMSOTPEnrollmentAction.GoToMFAEnrollment)
     }
     Column {
         BackButton(onClick = {
-            dispatch(SMSOTPEnrollmentAction.DispatchGlobalAction(SetNextRoute(Routes.MFAEnrollmentSelection)))
+            dispatch(SMSOTPEnrollmentAction.GoToMFAEnrollment)
         })
         PageTitle(textAlign = TextAlign.Left, text = "Enter your phone number to set up Multi-Factor Authentication")
         BodyText(

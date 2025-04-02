@@ -7,9 +7,11 @@ import com.stytch.sdk.b2b.network.models.InternalOrganizationData
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
+import com.stytch.sdk.ui.b2b.data.B2BErrorType
 import com.stytch.sdk.ui.b2b.data.B2BOAuthProviderConfig
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetB2BError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProduct
@@ -122,9 +124,8 @@ internal class MainScreenViewModel(
 
     private fun handleSSODiscovery() = dispatch(SetNextRoute(Routes.SSODiscoveryEmail))
 
-    fun handleAction(action: MainScreenAction) {
+    fun handle(action: MainScreenAction) {
         when (action) {
-            is MainScreenAction.DispatchGlobalAction -> dispatch(action.action)
             is MainScreenAction.HandleEmailSubmit -> handleEmailSubmit()
             is MainScreenAction.HandlePasswordSubmit -> handleEmailPasswordSubmit()
             is MainScreenAction.StartSSO -> useSSOStart(action.context, action.connectionId)
@@ -133,6 +134,9 @@ internal class MainScreenViewModel(
             is MainScreenAction.SetEmailShouldBeValidated -> useUpdateMemberEmailShouldBeValidated(true)
             is MainScreenAction.UpdateMemberEmailAddress -> useUpdateMemberEmailAddress(action.emailAddress)
             is MainScreenAction.UpdateMemberPassword -> useUpdateMemberPassword(action.password)
+            MainScreenAction.GoToPasswordAuthenticate -> dispatch(SetNextRoute(Routes.PasswordAuthenticate))
+            MainScreenAction.GoToPasswordForgot -> dispatch(SetNextRoute(Routes.PasswordForgot))
+            is MainScreenAction.SetB2BError -> dispatch(SetB2BError(action.error))
         }
     }
 
@@ -150,8 +154,8 @@ internal class MainScreenViewModel(
 
 internal sealed class MainScreenAction {
     @JacocoExcludeGenerated
-    data class DispatchGlobalAction(
-        val action: B2BUIAction,
+    data class SetB2BError(
+        val error: B2BErrorType,
     ) : MainScreenAction()
 
     @JacocoExcludeGenerated
@@ -183,6 +187,10 @@ internal sealed class MainScreenAction {
     ) : MainScreenAction()
 
     data object StartSSODiscovery : MainScreenAction()
+
+    data object GoToPasswordForgot : MainScreenAction()
+
+    data object GoToPasswordAuthenticate : MainScreenAction()
 }
 
 @JacocoExcludeGenerated

@@ -70,16 +70,16 @@ internal fun DiscoveryScreen(viewModel: DiscoveryScreenViewModel) {
             if (allowedAuthMethods.firstOrNull() === AllowedAuthMethods.SSO &&
                 organization.ssoDefaultConnectionId != null
             ) {
-                viewModel.handleAction(DiscoveryScreenActions.StartSSO(context, organization.ssoDefaultConnectionId))
+                viewModel.handle(DiscoveryScreenActions.StartSSO(context, organization.ssoDefaultConnectionId))
             } else {
                 viewModel.dispatch(SetActiveOrganization(organization.toInternalOrganizationData()))
-                viewModel.handleAction(
+                viewModel.handle(
                     DiscoveryScreenActions.ExchangeSessionForOrganization(organizationId = organization.organizationId),
                 )
             }
         } else {
             if (discoveryScreenState.value.isExchanging) return
-            viewModel.handleAction(
+            viewModel.handle(
                 DiscoveryScreenActions.ExchangeSessionForOrganization(organizationId = organization.organizationId),
             )
         }
@@ -87,7 +87,7 @@ internal fun DiscoveryScreen(viewModel: DiscoveryScreenViewModel) {
 
     fun handleDiscoveryOrganizationCreate() {
         if (discoveryScreenState.value.isCreating) return
-        viewModel.handleAction(DiscoveryScreenActions.CreateOrganization)
+        viewModel.handle(DiscoveryScreenActions.CreateOrganization)
     }
 
     BackHandler(enabled = true) {
@@ -115,7 +115,7 @@ internal fun DiscoveryScreen(viewModel: DiscoveryScreenViewModel) {
         createOrganzationsEnabled = createOrganzationsEnabled,
         handleCreateOrganization = ::handleDiscoveryOrganizationCreate,
         handleDiscoveryOrganizationStart = ::handleDiscoveryOrganizationStart,
-        handleAction = viewModel::handleAction,
+        dispatch = viewModel::handle,
     )
 }
 
@@ -125,7 +125,7 @@ private fun DiscoveryScreenComposable(
     createOrganzationsEnabled: Boolean,
     handleCreateOrganization: () -> Unit = {},
     handleDiscoveryOrganizationStart: (DiscoveredOrganization) -> Unit = {},
-    handleAction: (DiscoveryScreenActions) -> Unit = {},
+    dispatch: (DiscoveryScreenActions) -> Unit = {},
 ) {
     val theme = LocalStytchTheme.current
 
@@ -142,11 +142,11 @@ private fun DiscoveryScreenComposable(
             return NoOrganizationsDiscovered(
                 emailState = discoveryScreenState.emailState,
                 createOrganzationsEnabled = createOrganzationsEnabled,
-                onCreateOrganization = { handleAction(DiscoveryScreenActions.CreateOrganization) },
-                onGoBack = { handleAction(DiscoveryScreenActions.DispatchGlobalAction(ResetEverything)) },
+                onCreateOrganization = { dispatch(DiscoveryScreenActions.CreateOrganization) },
+                onGoBack = { dispatch(DiscoveryScreenActions.ResetEverything) },
             )
         }
-        BackButton(onClick = { handleAction(DiscoveryScreenActions.DispatchGlobalAction(ResetEverything)) })
+        BackButton(onClick = { dispatch(DiscoveryScreenActions.ResetEverything) })
         PageTitle(textAlign = TextAlign.Left, text = "Select an organization to continue")
         Column(modifier = Modifier.fillMaxWidth()) {
             discoveryScreenState.discoveredOrganizations.map { discoveredOrganization ->

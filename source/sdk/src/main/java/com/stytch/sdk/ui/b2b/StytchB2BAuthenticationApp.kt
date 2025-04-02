@@ -27,17 +27,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.sdk.R
 import com.stytch.sdk.common.DeeplinkTokenPair
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.components.LoadingView
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
-import com.stytch.sdk.ui.b2b.screens.SMSOTPEntryScreen
-import com.stytch.sdk.ui.b2b.screens.SSODiscoveryEmailScreen
-import com.stytch.sdk.ui.b2b.screens.SSODiscoveryFallbackScreen
-import com.stytch.sdk.ui.b2b.screens.SSODiscoveryMenuScreen
-import com.stytch.sdk.ui.b2b.screens.SuccessScreen
-import com.stytch.sdk.ui.b2b.screens.TOTPEnrollmentScreen
-import com.stytch.sdk.ui.b2b.screens.TOTPEntryScreen
 import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreen
 import com.stytch.sdk.ui.b2b.screens.deepLinkParser.DeepLinkParserScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.discovery.DiscoveryScreen
@@ -69,6 +63,19 @@ import com.stytch.sdk.ui.b2b.screens.recoveryCodesSave.RecoveryCodesSaveScreen
 import com.stytch.sdk.ui.b2b.screens.recoveryCodesSave.RecoveryCodesSaveScreenViewModel
 import com.stytch.sdk.ui.b2b.screens.smsOTPEnrollment.SMSOTPEnrollmentScreen
 import com.stytch.sdk.ui.b2b.screens.smsOTPEnrollment.SMSOTPEnrollmentScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.smsOTPEntry.SMSOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.smsOTPEntry.SMSOTPEntryScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryEmail.SSODiscoveryEmailScreen
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryEmail.SSODiscoveryEmailScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryFallback.SSODiscoveryFallbackScreen
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryFallback.SSODiscoveryFallbackScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryMenu.SSODiscoveryMenuScreen
+import com.stytch.sdk.ui.b2b.screens.ssoDiscoveryMenu.SSODiscoveryMenuScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.success.SuccessScreen
+import com.stytch.sdk.ui.b2b.screens.totpEnrollment.TOTPEnrollmentScreen
+import com.stytch.sdk.ui.b2b.screens.totpEnrollment.TOTPEnrollmentScreenViewModel
+import com.stytch.sdk.ui.b2b.screens.totpEntry.TOTPEntryScreen
+import com.stytch.sdk.ui.b2b.screens.totpEntry.TOTPEntryScreenViewModel
 import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchBootstrapData
@@ -206,25 +213,33 @@ internal fun StytchB2BAuthenticationApp(
                         )
                     }
                     composable<Routes.SMSOTPEntry> {
-                        SMSOTPEntryScreen(createViewModel = ::createViewModelHelper)
+                        SMSOTPEntryScreen(viewModel = createViewModelHelper(SMSOTPEntryScreenViewModel::class.java))
                     }
                     composable<Routes.SSODiscoveryEmail> {
-                        SSODiscoveryEmailScreen(createViewModel = ::createViewModelHelper)
+                        SSODiscoveryEmailScreen(
+                            viewModel = createViewModelHelper(SSODiscoveryEmailScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.SSODiscoveryFallback> {
-                        SSODiscoveryFallbackScreen(createViewModel = ::createViewModelHelper)
+                        SSODiscoveryFallbackScreen(
+                            viewModel = createViewModelHelper(SSODiscoveryFallbackScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.SSODiscoveryMenu> {
-                        SSODiscoveryMenuScreen(createViewModel = ::createViewModelHelper)
+                        SSODiscoveryMenuScreen(
+                            viewModel = createViewModelHelper(SSODiscoveryMenuScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.Success> {
                         SuccessScreen()
                     }
                     composable<Routes.TOTPEnrollment> {
-                        TOTPEnrollmentScreen(createViewModel = ::createViewModelHelper)
+                        TOTPEnrollmentScreen(
+                            viewModel = createViewModelHelper(TOTPEnrollmentScreenViewModel::class.java),
+                        )
                     }
                     composable<Routes.TOTPEntry> {
-                        TOTPEntryScreen(createViewModel = ::createViewModelHelper)
+                        TOTPEntryScreen(viewModel = createViewModelHelper(TOTPEntryScreenViewModel::class.java))
                     }
                 }
                 rootAppState.errorToastText?.let {
@@ -256,6 +271,7 @@ internal fun StytchB2BAuthenticationApp(
     }
 }
 
+@JacocoExcludeGenerated
 internal data class RootAppState(
     val currentRoute: Route? = null,
     val deeplinkTokenPair: DeeplinkTokenPair? = null,

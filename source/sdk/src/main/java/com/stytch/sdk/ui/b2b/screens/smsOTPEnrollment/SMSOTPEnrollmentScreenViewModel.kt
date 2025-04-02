@@ -5,7 +5,9 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseOTPSMSSend
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberPhoneNumber
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,7 +30,7 @@ internal class SMSOTPEnrollmentScreenViewModel(
 
     fun handle(action: SMSOTPEnrollmentAction) {
         when (action) {
-            is SMSOTPEnrollmentAction.DispatchGlobalAction -> dispatch(action.action)
+            SMSOTPEnrollmentAction.GoToMFAEnrollment -> dispatch(SetNextRoute(Routes.MFAEnrollmentSelection))
             is SMSOTPEnrollmentAction.Send -> useSmsOtpSend(action.isEnrolling)
             is SMSOTPEnrollmentAction.UpdateMemberCountryCode ->
                 useUpdateMemberPhoneNumber(
@@ -45,10 +47,7 @@ internal class SMSOTPEnrollmentScreenViewModel(
 }
 
 internal sealed class SMSOTPEnrollmentAction {
-    @JacocoExcludeGenerated
-    data class DispatchGlobalAction(
-        val action: B2BUIAction,
-    ) : SMSOTPEnrollmentAction()
+    data object GoToMFAEnrollment : SMSOTPEnrollmentAction()
 
     @JacocoExcludeGenerated
     data class UpdateMemberCountryCode(

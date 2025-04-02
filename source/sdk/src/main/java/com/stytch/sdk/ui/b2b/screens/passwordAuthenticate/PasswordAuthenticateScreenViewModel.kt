@@ -5,7 +5,10 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ResetEverything
+import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
+import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UsePasswordDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseUpdateMemberEmailAddress
@@ -55,9 +58,10 @@ internal class PasswordAuthenticateScreenViewModel(
     fun handle(action: PasswordAuthenticateAction) {
         when (action) {
             PasswordAuthenticateAction.Authenticate -> authenticatePassword()
-            is PasswordAuthenticateAction.DispatchGlobalAction -> dispatch(action.action)
             is PasswordAuthenticateAction.UpdateMemberEmailAddress -> useUpdateMemberEmailAddress(action.emailAddress)
             is PasswordAuthenticateAction.UpdateMemberPassword -> useUpdateMemberPassword(action.password)
+            PasswordAuthenticateAction.GoToPasswordForgot -> dispatch(SetNextRoute(Routes.PasswordForgot))
+            PasswordAuthenticateAction.ResetEverything -> dispatch(ResetEverything)
         }
     }
 }
@@ -79,10 +83,9 @@ internal sealed class PasswordAuthenticateAction {
         val password: String,
     ) : PasswordAuthenticateAction()
 
-    @JacocoExcludeGenerated
-    data class DispatchGlobalAction(
-        val action: B2BUIAction,
-    ) : PasswordAuthenticateAction()
-
     data object Authenticate : PasswordAuthenticateAction()
+
+    data object ResetEverything : PasswordAuthenticateAction()
+
+    data object GoToPasswordForgot : PasswordAuthenticateAction()
 }
