@@ -117,7 +117,7 @@ public interface B2BSessions {
      */
     public fun updateSession(
         sessionToken: String,
-        sessionJwt: String,
+        sessionJwt: String?,
     )
 
     /**

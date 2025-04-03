@@ -146,7 +146,7 @@ internal class B2BSessionsImpl internal constructor(
      */
     override fun updateSession(
         sessionToken: String,
-        sessionJwt: String,
+        sessionJwt: String?,
     ) {
         try {
             sessionStorage.updateSession(sessionToken = sessionToken, sessionJwt = sessionJwt)
