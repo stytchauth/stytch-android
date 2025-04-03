@@ -120,6 +120,6 @@ public interface Sessions {
      */
     public fun updateSession(
         sessionToken: String,
-        sessionJwt: String,
+        sessionJwt: String?,
     )
 }

@@ -145,7 +145,7 @@ internal class SessionsImpl internal constructor(
      */
     override fun updateSession(
         sessionToken: String,
-        sessionJwt: String,
+        sessionJwt: String?,
     ) {
         try {
             sessionStorage.updateSession(sessionToken, sessionJwt)
