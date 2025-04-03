@@ -48,7 +48,6 @@ internal class StytchB2BApiServiceTest {
                 mockWebServer.url("/").toString(),
                 null,
                 null,
-                {},
                 StytchB2BApiService::class.java,
             )
     }

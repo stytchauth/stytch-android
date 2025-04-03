@@ -136,7 +136,6 @@ internal object StytchB2BApi {
                 sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                { StytchB2BClient.sessionStorage.revoke() },
                 StytchB2BApiService::class.java,
             )
     }
@@ -163,7 +162,6 @@ internal object StytchB2BApi {
             sdkUrl,
             authHeaderInterceptor,
             null,
-            { StytchB2BClient.sessionStorage.revoke() },
             StytchB2BApiService::class.java,
         )
     }
