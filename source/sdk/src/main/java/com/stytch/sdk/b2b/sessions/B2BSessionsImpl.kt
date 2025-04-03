@@ -9,8 +9,10 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.stytchObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -30,6 +32,21 @@ internal class B2BSessionsImpl internal constructor(
     private val api: StytchB2BApi.Sessions,
 ) : B2BSessions {
     private val callbacks = mutableListOf<(StytchObjectInfo<B2BSessionData>) -> Unit>()
+
+    internal inline fun <reified T : Any> maybeForceClearSession(
+        result: StytchResult.Error,
+        forceClear: Boolean = false,
+    ): StytchResult<T> =
+        if (forceClear || result.exception is StytchAPIError && result.exception.isUnrecoverableError()) {
+            try {
+                sessionStorage.revoke()
+                result
+            } catch (ex: Exception) {
+                StytchResult.Error(StytchInternalError(ex))
+            }
+        } else {
+            result
+        }
 
     override val onChange: StateFlow<StytchObjectInfo<B2BSessionData>> =
         combine(sessionStorage.sessionFlow, sessionStorage.lastValidatedAtFlow, ::stytchObjectMapper)
@@ -71,21 +88,20 @@ internal class B2BSessionsImpl internal constructor(
             }
         }
 
-    override suspend fun authenticate(authParams: B2BSessions.AuthParams): SessionsAuthenticateResponse {
-        val result: SessionsAuthenticateResponse
+    override suspend fun authenticate(authParams: B2BSessions.AuthParams): SessionsAuthenticateResponse =
         withContext(dispatchers.io) {
-            // do not revoke session here since we using stored data to authenticate
-            // call backend endpoint
-            result =
+            var result =
                 api
                     .authenticate(
                         authParams.sessionDurationMinutes,
                     ).apply {
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
+            if (result is StytchResult.Error) {
+                result = maybeForceClearSession(result, false)
+            }
+            result
         }
-        return result
-    }
 
     override fun authenticate(
         authParams: B2BSessions.AuthParams,
@@ -107,21 +123,21 @@ internal class B2BSessionsImpl internal constructor(
                 authenticate(authParams)
             }.asCompletableFuture()
 
-    override suspend fun revoke(params: B2BSessions.RevokeParams): BaseResponse {
-        var result: BaseResponse
+    override suspend fun revoke(params: B2BSessions.RevokeParams): BaseResponse =
         withContext(dispatchers.io) {
-            result = api.revoke()
-        }
-        // remove stored session
-        try {
-            if (result is StytchResult.Success || params.forceClear) {
-                sessionStorage.revoke()
+            var result = api.revoke()
+            try {
+                when (result) {
+                    is StytchResult.Success -> sessionStorage.revoke()
+                    is StytchResult.Error -> {
+                        result = maybeForceClearSession<BasicData>(result, params.forceClear)
+                    }
+                }
+                result
+            } catch (e: Exception) {
+                StytchResult.Error(StytchInternalError(e))
             }
-        } catch (ex: Exception) {
-            result = StytchResult.Error(StytchInternalError(exception = ex))
         }
-        return result
-    }
 
     override fun revoke(
         params: B2BSessions.RevokeParams,

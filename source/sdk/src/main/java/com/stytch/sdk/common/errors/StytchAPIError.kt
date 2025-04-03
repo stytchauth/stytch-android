@@ -1,5 +1,13 @@
 package com.stytch.sdk.common.errors
 
+private val UNRECOVERABLE_ERRORS =
+    setOf(
+        StytchAPIErrorType.UNAUTHORIZED_CREDENTIALS,
+        StytchAPIErrorType.USER_UNAUTHENTICATED,
+        StytchAPIErrorType.INVALID_SECRET_AUTHENTICATION,
+        StytchAPIErrorType.SESSION_NOT_FOUND,
+    )
+
 /**
  * An error class representing a non-schema error that occurs in the Stytch API
  * @property requestId the request id of the request that triggered this error
@@ -14,4 +22,6 @@ public data class StytchAPIError(
     public override val message: String,
     public val url: String? = null,
     public val statusCode: Int,
-) : StytchError(message = message)
+) : StytchError(message = message) {
+    internal fun isUnrecoverableError(): Boolean = UNRECOVERABLE_ERRORS.contains(this.errorType)
+}

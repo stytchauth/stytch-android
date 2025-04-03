@@ -7,21 +7,18 @@ import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.utils.createEnumJsonAdapter
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 private const val ONE_HUNDRED_TWENTY = 120L
-private const val HTTP_UNAUTHORIZED = 401
 
 internal interface ApiService {
     companion object {
         private fun clientBuilder(
             authHeaderInterceptor: StytchAuthHeaderInterceptor?,
             dfpInterceptor: StytchDFPInterceptor?,
-            revokeSession: () -> Unit,
         ): OkHttpClient {
             val builder =
                 OkHttpClient
@@ -32,16 +29,7 @@ internal interface ApiService {
             authHeaderInterceptor?.let { builder.addInterceptor(it) }
             dfpInterceptor?.let { builder.addInterceptor(it) }
             builder
-                .addInterceptor(
-                    Interceptor { chain ->
-                        val request = chain.request()
-                        val response = chain.proceed(request)
-                        if (response.code == HTTP_UNAUTHORIZED) {
-                            revokeSession()
-                        }
-                        return@Interceptor response
-                    },
-                ).addNetworkInterceptor {
+                .addNetworkInterceptor {
                     // OkHttp is adding a charset to the content-type which is rejected by the API
                     // see: https://github.com/square/okhttp/issues/3081
                     it.proceed(
@@ -59,7 +47,6 @@ internal interface ApiService {
             hostUrl: String,
             authHeaderInterceptor: StytchAuthHeaderInterceptor?,
             dfpInterceptor: StytchDFPInterceptor?,
-            revokeSession: () -> Unit,
             apiService: Class<T>,
         ): T {
             val moshi =
@@ -75,7 +62,7 @@ internal interface ApiService {
                 .Builder()
                 .baseUrl(hostUrl)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .client(clientBuilder(authHeaderInterceptor, dfpInterceptor, revokeSession))
+                .client(clientBuilder(authHeaderInterceptor, dfpInterceptor))
                 .build()
                 .create(apiService)
         }

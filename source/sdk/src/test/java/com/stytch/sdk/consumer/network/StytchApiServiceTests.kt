@@ -37,7 +37,6 @@ internal class StytchApiServiceTests {
                 mockWebServer.url("/").toString(),
                 null,
                 null,
-                {},
                 StytchApiService::class.java,
             )
     }

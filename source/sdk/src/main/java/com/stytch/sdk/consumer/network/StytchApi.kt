@@ -94,7 +94,6 @@ internal object StytchApi {
                 sdkUrl,
                 authHeaderInterceptor,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                { StytchClient.sessionStorage.revoke() },
                 StytchApiService::class.java,
             )
     }
@@ -121,7 +120,6 @@ internal object StytchApi {
             sdkUrl,
             authHeaderInterceptor,
             null,
-            { StytchClient.sessionStorage.revoke() },
             StytchApiService::class.java,
         )
     }
