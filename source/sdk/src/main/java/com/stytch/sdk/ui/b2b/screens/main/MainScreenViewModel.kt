@@ -88,7 +88,7 @@ internal class MainScreenViewModel(
                     organizationId = organization.organizationId,
                 ).onSuccess { response ->
                     dispatch(SetLoading(false))
-                    if (!response.member?.memberPasswordId.isNullOrEmpty()) {
+                    if (response.member != null) {
                         usePasswordsAuthenticate()
                     } else {
                         useNonMemberPasswordReset()
