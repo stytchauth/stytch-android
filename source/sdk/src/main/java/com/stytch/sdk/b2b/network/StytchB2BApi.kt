@@ -538,6 +538,7 @@ internal object StytchB2BApi {
             resetPasswordTemplateId: String?,
             codeChallenge: String,
             locale: Locale?,
+            verifyEmailTemplateId: String?,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmailStart(
@@ -550,6 +551,7 @@ internal object StytchB2BApi {
                         resetPasswordTemplateId = resetPasswordTemplateId,
                         codeChallenge = codeChallenge,
                         locale = locale,
+                        verifyEmailTemplateId = verifyEmailTemplateId,
                     ),
                 )
             }
@@ -633,6 +635,7 @@ internal object StytchB2BApi {
                 resetPasswordTemplateId: String?,
                 codeChallenge: String,
                 locale: Locale?,
+                verifyEmailTemplateId: String?,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmailStart(
@@ -644,6 +647,7 @@ internal object StytchB2BApi {
                             resetPasswordTemplateId = resetPasswordTemplateId,
                             codeChallenge = codeChallenge,
                             locale = locale,
+                            verifyEmailTemplateId = verifyEmailTemplateId,
                         ),
                     )
                 }

@@ -120,6 +120,8 @@ internal object B2BRequests {
             @Json(name = "code_challenge")
             val codeChallenge: String,
             val locale: Locale? = null,
+            @Json(name = "verify_email_template_id")
+            val verifyEmailTemplateId: String?,
         )
 
         @Keep
@@ -187,6 +189,8 @@ internal object B2BRequests {
                 @Json(name = "pkce_code_challenge")
                 val codeChallenge: String,
                 val locale: Locale? = null,
+                @Json(name = "verify_email_template_id")
+                val verifyEmailTemplateId: String?,
             )
 
             @Keep
