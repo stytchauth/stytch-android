@@ -40,12 +40,13 @@ internal class UseSendCorrectPasswordReset(
                 organizationId = organizationId,
             ).onSuccess {
                 dispatch(SetLoading(false))
-                if (it.member?.memberPasswordId.isNullOrEmpty()) {
-                    // no memberPasswordId == no password, so drop them in the nonMemberReset flow
+                if (it.member != null) {
+                    // member exists, so send them a reset
+                    usePasswordResetByEmailStart()
+                } else {
+                    // no member, so drop them in the nonMemberReset flow
                     return@onSuccess useNonMemberPasswordReset()
                 }
-                // there IS a password for this user, so send them a reset
-                usePasswordResetByEmailStart()
             }.onFailure {
                 dispatch(SetLoading(false))
             }
