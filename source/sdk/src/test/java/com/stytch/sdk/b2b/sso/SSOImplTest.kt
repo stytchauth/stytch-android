@@ -1,6 +1,7 @@
 package com.stytch.sdk.b2b.sso
 
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
+import com.stytch.sdk.b2b.B2BSSODiscoveryConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
@@ -125,6 +126,22 @@ internal class SSOImplTest {
         coEvery { mockApi.getConnections() } returns mockk(relaxed = true)
         val mockCallback = spyk<(B2BSSOGetConnectionsResponse) -> Unit>()
         impl.getConnections(mockCallback)
+        verify { mockCallback.invoke(any()) }
+    }
+
+    @Test
+    fun `SSO discoverConnections delegates to api`() =
+        runBlocking {
+            coEvery { mockApi.discoveryConnections(any()) } returns mockk(relaxed = true)
+            impl.discoverConnections("test@stytch.com")
+            coVerify { mockApi.discoveryConnections(eq("test@stytch.com")) }
+        }
+
+    @Test
+    fun `SSO discoverConnections with callback calls callback method`() {
+        coEvery { mockApi.discoveryConnections(any()) } returns mockk(relaxed = true)
+        val mockCallback = spyk<(B2BSSODiscoveryConnectionResponse) -> Unit>()
+        impl.discoverConnections("test@stytch.com", mockCallback)
         verify { mockCallback.invoke(any()) }
     }
 
