@@ -31,6 +31,7 @@ internal class UsePasswordResetByEmailStart(
                         loginRedirectUrl = getRedirectUrl(),
                         resetPasswordRedirectUrl = getRedirectUrl(),
                         resetPasswordTemplateId = productConfig.passwordOptions.resetPasswordTemplateId,
+                        verifyEmailTemplateId = productConfig.passwordOptions.verifyEmailTemplateId,
                         locale = productConfig.locale,
                     ),
                 )
