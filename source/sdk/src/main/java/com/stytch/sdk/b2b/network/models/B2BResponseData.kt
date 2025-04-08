@@ -1428,6 +1428,6 @@ public data class B2BPasswordDiscoveryAuthenticateResponseData(
 @Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
-internal data class B2BSSODiscoveryConnectionResponseData(
+public data class B2BSSODiscoveryConnectionResponseData(
     val connections: List<SSOActiveConnection>,
 ) : Parcelable

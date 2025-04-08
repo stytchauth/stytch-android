@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
+import com.stytch.sdk.b2b.B2BSSODiscoveryConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
@@ -190,6 +191,35 @@ public interface SSO {
      * @return [B2BSSODeleteConnectionResponse]
      */
     public fun deleteConnectionCompletable(connectionId: String): CompletableFuture<B2BSSODeleteConnectionResponse>
+
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @return [B2BSSODiscoveryConnectionResponse]
+     */
+    public suspend fun discoverConnections(emailAddress: String): B2BSSODiscoveryConnectionResponse
+
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @param callback A callback that receives a [B2BSSODiscoveryConnectionResponse]
+     */
+    public fun discoverConnections(
+        emailAddress: String,
+        callback: (B2BSSODiscoveryConnectionResponse) -> Unit,
+    )
+
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @return [B2BSSODiscoveryConnectionResponse]
+     */
+    public suspend fun discoverConnectionsCompletable(
+        emailAddress: String,
+    ): CompletableFuture<B2BSSODiscoveryConnectionResponse>
 
     /**
      * Exposes an instance of the [SAML] interface
