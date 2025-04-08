@@ -12,4 +12,5 @@ import kotlinx.parcelize.Parcelize
 @JacocoExcludeGenerated
 public data class B2BPasswordOptions(
     val resetPasswordTemplateId: String? = null,
+    val verifyEmailTemplateId: String? = null,
 ) : Parcelable

@@ -115,6 +115,9 @@ public interface Passwords {
      * @property resetPasswordTemplateId Use a custom template for password reset emails. By default, it will use your
      * default email template. The template must be a template using our built-in customizations or a custom HTML email
      * for Password Reset.
+     * @property verifyEmailTemplateId Use a custom template for password verify emails. By default, it will use your
+     * default email template. The template must be a template using our built-in customizations or a custom HTML email
+     * for Password Verification.
      */
     @JacocoExcludeGenerated
     public data class ResetByEmailStartParameters
@@ -126,6 +129,7 @@ public interface Passwords {
             val resetPasswordRedirectUrl: String? = null,
             val resetPasswordExpirationMinutes: Int? = null,
             val resetPasswordTemplateId: String? = null,
+            val verifyEmailTemplateId: String? = null,
             val locale: Locale? = null,
         )
 
@@ -381,6 +385,9 @@ public interface Passwords {
          * @property resetPasswordTemplateId - The email template ID to use for password reset. If not provided, your
          * default email template will be sent. If providing a template ID, it must be either a template using
          * Stytch's customizations, or a Passwords reset custom HTML template.
+         * @property verifyEmailTemplateId Use a custom template for password verify emails. By default, it will use
+         * your default email template. The template must be a template using our built-in customizations or a custom
+         * HTML email for Password Verification.
          */
         @JacocoExcludeGenerated
         public data class ResetByEmailStartParameters(
@@ -389,6 +396,7 @@ public interface Passwords {
             val resetPasswordRedirectUrl: String? = null,
             val resetPasswordExpirationMinutes: Int? = null,
             val resetPasswordTemplateId: String? = null,
+            val verifyEmailTemplateId: String? = null,
             val locale: Locale? = null,
         )
 
