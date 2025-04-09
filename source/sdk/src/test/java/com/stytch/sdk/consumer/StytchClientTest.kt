@@ -107,10 +107,10 @@ internal class StytchClientTest {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
-        StytchClient.externalScope = TestScope()
-        StytchClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
-        StytchClient.dfpProvider = mockk()
-        StytchClient.pkcePairManager = mockPKCEPairManager
+        StytchClient.configurationManager.externalScope = TestScope()
+        StytchClient.configurationManager.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+        StytchClient.configurationManager.dfpProvider = mockk()
+        StytchClient.configurationManager.pkcePairManager = mockPKCEPairManager
         StytchClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
     }
 
@@ -126,7 +126,7 @@ internal class StytchClientTest {
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `assertInitialized throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchApi.isInitialized } returns false
-        StytchClient.assertInitialized()
+        StytchApi.assertInitialized()
     }
 
     @Test
@@ -135,7 +135,7 @@ internal class StytchClientTest {
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
-        stytchClientObject.assertInitialized()
+        StytchApi.assertInitialized()
     }
 
     @Test
@@ -145,7 +145,7 @@ internal class StytchClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         val publicToken = UUID.randomUUID().toString()
         stytchClientObject.configure(mContextMock, publicToken)
-        verify { StytchApi.configure(publicToken, deviceInfo) }
+        verify { StytchApi.configure(publicToken, deviceInfo, any()) }
     }
 
     @Test
@@ -182,7 +182,7 @@ internal class StytchClientTest {
                 }
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
-            every { StorageHelper.loadValue(any()) } returns null
+            every { StytchClient.sessionStorage.session } returns null
             StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
@@ -215,6 +215,9 @@ internal class StytchClientTest {
                     .lenient()
                     .toJson(mockValidSession)
             every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
+            StytchClient.configure(mContextMock, UUID.randomUUID().toString())
+            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
+            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
         }
     }
 
@@ -521,23 +524,23 @@ internal class StytchClientTest {
         runTest {
             val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
             assert(nonDefaultBootstrapData != BootstrapData())
-            StytchClient.bootstrapData = nonDefaultBootstrapData
+            StytchClient.configurationManager.bootstrapData = nonDefaultBootstrapData
             every { NetworkChangeListener.networkIsAvailable } returns true
             coEvery { StytchApi.getBootstrapData() } returns
                 StytchResult.Error(StytchInternalError(RuntimeException("something went wrong")))
-            StytchClient.refreshBootstrapData()
-            assert(StytchClient.bootstrapData == nonDefaultBootstrapData)
+            StytchClient.configurationManager.refreshBootstrapData()
+            assert(StytchClient.configurationManager.bootstrapData == nonDefaultBootstrapData)
         }
 
     @Test
     fun `verify bootstrap data is overwritten by a successful bootstrap response`() =
         runTest {
             val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
-            StytchClient.bootstrapData = BootstrapData()
-            assert(StytchClient.bootstrapData != nonDefaultBootstrapData)
+            StytchClient.configurationManager.bootstrapData = BootstrapData()
+            assert(StytchClient.configurationManager.bootstrapData != nonDefaultBootstrapData)
             every { NetworkChangeListener.networkIsAvailable } returns true
             coEvery { StytchApi.getBootstrapData() } returns StytchResult.Success(nonDefaultBootstrapData)
-            StytchClient.refreshBootstrapData()
-            assert(StytchClient.bootstrapData == nonDefaultBootstrapData)
+            StytchClient.configurationManager.refreshBootstrapData()
+            assert(StytchClient.configurationManager.bootstrapData == nonDefaultBootstrapData)
         }
 }

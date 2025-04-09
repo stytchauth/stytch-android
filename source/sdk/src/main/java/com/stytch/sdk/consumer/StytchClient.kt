@@ -218,12 +218,6 @@ public object StytchClient {
         sessionStorage = ConsumerSessionStorage(StorageHelper)
     }
 
-    internal fun assertInitialized() {
-        if (!StytchApi.isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchClient")
-        }
-    }
-
     /**
      * Exposes an instance of the [MagicLinks] interface whicih provides methods for sending and authenticating users
      * with Email Magic Links.
@@ -232,7 +226,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val magicLinks: MagicLinks by StytchLazyDelegate(::assertInitialized) {
+    public val magicLinks: MagicLinks by StytchLazyDelegate(StytchApi::assertInitialized) {
         MagicLinksImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -250,7 +244,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val otps: OTP by StytchLazyDelegate(::assertInitialized) {
+    public val otps: OTP by StytchLazyDelegate(StytchApi::assertInitialized) {
         OTPImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -267,7 +261,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
+    public val passwords: Passwords by StytchLazyDelegate(StytchApi::assertInitialized) {
         PasswordsImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -285,7 +279,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val sessions: Sessions by StytchLazyDelegate(::assertInitialized) {
+    public val sessions: Sessions by StytchLazyDelegate(StytchApi::assertInitialized) {
         SessionsImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -302,7 +296,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val biometrics: Biometrics by StytchLazyDelegate(::assertInitialized) {
+    public val biometrics: Biometrics by StytchLazyDelegate(StytchApi::assertInitialized) {
         BiometricsImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -323,7 +317,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val user: UserManagement by StytchLazyDelegate(::assertInitialized) {
+    public val user: UserManagement by StytchLazyDelegate(StytchApi::assertInitialized) {
         UserManagementImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -340,7 +334,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
+    public val oauth: OAuth by StytchLazyDelegate(StytchApi::assertInitialized) {
         OAuthImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -358,7 +352,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passkeys: Passkeys by StytchLazyDelegate(::assertInitialized) {
+    public val passkeys: Passkeys by StytchLazyDelegate(StytchApi::assertInitialized) {
         PasskeysImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -375,7 +369,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
+    public val dfp: DFP by StytchLazyDelegate(StytchApi::assertInitialized) {
         DFPImpl(
             configurationManager.dfpProvider,
             configurationManager.dispatchers,
@@ -391,7 +385,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val crypto: CryptoWallet by StytchLazyDelegate(::assertInitialized) {
+    public val crypto: CryptoWallet by StytchLazyDelegate(StytchApi::assertInitialized) {
         CryptoWalletImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -408,7 +402,7 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
+    public val totp: TOTP by StytchLazyDelegate(StytchApi::assertInitialized) {
         TOTPImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -417,7 +411,7 @@ public object StytchClient {
         )
     }
 
-    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
+    internal val events: Events by StytchLazyDelegate(StytchApi::assertInitialized) {
         EventsImpl(
             configurationManager.deviceInfo,
             configurationManager.appSessionId,
@@ -448,7 +442,7 @@ public object StytchClient {
         uri: Uri,
         sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
-        assertInitialized()
+        StytchApi.assertInitialized()
         return withContext(configurationManager.dispatchers.io) {
             val token = uri.getQueryParameter(QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
@@ -565,6 +559,7 @@ public object StytchClient {
             configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
                 val start = Date().time
                 sessionStorage.session?.let {
+                    println("THIS IS MY SESSION DATA: $it")
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
                     StytchApi.Sessions.authenticate(null).apply {
@@ -600,5 +595,7 @@ public object StytchClient {
                 )
             }
         }
+
+        override fun getSessionToken(): String? = sessionStorage.sessionToken
     }
 }

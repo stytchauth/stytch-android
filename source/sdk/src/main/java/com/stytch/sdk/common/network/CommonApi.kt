@@ -11,6 +11,7 @@ internal interface CommonApi {
     fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        getSessionToken: () -> String?,
     )
 
     fun configureDFP(

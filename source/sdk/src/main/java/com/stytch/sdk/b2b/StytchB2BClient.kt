@@ -225,12 +225,6 @@ public object StytchB2BClient {
         sessionStorage = B2BSessionStorage(StorageHelper)
     }
 
-    internal fun assertInitialized() {
-        if (!StytchB2BApi.isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchB2BClient")
-        }
-    }
-
     /**
      * Exposes an instance of the [B2BMagicLinks] interface whicih provides methods for sending and authenticating
      * users with Email Magic Links.
@@ -239,7 +233,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val magicLinks: B2BMagicLinks by StytchLazyDelegate(::assertInitialized) {
+    public val magicLinks: B2BMagicLinks by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         B2BMagicLinksImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -258,7 +252,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val sessions: B2BSessions by StytchLazyDelegate(::assertInitialized) {
+    public val sessions: B2BSessions by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         B2BSessionsImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -275,7 +269,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val organization: Organization by StytchLazyDelegate(::assertInitialized) {
+    public val organization: Organization by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         OrganizationImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -292,7 +286,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val member: Member by StytchLazyDelegate(::assertInitialized) {
+    public val member: Member by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         MemberImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -309,7 +303,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
+    public val passwords: Passwords by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         PasswordsImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -328,7 +322,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val discovery: Discovery by StytchLazyDelegate(::assertInitialized) {
+    public val discovery: Discovery by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         DiscoveryImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -341,7 +335,7 @@ public object StytchB2BClient {
      * Exposes an instance of the [SSO] interface which provides methods for authenticating SSO sessions
      */
     @JvmStatic
-    public val sso: SSO by StytchLazyDelegate(::assertInitialized) {
+    public val sso: SSO by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         SSOImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -359,7 +353,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
+    public val dfp: DFP by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         DFPImpl(
             configurationManager.dfpProvider,
             configurationManager.dispatchers,
@@ -367,7 +361,7 @@ public object StytchB2BClient {
         )
     }
 
-    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
+    internal val events: Events by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         EventsImpl(
             configurationManager.deviceInfo,
             configurationManager.appSessionId,
@@ -384,7 +378,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val otp: OTP by StytchLazyDelegate(::assertInitialized) {
+    public val otp: OTP by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         OTPImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -400,7 +394,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
+    public val totp: TOTP by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         TOTPImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -417,7 +411,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val recoveryCodes: RecoveryCodes by StytchLazyDelegate(::assertInitialized) {
+    public val recoveryCodes: RecoveryCodes by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         RecoveryCodesImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -434,7 +428,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
+    public val oauth: OAuth by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         OAuthImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -450,7 +444,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val rbac: RBAC by StytchLazyDelegate(::assertInitialized) {
+    public val rbac: RBAC by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         RBACImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -464,7 +458,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val searchManager: SearchManager by StytchLazyDelegate(::assertInitialized) {
+    public val searchManager: SearchManager by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         SearchManagerImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -479,7 +473,7 @@ public object StytchB2BClient {
      * StytchB2BClient.configure()
      */
     @JvmStatic
-    public val scim: SCIM by StytchLazyDelegate(::assertInitialized) {
+    public val scim: SCIM by StytchLazyDelegate(StytchB2BApi::assertInitialized) {
         SCIMImpl(
             configurationManager.externalScope,
             configurationManager.dispatchers,
@@ -504,7 +498,7 @@ public object StytchB2BClient {
         uri: Uri,
         sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
-        assertInitialized()
+        StytchB2BApi.assertInitialized()
         val (tokenType, token, redirectType) = parseDeeplink(uri)
         if (token.isNullOrEmpty()) {
             return DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
@@ -700,5 +694,7 @@ public object StytchB2BClient {
                 )
             }
         }
+
+        override fun getSessionToken(): String? = sessionStorage.sessionToken
     }
 }

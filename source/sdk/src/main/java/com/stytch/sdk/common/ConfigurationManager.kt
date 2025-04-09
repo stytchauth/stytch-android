@@ -27,7 +27,7 @@ import java.util.UUID
 internal class ConfigurationManager {
     internal lateinit var deviceInfo: DeviceInfo
     internal lateinit var appSessionId: String
-    private var stytchClientOptions: StytchClientOptions? = null
+    private var options: StytchClientOptions = StytchClientOptions()
     internal var applicationContext = WeakReference<Context>(null)
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
@@ -53,7 +53,7 @@ internal class ConfigurationManager {
             configurationStartTime = Date().time
             this.client = client
             this.publicToken = publicToken
-            this.stytchClientOptions = options
+            this.options = options
             this.applicationContext = WeakReference(context.applicationContext)
             this.deviceInfo = context.getDeviceInfo()
             this.appSessionId = "app-session-id-${UUID.randomUUID()}"
@@ -69,7 +69,7 @@ internal class ConfigurationManager {
                     client.smsAutofillCallback(code, sessionDurationMinutes)
                 }
             StorageHelper.initialize(context)
-            client.commonApi.configure(publicToken, deviceInfo)
+            client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken)
             val bootstrapJob = refreshBootstrapAndApi(true)
             val sessionRehydrationJob = client.rehydrateSession()
             externalScope.launch(dispatchers.io) {
@@ -98,7 +98,7 @@ internal class ConfigurationManager {
     private fun isAlreadyConfiguredFor(
         publicToken: String,
         options: StytchClientOptions,
-    ) = this::publicToken.isInitialized && this.publicToken == publicToken && this.stytchClientOptions == options
+    ) = this::publicToken.isInitialized && this.publicToken == publicToken && this.options == options
 
     fun emitAnalyticsEvent(event: ConfigurationAnalyticsEvent) {
         // TODO: Align on naming with Nidal

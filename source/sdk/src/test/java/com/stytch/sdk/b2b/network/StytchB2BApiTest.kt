@@ -91,7 +91,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi isInitialized returns correctly based on configuration state`() {
-        StytchB2BApi.configure("publicToken", DeviceInfo())
+        StytchB2BApi.configure("publicToken", DeviceInfo(), { null })
         assert(StytchB2BApi.isInitialized)
     }
 

@@ -20,4 +20,6 @@ internal interface StytchClientCommon {
     )
 
     var onFinishedInitialization: () -> Unit
+
+    fun getSessionToken(): String?
 }

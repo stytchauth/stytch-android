@@ -31,7 +31,6 @@ import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
-import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
@@ -55,27 +54,25 @@ import com.stytch.sdk.consumer.network.models.UserSearchResponseData
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    private lateinit var getSessionToken: () -> String?
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
     @Suppress("MaxLineLength")
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
-        if (!isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchClient")
-        }
-        StytchAuthHeaderInterceptor(
-            deviceInfo,
-            publicToken,
-        ) { StytchClient.sessionStorage.sessionToken }
+        assertInitialized()
+        StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken)
     }
 
     override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        getSessionToken: () -> String?,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+        this.getSessionToken = getSessionToken
     }
 
     override fun configureDFP(
@@ -106,9 +103,15 @@ internal object StytchApi : CommonApi {
 
     internal val isTestToken: Boolean
         get() {
-            StytchClient.assertInitialized()
+            assertInitialized()
             return publicToken.contains("public-token-test")
         }
+
+    internal fun assertInitialized() {
+        if (!isInitialized) {
+            throw StytchSDKNotConfiguredError("StytchClient")
+        }
+    }
 
     private val regularStytchApiService: StytchApiService by lazy {
         val sdkUrl =
@@ -130,7 +133,7 @@ internal object StytchApi : CommonApi {
     @VisibleForTesting
     internal val apiService: StytchApiService
         get() {
-            StytchClient.assertInitialized()
+            assertInitialized()
             return if (::dfpProtectedStytchApiService.isInitialized) {
                 dfpProtectedStytchApiService
             } else {
@@ -922,7 +925,7 @@ internal object StytchApi : CommonApi {
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeConsumerApiCall(
         apiCall: suspend () -> T,
     ): StytchResult<T1> =
-        safeApiCall({ StytchClient.assertInitialized() }) {
+        safeApiCall({ assertInitialized() }) {
             apiCall()
         }
 }

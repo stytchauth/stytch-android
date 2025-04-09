@@ -9,7 +9,6 @@ import com.stytch.sdk.b2b.SCIMRotateCancelResponse
 import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
 import com.stytch.sdk.b2b.SCIMRotateStartResponse
 import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
-import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
@@ -96,27 +95,25 @@ import com.stytch.sdk.common.network.safeApiCall
 internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    private lateinit var getSessionToken: () -> String?
 
     // save reference for changing auth header
     // make sure api is configured before accessing this variable
     @Suppress("MaxLineLength")
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
-        if (!isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchB2BClient")
-        }
-        StytchAuthHeaderInterceptor(
-            deviceInfo,
-            publicToken,
-        ) { StytchB2BClient.sessionStorage.sessionToken }
+        assertInitialized()
+        StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken)
     }
 
     override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        getSessionToken: () -> String?,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+        this.getSessionToken = getSessionToken
     }
 
     override fun configureDFP(
@@ -125,7 +122,7 @@ internal object StytchB2BApi : CommonApi {
         dfpProtectedAuthEnabled: Boolean,
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
-        StytchB2BClient.assertInitialized()
+        assertInitialized()
         val sdkUrl =
             if (isTestToken) {
                 TEST_SDK_URL
@@ -148,9 +145,15 @@ internal object StytchB2BApi : CommonApi {
 
     internal val isTestToken: Boolean
         get() {
-            StytchB2BClient.assertInitialized()
+            assertInitialized()
             return publicToken.contains("public-token-test")
         }
+
+    internal fun assertInitialized() {
+        if (!isInitialized) {
+            throw StytchSDKNotConfiguredError("StytchB2BClient")
+        }
+    }
 
     private val regularStytchApiService: StytchB2BApiService by lazy {
         val sdkUrl =
@@ -172,7 +175,7 @@ internal object StytchB2BApi : CommonApi {
     @VisibleForTesting
     internal val apiService: StytchB2BApiService
         get() {
-            StytchB2BClient.assertInitialized()
+            assertInitialized()
             return if (::dfpProtectedStytchApiService.isInitialized) {
                 dfpProtectedStytchApiService
             } else {
@@ -181,7 +184,7 @@ internal object StytchB2BApi : CommonApi {
         }
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(apiCall: suspend () -> T): StytchResult<T1> =
-        safeApiCall({ StytchB2BClient.assertInitialized() }) {
+        safeApiCall({ assertInitialized() }) {
             apiCall()
         }
 

@@ -106,7 +106,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `authenticate emits correct event on reset_password success`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Error =
                 mockk(relaxed = true) {
                     every { exception } returns
@@ -136,7 +136,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `authenticate updates state on reset_password failure`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Error =
                 mockk(relaxed = true) {
                     every { exception } returns
@@ -194,7 +194,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `sendEML updates state and emits event on success`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
             val eventFlow =
                 async {
@@ -212,7 +212,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `sendEML updates state on failure`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Error =
                 mockk(relaxed = true) {
                     every { exception } returns
@@ -268,7 +268,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `onForgotPasswordClicked updates state and emits event on success`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
             val eventFlow =
                 async {
@@ -286,7 +286,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `onForgotPasswordClicked updates state on failure`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Error =
                 mockk(relaxed = true) {
                     every { exception } returns
