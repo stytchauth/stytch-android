@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture
  * The Biometrics interface provides methods for detecting biometric availability, registering, authenticating, and
  * removing biometrics identifiers.
  */
+
 public interface Biometrics {
     /**
      * Data class used for wrapping parameters used with Biometrics registration flow

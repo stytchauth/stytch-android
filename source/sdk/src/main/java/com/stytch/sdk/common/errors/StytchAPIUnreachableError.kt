@@ -6,6 +6,7 @@ package com.stytch.sdk.common.errors
  * @property message a string explaining what went wrong
  * @property exception an optional [Throwable] that caused this error to occur
  */
+
 public data class StytchAPIUnreachableError(
     public override val message: String,
     public val exception: Throwable? = null,

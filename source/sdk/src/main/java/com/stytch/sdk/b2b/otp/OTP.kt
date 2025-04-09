@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
  */
+
 public interface OTP {
     /**
      * Public variable that exposes an instance of SMS OTP
@@ -29,6 +30,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call SMS OTP endpoints
      */
+
     public interface SMS {
         /**
          * A data class wrapping the parameters needed to send an SMS OTP
@@ -131,6 +133,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call Email OTP endpoints
      */
+
     public interface Email {
         public val discovery: Discovery
 
@@ -237,6 +240,7 @@ public interface OTP {
         /**
          * Provides all possible ways to call Email OTP Discovery endpoints
          */
+
         public interface Discovery {
             /**
              * A data class wrapping the parameters needed to send an Email Discovery OTP

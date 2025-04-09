@@ -69,6 +69,7 @@ import java.util.Date
  * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our
  * supported authentication products.
  */
+
 public object StytchB2BClient {
     internal val configurationManager = ConfigurationManager()
 

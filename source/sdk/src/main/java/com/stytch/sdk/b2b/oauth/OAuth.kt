@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture
  * The OAuth interface provides methods for authenticating a user, via the supported OAuth providers, provided you have
  * configured them within your Stytch Dashboard.
  */
+
 public interface OAuth {
     public fun setOAuthReceiverActivity(activity: ComponentActivity?)
 
@@ -21,6 +22,7 @@ public interface OAuth {
      * An interface describing the methods and parameters available for starting an OAuth or OAuth discovery flow
      * for a specific provider
      */
+
     public interface Provider {
         /**
          * A data class wrapping the parameters necessary to start an OAuth flow for a specific provider
@@ -94,6 +96,7 @@ public interface OAuth {
      * An interface describing the methods and parameters available for starting an OAuth discovery flow
      * for a specific provider
      */
+
     public interface ProviderDiscovery {
         /**
          * A data class wrapping the parameters necessary to start an OAuth flow for a specific provider
@@ -163,6 +166,7 @@ public interface OAuth {
     /**
      * An interface describing the parameters and methods available for authenticating an OAuth Discovery flow
      */
+
     public interface Discovery {
         /**
          * A data class wrapping the parameters necessary to authenticate an OAuth Discovery flow

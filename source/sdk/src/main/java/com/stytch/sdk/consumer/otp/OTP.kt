@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
  * Email.
  */
+
 public interface OTP {
     /**
      * Data class used for wrapping parameters used with OTP authentication
@@ -83,6 +84,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call SMS OTP endpoints
      */
+
     public interface SmsOTP {
         /**
          * Data class used for wrapping parameters used with SMS OTP
@@ -164,6 +166,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call WhatsApp OTP endpoints
      */
+
     public interface WhatsAppOTP {
         /**
          * Data class used for wrapping parameters used with WhatsApp OTP
@@ -239,6 +242,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call Email OTP endpoints
      */
+
     public interface EmailOTP {
         /**
          * Data class used for wrapping parameters used with Email OTP

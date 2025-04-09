@@ -7,6 +7,7 @@ import com.stytch.sdk.R
 /**
  * An enum class representing all of the supported OAuth providers
  */
+
 public enum class OAuthProvider(
     @DrawableRes internal val iconDrawable: Int,
     @StringRes internal val iconText: Int,

@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture
  * The Sessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
+
 public interface Sessions {
     /**
      * Exposes a flow of session data

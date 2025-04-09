@@ -1,7 +1,6 @@
 package com.stytch.sdk.ui.b2c.data
 
 import android.os.Parcelable
-import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
@@ -19,7 +18,6 @@ import kotlinx.parcelize.Parcelize
  * @property googleOauthOptions an instance of [GoogleOAuthOptions]
  */
 @Parcelize
-@Keep
 @JsonClass(generateAdapter = true)
 @JacocoExcludeGenerated
 public data class StytchProductConfig

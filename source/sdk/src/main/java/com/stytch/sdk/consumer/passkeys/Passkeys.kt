@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
  * The Passkeys interface provides methods for detecting Passkeys support, registering, and authenticating with
  * Passkeys.
  */
+
 public interface Passkeys {
     /**
      * Data class used for wrapping parameters used with Passkeys registration

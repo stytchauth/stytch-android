@@ -12,13 +12,34 @@
 #   public *;
 #}
 
--keep public class com.stytch.sdk.** {
-    public protected *;
+-keep public interface com.stytch.sdk.** {
+    public *;
 }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
--keepattributes SourceFile,LineNumberTable
+-keep public class com.stytch.sdk.**$* {
+    *;
+}
+
+-keep public class com.stytch.sdk.b2b.* {
+    public *;
+}
+
+-keep public class com.stytch.sdk.common.* {
+    public *;
+}
+
+-keep public class com.stytch.sdk.consumer.* {
+    public *;
+}
+
+-keep public class com.stytch.sdk.ui.* {
+    public *;
+}
+
+-keep public class com.stytch.sdk.**.models.* {
+    public *;
+}
+
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.

@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
  */
+
 public interface MagicLinks {
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
@@ -61,6 +62,7 @@ public interface MagicLinks {
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
+
     public interface EmailMagicLinks {
         /**
          * Data class used for wrapping parameters used with MagicLinks.EmailMagicLinks.loginOrCreate

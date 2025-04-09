@@ -17,6 +17,7 @@ public sealed class BiometricAvailability {
          * An enum describing why biometrics are unavailable on this device
          * @property message a string representation of why biometrics are unavailable
          */
+
         public enum class Reason(
             public val message: String,
         ) {
@@ -87,15 +88,18 @@ public sealed class BiometricAvailability {
      * Status indicating that the biometric key has been revoked. Usually this means the user has added a new
      * biometric or deleted all existing biometrics.
      */
+
     public data object RegistrationRevoked : BiometricAvailability()
 
     /**
      * Status indicating that biometrics are available, but no registrations have been made yet
      */
+
     public data object AvailableNoRegistrations : BiometricAvailability()
 
     /**
      * Status indicating that biometrics are available and there is already a biometric registration on device
      */
+
     public data object AvailableRegistered : BiometricAvailability()
 }

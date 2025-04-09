@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * The RecoveryCodes interface provides methods for getting, rotating, and using recovery codes for a member
  */
+
 public interface RecoveryCodes {
     /**
      * Get the recovery codes for an authenticated member

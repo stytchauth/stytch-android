@@ -62,6 +62,7 @@ import java.util.Date
  * The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our
  * supported authentication products.
  */
+
 public object StytchClient {
     internal val configurationManager = ConfigurationManager()
 

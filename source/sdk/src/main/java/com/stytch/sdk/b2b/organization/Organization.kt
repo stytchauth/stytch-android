@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture
  * The Organization interface provides methods for retrieving, updating, and deleting the current authenticated user's
  * organization and creating, updating, deleting, reactivating, and searching an organizations members
  */
+
 public interface Organization {
     /**
      * Exposes a flow of organization data
@@ -183,6 +184,7 @@ public interface Organization {
      * An interface that provides methods for performing create, update, delete, reactivate, and search operations on an
      * Organization's members
      */
+
     public interface OrganizationMembers {
         /**
          * Deletes a Member.

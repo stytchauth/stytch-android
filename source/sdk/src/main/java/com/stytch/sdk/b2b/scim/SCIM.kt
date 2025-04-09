@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * The SCIM interface provides methods for creating, getting, updating, deleting, and rotating SCIM connections
  */
+
 public interface SCIM {
     /**
      * A data class wrapping the parameters needed to create a SCIM connection

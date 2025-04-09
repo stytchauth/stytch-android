@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture
  * (either Dropbox’s [zxcvbn](https://github.com/dropbox/zxcvbn) or adjustable LUDS) to guide members towards creating
  * passwords that are easy for humans to remember but difficult for computers to crack.
  */
+
 public interface Passwords {
     /**
      * Data class used for wrapping parameters used with Passwords authentication
