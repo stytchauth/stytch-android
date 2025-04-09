@@ -80,6 +80,7 @@ import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.EventsAPI
 import com.stytch.sdk.common.network.ApiService
+import com.stytch.sdk.common.network.CommonApi
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -92,7 +93,7 @@ import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
-internal object StytchB2BApi {
+internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
 
@@ -110,7 +111,7 @@ internal object StytchB2BApi {
         ) { StytchB2BClient.sessionStorage.sessionToken }
     }
 
-    internal fun configure(
+    override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
     ) {
@@ -118,7 +119,7 @@ internal object StytchB2BApi {
         this.deviceInfo = deviceInfo
     }
 
-    internal fun configureDFP(
+    override fun configureDFP(
         dfpProvider: DFPProvider,
         captchaProvider: CaptchaProvider,
         dfpProtectedAuthEnabled: Boolean,
@@ -945,7 +946,7 @@ internal object StytchB2BApi {
             }
     }
 
-    suspend fun getBootstrapData(): StytchResult<BootstrapData> =
+    override suspend fun getBootstrapData(): StytchResult<BootstrapData> =
         safeB2BApiCall {
             apiService.getBootstrapData(publicToken = publicToken)
         }

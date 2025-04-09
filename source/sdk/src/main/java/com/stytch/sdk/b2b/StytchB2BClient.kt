@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b
 
-import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.R
@@ -35,87 +34,52 @@ import com.stytch.sdk.b2b.sso.SSO
 import com.stytch.sdk.b2b.sso.SSOImpl
 import com.stytch.sdk.b2b.totp.TOTP
 import com.stytch.sdk.b2b.totp.TOTPImpl
-import com.stytch.sdk.common.AppLifecycleListener
+import com.stytch.sdk.common.ConfigurationAnalyticsEvent
+import com.stytch.sdk.common.ConfigurationManager
+import com.stytch.sdk.common.ConfigurationStep
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
-import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_REDIRECT_TYPE
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchClientCommon
 import com.stytch.sdk.common.StytchClientOptions
-import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLazyDelegate
-import com.stytch.sdk.common.StytchLog
-import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.ActivityProvider
-import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
-import com.stytch.sdk.common.dfp.DFPProvider
-import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
 import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.Events
 import com.stytch.sdk.common.events.EventsImpl
-import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
-import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
-import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
-import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
-import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.stytch.sdk.common.network.CommonApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.annotations.VisibleForTesting
-import java.lang.ref.WeakReference
-import java.util.UUID
+import java.util.Date
 
 /**
  * The StytchB2BClient object is your entrypoint to the Stytch B2B SDK and is how you interact with all of our
  * supported authentication products.
  */
 public object StytchB2BClient {
-    internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
+    internal val configurationManager = ConfigurationManager()
+
     internal lateinit var sessionStorage: B2BSessionStorage
-    internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
-    internal lateinit var dfpProvider: DFPProvider
-    internal var bootstrapData: BootstrapData = BootstrapData()
-    internal lateinit var publicToken: String
-
-    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
-    private lateinit var smsRetriever: StytchSMSRetriever
 
     /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
     @JvmStatic
-    public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
-
-    @VisibleForTesting
-    internal lateinit var deviceInfo: DeviceInfo
-
-    @VisibleForTesting
-    internal lateinit var appSessionId: String
-
-    private var stytchClientOptions: StytchClientOptions? = null
-
-    private var applicationContext = WeakReference<Context>(null)
+    public val isInitialized: StateFlow<Boolean> = configurationManager.isInitialized.asStateFlow()
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -190,71 +154,6 @@ public object StytchB2BClient {
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
-     * @param options Optional options to configure the StytchB2BClient
-     * @param callback An optional callback that is triggered after configuration and initialization has completed
-     * @throws StytchInternalError - if we failed to initialize for any reason
-     */
-    @JvmStatic
-    public fun configure(
-        context: Context,
-        publicToken: String,
-        options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
-    ) {
-        StytchLog.d("Using public token=$publicToken")
-        if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
-            return callback(true)
-        }
-        try {
-            applicationContext = WeakReference(context.applicationContext)
-            deviceInfo = context.getDeviceInfo()
-            this.publicToken = publicToken
-            this.stytchClientOptions = options
-            appSessionId = "app-session-id-${UUID.randomUUID()}"
-            StorageHelper.initialize(context)
-            sessionStorage = B2BSessionStorage(StorageHelper)
-            StytchB2BApi.configure(publicToken, deviceInfo)
-            val activityProvider = ActivityProvider(context.applicationContext as Application)
-            dfpProvider =
-                DFPProviderImpl(
-                    publicToken = publicToken,
-                    dfppaDomain = options.endpointOptions.dfppaDomain,
-                    activityProvider = activityProvider,
-                )
-            configureSmsRetriever(context.applicationContext)
-            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
-            AppLifecycleListener.configure(::refreshBootstrapAndAPIClient)
-            refreshBootstrapAndAPIClient()
-            externalScope.launch(dispatchers.io) {
-                // if there are session identifiers on device start the auto updater to ensure it is still valid
-                if (sessionStorage.persistedSessionIdentifiersExist) {
-                    sessionStorage.memberSession?.let {
-                        // if we have a session, it's expiration date has already been validated, now attempt
-                        // to validate it with the Stytch servers
-                        StytchB2BApi.Sessions.authenticate(null).apply {
-                            launchSessionUpdater(dispatchers, sessionStorage)
-                        }
-                    }
-                }
-                _isInitialized.value = true
-                events.logEvent("client_initialization_success")
-                callback(_isInitialized.value)
-            }
-        } catch (ex: Exception) {
-            events.logEvent("client_initialization_failure", null, ex)
-            throw StytchInternalError(
-                message = "Failed to initialize the SDK",
-                exception = ex,
-            )
-        }
-    }
-
-    /**
-     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
-     * across app launches.
-     * You must call this method before making any Stytch authentication requests.
-     * @param context The applicationContext of your app
-     * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
@@ -300,55 +199,34 @@ public object StytchB2BClient {
         configure(context, publicToken, StytchClientOptions()) {}
     }
 
-    private fun configureSmsRetriever(applicationContext: Context) {
-        smsRetriever =
-            StytchSMSRetrieverImpl(applicationContext) { code, sessionDurationMinutes ->
-                smsRetriever.finish()
-                val organizationId = sessionStorage.organization?.organizationId ?: return@StytchSMSRetrieverImpl
-                val memberId = sessionStorage.member?.memberId ?: return@StytchSMSRetrieverImpl
-                val parsedCode = code ?: return@StytchSMSRetrieverImpl
-                externalScope.launch {
-                    otp.sms.authenticate(
-                        OTP.SMS.AuthenticateParameters(
-                            organizationId = organizationId,
-                            memberId = memberId,
-                            code = parsedCode,
-                            sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
-                        ),
-                    )
-                }
-            }
-    }
-
-    private fun refreshBootstrapAndAPIClient() {
-        applicationContext.get()?.let {
-            externalScope.launch(dispatchers.io) {
-                refreshBootstrapData()
-                StytchB2BApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            it as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
-            }
-        }
-    }
-
-    internal suspend fun refreshBootstrapData() {
-        bootstrapData =
-            when (val res = StytchB2BApi.getBootstrapData()) {
-                is StytchResult.Success -> res.value
-                else -> bootstrapData
-            }
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param options Optional options to configure the StytchB2BClient
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        publicToken: String,
+        options: StytchClientOptions = StytchClientOptions(),
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        configurationManager.configure(
+            client = StytchB2BClientCommonConfiguration { callback(true) },
+            context = context,
+            publicToken = publicToken,
+            options = options,
+        )
+        sessionStorage = B2BSessionStorage(StorageHelper)
     }
 
     internal fun assertInitialized() {
-        if (!StytchB2BApi.isInitialized || !::sessionStorage.isInitialized) {
+        if (!StytchB2BApi.isInitialized) {
             throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
     }
@@ -363,12 +241,12 @@ public object StytchB2BClient {
     @JvmStatic
     public val magicLinks: B2BMagicLinks by StytchLazyDelegate(::assertInitialized) {
         B2BMagicLinksImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.MagicLinks.Email,
             StytchB2BApi.MagicLinks.Discovery,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -382,8 +260,8 @@ public object StytchB2BClient {
     @JvmStatic
     public val sessions: B2BSessions by StytchLazyDelegate(::assertInitialized) {
         B2BSessionsImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.Sessions,
         )
@@ -399,8 +277,8 @@ public object StytchB2BClient {
     @JvmStatic
     public val organization: Organization by StytchLazyDelegate(::assertInitialized) {
         OrganizationImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.Organization,
         )
@@ -416,8 +294,8 @@ public object StytchB2BClient {
     @JvmStatic
     public val member: Member by StytchLazyDelegate(::assertInitialized) {
         MemberImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.Member,
         )
@@ -433,12 +311,12 @@ public object StytchB2BClient {
     @JvmStatic
     public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
         PasswordsImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.Passwords,
             StytchB2BApi.Passwords.Discovery,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -452,8 +330,8 @@ public object StytchB2BClient {
     @JvmStatic
     public val discovery: Discovery by StytchLazyDelegate(::assertInitialized) {
         DiscoveryImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.Discovery,
         )
@@ -465,11 +343,11 @@ public object StytchB2BClient {
     @JvmStatic
     public val sso: SSO by StytchLazyDelegate(::assertInitialized) {
         SSOImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchB2BApi.SSO,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -482,11 +360,21 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
-        DFPImpl(dfpProvider, dispatchers, externalScope)
+        DFPImpl(
+            configurationManager.dfpProvider,
+            configurationManager.dispatchers,
+            configurationManager.externalScope,
+        )
     }
 
     internal val events: Events by StytchLazyDelegate(::assertInitialized) {
-        EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchB2BApi.Events)
+        EventsImpl(
+            configurationManager.deviceInfo,
+            configurationManager.appSessionId,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            StytchB2BApi.Events,
+        )
     }
 
     /**
@@ -497,7 +385,12 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val otp: OTP by StytchLazyDelegate(::assertInitialized) {
-        OTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OTP)
+        OTPImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            sessionStorage,
+            StytchB2BApi.OTP,
+        )
     }
 
     /**
@@ -508,7 +401,12 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
-        TOTPImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.TOTP)
+        TOTPImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            sessionStorage,
+            StytchB2BApi.TOTP,
+        )
     }
 
     /**
@@ -520,7 +418,12 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val recoveryCodes: RecoveryCodes by StytchLazyDelegate(::assertInitialized) {
-        RecoveryCodesImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.RecoveryCodes)
+        RecoveryCodesImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            sessionStorage,
+            StytchB2BApi.RecoveryCodes,
+        )
     }
 
     /**
@@ -532,7 +435,13 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
-        OAuthImpl(externalScope, dispatchers, sessionStorage, StytchB2BApi.OAuth, pkcePairManager)
+        OAuthImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            sessionStorage,
+            StytchB2BApi.OAuth,
+            configurationManager.pkcePairManager,
+        )
     }
 
     /**
@@ -542,7 +451,11 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val rbac: RBAC by StytchLazyDelegate(::assertInitialized) {
-        RBACImpl(externalScope, dispatchers, sessionStorage)
+        RBACImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            sessionStorage,
+        )
     }
 
     /**
@@ -552,7 +465,11 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val searchManager: SearchManager by StytchLazyDelegate(::assertInitialized) {
-        SearchManagerImpl(externalScope, dispatchers, StytchB2BApi.SearchManager)
+        SearchManagerImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            StytchB2BApi.SearchManager,
+        )
     }
 
     /**
@@ -563,7 +480,11 @@ public object StytchB2BClient {
      */
     @JvmStatic
     public val scim: SCIM by StytchLazyDelegate(::assertInitialized) {
-        SCIMImpl(externalScope, dispatchers, StytchB2BApi.SCIM)
+        SCIMImpl(
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            StytchB2BApi.SCIM,
+        )
     }
 
     /**
@@ -588,7 +509,7 @@ public object StytchB2BClient {
         if (token.isNullOrEmpty()) {
             return DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
         }
-        return withContext(dispatchers.io) {
+        return withContext(configurationManager.dispatchers.io) {
             when (tokenType) {
                 B2BTokenType.MULTI_TENANT_MAGIC_LINKS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
@@ -681,7 +602,7 @@ public object StytchB2BClient {
         sessionDurationMinutes: Int,
         callback: (response: DeeplinkHandledStatus) -> Unit,
     ) {
-        externalScope.launch(dispatchers.ui) {
+        configurationManager.externalScope.launch(configurationManager.dispatchers.ui) {
             val result = handle(uri, sessionDurationMinutes)
             // change to main thread to call callback
             callback(result)
@@ -704,9 +625,10 @@ public object StytchB2BClient {
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
     @JvmStatic
-    public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
+    public fun getPKCECodePair(): PKCECodePair? = configurationManager.pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever(sessionDurationMinutes: Int) = smsRetriever.start(sessionDurationMinutes)
+    internal fun startSmsRetriever(sessionDurationMinutes: Int) =
+        configurationManager.smsRetriever.start(sessionDurationMinutes)
 
     /**
      * Retrieve the token and a concrete token type from a deeplink
@@ -725,4 +647,58 @@ public object StytchB2BClient {
     @JvmStatic
     public val lastAuthMethodUsed: B2BAuthMethod?
         get() = sessionStorage.lastAuthMethodUsed
+
+    private class StytchB2BClientCommonConfiguration(
+        override var onFinishedInitialization: () -> Unit,
+    ) : StytchClientCommon {
+        override val commonApi: CommonApi = StytchB2BApi
+
+        override fun logEvent(
+            eventName: String,
+            details: Map<String, Any>?,
+            error: Exception?,
+        ) = events.logEvent(eventName, details, error)
+
+        override fun rehydrateSession(): Job =
+            configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
+                val start = Date().time
+                sessionStorage.memberSession?.let {
+                    // if we have a session, it's expiration date has already been validated, now attempt
+                    // to validate it with the Stytch servers
+                    StytchB2BApi.Sessions.authenticate(null).apply {
+                        configurationManager.emitAnalyticsEvent(
+                            ConfigurationAnalyticsEvent(
+                                step = ConfigurationStep.SESSION_HYDRATION,
+                                duration = Date().time - start,
+                            ),
+                        )
+                        launchSessionUpdater(configurationManager.dispatchers, sessionStorage)
+                    }
+                } ?: configurationManager.emitAnalyticsEvent(
+                    ConfigurationAnalyticsEvent(
+                        step = ConfigurationStep.SESSION_HYDRATION,
+                        duration = Date().time - start,
+                    ),
+                )
+            }
+
+        override fun smsAutofillCallback(
+            code: String?,
+            sessionDurationMinutes: Int?,
+        ) {
+            val organizationId = sessionStorage.organization?.organizationId ?: return
+            val memberId = sessionStorage.member?.memberId ?: return
+            val parsedCode = code ?: return
+            configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
+                otp.sms.authenticate(
+                    OTP.SMS.AuthenticateParameters(
+                        organizationId = organizationId,
+                        memberId = memberId,
+                        code = parsedCode,
+                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                    ),
+                )
+            }
+        }
+    }
 }

@@ -43,7 +43,7 @@ internal class NewUserScreenViewModel(
         val parameters =
             emailMagicLinksOptions.toParameters(
                 emailAddress = emailState.emailAddress,
-                publicToken = stytchClient.publicToken,
+                publicToken = stytchClient.configurationManager.publicToken,
                 locale = locale,
             )
         scope.launch {

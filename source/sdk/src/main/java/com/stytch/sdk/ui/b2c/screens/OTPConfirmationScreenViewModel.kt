@@ -177,7 +177,7 @@ internal class OTPConfirmationScreenViewModel(
                 val parameters =
                     passwordOptions.toResetByEmailStartParameters(
                         emailAddress = emailAddress,
-                        publicToken = stytchClient.publicToken,
+                        publicToken = stytchClient.configurationManager.publicToken,
                         locale = locale,
                     )
                 when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {

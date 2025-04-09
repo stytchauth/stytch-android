@@ -108,7 +108,7 @@ internal class OAuthImpl(
         override fun start(parameters: OAuth.Provider.StartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
             val host =
-                StytchB2BClient.bootstrapData.cnameDomain?.let {
+                StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                     "https://$it/"
                 } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/start"
@@ -142,7 +142,7 @@ internal class OAuthImpl(
                     }
                     val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                     val host =
-                        StytchB2BClient.bootstrapData.cnameDomain?.let {
+                        StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                             "https://$it/"
                         } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
                     val baseUrl = "${host}b2b/public/oauth/$providerName/start"

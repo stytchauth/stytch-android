@@ -48,7 +48,7 @@ internal class SSOImpl(
 
     override fun start(params: SSO.StartParams) {
         val host =
-            StytchB2BClient.bootstrapData.cnameDomain?.let {
+            StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                 "https://$it/v1/"
             } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
         val potentialParameters =
@@ -75,7 +75,7 @@ internal class SSOImpl(
                     return@suspendCancellableCoroutine
                 }
                 val host =
-                    StytchB2BClient.bootstrapData.cnameDomain?.let {
+                    StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                         "https://$it/v1/"
                     } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
                 val potentialParameters =
