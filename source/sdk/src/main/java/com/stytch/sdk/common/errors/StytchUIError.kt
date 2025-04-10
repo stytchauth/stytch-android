@@ -7,6 +7,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
  * rather we should be creating implementations for each of the known/expected errors we return.
  * @property exception an optional [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public sealed class StytchUIError(
     message: String,
     public open val exception: Throwable? = null,
@@ -25,7 +26,7 @@ public data class StytchUIActivityFailed(
  * Thrown when there was an error parsing the activity intent
  */
 
-public data object StytchUINoDataFromIntent : StytchUIError(
+@JacocoExcludeGenerated public data object StytchUINoDataFromIntent : StytchUIError(
     message = "Failed to retrieve data from intent",
 )
 

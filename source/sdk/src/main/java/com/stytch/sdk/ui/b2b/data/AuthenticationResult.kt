@@ -6,8 +6,9 @@ import com.stytch.sdk.common.errors.StytchError
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@JacocoExcludeGenerated
 public sealed class AuthenticationResult : Parcelable {
-    public data object Authenticated : AuthenticationResult()
+    @JacocoExcludeGenerated public data object Authenticated : AuthenticationResult()
 
     @JacocoExcludeGenerated
     public data class Error(

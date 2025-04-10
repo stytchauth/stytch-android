@@ -1,10 +1,12 @@
 package com.stytch.sdk.consumer.biometrics
 
 import androidx.biometric.BiometricManager
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 
 /**
  * Wrapper around BiometricManager results to provide friendly messaging for developers
  */
+@JacocoExcludeGenerated
 public sealed class BiometricAvailability {
     /**
      * Status indicating that biometrics are not available on this device for some reason
@@ -89,17 +91,17 @@ public sealed class BiometricAvailability {
      * biometric or deleted all existing biometrics.
      */
 
-    public data object RegistrationRevoked : BiometricAvailability()
+    @JacocoExcludeGenerated public data object RegistrationRevoked : BiometricAvailability()
 
     /**
      * Status indicating that biometrics are available, but no registrations have been made yet
      */
 
-    public data object AvailableNoRegistrations : BiometricAvailability()
+    @JacocoExcludeGenerated public data object AvailableNoRegistrations : BiometricAvailability()
 
     /**
      * Status indicating that biometrics are available and there is already a biometric registration on device
      */
 
-    public data object AvailableRegistered : BiometricAvailability()
+    @JacocoExcludeGenerated public data object AvailableRegistered : BiometricAvailability()
 }

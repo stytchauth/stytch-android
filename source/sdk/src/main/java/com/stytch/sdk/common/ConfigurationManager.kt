@@ -68,7 +68,6 @@ internal class ConfigurationManager {
                     smsRetriever.finish()
                     client.smsAutofillCallback(code, sessionDurationMinutes)
                 }
-            StorageHelper.initialize(context)
             client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken)
             val bootstrapJob = refreshBootstrapAndApi(true)
             val sessionRehydrationJob = client.rehydrateSession()

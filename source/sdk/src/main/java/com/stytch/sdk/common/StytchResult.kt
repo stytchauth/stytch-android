@@ -10,6 +10,7 @@ import kotlinx.parcelize.RawValue
  * Provides a wrapper for responses from the Stytch API
  */
 @Parcelize
+@JacocoExcludeGenerated
 public sealed class StytchResult<out T> : Parcelable {
     /**
      * Data class that can hold a successful response from a Stytch endpoint

@@ -217,13 +217,14 @@ public object StytchB2BClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        StorageHelper.initialize(context)
+        sessionStorage = B2BSessionStorage(StorageHelper)
         configurationManager.configure(
             client = StytchB2BClientCommonConfiguration { callback(true) },
             context = context,
             publicToken = publicToken,
             options = options,
         )
-        sessionStorage = B2BSessionStorage(StorageHelper)
     }
 
     /**

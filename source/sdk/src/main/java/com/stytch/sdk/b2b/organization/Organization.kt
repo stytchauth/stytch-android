@@ -445,6 +445,7 @@ public interface Organization {
          * @property filterName the field on which to filter
          * @property filterValue the value of the field to filter by
          */
+        @JacocoExcludeGenerated
         public sealed class SearchQueryOperand(
             @Json(name = "filter_name")
             public val filterName: String,

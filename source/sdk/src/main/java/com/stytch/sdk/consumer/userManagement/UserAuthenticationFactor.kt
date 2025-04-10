@@ -6,6 +6,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
  * A [UserAuthenticationFactor] represents a primary authentication factor associated with a Stytch User
  * @param id The string representing the unique ID of this authentication factor
  */
+@JacocoExcludeGenerated
 public sealed class UserAuthenticationFactor(
     public open val id: String,
 ) {

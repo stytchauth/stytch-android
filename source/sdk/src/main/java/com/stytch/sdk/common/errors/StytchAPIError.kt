@@ -1,5 +1,7 @@
 package com.stytch.sdk.common.errors
 
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+
 private val UNRECOVERABLE_ERRORS =
     setOf(
         StytchAPIErrorType.UNAUTHORIZED_CREDENTIALS,
@@ -16,6 +18,7 @@ private val UNRECOVERABLE_ERRORS =
  * @property url a url linking to the Stytch documentation that describes this error
  * @property statusCode the HTTP status code that was returned for this request
  */
+@JacocoExcludeGenerated
 public data class StytchAPIError(
     public val requestId: String? = null,
     public val errorType: StytchAPIErrorType,

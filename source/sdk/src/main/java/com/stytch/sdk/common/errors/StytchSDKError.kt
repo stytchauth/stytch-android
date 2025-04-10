@@ -9,7 +9,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
  * rather we should be creating implementations for each of the known/expected errors we return.
  * @property exception an optional [Throwable] that caused this error to occur
  */
-
+@JacocoExcludeGenerated
 public sealed class StytchSDKError(
     message: String,
     public open val exception: Throwable? = null,
@@ -124,7 +124,7 @@ public class StytchKeystoreUnavailableError :
  * Thrown when we are unable to retrieve a biometric key
  * @property exception an optional [Throwable] that caused this error to occur
  */
-
+@JacocoExcludeGenerated
 public data class StytchMissingPublicKeyError(
     override val exception: Throwable?,
 ) : StytchSDKError(
@@ -213,16 +213,22 @@ public data class UnexpectedCredentialType(
         message = "Unexpected type of credential: $credentialType",
     )
 
-public data object NoBrowserFound : StytchSDKError("No supported browser was found on this device")
+@JacocoExcludeGenerated public data object NoBrowserFound : StytchSDKError(
+    "No supported browser was found on this device",
+)
 
-public data object NoURIFound : StytchSDKError("No OAuth URI could be found in the bundle")
+@JacocoExcludeGenerated public data object NoURIFound : StytchSDKError("No OAuth URI could be found in the bundle")
 
-public data object UserCanceled : StytchSDKError("The user canceled the OAuth flow")
+@JacocoExcludeGenerated public data object UserCanceled : StytchSDKError("The user canceled the OAuth flow")
 
-public data object NoActivityProvided : StytchSDKError("You must supply a receiver activity before calling this method")
+@JacocoExcludeGenerated public data object NoActivityProvided : StytchSDKError(
+    "You must supply a receiver activity before calling this method",
+)
 
-public data object UnknownOAuthOrSSOError : StytchSDKError("The OAuth or SSO flow completed unexpectedly")
+@JacocoExcludeGenerated public data object UnknownOAuthOrSSOError : StytchSDKError(
+    "The OAuth or SSO flow completed unexpectedly",
+)
 
-public data object BiometricsAlreadyEnrolledError : StytchSDKError(
+@JacocoExcludeGenerated public data object BiometricsAlreadyEnrolledError : StytchSDKError(
     "There is already a biometric factor enrolled on this device. Fully authenticate with all factors and remove the existing registration before attempting to register again.",
 )

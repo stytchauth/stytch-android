@@ -6,7 +6,7 @@ import com.stytch.sdk.common.errors.StytchDeeplinkError
 /**
  * A class representing the three states of a deeplink handled by StytchClient.handle() / StytchB2BClient.handle()
  */
-
+@JacocoExcludeGenerated
 public sealed interface DeeplinkHandledStatus {
     /**
      * Indicates that a deeplink was successfully parsed from the deeplink.

@@ -210,13 +210,14 @@ public object StytchClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
+        StorageHelper.initialize(context)
+        sessionStorage = ConsumerSessionStorage(StorageHelper)
         configurationManager.configure(
             client = StytchClientCommonConfiguration { callback(true) },
             context = context,
             publicToken = publicToken,
             options = options,
         )
-        sessionStorage = ConsumerSessionStorage(StorageHelper)
     }
 
     /**
@@ -560,7 +561,6 @@ public object StytchClient {
             configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
                 val start = Date().time
                 sessionStorage.session?.let {
-                    println("THIS IS MY SESSION DATA: $it")
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
                     StytchApi.Sessions.authenticate(null).apply {

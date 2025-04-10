@@ -132,12 +132,12 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
-    implementation(libs.kotlinx.coroutines.android)
+    runtimeOnly(libs.kotlinx.coroutines.android)
     implementation(libs.tink.android)
     implementation(libs.bcprov.jdk18on)
     implementation(libs.recaptcha)
     implementation(libs.credentials)
-    implementation(libs.credentials.play.services.auth)
+    runtimeOnly(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.play.services.auth.api.phone)
     implementation(libs.lifecycle.common)
@@ -170,13 +170,13 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.json)
-    androidTestImplementation(libs.runner)
-    androidTestImplementation(libs.rules)
+    androidTestRuntimeOnly(libs.runner)
+    // androidTestImplementation(libs.rules)
     androidTestImplementation(libs.core.testing)
     // Test rules and transitive dependencies:
     androidTestImplementation(libs.ui.test.junit4)
     // Needed for createAndroidComposeRule, but not createComposeRule:
-    debugImplementation(libs.ui.test.manifest)
+    debugRuntimeOnly(libs.ui.test.manifest)
 
     testImplementation(libs.mockwebserver)
 }

@@ -11,34 +11,43 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
--keep public interface com.stytch.sdk.** {
+-keep,allowoptimization public interface com.stytch.sdk.**, com.stytch.sdk.**.*$* {
     public *;
 }
 
--keep public class com.stytch.sdk.**$* {
-    *;
-}
 
--keep public class com.stytch.sdk.b2b.* {
+-keep,allowoptimization public enum com.stytch.sdk.** {
     public *;
 }
 
--keep public class com.stytch.sdk.common.* {
+-keep,allowoptimization public class
+    com.stytch.sdk.**.*Response*,
+    com.stytch.sdk.b2b.*,
+    com.stytch.sdk.common.*,
+    com.stytch.sdk.consumer.*,
+    com.stytch.sdk.ui.b2b.*,
+    com.stytch.sdk.ui.b2c.* {
     public *;
 }
 
--keep public class com.stytch.sdk.consumer.* {
+-keep,allowoptimization @com.stytch.sdk.common.annotations.JacocoExcludeGenerated public class com.stytch.sdk.** {
     public *;
 }
 
--keep public class com.stytch.sdk.ui.* {
+-keep,allowoptimization public class com.stytch.sdk.**.*$Companion* {
     public *;
 }
 
--keep public class com.stytch.sdk.**.models.* {
+-keep,allowoptimization,allowobfuscation,allowshrinking public class
+    !com.stytch.sdk.**.*Impl*,
+    !com.stytch.sdk.**.*Request*,
+    !com.stytch.sdk.**.*JsonAdapter* {
     public *;
 }
+
+# Uncomment this to preserve the line number information for
+# debugging stack traces.
+-keepattributes SourceFile,LineNumberTable
 
 
 # If you keep the line number information, uncomment this to
