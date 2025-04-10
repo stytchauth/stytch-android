@@ -210,14 +210,32 @@ public object StytchClient {
         options: StytchClientOptions = StytchClientOptions(),
         callback: ((Boolean) -> Unit) = {},
     ) {
-        StorageHelper.initialize(context)
-        sessionStorage = ConsumerSessionStorage(StorageHelper)
+        // We must initialize the storagehelper/sessionstorage before configuration, because configuration kicks
+        // off a task that relies on the storage being available (session hydration). HOWEVER, we don't want to handle
+        // any exception in storage initialization immediately, because we want to log the error to the Events API,
+        // which requires the API to be configured (which happens in the configure call). So, catch and hold any error
+        // until _after_ configuration completes, at which point it is safe to log it.
+        val storageInitializationError =
+            try {
+                StorageHelper.initialize(context)
+                sessionStorage = ConsumerSessionStorage(StorageHelper)
+                null
+            } catch (ex: Exception) {
+                StytchInternalError(
+                    message = "Failed to initialize the SDK",
+                    exception = ex,
+                )
+            }
         configurationManager.configure(
             client = StytchClientCommonConfiguration { callback(true) },
             context = context,
             publicToken = publicToken,
             options = options,
         )
+        storageInitializationError?.let {
+            events.logEvent("client_initialization_failure", null, it)
+            throw it
+        }
     }
 
     /**

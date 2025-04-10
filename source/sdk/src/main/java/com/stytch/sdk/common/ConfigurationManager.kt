@@ -6,7 +6,6 @@ import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
-import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
@@ -49,49 +48,41 @@ internal class ConfigurationManager {
         if (isAlreadyConfiguredFor(publicToken, options)) {
             return
         }
-        try {
-            configurationStartTime = Date().time
-            this.client = client
-            this.publicToken = publicToken
-            this.options = options
-            this.applicationContext = WeakReference(context.applicationContext)
-            this.deviceInfo = context.getDeviceInfo()
-            this.appSessionId = "app-session-id-${UUID.randomUUID()}"
-            this.dfpProvider =
-                DFPProviderImpl(
-                    publicToken = publicToken,
-                    dfppaDomain = options.endpointOptions.dfppaDomain,
-                    activityProvider = ActivityProvider(context.applicationContext as Application),
-                )
-            this.smsRetriever =
-                StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
-                    smsRetriever.finish()
-                    client.smsAutofillCallback(code, sessionDurationMinutes)
-                }
-            client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken)
-            val bootstrapJob = refreshBootstrapAndApi(true)
-            val sessionRehydrationJob = client.rehydrateSession()
-            externalScope.launch(dispatchers.io) {
-                listOf(bootstrapJob, sessionRehydrationJob).joinAll()
-                client.logEvent("client_initialization_success", null, null)
-                isInitialized.value = true
-                emitAnalyticsEvent(
-                    ConfigurationAnalyticsEvent(
-                        step = ConfigurationStep.IS_INITIALIZED,
-                        duration = Date().time - configurationStartTime,
-                    ),
-                )
-                client.onFinishedInitialization()
-            }
-            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndApi)
-            AppLifecycleListener.configure(::refreshBootstrapAndApi)
-        } catch (ex: Exception) {
-            client.logEvent("client_initialization_failure", null, ex)
-            throw StytchInternalError(
-                message = "Failed to initialize the SDK",
-                exception = ex,
+        configurationStartTime = Date().time
+        this.client = client
+        this.publicToken = publicToken
+        this.options = options
+        this.applicationContext = WeakReference(context.applicationContext)
+        this.deviceInfo = context.getDeviceInfo()
+        this.appSessionId = "app-session-id-${UUID.randomUUID()}"
+        this.dfpProvider =
+            DFPProviderImpl(
+                publicToken = publicToken,
+                dfppaDomain = options.endpointOptions.dfppaDomain,
+                activityProvider = ActivityProvider(context.applicationContext as Application),
             )
+        this.smsRetriever =
+            StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
+                smsRetriever.finish()
+                client.smsAutofillCallback(code, sessionDurationMinutes)
+            }
+        client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken)
+        val bootstrapJob = refreshBootstrapAndApi(true)
+        val sessionRehydrationJob = client.rehydrateSession()
+        externalScope.launch(dispatchers.io) {
+            listOf(bootstrapJob, sessionRehydrationJob).joinAll()
+            client.logEvent("client_initialization_success", null, null)
+            isInitialized.value = true
+            emitAnalyticsEvent(
+                ConfigurationAnalyticsEvent(
+                    step = ConfigurationStep.IS_INITIALIZED,
+                    duration = Date().time - configurationStartTime,
+                ),
+            )
+            client.onFinishedInitialization()
         }
+        NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndApi)
+        AppLifecycleListener.configure(::refreshBootstrapAndApi)
     }
 
     private fun isAlreadyConfiguredFor(
