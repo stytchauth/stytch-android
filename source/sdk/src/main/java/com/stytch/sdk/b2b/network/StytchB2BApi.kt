@@ -91,15 +91,13 @@ import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
+import retrofit2.Retrofit
 
 internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var getSessionToken: () -> String?
 
-    // save reference for changing auth header
-    // make sure api is configured before accessing this variable
-    @Suppress("MaxLineLength")
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         assertInitialized()
@@ -114,6 +112,8 @@ internal object StytchB2BApi : CommonApi {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.getSessionToken = getSessionToken
+        retrofit = ApiService.getInitialRetrofitInstance(sdkUrl, authHeaderInterceptor)
+        apiService = retrofit.create(StytchB2BApiService::class.java)
     }
 
     override fun configureDFP(
@@ -123,19 +123,12 @@ internal object StytchB2BApi : CommonApi {
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         assertInitialized()
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        dfpProtectedStytchApiService =
-            ApiService.createApiService(
-                sdkUrl,
-                authHeaderInterceptor,
+        retrofit =
+            ApiService.addDfpInterceptor(
+                retrofit,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                StytchB2BApiService::class.java,
             )
+        apiService = retrofit.create(StytchB2BApiService::class.java)
     }
 
     internal val isInitialized: Boolean
@@ -149,39 +142,23 @@ internal object StytchB2BApi : CommonApi {
             return publicToken.contains("public-token-test")
         }
 
+    private val sdkUrl: String
+        get() {
+            return if (isTestToken) {
+                TEST_SDK_URL
+            } else {
+                LIVE_SDK_URL
+            }
+        }
+
     internal fun assertInitialized() {
         if (!isInitialized) {
             throw StytchSDKNotConfiguredError("StytchB2BClient")
         }
     }
 
-    private val regularStytchApiService: StytchB2BApiService by lazy {
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        ApiService.createApiService(
-            sdkUrl,
-            authHeaderInterceptor,
-            null,
-            StytchB2BApiService::class.java,
-        )
-    }
-
-    private lateinit var dfpProtectedStytchApiService: StytchB2BApiService
-
-    @VisibleForTesting
-    internal val apiService: StytchB2BApiService
-        get() {
-            assertInitialized()
-            return if (::dfpProtectedStytchApiService.isInitialized) {
-                dfpProtectedStytchApiService
-            } else {
-                regularStytchApiService
-            }
-        }
+    private lateinit var retrofit: Retrofit
+    internal lateinit var apiService: StytchB2BApiService
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(apiCall: suspend () -> T): StytchResult<T1> =
         safeApiCall({ assertInitialized() }) {

@@ -50,15 +50,13 @@ import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
+import retrofit2.Retrofit
 
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var getSessionToken: () -> String?
 
-    // save reference for changing auth header
-    // make sure api is configured before accessing this variable
-    @Suppress("MaxLineLength")
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
         assertInitialized()
@@ -73,6 +71,8 @@ internal object StytchApi : CommonApi {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.getSessionToken = getSessionToken
+        retrofit = ApiService.getInitialRetrofitInstance(sdkUrl, authHeaderInterceptor)
+        apiService = retrofit.create(StytchApiService::class.java)
     }
 
     override fun configureDFP(
@@ -81,19 +81,13 @@ internal object StytchApi : CommonApi {
         dfpProtectedAuthEnabled: Boolean,
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        dfpProtectedStytchApiService =
-            ApiService.createApiService(
-                sdkUrl,
-                authHeaderInterceptor,
+        assertInitialized()
+        retrofit =
+            ApiService.addDfpInterceptor(
+                retrofit,
                 StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                StytchApiService::class.java,
             )
+        apiService = retrofit.create(StytchApiService::class.java)
     }
 
     internal val isInitialized: Boolean
@@ -107,39 +101,22 @@ internal object StytchApi : CommonApi {
             return publicToken.contains("public-token-test")
         }
 
+    private val sdkUrl: String by lazy {
+        if (isTestToken) {
+            TEST_SDK_URL
+        } else {
+            LIVE_SDK_URL
+        }
+    }
+
     internal fun assertInitialized() {
         if (!isInitialized) {
             throw StytchSDKNotConfiguredError("StytchClient")
         }
     }
 
-    private val regularStytchApiService: StytchApiService by lazy {
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        ApiService.createApiService(
-            sdkUrl,
-            authHeaderInterceptor,
-            null,
-            StytchApiService::class.java,
-        )
-    }
-
-    private lateinit var dfpProtectedStytchApiService: StytchApiService
-
-    @VisibleForTesting
-    internal val apiService: StytchApiService
-        get() {
-            assertInitialized()
-            return if (::dfpProtectedStytchApiService.isInitialized) {
-                dfpProtectedStytchApiService
-            } else {
-                regularStytchApiService
-            }
-        }
+    private lateinit var retrofit: Retrofit
+    internal lateinit var apiService: StytchApiService
 
     internal object MagicLinks {
         object Email {

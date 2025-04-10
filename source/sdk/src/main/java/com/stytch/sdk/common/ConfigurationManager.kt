@@ -123,12 +123,17 @@ internal class ConfigurationManager {
             }
         }
 
+    private var isRefreshingBootstrap = false
+
     suspend fun refreshBootstrapData() {
+        if (isRefreshingBootstrap) return
+        isRefreshingBootstrap = true
         bootstrapData =
             when (val res = client.commonApi.getBootstrapData()) {
                 is StytchResult.Success -> res.value
                 else -> bootstrapData
             }
+        isRefreshingBootstrap = false
     }
 }
 
