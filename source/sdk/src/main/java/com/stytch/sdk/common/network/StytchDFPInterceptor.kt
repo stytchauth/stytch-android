@@ -1,8 +1,7 @@
 package com.stytch.sdk.common.network
 
 import androidx.annotation.VisibleForTesting
-import com.stytch.sdk.common.dfp.CaptchaProvider
-import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.extensions.isDFPPAEnabled
 import com.stytch.sdk.common.extensions.requiresCaptcha
 import com.stytch.sdk.common.extensions.toNewRequestWithParams
@@ -23,16 +22,13 @@ internal interface DFPInterceptor : Interceptor {
 }
 
 internal class StytchDFPInterceptor(
-    private val dfpProvider: DFPProvider,
-    private val captchaProvider: CaptchaProvider,
-    private val dfpProtectedAuthEnabled: Boolean,
-    private val dfpProtectedAuthMode: DFPProtectedAuthMode,
+    internal var dfpConfiguration: DFPConfiguration,
 ) : DFPInterceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         if (!request.isDFPPAEnabled()) return chain.proceed(request)
-        if (!dfpProtectedAuthEnabled) return handleDisabledDFPStatus(chain)
-        return when (dfpProtectedAuthMode) {
+        if (!dfpConfiguration.dfpProtectedAuthEnabled) return handleDisabledDFPStatus(chain)
+        return when (dfpConfiguration.dfpProtectedAuthMode) {
             DFPProtectedAuthMode.DECISIONING -> handleDFPDecisioningMode(chain)
             DFPProtectedAuthMode.OBSERVATION -> handleDFPObservationMode(chain)
         }
@@ -43,10 +39,10 @@ internal class StytchDFPInterceptor(
         // DISABLED = if captcha client is configured, add a captcha token, else do nothing
         val originalRequest = chain.request()
         val newRequest =
-            if (captchaProvider.captchaIsConfigured) {
+            if (dfpConfiguration.captchaProvider.captchaIsConfigured) {
                 originalRequest.toNewRequestWithParams(
                     mapOf(
-                        CAPTCHA_TOKEN_KEY to runBlocking { captchaProvider.executeRecaptcha() },
+                        CAPTCHA_TOKEN_KEY to runBlocking { dfpConfiguration.captchaProvider.executeRecaptcha() },
                     ),
                 )
             } else {
@@ -63,7 +59,7 @@ internal class StytchDFPInterceptor(
             chain.proceed(
                 request.toNewRequestWithParams(
                     mapOf(
-                        DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() },
+                        DFP_TELEMETRY_ID_KEY to runBlocking { dfpConfiguration.dfpProvider.getTelemetryId() },
                     ),
                 ),
             )
@@ -72,8 +68,8 @@ internal class StytchDFPInterceptor(
             chain.proceed(
                 request.toNewRequestWithParams(
                     mapOf(
-                        DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() },
-                        CAPTCHA_TOKEN_KEY to runBlocking { captchaProvider.executeRecaptcha() },
+                        DFP_TELEMETRY_ID_KEY to runBlocking { dfpConfiguration.dfpProvider.getTelemetryId() },
+                        CAPTCHA_TOKEN_KEY to runBlocking { dfpConfiguration.captchaProvider.executeRecaptcha() },
                     ),
                 ),
             )
@@ -88,10 +84,10 @@ internal class StytchDFPInterceptor(
         val request = chain.request()
         val newParams =
             mutableMapOf(
-                DFP_TELEMETRY_ID_KEY to runBlocking { dfpProvider.getTelemetryId() },
+                DFP_TELEMETRY_ID_KEY to runBlocking { dfpConfiguration.dfpProvider.getTelemetryId() },
             )
-        if (captchaProvider.captchaIsConfigured) {
-            newParams[CAPTCHA_TOKEN_KEY] = runBlocking { captchaProvider.executeRecaptcha() }
+        if (dfpConfiguration.captchaProvider.captchaIsConfigured) {
+            newParams[CAPTCHA_TOKEN_KEY] = runBlocking { dfpConfiguration.captchaProvider.executeRecaptcha() }
         }
         return chain.proceed(request.toNewRequestWithParams(newParams))
     }

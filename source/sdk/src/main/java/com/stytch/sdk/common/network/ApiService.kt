@@ -7,6 +7,7 @@ import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.utils.createEnumJsonAdapter
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -16,8 +17,9 @@ private const val ONE_HUNDRED_TWENTY = 120L
 
 internal open class ApiService(
     hostUrl: String,
+    interceptors: List<Interceptor> = emptyList(),
 ) {
-    private var client: OkHttpClient =
+    private val client: OkHttpClient =
         OkHttpClient
             .Builder()
             .readTimeout(ONE_HUNDRED_TWENTY, TimeUnit.SECONDS)
@@ -33,6 +35,10 @@ internal open class ApiService(
                         .header("Content-Type", "application/json")
                         .build(),
                 )
+            }.apply {
+                interceptors.forEach { interceptor ->
+                    addInterceptor(interceptor)
+                }
             }.build()
 
     private val moshi =
@@ -45,35 +51,13 @@ internal open class ApiService(
             .add(createEnumJsonAdapter<Locale>())
             .build()
 
-    internal var retrofit =
+    internal val retrofit =
         Retrofit
             .Builder()
             .baseUrl(hostUrl)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-
-    fun addAuthHeaderInterceptor(authHeaderInterceptor: StytchAuthHeaderInterceptor?): Retrofit {
-        val newBuilder = client.newBuilder()
-        authHeaderInterceptor?.let {
-            newBuilder.addInterceptor(it)
-        }
-        client = newBuilder.build()
-        return retrofit.newBuilder().client(client).build()
-    }
-
-    fun addDfpInterceptor(dfpInterceptor: StytchDFPInterceptor): Retrofit {
-        val newClientBuilder = client.newBuilder()
-        newClientBuilder
-            .interceptors()
-            .find {
-                it::class.java == StytchDFPInterceptor::class.java
-            }?.let { existingInterceptor ->
-                newClientBuilder.interceptors().remove(existingInterceptor)
-            }
-        client = newClientBuilder.addInterceptor(dfpInterceptor).build()
-        return retrofit.newBuilder().client(client).build()
-    }
 
     interface ApiEndpoints
 }

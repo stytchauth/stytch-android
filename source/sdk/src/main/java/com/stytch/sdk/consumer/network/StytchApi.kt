@@ -1,14 +1,12 @@
 package com.stytch.sdk.consumer.network
 
-import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.LIVE_SDK_URL
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.TEST_SDK_URL
-import com.stytch.sdk.common.dfp.CaptchaProvider
-import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.EventsAPI
 import com.stytch.sdk.common.network.ApiService
@@ -21,7 +19,6 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
@@ -54,40 +51,32 @@ import com.stytch.sdk.consumer.network.models.UserSearchResponseData
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
-    private lateinit var getSessionToken: () -> String?
     private lateinit var apiServiceClass: ApiService
-
-    @VisibleForTesting
-    internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
-        assertInitialized()
-        StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken)
-    }
+    private lateinit var dfpInterceptor: StytchDFPInterceptor
 
     override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
         getSessionToken: () -> String?,
+        dfpConfiguration: DFPConfiguration,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
-        this.getSessionToken = getSessionToken
-        apiServiceClass = ApiService(sdkUrl)
-        apiService =
-            apiServiceClass.addAuthHeaderInterceptor(authHeaderInterceptor).create(StytchApiService::class.java)
+        this.dfpInterceptor = StytchDFPInterceptor(dfpConfiguration)
+        apiServiceClass =
+            ApiService(
+                sdkUrl,
+                listOf(
+                    StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken),
+                    dfpInterceptor,
+                ),
+            )
+        apiServiceClass
+        apiService = apiServiceClass.retrofit.create(StytchApiService::class.java)
     }
 
-    override fun configureDFP(
-        dfpProvider: DFPProvider,
-        captchaProvider: CaptchaProvider,
-        dfpProtectedAuthEnabled: Boolean,
-        dfpProtectedAuthMode: DFPProtectedAuthMode,
-    ) {
-        assertInitialized()
-        apiService =
-            apiServiceClass
-                .addDfpInterceptor(
-                    StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                ).create(StytchApiService::class.java)
+    override fun configureDFP(dfpConfiguration: DFPConfiguration) {
+        dfpInterceptor.dfpConfiguration = dfpConfiguration
     }
 
     internal val isInitialized: Boolean

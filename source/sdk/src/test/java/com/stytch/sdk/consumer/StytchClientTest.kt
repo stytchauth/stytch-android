@@ -145,7 +145,7 @@ internal class StytchClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         val publicToken = UUID.randomUUID().toString()
         stytchClientObject.configure(mContextMock, publicToken)
-        verify { StytchApi.configure(publicToken, deviceInfo, any()) }
+        verify { StytchApi.configure(publicToken, deviceInfo, any(), any()) }
     }
 
     @Test
@@ -169,7 +169,7 @@ internal class StytchClientTest {
     fun `configures DFP when calling StytchClient configure`() {
         runBlocking {
             StytchClient.configure(mContextMock, UUID.randomUUID().toString())
-            verify(exactly = 1) { StytchApi.configureDFP(any(), any(), any(), any()) }
+            verify(exactly = 1) { StytchApi.configureDFP(any()) }
         }
     }
 
