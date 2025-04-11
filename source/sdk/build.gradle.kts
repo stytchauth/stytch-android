@@ -13,7 +13,7 @@ plugins {
 }
 
 extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
-extra["PUBLISH_VERSION"] = "0.43.0"
+extra["PUBLISH_VERSION"] = "0.44.0"
 extra["PUBLISH_ARTIFACT_ID"] = "sdk"
 
 apply("${rootProject.projectDir}/scripts/publish-module.gradle")

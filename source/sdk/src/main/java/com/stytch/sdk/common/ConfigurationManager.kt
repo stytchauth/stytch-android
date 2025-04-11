@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
@@ -66,7 +67,19 @@ internal class ConfigurationManager {
                 smsRetriever.finish()
                 client.smsAutofillCallback(code, sessionDurationMinutes)
             }
-        client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken)
+        val dfpConfiguration =
+            DFPConfiguration(
+                dfpProvider = dfpProvider,
+                captchaProvider =
+                    CaptchaProviderImpl(
+                        context.applicationContext as Application,
+                        externalScope,
+                        bootstrapData.captchaSettings.siteKey,
+                    ),
+                dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
+                dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+            )
+        client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken, dfpConfiguration)
         val bootstrapJob = refreshBootstrapAndApi(true)
         val sessionRehydrationJob = client.rehydrateSession()
         externalScope.launch(dispatchers.io) {
@@ -101,17 +114,19 @@ internal class ConfigurationManager {
             val start = Date().time
             applicationContext.get()?.let {
                 refreshBootstrapData()
-                client.commonApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            it as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
-                    dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-                )
+                val dfpConfiguration =
+                    DFPConfiguration(
+                        dfpProvider = dfpProvider,
+                        captchaProvider =
+                            CaptchaProviderImpl(
+                                it as Application,
+                                externalScope,
+                                bootstrapData.captchaSettings.siteKey,
+                            ),
+                        dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
+                        dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                    )
+                client.commonApi.configureDFP(dfpConfiguration)
                 if (reportTiming) {
                     emitAnalyticsEvent(
                         ConfigurationAnalyticsEvent(

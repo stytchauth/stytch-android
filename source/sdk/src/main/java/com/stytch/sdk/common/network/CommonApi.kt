@@ -2,24 +2,18 @@ package com.stytch.sdk.common.network
 
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.CaptchaProvider
-import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 
 internal interface CommonApi {
     fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
         getSessionToken: () -> String?,
+        dfpConfiguration: DFPConfiguration,
     )
 
-    fun configureDFP(
-        dfpProvider: DFPProvider,
-        captchaProvider: CaptchaProvider,
-        dfpProtectedAuthEnabled: Boolean,
-        dfpProtectedAuthMode: DFPProtectedAuthMode,
-    )
+    fun configureDFP(dfpConfiguration: DFPConfiguration)
 
     suspend fun getBootstrapData(): StytchResult<BootstrapData>
 }

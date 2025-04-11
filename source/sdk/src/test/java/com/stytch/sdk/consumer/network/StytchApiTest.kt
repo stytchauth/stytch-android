@@ -80,7 +80,7 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi isInitialized returns correctly based on configuration state`() {
-        StytchApi.configure("publicToken", DeviceInfo(), { null })
+        StytchApi.configure("publicToken", DeviceInfo(), { null }, mockk())
         assert(StytchApi.isInitialized)
     }
 

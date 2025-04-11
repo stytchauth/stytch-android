@@ -2,11 +2,13 @@ package com.stytch.sdk.common.network
 
 import com.stytch.sdk.common.annotations.DFPPAEnabled
 import com.stytch.sdk.common.dfp.CaptchaProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.extensions.toNewRequestWithParams
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.consumer.network.StytchApiService
 import io.mockk.MockKAnnotations
+import io.mockk.MockKSettings.recordPrivateCalls
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -44,7 +46,7 @@ internal class StytchDFPInterceptorTest {
     @MockK
     private lateinit var dfpProtectedAuthMode: DFPProtectedAuthMode
 
-    private lateinit var interceptor: DFPInterceptor
+    private lateinit var interceptor: StytchDFPInterceptor
 
     private lateinit var client: OkHttpClient
 
@@ -54,7 +56,9 @@ internal class StytchDFPInterceptorTest {
         mockkStatic("com.stytch.sdk.common.extensions.RequestExtKt")
         interceptor =
             spyk(
-                StytchDFPInterceptor(dfpProvider, captchaProvider, true, DFPProtectedAuthMode.OBSERVATION),
+                StytchDFPInterceptor(
+                    DFPConfiguration(dfpProvider, captchaProvider, true, DFPProtectedAuthMode.OBSERVATION),
+                ),
                 recordPrivateCalls = true,
             )
         client = OkHttpClient().newBuilder().addInterceptor(interceptor).build()
@@ -152,24 +156,16 @@ internal class StytchDFPInterceptorTest {
                 every { request() } returns request
             }
         // DISABLED (need to reset the spy)
-        interceptor =
-            spyk(
-                StytchDFPInterceptor(dfpProvider, captchaProvider, false, dfpProtectedAuthMode),
-                recordPrivateCalls = true,
-            )
         every { interceptor.handleDisabledDFPStatus(any()) } returns mockk()
+        interceptor.dfpConfiguration = DFPConfiguration(dfpProvider, captchaProvider, false, dfpProtectedAuthMode)
         interceptor.intercept(chain)
         verify { interceptor.handleDisabledDFPStatus(any()) }
 
         // ENABLED + DECISIONING (need to reset the spy)
-        interceptor =
-            spyk(
-                StytchDFPInterceptor(dfpProvider, captchaProvider, true, dfpProtectedAuthMode),
-                recordPrivateCalls = true,
-            )
         every { interceptor.handleDFPDecisioningMode(any()) } returns mockk()
         every { dfpProtectedAuthMode.name } returns DFPProtectedAuthMode.DECISIONING.name
         every { dfpProtectedAuthMode.ordinal } returns DFPProtectedAuthMode.DECISIONING.ordinal
+        interceptor.dfpConfiguration = DFPConfiguration(dfpProvider, captchaProvider, true, dfpProtectedAuthMode)
         interceptor.intercept(chain)
         verify { interceptor.handleDFPDecisioningMode(any()) }
 
