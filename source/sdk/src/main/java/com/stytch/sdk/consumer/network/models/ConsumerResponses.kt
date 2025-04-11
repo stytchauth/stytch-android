@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.network.models
 
-import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
@@ -8,79 +7,86 @@ import com.stytch.sdk.common.network.models.OTPSendResponseData
 
 internal object ConsumerResponses {
     object Passwords {
-        @Keep
         @JsonClass(generateAdapter = true)
-        class PasswordsCreateResponse(data: CreateResponse) : StytchDataResponse<CreateResponse>(data)
+        class PasswordsCreateResponse(
+            data: CreateResponse,
+        ) : StytchDataResponse<CreateResponse>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class PasswordsStrengthCheckResponse(data: StrengthCheckResponse) :
-            StytchDataResponse<StrengthCheckResponse>(data)
+        class PasswordsStrengthCheckResponse(
+            data: StrengthCheckResponse,
+        ) : StytchDataResponse<StrengthCheckResponse>(data)
     }
 
     object Biometrics {
-        @Keep
         @JsonClass(generateAdapter = true)
-        class RegisterResponse(data: BiometricsAuthData) :
-            StytchDataResponse<BiometricsAuthData>(data)
+        class RegisterResponse(
+            data: BiometricsAuthData,
+        ) : StytchDataResponse<BiometricsAuthData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: BiometricsAuthData) :
-            StytchDataResponse<BiometricsAuthData>(data)
+        class AuthenticateResponse(
+            data: BiometricsAuthData,
+        ) : StytchDataResponse<BiometricsAuthData>(data)
     }
 
     object User {
-        @Keep
         @JsonClass(generateAdapter = true)
-        class UserResponse(data: UserData) : StytchDataResponse<UserData>(data)
+        class UserResponse(
+            data: UserData,
+        ) : StytchDataResponse<UserData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class DeleteFactorResponse(data: DeleteAuthenticationFactorData) :
-            StytchDataResponse<DeleteAuthenticationFactorData>(data)
+        class DeleteFactorResponse(
+            data: DeleteAuthenticationFactorData,
+        ) : StytchDataResponse<DeleteAuthenticationFactorData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class UpdateUserResponse(data: UpdateUserResponseData) : StytchDataResponse<UpdateUserResponseData>(data)
+        class UpdateUserResponse(
+            data: UpdateUserResponseData,
+        ) : StytchDataResponse<UpdateUserResponseData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class UserSearchResponse(data: UserSearchResponseData) : StytchDataResponse<UserSearchResponseData>(data)
+        class UserSearchResponse(
+            data: UserSearchResponseData,
+        ) : StytchDataResponse<UserSearchResponseData>(data)
     }
 
     object OAuth {
-        @Keep
         @JsonClass(generateAdapter = true)
-        class OAuthAuthenticateResponse(data: OAuthData) : StytchDataResponse<OAuthData>(data)
+        class OAuthAuthenticateResponse(
+            data: OAuthData,
+        ) : StytchDataResponse<OAuthData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class NativeOAuthAuthenticateResponse(data: NativeOAuthData) : StytchDataResponse<NativeOAuthData>(data)
+        class NativeOAuthAuthenticateResponse(
+            data: NativeOAuthData,
+        ) : StytchDataResponse<NativeOAuthData>(data)
     }
 
     object WebAuthn {
-        @Keep
         @JsonClass(generateAdapter = true)
-        class RegisterStartResponse(data: WebAuthnRegisterStartData) :
-            StytchDataResponse<WebAuthnRegisterStartData>(data)
+        class RegisterStartResponse(
+            data: WebAuthnRegisterStartData,
+        ) : StytchDataResponse<WebAuthnRegisterStartData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class RegisterResponse(data: WebAuthnRegisterData) : StytchDataResponse<WebAuthnRegisterData>(data)
+        class RegisterResponse(
+            data: WebAuthnRegisterData,
+        ) : StytchDataResponse<WebAuthnRegisterData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class AuthenticateResponse(data: WebAuthnAuthenticateStartData) :
-            StytchDataResponse<WebAuthnAuthenticateStartData>(data)
+        class AuthenticateResponse(
+            data: WebAuthnAuthenticateStartData,
+        ) : StytchDataResponse<WebAuthnAuthenticateStartData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
-        class UpdateResponse(data: WebAuthnUpdateResponseData) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
+        class UpdateResponse(
+            data: WebAuthnUpdateResponseData,
+        ) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
     }
 
     object Crypto {
-        @Keep
         @JsonClass(generateAdapter = true)
         class AuthenticateStartResponse(
             data: CryptoWalletAuthenticateStartResponseData,
@@ -88,40 +94,39 @@ internal object ConsumerResponses {
     }
 
     object TOTP {
-        @Keep
         @JsonClass(generateAdapter = true)
         class TOTPCreateResponse(
             data: TOTPCreateResponseData,
         ) : StytchDataResponse<TOTPCreateResponseData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
         class TOTPAuthenticateResponse(
             data: TOTPAuthenticateResponseData,
         ) : StytchDataResponse<TOTPAuthenticateResponseData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
         class TOTPRecoveryCodesResponse(
             data: TOTPRecoveryCodesResponseData,
         ) : StytchDataResponse<TOTPRecoveryCodesResponseData>(data)
 
-        @Keep
         @JsonClass(generateAdapter = true)
         class TOTPRecoverResponse(
             data: TOTPRecoverResponseData,
         ) : StytchDataResponse<TOTPRecoverResponseData>(data)
     }
 
-    @Keep
     @JsonClass(generateAdapter = true)
-    class AuthenticateResponse(data: AuthData) : StytchDataResponse<AuthData>(data)
+    class AuthenticateResponse(
+        data: AuthData,
+    ) : StytchDataResponse<AuthData>(data)
 
-    @Keep
     @JsonClass(generateAdapter = true)
-    class LoginOrCreateOTPResponse(data: LoginOrCreateOTPData) : StytchDataResponse<LoginOrCreateOTPData>(data)
+    class LoginOrCreateOTPResponse(
+        data: LoginOrCreateOTPData,
+    ) : StytchDataResponse<LoginOrCreateOTPData>(data)
 
-    @Keep
     @JsonClass(generateAdapter = true)
-    class OTPSendResponse(data: OTPSendResponseData) : StytchDataResponse<OTPSendResponseData>(data)
+    class OTPSendResponse(
+        data: OTPSendResponseData,
+    ) : StytchDataResponse<OTPSendResponseData>(data)
 }

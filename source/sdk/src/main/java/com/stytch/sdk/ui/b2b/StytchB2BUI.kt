@@ -27,7 +27,7 @@ public class StytchB2BUI private constructor(
     private val authHandler: StytchB2BAuthHandler
 
     internal val bootstrapData: BootstrapData
-        get() = StytchB2BClient.bootstrapData
+        get() = StytchB2BClient.configurationManager.bootstrapData
 
     init {
         require(activity != null) { "Missing required activity" }

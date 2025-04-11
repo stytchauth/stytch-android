@@ -28,27 +28,28 @@ class MemberViewModel : ViewModel() {
     fun updateMemberName() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.member.update(
-                    Member.UpdateParams(name = nameState.text),
-                ).toFriendlyDisplay()
+                StytchB2BClient.member
+                    .update(
+                        Member.UpdateParams(name = nameState.text),
+                    ).toFriendlyDisplay()
         }
     }
 
     fun deleteMfaPhoneNumber() {
         viewModelScope.launchAndToggleLoadingState {
             _currentResponse.value =
-                StytchB2BClient.member.deleteFactor(
-                    MemberAuthenticationFactor.MfaPhoneNumber,
-                ).toFriendlyDisplay()
+                StytchB2BClient.member
+                    .deleteFactor(
+                        MemberAuthenticationFactor.MfaPhoneNumber,
+                    ).toFriendlyDisplay()
         }
     }
 
-    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle {
-        return launch {
+    private fun CoroutineScope.launchAndToggleLoadingState(block: suspend () -> Unit): DisposableHandle =
+        launch {
             _loadingState.value = true
             block()
         }.invokeOnCompletion {
             _loadingState.value = false
         }
-    }
 }

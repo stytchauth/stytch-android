@@ -82,7 +82,7 @@ internal class PasswordResetSentScreenViewModel(
             val parameters =
                 emailMagicLinksOptions.toParameters(
                     emailAddress = emailAddress,
-                    publicToken = stytchClient.publicToken,
+                    publicToken = stytchClient.configurationManager.publicToken,
                     locale = locale,
                 )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {

@@ -64,8 +64,8 @@ internal class OAuthImplTest {
         mockkObject(StytchClient)
         every { StytchClient.events } returns mockk(relaxed = true)
         every { StytchApi.isInitialized } returns true
-        StytchClient.deviceInfo = mockk(relaxed = true)
-        StytchClient.appSessionId = "app-session-id"
+        StytchClient.configurationManager.deviceInfo = mockk(relaxed = true)
+        StytchClient.configurationManager.appSessionId = "app-session-id"
         impl =
             OAuthImpl(
                 externalScope = TestScope(),

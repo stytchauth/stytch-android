@@ -6,6 +6,7 @@ import java.util.Locale
 /**
  * An enum representing the supported (B2B) token types that we can extract from a deeplink
  */
+
 public enum class B2BTokenType : TokenType {
     /**
      * A B2B Email Magic Link deeplink

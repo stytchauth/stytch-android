@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
  * factors from an authenticated user.
  */
+
 public interface UserManagement {
     /**
      * Exposes a flow of user data

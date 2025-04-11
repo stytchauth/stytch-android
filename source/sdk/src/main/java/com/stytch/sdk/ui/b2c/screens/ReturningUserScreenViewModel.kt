@@ -132,7 +132,7 @@ internal class ReturningUserScreenViewModel(
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = email,
-                publicToken = stytchClient.publicToken,
+                publicToken = stytchClient.configurationManager.publicToken,
                 locale = locale,
             )
         when (val result = stytchClient.passwords.resetByEmailStart(parameters)) {
@@ -181,7 +181,7 @@ internal class ReturningUserScreenViewModel(
             val parameters =
                 emailMagicLinksOptions.toParameters(
                     emailAddress = uiState.value.emailState.emailAddress,
-                    publicToken = stytchClient.publicToken,
+                    publicToken = stytchClient.configurationManager.publicToken,
                     locale = locale,
                 )
             when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters)) {
@@ -270,7 +270,7 @@ internal class ReturningUserScreenViewModel(
             val parameters =
                 passwordOptions.toResetByEmailStartParameters(
                     emailAddress = uiState.value.emailState.emailAddress,
-                    publicToken = stytchClient.publicToken,
+                    publicToken = stytchClient.configurationManager.publicToken,
                     locale = locale,
                 )
             when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {

@@ -59,6 +59,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
     // Optionally configure plugin
     ktlint {

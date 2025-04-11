@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture
  * The CryptoWallet interface provides methods for authenticating a user using one of the supported Crypto Wallets
  * (Ethereum or Solana)
  */
+
 public interface CryptoWallet {
     /**
      * A data class wrapping the parameters needed to begin a crypto wallet authentication flow

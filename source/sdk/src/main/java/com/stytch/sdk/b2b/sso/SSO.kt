@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture
  * Stytch supports the following SSO protocols:
  * - SAML
  */
+
 public interface SSO {
     public fun setSSOReceiverActivity(activity: ComponentActivity?)
 
@@ -234,6 +235,7 @@ public interface SSO {
     /**
      * The SAML interface provides methods for creating, updating, and deleting a SAML connection
      */
+
     public interface SAML {
         /**
          * Data class used for wrapping the parameters for a SAML creation request
@@ -419,6 +421,7 @@ public interface SSO {
     /**
      * The OIDC interface provides methods for creating and updating an OIDC connection
      */
+
     public interface OIDC {
         /**
          * Data class used for wrapping the parameters for an OIDC creation request

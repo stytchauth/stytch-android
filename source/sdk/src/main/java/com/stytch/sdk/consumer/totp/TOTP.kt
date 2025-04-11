@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
  * The TOTP interface provides methods for creating and authenticating TOTP codes; retrieving recovery codes; and
  * consuming a recovery code
  */
+
 public interface TOTP {
     /**
      * A data class wrapping the parameters used in a TOTP create request

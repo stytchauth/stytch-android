@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * The TOTP interface provides methods for creating and authenticating TOTPs for a member
  */
+
 public interface TOTP {
     /**
      * A data class wrapping the parameters needed to create a TOTP

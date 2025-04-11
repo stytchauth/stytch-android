@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture
  *
  * Call the `StytchB2BClient.magicLinks.discovery.authenticate()` method to authenticate a Member with a Magic Link.
  */
+
 public interface B2BMagicLinks {
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
@@ -118,6 +119,7 @@ public interface B2BMagicLinks {
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
+
     public interface EmailMagicLinks {
         /**
          * Data class used for wrapping parameters used with requesting an email magic link

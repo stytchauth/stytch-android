@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture
  *
  * Call the `StytchB2BClient.discovery.create()` method to create a new organization.
  */
+
 public interface Discovery {
     /**
      * Discover a member's available organizations

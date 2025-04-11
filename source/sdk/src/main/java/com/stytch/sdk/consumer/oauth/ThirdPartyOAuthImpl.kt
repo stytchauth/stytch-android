@@ -35,7 +35,7 @@ internal class ThirdPartyOAuthImpl(
         val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
         val token = StytchApi.publicToken
         val host =
-            StytchClient.bootstrapData.cnameDomain?.let {
+            StytchClient.configurationManager.bootstrapData.cnameDomain?.let {
                 "https://$it/v1/"
             } ?: if (StytchApi.isTestToken) TEST_API_URL else LIVE_API_URL
         val baseUrl = "${host}public/oauth/$providerName/start"
@@ -68,7 +68,7 @@ internal class ThirdPartyOAuthImpl(
                 val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 val token = StytchApi.publicToken
                 val host =
-                    StytchClient.bootstrapData.cnameDomain?.let {
+                    StytchClient.configurationManager.bootstrapData.cnameDomain?.let {
                         "https://$it/v1/"
                     } ?: if (StytchApi.isTestToken) TEST_API_URL else LIVE_API_URL
                 val baseUrl = "${host}public/oauth/$providerName/start"

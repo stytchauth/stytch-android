@@ -1,13 +1,11 @@
 package com.stytch.sdk.common.network.models
 
-import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.utils.IEnumValue
 
 internal object CommonRequests {
     object Sessions {
-        @Keep
         @JsonClass(generateAdapter = true)
         data class AuthenticateRequest(
             @Json(name = "session_duration_minutes")
@@ -16,14 +14,12 @@ internal object CommonRequests {
     }
 
     object Events {
-        @Keep
         @JsonClass(generateAdapter = true)
         data class Event(
             val telemetry: EventTelemetry,
             val event: EventEvent,
         )
 
-        @Keep
         @JsonClass(generateAdapter = true)
         data class EventTelemetry(
             @Json(name = "event_id")
@@ -41,14 +37,12 @@ internal object CommonRequests {
             val device: DeviceIdentifier,
         )
 
-        @Keep
         @JsonClass(generateAdapter = true)
         data class VersionIdentifier(
             val identifier: String,
             val version: String? = null,
         )
 
-        @Keep
         @JsonClass(generateAdapter = true)
         data class DeviceIdentifier(
             val model: String? = null,
@@ -56,7 +50,6 @@ internal object CommonRequests {
             val screenSize: String? = null,
         )
 
-        @Keep
         @JsonClass(generateAdapter = true)
         data class EventEvent(
             @Json(name = "public_token")
@@ -70,7 +63,6 @@ internal object CommonRequests {
     }
 }
 
-@Keep
 @JsonClass(generateAdapter = false)
 public enum class Locale(
     override val jsonName: String,

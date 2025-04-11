@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
+
 public interface B2BSessions {
     /**
      * Exposes a flow of session data

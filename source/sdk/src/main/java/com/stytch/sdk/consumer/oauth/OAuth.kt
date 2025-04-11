@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture
  * The OAuth interface provides methods for authenticating a user via a native Google OneTap prompt or any of the
  * supported third-party OAuth providers, provided you have configured them within your Stytch Dashboard.
  */
+
 public interface OAuth {
     /**
      * The interface for authenticating a user with Google OneTap
@@ -117,6 +118,7 @@ public interface OAuth {
     /**
      * Provides start, authenticate, and signOut methods for native Google One Tap authentication
      */
+
     public interface GoogleOneTap {
         /**
          * Data class used for wrapping parameters to start a Google OneTap flow
@@ -176,6 +178,7 @@ public interface OAuth {
     /**
      * Provides a method for starting Third Party OAuth authentications
      */
+
     public interface ThirdParty {
         /**
          * The Third Party OAuth provider name

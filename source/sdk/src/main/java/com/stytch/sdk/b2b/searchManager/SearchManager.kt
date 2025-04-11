@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * The SearchManager interface provides methods for searching for organizations and members
  */
+
 public interface SearchManager {
     /**
      * A data class wrapping the parameters used for a Search Organizations call

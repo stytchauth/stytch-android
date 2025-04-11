@@ -8,6 +8,7 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
  * A class representing the types of Deeplink responses that the Stytch client has handled
  * @property result A [StytchResult] representing either the authenticated or discovery response, or an error.
  */
+@JacocoExcludeGenerated
 public sealed class DeeplinkResponse(
     public open val result: StytchResult<Any>,
 ) {

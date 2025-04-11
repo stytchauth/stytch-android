@@ -86,7 +86,7 @@ internal class EMLConfirmationScreenViewModelTest {
                     any(),
                 )
             } returns StytchResult.Success(BasicData(200, ""))
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val eventFlow =
                 async {
                     viewModel.eventFlow.first()
@@ -109,7 +109,7 @@ internal class EMLConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail delegates to correct method and updates state on error`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns
                 StytchResult.Error(
                     StytchInternalError(message = "Testing error state"),

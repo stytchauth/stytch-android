@@ -147,8 +147,8 @@ internal class MainScreenViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = "${StytchClient.publicToken}://oauth",
-                signupRedirectUrl = "${StytchClient.publicToken}://oauth",
+                loginRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
+                signupRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
             )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
@@ -297,7 +297,7 @@ internal class MainScreenViewModel(
         val parameters =
             emailMagicLinksOptions.toParameters(
                 emailAddress = emailAddress,
-                publicToken = stytchClient.publicToken,
+                publicToken = stytchClient.configurationManager.publicToken,
                 locale = locale,
             )
         return when (val result = stytchClient.magicLinks.email.loginOrCreate(parameters = parameters)) {
@@ -365,7 +365,7 @@ internal class MainScreenViewModel(
         val parameters =
             passwordOptions.toResetByEmailStartParameters(
                 emailAddress = emailAddress,
-                publicToken = stytchClient.publicToken,
+                publicToken = stytchClient.configurationManager.publicToken,
                 locale = locale,
             )
         return when (val result = stytchClient.passwords.resetByEmailStart(parameters = parameters)) {
