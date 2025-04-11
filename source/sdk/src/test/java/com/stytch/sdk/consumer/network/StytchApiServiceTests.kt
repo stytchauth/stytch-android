@@ -32,12 +32,7 @@ internal class StytchApiServiceTests {
         mockWebServer = MockWebServer()
         mockWebServer.start(12345)
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
-        apiService =
-            ApiService
-                .getInitialRetrofitInstance(
-                    mockWebServer.url("/").toString(),
-                    null,
-                ).create(StytchApiService::class.java)
+        apiService = ApiService(mockWebServer.url("/").toString()).retrofit.create(StytchApiService::class.java)
     }
 
     @After

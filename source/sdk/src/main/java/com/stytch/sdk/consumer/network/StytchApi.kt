@@ -50,12 +50,12 @@ import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
-import retrofit2.Retrofit
 
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var getSessionToken: () -> String?
+    private lateinit var apiServiceClass: ApiService
 
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
@@ -71,8 +71,9 @@ internal object StytchApi : CommonApi {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.getSessionToken = getSessionToken
-        retrofit = ApiService.getInitialRetrofitInstance(sdkUrl, authHeaderInterceptor)
-        apiService = retrofit.create(StytchApiService::class.java)
+        apiServiceClass = ApiService(sdkUrl)
+        apiService =
+            apiServiceClass.addAuthHeaderInterceptor(authHeaderInterceptor).create(StytchApiService::class.java)
     }
 
     override fun configureDFP(
@@ -82,12 +83,11 @@ internal object StytchApi : CommonApi {
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         assertInitialized()
-        retrofit =
-            ApiService.addDfpInterceptor(
-                retrofit,
-                StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-            )
-        apiService = retrofit.create(StytchApiService::class.java)
+        apiService =
+            apiServiceClass
+                .addDfpInterceptor(
+                    StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
+                ).create(StytchApiService::class.java)
     }
 
     internal val isInitialized: Boolean
@@ -115,7 +115,6 @@ internal object StytchApi : CommonApi {
         }
     }
 
-    private lateinit var retrofit: Retrofit
     internal lateinit var apiService: StytchApiService
 
     internal object MagicLinks {

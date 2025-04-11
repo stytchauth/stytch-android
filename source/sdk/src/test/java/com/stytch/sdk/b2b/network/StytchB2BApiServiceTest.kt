@@ -44,11 +44,7 @@ internal class StytchB2BApiServiceTest {
         mockWebServer.start(12345)
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
         apiService =
-            ApiService
-                .getInitialRetrofitInstance(
-                    mockWebServer.url("/").toString(),
-                    null,
-                ).create(StytchB2BApiService::class.java)
+            ApiService(mockWebServer.url("/").toString()).retrofit.create(StytchB2BApiService::class.java)
     }
 
     @After

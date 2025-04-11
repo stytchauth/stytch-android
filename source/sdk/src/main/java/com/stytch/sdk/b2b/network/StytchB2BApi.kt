@@ -91,12 +91,12 @@ import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
-import retrofit2.Retrofit
 
 internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var getSessionToken: () -> String?
+    private lateinit var apiServiceClass: ApiService
 
     @VisibleForTesting
     internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
@@ -112,8 +112,9 @@ internal object StytchB2BApi : CommonApi {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.getSessionToken = getSessionToken
-        retrofit = ApiService.getInitialRetrofitInstance(sdkUrl, authHeaderInterceptor)
-        apiService = retrofit.create(StytchB2BApiService::class.java)
+        this.apiServiceClass = ApiService(sdkUrl)
+        apiService =
+            apiServiceClass.addAuthHeaderInterceptor(authHeaderInterceptor).create(StytchB2BApiService::class.java)
     }
 
     override fun configureDFP(
@@ -123,12 +124,11 @@ internal object StytchB2BApi : CommonApi {
         dfpProtectedAuthMode: DFPProtectedAuthMode,
     ) {
         assertInitialized()
-        retrofit =
-            ApiService.addDfpInterceptor(
-                retrofit,
-                StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-            )
-        apiService = retrofit.create(StytchB2BApiService::class.java)
+        apiService =
+            apiServiceClass
+                .addDfpInterceptor(
+                    StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
+                ).create(StytchB2BApiService::class.java)
     }
 
     internal val isInitialized: Boolean
@@ -157,7 +157,6 @@ internal object StytchB2BApi : CommonApi {
         }
     }
 
-    private lateinit var retrofit: Retrofit
     internal lateinit var apiService: StytchB2BApiService
 
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(apiCall: suspend () -> T): StytchResult<T1> =
