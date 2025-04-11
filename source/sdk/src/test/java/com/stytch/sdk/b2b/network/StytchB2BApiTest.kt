@@ -62,7 +62,6 @@ internal class StytchB2BApiTest {
     fun before() {
         val mockApplication: Application =
             mockk {
-                every { registerActivityLifecycleCallbacks(any()) } just runs
                 every { packageName } returns "Stytch"
             }
         mContextMock =
