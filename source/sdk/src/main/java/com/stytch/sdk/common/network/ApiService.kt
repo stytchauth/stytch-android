@@ -36,9 +36,13 @@ internal interface ApiService {
 
         fun getInitialRetrofitInstance(
             hostUrl: String,
-            authHeaderInterceptor: StytchAuthHeaderInterceptor,
+            authHeaderInterceptor: StytchAuthHeaderInterceptor?,
         ): Retrofit {
-            client = client.newBuilder().addInterceptor(authHeaderInterceptor).build()
+            val newBuilder = client.newBuilder()
+            authHeaderInterceptor?.let {
+                newBuilder.addInterceptor(it)
+            }
+            client = newBuilder.build()
             val moshi =
                 Moshi
                     .Builder()
