@@ -10,7 +10,11 @@ import com.stytch.sdk.utils.verifyDelete
 import com.stytch.sdk.utils.verifyGet
 import com.stytch.sdk.utils.verifyPost
 import com.stytch.sdk.utils.verifyPut
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
@@ -32,13 +36,17 @@ internal class StytchApiServiceTests {
         mockWebServer = MockWebServer()
         mockWebServer.start(12345)
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
+        val chain = slot<Interceptor.Chain>()
         apiService =
-            ApiService.createApiService(
-                mockWebServer.url("/").toString(),
-                null,
-                null,
-                StytchApiService::class.java,
-            )
+            ApiService
+                .getInitialRetrofitInstance(
+                    mockWebServer.url("/").toString(),
+                    mockk {
+                        every { intercept(capture(chain)) } answers {
+                            chain.captured.proceed(chain.captured.request())
+                        }
+                    },
+                ).create(StytchApiService::class.java)
     }
 
     @After

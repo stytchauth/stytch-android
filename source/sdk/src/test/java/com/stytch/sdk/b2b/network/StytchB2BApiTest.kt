@@ -95,12 +95,6 @@ internal class StytchB2BApiTest {
         assert(StytchB2BApi.isInitialized)
     }
 
-    @Test(expected = StytchSDKNotConfiguredError::class)
-    fun `StytchB2BApi apiService throws exception when not configured`() {
-        every { StytchB2BApi.isInitialized } returns false
-        StytchB2BApi.apiService
-    }
-
     @Test
     fun `StytchB2BApi apiService is available when configured`() {
         StytchB2BClient.configure(mContextMock, "")

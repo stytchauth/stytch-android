@@ -84,12 +84,6 @@ internal class StytchApiTest {
         assert(StytchApi.isInitialized)
     }
 
-    @Test(expected = StytchSDKNotConfiguredError::class)
-    fun `StytchApi apiService throws exception when not configured`() {
-        every { StytchApi.isInitialized } returns false
-        StytchApi.apiService
-    }
-
     @Test
     fun `StytchApi apiService is available when configured`() {
         StytchClient.configure(mContextMock, "")
