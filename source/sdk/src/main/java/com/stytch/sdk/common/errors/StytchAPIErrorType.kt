@@ -1,11 +1,15 @@
 package com.stytch.sdk.common.errors
 import java.util.Locale
 
-public enum class StytchAPIErrorType(
-    public val type: String,
-) {
+public enum class StytchAPIErrorType(public val type: String) {
     ACTION_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
         type = "action_available_only_for_active_members",
+    ),
+    ACTION_AVAILABLE_ONLY_ONCE_PRIMARY_AUTHENTICATION_IS_MET(
+        type = "action_available_only_once_primary_authentication_is_met",
+    ),
+    ACTION_NOT_ALLOWED_EMAIL_DOMAIN_IS_CLAIMED(
+        type = "action_not_allowed_email_domain_is_claimed",
     ),
     ACTIVE_SCIM_CONNECTION_EXISTS(
         type = "active_scim_connection_exists",
@@ -108,6 +112,9 @@ public enum class StytchAPIErrorType(
     ),
     CAPTCHA_REQUIRED(
         type = "captcha_required",
+    ),
+    CLAIMED_EMAIL_DOMAINS_NOT_SUPPORTED(
+        type = "claimed_email_domains_not_supported",
     ),
     CLIENT_CLOSED_REQUEST(
         type = "client_closed_request",
@@ -225,6 +232,9 @@ public enum class StytchAPIErrorType(
     ),
     DUPLICATE_WEBAUTHN_REGISTRATION(
         type = "duplicate_webauthn_registration",
+    ),
+    DYNAMIC_CLIENT_REGISTRATION_NOT_ENABLED(
+        type = "dynamic_client_registration_not_enabled",
     ),
     EMAIL_IN_DENYLIST(
         type = "email_in_denylist",
@@ -526,6 +536,9 @@ public enum class StytchAPIErrorType(
     INVALID_EMAIL_SUBJECT(
         type = "invalid_email_subject",
     ),
+    INVALID_EMAIL_TEMPLATE_PARAMETERS(
+        type = "invalid_email_template_parameters",
+    ),
     INVALID_ETHEREUM_ADDRESS(
         type = "invalid_ethereum_address",
     ),
@@ -687,6 +700,9 @@ public enum class StytchAPIErrorType(
     ),
     INVALID_PASSWORD_STRENGTH_LUDS_LENGTH(
         type = "invalid_password_strength_luds_length",
+    ),
+    INVALID_PBKDF_2_ALGORITHM(
+        type = "invalid_pbkdf_2_algorithm",
     ),
     INVALID_PBKDF_2_HASH(
         type = "invalid_pbkdf_2_hash",
@@ -1081,6 +1097,9 @@ public enum class StytchAPIErrorType(
     MEMBER_RESET_PASSWORD(
         type = "member_reset_password",
     ),
+    MEMBER_SEARCH_CANNOT_MIX_INTERNAL_AND_EXTERNAL_MEMBER_IDS(
+        type = "member_search_cannot_mix_internal_and_external_member_ids",
+    ),
     MEMBER_SEARCH_EXPECTED_ARRAY_OF_STRINGS(
         type = "member_search_expected_array_of_strings",
     ),
@@ -1309,6 +1328,15 @@ public enum class StytchAPIErrorType(
     NOT_YET_VALID_SAML_RESPONSE(
         type = "not_yet_valid_saml_response",
     ),
+    OAUTH_ACCESS_TOKEN_EXCHANGE_MISSING_FULL_ACCESS(
+        type = "oauth_access_token_exchange_missing_full_access",
+    ),
+    OAUTH_ACCESS_TOKEN_EXCHANGE_TOKEN_INVALID_GRANT(
+        type = "oauth_access_token_exchange_token_invalid_grant",
+    ),
+    OAUTH_ACCESS_TOKEN_EXCHANGE_TOKEN_TOO_OLD(
+        type = "oauth_access_token_exchange_token_too_old",
+    ),
     OAUTH_APP_NOT_AUTHORIZED(
         type = "oauth_app_not_authorized",
     ),
@@ -1393,6 +1421,9 @@ public enum class StytchAPIErrorType(
     OIDC_CONNECTION_ISSUER_REQUIRED(
         type = "oidc_connection_issuer_required",
     ),
+    OIDC_CONNECTION_ISSUER_URL_INVALID_FORMAT(
+        type = "oidc_connection_issuer_url_invalid_format",
+    ),
     OIDC_CONNECTION_JWKS_URL_INVALID_FORMAT(
         type = "oidc_connection_jwks_url_invalid_format",
     ),
@@ -1450,6 +1481,9 @@ public enum class StytchAPIErrorType(
     ORGANIZATION_LOGO_URL_TOO_LONG(
         type = "organization_logo_url_too_long",
     ),
+    ORGANIZATION_NAME_INCLUDES_BANNED_WORDS(
+        type = "organization_name_includes_banned_words",
+    ),
     ORGANIZATION_NAME_MISSING(
         type = "organization_name_missing",
     ),
@@ -1479,6 +1513,9 @@ public enum class StytchAPIErrorType(
     ),
     ORGANIZATION_SEARCH_MISSING_ALLOWED_DOMAINS(
         type = "organization_search_missing_allowed_domains",
+    ),
+    ORGANIZATION_SEARCH_MISSING_CLAIMED_EMAIL_DOMAINS(
+        type = "organization_search_missing_claimed_email_domains",
     ),
     ORGANIZATION_SEARCH_MISSING_FILTER_NAME(
         type = "organization_search_missing_filter_name",
@@ -1510,14 +1547,23 @@ public enum class StytchAPIErrorType(
     ORGANIZATION_SEARCH_ORGANIZATION_SLUG_FUZZY_TOO_SHORT(
         type = "organization_search_organization_slug_fuzzy_too_short",
     ),
+    ORGANIZATION_SETTINGS_CLAIMED_DOMAIN_TOO_COMMON(
+        type = "organization_settings_claimed_domain_too_common",
+    ),
     ORGANIZATION_SETTINGS_DISPOSABLE_DOMAIN(
         type = "organization_settings_disposable_domain",
     ),
     ORGANIZATION_SETTINGS_DOMAIN_TOO_COMMON(
         type = "organization_settings_domain_too_common",
     ),
+    ORGANIZATION_SETTINGS_DUPLICATE_CLAIMED_DOMAIN(
+        type = "organization_settings_duplicate_claimed_domain",
+    ),
     ORGANIZATION_SETTINGS_DUPLICATE_DOMAIN(
         type = "organization_settings_duplicate_domain",
+    ),
+    ORGANIZATION_SETTINGS_INVALID_CLAIMED_DOMAIN(
+        type = "organization_settings_invalid_claimed_domain",
     ),
     ORGANIZATION_SETTINGS_INVALID_DOMAIN(
         type = "organization_settings_invalid_domain",
@@ -1726,6 +1772,9 @@ public enum class StytchAPIErrorType(
     SAML_CONNECTION_NAME_MAPPING_REQUIRED(
         type = "saml_connection_name_mapping_required",
     ),
+    SAML_CONNECTION_NO_NESTED_KEYS_IN_ATTRIBUTE_MAPPING(
+        type = "saml_connection_no_nested_keys_in_attribute_mapping",
+    ),
     SAML_CONNECTION_NOT_FOUND(
         type = "saml_connection_not_found",
     ),
@@ -1734,6 +1783,12 @@ public enum class StytchAPIErrorType(
     ),
     SAML_GROUP_ROLE_ASSIGNMENT_DOES_NOT_CONTAIN_MEMBER_GROUP(
         type = "saml_group_role_assignment_does_not_contain_member_group",
+    ),
+    SAML_SIGNING_PRIVATE_KEY_FORMAT_NOT_SUPPORTED(
+        type = "saml_signing_private_key_format_not_supported",
+    ),
+    SAML_SIGNING_PRIVATE_KEY_INVALID(
+        type = "saml_signing_private_key_invalid",
     ),
     SCIM_CONNECTION_NOT_ROTATING_TOKEN(
         type = "scim_connection_not_rotating_token",
@@ -1825,6 +1880,9 @@ public enum class StytchAPIErrorType(
     TEST_ID_USED_IN_LIVE_ENVIRONMENT(
         type = "test_id_used_in_live_environment",
     ),
+    THIRD_PARTY_CLIENTS_CANNOT_USE_FULL_ACCESS(
+        type = "third_party_clients_cannot_use_full_access",
+    ),
     TOO_FEW_TOKENS_AUTHENTICATED(
         type = "too_few_tokens_authenticated",
     ),
@@ -1836,6 +1894,9 @@ public enum class StytchAPIErrorType(
     ),
     TOO_MANY_EMAIL_TEMPLATES(
         type = "too_many_email_templates",
+    ),
+    TOO_MANY_IDP_CLIENTS(
+        type = "too_many_idp_clients",
     ),
     TOO_MANY_M2M_CLIENT_SCOPES(
         type = "too_many_m2m_client_scopes",
@@ -1893,9 +1954,6 @@ public enum class StytchAPIErrorType(
     ),
     TOO_MANY_USER_SELECTION_ARGUMENTS(
         type = "too_many_user_selection_arguments",
-    ),
-    TOO_RESTRICTIVE_ORGANIZATION_SETTINGS(
-        type = "too_restrictive_organization_settings",
     ),
     TOTP_CODE_ALREADY_AUTHENTICATED(
         type = "totp_code_already_authenticated",
@@ -2014,8 +2072,14 @@ public enum class StytchAPIErrorType(
     USER_ID_MISMATCH(
         type = "user_id_mismatch",
     ),
+    USER_IMPERSONATION_NOT_ALLOWED(
+        type = "user_impersonation_not_allowed",
+    ),
     USER_NOT_FOUND(
         type = "user_not_found",
+    ),
+    USER_SEARCH_CANNOT_MIX_INTERNAL_AND_EXTERNAL_USER_IDS(
+        type = "user_search_cannot_mix_internal_and_external_user_ids",
     ),
     USER_SEARCH_EMAIL_ADDRESS_FUZZY_TOO_SHORT(
         type = "user_search_email_address_fuzzy_too_short",
