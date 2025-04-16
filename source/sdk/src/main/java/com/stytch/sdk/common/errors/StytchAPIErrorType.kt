@@ -2075,6 +2075,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     USER_IMPERSONATION_NOT_ALLOWED(
         type = "user_impersonation_not_allowed",
     ),
+    USER_LOCK_LIMIT_REACHED(
+        type = "user_lock_limit_reached",
+    ),
     USER_NOT_FOUND(
         type = "user_not_found",
     ),
