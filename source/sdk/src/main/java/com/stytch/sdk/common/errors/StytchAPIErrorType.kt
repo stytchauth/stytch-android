@@ -1784,6 +1784,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     SAML_GROUP_ROLE_ASSIGNMENT_DOES_NOT_CONTAIN_MEMBER_GROUP(
         type = "saml_group_role_assignment_does_not_contain_member_group",
     ),
+    SAML_IDP_INITIATED_AUTH_DISABLED(
+        type = "saml_idp_initiated_auth_disabled",
+    ),
     SAML_SIGNING_PRIVATE_KEY_FORMAT_NOT_SUPPORTED(
         type = "saml_signing_private_key_format_not_supported",
     ),
