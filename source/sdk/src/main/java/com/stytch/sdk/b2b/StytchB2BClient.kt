@@ -58,6 +58,7 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.Events
 import com.stytch.sdk.common.events.EventsImpl
 import com.stytch.sdk.common.network.CommonApi
+import com.stytch.sdk.common.network.models.Vertical
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -666,6 +667,8 @@ public object StytchB2BClient {
         override var onFinishedInitialization: () -> Unit,
     ) : StytchClientCommon {
         override val commonApi: CommonApi = StytchB2BApi
+
+        override val expectedVertical: Vertical = Vertical.B2B
 
         override fun logEvent(
             eventName: String,

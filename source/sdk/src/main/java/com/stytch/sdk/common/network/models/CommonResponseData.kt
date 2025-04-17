@@ -353,7 +353,14 @@ public data class BootstrapData(
     val passwordConfig: PasswordConfig? = null,
     @Json(name = "rbac_policy")
     val rbacPolicy: RBACPolicy? = null,
+    val vertical: Vertical = Vertical.CONSUMER,
 ) : Parcelable
+
+@JsonClass(generateAdapter = false)
+public enum class Vertical {
+    B2B,
+    CONSUMER,
+}
 
 @JsonClass(generateAdapter = true)
 @Parcelize
