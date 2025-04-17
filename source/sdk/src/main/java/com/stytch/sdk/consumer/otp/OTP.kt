@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
@@ -15,6 +16,7 @@ import java.util.concurrent.CompletableFuture
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS, WhatsApp, and
  * Email.
  */
+
 public interface OTP {
     /**
      * Data class used for wrapping parameters used with OTP authentication
@@ -22,6 +24,7 @@ public interface OTP {
      * @property methodId the identifier returned from the corresponding loginOrCreate or send method
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParameters
         @JvmOverloads
         constructor(
@@ -81,6 +84,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call SMS OTP endpoints
      */
+
     public interface SmsOTP {
         /**
          * Data class used for wrapping parameters used with SMS OTP
@@ -93,6 +97,7 @@ public interface OTP {
          * if no value is provided, the copy defaults to English.
          */
         @Parcelize
+        @JacocoExcludeGenerated
         public data class Parameters
             @JvmOverloads
             constructor(
@@ -161,6 +166,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call WhatsApp OTP endpoints
      */
+
     public interface WhatsAppOTP {
         /**
          * Data class used for wrapping parameters used with WhatsApp OTP
@@ -169,6 +175,7 @@ public interface OTP {
          * @property expirationMinutes indicates how long the OTP should last before it expires
          */
         @Parcelize
+        @JacocoExcludeGenerated
         public data class Parameters
             @JvmOverloads
             constructor(
@@ -235,6 +242,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call Email OTP endpoints
      */
+
     public interface EmailOTP {
         /**
          * Data class used for wrapping parameters used with Email OTP
@@ -248,6 +256,7 @@ public interface OTP {
          * Magic links - Sign-up.
          */
         @Parcelize
+        @JacocoExcludeGenerated
         public data class Parameters
             @JvmOverloads
             constructor(

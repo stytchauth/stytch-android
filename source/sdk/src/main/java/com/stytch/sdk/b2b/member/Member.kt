@@ -6,6 +6,7 @@ import com.stytch.sdk.b2b.UpdateMemberResponse
 import com.stytch.sdk.b2b.network.models.MemberData
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.common.StytchObjectInfo
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.CompletableFuture
 
@@ -61,6 +62,7 @@ public interface Member {
      *  1. Which MFA method the Member is prompted to use when logging in
      *  2. Whether An SMS will be sent automatically after completing the first leg of authentication
      */
+    @JacocoExcludeGenerated
     public data class UpdateParams
         @JvmOverloads
         constructor(

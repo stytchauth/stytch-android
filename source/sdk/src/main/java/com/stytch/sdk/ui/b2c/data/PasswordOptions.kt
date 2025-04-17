@@ -1,8 +1,8 @@
 package com.stytch.sdk.ui.b2c.data
 
 import android.os.Parcelable
-import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.passwords.Passwords
 import kotlinx.parcelize.Parcelize
@@ -14,8 +14,8 @@ import kotlinx.parcelize.Parcelize
  * @property resetPasswordTemplateId The ID of an email template (defined in the Stytch Dashboard) for password resets
  */
 @Parcelize
-@Keep
 @JsonClass(generateAdapter = true)
+@JacocoExcludeGenerated
 public data class PasswordOptions
     @JvmOverloads
     constructor(

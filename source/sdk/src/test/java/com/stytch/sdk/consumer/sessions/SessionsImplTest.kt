@@ -4,6 +4,8 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.EncryptionManager
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchAPIErrorType
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
@@ -142,6 +144,21 @@ internal class SessionsImplTest {
         }
 
     @Test
+    fun `SessionsImpl revoke does revoke a local session if a network error occurs and error is unrecoverable`() =
+        runBlocking {
+            coEvery { mockApi.revoke() } returns
+                StytchResult.Error(
+                    StytchAPIError(
+                        errorType = StytchAPIErrorType.SESSION_NOT_FOUND,
+                        message = "",
+                        statusCode = 401,
+                    ),
+                )
+            impl.revoke(Sessions.RevokeParams(false))
+            verify { mockSessionStorage.revoke() }
+        }
+
+    @Test
     fun `SessionsImpl revoke returns error if sessionStorage revoke fails`() =
         runBlocking {
             coEvery { mockApi.revoke() } returns StytchResult.Success(mockk(relaxed = true))
@@ -170,5 +187,31 @@ internal class SessionsImplTest {
     fun `SessionsImpl updateSession throws StytchInternalError exception when sessionstorage fails`() {
         every { mockSessionStorage.updateSession(any(), any()) } throws RuntimeException("Test")
         impl.updateSession("token", "jwt")
+    }
+
+    @Test
+    fun `SessionsImpl maybeForceClearSession behaves as expected`() {
+        val unrecoverableError =
+            StytchResult.Error(
+                StytchAPIError(
+                    errorType = StytchAPIErrorType.SESSION_NOT_FOUND,
+                    message = "",
+                    statusCode = 401,
+                ),
+            )
+        val recoverableError =
+            StytchResult.Error(
+                StytchAPIError(
+                    errorType = StytchAPIErrorType.UNKNOWN_ERROR,
+                    message = "",
+                    statusCode = 500,
+                ),
+            )
+        impl.maybeForceClearSession<Any>(recoverableError)
+        verify(exactly = 0) { mockSessionStorage.revoke() }
+        impl.maybeForceClearSession<Any>(unrecoverableError)
+        verify(exactly = 1) { mockSessionStorage.revoke() }
+        impl.maybeForceClearSession<Any>(recoverableError, true)
+        verify(exactly = 2) { mockSessionStorage.revoke() }
     }
 }

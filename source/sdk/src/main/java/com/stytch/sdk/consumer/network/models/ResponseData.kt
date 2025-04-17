@@ -1,7 +1,6 @@
 package com.stytch.sdk.consumer.network.models
 
 import android.os.Parcelable
-import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.network.models.AuthenticationFactor
@@ -21,7 +20,6 @@ import com.stytch.sdk.common.utils.IEnumValue
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
-@Keep
 public interface IAuthData : CommonAuthenticationData {
     public val session: SessionData
     public override val sessionJwt: String
@@ -29,12 +27,10 @@ public interface IAuthData : CommonAuthenticationData {
     public val user: UserData
 }
 
-@Keep
 public interface INativeOAuthData : IAuthData {
     public val userCreated: Boolean
 }
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class AuthData(
@@ -51,7 +47,6 @@ public data class AuthData(
 ) : IAuthData,
     Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class SessionData(
@@ -71,7 +66,6 @@ public data class SessionData(
     @Json(name = "authentication_factors")
     val authenticationFactors: List<AuthenticationFactor>,
 ) : Parcelable {
-    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class AttributesData(
@@ -82,7 +76,6 @@ public data class SessionData(
     ) : Parcelable
 }
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UserData(
@@ -114,7 +107,6 @@ public data class UserData(
     val untrustedMetadata: @RawValue Map<String, Any?>?,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CreateResponse(
@@ -139,7 +131,6 @@ public data class CreateResponse(
 ) : IAuthData,
     Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class BiometricsAuthData(
@@ -158,7 +149,6 @@ public data class BiometricsAuthData(
 ) : IAuthData,
     Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class DeleteAuthenticationFactorData(
@@ -169,7 +159,6 @@ public data class DeleteAuthenticationFactorData(
     val user: UserData,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class OAuthData(
@@ -193,7 +182,6 @@ public data class OAuthData(
     val providerValues: OAuthProviderValues,
 ) : IAuthData,
     Parcelable {
-    @Keep
     @JsonClass(generateAdapter = true)
     @Parcelize
     public data class OAuthProviderValues(
@@ -207,7 +195,6 @@ public data class OAuthData(
     ) : Parcelable
 }
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class NativeOAuthData(
@@ -222,7 +209,6 @@ public data class NativeOAuthData(
 ) : INativeOAuthData,
     Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class StrengthCheckResponse(
@@ -240,7 +226,6 @@ public data class StrengthCheckResponse(
     val strengthPolicy: StrengthPolicy,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UpdateUserResponseData(
@@ -251,14 +236,12 @@ public data class UpdateUserResponseData(
     val user: UserData,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class UserSearchResponseData(
     val userType: UserType,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = false)
 @Parcelize
 public enum class UserType : Parcelable {
@@ -272,7 +255,6 @@ public enum class UserType : Parcelable {
     PASSWORDLESS,
 }
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class WebAuthnRegisterStartData(
@@ -282,7 +264,6 @@ public data class WebAuthnRegisterStartData(
     val publicKeyCredentialCreationOptions: String,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class WebAuthnRegisterData(
@@ -301,7 +282,6 @@ public data class WebAuthnRegisterData(
 ) : Parcelable,
     IAuthData
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class WebAuthnAuthenticateStartData(
@@ -309,7 +289,6 @@ public data class WebAuthnAuthenticateStartData(
     val publicKeyCredentialRequestOptions: String,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class WebAuthnUpdateResponseData(
@@ -321,7 +300,6 @@ public data class WebAuthnUpdateResponseData(
     val webauthnRegistration: WebAuthNRegistrations,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = false)
 @Parcelize
 public enum class CryptoWalletType(
@@ -332,14 +310,12 @@ public enum class CryptoWalletType(
     SOLANA("solana"),
 }
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class CryptoWalletAuthenticateStartResponseData(
     val challenge: String,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPCreateResponseData(
@@ -352,7 +328,6 @@ public data class TOTPCreateResponseData(
     val recoveryCodes: List<String>,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPAuthenticateResponseData(
@@ -367,7 +342,6 @@ public data class TOTPAuthenticateResponseData(
 ) : IAuthData,
     Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPRecoveryCodesResponseData(
@@ -376,7 +350,6 @@ public data class TOTPRecoveryCodesResponseData(
     val totps: List<TOTPRecovery>,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPRecovery(
@@ -387,7 +360,6 @@ public data class TOTPRecovery(
     val recoveryCodes: List<String>,
 ) : Parcelable
 
-@Keep
 @JsonClass(generateAdapter = true)
 @Parcelize
 public data class TOTPRecoverResponseData(

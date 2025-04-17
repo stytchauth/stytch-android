@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
+import com.stytch.sdk.b2b.B2BSSODiscoveryConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
@@ -47,7 +48,7 @@ internal class SSOImpl(
 
     override fun start(params: SSO.StartParams) {
         val host =
-            StytchB2BClient.bootstrapData.cnameDomain?.let {
+            StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                 "https://$it/v1/"
             } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
         val potentialParameters =
@@ -74,7 +75,7 @@ internal class SSOImpl(
                     return@suspendCancellableCoroutine
                 }
                 val host =
-                    StytchB2BClient.bootstrapData.cnameDomain?.let {
+                    StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
                         "https://$it/v1/"
                     } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
                 val potentialParameters =
@@ -180,6 +181,25 @@ internal class SSOImpl(
             .async {
                 deleteConnection(connectionId)
             }.asCompletableFuture()
+
+    override suspend fun discoverConnections(emailAddress: String): B2BSSODiscoveryConnectionResponse =
+        withContext(dispatchers.io) {
+            api.discoveryConnections(emailAddress = emailAddress)
+        }
+
+    override fun discoverConnections(
+        emailAddress: String,
+        callback: (B2BSSODiscoveryConnectionResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            callback(discoverConnections(emailAddress))
+        }
+    }
+
+    override suspend fun discoverConnectionsCompletable(
+        emailAddress: String,
+    ): CompletableFuture<B2BSSODiscoveryConnectionResponse> =
+        externalScope.async { discoverConnections(emailAddress) }.asCompletableFuture()
 
     override val saml: SSO.SAML = SAMLImpl()
 

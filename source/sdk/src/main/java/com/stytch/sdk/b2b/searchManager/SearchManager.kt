@@ -2,16 +2,19 @@ package com.stytch.sdk.b2b.searchManager
 
 import com.stytch.sdk.b2b.B2BSearchMemberResponse
 import com.stytch.sdk.b2b.B2BSearchOrganizationResponse
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
 /**
  * The SearchManager interface provides methods for searching for organizations and members
  */
+
 public interface SearchManager {
     /**
      * A data class wrapping the parameters used for a Search Organizations call
      * @property organizationSlug the slug of the organization to search for
      */
+    @JacocoExcludeGenerated
     public data class SearchOrganizationParameters(
         val organizationSlug: String,
     )
@@ -47,6 +50,7 @@ public interface SearchManager {
      * @property emailAddress the email address of the member to search for
      * @property organizationId the id of the organization the member belongs to
      */
+    @JacocoExcludeGenerated
     public data class SearchMemberParameters(
         val emailAddress: String,
         val organizationId: String,

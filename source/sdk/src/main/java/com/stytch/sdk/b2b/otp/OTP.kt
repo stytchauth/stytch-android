@@ -8,12 +8,14 @@ import com.stytch.sdk.b2b.EmailOTPLoginOrSignupResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
 /**
  * The OTP interface provides methods for sending and authenticating One-Time Passcodes (OTP) via SMS
  */
+
 public interface OTP {
     /**
      * Public variable that exposes an instance of SMS OTP
@@ -28,6 +30,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call SMS OTP endpoints
      */
+
     public interface SMS {
         /**
          * A data class wrapping the parameters needed to send an SMS OTP
@@ -43,6 +46,7 @@ public interface OTP {
          * @property enableAutofill indicates whether the SMS message should include autofill metadata
          * @property autofillSessionDurationMinutes indicates how long an autofilled session should last
          */
+        @JacocoExcludeGenerated
         public data class SendParameters
             @JvmOverloads
             constructor(
@@ -88,6 +92,7 @@ public interface OTP {
          * false. If not set, does not affect the member's MFA enrollment.
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
+        @JacocoExcludeGenerated
         public data class AuthenticateParameters
             @JvmOverloads
             constructor(
@@ -128,6 +133,7 @@ public interface OTP {
     /**
      * Provides all possible ways to call Email OTP endpoints
      */
+
     public interface Email {
         public val discovery: Discovery
 
@@ -146,6 +152,7 @@ public interface OTP {
          * Currently supported languages are English ("en"), Spanish ("es"), and Brazilian Portuguese ("pt-br"); if no
          * value is provided, the copy defaults to English.
          */
+        @JacocoExcludeGenerated
         public data class LoginOrSignupParameters
             @JvmOverloads
             constructor(
@@ -193,6 +200,7 @@ public interface OTP {
          * value is provided, the copy defaults to English.
          * @property sessionDurationMinutes indicates how long the session should last before it expires
          */
+        @JacocoExcludeGenerated
         public data class AuthenticateParameters
             @JvmOverloads
             constructor(
@@ -232,6 +240,7 @@ public interface OTP {
         /**
          * Provides all possible ways to call Email OTP Discovery endpoints
          */
+
         public interface Discovery {
             /**
              * A data class wrapping the parameters needed to send an Email Discovery OTP
@@ -244,6 +253,7 @@ public interface OTP {
              * Currently supported languages are English ("en"), Spanish ("es"), and Brazilian Portuguese ("pt-br");
              * if no value is provided, the copy defaults to English.
              */
+            @JacocoExcludeGenerated
             public data class SendParameters
                 @JvmOverloads
                 constructor(
@@ -281,6 +291,7 @@ public interface OTP {
              * @property code The OTP to authenticate
              * @property emailAddress The email address of the member
              */
+            @JacocoExcludeGenerated
             public data class AuthenticateParameters(
                 val code: String,
                 val emailAddress: String,

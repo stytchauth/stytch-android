@@ -1,44 +1,31 @@
 package com.stytch.sdk.consumer
 
-import android.app.Application
 import android.content.Context
 import android.net.Uri
 import com.stytch.sdk.R
-import com.stytch.sdk.common.AppLifecycleListener
+import com.stytch.sdk.common.ConfigurationAnalyticsEvent
+import com.stytch.sdk.common.ConfigurationManager
+import com.stytch.sdk.common.ConfigurationStep
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
-import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.EncryptionManager
-import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StytchClientCommon
 import com.stytch.sdk.common.StytchClientOptions
-import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchLazyDelegate
-import com.stytch.sdk.common.StytchLog
-import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
-import com.stytch.sdk.common.dfp.DFPProvider
-import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
 import com.stytch.sdk.common.errors.StytchDeeplinkUnkownTokenTypeError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.Events
 import com.stytch.sdk.common.events.EventsImpl
-import com.stytch.sdk.common.extensions.getDeviceInfo
-import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
-import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
-import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
-import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
-import com.stytch.sdk.common.smsRetriever.StytchSMSRetrieverImpl
+import com.stytch.sdk.common.network.CommonApi
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -64,50 +51,29 @@ import com.stytch.sdk.consumer.totp.TOTPImpl
 import com.stytch.sdk.consumer.userManagement.UserAuthenticationFactor
 import com.stytch.sdk.consumer.userManagement.UserManagement
 import com.stytch.sdk.consumer.userManagement.UserManagementImpl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.annotations.VisibleForTesting
-import java.lang.ref.WeakReference
-import java.util.UUID
+import java.util.Date
 
 /**
  * The StytchClient object is your entrypoint to the Stytch Consumer SDK and is how you interact with all of our
  * supported authentication products.
  */
+
 public object StytchClient {
-    internal var dispatchers: StytchDispatchers = StytchDispatchers()
-    internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
+    internal val configurationManager = ConfigurationManager()
+
     internal lateinit var sessionStorage: ConsumerSessionStorage
-    internal var pkcePairManager: PKCEPairManager = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
-    internal lateinit var dfpProvider: DFPProvider
-    internal var bootstrapData: BootstrapData = BootstrapData()
-    internal lateinit var publicToken: String
-
-    private lateinit var smsRetriever: StytchSMSRetriever
-
-    private var _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
      * Exposes a flow that reports the initialization state of the SDK. You can use this, or the optional callback in
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
     @JvmStatic
-    public val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
-
-    @VisibleForTesting
-    internal lateinit var deviceInfo: DeviceInfo
-
-    @VisibleForTesting
-    internal lateinit var appSessionId: String
-
-    private var stytchClientOptions: StytchClientOptions? = null
-
-    private var applicationContext = WeakReference<Context>(null)
+    public val isInitialized: StateFlow<Boolean> = configurationManager.isInitialized.asStateFlow()
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
@@ -182,71 +148,6 @@ public object StytchClient {
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
      * @param publicToken Available via the Stytch dashboard in the API keys section
-     * @param options Optional options to configure the StytchClient
-     * @param callback An optional callback that is triggered after configuration and initialization has completed
-     * @throws StytchInternalError - if we failed to initialize for any reason
-     */
-    @JvmStatic
-    public fun configure(
-        context: Context,
-        publicToken: String,
-        options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
-    ) {
-        StytchLog.d("Using public token=$publicToken")
-        if (::publicToken.isInitialized && publicToken == this.publicToken && options == this.stytchClientOptions) {
-            return callback(true)
-        }
-        try {
-            applicationContext = WeakReference(context.applicationContext)
-            this.publicToken = publicToken
-            this.stytchClientOptions = options
-            deviceInfo = context.getDeviceInfo()
-            appSessionId = "app-session-id-${UUID.randomUUID()}"
-            StorageHelper.initialize(context)
-            sessionStorage = ConsumerSessionStorage(StorageHelper)
-            StytchApi.configure(publicToken, deviceInfo)
-            dfpProvider =
-                DFPProviderImpl(
-                    context = context.applicationContext,
-                    publicToken = publicToken,
-                    dfppaDomain = options.endpointOptions.dfppaDomain,
-                )
-            configureSmsRetriever(context.applicationContext)
-            NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndAPIClient)
-            AppLifecycleListener.configure(::refreshBootstrapAndAPIClient)
-            refreshBootstrapAndAPIClient()
-            maybeClearBadSessionToken()
-            externalScope.launch(dispatchers.io) {
-                // if there are session identifiers on device start the auto updater to ensure it is still valid
-                if (sessionStorage.persistedSessionIdentifiersExist) {
-                    sessionStorage.session?.let {
-                        // if we have a session, it's expiration date has already been validated, now attempt
-                        // to validate it with the Stytch servers
-                        StytchApi.Sessions.authenticate(null).apply {
-                            launchSessionUpdater(dispatchers, sessionStorage)
-                        }
-                    }
-                }
-                _isInitialized.value = true
-                events.logEvent("client_initialization_success")
-                callback(_isInitialized.value)
-            }
-        } catch (ex: Exception) {
-            events.logEvent("client_initialization_failure", null, ex)
-            throw StytchInternalError(
-                message = "Failed to initialize the SDK",
-                exception = ex,
-            )
-        }
-    }
-
-    /**
-     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
-     * across app launches.
-     * You must call this method before making any Stytch authentication requests.
-     * @param context The applicationContext of your app
-     * @param publicToken Available via the Stytch dashboard in the API keys section
      * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
@@ -292,54 +193,48 @@ public object StytchClient {
         configure(context, publicToken, StytchClientOptions()) {}
     }
 
-    private fun configureSmsRetriever(context: Context) {
-        smsRetriever =
-            StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
-                smsRetriever.finish()
-                val parsedCode = code ?: return@StytchSMSRetrieverImpl
-                val methodId = sessionStorage.methodId ?: return@StytchSMSRetrieverImpl
-                externalScope.launch {
-                    otps.authenticate(
-                        OTP.AuthParameters(
-                            token = parsedCode,
-                            methodId = methodId,
-                            sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
-                        ),
-                    )
-                }
-            }
-    }
-
-    private fun refreshBootstrapAndAPIClient() {
-        applicationContext.get()?.let {
-            externalScope.launch(dispatchers.io) {
-                refreshBootstrapData()
-                StytchApi.configureDFP(
-                    dfpProvider = dfpProvider,
-                    captchaProvider =
-                        CaptchaProviderImpl(
-                            it as Application,
-                            externalScope,
-                            bootstrapData.captchaSettings.siteKey,
-                        ),
-                    bootstrapData.dfpProtectedAuthEnabled,
-                    bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+    /**
+     * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
+     * across app launches.
+     * You must call this method before making any Stytch authentication requests.
+     * @param context The applicationContext of your app
+     * @param publicToken Available via the Stytch dashboard in the API keys section
+     * @param options Optional options to configure the StytchClient
+     * @param callback An optional callback that is triggered after configuration and initialization has completed
+     * @throws StytchInternalError - if we failed to initialize for any reason
+     */
+    @JvmStatic
+    public fun configure(
+        context: Context,
+        publicToken: String,
+        options: StytchClientOptions = StytchClientOptions(),
+        callback: ((Boolean) -> Unit) = {},
+    ) {
+        // We must initialize the storagehelper/sessionstorage before configuration, because configuration kicks
+        // off a task that relies on the storage being available (session hydration). HOWEVER, we don't want to handle
+        // any exception in storage initialization immediately, because we want to log the error to the Events API,
+        // which requires the API to be configured (which happens in the configure call). So, catch and hold any error
+        // until _after_ configuration completes, at which point it is safe to log it.
+        val storageInitializationError =
+            try {
+                StorageHelper.initialize(context)
+                sessionStorage = ConsumerSessionStorage(StorageHelper)
+                null
+            } catch (ex: Exception) {
+                StytchInternalError(
+                    message = "Failed to initialize the SDK",
+                    exception = ex,
                 )
             }
-        }
-    }
-
-    internal suspend fun refreshBootstrapData() {
-        bootstrapData =
-            when (val res = StytchApi.getBootstrapData()) {
-                is StytchResult.Success -> res.value
-                else -> bootstrapData
-            }
-    }
-
-    internal fun assertInitialized() {
-        if (!StytchApi.isInitialized || !::sessionStorage.isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchClient")
+        configurationManager.configure(
+            client = StytchClientCommonConfiguration { callback(true) },
+            context = context,
+            publicToken = publicToken,
+            options = options,
+        )
+        storageInitializationError?.let {
+            events.logEvent("client_initialization_failure", null, it)
+            throw it
         }
     }
 
@@ -351,13 +246,13 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val magicLinks: MagicLinks by StytchLazyDelegate(::assertInitialized) {
+    public val magicLinks: MagicLinks by StytchLazyDelegate(StytchApi::assertInitialized) {
         MagicLinksImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.MagicLinks.Email,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -369,10 +264,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val otps: OTP by StytchLazyDelegate(::assertInitialized) {
+    public val otps: OTP by StytchLazyDelegate(StytchApi::assertInitialized) {
         OTPImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.OTP,
         )
@@ -386,13 +281,13 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passwords: Passwords by StytchLazyDelegate(::assertInitialized) {
+    public val passwords: Passwords by StytchLazyDelegate(StytchApi::assertInitialized) {
         PasswordsImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.Passwords,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -404,10 +299,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val sessions: Sessions by StytchLazyDelegate(::assertInitialized) {
+    public val sessions: Sessions by StytchLazyDelegate(StytchApi::assertInitialized) {
         SessionsImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.Sessions,
         )
@@ -421,10 +316,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val biometrics: Biometrics by StytchLazyDelegate(::assertInitialized) {
+    public val biometrics: Biometrics by StytchLazyDelegate(StytchApi::assertInitialized) {
         BiometricsImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StorageHelper,
             StytchApi.Biometrics,
@@ -442,10 +337,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val user: UserManagement by StytchLazyDelegate(::assertInitialized) {
+    public val user: UserManagement by StytchLazyDelegate(StytchApi::assertInitialized) {
         UserManagementImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.UserManagement,
         )
@@ -459,13 +354,13 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val oauth: OAuth by StytchLazyDelegate(::assertInitialized) {
+    public val oauth: OAuth by StytchLazyDelegate(StytchApi::assertInitialized) {
         OAuthImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.OAuth,
-            pkcePairManager,
+            configurationManager.pkcePairManager,
         )
     }
 
@@ -477,10 +372,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val passkeys: Passkeys by StytchLazyDelegate(::assertInitialized) {
+    public val passkeys: Passkeys by StytchLazyDelegate(StytchApi::assertInitialized) {
         PasskeysImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.WebAuthn,
         )
@@ -494,8 +389,12 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val dfp: DFP by StytchLazyDelegate(::assertInitialized) {
-        DFPImpl(dfpProvider, dispatchers, externalScope)
+    public val dfp: DFP by StytchLazyDelegate(StytchApi::assertInitialized) {
+        DFPImpl(
+            configurationManager.dfpProvider,
+            configurationManager.dispatchers,
+            configurationManager.externalScope,
+        )
     }
 
     /**
@@ -506,10 +405,10 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val crypto: CryptoWallet by StytchLazyDelegate(::assertInitialized) {
+    public val crypto: CryptoWallet by StytchLazyDelegate(StytchApi::assertInitialized) {
         CryptoWalletImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.Crypto,
         )
@@ -523,17 +422,23 @@ public object StytchClient {
      * StytchClient.configure()
      */
     @JvmStatic
-    public val totp: TOTP by StytchLazyDelegate(::assertInitialized) {
+    public val totp: TOTP by StytchLazyDelegate(StytchApi::assertInitialized) {
         TOTPImpl(
-            externalScope,
-            dispatchers,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
             sessionStorage,
             StytchApi.TOTP,
         )
     }
 
-    internal val events: Events by StytchLazyDelegate(::assertInitialized) {
-        EventsImpl(deviceInfo, appSessionId, externalScope, dispatchers, StytchApi.Events)
+    internal val events: Events by StytchLazyDelegate(StytchApi::assertInitialized) {
+        EventsImpl(
+            configurationManager.deviceInfo,
+            configurationManager.appSessionId,
+            configurationManager.externalScope,
+            configurationManager.dispatchers,
+            StytchApi.Events,
+        )
     }
 
     /**
@@ -557,8 +462,8 @@ public object StytchClient {
         uri: Uri,
         sessionDurationMinutes: Int,
     ): DeeplinkHandledStatus {
-        assertInitialized()
-        return withContext(dispatchers.io) {
+        StytchApi.assertInitialized()
+        return withContext(configurationManager.dispatchers.io) {
             val token = uri.getQueryParameter(QUERY_TOKEN)
             if (token.isNullOrEmpty()) {
                 return@withContext DeeplinkHandledStatus.NotHandled(StytchDeeplinkMissingTokenError())
@@ -614,7 +519,7 @@ public object StytchClient {
         sessionDurationMinutes: Int,
         callback: (response: DeeplinkHandledStatus) -> Unit,
     ) {
-        externalScope.launch(dispatchers.ui) {
+        configurationManager.externalScope.launch(configurationManager.dispatchers.ui) {
             val result = handle(uri, sessionDurationMinutes)
             // change to main thread to call callback
             callback(result)
@@ -633,21 +538,14 @@ public object StytchClient {
     public fun canHandle(uri: Uri): Boolean =
         ConsumerTokenType.fromString(uri.getQueryParameter(QUERY_TOKEN_TYPE)) != ConsumerTokenType.UNKNOWN
 
-    private fun maybeClearBadSessionToken() {
-        if (sessionStorage.sessionToken?.isBlank() == true) {
-            // We accidentally saved a blank session token instead of a null session token. Clear it all out.
-            // This fixes a bug introduced with the original PasswordsResetBySession implementation
-            sessionStorage.revoke()
-        }
-    }
-
     /**
      * Retrieve the most recently created PKCE code pair from the device, if available
      */
     @JvmStatic
-    public fun getPKCECodePair(): PKCECodePair? = pkcePairManager.getPKCECodePair()
+    public fun getPKCECodePair(): PKCECodePair? = configurationManager.pkcePairManager.getPKCECodePair()
 
-    internal fun startSmsRetriever(sessionDurationMinutes: Int) = smsRetriever.start(sessionDurationMinutes)
+    internal fun startSmsRetriever(sessionDurationMinutes: Int) =
+        configurationManager.smsRetriever.start(sessionDurationMinutes)
 
     /**
      * Retrieve the token and a concrete token type from a deeplink
@@ -665,4 +563,58 @@ public object StytchClient {
     @JvmStatic
     public val lastAuthMethodUsed: ConsumerAuthMethod?
         get() = sessionStorage.lastAuthMethodUsed
+
+    private class StytchClientCommonConfiguration(
+        override var onFinishedInitialization: () -> Unit,
+    ) : StytchClientCommon {
+        override val commonApi: CommonApi = StytchApi
+
+        override fun logEvent(
+            eventName: String,
+            details: Map<String, Any>?,
+            error: Exception?,
+        ) = events.logEvent(eventName, details, error)
+
+        override fun rehydrateSession(): Job =
+            configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
+                val start = Date().time
+                sessionStorage.session?.let {
+                    // if we have a session, it's expiration date has already been validated, now attempt
+                    // to validate it with the Stytch servers
+                    StytchApi.Sessions.authenticate(null).apply {
+                        configurationManager.emitAnalyticsEvent(
+                            ConfigurationAnalyticsEvent(
+                                step = ConfigurationStep.SESSION_HYDRATION,
+                                duration = Date().time - start,
+                            ),
+                        )
+                        launchSessionUpdater(configurationManager.dispatchers, sessionStorage)
+                    }
+                } ?: configurationManager.emitAnalyticsEvent(
+                    ConfigurationAnalyticsEvent(
+                        step = ConfigurationStep.SESSION_HYDRATION,
+                        duration = Date().time - start,
+                    ),
+                )
+            }
+
+        override fun smsAutofillCallback(
+            code: String?,
+            sessionDurationMinutes: Int?,
+        ) {
+            val parsedCode = code ?: return
+            val methodId = sessionStorage.methodId ?: return
+            configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
+                otps.authenticate(
+                    OTP.AuthParameters(
+                        token = parsedCode,
+                        methodId = methodId,
+                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                    ),
+                )
+            }
+        }
+
+        override fun getSessionToken(): String? = sessionStorage.sessionToken
+    }
 }

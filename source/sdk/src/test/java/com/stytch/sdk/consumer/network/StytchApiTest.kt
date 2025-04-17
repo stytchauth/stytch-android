@@ -77,14 +77,8 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi isInitialized returns correctly based on configuration state`() {
-        StytchApi.configure("publicToken", DeviceInfo())
+        StytchApi.configure("publicToken", DeviceInfo(), { null }, mockk())
         assert(StytchApi.isInitialized)
-    }
-
-    @Test(expected = StytchSDKNotConfiguredError::class)
-    fun `StytchApi apiService throws exception when not configured`() {
-        every { StytchApi.isInitialized } returns false
-        StytchApi.apiService
     }
 
     @Test

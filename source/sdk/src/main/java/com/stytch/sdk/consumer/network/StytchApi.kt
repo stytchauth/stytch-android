@@ -1,17 +1,16 @@
 package com.stytch.sdk.consumer.network
 
-import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.LIVE_SDK_URL
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.TEST_SDK_URL
-import com.stytch.sdk.common.dfp.CaptchaProvider
-import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.EventsAPI
 import com.stytch.sdk.common.network.ApiService
+import com.stytch.sdk.common.network.CommonApi
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -20,7 +19,6 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.NameData
@@ -30,7 +28,6 @@ import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
-import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
@@ -51,52 +48,35 @@ import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
 
-internal object StytchApi {
+internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    private lateinit var apiServiceClass: ApiService
+    private lateinit var dfpInterceptor: StytchDFPInterceptor
 
-    // save reference for changing auth header
-    // make sure api is configured before accessing this variable
-    @Suppress("MaxLineLength")
-    @VisibleForTesting
-    internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
-        if (!isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchClient")
-        }
-        StytchAuthHeaderInterceptor(
-            deviceInfo,
-            publicToken,
-        ) { StytchClient.sessionStorage.sessionToken }
-    }
-
-    internal fun configure(
+    override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        getSessionToken: () -> String?,
+        dfpConfiguration: DFPConfiguration,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+        this.dfpInterceptor = StytchDFPInterceptor(dfpConfiguration)
+        apiServiceClass =
+            ApiService(
+                sdkUrl,
+                listOf(
+                    StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken),
+                    dfpInterceptor,
+                ),
+            )
+        apiServiceClass
+        apiService = apiServiceClass.retrofit.create(StytchApiService::class.java)
     }
 
-    internal fun configureDFP(
-        dfpProvider: DFPProvider,
-        captchaProvider: CaptchaProvider,
-        dfpProtectedAuthEnabled: Boolean,
-        dfpProtectedAuthMode: DFPProtectedAuthMode,
-    ) {
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        dfpProtectedStytchApiService =
-            ApiService.createApiService(
-                sdkUrl,
-                authHeaderInterceptor,
-                StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                { StytchClient.sessionStorage.revoke() },
-                StytchApiService::class.java,
-            )
+    override fun configureDFP(dfpConfiguration: DFPConfiguration) {
+        dfpInterceptor.dfpConfiguration = dfpConfiguration
     }
 
     internal val isInitialized: Boolean
@@ -106,38 +86,25 @@ internal object StytchApi {
 
     internal val isTestToken: Boolean
         get() {
-            StytchClient.assertInitialized()
+            assertInitialized()
             return publicToken.contains("public-token-test")
         }
 
-    private val regularStytchApiService: StytchApiService by lazy {
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        ApiService.createApiService(
-            sdkUrl,
-            authHeaderInterceptor,
-            null,
-            { StytchClient.sessionStorage.revoke() },
-            StytchApiService::class.java,
-        )
+    private val sdkUrl: String by lazy {
+        if (isTestToken) {
+            TEST_SDK_URL
+        } else {
+            LIVE_SDK_URL
+        }
     }
 
-    private lateinit var dfpProtectedStytchApiService: StytchApiService
-
-    @VisibleForTesting
-    internal val apiService: StytchApiService
-        get() {
-            StytchClient.assertInitialized()
-            return if (::dfpProtectedStytchApiService.isInitialized) {
-                dfpProtectedStytchApiService
-            } else {
-                regularStytchApiService
-            }
+    internal fun assertInitialized() {
+        if (!isInitialized) {
+            throw StytchSDKNotConfiguredError("StytchClient")
         }
+    }
+
+    internal lateinit var apiService: StytchApiService
 
     internal object MagicLinks {
         object Email {
@@ -856,7 +823,7 @@ internal object StytchApi {
             }
     }
 
-    suspend fun getBootstrapData(): StytchResult<BootstrapData> =
+    override suspend fun getBootstrapData(): StytchResult<BootstrapData> =
         safeConsumerApiCall {
             apiService.getBootstrapData(publicToken = publicToken)
         }
@@ -923,7 +890,7 @@ internal object StytchApi {
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeConsumerApiCall(
         apiCall: suspend () -> T,
     ): StytchResult<T1> =
-        safeApiCall({ StytchClient.assertInitialized() }) {
+        safeApiCall({ assertInitialized() }) {
             apiCall()
         }
 }

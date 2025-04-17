@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.userManagement
 
 import com.stytch.sdk.common.StytchObjectInfo
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.consumer.DeleteFactorResponse
 import com.stytch.sdk.consumer.SearchUserResponse
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture
  * The UserManagement interface provides methods for retrieving an authenticated user and deleting authentication
  * factors from an authenticated user.
  */
+
 public interface UserManagement {
     /**
      * Exposes a flow of user data
@@ -76,6 +78,7 @@ public interface UserManagement {
      * @property name the name of the user
      * @property untrustedMetadata a map of untrusted metadata to assign to the user
      */
+    @JacocoExcludeGenerated
     public data class UpdateParams
         @JvmOverloads
         constructor(
@@ -111,6 +114,7 @@ public interface UserManagement {
      * Data class used for wrapping parameters used for searching Users
      * @property email the email address to search for
      */
+    @JacocoExcludeGenerated
     public data class SearchParams(
         val email: String,
     )

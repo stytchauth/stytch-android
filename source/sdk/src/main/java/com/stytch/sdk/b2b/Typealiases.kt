@@ -16,6 +16,7 @@ import com.stytch.sdk.b2b.network.models.B2BSCIMRotateCompleteResponseData
 import com.stytch.sdk.b2b.network.models.B2BSCIMRotateStartResponseData
 import com.stytch.sdk.b2b.network.models.B2BSCIMUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSODeleteConnectionResponseData
+import com.stytch.sdk.b2b.network.models.B2BSSODiscoveryConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOGetConnectionsResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCCreateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSSOOIDCUpdateConnectionResponseData
@@ -353,3 +354,8 @@ public typealias B2BPasswordDiscoveryResetByEmailResponse = StytchResult<B2BPass
  * Authenticate responses
  */
 public typealias B2BPasswordDiscoveryAuthenticateResponse = StytchResult<B2BPasswordDiscoveryAuthenticateResponseData>
+
+/**
+ * Type alias for StytchResult<B2BSSODiscoveryConnectionResponseData> used for SSO Discover Connections responses
+ */
+public typealias B2BSSODiscoveryConnectionResponse = StytchResult<B2BSSODiscoveryConnectionResponseData>

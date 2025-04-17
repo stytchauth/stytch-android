@@ -20,7 +20,7 @@ internal class RBACImpl(
         resourceId: String,
         action: String,
     ): Boolean =
-        StytchB2BClient.bootstrapData.rbacPolicy?.callerIsAuthorized(
+        StytchB2BClient.configurationManager.bootstrapData.rbacPolicy?.callerIsAuthorized(
             memberRoles = getRoleIds(),
             resourceId = resourceId,
             action = action,
@@ -30,7 +30,7 @@ internal class RBACImpl(
         resourceId: String,
         action: String,
     ): Boolean {
-        StytchB2BClient.refreshBootstrapData()
+        StytchB2BClient.configurationManager.refreshBootstrapData()
         return isAuthorizedSync(resourceId = resourceId, action = action)
     }
 
@@ -54,8 +54,10 @@ internal class RBACImpl(
             }.asCompletableFuture()
 
     override suspend fun allPermissions(): Map<String, Map<String, Boolean>> {
-        StytchB2BClient.refreshBootstrapData()
-        return StytchB2BClient.bootstrapData.rbacPolicy?.allPermissionsForCaller(getRoleIds()) ?: emptyMap()
+        StytchB2BClient.configurationManager.refreshBootstrapData()
+        return StytchB2BClient.configurationManager.bootstrapData.rbacPolicy
+            ?.allPermissionsForCaller(getRoleIds())
+            ?: emptyMap()
     }
 
     override fun allPermissions(callback: (Map<String, Map<String, Boolean>>) -> Unit) {

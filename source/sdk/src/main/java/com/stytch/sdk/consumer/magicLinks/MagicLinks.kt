@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.magicLinks
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import kotlinx.parcelize.Parcelize
@@ -11,12 +12,14 @@ import java.util.concurrent.CompletableFuture
 /**
  * MagicLinks interface that encompasses authentication functions as well as other related functionality
  */
+
 public interface MagicLinks {
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
      * @property token is the unique sequence of characters used to log in
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParameters
         @JvmOverloads
         constructor(
@@ -59,6 +62,7 @@ public interface MagicLinks {
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
+
     public interface EmailMagicLinks {
         /**
          * Data class used for wrapping parameters used with MagicLinks.EmailMagicLinks.loginOrCreate
@@ -79,6 +83,7 @@ public interface MagicLinks {
          * if no value is provided, the copy defaults to English.
          */
         @Parcelize
+        @JacocoExcludeGenerated
         public data class Parameters
             @JvmOverloads
             constructor(

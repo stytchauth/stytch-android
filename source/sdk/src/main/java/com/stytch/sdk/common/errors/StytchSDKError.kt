@@ -2,11 +2,14 @@
 
 package com.stytch.sdk.common.errors
 
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+
 /**
  * A base class representing SDK specific errors or exceptions that may occur. This class should not be used directly,
  * rather we should be creating implementations for each of the known/expected errors we return.
  * @property exception an optional [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public sealed class StytchSDKError(
     message: String,
     public open val exception: Throwable? = null,
@@ -16,6 +19,7 @@ public sealed class StytchSDKError(
  * Thrown when you try to use the SDK before it has been configured
  * @property clientName the client type that must be configured (either `StytchClient` or `StytchB2BClient`)
  */
+@JacocoExcludeGenerated
 public data class StytchSDKNotConfiguredError(
     val clientName: String,
 ) : StytchSDKError(
@@ -27,6 +31,7 @@ public data class StytchSDKNotConfiguredError(
  * @property exception an optional [Throwable] that caused this error to occur
  * @property message a string describing what went wrong
  */
+@JacocoExcludeGenerated
 public data class StytchInternalError(
     public override val exception: Throwable? = null,
     public override val message: String = "An internal error has occurred. Please contact Stytch if this occurs.",
@@ -39,6 +44,7 @@ public data class StytchInternalError(
  * Thrown when we couldn't find a code verifier on device
  * @property exception an optional [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public data class StytchMissingPKCEError(
     public override val exception: Throwable?,
 ) : StytchSDKError(
@@ -50,6 +56,7 @@ public data class StytchMissingPKCEError(
  * Thrown when we couldn't create a code challenge on device
  * @property exception the [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public data class StytchFailedToCreateCodeChallengeError(
     public override val exception: Throwable,
 ) : StytchSDKError(
@@ -61,6 +68,7 @@ public data class StytchFailedToCreateCodeChallengeError(
  * A type of error that can occur during deeplink handling
  * @property message a string describing what went wrong when handling the deeplink
  */
+
 public interface StytchDeeplinkError {
     public val message: String
 }
@@ -68,6 +76,7 @@ public interface StytchDeeplinkError {
 /**
  * Thrown when we were passed an unknown deeplink token type
  */
+
 public class StytchDeeplinkUnkownTokenTypeError :
     StytchSDKError(
         message = "The deeplink received has an unknown token type.",
@@ -77,6 +86,7 @@ public class StytchDeeplinkUnkownTokenTypeError :
 /**
  * Thrown when we attempted to handle a deeplink, but no token was found
  */
+
 public class StytchDeeplinkMissingTokenError :
     StytchSDKError(
         message = "The deeplink received has a missing token value.",
@@ -86,6 +96,7 @@ public class StytchDeeplinkMissingTokenError :
 /**
  * Thrown when there is no current session persisted on device
  */
+
 public class StytchNoCurrentSessionError :
     StytchSDKError(
         message = "There is no session currently available.",
@@ -94,6 +105,7 @@ public class StytchNoCurrentSessionError :
 /**
  * Thrown when there are no biometric registrations present on the device
  */
+
 public class StytchNoBiometricsRegistrationError :
     StytchSDKError(
         message = "There is no biometric registration available. Authenticate with another method and add a new biometric registration first.",
@@ -102,6 +114,7 @@ public class StytchNoBiometricsRegistrationError :
 /**
  * Thrown when the keystore is unavailable, but the developer did not pass allowFallbackToCleartext=true
  */
+
 public class StytchKeystoreUnavailableError :
     StytchSDKError(
         message = "The Android keystore is unavailable on the device. Consider setting allowFallbackToCleartext to true.",
@@ -111,6 +124,7 @@ public class StytchKeystoreUnavailableError :
  * Thrown when we are unable to retrieve a biometric key
  * @property exception an optional [Throwable] that caused this error to occur
  */
+@JacocoExcludeGenerated
 public data class StytchMissingPublicKeyError(
     override val exception: Throwable?,
 ) : StytchSDKError(
@@ -122,6 +136,7 @@ public data class StytchMissingPublicKeyError(
  * Thrown when a challenge signing (biometrics, passkeys) has failed
  * @property exception an optional [Throwable] that caused this error to occur
  */
+
 public data class StytchChallengeSigningFailed(
     public override val exception: Throwable?,
 ) : StytchSDKError(
@@ -132,6 +147,7 @@ public data class StytchChallengeSigningFailed(
 /**
  * Thrown when the Google OneTap authorization credential was missing an id_token
  */
+
 public class StytchMissingAuthorizationCredentialIdTokenError :
     StytchSDKError(
         message = "The authorization credential is missing an ID token.",
@@ -140,6 +156,7 @@ public class StytchMissingAuthorizationCredentialIdTokenError :
 /**
  * Thrown when the Google OneTap client or nonce is missing
  */
+
 public class StytchInvalidAuthorizationCredentialError :
     StytchSDKError(
         message = "The authorization credential is invalid.",
@@ -148,6 +165,7 @@ public class StytchInvalidAuthorizationCredentialError :
 /**
  * Thrown when you attempt to perform a passkey flow on a device that does not support passkeys
  */
+
 public class StytchPasskeysNotSupportedError :
     StytchSDKError(
         message = "Passkeys are not supported on this device.",
@@ -195,16 +213,22 @@ public data class UnexpectedCredentialType(
         message = "Unexpected type of credential: $credentialType",
     )
 
-public data object NoBrowserFound : StytchSDKError("No supported browser was found on this device")
+@JacocoExcludeGenerated public data object NoBrowserFound : StytchSDKError(
+    "No supported browser was found on this device",
+)
 
-public data object NoURIFound : StytchSDKError("No OAuth URI could be found in the bundle")
+@JacocoExcludeGenerated public data object NoURIFound : StytchSDKError("No OAuth URI could be found in the bundle")
 
-public data object UserCanceled : StytchSDKError("The user canceled the OAuth flow")
+@JacocoExcludeGenerated public data object UserCanceled : StytchSDKError("The user canceled the OAuth flow")
 
-public data object NoActivityProvided : StytchSDKError("You must supply a receiver activity before calling this method")
+@JacocoExcludeGenerated public data object NoActivityProvided : StytchSDKError(
+    "You must supply a receiver activity before calling this method",
+)
 
-public data object UnknownOAuthOrSSOError : StytchSDKError("The OAuth or SSO flow completed unexpectedly")
+@JacocoExcludeGenerated public data object UnknownOAuthOrSSOError : StytchSDKError(
+    "The OAuth or SSO flow completed unexpectedly",
+)
 
-public data object BiometricsAlreadyEnrolledError : StytchSDKError(
+@JacocoExcludeGenerated public data object BiometricsAlreadyEnrolledError : StytchSDKError(
     "There is already a biometric factor enrolled on this device. Fully authenticate with all factors and remove the existing registration before attempting to register again.",
 )

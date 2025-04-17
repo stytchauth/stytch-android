@@ -6,6 +6,7 @@ import java.util.Locale
 /**
  * An enum representing the supported (consumer) token types that we can extract from a deeplink
  */
+
 public enum class ConsumerTokenType : TokenType {
     /**
      * A Consumer Email Magic Link deeplink
@@ -30,12 +31,11 @@ public enum class ConsumerTokenType : TokenType {
     ;
 
     internal companion object {
-        fun fromString(typeString: String?): ConsumerTokenType {
-            return try {
+        fun fromString(typeString: String?): ConsumerTokenType =
+            try {
                 valueOf(typeString?.uppercase(Locale.ENGLISH)!!)
             } catch (_: Exception) {
                 UNKNOWN
             }
-        }
     }
 }

@@ -15,7 +15,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 @Suppress("TooManyFunctions")
-internal interface StytchApiService : ApiService {
+internal interface StytchApiService : ApiService.ApiEndpoints {
     //region Magic Links
     @POST("magic_links/email/login_or_create")
     @DFPPAEnabled

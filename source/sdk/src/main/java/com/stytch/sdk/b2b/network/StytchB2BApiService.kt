@@ -15,7 +15,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-internal interface StytchB2BApiService : ApiService {
+internal interface StytchB2BApiService : ApiService.ApiEndpoints {
     //region Magic Links
     @POST("b2b/magic_links/email/login_or_signup")
     suspend fun loginOrSignupByEmail(

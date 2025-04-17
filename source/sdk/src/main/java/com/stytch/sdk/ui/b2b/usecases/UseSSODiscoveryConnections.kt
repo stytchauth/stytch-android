@@ -1,7 +1,7 @@
 package com.stytch.sdk.ui.b2b.usecases
 
 import androidx.core.text.htmlEncode
-import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.B2BSSODiscoveryConnectionResponseData
 import com.stytch.sdk.ui.b2b.Dispatch
 import com.stytch.sdk.ui.b2b.PerformRequest
@@ -22,7 +22,7 @@ internal class UseSSODiscoveryConnections(
     operator fun invoke() {
         scope.launch(Dispatchers.IO) {
             request {
-                StytchB2BApi.SSO.discoveryConnections(
+                StytchB2BClient.sso.discoverConnections(
                     emailAddress =
                         state.value.emailState.emailAddress
                             .htmlEncode(),

@@ -17,6 +17,7 @@ import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.StorageHelper
+import com.stytch.sdk.common.StorageHelper.loadValue
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
@@ -107,10 +108,10 @@ internal class StytchB2BClientTest {
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
-        StytchB2BClient.externalScope = TestScope()
-        StytchB2BClient.dispatchers = StytchDispatchers(dispatcher, dispatcher)
-        StytchB2BClient.dfpProvider = mockk()
-        StytchB2BClient.pkcePairManager = mockPKCEPairManager
+        StytchB2BClient.configurationManager.externalScope = TestScope()
+        StytchB2BClient.configurationManager.dispatchers = StytchDispatchers(dispatcher, dispatcher)
+        StytchB2BClient.configurationManager.dfpProvider = mockk()
+        StytchB2BClient.configurationManager.pkcePairManager = mockPKCEPairManager
         StytchB2BClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
     }
 
@@ -126,7 +127,7 @@ internal class StytchB2BClientTest {
     @Test(expected = StytchSDKNotConfiguredError::class)
     fun `assertInitialized throws StytchSDKNotConfiguredError when not configured`() {
         every { StytchB2BApi.isInitialized } returns false
-        StytchB2BClient.assertInitialized()
+        StytchB2BApi.assertInitialized()
     }
 
     @Test
@@ -135,7 +136,7 @@ internal class StytchB2BClientTest {
         val deviceInfo = DeviceInfo()
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         stytchClientObject.configure(mContextMock, "")
-        stytchClientObject.assertInitialized()
+        StytchB2BApi.assertInitialized()
     }
 
     @Test
@@ -145,7 +146,7 @@ internal class StytchB2BClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         val publicToken = UUID.randomUUID().toString()
         stytchClientObject.configure(mContextMock, publicToken)
-        verify { StytchB2BApi.configure(publicToken, deviceInfo) }
+        verify { StytchB2BApi.configure(publicToken, deviceInfo, any(), any()) }
     }
 
     @Test
@@ -169,7 +170,7 @@ internal class StytchB2BClientTest {
     fun `configures DFP when calling StytchB2BClient configure`() {
         runBlocking {
             StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
-            verify(exactly = 1) { StytchB2BApi.configureDFP(any(), any(), any(), any()) }
+            verify(exactly = 1) { StytchB2BApi.configureDFP(any()) }
         }
     }
 
@@ -182,7 +183,7 @@ internal class StytchB2BClientTest {
                 }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             // no session data == no authentication/updater
-            every { StorageHelper.loadValue(any()) } returns null
+            every { StytchB2BClient.sessionStorage.memberSession } returns null
             StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate(any()) }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
@@ -508,23 +509,23 @@ internal class StytchB2BClientTest {
         runTest {
             val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
             assert(nonDefaultBootstrapData != BootstrapData())
-            StytchB2BClient.bootstrapData = nonDefaultBootstrapData
+            StytchB2BClient.configurationManager.bootstrapData = nonDefaultBootstrapData
             every { NetworkChangeListener.networkIsAvailable } returns true
             coEvery { StytchB2BApi.getBootstrapData() } returns
                 StytchResult.Error(StytchInternalError(RuntimeException("something went wrong")))
-            StytchB2BClient.refreshBootstrapData()
-            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+            StytchB2BClient.configurationManager.refreshBootstrapData()
+            assert(StytchB2BClient.configurationManager.bootstrapData == nonDefaultBootstrapData)
         }
 
     @Test
     fun `verify bootstrap data is overwritten by a successful bootstrap response`() =
         runTest {
             val nonDefaultBootstrapData = BootstrapData(cnameDomain = "android.stytch.com")
-            StytchB2BClient.bootstrapData = BootstrapData()
-            assert(StytchB2BClient.bootstrapData != nonDefaultBootstrapData)
+            StytchB2BClient.configurationManager.bootstrapData = BootstrapData()
+            assert(StytchB2BClient.configurationManager.bootstrapData != nonDefaultBootstrapData)
             every { NetworkChangeListener.networkIsAvailable } returns true
             coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Success(nonDefaultBootstrapData)
-            StytchB2BClient.refreshBootstrapData()
-            assert(StytchB2BClient.bootstrapData == nonDefaultBootstrapData)
+            StytchB2BClient.configurationManager.refreshBootstrapData()
+            assert(StytchB2BClient.configurationManager.bootstrapData == nonDefaultBootstrapData)
         }
 }

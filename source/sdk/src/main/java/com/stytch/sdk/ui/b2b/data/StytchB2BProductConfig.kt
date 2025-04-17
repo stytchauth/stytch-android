@@ -1,16 +1,16 @@
 package com.stytch.sdk.ui.b2b.data
 
 import android.os.Parcelable
-import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.b2b.network.models.MfaMethod
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.ui.shared.data.SessionOptions
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Keep
 @JsonClass(generateAdapter = true)
+@JacocoExcludeGenerated
 public data class StytchB2BProductConfig
     @JvmOverloads
     constructor(

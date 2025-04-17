@@ -230,7 +230,7 @@ internal class OTPConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail emits correct event on success`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Success<BasicData> = mockk(relaxed = true)
             val eventFlow =
                 async {
@@ -247,7 +247,7 @@ internal class OTPConfirmationScreenViewModelTest {
     @Test
     fun `sendResetPasswordEmail updates state on failure`() =
         runTest(dispatcher) {
-            every { mockStytchClient.publicToken } returns "publicToken"
+            every { mockStytchClient.configurationManager.publicToken } returns "publicToken"
             val result: StytchResult.Error =
                 mockk(relaxed = true) {
                     every { exception } returns

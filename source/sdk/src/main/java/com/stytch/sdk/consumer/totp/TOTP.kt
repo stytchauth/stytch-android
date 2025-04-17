@@ -1,6 +1,7 @@
 package com.stytch.sdk.consumer.totp
 
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.TOTPAuthenticateResponse
 import com.stytch.sdk.consumer.TOTPCreateResponse
 import com.stytch.sdk.consumer.TOTPRecoverResponse
@@ -11,6 +12,7 @@ import java.util.concurrent.CompletableFuture
  * The TOTP interface provides methods for creating and authenticating TOTP codes; retrieving recovery codes; and
  * consuming a recovery code
  */
+
 public interface TOTP {
     /**
      * A data class wrapping the parameters used in a TOTP create request
@@ -18,6 +20,7 @@ public interface TOTP {
      * within this time frame the TOTP will be unusable. Defaults to 60 (1 hour) with a minimum of 5 and a maximum of
      * 1440.
      */
+    @JacocoExcludeGenerated
     public data class CreateParameters(
         val expirationMinutes: Int,
     )
@@ -27,6 +30,7 @@ public interface TOTP {
      * @property totpCode The TOTP code to authenticate. The TOTP code should consist of 6 digits.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParameters
         @JvmOverloads
         constructor(
@@ -39,6 +43,7 @@ public interface TOTP {
      * @property recoveryCode The recovery code to authenticate.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class RecoverParameters
         @JvmOverloads
         constructor(

@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.shared.data
 
 import android.os.Parcelable
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -9,6 +10,7 @@ import kotlinx.parcelize.Parcelize
  * @param lightTheme a [StytchTheme] instance that defines the styles when in light mode
  */
 @Parcelize
+@JacocoExcludeGenerated
 public data class StytchStyles
     @JvmOverloads
     constructor(

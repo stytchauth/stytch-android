@@ -27,7 +27,7 @@ public class StytchUI private constructor(
     private val authHandler: StytchAuthHandler
 
     internal val bootstrapData: BootstrapData
-        get() = StytchClient.bootstrapData
+        get() = StytchClient.configurationManager.bootstrapData
 
     init {
         require(activity != null) { "Missing required activity" }

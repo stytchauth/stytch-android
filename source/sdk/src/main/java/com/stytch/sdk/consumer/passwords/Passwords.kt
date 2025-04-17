@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer.passwords
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
@@ -22,6 +23,7 @@ import java.util.concurrent.CompletableFuture
  * (either Dropbox’s [zxcvbn](https://github.com/dropbox/zxcvbn) or adjustable LUDS) to guide members towards creating
  * passwords that are easy for humans to remember but difficult for computers to crack.
  */
+
 public interface Passwords {
     /**
      * Data class used for wrapping parameters used with Passwords authentication
@@ -29,6 +31,7 @@ public interface Passwords {
      * @property password is your private sequence of characters to authenticate
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParameters
         @JvmOverloads
         constructor(
@@ -45,6 +48,7 @@ public interface Passwords {
      * created account in the future
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class CreateParameters
         @JvmOverloads
         constructor(
@@ -66,6 +70,7 @@ public interface Passwords {
      * for Password Reset.
      */
     @Parcelize
+    @JacocoExcludeGenerated
     public data class ResetByEmailStartParameters
         @JvmOverloads
         constructor(
@@ -84,6 +89,7 @@ public interface Passwords {
      * @property password is the private sequence of characters you wish to use as a password
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class ResetByEmailParameters
         @JvmOverloads
         constructor(
@@ -98,6 +104,7 @@ public interface Passwords {
      * @property password is the new password to set
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class ResetBySessionParameters
         @JvmOverloads
         constructor(
@@ -114,6 +121,7 @@ public interface Passwords {
      * @property newPassword The new password for the user.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class ResetByExistingPasswordParameters
         @JvmOverloads
         constructor(
@@ -162,6 +170,7 @@ public interface Passwords {
      * initiate a password strength check
      * @property password is the private sequence of characters you wish to check to get advice on improving it
      */
+    @JacocoExcludeGenerated
     public data class StrengthCheckParameters
         @JvmOverloads
         constructor(

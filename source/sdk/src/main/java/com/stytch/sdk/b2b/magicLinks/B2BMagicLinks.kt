@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -27,12 +28,14 @@ import java.util.concurrent.CompletableFuture
  *
  * Call the `StytchB2BClient.magicLinks.discovery.authenticate()` method to authenticate a Member with a Magic Link.
  */
+
 public interface B2BMagicLinks {
     /**
      * Data class used for wrapping parameters used with MagicLinks authentication
      * @property token is the unique sequence of characters used to log in
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParameters
         @JvmOverloads
         constructor(
@@ -79,6 +82,7 @@ public interface B2BMagicLinks {
      * A data class used for wrapping parameters used for authenticating a discovery magic link
      * @property token the discovery magic links token
      */
+    @JacocoExcludeGenerated
     public data class DiscoveryAuthenticateParameters(
         val token: String,
     )
@@ -115,6 +119,7 @@ public interface B2BMagicLinks {
     /**
      * Provides all possible ways to call EmailMagicLinks endpoints
      */
+
     public interface EmailMagicLinks {
         /**
          * Data class used for wrapping parameters used with requesting an email magic link
@@ -133,6 +138,7 @@ public interface B2BMagicLinks {
          * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
          * if no value is provided, the copy defaults to English.
          */
+        @JacocoExcludeGenerated
         public data class Parameters
             @JvmOverloads
             constructor(
@@ -184,6 +190,7 @@ public interface B2BMagicLinks {
          * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
          * if no value is provided, the copy defaults to English.
          */
+        @JacocoExcludeGenerated
         public data class DiscoverySendParameters
             @JvmOverloads
             constructor(
@@ -240,6 +247,7 @@ public interface B2BMagicLinks {
          * [RBAC guide](https://stytch.com/docs/b2b/guides/rbac/role-assignment) for more information about role
          * assignment.
          */
+        @JacocoExcludeGenerated
         public data class InviteParameters
             @JvmOverloads
             constructor(

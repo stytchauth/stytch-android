@@ -3,11 +3,13 @@ package com.stytch.sdk.b2b.recoveryCodes
 import com.stytch.sdk.b2b.RecoveryCodesGetResponse
 import com.stytch.sdk.b2b.RecoveryCodesRecoverResponse
 import com.stytch.sdk.b2b.RecoveryCodesRotateResponse
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
 /**
  * The RecoveryCodes interface provides methods for getting, rotating, and using recovery codes for a member
  */
+
 public interface RecoveryCodes {
     /**
      * Get the recovery codes for an authenticated member
@@ -52,6 +54,7 @@ public interface RecoveryCodes {
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      * @property recoveryCode The recovery code to authenticate.
      */
+    @JacocoExcludeGenerated
     public data class RecoverParameters(
         val organizationId: String,
         val memberId: String,

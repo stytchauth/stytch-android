@@ -3,6 +3,7 @@ package com.stytch.sdk.b2b.sso
 import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.B2BSSODeleteConnectionResponse
+import com.stytch.sdk.b2b.B2BSSODiscoveryConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOGetConnectionsResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCCreateConnectionResponse
 import com.stytch.sdk.b2b.B2BSSOOIDCUpdateConnectionResponse
@@ -15,6 +16,7 @@ import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -27,6 +29,7 @@ import java.util.concurrent.CompletableFuture
  * Stytch supports the following SSO protocols:
  * - SAML
  */
+
 public interface SSO {
     public fun setSSOReceiverActivity(activity: ComponentActivity?)
 
@@ -44,6 +47,7 @@ public interface SSO {
      * finish the login. The URL must be configured as a Sign Up URL in the Redirect URL page. If the field is not
      * specified, the default Sign Up URL will be used.
      */
+    @JacocoExcludeGenerated
     public data class StartParams
         @JvmOverloads
         constructor(
@@ -74,6 +78,7 @@ public interface SSO {
      * @property customScopes Any additional scopes to be requested from the identity provider
      * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
      */
+    @JacocoExcludeGenerated
     public data class GetTokenForProviderParams
         @JvmOverloads
         constructor(
@@ -101,6 +106,7 @@ public interface SSO {
      * Currently supported languages are English (`"en"`), Spanish (`"es"`), and Brazilian Portuguese (`"pt-br"`);
      * if no value is provided, the copy defaults to English.
      */
+    @JacocoExcludeGenerated
     public data class AuthenticateParams
         @JvmOverloads
         constructor(
@@ -187,6 +193,35 @@ public interface SSO {
      */
     public fun deleteConnectionCompletable(connectionId: String): CompletableFuture<B2BSSODeleteConnectionResponse>
 
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @return [B2BSSODiscoveryConnectionResponse]
+     */
+    public suspend fun discoverConnections(emailAddress: String): B2BSSODiscoveryConnectionResponse
+
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @param callback A callback that receives a [B2BSSODiscoveryConnectionResponse]
+     */
+    public fun discoverConnections(
+        emailAddress: String,
+        callback: (B2BSSODiscoveryConnectionResponse) -> Unit,
+    )
+
+    /** The SSO Discovery method surfaces SSO connections for the end user. It will return all active SSO connections
+     * for an end user or, if no active connections are found, it will return all SSO connections that the end user
+     * could JIT provision into based on the provided email address.
+     * @param emailAddress Email address to return SSO connection IDs for.
+     * @return [B2BSSODiscoveryConnectionResponse]
+     */
+    public suspend fun discoverConnectionsCompletable(
+        emailAddress: String,
+    ): CompletableFuture<B2BSSODiscoveryConnectionResponse>
+
     /**
      * Exposes an instance of the [SAML] interface
      */
@@ -200,11 +235,13 @@ public interface SSO {
     /**
      * The SAML interface provides methods for creating, updating, and deleting a SAML connection
      */
+
     public interface SAML {
         /**
          * Data class used for wrapping the parameters for a SAML creation request
          * @property displayName A human-readable display name for the connection.
          */
+        @JacocoExcludeGenerated
         public data class CreateParameters
             @JvmOverloads
             constructor(
@@ -256,6 +293,7 @@ public interface SSO {
          * implicit role assignments, you must add a "groups" key to your SAML connection's attribute_mapping. Make sure
          * that your IdP is configured to correctly send the group information.
          */
+        @JacocoExcludeGenerated
         public data class UpdateParameters
             @JvmOverloads
             constructor(
@@ -300,6 +338,7 @@ public interface SSO {
          * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
          * @property metadataUrl A URL that points to the IdP metadata. This will be provided by the IdP.
          */
+        @JacocoExcludeGenerated
         public data class UpdateByURLParameters(
             val connectionId: String,
             val metadataUrl: String,
@@ -338,6 +377,7 @@ public interface SSO {
          * @property connectionId Globally unique UUID that identifies a specific SAML Connection.
          * @property certificateId The ID of the certificate to be deleted.
          */
+        @JacocoExcludeGenerated
         public data class DeleteVerificationCertificateParameters(
             val connectionId: String,
             val certificateId: String,
@@ -381,11 +421,13 @@ public interface SSO {
     /**
      * The OIDC interface provides methods for creating and updating an OIDC connection
      */
+
     public interface OIDC {
         /**
          * Data class used for wrapping the parameters for an OIDC creation request
          * @property displayName A human-readable display name for the connection.
          */
+        @JacocoExcludeGenerated
         public data class CreateParameters
             @JvmOverloads
             constructor(
@@ -436,6 +478,7 @@ public interface SSO {
          * @property jwksUrl The location of the IdP's JSON Web Key Set, used to verify credentials issued by the IdP.
          * This will be provided by the IdP.
          */
+        @JacocoExcludeGenerated
         public data class UpdateParameters
             @JvmOverloads
             constructor(

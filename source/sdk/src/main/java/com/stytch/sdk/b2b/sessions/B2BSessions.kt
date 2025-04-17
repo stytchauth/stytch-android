@@ -5,6 +5,7 @@ import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchObjectInfo
+import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.network.models.Locale
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture
  * The B2BSessions interface provides methods for authenticating, updating, or revoking sessions, and properties to
  * retrieve the existing session token (opaque or JWT).
  */
+
 public interface B2BSessions {
     /**
      * Exposes a flow of session data
@@ -40,6 +42,7 @@ public interface B2BSessions {
      * Data class used for wrapping parameters used with Sessions authentication
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class AuthParams
         @JvmOverloads
         constructor(
@@ -50,6 +53,7 @@ public interface B2BSessions {
      * Data class used for wrapping parameters used with Sessions revocation
      * @property forceClear if true, we will clear the local session regardless of any network errors
      */
+    @JacocoExcludeGenerated
     public data class RevokeParams
         @JvmOverloads
         constructor(
@@ -114,7 +118,7 @@ public interface B2BSessions {
      */
     public fun updateSession(
         sessionToken: String,
-        sessionJwt: String,
+        sessionJwt: String?,
     )
 
     /**
@@ -130,6 +134,7 @@ public interface B2BSessions {
      * secondary authentication requirement.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
      */
+    @JacocoExcludeGenerated
     public data class ExchangeParameters
         @JvmOverloads
         constructor(

@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b.network
 
-import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.b2b.SCIMCreateConnectionResponse
 import com.stytch.sdk.b2b.SCIMDeleteConnectionResponse
 import com.stytch.sdk.b2b.SCIMGetConnectionGroupsResponse
@@ -9,7 +8,6 @@ import com.stytch.sdk.b2b.SCIMRotateCancelResponse
 import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
 import com.stytch.sdk.b2b.SCIMRotateStartResponse
 import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
-import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
@@ -75,11 +73,11 @@ import com.stytch.sdk.common.LIVE_SDK_URL
 import com.stytch.sdk.common.NoResponseResponse
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.TEST_SDK_URL
-import com.stytch.sdk.common.dfp.CaptchaProvider
-import com.stytch.sdk.common.dfp.DFPProvider
+import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.EventsAPI
 import com.stytch.sdk.common.network.ApiService
+import com.stytch.sdk.common.network.CommonApi
 import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
@@ -87,58 +85,38 @@ import com.stytch.sdk.common.network.StytchDataResponse
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.CommonRequests
-import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
 
-internal object StytchB2BApi {
+internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
     private lateinit var deviceInfo: DeviceInfo
+    private lateinit var apiServiceClass: ApiService
+    private lateinit var dfpInterceptor: StytchDFPInterceptor
 
-    // save reference for changing auth header
-    // make sure api is configured before accessing this variable
-    @Suppress("MaxLineLength")
-    @VisibleForTesting
-    internal val authHeaderInterceptor: StytchAuthHeaderInterceptor by lazy {
-        if (!isInitialized) {
-            throw StytchSDKNotConfiguredError("StytchB2BClient")
-        }
-        StytchAuthHeaderInterceptor(
-            deviceInfo,
-            publicToken,
-        ) { StytchB2BClient.sessionStorage.sessionToken }
-    }
-
-    internal fun configure(
+    override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        getSessionToken: () -> String?,
+        dfpConfiguration: DFPConfiguration,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
+        this.dfpInterceptor = StytchDFPInterceptor(dfpConfiguration)
+        apiServiceClass =
+            ApiService(
+                sdkUrl,
+                listOf(
+                    StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken),
+                    dfpInterceptor,
+                ),
+            )
+        apiService = apiServiceClass.retrofit.create(StytchB2BApiService::class.java)
     }
 
-    internal fun configureDFP(
-        dfpProvider: DFPProvider,
-        captchaProvider: CaptchaProvider,
-        dfpProtectedAuthEnabled: Boolean,
-        dfpProtectedAuthMode: DFPProtectedAuthMode,
-    ) {
-        StytchB2BClient.assertInitialized()
-        val sdkUrl =
-            if (isTestToken) {
-                TEST_SDK_URL
-            } else {
-                LIVE_SDK_URL
-            }
-        dfpProtectedStytchApiService =
-            ApiService.createApiService(
-                sdkUrl,
-                authHeaderInterceptor,
-                StytchDFPInterceptor(dfpProvider, captchaProvider, dfpProtectedAuthEnabled, dfpProtectedAuthMode),
-                { StytchB2BClient.sessionStorage.revoke() },
-                StytchB2BApiService::class.java,
-            )
+    override fun configureDFP(dfpConfiguration: DFPConfiguration) {
+        dfpInterceptor.dfpConfiguration = dfpConfiguration
     }
 
     internal val isInitialized: Boolean
@@ -148,41 +126,29 @@ internal object StytchB2BApi {
 
     internal val isTestToken: Boolean
         get() {
-            StytchB2BClient.assertInitialized()
+            assertInitialized()
             return publicToken.contains("public-token-test")
         }
 
-    private val regularStytchApiService: StytchB2BApiService by lazy {
-        val sdkUrl =
-            if (isTestToken) {
+    private val sdkUrl: String
+        get() {
+            return if (isTestToken) {
                 TEST_SDK_URL
             } else {
                 LIVE_SDK_URL
             }
-        ApiService.createApiService(
-            sdkUrl,
-            authHeaderInterceptor,
-            null,
-            { StytchB2BClient.sessionStorage.revoke() },
-            StytchB2BApiService::class.java,
-        )
-    }
-
-    private lateinit var dfpProtectedStytchApiService: StytchB2BApiService
-
-    @VisibleForTesting
-    internal val apiService: StytchB2BApiService
-        get() {
-            StytchB2BClient.assertInitialized()
-            return if (::dfpProtectedStytchApiService.isInitialized) {
-                dfpProtectedStytchApiService
-            } else {
-                regularStytchApiService
-            }
         }
 
+    internal fun assertInitialized() {
+        if (!isInitialized) {
+            throw StytchSDKNotConfiguredError("StytchB2BClient")
+        }
+    }
+
+    internal lateinit var apiService: StytchB2BApiService
+
     internal suspend fun <T1, T : StytchDataResponse<T1>> safeB2BApiCall(apiCall: suspend () -> T): StytchResult<T1> =
-        safeApiCall({ StytchB2BClient.assertInitialized() }) {
+        safeApiCall({ assertInitialized() }) {
             apiCall()
         }
 
@@ -540,6 +506,7 @@ internal object StytchB2BApi {
             resetPasswordTemplateId: String?,
             codeChallenge: String,
             locale: Locale?,
+            verifyEmailTemplateId: String?,
         ): StytchResult<BasicData> =
             safeB2BApiCall {
                 apiService.resetPasswordByEmailStart(
@@ -552,6 +519,7 @@ internal object StytchB2BApi {
                         resetPasswordTemplateId = resetPasswordTemplateId,
                         codeChallenge = codeChallenge,
                         locale = locale,
+                        verifyEmailTemplateId = verifyEmailTemplateId,
                     ),
                 )
             }
@@ -635,6 +603,7 @@ internal object StytchB2BApi {
                 resetPasswordTemplateId: String?,
                 codeChallenge: String,
                 locale: Locale?,
+                verifyEmailTemplateId: String?,
             ): StytchResult<BasicData> =
                 safeB2BApiCall {
                     apiService.passwordDiscoveryResetByEmailStart(
@@ -646,6 +615,7 @@ internal object StytchB2BApi {
                             resetPasswordTemplateId = resetPasswordTemplateId,
                             codeChallenge = codeChallenge,
                             locale = locale,
+                            verifyEmailTemplateId = verifyEmailTemplateId,
                         ),
                     )
                 }
@@ -943,7 +913,7 @@ internal object StytchB2BApi {
             }
     }
 
-    suspend fun getBootstrapData(): StytchResult<BootstrapData> =
+    override suspend fun getBootstrapData(): StytchResult<BootstrapData> =
         safeB2BApiCall {
             apiService.getBootstrapData(publicToken = publicToken)
         }

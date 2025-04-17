@@ -30,6 +30,7 @@ internal class UsePasswordDiscoveryResetByEmailStart(
                         discoveryRedirectUrl = getRedirectUrl(),
                         resetPasswordRedirectUrl = getRedirectUrl(),
                         resetPasswordTemplateId = productConfig.passwordOptions.resetPasswordTemplateId,
+                        verifyEmailTemplateId = productConfig.passwordOptions.verifyEmailTemplateId,
                         locale = productConfig.locale,
                     ),
                 )

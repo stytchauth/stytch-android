@@ -88,6 +88,7 @@ internal class PasswordsImpl internal constructor(
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
                     codeChallenge = challengeCode,
                     locale = parameters.locale,
+                    verifyEmailTemplateId = parameters.verifyEmailTemplateId,
                 )
         }
         return result
@@ -257,6 +258,7 @@ internal class PasswordsImpl internal constructor(
                     resetPasswordTemplateId = parameters.resetPasswordTemplateId,
                     codeChallenge = challengeCode,
                     locale = parameters.locale,
+                    verifyEmailTemplateId = parameters.verifyEmailTemplateId,
                 )
             }
 
