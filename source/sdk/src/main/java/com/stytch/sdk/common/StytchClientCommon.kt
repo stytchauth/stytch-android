@@ -1,9 +1,12 @@
 package com.stytch.sdk.common
 
 import com.stytch.sdk.common.network.CommonApi
+import com.stytch.sdk.common.network.models.Vertical
 import kotlinx.coroutines.Job
 
 internal interface StytchClientCommon {
+    val expectedVertical: Vertical
+
     val commonApi: CommonApi
 
     fun logEvent(

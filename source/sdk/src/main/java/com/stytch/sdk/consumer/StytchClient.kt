@@ -26,6 +26,7 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.Events
 import com.stytch.sdk.common.events.EventsImpl
 import com.stytch.sdk.common.network.CommonApi
+import com.stytch.sdk.common.network.models.Vertical
 import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
@@ -568,6 +569,8 @@ public object StytchClient {
         override var onFinishedInitialization: () -> Unit,
     ) : StytchClientCommon {
         override val commonApi: CommonApi = StytchApi
+
+        override val expectedVertical: Vertical = Vertical.CONSUMER
 
         override fun logEvent(
             eventName: String,

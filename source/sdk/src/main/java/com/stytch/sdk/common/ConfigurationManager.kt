@@ -10,6 +10,7 @@ import com.stytch.sdk.common.dfp.DFPProviderImpl
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
+import com.stytch.sdk.common.network.models.Vertical
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManagerImpl
 import com.stytch.sdk.common.smsRetriever.StytchSMSRetriever
@@ -148,6 +149,22 @@ internal class ConfigurationManager {
                 is StytchResult.Success -> res.value
                 else -> bootstrapData
             }
+        when {
+            client.expectedVertical == Vertical.CONSUMER && bootstrapData.vertical == Vertical.B2B -> {
+                StytchLog.e(
+                    "This application is using a Stytch client for Consumer projects, but the public token is for a " +
+                        "Stytch B2B project. Use a B2B Stytch client instead, or verify that the public token is " +
+                        "correct.",
+                )
+            }
+            client.expectedVertical == Vertical.B2B && bootstrapData.vertical == Vertical.CONSUMER -> {
+                StytchLog.e(
+                    "This application is using a Stytch client for B2B projects, but the public token is for a " +
+                        "Stytch Consumer project. Use a Consumer Stytch client instead, or verify that the public " +
+                        "token is correct.",
+                )
+            }
+        }
         isRefreshingBootstrap = false
     }
 }
