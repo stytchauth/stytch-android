@@ -22,11 +22,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.unmockkAll
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -55,7 +53,6 @@ internal class StytchApiTest {
     fun before() {
         val mockApplication: Application =
             mockk {
-                every { registerActivityLifecycleCallbacks(any()) } just runs
                 every { packageName } returns "Stytch"
             }
         mContextMock =

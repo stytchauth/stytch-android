@@ -87,7 +87,6 @@ internal class StytchB2BClientTest {
         every { AppLifecycleListener.configure(any()) } just runs
         val mockApplication: Application =
             mockk {
-                every { registerActivityLifecycleCallbacks(any()) } just runs
                 every { packageName } returns "Stytch"
             }
         mContextMock =

@@ -2,7 +2,6 @@ package com.stytch.sdk.common
 
 import android.app.Application
 import android.content.Context
-import com.stytch.sdk.common.dfp.ActivityProvider
 import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.dfp.DFPProvider
@@ -59,9 +58,9 @@ internal class ConfigurationManager {
         this.appSessionId = "app-session-id-${UUID.randomUUID()}"
         this.dfpProvider =
             DFPProviderImpl(
+                context = context.applicationContext,
                 publicToken = publicToken,
                 dfppaDomain = options.endpointOptions.dfppaDomain,
-                activityProvider = ActivityProvider(context.applicationContext as Application),
             )
         this.smsRetriever =
             StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->

@@ -13,7 +13,7 @@ plugins {
 }
 
 extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
-extra["PUBLISH_VERSION"] = "0.44.0"
+extra["PUBLISH_VERSION"] = "0.45.0"
 extra["PUBLISH_ARTIFACT_ID"] = "sdk"
 
 apply("${rootProject.projectDir}/scripts/publish-module.gradle")
@@ -140,6 +140,7 @@ dependencies {
     runtimeOnly(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.play.services.auth.api.phone)
+    implementation(libs.stytch.dfp)
     implementation(libs.lifecycle.common)
     implementation(libs.lifecycle.process)
 
