@@ -131,6 +131,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CNAME_REQUIRED_FOR_HTTP_ONLY_COOKIES(
         type = "cname_required_for_http_only_cookies",
     ),
+    CONNECTED_APP_CONSENT_REVOKED(
+        type = "connected_app_consent_revoked",
+    ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
