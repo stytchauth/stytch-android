@@ -1,6 +1,9 @@
 package com.stytch.sdk.common.dfp
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import com.stytch.dfp.DFP as StytchDFP
@@ -10,20 +13,25 @@ internal interface DFPProvider {
 }
 
 internal class DFPProviderImpl(
+    scope: CoroutineScope,
     context: Context,
     publicToken: String,
     dfppaDomain: String,
 ) : DFPProvider {
-    // We have to do this to allow unit tests to work, as they don't load native libs :( Alternatively, we'd need to
-    // rewrite all of our affected tests to be instrumented tests, which isn't ideal
-    private val dfp: StytchDFP? =
-        try {
-            StytchDFP(context = context, publicToken = publicToken, submissionUrl = dfppaDomain)
-        } catch (_: UnsatisfiedLinkError) {
-            null
-        } catch (_: NoClassDefFoundError) {
-            null
+    private var dfp: StytchDFP? = null
+
+    init {
+        scope.launch(Dispatchers.IO) {
+            dfp =
+                try {
+                    StytchDFP(context = context, publicToken = publicToken, submissionUrl = dfppaDomain)
+                } catch (_: UnsatisfiedLinkError) {
+                    null
+                } catch (_: NoClassDefFoundError) {
+                    null
+                }
         }
+    }
 
     override suspend fun getTelemetryId(): String =
         suspendCancellableCoroutine { continuation ->

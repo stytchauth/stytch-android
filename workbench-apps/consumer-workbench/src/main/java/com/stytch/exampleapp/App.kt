@@ -1,6 +1,7 @@
 package com.stytch.exampleapp
 
 import android.app.Application
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
 import com.stytch.sdk.consumer.StytchClient
 import kotlinx.coroutines.CoroutineScope
@@ -10,6 +11,20 @@ import kotlinx.coroutines.launch
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy
+                .Builder()
+                .detectAll()
+                .penaltyLog()
+                .build(),
+        )
+        StrictMode.setVmPolicy(
+            StrictMode.VmPolicy
+                .Builder()
+                .detectAll()
+                .penaltyLog()
+                .build(),
+        )
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         StytchClient.configure(this) {
             println("Stytch has been initialized and configured and is ready for use")

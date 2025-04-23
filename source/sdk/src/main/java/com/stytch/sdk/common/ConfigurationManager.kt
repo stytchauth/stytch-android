@@ -58,6 +58,7 @@ internal class ConfigurationManager {
         this.appSessionId = "app-session-id-${UUID.randomUUID()}"
         this.dfpProvider =
             DFPProviderImpl(
+                scope = externalScope,
                 context = context.applicationContext,
                 publicToken = publicToken,
                 dfppaDomain = options.endpointOptions.dfppaDomain,

@@ -3,6 +3,10 @@ package com.stytch.sdk.common
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.security.KeyStore
 
 private const val KEY_ALIAS = "Stytch RSA 2048"
@@ -15,9 +19,11 @@ internal object StorageHelper {
     internal lateinit var sharedPreferences: SharedPreferences
 
     fun initialize(context: Context) {
-        keyStore.load(null)
-        sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
-        EncryptionManager.createNewKeys(context, KEY_ALIAS)
+        CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+            keyStore.load(null)
+            sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+            EncryptionManager.createNewKeys(context, KEY_ALIAS)
+        }
     }
 
     /**
