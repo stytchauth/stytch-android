@@ -75,6 +75,9 @@ internal fun <T : CommonAuthenticationData> StytchResult<T>.launchSessionUpdater
                     saveSession(result, sessionStorage)
                 }
             },
+            clearSession = {
+                sessionStorage.revoke()
+            },
         )
     }
 }

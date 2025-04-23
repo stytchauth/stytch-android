@@ -15,6 +15,7 @@ import com.stytch.sdk.common.network.InfoHeaderModel
 import com.stytch.sdk.common.network.StytchAuthHeaderInterceptor
 import com.stytch.sdk.common.network.StytchDFPInterceptor
 import com.stytch.sdk.common.network.StytchDataResponse
+import com.stytch.sdk.common.network.ThreadingInterceptor
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.BiometricsStartResponse
 import com.stytch.sdk.common.network.models.BootstrapData
@@ -67,6 +68,7 @@ internal object StytchApi : CommonApi {
             ApiService(
                 sdkUrl,
                 listOf(
+                    ThreadingInterceptor(),
                     StytchAuthHeaderInterceptor(deviceInfo, publicToken, getSessionToken),
                     dfpInterceptor,
                 ),
