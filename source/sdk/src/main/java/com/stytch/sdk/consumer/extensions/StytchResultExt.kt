@@ -47,6 +47,9 @@ internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater(
                     saveSession(result, sessionStorage)
                 }
             },
+            clearSession = {
+                sessionStorage.revoke()
+            },
         )
     }
 }

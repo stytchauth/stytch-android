@@ -3,6 +3,7 @@ package com.stytch.sdk.common.sessions
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -33,7 +34,8 @@ internal object SessionAutoUpdater {
     fun startSessionUpdateJob(
         dispatchers: StytchDispatchers,
         updateSession: suspend () -> StytchResult<CommonAuthenticationData>,
-        saveSession: suspend (CommonAuthenticationData) -> Unit,
+        saveSession: (CommonAuthenticationData) -> Unit,
+        clearSession: () -> Unit,
     ) {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
@@ -42,38 +44,40 @@ internal object SessionAutoUpdater {
                 while (true) {
                     // wait before another update request
                     delay(sessionUpdateDelay)
-                    // request session update from backend
-                    val sessionResult = updateSession()
                     // save session data in SessionStorage if call successful
-                    if (sessionResult is StytchResult.Success) {
-                        // reset exponential backoff delay
-                        resetDelay()
-                        // save session
-                        saveSession(sessionResult.value)
-                    } else {
-                        // set backoff start if not set
-                        if (backoffStartMillis <= 0) {
-                            backoffStartMillis = System.currentTimeMillis()
-                        }
-                        // if delay reached max delay stop exponential backoff
-                        if (System.currentTimeMillis() - backoffStartMillis > MAXIMUM_DELAY - DEFAULT_DELAY) {
+                    when (val sessionResult = updateSession()) {
+                        is StytchResult.Success -> {
                             resetDelay()
-                            // stop auto updater/ exit while loop
-                            break
-                        } else {
-                            // set exponential delay
-                            sessionUpdateDelay =
-                                minOf(
-                                    (
-                                        2.0.pow(n) +
-                                            Random.nextLong(
-                                                MINIMUM_RANDOM_MILLIS,
-                                                MAXIMUM_RANDOM_MILLIS,
-                                            )
-                                    ).toLong(),
-                                    MAXIMUM_BACKOFF_DELAY,
-                                )
-                            n++
+                            saveSession(sessionResult.value)
+                        }
+                        is StytchResult.Error -> {
+                            if ((sessionResult.exception as? StytchAPIError)?.isUnrecoverableError() == true) {
+                                clearSession()
+                            }
+                            // set backoff start if not set
+                            if (backoffStartMillis <= 0) {
+                                backoffStartMillis = System.currentTimeMillis()
+                            }
+                            // if delay reached max delay stop exponential backoff
+                            if (System.currentTimeMillis() - backoffStartMillis > MAXIMUM_DELAY - DEFAULT_DELAY) {
+                                resetDelay()
+                                // stop auto updater/ exit while loop
+                                break
+                            } else {
+                                // set exponential delay
+                                sessionUpdateDelay =
+                                    minOf(
+                                        (
+                                            2.0.pow(n) +
+                                                Random.nextLong(
+                                                    MINIMUM_RANDOM_MILLIS,
+                                                    MAXIMUM_RANDOM_MILLIS,
+                                                )
+                                        ).toLong(),
+                                        MAXIMUM_BACKOFF_DELAY,
+                                    )
+                                n++
+                            }
                         }
                     }
                 }
