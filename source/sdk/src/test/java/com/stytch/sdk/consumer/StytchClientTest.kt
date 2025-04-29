@@ -77,7 +77,7 @@ internal class StytchClientTest {
             "com.stytch.sdk.consumer.extensions.StytchResultExtKt",
         )
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any()) } returns Unit
         mockkObject(NetworkChangeListener)
         every { NetworkChangeListener.configure(any(), any()) } just runs
         every { NetworkChangeListener.networkIsAvailable } returns true

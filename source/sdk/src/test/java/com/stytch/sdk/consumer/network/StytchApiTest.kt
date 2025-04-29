@@ -63,7 +63,7 @@ internal class StytchApiTest {
         mockkObject(EncryptionManager)
         mockkObject(StytchApi)
         MockKAnnotations.init(this, true, true)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(StorageHelper)
         StytchClient.sessionStorage = mockConsumerSessionStorage
