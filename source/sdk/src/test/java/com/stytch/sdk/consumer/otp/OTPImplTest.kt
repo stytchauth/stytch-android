@@ -51,7 +51,7 @@ internal class OTPImplTest {
         MockKAnnotations.init(this, true, true)
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(SessionAutoUpdater)
         mockkStatic("com.stytch.sdk.consumer.extensions.StytchResultExtKt")

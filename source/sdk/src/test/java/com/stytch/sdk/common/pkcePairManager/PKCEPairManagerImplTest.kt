@@ -25,7 +25,7 @@ internal class PKCEPairManagerImplTest {
         mockkStatic(KeyStore::class)
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } just runs
+        every { EncryptionManager.createNewKeys(any()) } just runs
         mockkObject(StorageHelper)
         every { StorageHelper.initialize(any()) } just runs
 

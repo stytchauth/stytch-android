@@ -32,12 +32,16 @@ internal fun Context.getDeviceInfo(): DeviceInfo {
     return deviceInfo
 }
 
-internal fun Context.clearPreferences(preferencesName: String) {
+internal fun Context.clearPreferences(preferenceFileNames: List<String>) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        deleteSharedPreferences(preferencesName)
+        preferenceFileNames.forEach {
+            deleteSharedPreferences(it)
+        }
     } else {
-        getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit().clear().apply()
-        val dir = File(applicationInfo.dataDir, "shared_prefs")
-        File(dir, "$preferencesName.xml").delete()
+        preferenceFileNames.forEach {
+            getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().apply()
+            val dir = File(applicationInfo.dataDir, "shared_prefs")
+            File(dir, "$it.xml").delete()
+        }
     }
 }

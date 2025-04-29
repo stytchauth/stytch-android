@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
-        android:allowBackup="true"
+        android:fullBackupContent="@xml/android_11_and_lower_backup_rules"
+        android:dataExtractionRules="@xml/android_12_and_higher_backup_rules"
         android:supportsRtl="true">
         <activity
             android:name=".common.sso.SSOManagerActivity"

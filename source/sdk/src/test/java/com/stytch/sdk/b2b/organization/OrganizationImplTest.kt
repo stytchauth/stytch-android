@@ -69,7 +69,7 @@ internal class OrganizationImplTest {
     fun before() {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any()) } returns Unit
         every { EncryptionManager.encryptString(any()) } returns ""
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)

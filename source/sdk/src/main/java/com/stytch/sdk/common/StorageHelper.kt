@@ -9,8 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.security.KeyStore
 
-private const val KEY_ALIAS = "Stytch RSA 2048"
-private const val PREFERENCES_FILE_NAME = "stytch_preferences"
+internal const val STYTCH_PREFERENCES_FILE_NAME = "stytch_preferences"
 
 internal object StorageHelper {
     internal val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
@@ -21,8 +20,8 @@ internal object StorageHelper {
     fun initialize(context: Context) {
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             keyStore.load(null)
-            sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
-            EncryptionManager.createNewKeys(context, KEY_ALIAS)
+            sharedPreferences = context.getSharedPreferences(STYTCH_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+            EncryptionManager.createNewKeys(context)
         }
     }
 
