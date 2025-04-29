@@ -95,6 +95,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CANNOT_RESET_PASSWORD_WITH_EXISTING_PASSWORD(
         type = "cannot_reset_password_with_existing_password",
     ),
+    CANNOT_TOGGLE_CROSS_ORG_PASSWORDS_WHEN_PASSWORD_IN_USE(
+        type = "cannot_toggle_cross_org_passwords_when_password_in_use",
+    ),
     CANNOT_UPDATE_TRUSTED_METADATA(
         type = "cannot_update_trusted_metadata",
     ),
