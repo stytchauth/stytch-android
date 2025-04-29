@@ -27,7 +27,8 @@ import java.security.SecureRandom
 
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
-    private const val PREF_FILE_NAME = "stytch_secured_pref"
+    private const val KEY_ALIAS = "Stytch RSA 2048"
+    private const val KEY_PREFERENCES_FILE_NAME = "stytch_secured_pref"
     private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
     private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
@@ -37,27 +38,24 @@ internal object EncryptionManager {
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetManager(
-        context: Context,
-        keyAlias: String,
-    ): AndroidKeysetManager =
+    private fun getOrGenerateNewAES256KeysetManager(context: Context): AndroidKeysetManager =
         try {
             AndroidKeysetManager
                 .Builder()
-                .withSharedPref(context, keyAlias, PREF_FILE_NAME)
+                .withSharedPref(context, KEY_ALIAS, KEY_PREFERENCES_FILE_NAME)
                 .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
                 .withMasterKeyUri(MASTER_KEY_URI)
                 .build()
         } catch (_: InvalidProtocolBufferException) {
-            // Possible that the signing key was changed. This causes the preferences file to be unreadable,
-            // so we need to destroy and recreate it
-            context.clearPreferences(PREF_FILE_NAME)
-            getOrGenerateNewAES256KeysetManager(context, keyAlias)
+            // Possible that the signing key was changed, or the app was reinstalled. This causes the preferences file
+            // to be unreadable, so we need to destroy and recreate it
+            context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
+            getOrGenerateNewAES256KeysetManager(context)
         } catch (_: InvalidKeyException) {
-            // Possible that the signing key was changed. This causes the preferences file to be unreadable,
-            // so we need to destroy and recreate it
-            context.clearPreferences(PREF_FILE_NAME)
-            getOrGenerateNewAES256KeysetManager(context, keyAlias)
+            // Possible that the signing key was changed, or the app was reinstalled. This causes the preferences file
+            // to be unreadable, so we need to destroy and recreate it
+            context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
+            getOrGenerateNewAES256KeysetManager(context)
         }
 
     /**
@@ -94,11 +92,8 @@ internal object EncryptionManager {
     /**
      * @throws Exception - if failed to generate keys
      */
-    fun createNewKeys(
-        context: Context,
-        rsaKeyAlias: String,
-    ) {
-        val ksm = getOrGenerateNewAES256KeysetManager(context, rsaKeyAlias)
+    fun createNewKeys(context: Context) {
+        val ksm = getOrGenerateNewAES256KeysetManager(context)
         keysetManager = ksm
         aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
