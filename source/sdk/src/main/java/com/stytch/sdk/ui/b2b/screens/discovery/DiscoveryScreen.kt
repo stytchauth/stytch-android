@@ -28,8 +28,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -160,6 +162,7 @@ private fun DiscoveryScreenComposable(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Row(
+                        modifier = Modifier.weight(0.9F),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Logo(
@@ -170,10 +173,13 @@ private fun DiscoveryScreenComposable(
                             modifier = Modifier.padding(start = 8.dp),
                             text = discoveredOrganization.organization.organizationName,
                             color = Color(theme.primaryTextColor),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         ArrowText(type = discoveredOrganization.membership.type)
                         Icon(
@@ -250,6 +256,7 @@ private fun Logo(
     if (!logoUrl.isNullOrEmpty()) {
         AsyncImage(
             model = logoUrl,
+            contentScale = ContentScale.FillBounds,
             contentDescription = name,
             modifier =
                 Modifier
