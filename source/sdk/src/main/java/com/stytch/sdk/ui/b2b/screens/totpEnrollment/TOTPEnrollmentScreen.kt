@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,9 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 @Composable
 internal fun TOTPEnrollmentScreen(viewModel: TOTPEnrollmentScreenViewModel) {
     val totpState = viewModel.totpState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.onScreenLoad()
+    }
     TOTPEnrollmentScreenComposable(
         state = totpState.value,
         dispatch = viewModel::handle,

@@ -102,6 +102,28 @@ internal fun StytchB2BAuthenticationApp(
             rootAppState.currentRoute ?: Routes.Loading
         }
 
+    val deepLinkViewModel = createViewModelHelper(DeepLinkParserScreenViewModel::class.java)
+    val discoveryViewModel = createViewModelHelper(DiscoveryScreenViewModel::class.java)
+    val emailConfirmationScreenViewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java)
+    val emailMethodSelectionViewModel = createViewModelHelper(EmailMethodSelectionScreenViewModel::class.java)
+    val emailOTPEntryViewModel = createViewModelHelper(EmailOTPEntryScreenViewModel::class.java)
+    val errorViewModel = createViewModelHelper(ErrorScreenViewModel::class.java)
+    val mainViewModel = createViewModelHelper(MainScreenViewModel::class.java)
+    val mfaEnrollmentViewModel = createViewModelHelper(MFAEnrollmentSelectionScreenViewModel::class.java)
+    val passwordAuthenticateViewModel = createViewModelHelper(PasswordAuthenticateScreenViewModel::class.java)
+    val passwordForgotViewModel = createViewModelHelper(PasswordForgotScreenViewModel::class.java)
+    val passwordResetViewModel = createViewModelHelper(PasswordResetScreenViewModel::class.java)
+    val passwordSetNewViewModel = createViewModelHelper(PasswordSetNewScreenViewModel::class.java)
+    val recoveryCodesEntryViewModel = createViewModelHelper(RecoveryCodesEntryScreenViewModel::class.java)
+    val recoveryCodesSaveViewModel = createViewModelHelper(RecoveryCodesSaveScreenViewModel::class.java)
+    val smsOTPEnrollmentViewModel = createViewModelHelper(SMSOTPEnrollmentScreenViewModel::class.java)
+    val smsOTPEntryViewModel = createViewModelHelper(SMSOTPEntryScreenViewModel::class.java)
+    val ssoDiscoveryEmailViewModel = createViewModelHelper(SSODiscoveryEmailScreenViewModel::class.java)
+    val ssoDiscoveryFallbackViewModel = createViewModelHelper(SSODiscoveryFallbackScreenViewModel::class.java)
+    val ssoDiscoveryMenuViewModel = createViewModelHelper(SSODiscoveryMenuScreenViewModel::class.java)
+    val totpEnrollmentViewModel = createViewModelHelper(TOTPEnrollmentScreenViewModel::class.java)
+    val totpEntryViewModel = createViewModelHelper(TOTPEntryScreenViewModel::class.java)
+
     LaunchedEffect(rootAppState.currentRoute) {
         rootAppState.currentRoute?.let {
             navController.navigate(it) {
@@ -135,111 +157,87 @@ internal fun StytchB2BAuthenticationApp(
                     }
                     composable<Routes.DeeplinkParser> {
                         DeepLinkParserScreen(
-                            viewModel = createViewModelHelper(DeepLinkParserScreenViewModel::class.java),
+                            viewModel = deepLinkViewModel,
                             deepLinkTokenPair = rootAppState.deeplinkTokenPair,
                         )
                     }
                     composable<Routes.Discovery> {
-                        DiscoveryScreen(viewModel = createViewModelHelper(DiscoveryScreenViewModel::class.java))
+                        DiscoveryScreen(viewModel = discoveryViewModel)
                     }
                     composable<Routes.EmailConfirmation> {
                         EmailConfirmationScreen(
                             route = EmailConfirmationScreenRoute.EmailConfirmation,
-                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
+                            viewModel = emailConfirmationScreenViewModel,
                         )
                     }
                     composable<Routes.EmailMethodSelection> {
-                        EmailMethodSelectionScreen(
-                            viewModel = createViewModelHelper(EmailMethodSelectionScreenViewModel::class.java),
-                        )
+                        EmailMethodSelectionScreen(viewModel = emailMethodSelectionViewModel)
                     }
                     composable<Routes.EmailOTPEntry> {
-                        EmailOTPEntryScreen(viewModel = createViewModelHelper(EmailOTPEntryScreenViewModel::class.java))
+                        EmailOTPEntryScreen(viewModel = emailOTPEntryViewModel)
                     }
                     composable<Routes.Error> {
-                        ErrorScreen(viewModel = createViewModelHelper(ErrorScreenViewModel::class.java))
+                        ErrorScreen(viewModel = errorViewModel)
                     }
                     composable<Routes.Main> {
-                        MainScreen(viewModel = createViewModelHelper(MainScreenViewModel::class.java))
+                        MainScreen(viewModel = mainViewModel)
                     }
                     composable<Routes.MFAEnrollmentSelection> {
-                        MFAEnrollmentSelectionScreen(
-                            viewModel = createViewModelHelper(MFAEnrollmentSelectionScreenViewModel::class.java),
-                        )
+                        MFAEnrollmentSelectionScreen(viewModel = mfaEnrollmentViewModel)
                     }
                     composable<Routes.PasswordAuthenticate> {
-                        PasswordAuthenticateScreen(
-                            viewModel = createViewModelHelper(PasswordAuthenticateScreenViewModel::class.java),
-                        )
+                        PasswordAuthenticateScreen(viewModel = passwordAuthenticateViewModel)
                     }
                     composable<Routes.PasswordForgot> {
-                        PasswordForgotScreen(
-                            viewModel = createViewModelHelper(PasswordForgotScreenViewModel::class.java),
-                        )
+                        PasswordForgotScreen(viewModel = passwordForgotViewModel)
                     }
                     composable<Routes.PasswordReset> {
-                        PasswordResetScreen(viewModel = createViewModelHelper(PasswordResetScreenViewModel::class.java))
+                        PasswordResetScreen(viewModel = passwordResetViewModel)
                     }
                     composable<Routes.PasswordResetVerifyConfirmation> {
                         EmailConfirmationScreen(
                             route = EmailConfirmationScreenRoute.PasswordResetVerifyConfirmation,
-                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
+                            viewModel = emailConfirmationScreenViewModel,
                         )
                     }
                     composable<Routes.PasswordSetNew> {
-                        PasswordSetNewScreen(
-                            viewModel = createViewModelHelper(PasswordSetNewScreenViewModel::class.java),
-                        )
+                        PasswordSetNewScreen(viewModel = passwordSetNewViewModel)
                     }
                     composable<Routes.PasswordSetNewConfirmation> {
                         EmailConfirmationScreen(
                             route = EmailConfirmationScreenRoute.PasswordSetNewConfirmation,
-                            viewModel = createViewModelHelper(EmailConfirmationScreenViewModel::class.java),
+                            viewModel = emailConfirmationScreenViewModel,
                         )
                     }
                     composable<Routes.RecoveryCodeEntry> {
-                        RecoveryCodesEntryScreen(
-                            viewModel = createViewModelHelper(RecoveryCodesEntryScreenViewModel::class.java),
-                        )
+                        RecoveryCodesEntryScreen(viewModel = recoveryCodesEntryViewModel)
                     }
                     composable<Routes.RecoveryCodeSave> {
-                        RecoveryCodesSaveScreen(
-                            viewModel = createViewModelHelper(RecoveryCodesSaveScreenViewModel::class.java),
-                        )
+                        RecoveryCodesSaveScreen(viewModel = recoveryCodesSaveViewModel)
                     }
                     composable<Routes.SMSOTPEnrollment> {
-                        SMSOTPEnrollmentScreen(
-                            viewModel = createViewModelHelper(SMSOTPEnrollmentScreenViewModel::class.java),
-                        )
+                        SMSOTPEnrollmentScreen(viewModel = smsOTPEnrollmentViewModel)
                     }
                     composable<Routes.SMSOTPEntry> {
-                        SMSOTPEntryScreen(viewModel = createViewModelHelper(SMSOTPEntryScreenViewModel::class.java))
+                        SMSOTPEntryScreen(viewModel = smsOTPEntryViewModel)
                     }
                     composable<Routes.SSODiscoveryEmail> {
-                        SSODiscoveryEmailScreen(
-                            viewModel = createViewModelHelper(SSODiscoveryEmailScreenViewModel::class.java),
-                        )
+                        SSODiscoveryEmailScreen(viewModel = ssoDiscoveryEmailViewModel)
                     }
                     composable<Routes.SSODiscoveryFallback> {
-                        SSODiscoveryFallbackScreen(
-                            viewModel = createViewModelHelper(SSODiscoveryFallbackScreenViewModel::class.java),
-                        )
+                        SSODiscoveryFallbackScreen(viewModel = ssoDiscoveryFallbackViewModel)
                     }
                     composable<Routes.SSODiscoveryMenu> {
-                        SSODiscoveryMenuScreen(
-                            viewModel = createViewModelHelper(SSODiscoveryMenuScreenViewModel::class.java),
-                        )
+                        SSODiscoveryMenuScreen(viewModel = ssoDiscoveryMenuViewModel)
                     }
                     composable<Routes.Success> {
                         SuccessScreen()
                     }
                     composable<Routes.TOTPEnrollment> {
-                        TOTPEnrollmentScreen(
-                            viewModel = createViewModelHelper(TOTPEnrollmentScreenViewModel::class.java),
-                        )
+                        TOTPEnrollmentScreen(viewModel = totpEnrollmentViewModel)
                     }
                     composable<Routes.TOTPEntry> {
-                        TOTPEntryScreen(viewModel = createViewModelHelper(TOTPEntryScreenViewModel::class.java))
+                        TOTPEntryScreen(viewModel = totpEntryViewModel)
                     }
                 }
                 rootAppState.errorToastText?.let {

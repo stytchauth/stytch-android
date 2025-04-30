@@ -49,7 +49,7 @@ internal class SMSOTPEntryScreenViewModel(
         }
     }
 
-    init {
+    fun onScreenLoad() {
         val smsImplicitlySent = state.value.mfaPrimaryInfoState?.smsImplicitlySent == true
         val didSend = state.value.mfaSMSState?.didSend == true
         // If we haven't already sent one ourselves, and an SMS message was not already sent by the server, send it now

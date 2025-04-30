@@ -21,7 +21,7 @@ internal class TOTPEnrollmentScreenViewModel(
 
     private val useTOTPCreate = UseTOTPCreate(viewModelScope, state, ::dispatch, ::request)
 
-    init {
+    fun onScreenLoad() {
         // if we're enrolling, make sure we always set the postauthscreen to recoverycodesave
         dispatch(SetPostAuthScreen(Routes.RecoveryCodeSave))
         if (state.value.mfaTOTPState == null) {
