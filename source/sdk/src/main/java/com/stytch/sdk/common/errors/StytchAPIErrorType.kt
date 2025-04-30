@@ -170,6 +170,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     DESIRED_EMAIL_DEACTIVATED_BY_DIFFERENT_MEMBER(
         type = "desired_email_deactivated_by_different_member",
     ),
+    DOWNSTREAM_CARRIER_ERROR(
+        type = "downstream_carrier_error",
+    ),
     DUPLICATE_BIOMETRIC_REGISTRATION(
         type = "duplicate_biometric_registration",
     ),
