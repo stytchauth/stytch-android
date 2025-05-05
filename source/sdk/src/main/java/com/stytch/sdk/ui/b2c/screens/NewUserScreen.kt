@@ -110,7 +110,7 @@ private fun NewUserScreenComposable(
             )
             if (hasPasswords) {
                 Spacer(modifier = Modifier.height(24.dp))
-                DividerWithText(text = stringResource(id = R.string.stytch_b2c_method_divider_text))
+                DividerWithText(text = stringResource(id = R.string.stytch_method_divider_text))
                 Spacer(modifier = Modifier.height(24.dp))
                 BodyText(text = AnnotatedString(stringResource(id = R.string.stytch_b2c_finish_creating)))
             }

@@ -28,7 +28,6 @@ import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchAlertDialog
 import com.stytch.sdk.ui.shared.components.StytchTextButton
@@ -119,16 +118,14 @@ private fun EMLConfirmationScreenComposable(
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
                 modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.stytch_b2c_method_divider_text),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
                 text = stringResource(id = R.string.stytch_b2c_create_password_instead),
                 onClick = onCreatePasswordClicked,
             )
         }
-        uiState.genericErrorMessage?.let {
-            FormFieldStatus(text = it, isError = true)
-        }
+        uiState.genericErrorMessage?.display()
     }
     if (uiState.showResendDialog) {
         StytchAlertDialog(

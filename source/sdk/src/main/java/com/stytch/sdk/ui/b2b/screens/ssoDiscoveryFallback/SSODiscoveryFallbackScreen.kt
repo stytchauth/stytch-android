@@ -57,7 +57,7 @@ private fun SSODiscoveryFallbackScreenComposable(
             label = stringResource(R.string.stytch_b2b_enter_org_slug),
         )
         state.error?.let {
-            FormFieldStatus(isError = true, text = it)
+            FormFieldStatus(isError = true, text = stringResource(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(

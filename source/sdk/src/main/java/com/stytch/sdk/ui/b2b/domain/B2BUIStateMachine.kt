@@ -4,6 +4,7 @@ import com.freeletics.flowredux.dsl.FlowReduxStateMachine
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.ErrorDetails
 import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SSODiscoveryState
@@ -91,7 +92,14 @@ internal class B2BUIStateMachine(
                 }
                 on<SetGenericError> { action, state ->
                     state.mutate {
-                        copy(errorToastText = action.errorText)
+                        copy(
+                            errorDetails =
+                                ErrorDetails(
+                                    errorText = action.errorText,
+                                    errorMessageId = action.errorMessageId,
+                                    arguments = action.arguments,
+                                ),
+                        )
                     }
                 }
                 on<SetB2BError> { action, state ->

@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.data
 
+import androidx.annotation.StringRes
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
 import com.stytch.sdk.b2b.network.models.InternalOrganizationData
@@ -61,7 +62,9 @@ internal data class SetB2BError(
 ) : B2BUIAction
 
 internal data class SetGenericError(
-    val errorText: String?,
+    val errorText: String? = null,
+    @StringRes val errorMessageId: Int? = null,
+    val arguments: List<String> = emptyList(),
 ) : B2BUIAction
 
 internal data class SetDeeplinkTokenPair(

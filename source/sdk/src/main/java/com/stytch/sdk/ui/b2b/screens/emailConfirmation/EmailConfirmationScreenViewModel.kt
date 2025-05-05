@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.screens.emailConfirmation
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated

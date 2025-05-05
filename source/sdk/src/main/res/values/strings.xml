@@ -105,6 +105,7 @@
     <string name="stytch_b2c_continue_with_twitter">Continue with Twitter</string>
     <string name="stytch_b2c_semantics_oauth_button">OAuth Button</string>
     <string name="stytch_b2c_semantics_tabs">Tabs</string>
+    <string name="stytch_b2c_password_reset_unknown_email_address">Can\'t reset password for unknown email address</string>
 
     <!-- B2B UI strings -->
     <string name="stytch_b2b_default_error_message">Something went wrong. Try again later or contact your admin for help.</string>
@@ -178,4 +179,8 @@
     <string name="stytch_b2b_please_verify">Please verify your email</string>
     <string name="stytch_b2b_invalid_totp">Failed to validate TOTP code</string>
     <string name="stytch_b2b_sso_organization_not_found">Organization not found. Please try again.</string>
+    <string name="stytch_b2b_invalid_passcode">Invalid passcode, please try again.</string>
+    <string name="stytch_b2b_jit_ineligible">%1$s does not have access to %2$s. If you think this is a mistake, contact your admin.</string>
+    <string name="stytch_b2b_unable_to_verify_email">We were unable to verify your email. Please contact your admin.</string>
+    <string name="stytch_b2c_failed_to_get_user_type">Failed to get user type</string>
 </resources>

@@ -23,7 +23,7 @@ private fun EmailOTPEntryScreenComposable(
     ResendableOTP(
         title = stringResource(R.string.stytch_b2b_enter_verification_code),
         recipient = state.recipientFormatted,
-        errorMessage = state.errorMessage,
+        errorMessage = state.errorMessage?.let { stringResource(it) },
         isEnrolling = false,
         onBack = null,
         onSubmit = { dispatch(EmailOTPEntryScreenAction.Submit(it)) },

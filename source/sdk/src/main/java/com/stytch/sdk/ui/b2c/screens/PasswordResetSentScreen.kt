@@ -31,7 +31,6 @@ import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchAlertDialog
@@ -155,13 +154,11 @@ private fun PasswordResetSentScreenComposable(
                 ),
             modifier = Modifier.clickable { onShowResendDialog() },
         )
-        uiState.genericErrorMessage?.let {
-            FormFieldStatus(text = it, isError = true)
-        }
+        uiState.genericErrorMessage?.display()
         if (hasEML || hasEmailOTP) {
             DividerWithText(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.stytch_b2c_method_divider_text),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
                 text =

@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import coil3.util.CoilUtils.result
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.GenericErrorDetails
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails
 import com.stytch.sdk.ui.b2c.data.PasswordOptions
@@ -115,7 +118,7 @@ internal class OTPConfirmationScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(errorText = result.exception.message),
                         )
                 }
             }
@@ -159,7 +162,7 @@ internal class OTPConfirmationScreenViewModel(
                         uiState.value.copy(
                             showLoadingDialog = false,
                             showResendDialog = false,
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(result.exception.message),
                         )
                 }
             }
@@ -201,14 +204,17 @@ internal class OTPConfirmationScreenViewModel(
                     is StytchResult.Error ->
                         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                             uiState.value.copy(
-                                genericErrorMessage = result.exception.message,
+                                genericErrorMessage = GenericErrorDetails(result.exception.message),
                             )
                 }
             } ?: run {
                 // this should never happen
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = "Can't reset password for unknown email address",
+                        genericErrorMessage =
+                            GenericErrorDetails(
+                                errorMessageId = R.string.stytch_b2c_password_reset_unknown_email_address,
+                            ),
                     )
             }
         }

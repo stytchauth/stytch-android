@@ -11,6 +11,7 @@ import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.passwords.Passwords
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.GenericErrorDetails
 import com.stytch.sdk.ui.shared.data.SessionOptions
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
@@ -116,7 +117,7 @@ internal class SetPasswordScreenViewModel(
                 is StytchResult.Error -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(result.exception.message),
                         )
                 }
             }

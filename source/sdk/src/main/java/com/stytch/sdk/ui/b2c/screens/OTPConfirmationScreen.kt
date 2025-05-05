@@ -115,7 +115,7 @@ private fun OTPConfirmationScreenComposable(
         )
         BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_to, recipient))
         OTPEntry(
-            errorMessage = uiState.genericErrorMessage,
+            errorMessage = uiState.genericErrorMessage?.getText(),
             onCodeComplete = onOTPCodeComplete,
         )
         Text(
@@ -130,7 +130,7 @@ private fun OTPConfirmationScreenComposable(
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
                 modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.stytch_b2c_method_divider_text),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
                 text = stringResource(id = R.string.stytch_b2c_create_password_instead),
@@ -145,7 +145,7 @@ private fun OTPConfirmationScreenComposable(
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.stytch_resend_code_title),
-            body = context.getStyledText(R.string.stytch_b2c_new_code_will_be_sent_to, recipient),
+            body = context.getStyledText(R.string.stytch_new_code_will_be_sent_to, recipient),
             cancelText = stringResource(id = R.string.stytch_cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.stytch_send_code),
