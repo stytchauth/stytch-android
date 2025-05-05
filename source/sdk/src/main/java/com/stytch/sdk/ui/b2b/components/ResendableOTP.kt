@@ -74,7 +74,7 @@ internal fun ResendableOTP(
         )
         OTPEntry(errorMessage = errorMessage, onCodeComplete = onSubmit)
         Text(
-            text = stringResource(id = R.string.code_expires_in, expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_b2c_code_expires_in, expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -86,15 +86,15 @@ internal fun ResendableOTP(
     if (showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = { showResendDialog = false },
-            title = stringResource(id = R.string.resend_code),
+            title = stringResource(id = R.string.stytch_b2c_resend_code_title),
             body =
                 buildAnnotatedString {
-                    append(stringResource(id = R.string.new_code_will_be_sent_to))
+                    append(stringResource(id = R.string.stytch_b2c_new_code_will_be_sent_to))
                     append(recipient)
                 },
-            cancelText = stringResource(id = R.string.cancel),
+            cancelText = stringResource(id = R.string.stytch_b2c_cancel),
             onCancelClick = { showResendDialog = false },
-            acceptText = stringResource(id = R.string.send_code),
+            acceptText = stringResource(id = R.string.stytch_b2c_send_code),
             onAcceptClick = {
                 onResend()
                 countdownSeconds = otpExpirationMinutes * 60L

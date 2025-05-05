@@ -13,23 +13,23 @@ internal class ReturningUserScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, ReturningUserScreen) {
     private val pageTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.log_in))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_log_in))
     }
 
     private val emailAndPasswordEntry by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_password_entry))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_email_password_entry))
     }
 
     private val forgotPassword by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.forgot_password))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_forgot_password))
     }
 
     private val stytchButtonEML by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.email_me_a_login_link))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_email_me_a_login_link))
     }
 
     private val stytchButtonOTP by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.email_me_a_login_code))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_email_me_a_login_code))
     }
 
     fun pageTitleExists() = pageTitle.assertExists()

@@ -11,11 +11,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,6 +35,7 @@ import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.utils.getStyledText
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
@@ -99,36 +97,18 @@ private fun EMLConfirmationScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted =
-        AnnotatedString(
-            text = " $emailAddress",
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
-    val resendLinkFormatted =
-        AnnotatedString(
-            text = stringResource(id = R.string.resend_link),
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
+    val context = LocalContext.current
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.check_your_email),
+            text = stringResource(id = R.string.stytch_b2c_check_your_email),
             textAlign = TextAlign.Start,
         )
         BodyText(
-            text =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.login_link_sent))
-                    append(recipientFormatted)
-                },
+            text = context.getStyledText(R.string.stytch_b2c_login_link_sent_to_create_password, emailAddress),
         )
         Text(
-            text =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.didnt_get_it))
-                    append(" ")
-                    append(resendLinkFormatted)
-                },
+            text = context.getStyledText(R.string.stytch_b2c_didnt_get_it_resend_link),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -139,10 +119,10 @@ private fun EMLConfirmationScreenComposable(
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
                 modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
+                text = stringResource(id = R.string.stytch_b2c_method_divider_text),
             )
             StytchTextButton(
-                text = stringResource(id = R.string.create_password_instead),
+                text = stringResource(id = R.string.stytch_b2c_create_password_instead),
                 onClick = onCreatePasswordClicked,
             )
         }
@@ -153,15 +133,11 @@ private fun EMLConfirmationScreenComposable(
     if (uiState.showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
-            title = stringResource(id = R.string.resend_link),
-            body =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.new_link_will_be_sent_to))
-                    append(recipientFormatted)
-                },
-            cancelText = stringResource(id = R.string.cancel),
+            title = stringResource(id = R.string.stytch_b2c_resend_link_title),
+            body = context.getStyledText(R.string.stytch_b2c_new_link_will_be_sent_to, emailAddress),
+            cancelText = stringResource(id = R.string.stytch_b2c_cancel),
             onCancelClick = onDialogDismiss,
-            acceptText = stringResource(id = R.string.send_link),
+            acceptText = stringResource(id = R.string.stytch_b2c_send_link),
             onAcceptClick = onResendEML,
         )
     }

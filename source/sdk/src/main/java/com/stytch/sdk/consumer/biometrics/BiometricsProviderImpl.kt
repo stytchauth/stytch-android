@@ -107,16 +107,18 @@ internal class BiometricsProviderImpl : BiometricsProvider {
                 BiometricPrompt.PromptInfo
                     .Builder()
                     .apply {
-                        setTitle(promptData?.title ?: context.getString(R.string.stytch_biometric_prompt_title))
+                        setTitle(promptData?.title ?: context.getString(R.string.stytch_biometric_prompt_title_default))
                         setSubtitle(
-                            promptData?.subTitle ?: context.getString(R.string.stytch_biometric_prompt_subtitle),
+                            promptData?.subTitle ?: context.getString(
+                                R.string.stytch_biometric_prompt_subtitle_default,
+                            ),
                         )
                         setAllowedAuthenticators(allowedAuthenticators)
                         if (!allowedAuthenticatorsIncludeDeviceCredentials(allowedAuthenticators)) {
                             // can only show negative button if device credentials are not allowed
                             setNegativeButtonText(
                                 promptData?.negativeButtonText
-                                    ?: context.getString(R.string.stytch_biometric_prompt_negative),
+                                    ?: context.getString(R.string.stytch_biometric_prompt_negative_default),
                             )
                         }
                     }.build()

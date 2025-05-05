@@ -25,51 +25,51 @@ internal class MainScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
     private val header by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.sign_up_or_login))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_main_screen_header))
     }
 
     private val socialLoginButtons by lazy {
-        composeTestRule.onAllNodesWithContentDescription(getString(R.string.semantics_oauth_button))
+        composeTestRule.onAllNodesWithContentDescription(getString(R.string.stytch_b2c_semantics_oauth_button))
     }
 
     private val emailTab by lazy {
         composeTestRule.onNode(
-            hasText(getString(R.string.email)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            hasText(getString(R.string.stytch_email_label)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
             ),
         )
     }
 
     private val textTab by lazy {
         composeTestRule.onNode(
-            hasText(getString(R.string.text)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            hasText(getString(R.string.stytch_b2c_sms_tab_title)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
             ),
         )
     }
 
     private val whatsappTab by lazy {
         composeTestRule.onNode(
-            hasText(getString(R.string.whatsapp)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.semantics_tabs))),
+            hasText(getString(R.string.stytch_b2c_whatsapp_tab_title)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
             ),
         )
     }
 
     private val emailInput by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_input))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_email_input))
     }
 
     private val emailError by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_email_error))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_email_error))
     }
 
     private val phoneInput by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_phone_input))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_phone_input))
     }
 
     private val continueButton by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.button_continue))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_continue_button_text))
     }
 
     private fun nodeExists(

@@ -31,7 +31,7 @@ internal fun EmailAndPasswordEntry(
         allowInvalidSubmission == true ||
             !emailState.shouldValidateEmail ||
             (emailState.validEmail == true && passwordState.validPassword)
-    val semantics = stringResource(id = R.string.semantics_email_password_entry)
+    val semantics = stringResource(id = R.string.stytch_semantics_email_password_entry)
     val localFocusManager = LocalFocusManager.current
     Column(
         modifier = Modifier.semantics { contentDescription = semantics },
@@ -43,7 +43,7 @@ internal fun EmailAndPasswordEntry(
                     .padding(bottom = 24.dp),
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
-            label = stringResource(id = R.string.email),
+            label = stringResource(id = R.string.stytch_email_label),
             keyboardActions =
                 KeyboardActions(onDone = {
                     onEmailAddressDone?.invoke()
@@ -53,13 +53,13 @@ internal fun EmailAndPasswordEntry(
         PasswordInput(
             passwordState = passwordState,
             onPasswordChanged = onPasswordChanged,
-            label = stringResource(id = R.string.password),
+            label = stringResource(id = R.string.stytch_password_label),
             keyboardActions = KeyboardActions(onDone = { onSubmit() }),
         )
         StytchButton(
             onClick = onSubmit,
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.button_continue),
+            text = stringResource(id = R.string.stytch_continue_button_text),
             enabled = isSubmittable,
         )
     }

@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.PasswordInput
@@ -49,7 +48,7 @@ private fun PasswordResetScreenComposable(
         StytchButton(
             onClick = { dispatch(PasswordResetAction.Submit) },
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.button_continue),
+            text = stringResource(id = R.string.stytch_continue_button_text),
             enabled = state.passwordState.validPassword,
         )
     }

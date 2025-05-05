@@ -95,29 +95,29 @@ private fun NewUserScreenComposable(
         BackButton(onBack)
         if (hasEML || hasEmailOTP) {
             PageTitle(
-                text = stringResource(id = R.string.choose_how),
+                text = stringResource(id = R.string.stytch_b2c_choose_how),
                 textAlign = TextAlign.Start,
             )
             StytchButton(
                 enabled = true,
                 text =
                     if (hasEML) {
-                        stringResource(id = R.string.email_me_a_login_link)
+                        stringResource(id = R.string.stytch_b2c_email_me_a_login_link)
                     } else {
-                        stringResource(id = R.string.email_me_a_login_code)
+                        stringResource(id = R.string.stytch_b2c_email_me_a_login_code)
                     },
                 onClick = { if (hasEML) onSendEML() else onSendEmailOTP() },
             )
             if (hasPasswords) {
                 Spacer(modifier = Modifier.height(24.dp))
-                DividerWithText(text = stringResource(id = R.string.or))
+                DividerWithText(text = stringResource(id = R.string.stytch_b2c_method_divider_text))
                 Spacer(modifier = Modifier.height(24.dp))
-                BodyText(text = AnnotatedString(stringResource(id = R.string.finish_creating)))
+                BodyText(text = AnnotatedString(stringResource(id = R.string.stytch_b2c_finish_creating)))
             }
         } else {
             if (hasPasswords) {
                 PageTitle(
-                    text = stringResource(id = R.string.create_account),
+                    text = stringResource(id = R.string.stytch_b2c_create_account),
                     textAlign = TextAlign.Start,
                 )
             }

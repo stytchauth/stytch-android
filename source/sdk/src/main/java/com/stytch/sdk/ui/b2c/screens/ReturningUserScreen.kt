@@ -102,7 +102,7 @@ private fun ReturningUserScreenComposable(
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.log_in),
+            text = stringResource(id = R.string.stytch_b2c_log_in),
             textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(
@@ -114,22 +114,22 @@ private fun ReturningUserScreenComposable(
         )
         Spacer(modifier = Modifier.height(24.dp))
         StytchTextButton(
-            text = stringResource(id = R.string.forgot_password),
+            text = stringResource(id = R.string.stytch_b2c_forgot_password),
             onClick = onForgotPasswordClicked,
         )
         if (hasEML || hasEmailOTP) {
             DividerWithText(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
+                text = stringResource(id = R.string.stytch_b2c_method_divider_text),
             )
             StytchTextButton(
                 text =
                     stringResource(
                         id =
                             if (hasEML) {
-                                R.string.email_me_a_login_link
+                                R.string.stytch_b2c_email_me_a_login_link
                             } else {
-                                R.string.email_me_a_login_code
+                                R.string.stytch_b2c_email_me_a_login_code
                             },
                     ),
                 onClick = { if (hasEML) sendEML() else sendEmailOTP() },

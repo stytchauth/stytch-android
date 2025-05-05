@@ -30,13 +30,13 @@ internal fun EmailEntry(
         emailState = emailState,
         onEmailAddressChanged = onEmailAddressChanged,
         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-        label = stringResource(id = R.string.email),
+        label = stringResource(id = R.string.stytch_email_label),
         keyboardActions = keyboardActions,
     )
     StytchButton(
         onClick = onEmailAddressSubmit,
         modifier = Modifier.height(45.dp),
-        text = stringResource(id = R.string.button_continue),
+        text = stringResource(id = R.string.stytch_continue_button_text),
         enabled = !emailState.shouldValidateEmail || emailState.validEmail == true,
     )
 }
