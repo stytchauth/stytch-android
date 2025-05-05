@@ -4,7 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -32,10 +34,8 @@ private fun SMSOTPEnrollmentScreenComposable(
         BackButton(onClick = {
             dispatch(SMSOTPEnrollmentAction.GoToMFAEnrollment)
         })
-        PageTitle(textAlign = TextAlign.Left, text = "Enter your phone number to set up Multi-Factor Authentication")
-        BodyText(
-            text = "Your organization requires an additional form of verification to make your account more secure.",
-        )
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_mfa_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_mfa_description))
         PhoneEntry(
             countryCode = state.countryCode,
             onCountryCodeChanged = { dispatch(SMSOTPEnrollmentAction.UpdateMemberCountryCode(it)) },

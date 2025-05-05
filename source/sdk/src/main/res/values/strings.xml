@@ -29,10 +29,14 @@
     <string name="stytch_semantics_alert_dialog">Popup dialog</string>
     <string name="stytch_default_formatted_phone_number_placeholder">(123) 456-7890</string>
     <string name="stytch_powered_by_stytch">Powered by Stytch</string>
-
+    <string name="stytch_method_divider_text">or</string>
+    <string name="stytch_passcode_sent_to">A 6-digit passcode was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_new_code_will_be_sent_to">A new code will be sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_cancel">Cancel</string>
+    <string name="stytch_send_code">Send code</string>
+    <string name="stytch_code_expires_in">Your code expires in <annotation arg="%1$s">%1$s</annotation>. Didn’t get it? <annotation style="bold">Resend code</annotation>.</string>
     <!-- B2C UI strings -->
     <string name="stytch_b2c_main_screen_header">Sign up or log in</string>
-    <string name="stytch_b2c_method_divider_text">or</string>
     <string name="stytch_b2c_sms_tab_title">Text</string>
     <string name="stytch_b2c_check_your_email">Check your email</string>
     <string name="stytch_b2c_login_link_sent_to_create_password">A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation> to create a password for your account.</string>
@@ -42,7 +46,7 @@
     <string name="stytch_b2c_log_in">Log in</string>
     <string name="stytch_b2c_forgot_password">Forgot password?</string>
     <string name="stytch_b2c_resend_link_title">Resend Link</string>
-    <string name="stytch_b2c_resend_code_title">Resend Code</string>
+    <string name="stytch_resend_code_title">Resend Code</string>
     <string name="stytch_b2c_email_me_a_login_link">Email me a login link</string>
     <string name="stytch_b2c_email_me_a_login_code">Email me a login code</string>
     <string name="stytch_b2c_reset_password_link_sent">A link to reset your password was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation>.</string>
@@ -52,19 +56,14 @@
     <string name="stytch_b2c_secure_your_account">We want to make sure your account is secure and that it’s really you logging in! A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation>.</string>
     <string name="stytch_b2c_breached_password">A different site where you use the same password had a security issue recently. For your safety, an email was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation> to reset your password.</string>
     <string name="stytch_b2c_enter_passcode">Enter Passcode</string>
-    <string name="stytch_b2c_passcode_sent_to">A 6-digit passcode was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation></string>
-    <string name="stytch_b2c_code_expires_in">Your code expires in %1$s. Didn’t get it? <annotation style="bold">Resend code</annotation>.</string>
     <string name="stytch_b2c_invalid_number">Invalid number, please try again.</string>
     <string name="stytch_b2c_invalid_passcode">Invalid passcode, please try again.</string>
     <string name="stytch_b2c_whatsapp_tab_title">WhatsApp</string>
     <string name="stytch_b2c_misconfigured_otp_warning">Unrecognized EML/OTP configuration</string>
     <string name="stytch_b2c_didnt_get_it_resend_code">Didn’t get it? <annotation style="bold">Resend code</annotation></string>
     <string name="stytch_b2c_didnt_get_it_resend_link">Didn’t get it? <annotation style="bold">Resend code</annotation></string>
-    <string name="stytch_b2c_new_code_will_be_sent_to">A new code will be sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
     <string name="stytch_b2c_new_link_will_be_sent_to">A new link will be sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
-    <string name="stytch_b2c_send_code">Send code</string>
     <string name="stytch_b2c_send_link">Send link</string>
-    <string name="stytch_b2c_cancel">Cancel</string>
     <string name="stytch_b2c_success">Success!</string>
     <string name="stytch_b2c_logged_in">You have successfully logged in.</string>
     <string name="stytch_b2c_create_account">Create Account</string>
@@ -108,5 +107,75 @@
     <string name="stytch_b2c_semantics_tabs">Tabs</string>
 
     <!-- B2B UI strings -->
-
+    <string name="stytch_b2b_default_error_message">Something went wrong. Try again later or contact your admin for help.</string>
+    <string name="stytch_b2b_eml_error_message">Something went wrong. Your login link may have expired, been revoked, or been used more than once. Request a new login link to try again, or contact your admin for help.</string>
+    <string name="stytch_b2b_organization_error_message">The organization you are looking for could not be found. If you think this is a mistake, contact your admin.</string>
+    <string name="stytch_b2b_cannot_join_due_to_auth_policy">Unable to join due to <annotation arg="%1$s" style="bold">%1$s</annotation>\'s authentication policy. Please contact your admin for more information.</string>
+    <string name="stytch_b2B_no_auth_methods_found">Invalid product configuration detected</string>
+    <string name="stytch_b2b_email_me_a_log_in_code">Email me a log in code</string>
+    <string name="stytch_b2b_email_me_a_log_in_link">Email me a log in link</string>
+    <string name="stytch_b2b_select_how_you_d_like_to_continue">Select how you’d like to continue.</string>
+    <string name="stytch_b2b_enter_verification_code">Enter verification code</string>
+    <string name="stytch_b2b_the_organization">the organization</string>
+    <string name="stytch_b2b_looks_like_there_was_an_error">Looks like there was an error!</string>
+    <string name="stytch_b2b_error">Error</string>
+    <string name="stytch_b2b_sign_up_or_log_in">Sign up or log in</string>
+    <string name="stytch_b2b_continue_to_org_name">Continue to %1$s</string>
+    <string name="stytch_b2b_verify_your_email">Verify your email</string>
+    <string name="stytch_b2b_confirm_your_email_address_with_one_of_the_following">Confirm your email address with one of the following:</string>
+    <string name="stytch_b2b_continue_with_provider">Continue with %1$s</string>
+    <string name="stytch_b2b_continue_with_sso">Continue with SSO</string>
+    <string name="stytch_b2b_use_a_password_instead">Use a password instead</string>
+    <string name="stytch_b2b_having_trouble">Having trouble signing in? <annotation style="bold">Get help</annotation></string>
+    <string name="stytch_b2b_set_up_multi_factor_authentication">Set up Multi-Factor Authentication</string>
+    <string name="stytch_b2b_your_organization_requires_additional">Your organization requires an additional form of verification to make your account more secure.</string>
+    <string name="stytch_b2b_use_an_authenticator_app">Use an authenticator app</string>
+    <string name="stytch_b2b_text_me_a_code">Text me a code</string>
+    <string name="stytch_b2b_log_in_with_email_and_password">Log in with email and password</string>
+    <string name="stytch_b2b_check_your_email_for_help_signing_in">Check your email for help signing in!</string>
+    <string name="stytch_b2b_we_ll_email_you_a_login_link">We\'ll email you a login link to sign in to your account directly or reset your password if you have one.</string>
+    <string name="stytch_b2b_set_a_new_password">Set a new password</string>
+    <string name="stytch_b2b_didn_t_get_it_resend_email">Didn\'t get it? Resend email</string>
+    <string name="stytch_b2b_a_login_link_was_sent_to_you_at">A login link was sent to you at %1$s</string>
+    <string name="stytch_b2b_check_your_email">Check your email!</string>
+    <string name="stytch_b2b_enter_backup_code">Enter backup code</string>
+    <string name="stytch_b2b_enter_one_of_the_backup_codes">Enter one of the backup codes you saved when setting up your authenticator app.</string>
+    <string name="stytch_b2b_done">Done</string>
+    <string name="stytch_b2b_save_your_backup_codes">Save your backup codes!</string>
+    <string name="stytch_b2b_this_is_the_only_time_you_will_be_able_to_access_and_save_your_backup_codes">This is the only time you will be able to access and save your backup codes.</string>
+    <string name="stytch_b2b_download_codes">Download codes</string>
+    <string name="stytch_b2b_copy_all">Copy all</string>
+    <string name="stytch_b2b_mfa_title">Enter your phone number to set up Multi-Factor Authentication</string>
+    <string name="stytch_b2b_mfa_description">Your organization requires an additional form of verification to make your account more secure.</string>
+    <string name="stytch_b2b_enter_passcode">Enter passcode</string>
+    <string name="stytch_b2b_sso_discovery_email_title">Enter your email to continue</string>
+    <string name="stytch_b2b_sso_discovery_fallback_title">Sorry, we couldn\'t find any connections</string>
+    <string name="stytch_b2b_sso_discovery_fallback_description">Please input the Organization\'s unique slug to continue. If you don\'t know the unique slug, log in through another method to view all of your available Organizations.</string>
+    <string name="stytch_b2b_enter_org_slug">Enter org slug</string>
+    <string name="stytch_b2b_try_another_login_method">Try another login method</string>
+    <string name="stytch_b2b_sso_discovery_menu_title">Select a connection to continue</string>
+    <string name="stytch_b2b_success">Success</string>
+    <string name="stytch_b2b_totp_enrollment_title">Copy the code below to link your authenticator app</string>
+    <string name="stytch_b2b_totp_enrollment_description">Enter the key below into your authenticator app. If you don’t have an authenticator app, you’ll need to install one first.</string>
+    <string name="stytch_b2b_text_me_a_code_instead">Text me a code instead</string>
+    <string name="stytch_b2b_totp_entry_get_new_code">If the verification code doesn’t work, go back to your authenticator app to get a new code.</string>
+    <string name="stytch_b2b_totp_entry_use_backup_code">Can’t access your authenticator app? <annotation style="bold">Use a backup code</annotation></string>
+    <string name="stytch_b2b_totp_entry_description">Enter the 6-digit code from your authenticator app.</string>
+    <string name="stytch_b2b_discovery_title">Select an organization to continue</string>
+    <string name="stytch_b2b_create_an_organization">Create an organization</string>
+    <string name="stytch_b2b_logging_in">Logging In...</string>
+    <string name="stytch_b2b_create_an_organization_to_get_started">Create an organization to get started</string>
+    <string name="stytch_b2b_no_orgs_discovered_no_create_description">%1$s does not have an account. Think this is a mistake? Try a different email address, or contact your admin.</string>
+    <string name="stytch_b2b_try_a_different_email_address">Try a different email address</string>
+    <string name="stytch_b2b_no_orgs_discovered_title">%1$s does not belong to any organizations.</string>
+    <string name="stytch_b2b_no_orgs_discovered_description">Make sure your email address is correct. Otherwise, you might need to be invited by your admin.</string>
+    <string name="stytch_b2b_join">Join</string>
+    <string name="stytch_b2b_accept_invite">Accept Invite</string>
+    <string name="stych_b2b_an_email_was_sent_to">An email was sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stych_b2b_didnt_get_it_try_again">Didn\'t get it? <annotation style="bold">Try again</annotation></string>
+    <string name="stych_b2b_didnt_get_it_resend">Didn\'t get it? <annotation style="bold">Resend email</annotation></string>
+    <string name="stych_b2b_a_login_link_was_sent_to">A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_b2b_please_verify">Please verify your email</string>
+    <string name="stytch_b2b_invalid_totp">Failed to validate TOTP code</string>
+    <string name="stytch_b2b_sso_organization_not_found">Organization not found. Please try again.</string>
 </resources>

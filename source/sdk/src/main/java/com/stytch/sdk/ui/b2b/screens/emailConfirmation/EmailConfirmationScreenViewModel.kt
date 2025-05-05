@@ -1,10 +1,7 @@
 package com.stytch.sdk.ui.b2b.screens.emailConfirmation
 
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.R
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
@@ -41,12 +38,7 @@ internal class EmailConfirmationScreenViewModel(
 
     private fun emitState() {
         route?.let {
-            val formattedEmailAddress =
-                AnnotatedString(
-                    text = state.value.emailState.emailAddress,
-                    spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-                )
-            _emailConfirmationScreenState.value = it.toState(formattedEmailAddress)
+            _emailConfirmationScreenState.value = it.toState(state.value.emailState.emailAddress)
         }
     }
 
@@ -66,78 +58,43 @@ internal sealed class EmailConfirmationScreenState {
 
     @JacocoExcludeGenerated
     data class Ready(
-        val title: String,
-        val message: AnnotatedString,
-        val bottomText: AnnotatedString,
+        @StringRes val title: Int,
+        @StringRes val message: Int,
+        @StringRes val bottomText: Int,
+        val emailAddress: String,
     ) : EmailConfirmationScreenState()
 }
 
 internal sealed class EmailConfirmationScreenRoute {
-    abstract fun toState(formattedEmailAddress: AnnotatedString): EmailConfirmationScreenState.Ready
+    abstract fun toState(emailAddress: String): EmailConfirmationScreenState.Ready
 
     data object EmailConfirmation : EmailConfirmationScreenRoute() {
-        override fun toState(formattedEmailAddress: AnnotatedString) =
+        override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = "Check your email",
-                message =
-                    buildAnnotatedString {
-                        append("An email was sent to ")
-                        append(formattedEmailAddress)
-                    },
-                bottomText =
-                    buildAnnotatedString {
-                        append("Didn't get it? ")
-                        append(
-                            AnnotatedString(
-                                text = "Try Again.",
-                                spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-                            ),
-                        )
-                    },
+                title = R.string.stytch_b2b_check_your_email,
+                emailAddress = emailAddress,
+                message = R.string.stych_b2b_an_email_was_sent_to,
+                bottomText = R.string.stych_b2b_didnt_get_it_try_again,
             )
     }
 
     data object PasswordSetNewConfirmation : EmailConfirmationScreenRoute() {
-        override fun toState(formattedEmailAddress: AnnotatedString) =
+        override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = "Check your email!",
-                message =
-                    buildAnnotatedString {
-                        append("A login link was sent to you at ")
-                        append(formattedEmailAddress)
-                    },
-                bottomText =
-                    buildAnnotatedString {
-                        append("Didn't get it? ")
-                        append(
-                            AnnotatedString(
-                                text = "Resend email.",
-                                spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-                            ),
-                        )
-                    },
+                title = R.string.stytch_b2b_check_your_email,
+                emailAddress = emailAddress,
+                message = R.string.stych_b2b_a_login_link_was_sent_to,
+                bottomText = R.string.stych_b2b_didnt_get_it_resend,
             )
     }
 
     data object PasswordResetVerifyConfirmation : EmailConfirmationScreenRoute() {
-        override fun toState(formattedEmailAddress: AnnotatedString) =
+        override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = "Please verify your email",
-                message =
-                    buildAnnotatedString {
-                        append("A login link was sent to you at ")
-                        append(formattedEmailAddress)
-                    },
-                bottomText =
-                    buildAnnotatedString {
-                        append("Didn't get it? ")
-                        append(
-                            AnnotatedString(
-                                text = "Resend email.",
-                                spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-                            ),
-                        )
-                    },
+                title = R.string.stytch_b2b_please_verify,
+                emailAddress = emailAddress,
+                message = R.string.stych_b2b_a_login_link_was_sent_to,
+                bottomText = R.string.stych_b2b_didnt_get_it_resend,
             )
     }
 }

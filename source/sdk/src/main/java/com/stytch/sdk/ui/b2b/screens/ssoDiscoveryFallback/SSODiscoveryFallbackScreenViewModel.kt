@@ -1,7 +1,9 @@
 package com.stytch.sdk.ui.b2b.screens.ssoDiscoveryFallback
 
 import android.app.Activity
+import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.R
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.searchManager.SearchManager
 import com.stytch.sdk.common.StytchResult
@@ -45,7 +47,7 @@ internal class SSODiscoveryFallbackScreenViewModel(
             ) {
                 is StytchResult.Success -> {
                     if (response.value.organization == null) {
-                        _uiState.value = _uiState.value.copy(error = "Organization not found. Please try again.")
+                        _uiState.value = _uiState.value.copy(error = R.string.stytch_b2b_sso_organization_not_found)
                         return@launch
                     }
                     dispatch(SetAuthFlowType(AuthFlowType.ORGANIZATION))
@@ -74,7 +76,7 @@ internal class SSODiscoveryFallbackScreenViewModel(
 
 @JacocoExcludeGenerated
 internal data class SSODiscoveryFallbackScreenUIState(
-    val error: String? = null,
+    @StringRes val error: Int? = null,
 )
 
 internal sealed class SSODiscoveryFallbackScreenAction {

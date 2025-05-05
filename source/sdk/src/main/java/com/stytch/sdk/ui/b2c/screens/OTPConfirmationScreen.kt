@@ -113,13 +113,13 @@ private fun OTPConfirmationScreenComposable(
             text = stringResource(id = R.string.stytch_b2c_enter_passcode),
             textAlign = TextAlign.Start,
         )
-        BodyText(text = context.getStyledText(R.string.stytch_b2c_passcode_sent_to, recipient))
+        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_to, recipient))
         OTPEntry(
             errorMessage = uiState.genericErrorMessage,
             onCodeComplete = onOTPCodeComplete,
         )
         Text(
-            text = stringResource(id = R.string.stytch_b2c_code_expires_in, uiState.expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_code_expires_in, uiState.expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -144,11 +144,11 @@ private fun OTPConfirmationScreenComposable(
     if (uiState.showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
-            title = stringResource(id = R.string.stytch_b2c_resend_code_title),
+            title = stringResource(id = R.string.stytch_resend_code_title),
             body = context.getStyledText(R.string.stytch_b2c_new_code_will_be_sent_to, recipient),
-            cancelText = stringResource(id = R.string.stytch_b2c_cancel),
+            cancelText = stringResource(id = R.string.stytch_cancel),
             onCancelClick = onDialogDismiss,
-            acceptText = stringResource(id = R.string.stytch_b2c_send_code),
+            acceptText = stringResource(id = R.string.stytch_send_code),
             onAcceptClick = onResendEML,
         )
     }

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -67,8 +68,13 @@ private fun RecoveryCodesSaveScreenComposable(
     val context = LocalContext.current
     var didSaveCodesSomehow by remember { mutableStateOf(false) }
     Column {
-        PageTitle(textAlign = TextAlign.Left, text = "Save your backup codes!")
-        BodyText(text = "This is the only time you will be able to access and save your backup codes.")
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_save_your_backup_codes))
+        BodyText(
+            text =
+                stringResource(
+                    R.string.stytch_b2b_this_is_the_only_time_you_will_be_able_to_access_and_save_your_backup_codes,
+                ),
+        )
         Box(
             modifier =
                 Modifier
@@ -81,12 +87,18 @@ private fun RecoveryCodesSaveScreenComposable(
                     ),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 backupCodes.forEach { code ->
                     Text(
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
                         text = code,
                         style =
                             TextStyle(
@@ -107,17 +119,20 @@ private fun RecoveryCodesSaveScreenComposable(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            StytchTextButton(modifier = Modifier.weight(1f), text = "Download codes") {
+            StytchTextButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.stytch_b2b_download_codes),
+            ) {
                 context.startActivity(shareIntent)
                 didSaveCodesSomehow = true
             }
-            StytchTextButton(modifier = Modifier.weight(1f), text = "Copy all") {
+            StytchTextButton(modifier = Modifier.weight(1f), text = stringResource(R.string.stytch_b2b_copy_all)) {
                 clipboardManager.setText(AnnotatedString(allCodesJoined))
                 didSaveCodesSomehow = true
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        StytchButton(text = "Done", enabled = didSaveCodesSomehow, onClick = {
+        StytchButton(text = stringResource(R.string.stytch_b2b_done), enabled = didSaveCodesSomehow, onClick = {
             dispatch(RecoveryCodesSaveAction.AcknowledgeSave)
         })
     }

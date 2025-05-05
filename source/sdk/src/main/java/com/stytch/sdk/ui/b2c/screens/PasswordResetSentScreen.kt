@@ -185,7 +185,7 @@ private fun PasswordResetSentScreenComposable(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.stytch_b2c_resend_link_title),
             body = context.getStyledText(R.string.stytch_b2c_new_link_will_be_sent_to, emailAddress),
-            cancelText = stringResource(id = R.string.stytch_b2c_cancel),
+            cancelText = stringResource(id = R.string.stytch_cancel),
             onCancelClick = onDialogDismiss,
             acceptText = stringResource(id = R.string.stytch_b2c_send_link),
             onAcceptClick = onResendPasswordResetStart,

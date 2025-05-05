@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.b2b.data.SSODiscoveryState
 import com.stytch.sdk.ui.b2b.extensions.toPainterResource
@@ -40,11 +42,14 @@ private fun SSODiscoveryMenuScreenComposable(
         BackButton {
             dispatch(SSODiscoveryMenuScreenAction.ResetEverything)
         }
-        PageTitle(textAlign = TextAlign.Left, text = "Select a connection to continue")
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_sso_discovery_menu_title))
         state.connections.map { provider ->
             SocialLoginButton(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                text = "Continue with ${provider.displayName}",
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                text = stringResource(R.string.stytch_b2b_continue_with_provider, provider.displayName),
                 iconDrawable = provider.toPainterResource(),
                 iconDescription = provider.displayName,
                 onClick = { dispatch(SSODiscoveryMenuScreenAction.SSOStart(activity, provider.connectionId)) },
