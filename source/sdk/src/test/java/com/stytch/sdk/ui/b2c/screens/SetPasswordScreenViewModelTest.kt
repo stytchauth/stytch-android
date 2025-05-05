@@ -121,6 +121,9 @@ internal class SetPasswordScreenViewModelTest {
                 )
             viewModel.onSubmit("", mockk(relaxed = true), this)
             coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmail(any()) }
-            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Testing error state",
+            )
         }
 }

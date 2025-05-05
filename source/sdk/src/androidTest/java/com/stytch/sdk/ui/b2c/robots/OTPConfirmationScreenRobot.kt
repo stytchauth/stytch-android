@@ -32,7 +32,10 @@ internal class OTPConfirmationScreenRobot(
     }
 
     private val passcodeSentText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_passcode_sent_to), substring = true)
+        composeTestRule.onNodeWithText(
+            getString(R.string.stytch_passcode_sent_to, "robot@stytch.com"),
+            substring = true,
+        )
     }
 
     private val otpEntry by lazy {

@@ -24,26 +24,34 @@ internal class PasswordResetSentScreenRobot(
     }
 
     private val forgotPasswordText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_reset_password_link_sent), substring = true)
+        composeTestRule.onNodeWithText(
+            getString(R.string.stytch_b2c_reset_password_link_sent, "robot@stytch.com"),
+            substring = true,
+        )
     }
 
     private val noPasswordText by lazy {
         composeTestRule.onNodeWithText(
-            getString(R.string.stytch_b2c_login_link_sent_to_create_password) + "   " +
-                getString(R.string.stytch_b2c_create_password_for_account),
+            getString(R.string.stytch_b2c_login_link_sent_to_create_password, "robot@stytch.com"),
         )
     }
 
     private val breachedPasswordText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_breached_password), substring = true)
+        composeTestRule.onNodeWithText(
+            getString(R.string.stytch_b2c_breached_password, "robot@stytch.com"),
+            substring = true,
+        )
     }
 
     private val dedupePasswordText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_secure_your_account), substring = true)
+        composeTestRule.onNodeWithText(
+            getString(R.string.stytch_b2c_secure_your_account, "robot@stytch.com"),
+            substring = true,
+        )
     }
 
     private val resendText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_didnt_get_it), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_didnt_get_it_resend_link), substring = true)
     }
 
     private val stytchButtonEML by lazy {

@@ -24,13 +24,13 @@ internal class EMLConfirmationScreenRobot(
 
     private val loginLinkText by lazy {
         composeTestRule.onNodeWithText(
-            getString(R.string.stytch_b2c_login_link_sent_to_create_password),
+            getString(R.string.stytch_b2c_login_link_sent_to_create_password, "robot@stytch.com"),
             substring = true,
         )
     }
 
     private val resendLinkText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_didnt_get_it), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_didnt_get_it_resend_link), substring = true)
     }
 
     private val passwordButton by lazy {
