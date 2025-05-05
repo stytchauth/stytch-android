@@ -7,9 +7,7 @@ name: runOnGitHub
 # events but only for the master branch
 on:
   push:
-    branches: [ master, main, dev ]
   pull_request:
-    branches: [ master, main, dev ]
 jobs:
   gradle:
     runs-on: ubuntu-latest
