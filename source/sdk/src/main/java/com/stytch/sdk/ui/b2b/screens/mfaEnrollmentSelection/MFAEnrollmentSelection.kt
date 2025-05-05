@@ -31,9 +31,12 @@ private fun MFAEnrollmentSelectionScreenComposable(
 ) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(textAlign = TextAlign.Left, text =
-            stringResource(
-                R.string.stytch_b2b_set_up_multi_factor_authentication)
+        PageTitle(
+            textAlign = TextAlign.Left,
+            text =
+                stringResource(
+                    R.string.stytch_b2b_set_up_multi_factor_authentication,
+                ),
         )
         BodyText(
             text = stringResource(R.string.stytch_b2b_your_organization_requires_additional),

@@ -24,9 +24,12 @@ internal fun EmailMethodSelectionScreen(viewModel: EmailMethodSelectionScreenVie
 private fun EmailMethodSelectionScreenComposable(dispatch: (AllowedAuthMethods) -> Unit) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(textAlign = TextAlign.Left, text =
-            stringResource(
-                R.string.stytch_b2b_select_how_you_d_like_to_continue)
+        PageTitle(
+            textAlign = TextAlign.Left,
+            text =
+                stringResource(
+                    R.string.stytch_b2b_select_how_you_d_like_to_continue,
+                ),
         )
         Column {
             EMAIL_METHODS.forEach { method ->
