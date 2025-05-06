@@ -44,10 +44,7 @@ internal class TOTPEntryScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             useTOTPAuthenticate(code = code)
                 .onFailure {
-                    _totpEntryState.value =
-                        _totpEntryState.value.copy(
-                            errorMessage = "Failed to validate TOTP code",
-                        )
+                    _totpEntryState.value = _totpEntryState.value.copy(isInvalid = true)
                 }
         }
     }
@@ -66,5 +63,5 @@ internal class TOTPEntryScreenViewModel(
 internal data class TOTPEntryScreenState(
     val isEnrolling: Boolean,
     val isSmsOtpAvailable: Boolean,
-    val errorMessage: String? = null,
+    val isInvalid: Boolean = false,
 )

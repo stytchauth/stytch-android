@@ -52,7 +52,7 @@ internal fun LUDSIndicator(
             Text(
                 text =
                     stringResource(
-                        id = R.string.missing_characters,
+                        id = R.string.stytch_luds_missing_characters_message,
                         bootstrapData.passwordConfig?.ludsMinimumCount ?: 0,
                     ),
                 style =
@@ -84,7 +84,7 @@ internal fun LUDSIndicator(
             Text(
                 text =
                     stringResource(
-                        id = R.string.missing_complexity,
+                        id = R.string.stytch_luds_missing_complexity_message,
                         bootstrapData.passwordConfig?.ludsComplexity ?: 0,
                     ),
                 style =
@@ -110,7 +110,7 @@ internal fun LUDSIndicator(
                             .padding(end = 4.dp),
                 )
                 Text(
-                    text = stringResource(id = R.string.breached_password_warning),
+                    text = stringResource(id = R.string.stytch_luds_breached_password_warning),
                     style =
                         type.caption.copy(
                             color = Color(theme.errorColor),

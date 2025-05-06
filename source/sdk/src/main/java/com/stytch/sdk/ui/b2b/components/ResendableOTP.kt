@@ -15,9 +15,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import com.stytch.sdk.R
 import com.stytch.sdk.ui.shared.components.BackButton
@@ -27,6 +27,7 @@ import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchAlertDialog
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.utils.getStyledText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -50,6 +51,7 @@ internal fun ResendableOTP(
     var countdownSeconds by remember { mutableLongStateOf(otpExpirationMinutes * 60L) }
     var expirationTimeFormatted by remember { mutableStateOf("$otpExpirationMinutes:00") }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             while (countdownSeconds > 0) {
@@ -65,16 +67,10 @@ internal fun ResendableOTP(
             BackButton { onBack?.invoke() }
         }
         PageTitle(textAlign = TextAlign.Left, text = title)
-        BodyText(
-            text =
-                buildAnnotatedString {
-                    append("A 6-digit passcode was sent to you at ")
-                    append(recipient)
-                },
-        )
+        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_to, recipient))
         OTPEntry(errorMessage = errorMessage, onCodeComplete = onSubmit)
         Text(
-            text = stringResource(id = R.string.code_expires_in, expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_code_expires_in, expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -86,15 +82,11 @@ internal fun ResendableOTP(
     if (showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = { showResendDialog = false },
-            title = stringResource(id = R.string.resend_code),
-            body =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.new_code_will_be_sent_to))
-                    append(recipient)
-                },
-            cancelText = stringResource(id = R.string.cancel),
+            title = stringResource(id = R.string.stytch_resend_code_title),
+            body = context.getStyledText(R.string.stytch_new_code_will_be_sent_to, recipient),
+            cancelText = stringResource(id = R.string.stytch_cancel),
             onCancelClick = { showResendDialog = false },
-            acceptText = stringResource(id = R.string.send_code),
+            acceptText = stringResource(id = R.string.stytch_send_code),
             onAcceptClick = {
                 onResend()
                 countdownSeconds = otpExpirationMinutes * 60L

@@ -13,8 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
@@ -46,30 +48,26 @@ private fun SSODiscoveryFallbackScreenComposable(
         BackButton {
             dispatch(SSODiscoveryFallbackScreenAction.ResetEverything)
         }
-        PageTitle(textAlign = TextAlign.Left, text = "Sorry, we couldn't find any connections")
-        BodyText(
-            text =
-                "Please input the Organization's unique slug to continue. If you don't know the unique slug, log in " +
-                    "through another method to view all of your available Organizations.",
-        )
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_sso_discovery_fallback_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_sso_discovery_fallback_description))
         StytchInput(
             modifier = Modifier.fillMaxWidth(),
             value = slug,
             onValueChange = setSlug,
-            label = "Enter org slug",
+            label = stringResource(R.string.stytch_b2b_enter_org_slug),
         )
         state.error?.let {
-            FormFieldStatus(isError = true, text = it)
+            FormFieldStatus(isError = true, text = stringResource(it))
         }
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = slug.isNotBlank(),
-            text = "Continue",
+            text = stringResource(R.string.stytch_continue_button_text),
             onClick = { dispatch(SSODiscoveryFallbackScreenAction.Submit(activity, slug)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
-            text = "Try another login method",
+            text = stringResource(R.string.stytch_b2b_try_another_login_method),
             modifier =
                 Modifier.clickable {
                     dispatch(SSODiscoveryFallbackScreenAction.ResetEverything)

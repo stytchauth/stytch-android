@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import androidx.lifecycle.SavedStateHandle
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import com.stytch.sdk.common.errors.StytchAPIErrorType
@@ -302,7 +303,10 @@ internal class MainScreenViewModelTest {
         runTest(dispatcher) {
             coEvery { viewModel.getUserType(any()) } returns null
             viewModel.onEmailAddressSubmit(StytchProductConfig(products = listOf(StytchProduct.PASSWORDS)), this)
-            assert(viewModel.uiState.value.genericErrorMessage == "Failed to get user type")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorMessageId == R.string.stytch_b2c_failed_to_get_user_type,
+            )
         }
 
     @Test
@@ -353,7 +357,10 @@ internal class MainScreenViewModelTest {
                     Locale.EN,
                 )
             assert(route == null)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something went wrong",
+            )
         }
 
     @Test
@@ -393,7 +400,10 @@ internal class MainScreenViewModelTest {
                     Locale.EN,
                 )
             assert(route == null)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something went wrong",
+            )
         }
 
     @Test
@@ -432,7 +442,10 @@ internal class MainScreenViewModelTest {
                     Locale.EN,
                 )
             assert(route == null)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something went wrong")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something went wrong",
+            )
         }
 
     @Test

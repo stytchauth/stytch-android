@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stytch.sdk.R
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.ui.b2b.components.MenuItemWithRightArrow
 import com.stytch.sdk.ui.shared.components.BodyText
@@ -29,15 +31,21 @@ private fun MFAEnrollmentSelectionScreenComposable(
 ) {
     val theme = LocalStytchTheme.current
     Column {
-        PageTitle(textAlign = TextAlign.Left, text = "Set up Multi-Factor Authentication")
+        PageTitle(
+            textAlign = TextAlign.Left,
+            text =
+                stringResource(
+                    R.string.stytch_b2b_set_up_multi_factor_authentication,
+                ),
+        )
         BodyText(
-            text = "Your organization requires an additional form of verification to make your account more secure.",
+            text = stringResource(R.string.stytch_b2b_your_organization_requires_additional),
         )
         Column {
             sortedOptions.forEach { mfaMethod ->
                 when (mfaMethod) {
-                    MfaMethod.TOTP -> "Use an authenticator app"
-                    MfaMethod.SMS -> "Text me a code"
+                    MfaMethod.TOTP -> stringResource(R.string.stytch_b2b_use_an_authenticator_app)
+                    MfaMethod.SMS -> stringResource(R.string.stytch_b2b_text_me_a_code)
                     MfaMethod.NONE -> null
                 }?.let { title ->
                     MenuItemWithRightArrow(title = title, onClick = { dispatch(mfaMethod) })

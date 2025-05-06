@@ -7,7 +7,7 @@
     <string name="deep_link_title">Deep links</string>
     <string name="host">b2bexampleapp.com</string>
     <string name="deeplink_received_toast">Deeplink received</string>
-    <string name="email">Email</string>
+    <string name="stytch_email_label">Email</string>
     <string name="please_enter_email">Please enter a valid email you wish to use</string>
     <string name="b2b_org_id">Organization ID</string>
     <string name="organization_slug">Organization Slug</string>

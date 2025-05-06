@@ -29,6 +29,7 @@ import com.stytch.sdk.R
 import com.stytch.sdk.common.DeeplinkTokenPair
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.components.LoadingView
+import com.stytch.sdk.ui.b2b.data.ErrorDetails
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.navigation.Route
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -240,10 +241,16 @@ internal fun StytchB2BAuthenticationApp(
                         TOTPEntryScreen(viewModel = totpEntryViewModel)
                     }
                 }
-                rootAppState.errorToastText?.let {
-                    FormFieldStatus(text = it, isError = true, autoDismiss = {
-                        dispatch(SetGenericError(null))
-                    })
+                rootAppState.errorDetails?.let { toastDetails ->
+                    val toastText =
+                        toastDetails.errorMessageId?.let { messageId ->
+                            stringResource(messageId, *toastDetails.arguments.toTypedArray())
+                        } ?: toastDetails.errorText
+                    toastText?.let {
+                        FormFieldStatus(text = it, isError = true, autoDismiss = {
+                            dispatch(SetGenericError(null))
+                        })
+                    }
                 }
             }
             if (!bootstrapData.disableSDKWatermark) {
@@ -258,7 +265,7 @@ internal fun StytchB2BAuthenticationApp(
                     Image(
                         modifier = Modifier.height(19.dp),
                         painter = painterResource(id = R.drawable.powered_by_stytch),
-                        contentDescription = stringResource(id = R.string.powered_by_stytch),
+                        contentDescription = stringResource(id = R.string.stytch_powered_by_stytch),
                     )
                 }
             }
@@ -274,5 +281,5 @@ internal data class RootAppState(
     val currentRoute: Route? = null,
     val deeplinkTokenPair: DeeplinkTokenPair? = null,
     val isLoading: Boolean = false,
-    val errorToastText: String? = null,
+    val errorDetails: ErrorDetails? = ErrorDetails(),
 )

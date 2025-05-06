@@ -24,8 +24,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.stytch.sdk.R
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
-import com.stytch.sdk.ui.b2c.data.OTPMethods
-import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.b2c.screens.MainScreen
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
@@ -38,14 +36,6 @@ internal fun StytchAuthenticationApp(
     screen: AndroidScreen? = null,
     onInvalidConfig: (StytchUIInvalidConfiguration) -> Unit,
 ) {
-    if (
-        productConfig.products.contains(StytchProduct.EMAIL_MAGIC_LINKS) &&
-        // EML
-        productConfig.otpOptions.methods.contains(OTPMethods.EMAIL) // Email OTP
-    ) {
-        onInvalidConfig(StytchUIInvalidConfiguration(stringResource(id = R.string.eml_and_otp_error)))
-        return
-    }
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Color(LocalStytchTheme.current.backgroundColor),
@@ -77,7 +67,7 @@ internal fun StytchAuthenticationApp(
                     Image(
                         modifier = Modifier.height(19.dp),
                         painter = painterResource(id = R.drawable.powered_by_stytch),
-                        contentDescription = stringResource(id = R.string.powered_by_stytch),
+                        contentDescription = stringResource(id = R.string.stytch_powered_by_stytch),
                     )
                 }
             }

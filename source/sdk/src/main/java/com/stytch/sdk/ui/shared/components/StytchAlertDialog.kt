@@ -39,7 +39,7 @@ internal fun StytchAlertDialog(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val semantics = stringResource(id = R.string.semantics_alert_dialog)
+    val semantics = stringResource(id = R.string.stytch_semantics_alert_dialog)
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.semantics { contentDescription = semantics },

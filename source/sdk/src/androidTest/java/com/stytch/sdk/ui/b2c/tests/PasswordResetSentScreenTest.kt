@@ -19,7 +19,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.FORGOT_PASSWORD,
                 ),
         ) {
@@ -39,7 +39,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.NO_PASSWORD_SET,
                 ),
         ) {
@@ -59,7 +59,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.BREACHED,
                 ),
         ) {
@@ -79,7 +79,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.DEDUPE,
                 ),
         ) {
@@ -99,7 +99,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.FORGOT_PASSWORD,
                 ),
         ) {
@@ -114,7 +114,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.FORGOT_PASSWORD,
                 ),
         ) {
@@ -129,7 +129,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.FORGOT_PASSWORD,
                 ),
         ) {
@@ -144,7 +144,7 @@ internal class PasswordResetSentScreenTest : BaseAndroidComposeTest() {
         passwordResetSentScreenRobot(
             details =
                 PasswordResetDetails(
-                    parameters = Passwords.ResetByEmailStartParameters(""),
+                    parameters = Passwords.ResetByEmailStartParameters("robot@stytch.com"),
                     resetType = PasswordResetType.NO_PASSWORD_SET,
                 ),
         ) {

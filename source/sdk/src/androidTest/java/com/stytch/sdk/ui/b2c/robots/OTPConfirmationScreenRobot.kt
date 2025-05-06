@@ -28,19 +28,22 @@ internal class OTPConfirmationScreenRobot(
         ),
     ) {
     private val pageTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.enter_passcode))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_enter_passcode))
     }
 
     private val passcodeSentText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.passcode_sent_to), substring = true)
+        composeTestRule.onNodeWithText(
+            getString(R.string.stytch_passcode_sent_to, "robot@stytch.com"),
+            substring = true,
+        )
     }
 
     private val otpEntry by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.semantics_otp_entry))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_otp_entry))
     }
 
     private val passwordButton by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.create_password_instead), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_create_password_instead), substring = true)
     }
 
     fun pageTitleExists() = pageTitle.assertExists()

@@ -14,7 +14,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 @Composable
 internal fun LoadingDialog() {
     val theme = LocalStytchTheme.current
-    val semantics = stringResource(id = R.string.semantics_loading_dialog)
+    val semantics = stringResource(id = R.string.stytch_semantics_loading_dialog)
     Dialog(onDismissRequest = {}) {
         CircularProgressIndicator(
             modifier = Modifier.semantics { contentDescription = semantics },

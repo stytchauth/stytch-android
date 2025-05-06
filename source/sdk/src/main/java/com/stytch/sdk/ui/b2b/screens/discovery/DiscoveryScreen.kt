@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.stytch.sdk.R
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganization
 import com.stytch.sdk.ui.b2b.components.LoadingView
@@ -149,7 +151,7 @@ private fun DiscoveryScreenComposable(
             )
         }
         BackButton(onClick = { dispatch(DiscoveryScreenActions.ResetEverything) })
-        PageTitle(textAlign = TextAlign.Left, text = "Select an organization to continue")
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_discovery_title))
         Column(modifier = Modifier.fillMaxWidth()) {
             discoveryScreenState.discoveredOrganizations.map { discoveredOrganization ->
                 Row(
@@ -202,7 +204,7 @@ private fun DiscoveryScreenComposable(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 StytchButton(
-                    text = "Create an organization",
+                    text = stringResource(R.string.stytch_b2b_create_an_organization),
                     enabled = true,
                     onClick = handleCreateOrganization,
                 )
@@ -213,7 +215,7 @@ private fun DiscoveryScreenComposable(
 
 @Composable
 private fun LoggingInView(color: Color) {
-    PageTitle(textAlign = TextAlign.Left, text = "Logging In...")
+    PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_logging_in))
     CircularProgressIndicator(color = color)
 }
 
@@ -227,24 +229,44 @@ private fun NoOrganizationsDiscovered(
     val config = LocalStytchB2BProductConfig.current
 
     if (createOrganzationsEnabled && config.allowCreateOrganization) {
-        PageTitle(textAlign = TextAlign.Left, text = "Create an organization to get started")
-        StytchButton(enabled = true, text = "Create an organization", onClick = onCreateOrganization)
+        PageTitle(
+            textAlign = TextAlign.Left,
+            text =
+                stringResource(
+                    R.string.stytch_b2b_create_an_organization_to_get_started,
+                ),
+        )
+        StytchButton(
+            enabled = true,
+            text = stringResource(R.string.stytch_b2b_create_an_organization),
+            onClick = onCreateOrganization,
+        )
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
             text =
-                "${emailState.emailAddress} does not have an account. Think this is a mistake? " +
-                    "Try a different email address, or contact your admin.",
+                stringResource(
+                    R.string.stytch_b2b_no_orgs_discovered_no_create_description,
+                    emailState.emailAddress,
+                ),
         )
-        StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
+        StytchButton(
+            enabled = true,
+            onClick = onGoBack,
+            text = stringResource(R.string.stytch_b2b_try_a_different_email_address),
+        )
         return
     }
 
     PageTitle(
         textAlign = TextAlign.Left,
-        text = "${emailState.emailAddress} does not belong to any organizations.",
+        text = stringResource(R.string.stytch_b2b_no_orgs_discovered_title, emailState.emailAddress),
     )
-    BodyText(text = "Make sure your email address is correct. Otherwise, you might need to be invited by your admin.")
-    StytchButton(enabled = true, onClick = onGoBack, text = "Try a different email address")
+    BodyText(text = stringResource(R.string.stytch_b2b_no_orgs_discovered_description))
+    StytchButton(
+        enabled = true,
+        onClick = onGoBack,
+        text = stringResource(R.string.stytch_b2b_try_a_different_email_address),
+    )
 }
 
 @Composable
@@ -276,7 +298,8 @@ private fun Logo(
                     .border(
                         BorderStroke(Dp.Hairline, Color(theme.inputBorderColor)),
                         RoundedCornerShape(theme.buttonBorderRadius),
-                    ).background(Color(theme.backgroundColor)),
+                    )
+                    .background(Color(theme.backgroundColor)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -296,9 +319,9 @@ private fun ArrowText(type: String) {
     val typography = LocalStytchTypography.current
     val text =
         if (jitEligible.contains(type) || type == "pending_member") {
-            "Join"
+            stringResource(R.string.stytch_b2b_join)
         } else if (type == "invited_member") {
-            "Accept Invite"
+            stringResource(R.string.stytch_b2b_accept_invite)
         } else {
             ""
         }

@@ -147,6 +147,6 @@ private fun B2BUIState.toRootAppState() =
     RootAppState(
         currentRoute = currentRoute,
         deeplinkTokenPair = deeplinkTokenPair,
-        errorToastText = errorToastText,
+        errorDetails = errorDetails,
         isLoading = isLoading,
     )

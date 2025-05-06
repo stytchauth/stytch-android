@@ -56,9 +56,9 @@ internal fun PasswordInput(
                     }
                 val description =
                     if (passwordVisible) {
-                        stringResource(id = R.string.hide_password)
+                        stringResource(id = R.string.stytch_semantics_hide_password)
                     } else {
-                        stringResource(id = R.string.show_password)
+                        stringResource(id = R.string.stytch_semantics_show_password)
                     }
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(imageVector = icon, contentDescription = description)

@@ -10,8 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
@@ -26,12 +28,12 @@ internal fun RecoveryCodesEntryScreen(viewModel: RecoveryCodesEntryScreenViewMod
 private fun RecoveryCodesEntryScreenComposable(dispatch: (RecoveryCodesEntryAction) -> Unit) {
     var recoveryCode by remember { mutableStateOf("") }
     Column {
-        PageTitle(textAlign = TextAlign.Left, text = "Enter backup code")
-        BodyText(text = "Enter one of the backup codes you saved when setting up your authenticator app.")
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_enter_backup_code))
+        BodyText(text = stringResource(R.string.stytch_b2b_enter_one_of_the_backup_codes))
         StytchInput(modifier = Modifier.fillMaxWidth(), value = recoveryCode, onValueChange = { recoveryCode = it })
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
-            text = "Done",
+            text = stringResource(R.string.stytch_b2b_done),
             enabled = recoveryCode.isNotEmpty(),
         ) { dispatch(RecoveryCodesEntryAction.Recover(recoveryCode)) }
     }

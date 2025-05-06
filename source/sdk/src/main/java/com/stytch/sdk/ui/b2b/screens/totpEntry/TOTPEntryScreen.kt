@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stytch.sdk.R
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.Body2Text
@@ -21,6 +19,7 @@ import com.stytch.sdk.ui.shared.components.OTPEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.utils.getStyledText
 
 internal sealed class TOTPEntryScreenAction {
     data object GoToTOTPEnrollment : TOTPEntryScreenAction()
@@ -50,6 +49,7 @@ private fun TOTPEntryScreenComposable(
     dispatch: (TOTPEntryScreenAction) -> Unit,
 ) {
     val theme = LocalStytchTheme.current
+    val context = LocalContext.current
     BackHandler(enabled = state.isEnrolling) {
         dispatch(TOTPEntryScreenAction.GoToTOTPEnrollment)
     }
@@ -57,32 +57,21 @@ private fun TOTPEntryScreenComposable(
         if (state.isEnrolling) {
             BackButton { dispatch(TOTPEntryScreenAction.GoToTOTPEnrollment) }
         }
-        PageTitle(textAlign = TextAlign.Left, text = "Enter verification code")
-        BodyText(text = "Enter the 6-digit code from your authenticator app.")
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_enter_verification_code))
+        BodyText(text = stringResource(R.string.stytch_b2b_totp_entry_description))
         OTPEntry(
-            errorMessage = state.errorMessage,
+            errorMessage = if (state.isInvalid) stringResource(R.string.stytch_b2b_invalid_totp) else null,
             onCodeComplete = { dispatch(TOTPEntryScreenAction.ValidateCode(it)) },
         )
 
         if (!state.isEnrolling) {
             StytchTextButton(
-                text =
-                    buildAnnotatedString {
-                        append("Can’t access your authenticator app? ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Use a backup code")
-                        }
-                    },
+                text = stringResource(R.string.stytch_b2b_totp_entry_use_backup_code),
                 color = theme.secondaryTextColor,
                 onClick = { dispatch(TOTPEntryScreenAction.UseRecoveryCode) },
             )
         } else {
-            Body2Text(
-                text =
-                    AnnotatedString(
-                        "If the verification code doesn’t work, go back to your authenticator app to get a new code.",
-                    ),
-            )
+            Body2Text(text = context.getStyledText(R.string.stytch_b2b_totp_entry_get_new_code))
         }
 
         if (state.isSmsOtpAvailable) {
@@ -90,7 +79,10 @@ private fun TOTPEntryScreenComposable(
                 thickness = 1.dp,
                 color = Color(theme.inputBorderColor),
             )
-            StytchTextButton(text = "Text me a code instead", onClick = { dispatch(TOTPEntryScreenAction.TextMeACode) })
+            StytchTextButton(
+                text = stringResource(R.string.stytch_b2b_text_me_a_code_instead),
+                onClick = { dispatch(TOTPEntryScreenAction.TextMeACode) },
+            )
         }
     }
 }

@@ -39,7 +39,6 @@ import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.DividerWithText
 import com.stytch.sdk.ui.shared.components.EmailEntry
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.PhoneEntry
@@ -104,20 +103,20 @@ private fun MainScreenComposable(
     val tabTitles =
         tabTypes.map {
             when (it) {
-                TabTypes.EMAIL -> stringResource(id = R.string.email)
-                TabTypes.SMS -> stringResource(id = R.string.text)
-                TabTypes.WHATSAPP -> stringResource(id = R.string.whatsapp)
+                TabTypes.EMAIL -> stringResource(id = R.string.stytch_email_label)
+                TabTypes.SMS -> stringResource(id = R.string.stytch_b2c_sms_tab_title)
+                TabTypes.WHATSAPP -> stringResource(id = R.string.stytch_b2c_whatsapp_tab_title)
             }
         }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
-    val semanticsOAuthButton = stringResource(id = R.string.semantics_oauth_button)
+    val semanticsOAuthButton = stringResource(id = R.string.stytch_b2c_semantics_oauth_button)
 
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
         if (!theme.hideHeaderText) {
-            PageTitle(text = stringResource(id = R.string.sign_up_or_login))
+            PageTitle(text = stringResource(id = R.string.stytch_b2c_main_screen_header))
         }
         productComponents.map {
             when (it) {
@@ -140,12 +139,12 @@ private fun MainScreenComposable(
                 ProductComponent.DIVIDER -> {
                     DividerWithText(
                         modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                        text = stringResource(id = R.string.or),
+                        text = stringResource(id = R.string.stytch_method_divider_text),
                     )
                 }
                 ProductComponent.INPUTS -> {
                     if (tabTitles.size > 1) {
-                        val semanticTabs = stringResource(id = R.string.semantics_tabs)
+                        val semanticTabs = stringResource(id = R.string.stytch_b2c_semantics_tabs)
                         TabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color(theme.backgroundColor),
@@ -176,13 +175,13 @@ private fun MainScreenComposable(
                         }
                     }
                     when (tabTitles[selectedTabIndex]) {
-                        stringResource(id = R.string.email) ->
+                        stringResource(id = R.string.stytch_email_label) ->
                             EmailEntry(
                                 emailState = emailState,
                                 onEmailAddressChanged = onEmailAddressChanged,
                                 onEmailAddressSubmit = { onEmailAddressSubmit(productConfig) },
                             )
-                        stringResource(id = R.string.text) ->
+                        stringResource(id = R.string.stytch_b2c_sms_tab_title) ->
                             PhoneEntry(
                                 countryCode = phoneState.countryCode,
                                 onCountryCodeChanged = onCountryCodeChanged,
@@ -191,7 +190,7 @@ private fun MainScreenComposable(
                                 onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
                                 statusText = phoneState.error,
                             )
-                        stringResource(id = R.string.whatsapp) ->
+                        stringResource(id = R.string.stytch_b2c_whatsapp_tab_title) ->
                             PhoneEntry(
                                 countryCode = phoneState.countryCode,
                                 onCountryCodeChanged = onCountryCodeChanged,
@@ -200,14 +199,12 @@ private fun MainScreenComposable(
                                 onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
                                 statusText = phoneState.error,
                             )
-                        else -> Text(stringResource(id = R.string.misconfigured_otp))
+                        else -> Text(stringResource(id = R.string.stytch_b2c_misconfigured_otp_warning))
                     }
                 }
             }
         }
-        uiState.genericErrorMessage?.let {
-            FormFieldStatus(text = it, isError = true)
-        }
+        uiState.genericErrorMessage?.display()
     }
     if (uiState.showLoadingDialog) {
         LoadingDialog()
