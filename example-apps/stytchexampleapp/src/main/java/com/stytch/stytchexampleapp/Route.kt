@@ -8,4 +8,6 @@ internal sealed class Route(
     data object Login : Route("login")
 
     data object Profile : Route("profile")
+
+    data object UILogin : Route("ui-login")
 }

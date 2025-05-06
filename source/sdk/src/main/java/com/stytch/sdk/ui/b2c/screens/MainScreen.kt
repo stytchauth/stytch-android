@@ -2,9 +2,13 @@ package com.stytch.sdk.ui.b2c.screens
 
 import android.os.Parcelable
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
@@ -16,7 +20,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -25,16 +31,21 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.R
+import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.biometrics.BiometricAvailability.AvailableNoRegistrations
+import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.OAuthProvider
 import com.stytch.sdk.ui.b2c.data.OTPOptions
+import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.DividerWithText
@@ -44,10 +55,12 @@ import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.PhoneEntry
 import com.stytch.sdk.ui.shared.components.SocialLoginButton
+import com.stytch.sdk.ui.shared.components.StytchButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -57,9 +70,18 @@ internal object MainScreen : AndroidScreen(), Parcelable {
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
         val context = LocalActivity.current as AuthenticationActivity
-        val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
+        val viewModel =
+            viewModel<MainScreenViewModel>(
+                factory = MainScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
+            // enable biometrics after authentication if the developer requires them AND its available AND not
+            // already registered
+            viewModel.enableBiometricRegistrationOnAuthentication(
+                productConfig.biometricsOptions.forceRegistrationOnLoginIfNoneFound &&
+                    StytchClient.biometrics.areBiometricsAvailable(context) == AvailableNoRegistrations,
+            )
             viewModel.eventFlow.collectLatest {
                 when (it) {
                     is EventState.NavigationRequested -> navigator.push(it.navigationRoute.screen)
@@ -80,6 +102,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             exitWithoutAuthenticating = context::exitWithoutAuthenticating,
             productComponents = viewModel.getProductComponents(productConfig.products),
             tabTypes = viewModel.getTabTitleOrdering(productConfig.products, productConfig.otpOptions.methods),
+            onToggleBiometricsRegistration = viewModel::enableBiometricRegistrationOnAuthentication,
         )
     }
 }
@@ -97,6 +120,7 @@ private fun MainScreenComposable(
     exitWithoutAuthenticating: () -> Unit,
     productComponents: List<ProductComponent>,
     tabTypes: List<TabTypes>,
+    onToggleBiometricsRegistration: (Boolean) -> Unit,
 ) {
     val productConfig = LocalStytchProductConfig.current
     val theme = LocalStytchTheme.current
@@ -113,6 +137,18 @@ private fun MainScreenComposable(
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
     val semanticsOAuthButton = stringResource(id = R.string.semantics_oauth_button)
+    val context = LocalActivity.current as FragmentActivity
+    val scope = rememberCoroutineScope()
+
+    fun loginWithBiometrics() {
+        scope.launch {
+            StytchClient.biometrics.authenticate(
+                Biometrics.AuthenticateParameters(
+                    context = context,
+                ),
+            )
+        }
+    }
 
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
@@ -201,6 +237,39 @@ private fun MainScreenComposable(
                                 statusText = phoneState.error,
                             )
                         else -> Text(stringResource(id = R.string.misconfigured_otp))
+                    }
+                }
+            }
+        }
+        if (productConfig.products.contains(StytchProduct.BIOMETRICS)) {
+            if (StytchClient.biometrics.isRegistrationAvailable(context)) {
+                StytchButton(
+                    enabled = true,
+                    text = "Login With Biometrics",
+                    onClick = ::loginWithBiometrics,
+                )
+            } else {
+                if (!productConfig.biometricsOptions.forceRegistrationOnLoginIfNoneFound &&
+                    StytchClient.biometrics.areBiometricsAvailable(context) == AvailableNoRegistrations
+                ) {
+                    // not forced, and available, so show toggle
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(
+                            text = "Enroll in biometrics",
+                            style =
+                                type.body2.copy(
+                                    color = Color(theme.primaryTextColor),
+                                    lineHeight = 48.sp,
+                                ),
+                        )
+                        Switch(
+                            checked = uiState.showBiometricRegistrationOnLogin,
+                            onCheckedChange = { onToggleBiometricsRegistration(it) },
+                        )
                     }
                 }
             }

@@ -1,0 +1,55 @@
+package com.stytch.sdk.ui.b2c.screens
+
+import android.os.Parcelable
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import cafe.adriel.voyager.androidx.AndroidScreen
+import com.stytch.sdk.ui.b2c.AuthenticationActivity
+import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.shared.components.PageTitle
+import com.stytch.sdk.ui.shared.components.StytchButton
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+internal data object BiometricRegistrationScreen :
+    AndroidScreen(),
+    Parcelable {
+    @Composable
+    override fun Content() {
+        val context = LocalActivity.current as AuthenticationActivity
+        val viewModel =
+            viewModel<BiometricRegistrationScreenViewModel>(
+                factory = BiometricRegistrationScreenViewModel.factory(context.savedStateHandle),
+            )
+        LaunchedEffect(Unit) {
+            viewModel.eventFlow.collectLatest {
+                when (it) {
+                    is EventState.Authenticated -> context.returnAuthenticationResult(it.result)
+                    else -> {}
+                }
+            }
+        }
+        BiometricRegistrationScreenComposable(registerBiometrics = viewModel::registerBiometrics)
+    }
+}
+
+@Composable
+private fun BiometricRegistrationScreenComposable(registerBiometrics: (FragmentActivity) -> Unit) {
+    val context = LocalActivity.current as FragmentActivity
+    Column(modifier = Modifier.padding(bottom = 32.dp)) {
+        PageTitle(
+            text = "Register Biometrics",
+            textAlign = TextAlign.Start,
+        )
+        StytchButton(enabled = true, onClick = { registerBiometrics(context) }, text = "Enroll in Biometrics")
+    }
+}

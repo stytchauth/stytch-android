@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ internal fun LoginRoute(
                 setConfirmationCode = viewModel::setConfirmationCode,
                 submitPhoneNumber = viewModel::submitPhoneNumber,
                 confirmCode = viewModel::confirmCode,
+                launchUILogin = { navigateTo(Route.UILogin) },
             )
     }
 }
@@ -109,6 +111,7 @@ private fun LoginScreen(
     setConfirmationCode: (String) -> Unit,
     submitPhoneNumber: () -> Unit,
     confirmCode: () -> Unit,
+    launchUILogin: () -> Unit,
 ) {
     Column {
         if (!uiState.methodIdExists) {
@@ -153,6 +156,16 @@ private fun LoginScreen(
                 text = uiState.screenState.error.message ?: "Something went wrong",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Red,
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = launchUILogin,
+        ) {
+            Text(
+                text = "Try Stytch UI",
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }

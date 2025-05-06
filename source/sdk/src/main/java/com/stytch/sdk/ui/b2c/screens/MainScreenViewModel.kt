@@ -60,6 +60,11 @@ internal class MainScreenViewModel(
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    fun enableBiometricRegistrationOnAuthentication(value: Boolean) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(showBiometricRegistrationOnLogin = value)
+    }
+
     fun getProductComponents(products: List<StytchProduct>): List<ProductComponent> {
         val hasButtons = products.contains(StytchProduct.OAUTH)
         val hasInput =
