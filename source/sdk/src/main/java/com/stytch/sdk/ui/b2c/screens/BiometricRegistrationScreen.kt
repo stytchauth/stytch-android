@@ -12,16 +12,20 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchButton
+import com.stytch.sdk.ui.shared.components.StytchTextButton
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal data object BiometricRegistrationScreen :
-    AndroidScreen(),
+internal data class BiometricRegistrationScreen(
+    val previousAuthenticationResult: StytchResult<*>,
+) : AndroidScreen(),
     Parcelable {
     @Composable
     override fun Content() {
@@ -38,18 +42,26 @@ internal data object BiometricRegistrationScreen :
                 }
             }
         }
-        BiometricRegistrationScreenComposable(registerBiometrics = viewModel::registerBiometrics)
+        BiometricRegistrationScreenComposable(
+            registerBiometrics = viewModel::registerBiometrics,
+            skipRegistration = { context.returnAuthenticationResult(previousAuthenticationResult, false) },
+        )
     }
 }
 
 @Composable
-private fun BiometricRegistrationScreenComposable(registerBiometrics: (FragmentActivity) -> Unit) {
+private fun BiometricRegistrationScreenComposable(
+    registerBiometrics: (FragmentActivity) -> Unit,
+    skipRegistration: () -> Unit,
+) {
     val context = LocalActivity.current as FragmentActivity
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         PageTitle(
-            text = "Register Biometrics",
+            text = "Enable Biometric Login?",
             textAlign = TextAlign.Start,
         )
+        BodyText(text = "Use biometrics to log into your account.")
         StytchButton(enabled = true, onClick = { registerBiometrics(context) }, text = "Enroll in Biometrics")
+        StytchTextButton(text = "Skip for now", onClick = skipRegistration)
     }
 }

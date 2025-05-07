@@ -16,8 +16,6 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.biometrics.BiometricAvailability.AvailableNoRegistrations
-import com.stytch.sdk.ui.b2b.B2BAuthenticationActivity.Companion.STYTCH_RESULT_KEY
-import com.stytch.sdk.ui.b2b.B2BAuthenticationActivity.Companion.STYTCH_UI_CONFIG_KEY
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.StytchUIConfig
 import com.stytch.sdk.ui.b2c.screens.BiometricRegistrationScreen
@@ -39,6 +37,10 @@ internal class AuthenticationActivity : FragmentActivity() {
                 )
                 return@onCreate
             }
+        viewModel.enableBiometricRegistrationOnAuthentication(
+            uiConfig.productConfig.biometricsOptions.forceRegistrationOnLoginIfNoneFound &&
+                StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations,
+        )
         // log render_login_screen
         if (StytchClient.isInitialized.value) {
             StytchClient.events.logEvent(
@@ -95,11 +97,17 @@ internal class AuthenticationActivity : FragmentActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    internal fun returnAuthenticationResult(result: StytchResult<*>) {
-        if (viewModel.uiState.value.showBiometricRegistrationOnLogin &&
-            StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations
+    internal fun returnAuthenticationResult(
+        result: StytchResult<*>,
+        enforceBiometricsCheck: Boolean = true,
+    ) {
+        if (
+            enforceBiometricsCheck &&
+            viewModel.uiState.value.showBiometricRegistrationOnLogin &&
+            StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations &&
+            result is StytchResult.Success
         ) {
-            renderApplicationAtScreen(BiometricRegistrationScreen)
+            renderApplicationAtScreen(BiometricRegistrationScreen(result))
         } else {
             if (StytchClient.isInitialized.value) {
                 when (result) {
