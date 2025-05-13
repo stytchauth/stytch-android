@@ -137,9 +137,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     CONNECTED_APP_CONSENT_REVOKED(
         type = "connected_app_consent_revoked",
     ),
-    CONNECTED_APP_NOT_ALLOWED_FOR_ORG(
-        type = "connected_app_not_allowed_for_org",
-    ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
