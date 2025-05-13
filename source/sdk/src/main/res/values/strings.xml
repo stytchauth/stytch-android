@@ -2,6 +2,7 @@
 <resources>
     <!-- ACTIVITY DEEPLINK STRINGS -->
     <string name="STYTCH_PUBLIC_TOKEN" />
+
     <!-- Headless SDK strings (these don't need to be localized; they can be overridden via params) -->
     <string name="stytch_biometric_prompt_title_default">Biometric Authentication</string>
     <string name="stytch_biometric_prompt_subtitle_default">Authenticate using your biometric credential</string>
@@ -106,6 +107,12 @@
     <string name="stytch_b2c_semantics_oauth_button">OAuth Button</string>
     <string name="stytch_b2c_semantics_tabs">Tabs</string>
     <string name="stytch_b2c_password_reset_unknown_email_address">Can\'t reset password for unknown email address</string>
+    <string name="stytch_b2c_failed_to_get_user_type">Failed to get user type</string>
+    <string name="stytch_b2c_enable_biometric_login">Enable Biometric Login?</string>
+    <string name="stytch_b2c_use_biometrics_to_log_into_your_account">Use biometrics to log into your account.</string>
+    <string name="stytch_b2c_enroll_in_biometrics">Enroll in Biometrics</string>
+    <string name="stytch_b2c_skip_for_now">Skip for now</string>
+    <string name="stytch_b2c_continue_with_biometrics">Continue with Biometrics</string>
 
     <!-- B2B UI strings -->
     <string name="stytch_b2b_default_error_message">Something went wrong. Try again later or contact your admin for help.</string>
@@ -182,5 +189,4 @@
     <string name="stytch_b2b_invalid_passcode">Invalid passcode, please try again.</string>
     <string name="stytch_b2b_jit_ineligible">%1$s does not have access to %2$s. If you think this is a mistake, contact your admin.</string>
     <string name="stytch_b2b_unable_to_verify_email">We were unable to verify your email. Please contact your admin.</string>
-    <string name="stytch_b2c_failed_to_get_user_type">Failed to get user type</string>
 </resources>

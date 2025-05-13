@@ -15,6 +15,7 @@ internal data class ApplicationUIState(
     val showLoadingDialog: Boolean = false,
     val showResendDialog: Boolean = false,
     val expirationTimeFormatted: String = "",
+    val showBiometricRegistrationOnLogin: Boolean = false,
 ) : Parcelable {
     internal companion object {
         const val SAVED_STATE_KEY = "StytchAuthApplicationUIState"

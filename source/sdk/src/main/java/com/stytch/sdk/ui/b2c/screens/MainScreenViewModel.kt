@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2c.screens
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -43,6 +44,7 @@ import kotlinx.coroutines.launch
 
 internal enum class ProductComponent {
     BUTTONS,
+    BIOMETRICS,
     INPUTS,
     DIVIDER,
 }
@@ -62,13 +64,18 @@ internal class MainScreenViewModel(
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun getProductComponents(products: List<StytchProduct>): List<ProductComponent> {
+    fun getProductComponents(
+        products: List<StytchProduct>,
+        context: FragmentActivity,
+    ): List<ProductComponent> {
         val hasButtons = products.contains(StytchProduct.OAUTH)
         val hasInput =
             products.any {
                 listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
             }
-        val hasDivider = hasButtons && hasInput
+        val hasBiometrics = products.contains(StytchProduct.BIOMETRICS)
+        val enrolledInBiometrics = StytchClient.biometrics.isRegistrationAvailable(context)
+        val hasDivider = (hasButtons || (hasBiometrics && enrolledInBiometrics)) && hasInput
         return mutableListOf<ProductComponent>()
             .apply {
                 products.forEachIndexed { index, product ->
@@ -83,6 +90,9 @@ internal class MainScreenViewModel(
                         product == StytchProduct.OTP
                     ) {
                         add(ProductComponent.INPUTS)
+                    }
+                    if (product == StytchProduct.BIOMETRICS && enrolledInBiometrics) {
+                        add(ProductComponent.BIOMETRICS)
                     }
                 }
             }.toSet()

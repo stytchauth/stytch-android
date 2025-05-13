@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlin.collections.set
 
 internal class AuthenticationViewModel(
     private val stytchClient: StytchClient,
@@ -32,6 +33,11 @@ internal class AuthenticationViewModel(
     val eventFlow = _eventFlow.asSharedFlow()
 
     val uiState = savedStateHandle.getStateFlow(ApplicationUIState.SAVED_STATE_KEY, ApplicationUIState())
+
+    fun enableBiometricRegistrationOnAuthentication(value: Boolean) {
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
+            uiState.value.copy(showBiometricRegistrationOnLogin = value)
+    }
 
     fun authenticateThirdPartyOAuth(
         resultCode: Int,

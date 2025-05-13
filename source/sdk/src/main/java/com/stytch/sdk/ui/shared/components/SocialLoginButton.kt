@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +29,7 @@ internal fun SocialLoginButton(
     onClick: () -> Unit = {},
     iconDrawable: Painter? = null,
     iconDescription: String? = null,
+    imageVector: ImageVector? = null,
     text: String,
 ) {
     val theme = LocalStytchTheme.current
@@ -50,6 +52,13 @@ internal fun SocialLoginButton(
             if (iconDrawable != null) {
                 Image(
                     painter = iconDrawable,
+                    contentDescription = iconDescription,
+                    modifier = Modifier.width(24.dp).padding(end = 4.dp),
+                )
+            }
+            if (imageVector != null) {
+                Image(
+                    imageVector = imageVector,
                     contentDescription = iconDescription,
                     modifier = Modifier.width(24.dp).padding(end = 4.dp),
                 )
