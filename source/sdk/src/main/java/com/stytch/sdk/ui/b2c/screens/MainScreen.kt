@@ -164,7 +164,7 @@ private fun MainScreenComposable(
                         modifier = Modifier.padding(bottom = 12.dp),
                         onClick = ::loginWithBiometrics,
                         imageVector = Icons.Default.Fingerprint,
-                        text = "Continue with Biometrics",
+                        text = stringResource(R.string.stytch_b2c_continue_with_biometrics),
                     )
                 }
                 ProductComponent.DIVIDER -> {
@@ -179,7 +179,10 @@ private fun MainScreenComposable(
                         TabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color(theme.backgroundColor),
-                            modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 12.dp)
+                                    .semantics { contentDescription = semanticTabs },
                             indicator = { tabPositions ->
                                 SecondaryIndicator(
                                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),

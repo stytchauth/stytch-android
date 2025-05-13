@@ -103,4 +103,9 @@
     <string name="semantics_loading_dialog">Loading</string>
     <string name="semantics_email_password_entry">Entry form for email and password</string>
     <string name="semantics_otp_entry">Entry form for One Time Passcode</string>
+    <string name="stytch_b2c_enable_biometric_login">Enable Biometric Login?</string>
+    <string name="stytch_b2c_use_biometrics_to_log_into_your_account">Use biometrics to log into your account.</string>
+    <string name="stytch_b2c_enroll_in_biometrics">Enroll in Biometrics</string>
+    <string name="stytch_b2c_skip_for_now">Skip for now</string>
+    <string name="stytch_b2c_continue_with_biometrics">Continue with Biometrics</string>
 </resources>

@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.data.EventState
@@ -57,11 +59,14 @@ private fun BiometricRegistrationScreenComposable(
     val context = LocalActivity.current as FragmentActivity
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         PageTitle(
-            text = "Enable Biometric Login?",
+            text = stringResource(R.string.stytch_b2c_enable_biometric_login),
             textAlign = TextAlign.Start,
         )
-        BodyText(text = "Use biometrics to log into your account.")
-        StytchButton(enabled = true, onClick = { registerBiometrics(context) }, text = "Enroll in Biometrics")
-        StytchTextButton(text = "Skip for now", onClick = skipRegistration)
+        BodyText(text = stringResource(R.string.stytch_b2c_use_biometrics_to_log_into_your_account))
+        StytchButton(enabled = true, onClick = { registerBiometrics(context) }, text =
+            stringResource(
+                R.string.stytch_b2c_enroll_in_biometrics)
+        )
+        StytchTextButton(text = stringResource(R.string.stytch_b2c_skip_for_now), onClick = skipRegistration)
     }
 }
