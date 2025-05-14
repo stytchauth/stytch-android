@@ -42,6 +42,7 @@ import com.stytch.exampleapp.ui.headless.magicLinks.MagicLinksScreen
 import com.stytch.exampleapp.ui.headless.oauth.OAuthScreen
 import com.stytch.exampleapp.ui.headless.otp.OTPScreen
 import com.stytch.exampleapp.ui.headless.passkeys.PasskeysScreen
+import com.stytch.exampleapp.ui.headless.passwords.PasswordsScreen
 import com.stytch.exampleapp.ui.headless.pkce.PKCEScreen
 import com.stytch.exampleapp.ui.headless.totp.TOTPScreen
 import com.stytch.sdk.common.StytchResult
@@ -143,6 +144,7 @@ fun HeadlessScreen() {
                             PasskeysScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.Passwords> {
+                            PasswordsScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.PKCE> {
                             PKCEScreen()
