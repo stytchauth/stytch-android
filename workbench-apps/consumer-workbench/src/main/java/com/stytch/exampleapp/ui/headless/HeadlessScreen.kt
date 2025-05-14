@@ -2,6 +2,7 @@ package com.stytch.exampleapp.ui.headless
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -39,6 +40,8 @@ import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.ui.headless.biometrics.BiometricsScreen
 import com.stytch.exampleapp.ui.headless.magicLinks.MagicLinksScreen
 import com.stytch.exampleapp.ui.headless.oauth.OAuthScreen
+import com.stytch.exampleapp.ui.headless.otp.OTPScreen
+import com.stytch.exampleapp.ui.headless.pkce.PKCEScreen
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import kotlinx.coroutines.launch
@@ -120,7 +123,7 @@ fun HeadlessScreen() {
                         startDestination = HeadlessProducts.None,
                     ) {
                         composable<HeadlessProducts.None> {
-                            Text("Select a product from the menu to test it out")
+                            Text("Select a product from the menu")
                         }
                         composable<HeadlessProducts.Biometrics> {
                             BiometricsScreen(viewModel::setResponseState)
@@ -132,18 +135,19 @@ fun HeadlessScreen() {
                             OAuthScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.OTP> {
+                            OTPScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.Passkeys> {
                         }
                         composable<HeadlessProducts.Passwords> {
                         }
                         composable<HeadlessProducts.PKCE> {
-                        }
-                        composable<HeadlessProducts.Sessions> {
+                            PKCEScreen()
                         }
                         composable<HeadlessProducts.TOTP> {
                         }
                     }
+                    HorizontalDivider(modifier = Modifier.height(10.dp))
                     Column(
                         modifier = Modifier.weight(0.25f).verticalScroll(rememberScrollState()),
                     ) {
@@ -181,8 +185,6 @@ fun HeadlessScreen() {
 
     @Serializable data object PKCE : HeadlessProducts("PKCE")
 
-    @Serializable data object Sessions : HeadlessProducts("Sessions")
-
     @Serializable data object TOTP : HeadlessProducts("TOTP")
 }
 
@@ -194,7 +196,7 @@ val AllHeadlessProducts =
         HeadlessProducts.OTP,
         HeadlessProducts.Passkeys,
         HeadlessProducts.Passwords,
-        HeadlessProducts.Sessions,
+        HeadlessProducts.PKCE,
         HeadlessProducts.TOTP,
     )
 

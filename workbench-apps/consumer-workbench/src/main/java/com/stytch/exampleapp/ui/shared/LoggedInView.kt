@@ -6,25 +6,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.stytch.exampleapp.ui.ConsumerWorkbenchAppUIState
-import com.stytch.sdk.consumer.StytchClient
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoggedInView(state: ConsumerWorkbenchAppUIState.LoggedIn) {
-    val scope = rememberCoroutineScope()
-
-    fun logout() {
-        scope.launch {
-            StytchClient.sessions.revoke()
-        }
-    }
-
     Column {
+        Text(
+            style = MaterialTheme.typography.titleLarge,
+            text = "You are currently logged in.",
+        )
         KeyValueRow(key = "User Id", value = state.userData.userId)
         KeyValueRow(key = "Session Id", value = state.sessionData.sessionId)
         KeyValueRow(key = "Session Start", value = state.sessionData.startedAt)
