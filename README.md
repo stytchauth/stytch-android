@@ -155,11 +155,15 @@ This repository is organized in three main parts:
 * **example-apps/** - These are two example apps (one in Kotlin, one in Java), demonstrating realistic use cases of the Stytch SDK, using both the Headless and Pre-Built UI implementations. Feel free to copy these projects and edit them to suit your needs
 * **source/sdk/** - This is the actual source code of the Stytch Android SDK
 
-If you wish to run any of the example or workbench apps from within this repository, you should add some, or all, of the following properties to your `local.properties` file:
-* **GOOGLE_OAUTH_CLIENT_ID** - A Google OAuth client ID, created in your Google Console (linked to `com.stytch.exampleapp`) and added to your Stytch Dashboard, used in the consumer workbench app for testing Google One Tap
-* **PASSKEYS_DOMAIN** - The domain where you host your `/.well-known/assetlinks.json` file, used in the consumer workbench app to test Passkeys flows
+For both the example apps and the workbench apps, you should consider them the same as if you were configuring your own custom app, and follow the setup instructions from above in regards to adding a string resource containing your `STYTCH_PUBLIC_TOKEN`. The `consumer-workbench` app also accepts the two following additional string resources:
+1. `PASSKEYS_DOMAIN` - for associating the workbench app with a domain on which you host your `.well-known/assetlinks.json` file
+2. `GOOGLE_CLIENT_ID` - for configuring Google OneTap
 
-If you do not add these properties, the applications should still build, but will not function as expected.
+In order to run these example and workbench apps, you will need to set the following allowed Application IDs in your Stytch Dashboard:
+* **example-apps/javademoapp:** `com.stytch.javademoapp`
+* **example-apps/stytchexampleapp:** `com.stytch.stytchexampleapp`
+* **workbench-apps/b2b-workbench:** `com.stytch.exampleapp.b2b`
+* **workbench-apps/stytchexampleapp:** `com.stytch.exampleapp`
 
 ## Get Help And Join The Community
 Join the discussion, ask questions, and suggest new features in our ​[Slack community](https://stytch.com/docs/resources/support/overview)!

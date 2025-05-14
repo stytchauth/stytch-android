@@ -13,39 +13,51 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.stytch.exampleapp.R
 import com.stytch.exampleapp.ui.ConsumerWorkbenchAppUIState
 import com.stytch.exampleapp.ui.shared.LoggedInView
 import com.stytch.sdk.ui.b2c.StytchUI
+import com.stytch.sdk.ui.b2c.data.GoogleOAuthOptions
+import com.stytch.sdk.ui.b2c.data.OAuthOptions
+import com.stytch.sdk.ui.b2c.data.OAuthProvider
 import com.stytch.sdk.ui.b2c.data.OTPMethods
 import com.stytch.sdk.ui.b2c.data.OTPOptions
 import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 
-val STYTCH_PRODUCT_CONFIG_EDIT_ME =
-    StytchProductConfig(
-        products =
-            listOf(
-                StytchProduct.OAUTH,
-                StytchProduct.EMAIL_MAGIC_LINKS,
-                StytchProduct.OTP,
-                StytchProduct.PASSWORDS,
-            ),
-        otpOptions =
-            OTPOptions(
-                methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
-            ),
-    )
-
 @Composable
 fun UIScreen(state: ConsumerWorkbenchAppUIState) {
+    val stytchProductConfig =
+        StytchProductConfig(
+            products =
+                listOf(
+                    StytchProduct.OAUTH,
+                    StytchProduct.EMAIL_MAGIC_LINKS,
+                    StytchProduct.OTP,
+                    StytchProduct.PASSWORDS,
+                ),
+            otpOptions =
+                OTPOptions(
+                    methods = listOf(OTPMethods.SMS, OTPMethods.WHATSAPP),
+                ),
+            oAuthOptions =
+                OAuthOptions(
+                    providers = listOf(OAuthProvider.GOOGLE, OAuthProvider.GITHUB),
+                ),
+            googleOauthOptions =
+                GoogleOAuthOptions(
+                    clientId = stringResource(R.string.GOOGLE_CLIENT_ID),
+                ),
+        )
     val activity = LocalActivity.current ?: return
     val stytchUi =
         StytchUI
             .Builder()
             .apply {
                 activity(activity as ComponentActivity)
-                productConfig(STYTCH_PRODUCT_CONFIG_EDIT_ME)
+                productConfig(stytchProductConfig)
                 onAuthenticated { }
             }.build()
     Column(
