@@ -7,6 +7,7 @@ import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,14 +33,25 @@ import kotlin.collections.mapIndexed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConsumerWorkbenchApp(state: ConsumerWorkbenchAppUIState) {
+fun ConsumerWorkbenchApp(
+    state: ConsumerWorkbenchAppUIState,
+    logout: () -> Unit,
+) {
     val navController = rememberNavController()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             BottomBar(
                 destinations = listOf(RootRoute.Home, RootRoute.Headless, RootRoute.UI),
                 onNavigateTo = { navController.navigate(it) },
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Revoke Session") },
+                icon = { },
+                onClick = logout,
             )
         },
     ) { innerPadding ->

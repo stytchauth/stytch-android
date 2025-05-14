@@ -9,12 +9,8 @@ import com.stytch.sdk.consumer.biometrics.Biometrics
 import kotlinx.coroutines.launch
 
 class BiometricsScreenViewModel(
-    val reportState: (HeadlessMethodResponseState) -> Unit,
+    private val reportState: (HeadlessMethodResponseState) -> Unit,
 ) : ViewModel() {
-    init {
-        println("JORDAN >>> initted")
-    }
-
     fun registerBiometrics(
         context: FragmentActivity,
         promptData: Biometrics.PromptData? = null,

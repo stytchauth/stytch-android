@@ -1,6 +1,5 @@
 package com.stytch.exampleapp.ui.headless
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,18 +7,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,12 +37,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stytch.exampleapp.ui.headless.biometrics.BiometricsScreen
+import com.stytch.exampleapp.ui.headless.magicLinks.MagicLinksScreen
+import com.stytch.exampleapp.ui.headless.oauth.OAuthScreen
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeadlessScreen() {
     val viewModel = HeadlessScreenViewModel()
@@ -83,64 +87,74 @@ fun HeadlessScreen() {
         },
     ) {
         Scaffold(
-            floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    text = { Text("Show menu") },
-                    icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-                    onClick = {
-                        scope.launch {
-                            drawerState.apply {
-                                if (isClosed) open() else close()
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            style = MaterialTheme.typography.headlineLarge,
+                            text = "Stytch Headless",
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            scope.launch {
+                                drawerState.apply {
+                                    if (isClosed) open() else close()
+                                }
                             }
+                        }) {
+                            Icon(Icons.Filled.Menu, contentDescription = "")
                         }
                     },
                 )
             },
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    style = MaterialTheme.typography.headlineLarge,
-                    text = "Stytch Headless",
-                )
-                NavHost(
-                    modifier = Modifier.weight(0.5f),
-                    navController = navController,
-                    startDestination = HeadlessProducts.None,
-                ) {
-                    composable<HeadlessProducts.None> {
-                        Text("Select a product from the side drawer to test it out")
-                    }
-                    composable<HeadlessProducts.Biometrics> {
-                        BiometricsScreen(viewModel::setResponseState)
-                    }
-                    composable<HeadlessProducts.MagicLinks> {
-                    }
-                    composable<HeadlessProducts.OAuth> {
-                    }
-                    composable<HeadlessProducts.OTP> {
-                    }
-                    composable<HeadlessProducts.Passkeys> {
-                    }
-                    composable<HeadlessProducts.Passwords> {
-                    }
-                    composable<HeadlessProducts.Sessions> {
-                    }
-                    composable<HeadlessProducts.TOTP> {
-                    }
-                }
+        ) { innerPadding ->
+            Surface(modifier = Modifier.padding(innerPadding)) {
                 Column(
-                    modifier = Modifier.weight(0.5f).verticalScroll(rememberScrollState()),
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    when (val response = responseState.value) {
-                        is HeadlessMethodResponseState.None -> {}
-                        is HeadlessMethodResponseState.Loading -> CircularProgressIndicator()
-                        is HeadlessMethodResponseState.Response ->
-                            SelectionContainer {
-                                Text(response.result.toFriendlyDisplay())
-                            }
+                    NavHost(
+                        modifier = Modifier.weight(0.75f),
+                        navController = navController,
+                        startDestination = HeadlessProducts.None,
+                    ) {
+                        composable<HeadlessProducts.None> {
+                            Text("Select a product from the menu to test it out")
+                        }
+                        composable<HeadlessProducts.Biometrics> {
+                            BiometricsScreen(viewModel::setResponseState)
+                        }
+                        composable<HeadlessProducts.MagicLinks> {
+                            MagicLinksScreen(viewModel::setResponseState)
+                        }
+                        composable<HeadlessProducts.OAuth> {
+                            OAuthScreen(viewModel::setResponseState)
+                        }
+                        composable<HeadlessProducts.OTP> {
+                        }
+                        composable<HeadlessProducts.Passkeys> {
+                        }
+                        composable<HeadlessProducts.Passwords> {
+                        }
+                        composable<HeadlessProducts.PKCE> {
+                        }
+                        composable<HeadlessProducts.Sessions> {
+                        }
+                        composable<HeadlessProducts.TOTP> {
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(0.25f).verticalScroll(rememberScrollState()),
+                    ) {
+                        when (val response = responseState.value) {
+                            is HeadlessMethodResponseState.None -> {}
+                            is HeadlessMethodResponseState.Loading -> CircularProgressIndicator()
+                            is HeadlessMethodResponseState.Response ->
+                                SelectionContainer {
+                                    Text(response.result.toFriendlyDisplay())
+                                }
+                        }
                     }
                 }
             }
@@ -164,6 +178,8 @@ fun HeadlessScreen() {
     @Serializable data object Passkeys : HeadlessProducts("Passkeys")
 
     @Serializable data object Passwords : HeadlessProducts("Passwords")
+
+    @Serializable data object PKCE : HeadlessProducts("PKCE")
 
     @Serializable data object Sessions : HeadlessProducts("Sessions")
 

@@ -39,24 +39,6 @@ val STYTCH_PRODUCT_CONFIG_EDIT_ME =
 
 @Composable
 fun UIScreen(state: ConsumerWorkbenchAppUIState) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            style = MaterialTheme.typography.headlineLarge,
-            text = "Stytch UI",
-        )
-        when (state) {
-            is ConsumerWorkbenchAppUIState.Loading -> {}
-            is ConsumerWorkbenchAppUIState.LoggedOut -> LoggedOutView()
-            is ConsumerWorkbenchAppUIState.LoggedIn -> LoggedInView(state)
-        }
-    }
-}
-
-@Composable
-fun LoggedOutView() {
     val activity = LocalActivity.current ?: return
     val stytchUi =
         StytchUI
@@ -66,12 +48,24 @@ fun LoggedOutView() {
                 productConfig(STYTCH_PRODUCT_CONFIG_EDIT_ME)
                 onAuthenticated { }
             }.build()
-    Row(modifier = Modifier.fillMaxWidth()) {
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { stytchUi.authenticate() },
-        ) {
-            Text("Try Stytch UI")
+    Column(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            style = MaterialTheme.typography.headlineLarge,
+            text = "Stytch UI",
+        )
+        if (state is ConsumerWorkbenchAppUIState.LoggedIn) {
+            LoggedInView(state)
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { stytchUi.authenticate() },
+            ) {
+                Text("Try Stytch UI")
+            }
         }
     }
 }

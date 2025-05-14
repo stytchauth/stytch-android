@@ -17,10 +17,16 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         StytchClient.oauth.setOAuthReceiverActivity(this)
         super.onCreate(savedInstanceState)
+        intent.data?.let {
+            viewModel.handleDeeplink(it)
+        }
         setContent {
             val state = viewModel.uiState.collectAsState()
             AppTheme {
-                ConsumerWorkbenchApp(state.value)
+                ConsumerWorkbenchApp(
+                    state = state.value,
+                    logout = viewModel::logout,
+                )
             }
         }
     }
