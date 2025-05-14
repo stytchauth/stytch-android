@@ -41,7 +41,9 @@ import com.stytch.exampleapp.ui.headless.biometrics.BiometricsScreen
 import com.stytch.exampleapp.ui.headless.magicLinks.MagicLinksScreen
 import com.stytch.exampleapp.ui.headless.oauth.OAuthScreen
 import com.stytch.exampleapp.ui.headless.otp.OTPScreen
+import com.stytch.exampleapp.ui.headless.passkeys.PasskeysScreen
 import com.stytch.exampleapp.ui.headless.pkce.PKCEScreen
+import com.stytch.exampleapp.ui.headless.totp.TOTPScreen
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
 import kotlinx.coroutines.launch
@@ -138,6 +140,7 @@ fun HeadlessScreen() {
                             OTPScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.Passkeys> {
+                            PasskeysScreen(viewModel::setResponseState)
                         }
                         composable<HeadlessProducts.Passwords> {
                         }
@@ -145,6 +148,7 @@ fun HeadlessScreen() {
                             PKCEScreen()
                         }
                         composable<HeadlessProducts.TOTP> {
+                            TOTPScreen(viewModel::setResponseState)
                         }
                     }
                     HorizontalDivider(modifier = Modifier.height(10.dp))

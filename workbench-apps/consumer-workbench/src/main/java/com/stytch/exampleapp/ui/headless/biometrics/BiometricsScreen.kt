@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.exampleapp.ui.headless.HeadlessMethodResponseState
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.consumer.StytchClient
@@ -29,6 +30,19 @@ import com.stytch.sdk.consumer.biometrics.BiometricAvailability
 @Composable
 fun BiometricsScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
     val viewModel = BiometricsScreenViewModel(reportState)
+    BiometricsScreenComposable(
+        register = viewModel::registerBiometrics,
+        authenticate = viewModel::authenticateBiometrics,
+        remove = viewModel::removeRegistration,
+    )
+}
+
+@Composable
+fun BiometricsScreenComposable(
+    register: (FragmentActivity) -> Unit,
+    authenticate: (FragmentActivity) -> Unit,
+    remove: () -> Unit,
+) {
     val context = LocalActivity.current as FragmentActivity
     var biometricsAreRegistered = remember { mutableStateOf(false) }
     var canRegisterBiometrics = remember { mutableStateOf(false) }
@@ -65,7 +79,7 @@ fun BiometricsScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
             OutlinedButton(
                 enabled = canRegisterBiometrics.value,
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { viewModel.registerBiometrics(context) },
+                onClick = { register(context) },
             ) {
                 Text(
                     text = "Register biometrics",
@@ -82,7 +96,7 @@ fun BiometricsScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
             OutlinedButton(
                 enabled = canRemoveBiometrics.value,
                 modifier = Modifier.fillMaxWidth(),
-                onClick = viewModel::removeRegistration,
+                onClick = remove,
             ) {
                 Text(
                     text = "Delete biometrics",
@@ -99,7 +113,7 @@ fun BiometricsScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
             OutlinedButton(
                 enabled = canAddBiometricsToSession.value,
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { viewModel.authenticateBiometrics(context) },
+                onClick = { authenticate(context) },
             ) {
                 Text(
                     text = "Auth with biometrics",

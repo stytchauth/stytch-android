@@ -10,19 +10,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
+import com.stytch.exampleapp.R
 import com.stytch.exampleapp.ui.headless.HeadlessMethodResponseState
 
 @Composable
 fun OAuthScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
     val viewModel = OAuthScreenViewModel(reportState)
     val context = LocalActivity.current as FragmentActivity
+    val googleOauthClientId = stringResource(R.string.GOOGLE_CLIENT_ID)
     Column(
         modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedButton(
-            onClick = { viewModel.loginWithGoogleOneTap(context) },
+            onClick = { viewModel.loginWithGoogleOneTap(context, googleOauthClientId) },
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Google One Tap")

@@ -16,11 +16,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stytch.exampleapp.ui.headless.HeadlessMethodResponseState
 
 @Composable
 fun MagicLinksScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
     val viewModel = MagicLinksScreenViewModel(reportState)
+    MagicLinksScreenComposable(loginOrCreate = viewModel::emlLoginOrCreate)
+}
+
+@Composable
+fun MagicLinksScreenComposable(loginOrCreate: (String) -> Unit) {
     var emailAddress by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -36,7 +42,7 @@ fun MagicLinksScreen(reportState: (HeadlessMethodResponseState) -> Unit) {
         }
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
             OutlinedButton(
-                onClick = { viewModel.emlLoginOrCreate(emailAddress) },
+                onClick = { loginOrCreate(emailAddress) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = emailAddress.isNotBlank(),
             ) {

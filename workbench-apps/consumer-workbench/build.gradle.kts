@@ -24,13 +24,6 @@ android {
     }
 
     buildTypes {
-        all {
-            val googleOAuthClientId = rootProject.ext["GOOGLE_OAUTH_CLIENT_ID"] as String
-            buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleOAuthClientId\"")
-
-            val passkeysDomain = rootProject.ext["PASSKEYS_DOMAIN"] as String
-            buildConfigField("String", "PASSKEYS_DOMAIN", "\"$passkeysDomain\"")
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

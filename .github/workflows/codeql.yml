@@ -78,9 +78,6 @@ jobs:
       run: |
          echo "Run, Build Application using script"
          ./gradlew --no-daemon assemble
-      env:
-        GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-        PASSKEYS_DOMAIN: 'abc123'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

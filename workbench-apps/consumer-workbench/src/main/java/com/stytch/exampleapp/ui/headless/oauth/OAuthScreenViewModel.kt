@@ -3,7 +3,6 @@ package com.stytch.exampleapp.ui.headless.oauth
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stytch.exampleapp.BuildConfig
 import com.stytch.exampleapp.ui.headless.HeadlessMethodResponseState
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.consumer.StytchClient
@@ -31,7 +30,10 @@ enum class OAuthProvider {
 class OAuthScreenViewModel(
     private val reportState: (HeadlessMethodResponseState) -> Unit,
 ) : ViewModel() {
-    fun loginWithGoogleOneTap(context: Activity) {
+    fun loginWithGoogleOneTap(
+        context: Activity,
+        googleOauthClientId: String,
+    ) {
         viewModelScope
             .launch {
                 reportState(HeadlessMethodResponseState.Loading)
@@ -41,7 +43,7 @@ class OAuthScreenViewModel(
                             .start(
                                 OAuth.GoogleOneTap.StartParameters(
                                     context = context,
-                                    clientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                                    clientId = googleOauthClientId,
                                 ),
                             ),
                     ),
