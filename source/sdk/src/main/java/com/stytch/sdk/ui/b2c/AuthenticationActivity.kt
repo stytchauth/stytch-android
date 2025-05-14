@@ -38,7 +38,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                 return@onCreate
             }
         viewModel.enableBiometricRegistrationOnAuthentication(
-            uiConfig.productConfig.biometricsOptions.forceRegistrationOnLoginIfNoneFound &&
+            uiConfig.productConfig.biometricsOptions.showBiometricRegistrationOnLogin &&
                 StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations,
         )
         // log render_login_screen
