@@ -63,10 +63,14 @@ private fun BiometricRegistrationScreenComposable(
             textAlign = TextAlign.Start,
         )
         BodyText(text = stringResource(R.string.stytch_b2c_use_biometrics_to_log_into_your_account))
-        StytchButton(enabled = true, onClick = { registerBiometrics(context) }, text =
-            stringResource(
-                R.string.stytch_b2c_enroll_in_biometrics)
+        StytchButton(
+            enabled = true,
+            onClick = { registerBiometrics(context) },
+            text = stringResource(R.string.stytch_b2c_enroll_in_biometrics),
         )
-        StytchTextButton(text = stringResource(R.string.stytch_b2c_skip_for_now), onClick = skipRegistration)
+        StytchTextButton(
+            text = stringResource(R.string.stytch_b2c_skip_for_now),
+            onClick = skipRegistration,
+        )
     }
 }

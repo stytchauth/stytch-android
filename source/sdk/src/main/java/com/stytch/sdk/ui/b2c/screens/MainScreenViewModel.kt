@@ -71,9 +71,9 @@ internal class MainScreenViewModel(
             products.any {
                 listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
             }
-        val hasBiometrics = products.contains(StytchProduct.BIOMETRICS)
-        val enrolledInBiometrics = StytchClient.biometrics.isRegistrationAvailable(context)
-        val hasDivider = (hasButtons || (hasBiometrics && enrolledInBiometrics)) && hasInput
+        val hasBiometrics =
+            products.contains(StytchProduct.BIOMETRICS) && StytchClient.biometrics.isRegistrationAvailable(context)
+        val hasDivider = (hasButtons || hasBiometrics) && hasInput
         return mutableListOf<ProductComponent>()
             .apply {
                 products.forEachIndexed { index, product ->
@@ -89,7 +89,7 @@ internal class MainScreenViewModel(
                     ) {
                         add(ProductComponent.INPUTS)
                     }
-                    if (product == StytchProduct.BIOMETRICS && enrolledInBiometrics) {
+                    if (product == StytchProduct.BIOMETRICS && hasBiometrics) {
                         add(ProductComponent.BIOMETRICS)
                     }
                 }
@@ -157,8 +157,8 @@ internal class MainScreenViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
-                signupRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
+                loginRedirectUrl = "${stytchClient.configurationManager.publicToken}://oauth",
+                signupRedirectUrl = "${stytchClient.configurationManager.publicToken}://oauth",
             )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)
