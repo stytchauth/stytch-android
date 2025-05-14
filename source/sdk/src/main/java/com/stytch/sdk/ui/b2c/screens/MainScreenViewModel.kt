@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2c.screens
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 
 internal enum class ProductComponent {
     BUTTONS,
+    BIOMETRICS,
     INPUTS,
     DIVIDER,
 }
@@ -60,13 +62,18 @@ internal class MainScreenViewModel(
     private val _eventFlow = MutableSharedFlow<EventState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun getProductComponents(products: List<StytchProduct>): List<ProductComponent> {
+    fun getProductComponents(
+        products: List<StytchProduct>,
+        context: FragmentActivity,
+    ): List<ProductComponent> {
         val hasButtons = products.contains(StytchProduct.OAUTH)
         val hasInput =
             products.any {
                 listOf(StytchProduct.OTP, StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS).contains(it)
             }
-        val hasDivider = hasButtons && hasInput
+        val hasBiometrics =
+            products.contains(StytchProduct.BIOMETRICS) && StytchClient.biometrics.isRegistrationAvailable(context)
+        val hasDivider = (hasButtons || hasBiometrics) && hasInput
         return mutableListOf<ProductComponent>()
             .apply {
                 products.forEachIndexed { index, product ->
@@ -81,6 +88,9 @@ internal class MainScreenViewModel(
                         product == StytchProduct.OTP
                     ) {
                         add(ProductComponent.INPUTS)
+                    }
+                    if (product == StytchProduct.BIOMETRICS && hasBiometrics) {
+                        add(ProductComponent.BIOMETRICS)
                     }
                 }
             }.toSet()
@@ -147,8 +157,8 @@ internal class MainScreenViewModel(
             OAuth.ThirdParty.StartParameters(
                 context = context,
                 oAuthRequestIdentifier = STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID,
-                loginRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
-                signupRedirectUrl = "${StytchClient.configurationManager.publicToken}://oauth",
+                loginRedirectUrl = "${stytchClient.configurationManager.publicToken}://oauth",
+                signupRedirectUrl = "${stytchClient.configurationManager.publicToken}://oauth",
             )
         when (provider) {
             OAuthProvider.AMAZON -> stytchClient.oauth.amazon.start(parameters)

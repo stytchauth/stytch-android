@@ -35,5 +35,6 @@ public data class StytchProductConfig
         val sessionOptions: SessionOptions = SessionOptions(),
         val passwordOptions: PasswordOptions = PasswordOptions(),
         val googleOauthOptions: GoogleOAuthOptions = GoogleOAuthOptions(),
+        val biometricsOptions: BiometricsOptions = BiometricsOptions(),
         val locale: Locale = Locale.EN,
     ) : Parcelable

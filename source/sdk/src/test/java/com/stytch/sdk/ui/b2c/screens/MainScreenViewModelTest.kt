@@ -55,6 +55,10 @@ internal class MainScreenViewModelTest {
                     mockk(relaxed = true) {
                         every { logEvent(any(), any()) } just runs
                     }
+                every { configurationManager } returns
+                    mockk(relaxed = true) {
+                        every { publicToken } returns ""
+                    }
             }
         viewModel = spyk(MainScreenViewModel(savedStateHandle, mockStytchClient))
     }
@@ -525,31 +529,31 @@ internal class MainScreenViewModelTest {
     fun `getProductComponents returns the expected order`() {
         var given = listOf(StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
         var expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.OTP, StytchProduct.OAUTH)
         expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.PASSWORDS, StytchProduct.OAUTH)
         expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.PASSWORDS, StytchProduct.EMAIL_MAGIC_LINKS, StytchProduct.OAUTH)
         expected = listOf(ProductComponent.INPUTS, ProductComponent.DIVIDER, ProductComponent.BUTTONS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.OAUTH, StytchProduct.EMAIL_MAGIC_LINKS)
         expected = listOf(ProductComponent.BUTTONS, ProductComponent.DIVIDER, ProductComponent.INPUTS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.OAUTH)
         expected = listOf(ProductComponent.BUTTONS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
 
         given = listOf(StytchProduct.EMAIL_MAGIC_LINKS)
         expected = listOf(ProductComponent.INPUTS)
-        assert(viewModel.getProductComponents(given) == expected)
+        assert(viewModel.getProductComponents(given, mockk()) == expected)
     }
 
     @Test

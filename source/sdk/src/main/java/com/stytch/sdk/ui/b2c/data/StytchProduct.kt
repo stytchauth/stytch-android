@@ -24,4 +24,9 @@ public enum class StytchProduct {
      * An enum value representing the Passwords Product
      */
     PASSWORDS,
+
+    /**
+     * An enum value representing the Biometrics Product
+     */
+    BIOMETRICS,
 }

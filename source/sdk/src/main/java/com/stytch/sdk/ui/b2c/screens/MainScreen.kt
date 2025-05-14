@@ -5,6 +5,8 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
@@ -16,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +28,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.stytch.sdk.R
+import com.stytch.sdk.consumer.StytchClient
+import com.stytch.sdk.consumer.biometrics.Biometrics
 import com.stytch.sdk.ui.b2c.AuthenticationActivity
 import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
@@ -48,6 +54,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -57,7 +64,10 @@ internal object MainScreen : AndroidScreen(), Parcelable {
         val navigator = LocalNavigator.currentOrThrow
         val productConfig = LocalStytchProductConfig.current
         val context = LocalActivity.current as AuthenticationActivity
-        val viewModel = viewModel<MainScreenViewModel>(factory = MainScreenViewModel.factory(context.savedStateHandle))
+        val viewModel =
+            viewModel<MainScreenViewModel>(
+                factory = MainScreenViewModel.factory(context.savedStateHandle),
+            )
         val uiState = viewModel.uiState.collectAsState()
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collectLatest {
@@ -78,7 +88,7 @@ internal object MainScreen : AndroidScreen(), Parcelable {
             sendSmsOtp = { viewModel.sendSmsOTP(it, productConfig.locale) },
             sendWhatsAppOTP = { viewModel.sendWhatsAppOTP(it, productConfig.locale) },
             exitWithoutAuthenticating = context::exitWithoutAuthenticating,
-            productComponents = viewModel.getProductComponents(productConfig.products),
+            productComponents = viewModel.getProductComponents(productConfig.products, context),
             tabTypes = viewModel.getTabTitleOrdering(productConfig.products, productConfig.otpOptions.methods),
         )
     }
@@ -113,6 +123,18 @@ private fun MainScreenComposable(
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
     val semanticsOAuthButton = stringResource(id = R.string.semantics_oauth_button)
+    val context = LocalActivity.current as FragmentActivity
+    val scope = rememberCoroutineScope()
+
+    fun loginWithBiometrics() {
+        scope.launch {
+            StytchClient.biometrics.authenticate(
+                Biometrics.AuthenticateParameters(
+                    context = context,
+                ),
+            )
+        }
+    }
 
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
@@ -137,6 +159,14 @@ private fun MainScreenComposable(
                         )
                     }
                 }
+                ProductComponent.BIOMETRICS -> {
+                    SocialLoginButton(
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        onClick = ::loginWithBiometrics,
+                        imageVector = Icons.Default.Fingerprint,
+                        text = stringResource(R.string.stytch_b2c_continue_with_biometrics),
+                    )
+                }
                 ProductComponent.DIVIDER -> {
                     DividerWithText(
                         modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
@@ -149,7 +179,10 @@ private fun MainScreenComposable(
                         TabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color(theme.backgroundColor),
-                            modifier = Modifier.padding(bottom = 12.dp).semantics { contentDescription = semanticTabs },
+                            modifier =
+                                Modifier
+                                    .padding(bottom = 12.dp)
+                                    .semantics { contentDescription = semanticTabs },
                             indicator = { tabPositions ->
                                 SecondaryIndicator(
                                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
