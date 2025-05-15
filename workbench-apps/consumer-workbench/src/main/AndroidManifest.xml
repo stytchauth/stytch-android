@@ -27,8 +27,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="app"
-                    android:host="consumerworkbench"
-                    android:pathPrefix="/" />
+                    android:host="consumerworkbench" />
             </intent-filter>
         </activity>
     </application>

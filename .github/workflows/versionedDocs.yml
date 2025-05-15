@@ -26,9 +26,6 @@ jobs:
         distribution: zulu
         java-version: 17
     - name: Generate docs
-      env:
-        GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-        PASSKEYS_DOMAIN: 'abc123'
       working-directory: main
       run: ./gradlew dokkaHtmlMultiModule
 
