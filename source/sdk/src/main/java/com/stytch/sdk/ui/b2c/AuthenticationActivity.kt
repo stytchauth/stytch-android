@@ -38,7 +38,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                 return@onCreate
             }
         viewModel.enableBiometricRegistrationOnAuthentication(
-            uiConfig.productConfig.biometricsOptions.forceRegistrationOnLoginIfNoneFound &&
+            uiConfig.productConfig.biometricsOptions.showBiometricRegistrationOnLogin &&
                 StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations,
         )
         // log render_login_screen
@@ -47,14 +47,14 @@ internal class AuthenticationActivity : FragmentActivity() {
                 eventName = "render_login_screen",
                 details = mapOf("options" to uiConfig.productConfig),
             )
-            StytchClient.user.onChange {
-                if (it is StytchObjectInfo.Available) {
-                    returnAuthenticationResult(StytchResult.Success(it.value))
-                }
-            }
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                StytchClient.user.onChange.collect {
+                    if (it is StytchObjectInfo.Available) {
+                        returnAuthenticationResult(StytchResult.Success(it.value))
+                    }
+                }
                 viewModel
                     .eventFlow
                     .collect {

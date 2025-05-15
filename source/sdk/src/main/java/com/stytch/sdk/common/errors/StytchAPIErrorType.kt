@@ -137,6 +137,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CONNECTED_APP_CONSENT_REVOKED(
         type = "connected_app_consent_revoked",
     ),
+    CONNECTED_APP_NOT_ALLOWED_FOR_ORG(
+        type = "connected_app_not_allowed_for_org",
+    ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
@@ -286,6 +289,18 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     ENTERPRISE_ENDPOINT(
         type = "enterprise_endpoint",
+    ),
+    EVENT_LOG_STREAMING_BAD_DATADOG_CONFIG(
+        type = "event_log_streaming_bad_datadog_config",
+    ),
+    EVENT_LOG_STREAMING_BAD_GRAFANA_LOKI_CONFIG(
+        type = "event_log_streaming_bad_grafana_loki_config",
+    ),
+    EVENT_LOG_STREAMING_NOT_FOUND(
+        type = "event_log_streaming_not_found",
+    ),
+    EVENT_LOG_STREAMING_TOO_MANY_DESTINATIONS(
+        type = "event_log_streaming_too_many_destinations",
     ),
     EXPIRED_OAUTH_RESPONSE(
         type = "expired_oauth_response",
