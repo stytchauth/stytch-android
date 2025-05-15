@@ -43,7 +43,7 @@ internal fun EmailAndPasswordEntry(
                     .padding(bottom = 24.dp),
             emailState = emailState,
             onEmailAddressChanged = onEmailAddressChanged,
-            label = stringResource(id = R.string.stytch_email_label),
+            label = stringResource(id = R.string.stytch_label_email),
             keyboardActions =
                 KeyboardActions(onDone = {
                     onEmailAddressDone?.invoke()
@@ -53,13 +53,13 @@ internal fun EmailAndPasswordEntry(
         PasswordInput(
             passwordState = passwordState,
             onPasswordChanged = onPasswordChanged,
-            label = stringResource(id = R.string.stytch_password_label),
+            label = stringResource(id = R.string.stytch_label_password),
             keyboardActions = KeyboardActions(onDone = { onSubmit() }),
         )
         StytchButton(
             onClick = onSubmit,
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.stytch_continue_button_text),
+            text = stringResource(id = R.string.stytch_button_continue),
             enabled = isSubmittable,
         )
     }

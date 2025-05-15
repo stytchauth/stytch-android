@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.FormFieldStatus
@@ -54,7 +53,7 @@ private fun SSODiscoveryFallbackScreenComposable(
             modifier = Modifier.fillMaxWidth(),
             value = slug,
             onValueChange = setSlug,
-            label = stringResource(R.string.stytch_b2b_enter_org_slug),
+            label = stringResource(R.string.stytch_b2b_sso_discovery_fallback_slug_placeholder),
         )
         state.error?.let {
             FormFieldStatus(isError = true, text = stringResource(it))
@@ -62,12 +61,12 @@ private fun SSODiscoveryFallbackScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = slug.isNotBlank(),
-            text = stringResource(R.string.stytch_continue_button_text),
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(SSODiscoveryFallbackScreenAction.Submit(activity, slug)) },
         )
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
-            text = stringResource(R.string.stytch_b2b_try_another_login_method),
+            text = stringResource(R.string.stytch_b2b_sso_discovery_fallback_reset),
             modifier =
                 Modifier.clickable {
                     dispatch(SSODiscoveryFallbackScreenAction.ResetEverything)

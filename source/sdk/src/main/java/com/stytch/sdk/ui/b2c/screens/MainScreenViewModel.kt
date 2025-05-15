@@ -282,7 +282,7 @@ internal class MainScreenViewModel(
                                     showLoadingDialog = false,
                                     genericErrorMessage =
                                         GenericErrorDetails(
-                                            errorMessageId = R.string.stytch_b2c_failed_to_get_user_type,
+                                            errorMessageId = R.string.stytch_b2c_error_failed_to_get_user_type,
                                         ),
                                 )
                             null

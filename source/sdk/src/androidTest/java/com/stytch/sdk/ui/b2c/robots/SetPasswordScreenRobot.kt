@@ -13,7 +13,7 @@ internal class SetPasswordScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, SetPasswordScreen("")) {
     private val pageTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_set_new_password))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_set_new_password_title))
     }
 
     private val emailAndPasswordEntry by lazy {

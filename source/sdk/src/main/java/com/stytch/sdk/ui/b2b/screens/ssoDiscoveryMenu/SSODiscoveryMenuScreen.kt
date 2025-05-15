@@ -49,7 +49,7 @@ private fun SSODiscoveryMenuScreenComposable(
                     Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                text = stringResource(R.string.stytch_b2b_continue_with_provider, provider.displayName),
+                text = stringResource(R.string.stytch_provider_continue_with, provider.displayName),
                 iconDrawable = provider.toPainterResource(),
                 iconDescription = provider.displayName,
                 onClick = { dispatch(SSODiscoveryMenuScreenAction.SSOStart(activity, provider.connectionId)) },

@@ -42,9 +42,9 @@ private fun PasswordForgotScreenComposable(
         }
         PageTitle(
             textAlign = TextAlign.Left,
-            text = stringResource(R.string.stytch_b2b_check_your_email_for_help_signing_in),
+            text = stringResource(R.string.stytch_b2b_password_forgot_title),
         )
-        BodyText(text = stringResource(R.string.stytch_b2b_we_ll_email_you_a_login_link))
+        BodyText(text = stringResource(R.string.stytch_b2b_password_forgot_body))
         EmailInput(
             modifier = Modifier.fillMaxWidth(),
             emailState = state.emailState,
@@ -58,7 +58,7 @@ private fun PasswordForgotScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = !state.emailState.shouldValidateEmail || state.emailState.validEmail == true,
-            text = stringResource(R.string.stytch_continue_button_text),
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(PasswordForgotAction.Submit) },
         )
     }

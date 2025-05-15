@@ -72,30 +72,30 @@ internal sealed class EmailConfirmationScreenRoute {
     data object EmailConfirmation : EmailConfirmationScreenRoute() {
         override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = R.string.stytch_b2b_check_your_email,
+                title = R.string.stytch_b2b_check_your_email_title,
                 emailAddress = emailAddress,
-                message = R.string.stych_b2b_an_email_was_sent_to,
-                bottomText = R.string.stych_b2b_didnt_get_it_try_again,
+                message = R.string.stytch_b2b_email_confirmation_body,
+                bottomText = R.string.stytch_b2b_email_confirmation_try_again,
             )
     }
 
     data object PasswordSetNewConfirmation : EmailConfirmationScreenRoute() {
         override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = R.string.stytch_b2b_check_your_email,
+                title = R.string.stytch_b2b_check_your_email_title,
                 emailAddress = emailAddress,
-                message = R.string.stych_b2b_a_login_link_was_sent_to,
-                bottomText = R.string.stych_b2b_didnt_get_it_resend,
+                message = R.string.stytch_b2b_email_sent_body,
+                bottomText = R.string.stytch_b2b_email_confirmation_resend,
             )
     }
 
     data object PasswordResetVerifyConfirmation : EmailConfirmationScreenRoute() {
         override fun toState(emailAddress: String) =
             EmailConfirmationScreenState.Ready(
-                title = R.string.stytch_b2b_please_verify,
+                title = R.string.stytch_b2b_email_verification_title,
                 emailAddress = emailAddress,
-                message = R.string.stych_b2b_a_login_link_was_sent_to,
-                bottomText = R.string.stych_b2b_didnt_get_it_resend,
+                message = R.string.stytch_b2b_email_sent_body,
+                bottomText = R.string.stytch_b2b_email_confirmation_resend,
             )
     }
 }

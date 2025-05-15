@@ -34,8 +34,8 @@ private fun SMSOTPEnrollmentScreenComposable(
         BackButton(onClick = {
             dispatch(SMSOTPEnrollmentAction.GoToMFAEnrollment)
         })
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_mfa_title))
-        BodyText(text = stringResource(R.string.stytch_b2b_mfa_description))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_mfa_sms_enrollment_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_mfa_sms_enrollment_body))
         PhoneEntry(
             countryCode = state.countryCode,
             onCountryCodeChanged = { dispatch(SMSOTPEnrollmentAction.UpdateMemberCountryCode(it)) },

@@ -78,7 +78,7 @@ internal class EMLConfirmationScreenViewModelTest {
             viewModel.sendResetPasswordEmail(null, mockk(), Locale.EN, this)
             assert(
                 viewModel.uiState.value.genericErrorMessage
-                    ?.errorMessageId == R.string.stytch_b2c_password_reset_unknown_email_address,
+                    ?.errorMessageId == R.string.stytch_b2c_error_unknown_email_address,
             )
         }
 

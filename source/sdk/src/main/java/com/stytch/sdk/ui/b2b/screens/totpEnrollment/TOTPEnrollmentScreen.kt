@@ -81,8 +81,8 @@ private fun TOTPEnrollmentScreenComposable(
         BackButton(onClick = {
             dispatch(TOTPEnrollmentScreenAction.GoToMFAEnrollment)
         })
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_totp_enrollment_title))
-        BodyText(text = stringResource(R.string.stytch_b2b_totp_enrollment_description))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_mfa_totp_enrollment_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_mfa_totp_enrollment_body))
         Box(
             modifier =
                 Modifier
@@ -129,7 +129,7 @@ private fun TOTPEnrollmentScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = didCopyCode,
-            text = stringResource(R.string.stytch_continue_button_text),
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(TOTPEnrollmentScreenAction.GoToCodeEntry) },
         )
     }

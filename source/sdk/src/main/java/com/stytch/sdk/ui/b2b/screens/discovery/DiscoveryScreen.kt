@@ -204,7 +204,7 @@ private fun DiscoveryScreenComposable(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 StytchButton(
-                    text = stringResource(R.string.stytch_b2b_create_an_organization),
+                    text = stringResource(R.string.stytch_b2b_button_create_an_organization),
                     enabled = true,
                     onClick = handleCreateOrganization,
                 )
@@ -215,7 +215,7 @@ private fun DiscoveryScreenComposable(
 
 @Composable
 private fun LoggingInView(color: Color) {
-    PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_logging_in))
+    PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_logging_in_title))
     CircularProgressIndicator(color = color)
 }
 
@@ -233,39 +233,39 @@ private fun NoOrganizationsDiscovered(
             textAlign = TextAlign.Left,
             text =
                 stringResource(
-                    R.string.stytch_b2b_create_an_organization_to_get_started,
+                    R.string.stytch_b2b_discovery_no_organizations_create_one_title,
                 ),
         )
         StytchButton(
             enabled = true,
-            text = stringResource(R.string.stytch_b2b_create_an_organization),
+            text = stringResource(R.string.stytch_b2b_button_create_an_organization),
             onClick = onCreateOrganization,
         )
         Spacer(modifier = Modifier.height(16.dp))
         BodyText(
             text =
                 stringResource(
-                    R.string.stytch_b2b_no_orgs_discovered_no_create_description,
+                    R.string.stytch_b2b_discovery_no_organizations_create_one_body,
                     emailState.emailAddress,
                 ),
         )
         StytchButton(
             enabled = true,
             onClick = onGoBack,
-            text = stringResource(R.string.stytch_b2b_try_a_different_email_address),
+            text = stringResource(R.string.stytch_b2b_discovery_button_try_a_different_email_address),
         )
         return
     }
 
     PageTitle(
         textAlign = TextAlign.Left,
-        text = stringResource(R.string.stytch_b2b_no_orgs_discovered_title, emailState.emailAddress),
+        text = stringResource(R.string.stytch_b2b_discovery_no_organizations_title, emailState.emailAddress),
     )
-    BodyText(text = stringResource(R.string.stytch_b2b_no_orgs_discovered_description))
+    BodyText(text = stringResource(R.string.stytch_b2b_discovery_no_organizations_body))
     StytchButton(
         enabled = true,
         onClick = onGoBack,
-        text = stringResource(R.string.stytch_b2b_try_a_different_email_address),
+        text = stringResource(R.string.stytch_b2b_discovery_button_try_a_different_email_address),
     )
 }
 
@@ -298,8 +298,7 @@ private fun Logo(
                     .border(
                         BorderStroke(Dp.Hairline, Color(theme.inputBorderColor)),
                         RoundedCornerShape(theme.buttonBorderRadius),
-                    )
-                    .background(Color(theme.backgroundColor)),
+                    ).background(Color(theme.backgroundColor)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -319,9 +318,9 @@ private fun ArrowText(type: String) {
     val typography = LocalStytchTypography.current
     val text =
         if (jitEligible.contains(type) || type == "pending_member") {
-            stringResource(R.string.stytch_b2b_join)
+            stringResource(R.string.stytch_b2b_discovery_organization_arrow_join)
         } else if (type == "invited_member") {
-            stringResource(R.string.stytch_b2b_accept_invite)
+            stringResource(R.string.stytch_b2b_discovery_organization_arrow_invite)
         } else {
             ""
         }

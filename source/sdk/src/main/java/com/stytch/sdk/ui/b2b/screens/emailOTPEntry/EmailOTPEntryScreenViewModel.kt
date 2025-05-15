@@ -74,7 +74,7 @@ internal class EmailOTPEntryScreenViewModel(
     private fun handleFailure() {
         _emailOtpEntryState.value =
             _emailOtpEntryState.value.copy(
-                errorMessage = R.string.stytch_b2b_invalid_passcode,
+                errorMessage = R.string.stytch_b2b_error_invalid_passcode,
             )
     }
 

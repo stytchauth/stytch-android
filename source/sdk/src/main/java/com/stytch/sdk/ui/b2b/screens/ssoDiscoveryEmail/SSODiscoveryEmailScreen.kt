@@ -13,7 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.EmailInput
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -61,7 +60,7 @@ private fun SSODiscoveryEmailScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = state.validEmail == true,
-            text = stringResource(R.string.stytch_continue_button_text),
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(SSODiscoveryEmailScreenAction.UseSSODiscoveryConnections) },
         )
     }

@@ -19,22 +19,22 @@ internal class EMLConfirmationScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, EMLConfirmationScreen(emlDetails, isReturningUser)) {
     private val pageTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_check_your_email), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_email_confirmation_title), substring = true)
     }
 
     private val loginLinkText by lazy {
         composeTestRule.onNodeWithText(
-            getString(R.string.stytch_b2c_login_link_sent_to_create_password, "robot@stytch.com"),
+            getString(R.string.stytch_b2c_email_create_password_body, "robot@stytch.com"),
             substring = true,
         )
     }
 
     private val resendLinkText by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_didnt_get_it_resend_link), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_button_resend_link), substring = true)
     }
 
     private val passwordButton by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_create_password_instead), substring = true)
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_button_create_password), substring = true)
     }
 
     fun pageTitleExists() = pageTitle.assertExists()

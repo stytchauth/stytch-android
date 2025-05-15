@@ -265,7 +265,7 @@ internal fun StytchB2BAuthenticationApp(
                     Image(
                         modifier = Modifier.height(19.dp),
                         painter = painterResource(id = R.drawable.powered_by_stytch),
-                        contentDescription = stringResource(id = R.string.stytch_powered_by_stytch),
+                        contentDescription = stringResource(id = R.string.stytch_watermark_text),
                     )
                 }
             }

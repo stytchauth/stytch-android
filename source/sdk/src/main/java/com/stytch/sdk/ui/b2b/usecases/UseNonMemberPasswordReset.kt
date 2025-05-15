@@ -29,7 +29,7 @@ internal class UseNonMemberPasswordReset(
         if (!organization.emailEligibleForJITProvisioning(state.value.emailState.emailAddress)) {
             return dispatch(
                 SetGenericError(
-                    errorMessageId = R.string.stytch_b2b_jit_ineligible,
+                    errorMessageId = R.string.stytch_b2b_error_jit_ineligible,
                     arguments = listOf(state.value.emailState.emailAddress, organization.organizationName),
                 ),
             )
@@ -50,7 +50,7 @@ internal class UseNonMemberPasswordReset(
             }.onSuccess {
                 dispatch(SetNextRoute(Routes.PasswordResetVerifyConfirmation))
             }.onFailure {
-                dispatch(SetGenericError(errorMessageId = R.string.stytch_b2b_unable_to_verify_email))
+                dispatch(SetGenericError(errorMessageId = R.string.stytch_b2b_error_unable_to_verify_email))
             }
         }
     }

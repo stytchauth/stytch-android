@@ -34,7 +34,7 @@ private fun SMSOTPEntryScreenComposable(
         )
     val isEnrolling = state.mfaSMSState?.isEnrolling ?: false
     ResendableOTP(
-        title = stringResource(R.string.stytch_b2b_enter_passcode),
+        title = stringResource(R.string.stytch_b2b_mfa_sms_enrollment_entry_title),
         recipient = recipientFormatted,
         isEnrolling = isEnrolling,
         onBack = { dispatch(SMSOTPEntryAction.GoToSMSEnrollment) },

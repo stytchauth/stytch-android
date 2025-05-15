@@ -305,7 +305,7 @@ internal class MainScreenViewModelTest {
             viewModel.onEmailAddressSubmit(StytchProductConfig(products = listOf(StytchProduct.PASSWORDS)), this)
             assert(
                 viewModel.uiState.value.genericErrorMessage
-                    ?.errorMessageId == R.string.stytch_b2c_failed_to_get_user_type,
+                    ?.errorMessageId == R.string.stytch_b2c_error_failed_to_get_user_type,
             )
         }
 

@@ -20,7 +20,6 @@ import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.utils.getStyledText
-import org.bouncycastle.crypto.params.Blake3Parameters.context
 
 @Composable
 internal fun PasswordAuthenticateScreen(viewModel: PasswordAuthenticateScreenViewModel) {
@@ -45,7 +44,7 @@ private fun PasswordAuthenticateScreenComposable(
         BackButton {
             dispatch(PasswordAuthenticateAction.ResetEverything)
         }
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_log_in_with_email_and_password))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_password_login_title))
         EmailAndPasswordEntry(
             emailState = state.emailState,
             onEmailAddressChanged = { dispatch(PasswordAuthenticateAction.UpdateMemberEmailAddress(it)) },
@@ -56,7 +55,7 @@ private fun PasswordAuthenticateScreenComposable(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Body2Text(
-            text = context.getStyledText(R.string.stytch_b2b_having_trouble),
+            text = context.getStyledText(R.string.stytch_b2b_trouble_signing_in),
             color = Color(theme.secondaryTextColor),
             modifier =
                 Modifier.clickable {

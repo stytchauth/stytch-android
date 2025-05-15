@@ -28,7 +28,7 @@ internal fun ErrorScreen(viewModel: ErrorScreenViewModel) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val b2bError = state.value.b2BErrorType ?: return
     val orgName =
-        state.value.activeOrganization?.organizationName ?: stringResource(R.string.stytch_b2b_the_organization)
+        state.value.activeOrganization?.organizationName ?: stringResource(R.string.stytch_b2b_organization_default)
     ErrorScreenComposable(b2bError = b2bError, orgName = orgName, dispatch = viewModel::dispatch)
 }
 
@@ -52,10 +52,10 @@ internal fun ErrorScreenComposable(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            PageTitle(text = stringResource(R.string.stytch_b2b_looks_like_there_was_an_error))
+            PageTitle(text = stringResource(R.string.stytch_b2b_error_title))
             Image(
                 painter = painterResource(id = R.drawable.big_error_circle),
-                contentDescription = stringResource(R.string.stytch_b2b_error),
+                contentDescription = stringResource(R.string.stytch_semantics_error),
             )
             Spacer(modifier = Modifier.height(32.dp))
             BodyText(text = stringResource(b2bError.id, orgName), textAlign = TextAlign.Center)

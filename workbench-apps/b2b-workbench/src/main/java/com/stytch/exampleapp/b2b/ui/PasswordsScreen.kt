@@ -49,7 +49,7 @@ fun PasswordsScreen(viewModel: PasswordsViewModel) {
                 value = viewModel.emailState,
                 singleLine = true,
                 label = {
-                    Text(text = stringResource(id = R.string.stytch_email_label))
+                    Text(text = stringResource(id = R.string.stytch_label_email))
                 },
                 onValueChange = {
                     viewModel.emailState = it
