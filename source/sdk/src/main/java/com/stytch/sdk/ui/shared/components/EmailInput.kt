@@ -30,7 +30,7 @@ internal fun EmailInput(
             modifier = modifier.semantics { contentDescription = semanticsInput },
             value = emailAddress,
             onValueChange = onEmailAddressChanged,
-            placeholder = stringResource(id = R.string.stytch_email_address_placeholder),
+            placeholder = stringResource(id = R.string.stytch_placeholder_email_address),
             isError = isError,
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -45,7 +45,7 @@ internal fun EmailInput(
             FormFieldStatus(
                 modifier = Modifier.semantics { contentDescription = semanticsError },
                 text =
-                    emailState.errorMessage ?: stringResource(id = R.string.stytch_invalid_email_default_error_message),
+                    emailState.errorMessage ?: stringResource(id = R.string.stytch_error_invalid_email_address),
                 isError = true,
             )
         }

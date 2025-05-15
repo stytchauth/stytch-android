@@ -36,7 +36,7 @@ fun PasswordsScreen(navController: NavController) {
             isError = viewModel.showEmailError,
             singleLine = true,
             label = {
-                Text(text = stringResource(id = R.string.stytch_email_label))
+                Text(text = stringResource(id = R.string.stytch_label_email))
             },
             onValueChange = {
                 viewModel.emailTextState = it
@@ -55,7 +55,7 @@ fun PasswordsScreen(navController: NavController) {
             value = viewModel.passwordTextState,
             singleLine = true,
             label = {
-                Text(text = stringResource(id = R.string.stytch_password_label))
+                Text(text = stringResource(id = R.string.stytch_label_password))
             },
             onValueChange = {
                 viewModel.passwordTextState = it

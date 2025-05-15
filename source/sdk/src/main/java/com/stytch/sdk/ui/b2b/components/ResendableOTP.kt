@@ -67,10 +67,10 @@ internal fun ResendableOTP(
             BackButton { onBack?.invoke() }
         }
         PageTitle(textAlign = TextAlign.Left, text = title)
-        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_to, recipient))
+        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_confirmation, recipient))
         OTPEntry(errorMessage = errorMessage, onCodeComplete = onSubmit)
         Text(
-            text = stringResource(id = R.string.stytch_code_expires_in, expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_code_expiration_count_down, expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -83,10 +83,10 @@ internal fun ResendableOTP(
         StytchAlertDialog(
             onDismissRequest = { showResendDialog = false },
             title = stringResource(id = R.string.stytch_resend_code_title),
-            body = context.getStyledText(R.string.stytch_new_code_will_be_sent_to, recipient),
-            cancelText = stringResource(id = R.string.stytch_cancel),
+            body = context.getStyledText(R.string.stytch_passcode_resend_text, recipient),
+            cancelText = stringResource(id = R.string.stytch_button_cancel),
             onCancelClick = { showResendDialog = false },
-            acceptText = stringResource(id = R.string.stytch_send_code),
+            acceptText = stringResource(id = R.string.stytch_button_send_code),
             onAcceptClick = {
                 onResend()
                 countdownSeconds = otpExpirationMinutes * 60L

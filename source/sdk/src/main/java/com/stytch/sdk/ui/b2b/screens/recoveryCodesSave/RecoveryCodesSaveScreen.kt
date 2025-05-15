@@ -68,13 +68,8 @@ private fun RecoveryCodesSaveScreenComposable(
     val context = LocalContext.current
     var didSaveCodesSomehow by remember { mutableStateOf(false) }
     Column {
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_save_your_backup_codes))
-        BodyText(
-            text =
-                stringResource(
-                    R.string.stytch_b2b_this_is_the_only_time_you_will_be_able_to_access_and_save_your_backup_codes,
-                ),
-        )
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_recovery_codes_save_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_recovery_codes_save_body))
         Box(
             modifier =
                 Modifier
@@ -121,18 +116,21 @@ private fun RecoveryCodesSaveScreenComposable(
         ) {
             StytchTextButton(
                 modifier = Modifier.weight(1f),
-                text = stringResource(R.string.stytch_b2b_download_codes),
+                text = stringResource(R.string.stytch_b2b_button_download_codes),
             ) {
                 context.startActivity(shareIntent)
                 didSaveCodesSomehow = true
             }
-            StytchTextButton(modifier = Modifier.weight(1f), text = stringResource(R.string.stytch_b2b_copy_all)) {
+            StytchTextButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.stytch_b2b_button_copy_all),
+            ) {
                 clipboardManager.setText(AnnotatedString(allCodesJoined))
                 didSaveCodesSomehow = true
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        StytchButton(text = stringResource(R.string.stytch_b2b_done), enabled = didSaveCodesSomehow, onClick = {
+        StytchButton(text = stringResource(R.string.stytch_b2b_button_done), enabled = didSaveCodesSomehow, onClick = {
             dispatch(RecoveryCodesSaveAction.AcknowledgeSave)
         })
     }

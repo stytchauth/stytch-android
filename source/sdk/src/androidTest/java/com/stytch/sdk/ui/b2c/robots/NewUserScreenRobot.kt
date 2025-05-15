@@ -13,19 +13,19 @@ internal class NewUserScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, NewUserScreen) {
     private val emlOrOtpTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_choose_how))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_new_user_choose_title))
     }
 
     private val passwordTitle by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_create_account))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_create_account_title))
     }
 
     private val stytchButtonEML by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_email_me_a_login_link))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_button_login_link))
     }
 
     private val stytchButtonOTP by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_email_me_a_login_code))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_button_login_code))
     }
 
     private val emailAndPasswordEntry by lazy {

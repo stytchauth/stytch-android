@@ -12,7 +12,7 @@ internal fun SuccessScreen() {
     Column {
         Image(
             painter = painterResource(id = R.drawable.success),
-            contentDescription = stringResource(R.string.stytch_b2b_success),
+            contentDescription = stringResource(R.string.stytch_semantics_success),
         )
     }
 }

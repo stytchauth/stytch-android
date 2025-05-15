@@ -73,7 +73,7 @@ private fun SetPasswordScreenComposable(
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.stytch_b2c_set_new_password),
+            text = stringResource(id = R.string.stytch_b2c_set_new_password_title),
             textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(

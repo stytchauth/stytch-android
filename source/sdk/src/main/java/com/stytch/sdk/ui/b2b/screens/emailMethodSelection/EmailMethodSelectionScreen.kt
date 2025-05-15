@@ -28,14 +28,14 @@ private fun EmailMethodSelectionScreenComposable(dispatch: (AllowedAuthMethods) 
             textAlign = TextAlign.Left,
             text =
                 stringResource(
-                    R.string.stytch_b2b_select_how_you_d_like_to_continue,
+                    R.string.stytch_b2b_email_method_selection_title,
                 ),
         )
         Column {
             EMAIL_METHODS.forEach { method ->
                 when (method) {
-                    AllowedAuthMethods.EMAIL_OTP -> stringResource(R.string.stytch_b2b_email_me_a_log_in_code)
-                    AllowedAuthMethods.MAGIC_LINK -> stringResource(R.string.stytch_b2b_email_me_a_log_in_link)
+                    AllowedAuthMethods.EMAIL_OTP -> stringResource(R.string.stytch_b2b_email_method_selection_code)
+                    AllowedAuthMethods.MAGIC_LINK -> stringResource(R.string.stytch_b2b_email_method_selection_link)
                     else -> null
                 }?.let { title ->
                     MenuItemWithRightArrow(title = title, onClick = { dispatch(method) })

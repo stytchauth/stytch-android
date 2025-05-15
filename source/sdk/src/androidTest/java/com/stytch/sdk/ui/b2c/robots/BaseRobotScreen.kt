@@ -26,7 +26,7 @@ internal abstract class BaseRobotScreen(
     ) = composeTestRule.activity.getString(resourceId, *arguments)
 
     private val backButton by lazy {
-        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_back_button))
+        composeTestRule.onNodeWithContentDescription(getString(R.string.stytch_semantics_back_button))
     }
 
     private val loadingDialog by lazy {

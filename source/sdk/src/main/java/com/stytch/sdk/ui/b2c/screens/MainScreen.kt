@@ -113,7 +113,7 @@ private fun MainScreenComposable(
     val tabTitles =
         tabTypes.map {
             when (it) {
-                TabTypes.EMAIL -> stringResource(id = R.string.stytch_email_label)
+                TabTypes.EMAIL -> stringResource(id = R.string.stytch_label_email)
                 TabTypes.SMS -> stringResource(id = R.string.stytch_b2c_sms_tab_title)
                 TabTypes.WHATSAPP -> stringResource(id = R.string.stytch_b2c_whatsapp_tab_title)
             }
@@ -121,7 +121,7 @@ private fun MainScreenComposable(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val phoneState = uiState.phoneNumberState
     val emailState = uiState.emailState
-    val semanticsOAuthButton = stringResource(id = R.string.stytch_b2c_semantics_oauth_button)
+    val semanticsOAuthButton = stringResource(id = R.string.stytch_semantics_oauth_button)
     val context = LocalActivity.current as FragmentActivity
     val scope = rememberCoroutineScope()
 
@@ -138,7 +138,7 @@ private fun MainScreenComposable(
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         BackButton { exitWithoutAuthenticating() }
         if (!theme.hideHeaderText) {
-            PageTitle(text = stringResource(id = R.string.stytch_b2c_main_screen_header))
+            PageTitle(text = stringResource(id = R.string.stytch_b2c_main_screen_title))
         }
         productComponents.map {
             when (it) {
@@ -153,8 +153,16 @@ private fun MainScreenComposable(
                                     },
                             onClick = { onStartOAuthLogin(it, productConfig) },
                             iconDrawable = painterResource(id = it.iconDrawable),
-                            iconDescription = stringResource(id = it.iconText),
-                            text = stringResource(id = it.text),
+                            iconDescription =
+                                stringResource(
+                                    id = R.string.stytch_semantics_logo,
+                                    stringResource(it.providerName),
+                                ),
+                            text =
+                                stringResource(
+                                    id = R.string.stytch_provider_continue_with,
+                                    stringResource(it.providerName),
+                                ),
                         )
                     }
                 }
@@ -163,7 +171,11 @@ private fun MainScreenComposable(
                         modifier = Modifier.padding(bottom = 12.dp),
                         onClick = ::loginWithBiometrics,
                         imageVector = Icons.Default.Fingerprint,
-                        text = stringResource(R.string.stytch_b2c_continue_with_biometrics),
+                        text =
+                            stringResource(
+                                id = R.string.stytch_provider_continue_with,
+                                stringResource(R.string.stytch_provider_name_biometrics),
+                            ),
                     )
                 }
                 ProductComponent.DIVIDER -> {
@@ -174,7 +186,7 @@ private fun MainScreenComposable(
                 }
                 ProductComponent.INPUTS -> {
                     if (tabTitles.size > 1) {
-                        val semanticTabs = stringResource(id = R.string.stytch_b2c_semantics_tabs)
+                        val semanticTabs = stringResource(id = R.string.stytch_semantics_tabs)
                         TabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color(theme.backgroundColor),
@@ -208,7 +220,7 @@ private fun MainScreenComposable(
                         }
                     }
                     when (tabTitles[selectedTabIndex]) {
-                        stringResource(id = R.string.stytch_email_label) ->
+                        stringResource(id = R.string.stytch_label_email) ->
                             EmailEntry(
                                 emailState = emailState,
                                 onEmailAddressChanged = onEmailAddressChanged,

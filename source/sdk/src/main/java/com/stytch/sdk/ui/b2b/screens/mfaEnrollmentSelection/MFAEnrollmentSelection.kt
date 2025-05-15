@@ -35,17 +35,17 @@ private fun MFAEnrollmentSelectionScreenComposable(
             textAlign = TextAlign.Left,
             text =
                 stringResource(
-                    R.string.stytch_b2b_set_up_multi_factor_authentication,
+                    R.string.stytch_b2b_mfa_enrollment_title,
                 ),
         )
         BodyText(
-            text = stringResource(R.string.stytch_b2b_your_organization_requires_additional),
+            text = stringResource(R.string.stytch_b2b_mfa_enrollment_body),
         )
         Column {
             sortedOptions.forEach { mfaMethod ->
                 when (mfaMethod) {
-                    MfaMethod.TOTP -> stringResource(R.string.stytch_b2b_use_an_authenticator_app)
-                    MfaMethod.SMS -> stringResource(R.string.stytch_b2b_text_me_a_code)
+                    MfaMethod.TOTP -> stringResource(R.string.stytch_b2b_mfa_choose_totp)
+                    MfaMethod.SMS -> stringResource(R.string.stytch_b2b_mfa_choose_sms)
                     MfaMethod.NONE -> null
                 }?.let { title ->
                     MenuItemWithRightArrow(title = title, onClick = { dispatch(mfaMethod) })

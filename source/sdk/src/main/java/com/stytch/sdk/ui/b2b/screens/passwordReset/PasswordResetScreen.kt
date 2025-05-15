@@ -38,7 +38,7 @@ private fun PasswordResetScreenComposable(
         }
         PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_set_a_new_password))
         PasswordInput(
-            label = stringResource(R.string.stytch_password_label),
+            label = stringResource(R.string.stytch_label_password),
             passwordState = state.passwordState,
             onPasswordChanged = {
                 dispatch(PasswordResetAction.UpdateMemberPassword(it))
@@ -48,7 +48,7 @@ private fun PasswordResetScreenComposable(
         StytchButton(
             onClick = { dispatch(PasswordResetAction.Submit) },
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.stytch_continue_button_text),
+            text = stringResource(id = R.string.stytch_button_continue),
             enabled = state.passwordState.validPassword,
         )
     }

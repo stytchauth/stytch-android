@@ -62,7 +62,7 @@ internal fun PasswordStrengthIndicator(
                 if (score < 3) {
                     feedback.suggestions.joinToString()
                 } else {
-                    stringResource(id = R.string.stytch_good_password_message)
+                    stringResource(id = R.string.stytch_feedback_good_password_message)
                 },
             style =
                 type.caption.copy(

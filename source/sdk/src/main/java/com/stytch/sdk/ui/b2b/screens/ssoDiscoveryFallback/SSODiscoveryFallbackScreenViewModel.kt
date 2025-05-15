@@ -47,7 +47,8 @@ internal class SSODiscoveryFallbackScreenViewModel(
             ) {
                 is StytchResult.Success -> {
                     if (response.value.organization == null) {
-                        _uiState.value = _uiState.value.copy(error = R.string.stytch_b2b_sso_organization_not_found)
+                        _uiState.value =
+                            _uiState.value.copy(error = R.string.stytch_b2b_error_sso_organization_not_found)
                         return@launch
                     }
                     dispatch(SetAuthFlowType(AuthFlowType.ORGANIZATION))

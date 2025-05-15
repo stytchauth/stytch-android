@@ -25,17 +25,17 @@ internal class MainScreenRobot(
     baseAndroidComposeTest: BaseAndroidComposeTest,
 ) : BaseRobotScreen(baseAndroidComposeTest.composeTestRule, MainScreen) {
     private val header by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_main_screen_header))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_b2c_main_screen_title))
     }
 
     private val socialLoginButtons by lazy {
-        composeTestRule.onAllNodesWithContentDescription(getString(R.string.stytch_b2c_semantics_oauth_button))
+        composeTestRule.onAllNodesWithContentDescription(getString(R.string.stytch_semantics_oauth_button))
     }
 
     private val emailTab by lazy {
         composeTestRule.onNode(
-            hasText(getString(R.string.stytch_email_label)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
+            hasText(getString(R.string.stytch_label_email)).and(
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_semantics_tabs))),
             ),
         )
     }
@@ -43,7 +43,7 @@ internal class MainScreenRobot(
     private val textTab by lazy {
         composeTestRule.onNode(
             hasText(getString(R.string.stytch_b2c_sms_tab_title)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_semantics_tabs))),
             ),
         )
     }
@@ -51,7 +51,7 @@ internal class MainScreenRobot(
     private val whatsappTab by lazy {
         composeTestRule.onNode(
             hasText(getString(R.string.stytch_b2c_whatsapp_tab_title)).and(
-                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_b2c_semantics_tabs))),
+                hasAnyAncestor(hasContentDescription(getString(R.string.stytch_semantics_tabs))),
             ),
         )
     }
@@ -69,7 +69,7 @@ internal class MainScreenRobot(
     }
 
     private val continueButton by lazy {
-        composeTestRule.onNodeWithText(getString(R.string.stytch_continue_button_text))
+        composeTestRule.onNodeWithText(getString(R.string.stytch_button_continue))
     }
 
     private fun nodeExists(

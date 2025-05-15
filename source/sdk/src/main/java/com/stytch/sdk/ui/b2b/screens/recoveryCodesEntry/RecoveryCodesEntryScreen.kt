@@ -28,12 +28,12 @@ internal fun RecoveryCodesEntryScreen(viewModel: RecoveryCodesEntryScreenViewMod
 private fun RecoveryCodesEntryScreenComposable(dispatch: (RecoveryCodesEntryAction) -> Unit) {
     var recoveryCode by remember { mutableStateOf("") }
     Column {
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_enter_backup_code))
-        BodyText(text = stringResource(R.string.stytch_b2b_enter_one_of_the_backup_codes))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_recovery_code_entry_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_recovery_code_entry_body))
         StytchInput(modifier = Modifier.fillMaxWidth(), value = recoveryCode, onValueChange = { recoveryCode = it })
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
-            text = stringResource(R.string.stytch_b2b_done),
+            text = stringResource(R.string.stytch_b2b_button_done),
             enabled = recoveryCode.isNotEmpty(),
         ) { dispatch(RecoveryCodesEntryAction.Recover(recoveryCode)) }
     }

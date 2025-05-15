@@ -42,6 +42,7 @@ class UiWorkbenchActivity : ComponentActivity() {
                                 StytchProduct.EMAIL_MAGIC_LINKS,
                                 StytchProduct.OTP,
                                 StytchProduct.PASSWORDS,
+                                StytchProduct.BIOMETRICS,
                             ),
                         emailMagicLinksOptions = EmailMagicLinksOptions(),
                         passwordOptions = PasswordOptions(),

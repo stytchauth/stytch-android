@@ -66,7 +66,7 @@ class MainActivity : FragmentActivity() {
                             StytchProductConfig(
                                 products = listOf(StytchProduct.BIOMETRICS, StytchProduct.OTP),
                                 otpOptions = OTPOptions(methods = listOf(OTPMethods.SMS)),
-                                biometricsOptions = BiometricsOptions(forceRegistrationOnLoginIfNoneFound = true),
+                                biometricsOptions = BiometricsOptions(showBiometricRegistrationOnLogin = true),
                             ),
                         )
                         onAuthenticated {

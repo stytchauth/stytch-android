@@ -133,7 +133,7 @@ internal fun PhoneEntry(
                 },
                 visualTransformation = PhoneNumberVisualTransformation(region),
                 isError = isError,
-                placeholder = stringResource(id = R.string.stytch_default_formatted_phone_number_placeholder),
+                placeholder = stringResource(id = R.string.stytch_placeholder_phone_number),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Phone,
@@ -150,7 +150,7 @@ internal fun PhoneEntry(
         StytchButton(
             onClick = onPhoneNumberSubmit,
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.stytch_continue_button_text),
+            text = stringResource(id = R.string.stytch_button_continue),
             enabled = phoneNumber.length >= maxPhoneLengthForRegion,
         )
     }

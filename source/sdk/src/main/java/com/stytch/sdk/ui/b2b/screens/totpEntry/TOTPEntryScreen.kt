@@ -57,10 +57,10 @@ private fun TOTPEntryScreenComposable(
         if (state.isEnrolling) {
             BackButton { dispatch(TOTPEntryScreenAction.GoToTOTPEnrollment) }
         }
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_enter_verification_code))
-        BodyText(text = stringResource(R.string.stytch_b2b_totp_entry_description))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_code_verification_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_totp_entry_body))
         OTPEntry(
-            errorMessage = if (state.isInvalid) stringResource(R.string.stytch_b2b_invalid_totp) else null,
+            errorMessage = if (state.isInvalid) stringResource(R.string.stytch_b2b_error_invalid_totp) else null,
             onCodeComplete = { dispatch(TOTPEntryScreenAction.ValidateCode(it)) },
         )
 
@@ -80,7 +80,7 @@ private fun TOTPEntryScreenComposable(
                 color = Color(theme.inputBorderColor),
             )
             StytchTextButton(
-                text = stringResource(R.string.stytch_b2b_text_me_a_code_instead),
+                text = stringResource(R.string.stytch_b2b_mfa_totp_enrollment_switch_to_sms),
                 onClick = { dispatch(TOTPEntryScreenAction.TextMeACode) },
             )
         }

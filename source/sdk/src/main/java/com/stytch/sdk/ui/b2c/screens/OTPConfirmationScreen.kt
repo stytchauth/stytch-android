@@ -110,16 +110,16 @@ private fun OTPConfirmationScreenComposable(
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.stytch_b2c_enter_passcode),
+            text = stringResource(id = R.string.stytch_b2c_otp_confirmation_title),
             textAlign = TextAlign.Start,
         )
-        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_to, recipient))
+        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_confirmation, recipient))
         OTPEntry(
             errorMessage = uiState.genericErrorMessage?.getText(),
             onCodeComplete = onOTPCodeComplete,
         )
         Text(
-            text = stringResource(id = R.string.stytch_code_expires_in, uiState.expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_code_expiration_count_down, uiState.expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -133,7 +133,7 @@ private fun OTPConfirmationScreenComposable(
                 text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
-                text = stringResource(id = R.string.stytch_b2c_create_password_instead),
+                text = stringResource(id = R.string.stytch_b2c_button_create_password),
                 onClick = onCreatePasswordClicked,
             )
         }
@@ -145,10 +145,10 @@ private fun OTPConfirmationScreenComposable(
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
             title = stringResource(id = R.string.stytch_resend_code_title),
-            body = context.getStyledText(R.string.stytch_new_code_will_be_sent_to, recipient),
-            cancelText = stringResource(id = R.string.stytch_cancel),
+            body = context.getStyledText(R.string.stytch_passcode_resend_text, recipient),
+            cancelText = stringResource(id = R.string.stytch_button_cancel),
             onCancelClick = onDialogDismiss,
-            acceptText = stringResource(id = R.string.stytch_send_code),
+            acceptText = stringResource(id = R.string.stytch_button_send_code),
             onAcceptClick = onResendEML,
         )
     }

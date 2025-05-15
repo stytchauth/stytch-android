@@ -61,10 +61,10 @@ private fun MainScreenComposable(
     val productComponentsOrdering = state.products.generateProductComponentsOrdering(authFlowType, organization)
     val title =
         when (authFlowType) {
-            AuthFlowType.DISCOVERY -> stringResource(R.string.stytch_b2b_sign_up_or_log_in)
+            AuthFlowType.DISCOVERY -> stringResource(R.string.stytch_b2b_discovery_flow_title)
             AuthFlowType.ORGANIZATION ->
                 stringResource(
-                    R.string.stytch_b2b_continue_to_org_name,
+                    R.string.stytch_b2b_organization_flow_title,
                     organization?.organizationName ?: "...",
                 )
         }
@@ -92,12 +92,12 @@ private fun MainScreenComposable(
         if (!theme.hideHeaderText) {
             if (showVerifyEmailCopy) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    PageTitle(text = stringResource(R.string.stytch_b2b_verify_your_email))
+                    PageTitle(text = stringResource(R.string.stytch_b2b_email_verification_flow_title))
                     Spacer(modifier = Modifier.height(24.dp))
                     BodyText(
                         text =
                             stringResource(
-                                R.string.stytch_b2b_confirm_your_email_address_with_one_of_the_following,
+                                R.string.stytch_b2b_email_verification_flow_body,
                             ),
                     )
                 }
@@ -140,7 +140,7 @@ private fun MainScreenComposable(
                                     .padding(vertical = 8.dp),
                             iconDrawable = provider.type.toPainterResource(),
                             iconDescription = provider.type.name,
-                            text = stringResource(R.string.stytch_b2b_continue_with_provider, provider.type.toTitle()),
+                            text = stringResource(R.string.stytch_provider_continue_with, provider.type.toTitle()),
                             onClick = { dispatch(MainScreenAction.StartOAuth(activity, provider)) },
                         )
                     }
@@ -152,7 +152,11 @@ private fun MainScreenComposable(
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
-                            text = stringResource(R.string.stytch_b2b_continue_with_sso),
+                            text =
+                                stringResource(
+                                    R.string.stytch_provider_continue_with,
+                                    stringResource(R.string.stytch_provider_name_sso),
+                                ),
                             iconDrawable = painterResource(R.drawable.sso),
                             iconDescription = "SSO",
                             onClick = { dispatch(MainScreenAction.StartSSODiscovery) },
@@ -164,7 +168,7 @@ private fun MainScreenComposable(
                                     Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 8.dp),
-                                text = stringResource(R.string.stytch_b2b_continue_with_provider),
+                                text = stringResource(R.string.stytch_provider_continue_with, provider.displayName),
                                 iconDrawable = provider.toPainterResource(),
                                 iconDescription = provider.displayName,
                                 onClick = {
@@ -189,7 +193,7 @@ private fun MainScreenComposable(
                         onEmailAddressDone = { dispatch(MainScreenAction.SetEmailShouldBeValidated) },
                     )
                     BodyText(
-                        text = context.getStyledText(R.string.stytch_b2b_having_trouble),
+                        text = context.getStyledText(R.string.stytch_b2b_trouble_signing_in),
                         textAlign = TextAlign.Center,
                         modifier =
                             Modifier
@@ -211,7 +215,7 @@ private fun MainScreenComposable(
                                 dispatch(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
-                    StytchTextButton(text = stringResource(R.string.stytch_b2b_use_a_password_instead)) {
+                    StytchTextButton(text = stringResource(R.string.stytch_b2b_button_use_a_password)) {
                         dispatch(MainScreenAction.GoToPasswordAuthenticate)
                     }
                 }

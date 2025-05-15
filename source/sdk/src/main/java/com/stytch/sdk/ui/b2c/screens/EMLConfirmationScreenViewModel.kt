@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import coil3.util.CoilUtils.result
 import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.Locale
@@ -118,7 +117,7 @@ internal class EMLConfirmationScreenViewModel(
                     uiState.value.copy(
                         genericErrorMessage =
                             GenericErrorDetails(
-                                errorMessageId = R.string.stytch_b2c_password_reset_unknown_email_address,
+                                errorMessageId = R.string.stytch_b2c_error_unknown_email_address,
                             ),
                     )
             }

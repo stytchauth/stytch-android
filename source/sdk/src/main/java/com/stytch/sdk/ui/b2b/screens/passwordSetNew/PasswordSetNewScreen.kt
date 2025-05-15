@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.stytch.sdk.R
-import com.stytch.sdk.ui.b2b.data.ResetEverything
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.PageTitle
@@ -37,13 +36,13 @@ private fun PasswordSetNewScreenComposable(
         BackButton {
             dispatch(PasswordSetNewAction.ResetEverything)
         }
-        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_check_your_email))
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_check_your_email_title))
         BodyText(
-            text = stringResource(R.string.stytch_b2b_a_login_link_was_sent_to_you_at, state.emailState.emailAddress),
+            text = stringResource(R.string.stytch_b2b_password_set_new_body, state.emailState.emailAddress),
             color = Color(theme.secondaryTextColor),
         )
         StytchTextButton(
-            text = stringResource(R.string.stytch_b2b_didn_t_get_it_resend_email),
+            text = stringResource(R.string.stytch_b2b_password_reset_title),
             color = theme.secondaryTextColor,
             onClick = { dispatch(PasswordSetNewAction.ResetByEmailStart) },
         )

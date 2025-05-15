@@ -11,5 +11,5 @@ import kotlinx.parcelize.Parcelize
 public data class BiometricsOptions
     @JvmOverloads
     constructor(
-        val forceRegistrationOnLoginIfNoneFound: Boolean = false,
+        val showBiometricRegistrationOnLogin: Boolean = false,
     ) : Parcelable
