@@ -296,6 +296,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     EVENT_LOG_STREAMING_BAD_GRAFANA_LOKI_CONFIG(
         type = "event_log_streaming_bad_grafana_loki_config",
     ),
+    EVENT_LOG_STREAMING_INVALID_DESTINATION_TYPE(
+        type = "event_log_streaming_invalid_destination_type",
+    ),
+    EVENT_LOG_STREAMING_INVALID_STREAMING_STATUS(
+        type = "event_log_streaming_invalid_streaming_status",
+    ),
     EVENT_LOG_STREAMING_NOT_FOUND(
         type = "event_log_streaming_not_found",
     ),
