@@ -6,7 +6,7 @@ For example, our B2C UI has a default main screen title that says "Sign up or lo
 <string name="stytch_b2c_main_screen_title">My Custom Title</string>
 ```
 And voila:
-![Example of custom copy in the Stytch B2C pre-built UI](assets/custom_copy_b2c.png)
+![Example of custom copy in the Stytch B2C pre-built UI](./assets/custom_copy_b2c.png)
 
 If you want to add localization/internationalization to your app, just create a strings resource file (with your desired qualifiers) and provide the appropriate translations.
 
