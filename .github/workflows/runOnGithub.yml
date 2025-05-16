@@ -24,9 +24,6 @@ jobs:
       - uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: runOnGitHub
-        env:
-          GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-          PASSKEYS_DOMAIN: 'abc123'
 
       - name: Add coverage to PR
         id: jacoco

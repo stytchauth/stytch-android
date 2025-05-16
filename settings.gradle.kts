@@ -33,7 +33,6 @@ rootProject.name = "Stytch Android SDK"
 include(":source:sdk")
 include(":workbench-apps:consumer-workbench")
 include(":workbench-apps:b2b-workbench")
-include(":workbench-apps:uiworkbench")
 include(":example-apps:stytchexampleapp")
 include(":example-apps:javademoapp")
 

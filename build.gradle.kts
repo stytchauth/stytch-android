@@ -1,5 +1,3 @@
-import java.util.Properties
-
 buildscript {
     dependencies {
         classpath(libs.gradle)
@@ -92,23 +90,4 @@ tasks.register("runOnGitHub") {
 
 tasks.dokkaHtmlMultiModule.configure {
     outputDirectory.set(file("$projectDir/docs"))
-}
-
-// Create variables with empty default values
-extra["GOOGLE_OAUTH_CLIENT_ID"] = ""
-extra["PASSKEYS_DOMAIN"] = ""
-
-val localProperties = project.rootProject.file("local.properties")
-if (localProperties.exists()) {
-    val p = Properties()
-    localProperties.inputStream().use {
-        p.load(it)
-    }
-    p.forEach { name, value ->
-        extra[name as String] = value as String
-    }
-} else {
-    // Use envvars
-    extra["GOOGLE_OAUTH_CLIENT_ID"] = System.getenv("GOOGLE_OAUTH_CLIENT_ID")
-    extra["PASSKEYS_DOMAIN"] = System.getenv("PASSKEYS_DOMAIN")
 }

@@ -1478,6 +1478,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     OIDC_INVALID_USERINFO(
         type = "oidc_invalid_userinfo",
     ),
+    OIDC_PROMPT_NONE_MUST_BE_EXCLUSIVE(
+        type = "oidc_prompt_none_must_be_exclusive",
+    ),
     OIDC_RESPONSE_EMAIL_MISSING(
         type = "oidc_response_email_missing",
     ),

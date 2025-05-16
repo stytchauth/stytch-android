@@ -39,4 +39,3 @@ jobs:
           script: ./gradlew :source:sdk:connectedCheck
         env:
           GOOGLE_OAUTH_CLIENT_ID: 'abc123'
-          PASSKEYS_DOMAIN: 'abc123'
