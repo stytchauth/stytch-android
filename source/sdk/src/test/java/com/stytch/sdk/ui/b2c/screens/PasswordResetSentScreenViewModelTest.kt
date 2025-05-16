@@ -91,7 +91,10 @@ internal class PasswordResetSentScreenViewModelTest {
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
             viewModel.onResendPasswordResetStart(mockk(relaxed = true), this)
             coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 
     @Test
@@ -126,7 +129,10 @@ internal class PasswordResetSentScreenViewModelTest {
             coEvery { mockStytchClient.magicLinks.email.loginOrCreate(any()) } returns result
             viewModel.sendEML("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 
     @Test
@@ -165,6 +171,9 @@ internal class PasswordResetSentScreenViewModelTest {
             coEvery { mockStytchClient.otps.email.loginOrCreate(any()) } returns result
             viewModel.sendEmailOTP("", mockk(relaxed = true), Locale.EN, this)
             assert(!viewModel.uiState.value.showLoadingDialog)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 }

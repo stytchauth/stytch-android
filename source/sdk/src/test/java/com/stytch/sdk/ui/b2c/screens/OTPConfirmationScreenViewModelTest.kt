@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2c.screens
 
 import android.text.format.DateUtils
 import androidx.lifecycle.SavedStateHandle
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
@@ -157,7 +158,10 @@ internal class OTPConfirmationScreenViewModelTest {
             viewModel.authenticateOTP("", mockk(relaxed = true), this)
             coVerify(exactly = 1) { mockStytchClient.otps.authenticate(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 
     @Test
@@ -217,14 +221,20 @@ internal class OTPConfirmationScreenViewModelTest {
             coVerify(exactly = 1) { mockStytchClient.otps.email.loginOrCreate(any()) }
             assert(!viewModel.uiState.value.showLoadingDialog)
             assert(!viewModel.uiState.value.showResendDialog)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 
     @Test
     fun `sendResetPasswordEmail updates error if no email is passed`() =
         runTest(dispatcher) {
             viewModel.sendResetPasswordEmail(null, mockk(relaxed = true), Locale.EN, this)
-            assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorMessageId == R.string.stytch_b2c_error_unknown_email_address,
+            )
         }
 
     @Test
@@ -257,6 +267,9 @@ internal class OTPConfirmationScreenViewModelTest {
                 }
             coEvery { mockStytchClient.passwords.resetByEmailStart(any()) } returns result
             viewModel.sendResetPasswordEmail("my@email.com", mockk(relaxed = true), Locale.EN, this)
-            assert(viewModel.uiState.value.genericErrorMessage == "Something bad happened internally")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Something bad happened internally",
+            )
         }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
@@ -20,6 +21,7 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EMLDetails
 import com.stytch.sdk.ui.b2c.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.GenericErrorDetails
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OAuthOptions
 import com.stytch.sdk.ui.b2c.data.OAuthProvider
@@ -278,7 +280,10 @@ internal class MainScreenViewModel(
                             savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                                 uiState.value.copy(
                                     showLoadingDialog = false,
-                                    genericErrorMessage = "Failed to get user type",
+                                    genericErrorMessage =
+                                        GenericErrorDetails(
+                                            errorMessageId = R.string.stytch_b2c_error_failed_to_get_user_type,
+                                        ),
                                 )
                             null
                         }
@@ -325,7 +330,7 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = result.exception.message,
+                        genericErrorMessage = GenericErrorDetails(result.exception.message),
                     ) // TODO
                 null
             }
@@ -360,7 +365,7 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = result.exception.message,
+                        genericErrorMessage = GenericErrorDetails(result.exception.message),
                     ) // TODO
                 null
             }
@@ -393,7 +398,7 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = result.exception.message,
+                        genericErrorMessage = GenericErrorDetails(result.exception.message),
                     ) // TODO
                 null
             }

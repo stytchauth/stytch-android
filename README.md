@@ -145,6 +145,7 @@ For further information and tutorials on some of our more common implementations
 * [Passwords](./tutorials/Passwords.md)
 * [Sessions](./tutorials/Sessions.md)
 * [StytchUI](./tutorials/UI.md)
+* [UI Custom Copy](./tutorials/Localization.md)
 
 ## Further Reading
 Full reference documentation is available for [Stytch](https://stytchauth.github.io/stytch-android/sdk/index.html) and [StytchUI](https://stytchauth.github.io/stytch-android/ui/index.html).

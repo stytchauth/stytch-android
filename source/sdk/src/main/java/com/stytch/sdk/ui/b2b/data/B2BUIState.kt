@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 internal data class B2BUIState(
     val currentRoute: Route? = null,
     val isLoading: Boolean = false,
-    val errorToastText: String? = null,
+    val errorDetails: ErrorDetails = ErrorDetails(),
     val emailState: EmailState = EmailState(shouldValidateEmail = false),
     val phoneNumberState: PhoneNumberState = PhoneNumberState(),
     val passwordState: PasswordState = PasswordState(),

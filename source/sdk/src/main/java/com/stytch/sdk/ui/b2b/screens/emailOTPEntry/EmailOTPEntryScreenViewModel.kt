@@ -1,9 +1,11 @@
 package com.stytch.sdk.ui.b2b.screens.emailOTPEntry
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.R
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
@@ -72,7 +74,7 @@ internal class EmailOTPEntryScreenViewModel(
     private fun handleFailure() {
         _emailOtpEntryState.value =
             _emailOtpEntryState.value.copy(
-                errorMessage = "Invalid passcode, please try again.",
+                errorMessage = R.string.stytch_b2b_error_invalid_passcode,
             )
     }
 
@@ -87,7 +89,7 @@ internal class EmailOTPEntryScreenViewModel(
 @JacocoExcludeGenerated
 internal data class EmailOTPEntryScreenState(
     val recipientFormatted: AnnotatedString,
-    val errorMessage: String? = null,
+    @StringRes val errorMessage: Int? = null,
 )
 
 internal sealed class EmailOTPEntryScreenAction {

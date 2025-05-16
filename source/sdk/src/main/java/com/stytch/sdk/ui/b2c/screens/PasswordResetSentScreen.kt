@@ -11,11 +11,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,7 +30,6 @@ import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.DividerWithText
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchAlertDialog
@@ -41,6 +37,7 @@ import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.utils.getStyledText
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
@@ -113,56 +110,37 @@ private fun PasswordResetSentScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted =
-        AnnotatedString(
-            text = " $emailAddress",
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
-    val resendLinkFormatted =
-        AnnotatedString(
-            text = stringResource(id = R.string.resend_link),
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
+    val context = LocalContext.current
     val pageTitleResource =
         when (resetType) {
-            PasswordResetType.FORGOT_PASSWORD -> R.string.forgot_password
+            PasswordResetType.FORGOT_PASSWORD -> R.string.stytch_b2c_forgot_password_title
             PasswordResetType.NO_PASSWORD_SET,
             PasswordResetType.BREACHED,
             PasswordResetType.DEDUPE,
-            -> R.string.check_email_new_password
+            -> R.string.stytch_b2c_password_reset_sent_title
         }
     val bodyTextString =
         when (resetType) {
             PasswordResetType.FORGOT_PASSWORD ->
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.reset_password_link_sent))
-                    append(" ")
-                    append(recipientFormatted)
-                    append(".")
-                }
+                context.getStyledText(
+                    R.string.stytch_b2c_forgot_password_body,
+                    emailAddress,
+                )
             PasswordResetType.NO_PASSWORD_SET ->
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.login_link_sent))
-                    append(" ")
-                    append(recipientFormatted)
-                    append(" ")
-                    append(stringResource(id = R.string.create_password_for_account))
-                }
+                context.getStyledText(
+                    R.string.stytch_b2c_email_create_password_body,
+                    emailAddress,
+                )
             PasswordResetType.BREACHED ->
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.breached_password))
-                    append(" ")
-                    append(recipientFormatted)
-                    append(" ")
-                    append(stringResource(id = R.string.breached_password_2))
-                }
+                context.getStyledText(
+                    R.string.stytch_b2c_password_reset_breached_body,
+                    emailAddress,
+                )
             PasswordResetType.DEDUPE ->
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.secure_your_account, recipientFormatted))
-                    append(" ")
-                    append(recipientFormatted)
-                    append(".")
-                }
+                context.getStyledText(
+                    R.string.stytch_b2c_password_reset_dedupe_body,
+                    emailAddress,
+                )
         }
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
@@ -172,12 +150,7 @@ private fun PasswordResetSentScreenComposable(
         )
         BodyText(text = bodyTextString)
         Text(
-            text =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.didnt_get_it))
-                    append(" ")
-                    append(resendLinkFormatted)
-                },
+            text = stringResource(id = R.string.stytch_b2c_button_resend_link),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -185,22 +158,20 @@ private fun PasswordResetSentScreenComposable(
                 ),
             modifier = Modifier.clickable { onShowResendDialog() },
         )
-        uiState.genericErrorMessage?.let {
-            FormFieldStatus(text = it, isError = true)
-        }
+        uiState.genericErrorMessage?.display()
         if (hasEML || hasEmailOTP) {
             DividerWithText(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
                 text =
                     stringResource(
                         id =
                             if (hasEML) {
-                                R.string.email_me_a_login_link
+                                R.string.stytch_b2c_button_login_link
                             } else {
-                                R.string.email_me_a_login_code
+                                R.string.stytch_b2c_button_login_code
                             },
                     ),
                 onClick = { if (hasEML) sendEML() else sendEmailOTP() },
@@ -213,15 +184,11 @@ private fun PasswordResetSentScreenComposable(
     if (uiState.showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
-            title = stringResource(id = R.string.resend_link),
-            body =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.new_link_will_be_sent_to))
-                    append(recipientFormatted)
-                },
-            cancelText = stringResource(id = R.string.cancel),
+            title = stringResource(id = R.string.stytch_b2c_resend_link_title),
+            body = context.getStyledText(R.string.stytch_b2c_resend_link_body, emailAddress),
+            cancelText = stringResource(id = R.string.stytch_button_cancel),
             onCancelClick = onDialogDismiss,
-            acceptText = stringResource(id = R.string.send_link),
+            acceptText = stringResource(id = R.string.stytch_b2c_button_send_link),
             onAcceptClick = onResendPasswordResetStart,
         )
     }

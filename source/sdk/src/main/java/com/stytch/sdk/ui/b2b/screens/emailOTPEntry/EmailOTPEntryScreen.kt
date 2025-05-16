@@ -1,7 +1,9 @@
 package com.stytch.sdk.ui.b2b.screens.emailOTPEntry
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.b2b.components.ResendableOTP
 
 @Composable
@@ -19,9 +21,9 @@ private fun EmailOTPEntryScreenComposable(
     dispatch: (EmailOTPEntryScreenAction) -> Unit,
 ) {
     ResendableOTP(
-        title = "Enter verification code",
+        title = stringResource(R.string.stytch_b2b_code_verification_title),
         recipient = state.recipientFormatted,
-        errorMessage = state.errorMessage,
+        errorMessage = state.errorMessage?.let { stringResource(it) },
         isEnrolling = false,
         onBack = null,
         onSubmit = { dispatch(EmailOTPEntryScreenAction.Submit(it)) },

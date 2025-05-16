@@ -59,18 +59,15 @@ private fun BiometricRegistrationScreenComposable(
     val context = LocalActivity.current as FragmentActivity
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         PageTitle(
-            text = stringResource(R.string.stytch_b2c_enable_biometric_login),
+            text = stringResource(R.string.stytch_b2c_biometric_registration_title),
             textAlign = TextAlign.Start,
         )
-        BodyText(text = stringResource(R.string.stytch_b2c_use_biometrics_to_log_into_your_account))
+        BodyText(text = stringResource(R.string.stytch_b2c_biometric_registration_body))
         StytchButton(
             enabled = true,
             onClick = { registerBiometrics(context) },
-            text = stringResource(R.string.stytch_b2c_enroll_in_biometrics),
+            text = stringResource(R.string.stytch_b2c_button_enroll_biometrics),
         )
-        StytchTextButton(
-            text = stringResource(R.string.stytch_b2c_skip_for_now),
-            onClick = skipRegistration,
-        )
+        StytchTextButton(text = stringResource(R.string.stytch_b2c_button_skip_for_now), onClick = skipRegistration)
     }
 }

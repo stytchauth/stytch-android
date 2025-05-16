@@ -18,7 +18,7 @@ import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 @Composable
 internal fun BackButton(onClick: () -> Unit) {
     val theme = LocalStytchTheme.current
-    val backButtonText = stringResource(id = R.string.back)
+    val backButtonText = stringResource(id = R.string.stytch_semantics_back_button)
     IconButton(
         modifier = Modifier.padding(bottom = 24.dp).semantics { contentDescription = backButtonText },
         colors =

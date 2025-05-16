@@ -16,6 +16,7 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EMLDetails
 import com.stytch.sdk.ui.b2c.data.EmailMagicLinksOptions
 import com.stytch.sdk.ui.b2c.data.EventState
+import com.stytch.sdk.ui.b2c.data.GenericErrorDetails
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails
 import com.stytch.sdk.ui.b2c.data.OTPOptions
@@ -106,7 +107,7 @@ internal class ReturningUserScreenViewModel(
                                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                                     uiState.value.copy(
                                         showLoadingDialog = false,
-                                        genericErrorMessage = result.exception.message,
+                                        genericErrorMessage = GenericErrorDetails(result.exception.message),
                                     )
                             }
                         }
@@ -114,7 +115,7 @@ internal class ReturningUserScreenViewModel(
                             savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                                 uiState.value.copy(
                                     showLoadingDialog = false,
-                                    genericErrorMessage = result.exception.message,
+                                    genericErrorMessage = GenericErrorDetails(result.exception.message),
                                 )
                         }
                     }
@@ -161,7 +162,7 @@ internal class ReturningUserScreenViewModel(
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
                         showLoadingDialog = false,
-                        genericErrorMessage = result.exception.message,
+                        genericErrorMessage = GenericErrorDetails(result.exception.message),
                     )
             }
         }
@@ -208,7 +209,7 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(result.exception.message),
                         )
             }
         }
@@ -250,7 +251,7 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(result.exception.message),
                         )
             }
         }
@@ -296,7 +297,7 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = result.exception.message,
+                            genericErrorMessage = GenericErrorDetails(result.exception.message),
                         )
                 }
             }

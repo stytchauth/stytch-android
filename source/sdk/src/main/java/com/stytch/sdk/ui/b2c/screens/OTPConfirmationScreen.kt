@@ -11,11 +11,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +36,7 @@ import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.utils.getStyledText
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.parcelize.Parcelize
 
@@ -107,30 +105,21 @@ private fun OTPConfirmationScreenComposable(
 ) {
     val type = LocalStytchTypography.current
     val theme = LocalStytchTheme.current
-    val recipientFormatted =
-        AnnotatedString(
-            text = " $recipient",
-            spanStyle = SpanStyle(fontWeight = FontWeight.W700),
-        )
+    val context = LocalContext.current
+
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.enter_passcode),
+            text = stringResource(id = R.string.stytch_b2c_otp_confirmation_title),
             textAlign = TextAlign.Start,
         )
-        BodyText(
-            text =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.passcode_sent_to))
-                    append(recipientFormatted)
-                },
-        )
+        BodyText(text = context.getStyledText(R.string.stytch_passcode_sent_confirmation, recipient))
         OTPEntry(
-            errorMessage = uiState.genericErrorMessage,
+            errorMessage = uiState.genericErrorMessage?.getText(),
             onCodeComplete = onOTPCodeComplete,
         )
         Text(
-            text = stringResource(id = R.string.code_expires_in, uiState.expirationTimeFormatted),
+            text = stringResource(id = R.string.stytch_code_expiration_count_down, uiState.expirationTimeFormatted),
             textAlign = TextAlign.Start,
             style =
                 type.caption.copy(
@@ -141,10 +130,10 @@ private fun OTPConfirmationScreenComposable(
         if (isReturningUser && productList.contains(StytchProduct.PASSWORDS)) {
             DividerWithText(
                 modifier = Modifier.padding(top = 24.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
-                text = stringResource(id = R.string.create_password_instead),
+                text = stringResource(id = R.string.stytch_b2c_button_create_password),
                 onClick = onCreatePasswordClicked,
             )
         }
@@ -155,15 +144,11 @@ private fun OTPConfirmationScreenComposable(
     if (uiState.showResendDialog) {
         StytchAlertDialog(
             onDismissRequest = onDialogDismiss,
-            title = stringResource(id = R.string.resend_code),
-            body =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.new_code_will_be_sent_to))
-                    append(recipientFormatted)
-                },
-            cancelText = stringResource(id = R.string.cancel),
+            title = stringResource(id = R.string.stytch_resend_code_title),
+            body = context.getStyledText(R.string.stytch_passcode_resend_text, recipient),
+            cancelText = stringResource(id = R.string.stytch_button_cancel),
             onCancelClick = onDialogDismiss,
-            acceptText = stringResource(id = R.string.send_code),
+            acceptText = stringResource(id = R.string.stytch_button_send_code),
             onAcceptClick = onResendEML,
         )
     }

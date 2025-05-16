@@ -21,7 +21,6 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.theme.LocalStytchProductConfig
@@ -74,7 +73,7 @@ private fun SetPasswordScreenComposable(
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.set_new_password),
+            text = stringResource(id = R.string.stytch_b2c_set_new_password_title),
             textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(
@@ -85,9 +84,7 @@ private fun SetPasswordScreenComposable(
             onSubmit = onSubmit,
         )
     }
-    uiState.genericErrorMessage?.let {
-        FormFieldStatus(text = it, isError = true)
-    }
+    uiState.genericErrorMessage?.display()
     if (uiState.showLoadingDialog) {
         LoadingDialog()
     }

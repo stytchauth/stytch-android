@@ -9,9 +9,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.stytch.sdk.ui.b2b.data.ResetEverything
+import com.stytch.sdk.R
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.BodyText
 import com.stytch.sdk.ui.shared.components.EmailInput
@@ -39,12 +40,11 @@ private fun PasswordForgotScreenComposable(
         BackButton {
             dispatch(PasswordForgotAction.ResetEverything)
         }
-        PageTitle(textAlign = TextAlign.Left, text = "Check your email for help signing in!")
-        BodyText(
-            text =
-                "We'll email you a login link to sign in to your account directly or reset your password " +
-                    "if you have one.",
+        PageTitle(
+            textAlign = TextAlign.Left,
+            text = stringResource(R.string.stytch_b2b_password_forgot_title),
         )
+        BodyText(text = stringResource(R.string.stytch_b2b_password_forgot_body))
         EmailInput(
             modifier = Modifier.fillMaxWidth(),
             emailState = state.emailState,
@@ -58,7 +58,7 @@ private fun PasswordForgotScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = !state.emailState.shouldValidateEmail || state.emailState.validEmail == true,
-            text = "Continue",
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(PasswordForgotAction.Submit) },
         )
     }

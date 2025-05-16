@@ -1,6 +1,7 @@
 package com.stytch.sdk.ui.b2c.screens
 
 import androidx.lifecycle.SavedStateHandle
+import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
@@ -75,7 +76,10 @@ internal class EMLConfirmationScreenViewModelTest {
     fun `sendResetPasswordEmail sets error message if no email address is passed`() =
         runTest(dispatcher) {
             viewModel.sendResetPasswordEmail(null, mockk(), Locale.EN, this)
-            assert(viewModel.uiState.value.genericErrorMessage == "Can't reset password for unknown email address")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorMessageId == R.string.stytch_b2c_error_unknown_email_address,
+            )
         }
 
     @Test
@@ -117,7 +121,10 @@ internal class EMLConfirmationScreenViewModelTest {
             val mockOptions: PasswordOptions = mockk(relaxed = true)
             viewModel.sendResetPasswordEmail("my@email.com", mockOptions, Locale.EN, this)
             coVerify(exactly = 1) { mockStytchClient.passwords.resetByEmailStart(any()) }
-            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Testing error state",
+            )
         }
 
     @Test
@@ -144,6 +151,9 @@ internal class EMLConfirmationScreenViewModelTest {
             viewModel.resendEML(mockk(), this)
             coVerify(exactly = 1) { mockStytchClient.magicLinks.email.loginOrCreate(any()) }
             assert(!viewModel.uiState.value.showResendDialog)
-            assert(viewModel.uiState.value.genericErrorMessage == "Testing error state")
+            assert(
+                viewModel.uiState.value.genericErrorMessage
+                    ?.errorText == "Testing error state",
+            )
         }
 }

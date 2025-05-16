@@ -16,11 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -39,6 +37,7 @@ import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.SocialLoginButton
 import com.stytch.sdk.ui.shared.components.StytchTextButton
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
+import com.stytch.sdk.ui.shared.utils.getStyledText
 
 @Composable
 internal fun MainScreen(viewModel: MainScreenViewModel) {
@@ -62,12 +61,17 @@ private fun MainScreenComposable(
     val productComponentsOrdering = state.products.generateProductComponentsOrdering(authFlowType, organization)
     val title =
         when (authFlowType) {
-            AuthFlowType.DISCOVERY -> "Sign up or log in"
-            AuthFlowType.ORGANIZATION -> "Continue to ${organization?.organizationName ?: "..."}"
+            AuthFlowType.DISCOVERY -> stringResource(R.string.stytch_b2b_discovery_flow_title)
+            AuthFlowType.ORGANIZATION ->
+                stringResource(
+                    R.string.stytch_b2b_organization_flow_title,
+                    organization?.organizationName ?: "...",
+                )
         }
     val showVerifyEmailCopy = emailAddress.isNotEmpty() && emailVerified == false && primaryAuthMethods.isNotEmpty()
     val theme = LocalStytchTheme.current
-    val context = LocalActivity.current as Activity
+    val activity = LocalActivity.current as Activity
+    val context = LocalContext.current
     if (state.products.isEmpty()) {
         dispatch(MainScreenAction.SetB2BError(B2BErrorType.NoAuthenticationMethodsFound))
         return
@@ -88,9 +92,14 @@ private fun MainScreenComposable(
         if (!theme.hideHeaderText) {
             if (showVerifyEmailCopy) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    PageTitle(text = "Verify your email")
+                    PageTitle(text = stringResource(R.string.stytch_b2b_email_verification_flow_title))
                     Spacer(modifier = Modifier.height(24.dp))
-                    BodyText(text = "Confirm your email address with one of the following:")
+                    BodyText(
+                        text =
+                            stringResource(
+                                R.string.stytch_b2b_email_verification_flow_body,
+                            ),
+                    )
                 }
             } else {
                 PageTitle(text = title)
@@ -131,16 +140,23 @@ private fun MainScreenComposable(
                                     .padding(vertical = 8.dp),
                             iconDrawable = provider.type.toPainterResource(),
                             iconDescription = provider.type.name,
-                            text = "Continue with ${provider.type.toTitle()}",
-                            onClick = { dispatch(MainScreenAction.StartOAuth(context, provider)) },
+                            text = stringResource(R.string.stytch_provider_continue_with, provider.type.toTitle()),
+                            onClick = { dispatch(MainScreenAction.StartOAuth(activity, provider)) },
                         )
                     }
                 }
                 ProductComponent.SSOButtons -> {
                     if (authFlowType == AuthFlowType.DISCOVERY) {
                         SocialLoginButton(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            text = "Continue with SSO",
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                            text =
+                                stringResource(
+                                    R.string.stytch_provider_continue_with,
+                                    stringResource(R.string.stytch_provider_name_sso),
+                                ),
                             iconDrawable = painterResource(R.drawable.sso),
                             iconDescription = "SSO",
                             onClick = { dispatch(MainScreenAction.StartSSODiscovery) },
@@ -148,14 +164,17 @@ private fun MainScreenComposable(
                     } else {
                         organization?.ssoActiveConnections?.map { provider ->
                             SocialLoginButton(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                                text = "Continue with ${provider.displayName}",
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                text = stringResource(R.string.stytch_provider_continue_with, provider.displayName),
                                 iconDrawable = provider.toPainterResource(),
                                 iconDescription = provider.displayName,
                                 onClick = {
                                     dispatch(
                                         MainScreenAction.StartSSO(
-                                            context,
+                                            activity,
                                             provider.connectionId,
                                         ),
                                     )
@@ -173,18 +192,8 @@ private fun MainScreenComposable(
                         onSubmit = { dispatch(MainScreenAction.HandlePasswordSubmit) },
                         onEmailAddressDone = { dispatch(MainScreenAction.SetEmailShouldBeValidated) },
                     )
-                    val signInText =
-                        buildAnnotatedString {
-                            append("Having trouble signing in? ")
-                            append(
-                                AnnotatedString(
-                                    text = "Get help",
-                                    spanStyle = SpanStyle(fontWeight = FontWeight.Bold),
-                                ),
-                            )
-                        }
                     BodyText(
-                        text = signInText,
+                        text = context.getStyledText(R.string.stytch_b2b_trouble_signing_in),
                         textAlign = TextAlign.Center,
                         modifier =
                             Modifier
@@ -206,11 +215,11 @@ private fun MainScreenComposable(
                                 dispatch(MainScreenAction.HandleEmailSubmit)
                             }),
                     )
-                    StytchTextButton(text = "Use a password instead") {
+                    StytchTextButton(text = stringResource(R.string.stytch_b2b_button_use_a_password)) {
                         dispatch(MainScreenAction.GoToPasswordAuthenticate)
                     }
                 }
-                ProductComponent.Divider -> DividerWithText(text = "or")
+                ProductComponent.Divider -> DividerWithText(text = stringResource(R.string.stytch_method_divider_text))
             }
         }
     }

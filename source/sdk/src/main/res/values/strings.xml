@@ -1,111 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ACTIVITY DEEPLINK STRINGS -->
+    <!-- Configuration Strings -->
     <string name="STYTCH_PUBLIC_TOKEN" />
-    <!-- Headless SDK strings -->
-    <string name="stytch_biometric_prompt_title">Biometric Authentication</string>
-    <string name="stytch_biometric_prompt_subtitle">Authenticate using your biometric credential</string>
-    <string name="stytch_biometric_prompt_negative">Cancel</string>
-    <!-- UI SDK strings -->
-    <string name="sign_up_or_login">Sign up or log in</string>
-    <string name="google_logo">Google Logo</string>
-    <string name="continue_with_google">Continue with Google</string>
-    <string name="apple_logo">Apple Logo</string>
-    <string name="continue_with_apple">Continue with Apple</string>
-    <string name="or">or</string>
-    <string name="button_continue">Continue</string>
-    <string name="email">Email</string>
-    <string name="text">Text</string>
-    <string name="back">Back</string>
-    <string name="check_your_email">Check your email</string>
-    <string name="login_link_sent">A login link was sent to you at</string>
-    <string name="didnt_get_it">Didn’t get it? </string>
-    <string name="create_password_instead">Create a password instead</string>
-    <string name="check_email_new_password">Check your email to set a new password</string>
-    <string name="create_password_for_account">to create a password for your account.</string>
-    <string name="set_new_password">Set a new password</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
-    <string name="forgot_password">Forgot password?</string>
-    <string name="email_me_a_login_link">Email me a login link</string>
-    <string name="email_me_a_login_code">Email me a login code</string>
-    <string name="reset_password_link_sent">A link to reset your password was sent to you at </string>
-    <string name="login_without_password">Login without a password</string>
-    <string name="choose_how">Choose how you would like to create your account.</string>
-    <string name="finish_creating">Finish creating your account by setting a password.</string>
-    <string name="secure_your_account">We want to make sure your account is secure and that it’s really you logging in! A login link was sent to you at </string>
-    <string name="breached_password">A different site where you use the same password had a security issue recently. For your safety, an email was sent to you at </string>
-    <string name="breached_password_2">to reset your password.</string>
-    <string name="enter_passcode">Enter Passcode</string>
-    <string name="passcode_sent_to">A 6-digit passcode was sent to you at </string>
-    <string name="code_expires_in">Your code expires in %1$s. Didn’t get it? Resend code.</string>
-    <string name="invalid_number">Invalid number, please try again.</string>
-    <string name="invalid_email">Invalid email address, please try again.</string>
-    <string name="invalid_passcode">Invalid passcode, please try again.</string>
-    <string name="whatsapp">WhatsApp</string>
-    <string name="powered_by_stytch">Powered by Stytch</string>
-    <string name="eml_and_otp_error">You cannot have both Email Magic Links and Email OTP configured at the same time</string>
-    <string name="misconfigured_otp">Unrecognized EML/OTP configuration</string>
-    <string name="resend_code">Resend code</string>
-    <string name="resend_link">Resend link</string>
-    <string name="new_code_will_be_sent_to">A new code will be sent to </string>
-    <string name="new_link_will_be_sent_to">A new link will be sent to </string>
-    <string name="send_code">Send code</string>
-    <string name="send_link">Send link</string>
-    <string name="cancel">Cancel</string>
-    <string name="success">Success!</string>
-    <string name="logged_in">You have successfully logged in.</string>
-    <string name="hide_password">Hide password</string>
-    <string name="show_password">Show password</string>
-    <string name="strong_password">Great job! This is a strong password.</string>
-    <string name="breached_password_warning">This password may have been used on a different site that experienced a security issue. Please choose another password.</string>
-    <string name="missing_characters">Must be at least %1$d characters long</string>
-    <string name="missing_complexity"> Must contain %1$d of the following: uppercase letter, lowercase letter, number, symbol</string>
-    <string name="create_account">Create Account</string>
-    <string name="amazon_logo">Amazon Logo</string>
-    <string name="continue_with_amazon">Continue with Amazon</string>
-    <string name="bitbucket_logo">Bitbucket Logo</string>
-    <string name="continue_with_bitbucket">Continue with Bitbucket</string>
-    <string name="coinbase_logo">Coinbase Logo</string>
-    <string name="continue_with_coinbase">Continue with Coinbase</string>
-    <string name="discord_logo">Discord Logo</string>
-    <string name="continue_with_discord">Continue with Discord</string>
-    <string name="facebook_logo">Facebook Logo</string>
-    <string name="continue_with_facebook">Continue with Facebook</string>
-    <string name="figma_logo">Figma Logo</string>
-    <string name="continue_with_figma">Continue with Figma</string>
-    <string name="github_logo">Github Logo</string>
-    <string name="continue_with_github">Continue with Github</string>
-    <string name="gitlab_logo">Gitlab Logo</string>
-    <string name="continue_with_gitlab">Continue with Gitlab</string>
-    <string name="linkedin_logo">LinkedIn Logo</string>
-    <string name="continue_with_linkedin">Continue with LinkedIn</string>
-    <string name="microsoft_logo">Microsoft Logo</string>
-    <string name="continue_with_microsoft">Continue with Microsoft</string>
-    <string name="salesforce_logo">Salesforce Logo</string>
-    <string name="continue_with_salesforce">Continue with Salesforce</string>
-    <string name="slack_logo">Slack Logo</string>
-    <string name="continue_with_slack">Continue with Slack</string>
-    <string name="snapchat_logo">Snapchat Logo</string>
-    <string name="continue_with_snapchat">Continue with Snapchat</string>
-    <string name="tiktok_logo">TikTok Logo</string>
-    <string name="continue_with_tiktok">Continue with TikTok</string>
-    <string name="twitch_logo">Twitch Logo</string>
-    <string name="continue_with_twitch">Continue with Twitch</string>
-    <string name="twitter_logo">Twitter Logo</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
-    <string name="semantics_oauth_button">OAuth Button</string>
-    <string name="semantics_tabs">Tabs</string>
-    <string name="semantics_email_input">Email input</string>
-    <string name="semantics_email_error">Email error</string>
-    <string name="semantics_phone_input">Phone input</string>
-    <string name="semantics_alert_dialog">Popup dialog</string>
-    <string name="semantics_loading_dialog">Loading</string>
-    <string name="semantics_email_password_entry">Entry form for email and password</string>
-    <string name="semantics_otp_entry">Entry form for One Time Passcode</string>
-    <string name="stytch_b2c_enable_biometric_login">Enable Biometric Login?</string>
-    <string name="stytch_b2c_use_biometrics_to_log_into_your_account">Use biometrics to log into your account.</string>
-    <string name="stytch_b2c_enroll_in_biometrics">Enroll in Biometrics</string>
-    <string name="stytch_b2c_skip_for_now">Skip for now</string>
-    <string name="stytch_b2c_continue_with_biometrics">Continue with Biometrics</string>
+
+    <!-- Headless SDK strings (these don't need to be localized; they can be overridden via params) -->
+    <string name="stytch_biometric_prompt_title_default">Biometric Authentication</string>
+    <string name="stytch_biometric_prompt_subtitle_default">Authenticate using your biometric credential</string>
+    <string name="stytch_biometric_prompt_negative_default">Cancel</string>
+
+    <!-- Shared UI Strings -->
+    <string name="stytch_button_cancel">Cancel</string>
+    <string name="stytch_button_continue">Continue</string>
+    <string name="stytch_button_send_code">Send code</string>
+    <string name="stytch_code_expiration_count_down">Your code expires in <annotation arg="%1$s">%1$s</annotation>. Didn’t get it? <annotation style="bold">Resend code</annotation>.</string>
+    <string name="stytch_error_invalid_email_address">Invalid email address, please try again.</string>
+    <string name="stytch_feedback_good_password_message">Great job! This is a strong password.</string>
+    <string name="stytch_feedback_luds_breached_password_warning">This password may have been used on a different site that experienced a security issue. Please choose another password.</string>
+    <string name="stytch_feedback_luds_missing_characters_message">Must be at least %1$d characters long</string>
+    <string name="stytch_feedback_luds_missing_complexity_message"> Must contain %1$d of the following: uppercase letter, lowercase letter, number, symbol</string>
+    <string name="stytch_label_email">Email</string>
+    <string name="stytch_label_password">Password</string>
+    <string name="stytch_method_divider_text">or</string>
+    <string name="stytch_passcode_resend_text">A new code will be sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_passcode_sent_confirmation">A 6-digit passcode was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_placeholder_email_address">Email Address</string>
+    <string name="stytch_placeholder_phone_number">(123) 456-7890</string>
+    <string name="stytch_provider_continue_with">Continue with %1$s</string>
+    <string name="stytch_provider_name_amazon">Amazon</string>
+    <string name="stytch_provider_name_apple">Apple</string>
+    <string name="stytch_provider_name_biometrics">Biometrics</string>
+    <string name="stytch_provider_name_bitbucket">Bitbucket</string>
+    <string name="stytch_provider_name_coinbase">Coinbase</string>
+    <string name="stytch_provider_name_discord">Discord</string>
+    <string name="stytch_provider_name_facebook">Facebook</string>
+    <string name="stytch_provider_name_figma">Figma</string>
+    <string name="stytch_provider_name_github">Github</string>
+    <string name="stytch_provider_name_gitlab">Gitlab</string>
+    <string name="stytch_provider_name_google">Google</string>
+    <string name="stytch_provider_name_linkedin">LinkedIn</string>
+    <string name="stytch_provider_name_microsoft">Microsoft</string>
+    <string name="stytch_provider_name_salesforce">Salesforce</string>
+    <string name="stytch_provider_name_slack">Slack</string>
+    <string name="stytch_provider_name_snapchat">Snapchat</string>
+    <string name="stytch_provider_name_sso">SSO</string>
+    <string name="stytch_provider_name_tiktok">TikTok</string>
+    <string name="stytch_provider_name_twitch">Twitch</string>
+    <string name="stytch_provider_name_twitter">Twitter</string>
+    <string name="stytch_resend_code_title">Resend Code</string>
+    <string name="stytch_watermark_text">Powered by Stytch</string>
+
+    <!-- B2C UI strings -->
+    <string name="stytch_b2c_biometric_registration_body">Use biometrics to log into your account.</string>
+    <string name="stytch_b2c_biometric_registration_title">Enable Biometric Login?</string>
+    <string name="stytch_b2c_button_create_password">Create a password instead</string>
+    <string name="stytch_b2c_button_enroll_biometrics">Enroll in Biometrics</string>
+    <string name="stytch_b2c_button_login_code">Email me a login code</string>
+    <string name="stytch_b2c_button_login_link">Email me a login link</string>
+    <string name="stytch_b2c_button_resend_link">Didn’t get it? <annotation style="bold">Resend link</annotation></string>
+    <string name="stytch_b2c_button_send_link">Send link</string>
+    <string name="stytch_b2c_button_skip_for_now">Skip for now</string>
+    <string name="stytch_b2c_create_account_title">Create Account</string>
+    <string name="stytch_b2c_email_confirmation_title">Check your email</string>
+    <string name="stytch_b2c_email_create_password_body">A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation> to create a password for your account.</string>
+    <string name="stytch_b2c_error_failed_to_get_user_type">Failed to get user type</string>
+    <string name="stytch_b2c_error_unknown_email_address">Can\'t reset password for unknown email address</string>
+    <string name="stytch_b2c_forgot_password_body">A link to reset your password was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation>.</string>
+    <string name="stytch_b2c_forgot_password_title">Forgot password?</string>
+    <string name="stytch_b2c_main_screen_title">Sign up or log in</string>
+    <string name="stytch_b2c_misconfigured_otp_warning">Unrecognized EML/OTP configuration</string>
+    <string name="stytch_b2c_new_user_choose_title">Choose how you would like to create your account.</string>
+    <string name="stytch_b2c_new_user_create_password_body">Finish creating your account by setting a password.</string>
+    <string name="stytch_b2c_otp_confirmation_title">Enter Passcode</string>\
+    <string name="stytch_b2c_password_reset_breached_body">A different site where you use the same password had a security issue recently. For your safety, an email was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation> to reset your password.</string>
+    <string name="stytch_b2c_password_reset_dedupe_body">We want to make sure your account is secure and that it’s really you logging in! A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation>.</string>
+    <string name="stytch_b2c_password_reset_sent_title">Check your email to set a new password</string>
+    <string name="stytch_b2c_resend_link_body">A new link will be sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_b2c_resend_link_title">Resend Link</string>
+    <string name="stytch_b2c_returning_user_title">Log in</string>
+    <string name="stytch_b2c_set_new_password_title">Set a new password</string>
+    <string name="stytch_b2c_sms_tab_title">Text</string>
+    <string name="stytch_b2c_whatsapp_tab_title">WhatsApp</string>
+
+    <!-- B2B UI strings -->
+    <string name="stytch_b2b_button_copy_all">Copy all</string>
+    <string name="stytch_b2b_button_create_an_organization">Create an organization</string>
+    <string name="stytch_b2b_button_done">Done</string>
+    <string name="stytch_b2b_button_download_codes">Download codes</string>
+    <string name="stytch_b2b_button_use_a_password">Use a password instead</string>
+    <string name="stytch_b2b_check_your_email_title">Check your email!</string>
+    <string name="stytch_b2b_code_verification_title">Enter verification code</string>
+    <string name="stytch_b2b_discovery_button_try_a_different_email_address">Try a different email address</string>
+    <string name="stytch_b2b_discovery_flow_title">Sign up or log in</string>
+    <string name="stytch_b2b_discovery_no_organizations_body">Make sure your email address is correct. Otherwise, you might need to be invited by your admin.</string>
+    <string name="stytch_b2b_discovery_no_organizations_create_one_body">%1$s does not have an account. Think this is a mistake? Try a different email address, or contact your admin.</string>
+    <string name="stytch_b2b_discovery_no_organizations_create_one_title">Create an organization to get started</string>
+    <string name="stytch_b2b_discovery_no_organizations_title">%1$s does not belong to any organizations.</string>
+    <string name="stytch_b2b_discovery_organization_arrow_invite">Accept Invite</string>
+    <string name="stytch_b2b_discovery_organization_arrow_join">Join</string>
+    <string name="stytch_b2b_discovery_title">Select an organization to continue</string>
+    <string name="stytch_b2b_email_confirmation_body">An email was sent to <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_b2b_email_confirmation_resend">Didn\'t get it? <annotation style="bold">Resend email</annotation></string>
+    <string name="stytch_b2b_email_confirmation_try_again">Didn\'t get it? <annotation style="bold">Try again</annotation></string>
+    <string name="stytch_b2b_email_method_selection_code">Email me a log in code</string>
+    <string name="stytch_b2b_email_method_selection_link">Email me a log in link</string>
+    <string name="stytch_b2b_email_method_selection_title">Select how you’d like to continue.</string>
+    <string name="stytch_b2b_email_sent_body">A login link was sent to you at <annotation arg="%1$s" style="bold">%1$s</annotation></string>
+    <string name="stytch_b2b_email_verification_flow_body">Confirm your email address with one of the following:</string>
+    <string name="stytch_b2b_email_verification_flow_title">Verify your email</string>
+    <string name="stytch_b2b_email_verification_title">Please verify your email</string>
+    <string name="stytch_b2b_error_auth_policy">Unable to join due to <annotation arg="%1$s" style="bold">%1$s</annotation>\'s authentication policy. Please contact your admin for more information.</string>
+    <string name="stytch_b2b_error_default">Something went wrong. Try again later or contact your admin for help.</string>
+    <string name="stytch_b2b_error_eml">Something went wrong. Your login link may have expired, been revoked, or been used more than once. Request a new login link to try again, or contact your admin for help.</string>
+    <string name="stytch_b2b_error_invalid_passcode">Invalid passcode, please try again.</string>
+    <string name="stytch_b2b_error_invalid_totp">Failed to validate TOTP code</string>
+    <string name="stytch_b2b_error_jit_ineligible">%1$s does not have access to %2$s. If you think this is a mistake, contact your admin.</string>
+    <string name="stytch_b2b_error_organization">The organization you are looking for could not be found. If you think this is a mistake, contact your admin.</string>
+    <string name="stytch_b2b_error_product_configuration">Invalid product configuration detected</string>
+    <string name="stytch_b2b_error_sso_organization_not_found">Organization not found. Please try again.</string>
+    <string name="stytch_b2b_error_title">Looks like there was an error!</string>
+    <string name="stytch_b2b_error_unable_to_verify_email">We were unable to verify your email. Please contact your admin.</string>
+    <string name="stytch_b2b_logging_in_title">Logging In…</string>
+    <string name="stytch_b2b_mfa_choose_sms">Text me a code</string>
+    <string name="stytch_b2b_mfa_choose_totp">Use an authenticator app</string>
+    <string name="stytch_b2b_mfa_enrollment_body">Your organization requires an additional form of verification to make your account more secure.</string>
+    <string name="stytch_b2b_mfa_enrollment_title">Set up Multi-Factor Authentication</string>
+    <string name="stytch_b2b_mfa_sms_enrollment_body">Your organization requires an additional form of verification to make your account more secure.</string>
+    <string name="stytch_b2b_mfa_sms_enrollment_entry_title">Enter passcode</string>
+    <string name="stytch_b2b_mfa_sms_enrollment_title">Enter your phone number to set up Multi-Factor Authentication</string>
+    <string name="stytch_b2b_mfa_totp_enrollment_body">Enter the key below into your authenticator app. If you don’t have an authenticator app, you’ll need to install one first.</string>
+    <string name="stytch_b2b_mfa_totp_enrollment_switch_to_sms">Text me a code instead</string>
+    <string name="stytch_b2b_mfa_totp_enrollment_title">Copy the code below to link your authenticator app</string>
+    <string name="stytch_b2b_organization_default">the organization</string>
+    <string name="stytch_b2b_organization_flow_title">Continue to %1$s</string>
+    <string name="stytch_b2b_password_forgot_body">We\'ll email you a login link to sign in to your account directly or reset your password if you have one.</string>
+    <string name="stytch_b2b_password_forgot_title">Check your email for help signing in!</string>
+    <string name="stytch_b2b_password_login_title">Log in with email and password</string>
+    <string name="stytch_b2b_password_reset_title">Didn\'t get it? Resend email</string>
+    <string name="stytch_b2b_password_set_new_body">A login link was sent to you at %1$s</string>
+    <string name="stytch_b2b_recovery_code_entry_body">Enter one of the backup codes you saved when setting up your authenticator app.</string>
+    <string name="stytch_b2b_recovery_code_entry_title">Enter backup code</string>
+    <string name="stytch_b2b_recovery_codes_save_body">This is the only time you will be able to access and save your backup codes.</string>
+    <string name="stytch_b2b_recovery_codes_save_title">Save your backup codes!</string>
+    <string name="stytch_b2b_set_a_new_password">Set a new password</string>
+    <string name="stytch_b2b_sso_discovery_email_title">Enter your email to continue</string>
+    <string name="stytch_b2b_sso_discovery_fallback_description">Please input the Organization\'s unique slug to continue. If you don\'t know the unique slug, log in through another method to view all of your available Organizations.</string>
+    <string name="stytch_b2b_sso_discovery_fallback_reset">Try another login method</string>
+    <string name="stytch_b2b_sso_discovery_fallback_slug_placeholder">Enter org slug</string>
+    <string name="stytch_b2b_sso_discovery_fallback_title">Sorry, we couldn\'t find any connections</string>
+    <string name="stytch_b2b_sso_discovery_menu_title">Select a connection to continue</string>
+    <string name="stytch_b2b_totp_entry_body">Enter the 6-digit code from your authenticator app.</string>
+    <string name="stytch_b2b_totp_entry_get_new_code">If the verification code doesn’t work, go back to your authenticator app to get a new code.</string>
+    <string name="stytch_b2b_totp_entry_use_backup_code">Can’t access your authenticator app? <annotation style="bold">Use a backup code</annotation></string>
+    <string name="stytch_b2b_trouble_signing_in">Having trouble signing in? <annotation style="bold">Get help</annotation></string>
+
+    <!-- Semantic strings (used for UI tests) -->
+    <string name="stytch_semantics_alert_dialog">Popup dialog</string>
+    <string name="stytch_semantics_back_button">Back</string>
+    <string name="stytch_semantics_email_error">Email error</string>
+    <string name="stytch_semantics_email_input">Email input</string>
+    <string name="stytch_semantics_email_password_entry">Entry form for email and password</string>
+    <string name="stytch_semantics_error">Error</string>
+    <string name="stytch_semantics_hide_password">Hide password</string>
+    <string name="stytch_semantics_loading_dialog">Loading</string>
+    <string name="stytch_semantics_logo">%1$s Logo</string>
+    <string name="stytch_semantics_oauth_button">OAuth button</string>
+    <string name="stytch_semantics_otp_entry">Entry form for One Time Passcode</string>
+    <string name="stytch_semantics_phone_input">Phone input</string>
+    <string name="stytch_semantics_show_password">Show password</string>
+    <string name="stytch_semantics_success">Success</string>
+    <string name="stytch_semantics_tabs">Tabs</string>
 </resources>

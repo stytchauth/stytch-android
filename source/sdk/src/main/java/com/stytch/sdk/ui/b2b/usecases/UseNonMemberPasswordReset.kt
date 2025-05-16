@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.b2b.usecases
 
+import com.stytch.sdk.R
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.common.network.models.BasicData
@@ -26,10 +27,12 @@ internal class UseNonMemberPasswordReset(
     operator fun invoke() {
         val organization = state.value.activeOrganization ?: return
         if (!organization.emailEligibleForJITProvisioning(state.value.emailState.emailAddress)) {
-            val errorText =
-                "${state.value.emailState.emailAddress} does not have access to " +
-                    "${organization.organizationName}. If you think this is a mistake, contact your admin."
-            return dispatch(SetGenericError(errorText))
+            return dispatch(
+                SetGenericError(
+                    errorMessageId = R.string.stytch_b2b_error_jit_ineligible,
+                    arguments = listOf(state.value.emailState.emailAddress, organization.organizationName),
+                ),
+            )
         }
         scope.launch(Dispatchers.IO) {
             request {
@@ -47,7 +50,7 @@ internal class UseNonMemberPasswordReset(
             }.onSuccess {
                 dispatch(SetNextRoute(Routes.PasswordResetVerifyConfirmation))
             }.onFailure {
-                dispatch(SetGenericError("We were unable to verify your email. Please contact your admin."))
+                dispatch(SetGenericError(errorMessageId = R.string.stytch_b2b_error_unable_to_verify_email))
             }
         }
     }

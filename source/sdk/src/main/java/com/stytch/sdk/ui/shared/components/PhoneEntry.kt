@@ -67,7 +67,7 @@ internal fun PhoneEntry(
             ?.toString() ?: ""
     val maxPhoneLengthForRegion = exampleNumber.length
     var expanded by remember { mutableStateOf(false) }
-    val semanticsPhoneInput = stringResource(id = R.string.semantics_phone_input)
+    val semanticsPhoneInput = stringResource(id = R.string.stytch_semantics_phone_input)
     Column {
         Row(
             modifier =
@@ -133,7 +133,7 @@ internal fun PhoneEntry(
                 },
                 visualTransformation = PhoneNumberVisualTransformation(region),
                 isError = isError,
-                placeholder = "(123) 456-7890",
+                placeholder = stringResource(id = R.string.stytch_placeholder_phone_number),
                 keyboardOptions =
                     KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Phone,
@@ -150,7 +150,7 @@ internal fun PhoneEntry(
         StytchButton(
             onClick = onPhoneNumberSubmit,
             modifier = Modifier.height(45.dp),
-            text = stringResource(id = R.string.button_continue),
+            text = stringResource(id = R.string.stytch_button_continue),
             enabled = phoneNumber.length >= maxPhoneLengthForRegion,
         )
     }

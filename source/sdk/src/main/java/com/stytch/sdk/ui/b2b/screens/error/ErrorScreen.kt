@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,7 +27,8 @@ import com.stytch.sdk.ui.shared.components.PageTitle
 internal fun ErrorScreen(viewModel: ErrorScreenViewModel) {
     val state = viewModel.state.collectAsStateWithLifecycle()
     val b2bError = state.value.b2BErrorType ?: return
-    val orgName = state.value.activeOrganization?.organizationName ?: "the organization"
+    val orgName =
+        state.value.activeOrganization?.organizationName ?: stringResource(R.string.stytch_b2b_organization_default)
     ErrorScreenComposable(b2bError = b2bError, orgName = orgName, dispatch = viewModel::dispatch)
 }
 
@@ -50,13 +52,13 @@ internal fun ErrorScreenComposable(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            PageTitle(text = "Looks like there was an error!")
+            PageTitle(text = stringResource(R.string.stytch_b2b_error_title))
             Image(
                 painter = painterResource(id = R.drawable.big_error_circle),
-                contentDescription = "Error",
+                contentDescription = stringResource(R.string.stytch_semantics_error),
             )
             Spacer(modifier = Modifier.height(32.dp))
-            BodyText(text = b2bError.description.format(orgName), textAlign = TextAlign.Center)
+            BodyText(text = stringResource(b2bError.id, orgName), textAlign = TextAlign.Center)
         }
     }
 }

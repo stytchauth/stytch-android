@@ -50,7 +50,7 @@ internal fun OTPEntry(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var finalCode by remember { mutableStateOf(listOf("", "", "", "", "", "")) }
-    val semantics = stringResource(id = R.string.semantics_otp_entry)
+    val semantics = stringResource(id = R.string.stytch_semantics_otp_entry)
 
     fun handleBackspace(index: Int) {
         var clearIndex = index

@@ -26,7 +26,6 @@ import com.stytch.sdk.ui.b2c.data.StytchProduct
 import com.stytch.sdk.ui.shared.components.BackButton
 import com.stytch.sdk.ui.shared.components.DividerWithText
 import com.stytch.sdk.ui.shared.components.EmailAndPasswordEntry
-import com.stytch.sdk.ui.shared.components.FormFieldStatus
 import com.stytch.sdk.ui.shared.components.LoadingDialog
 import com.stytch.sdk.ui.shared.components.PageTitle
 import com.stytch.sdk.ui.shared.components.StytchTextButton
@@ -102,7 +101,7 @@ private fun ReturningUserScreenComposable(
     Column(modifier = Modifier.padding(bottom = 32.dp)) {
         BackButton(onBack)
         PageTitle(
-            text = stringResource(id = R.string.log_in),
+            text = stringResource(id = R.string.stytch_b2c_returning_user_title),
             textAlign = TextAlign.Start,
         )
         EmailAndPasswordEntry(
@@ -114,31 +113,29 @@ private fun ReturningUserScreenComposable(
         )
         Spacer(modifier = Modifier.height(24.dp))
         StytchTextButton(
-            text = stringResource(id = R.string.forgot_password),
+            text = stringResource(id = R.string.stytch_b2c_forgot_password_title),
             onClick = onForgotPasswordClicked,
         )
         if (hasEML || hasEmailOTP) {
             DividerWithText(
                 modifier = Modifier.padding(top = 12.dp, bottom = 24.dp),
-                text = stringResource(id = R.string.or),
+                text = stringResource(id = R.string.stytch_method_divider_text),
             )
             StytchTextButton(
                 text =
                     stringResource(
                         id =
                             if (hasEML) {
-                                R.string.email_me_a_login_link
+                                R.string.stytch_b2c_button_login_link
                             } else {
-                                R.string.email_me_a_login_code
+                                R.string.stytch_b2c_button_login_code
                             },
                     ),
                 onClick = { if (hasEML) sendEML() else sendEmailOTP() },
             )
         }
     }
-    uiState.genericErrorMessage?.let {
-        FormFieldStatus(text = it, isError = true)
-    }
+    uiState.genericErrorMessage?.display()
     if (uiState.showLoadingDialog) {
         LoadingDialog()
     }

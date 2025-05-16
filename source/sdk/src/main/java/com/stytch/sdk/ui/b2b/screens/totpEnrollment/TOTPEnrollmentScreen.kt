@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -80,12 +81,8 @@ private fun TOTPEnrollmentScreenComposable(
         BackButton(onClick = {
             dispatch(TOTPEnrollmentScreenAction.GoToMFAEnrollment)
         })
-        PageTitle(textAlign = TextAlign.Left, text = "Copy the code below to link your authenticator app")
-        BodyText(
-            text =
-                "Enter the key below into your authenticator app. " +
-                    "If you don’t have an authenticator app, you’ll need to install one first.",
-        )
+        PageTitle(textAlign = TextAlign.Left, text = stringResource(R.string.stytch_b2b_mfa_totp_enrollment_title))
+        BodyText(text = stringResource(R.string.stytch_b2b_mfa_totp_enrollment_body))
         Box(
             modifier =
                 Modifier
@@ -132,7 +129,7 @@ private fun TOTPEnrollmentScreenComposable(
         Spacer(modifier = Modifier.height(16.dp))
         StytchButton(
             enabled = didCopyCode,
-            text = "Continue",
+            text = stringResource(R.string.stytch_button_continue),
             onClick = { dispatch(TOTPEnrollmentScreenAction.GoToCodeEntry) },
         )
     }

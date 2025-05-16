@@ -68,7 +68,7 @@ fun MainScreen(viewModel: HomeViewModel) {
                 isError = viewModel.showEmailError,
                 singleLine = true,
                 label = {
-                    Text(text = stringResource(id = R.string.email))
+                    Text(text = stringResource(id = R.string.stytch_label_email))
                 },
                 onValueChange = {
                     viewModel.emailState = it
