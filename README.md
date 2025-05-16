@@ -164,7 +164,7 @@ In order to run these example and workbench apps, you will need to set the follo
 * **example-apps/javademoapp:** `com.stytch.javademoapp`
 * **example-apps/stytchexampleapp:** `com.stytch.stytchexampleapp`
 * **workbench-apps/b2b-workbench:** `com.stytch.exampleapp.b2b`
-* **workbench-apps/stytchexampleapp:** `com.stytch.exampleapp`
+* **workbench-apps/consumer-workbench:** `com.stytch.exampleapp`
 
 ## Get Help And Join The Community
 Join the discussion, ask questions, and suggest new features in our ​[Slack community](https://stytch.com/docs/resources/support/overview)!
