@@ -2,10 +2,10 @@ package com.stytch.sdk.consumer.network
 
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
-import com.stytch.sdk.common.LIVE_SDK_URL
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NoResponseResponse
+import com.stytch.sdk.common.SDK_URL_PATH
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.TEST_SDK_URL
 import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.events.EventsAPI
@@ -54,16 +54,19 @@ internal object StytchApi : CommonApi {
     private lateinit var deviceInfo: DeviceInfo
     private lateinit var apiServiceClass: ApiService
     private lateinit var dfpInterceptor: StytchDFPInterceptor
+    private lateinit var endpointOptions: EndpointOptions
 
     override fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        endpointOptions: EndpointOptions,
         getSessionToken: () -> String?,
         dfpConfiguration: DFPConfiguration,
     ) {
         this.publicToken = publicToken
         this.deviceInfo = deviceInfo
         this.dfpInterceptor = StytchDFPInterceptor(dfpConfiguration)
+        this.endpointOptions = endpointOptions
         apiServiceClass =
             ApiService(
                 sdkUrl,
@@ -93,11 +96,7 @@ internal object StytchApi : CommonApi {
         }
 
     private val sdkUrl: String by lazy {
-        if (isTestToken) {
-            TEST_SDK_URL
-        } else {
-            LIVE_SDK_URL
-        }
+        "https://${if (isTestToken) endpointOptions.testDomain else endpointOptions.liveDomain}$SDK_URL_PATH"
     }
 
     internal fun assertInitialized() {

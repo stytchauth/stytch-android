@@ -1,6 +1,7 @@
 package com.stytch.sdk.common.network
 
 import com.stytch.sdk.common.DeviceInfo
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.network.models.BootstrapData
@@ -9,6 +10,7 @@ internal interface CommonApi {
     fun configure(
         publicToken: String,
         deviceInfo: DeviceInfo,
+        endpointOptions: EndpointOptions,
         getSessionToken: () -> String?,
         dfpConfiguration: DFPConfiguration,
     )

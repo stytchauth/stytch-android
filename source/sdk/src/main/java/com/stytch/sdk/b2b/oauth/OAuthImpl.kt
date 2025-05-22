@@ -193,7 +193,10 @@ internal class OAuthImpl(
     ) : OAuth.ProviderDiscovery {
         override fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
-            val host = if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+            val host =
+                StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
+                    "https://$it/v1/"
+                } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
             val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
             val urlParams =
                 mapOf(
@@ -221,7 +224,10 @@ internal class OAuthImpl(
                         return@suspendCancellableCoroutine
                     }
                     val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
-                    val host = if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                    val host =
+                        StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
+                            "https://$it/v1/"
+                        } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
                     val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
                     val urlParams =
                         mapOf(

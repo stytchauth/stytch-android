@@ -80,7 +80,13 @@ internal class ConfigurationManager {
                 dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
                 dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
             )
-        client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken, dfpConfiguration)
+        client.commonApi.configure(
+            publicToken,
+            deviceInfo,
+            options.endpointOptions,
+            client::getSessionToken,
+            dfpConfiguration,
+        )
         val bootstrapJob = refreshBootstrapAndApi(true)
         val sessionRehydrationJob = client.rehydrateSession()
         externalScope.launch(dispatchers.io) {

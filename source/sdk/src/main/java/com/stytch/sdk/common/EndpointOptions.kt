@@ -10,5 +10,7 @@ import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 public data class EndpointOptions
     @JvmOverloads
     constructor(
-        val dfppaDomain: String = "telemetry.stytch.com",
+        val testDomain: String = TEST_BASE_DOMAIN,
+        val liveDomain: String = LIVE_BASE_DOMAIN,
+        val dfppaDomain: String = DEFAULT_DFPPA_DOMAIN,
     )

@@ -1,9 +1,11 @@
 package com.stytch.sdk.common
 
-internal const val TEST_SDK_URL: String = "https://test.stytch.com/sdk/v1/"
-internal const val LIVE_SDK_URL: String = "https://api.stytch.com/sdk/v1/"
-internal const val TEST_API_URL: String = "https://test.stytch.com/v1/"
-internal const val LIVE_API_URL: String = "https://api.stytch.com/v1/"
+internal const val TEST_BASE_DOMAIN: String = "test.stytch.com"
+internal const val LIVE_BASE_DOMAIN: String = "api.stytch.com"
+internal const val DEFAULT_DFPPA_DOMAIN: String = "telemetry.stytch.com"
+internal const val SDK_URL_PATH: String = "/sdk/v1/"
+internal const val TEST_API_URL: String = "https://$TEST_BASE_DOMAIN/v1/"
+internal const val LIVE_API_URL: String = "https://$LIVE_BASE_DOMAIN/v1/"
 
 // Auth headers
 internal const val AUTH_HEADER_SDK_NAME = "stytch-android"
