@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
@@ -77,7 +78,7 @@ internal class StytchApiTest {
 
     @Test
     fun `StytchApi isInitialized returns correctly based on configuration state`() {
-        StytchApi.configure("publicToken", DeviceInfo(), { null }, mockk())
+        StytchApi.configure("publicToken", DeviceInfo(), EndpointOptions(), { null }, mockk())
         assert(StytchApi.isInitialized)
     }
 

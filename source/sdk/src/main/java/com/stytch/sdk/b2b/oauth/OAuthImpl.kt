@@ -10,17 +10,15 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.NoActivityProvided
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.ProvidedReceiverManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
-import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
 import com.stytch.sdk.common.utils.buildUri
+import com.stytch.sdk.common.utils.getApiUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -108,9 +106,11 @@ internal class OAuthImpl(
         override fun start(parameters: OAuth.Provider.StartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
             val host =
-                StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
-                    "https://$it/"
-                } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                getApiUrl(
+                    StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                    StytchB2BClient.configurationManager.options.endpointOptions,
+                    StytchB2BApi.isTestToken,
+                )
             val baseUrl = "${host}b2b/public/oauth/$providerName/start"
             val urlParams =
                 mapOf(
@@ -142,9 +142,11 @@ internal class OAuthImpl(
                     }
                     val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                     val host =
-                        StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
-                            "https://$it/"
-                        } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                        getApiUrl(
+                            StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                            StytchB2BClient.configurationManager.options.endpointOptions,
+                            StytchB2BApi.isTestToken,
+                        )
                     val baseUrl = "${host}b2b/public/oauth/$providerName/start"
                     val urlParams =
                         mapOf(
@@ -193,7 +195,12 @@ internal class OAuthImpl(
     ) : OAuth.ProviderDiscovery {
         override fun start(parameters: OAuth.ProviderDiscovery.DiscoveryStartParameters) {
             val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
-            val host = if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+            val host =
+                getApiUrl(
+                    StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                    StytchB2BClient.configurationManager.options.endpointOptions,
+                    StytchB2BApi.isTestToken,
+                )
             val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
             val urlParams =
                 mapOf(
@@ -221,7 +228,12 @@ internal class OAuthImpl(
                         return@suspendCancellableCoroutine
                     }
                     val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
-                    val host = if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                    val host =
+                        getApiUrl(
+                            StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                            StytchB2BClient.configurationManager.options.endpointOptions,
+                            StytchB2BApi.isTestToken,
+                        )
                     val baseUrl = "${host}b2b/public/oauth/$providerName/discovery/start"
                     val urlParams =
                         mapOf(

@@ -146,7 +146,7 @@ internal class StytchB2BClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         val publicToken = UUID.randomUUID().toString()
         stytchClientObject.configure(mContextMock, publicToken)
-        verify { StytchB2BApi.configure(publicToken, deviceInfo, any(), any()) }
+        verify { StytchB2BApi.configure(publicToken, deviceInfo, any(), any(), any()) }
     }
 
     @Test

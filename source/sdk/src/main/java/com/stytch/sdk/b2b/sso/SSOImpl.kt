@@ -16,16 +16,15 @@ import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
-import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.NoActivityProvided
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.ProvidedReceiverManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.utils.buildUri
+import com.stytch.sdk.common.utils.getApiUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -48,9 +47,11 @@ internal class SSOImpl(
 
     override fun start(params: SSO.StartParams) {
         val host =
-            StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
-                "https://$it/v1/"
-            } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+            getApiUrl(
+                StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                StytchB2BClient.configurationManager.options.endpointOptions,
+                StytchB2BApi.isTestToken,
+            )
         val potentialParameters =
             mapOf(
                 "connection_id" to params.connectionId,
@@ -75,9 +76,11 @@ internal class SSOImpl(
                     return@suspendCancellableCoroutine
                 }
                 val host =
-                    StytchB2BClient.configurationManager.bootstrapData.cnameDomain?.let {
-                        "https://$it/v1/"
-                    } ?: if (StytchB2BApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                    getApiUrl(
+                        StytchB2BClient.configurationManager.bootstrapData.cnameDomain,
+                        StytchB2BClient.configurationManager.options.endpointOptions,
+                        StytchB2BApi.isTestToken,
+                    )
                 val potentialParameters =
                     mapOf(
                         "connection_id" to parameters.connectionId,

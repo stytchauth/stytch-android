@@ -3,15 +3,14 @@ package com.stytch.sdk.consumer.oauth
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
-import com.stytch.sdk.common.LIVE_API_URL
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.common.TEST_API_URL
 import com.stytch.sdk.common.errors.NoActivityProvided
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.SSOManagerActivity
 import com.stytch.sdk.common.sso.SSOManagerActivity.Companion.URI_KEY
 import com.stytch.sdk.common.utils.buildUri
+import com.stytch.sdk.common.utils.getApiUrl
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.StytchApi
 import kotlinx.coroutines.CoroutineScope
@@ -35,9 +34,11 @@ internal class ThirdPartyOAuthImpl(
         val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
         val token = StytchApi.publicToken
         val host =
-            StytchClient.configurationManager.bootstrapData.cnameDomain?.let {
-                "https://$it/v1/"
-            } ?: if (StytchApi.isTestToken) TEST_API_URL else LIVE_API_URL
+            getApiUrl(
+                StytchClient.configurationManager.bootstrapData.cnameDomain,
+                StytchClient.configurationManager.options.endpointOptions,
+                StytchApi.isTestToken,
+            )
         val baseUrl = "${host}public/oauth/$providerName/start"
         val potentialParameters =
             mapOf(
@@ -68,9 +69,11 @@ internal class ThirdPartyOAuthImpl(
                 val pkce = pkcePairManager.generateAndReturnPKCECodePair().codeChallenge
                 val token = StytchApi.publicToken
                 val host =
-                    StytchClient.configurationManager.bootstrapData.cnameDomain?.let {
-                        "https://$it/v1/"
-                    } ?: if (StytchApi.isTestToken) TEST_API_URL else LIVE_API_URL
+                    getApiUrl(
+                        StytchClient.configurationManager.bootstrapData.cnameDomain,
+                        StytchClient.configurationManager.options.endpointOptions,
+                        StytchApi.isTestToken,
+                    )
                 val baseUrl = "${host}public/oauth/$providerName/start"
                 val potentialParameters =
                     mapOf(

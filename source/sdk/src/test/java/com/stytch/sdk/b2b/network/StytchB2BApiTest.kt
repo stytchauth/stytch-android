@@ -14,6 +14,7 @@ import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EncryptionManager
+import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NetworkChangeListener
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchAPIError
@@ -90,7 +91,7 @@ internal class StytchB2BApiTest {
 
     @Test
     fun `StytchB2BApi isInitialized returns correctly based on configuration state`() {
-        StytchB2BApi.configure("publicToken", DeviceInfo(), { null }, mockk())
+        StytchB2BApi.configure("publicToken", DeviceInfo(), EndpointOptions(), { null }, mockk())
         assert(StytchB2BApi.isInitialized)
     }
 

@@ -27,7 +27,7 @@ import java.util.UUID
 internal class ConfigurationManager {
     internal lateinit var deviceInfo: DeviceInfo
     internal lateinit var appSessionId: String
-    private var options: StytchClientOptions = StytchClientOptions()
+    internal var options: StytchClientOptions = StytchClientOptions()
     internal var applicationContext = WeakReference<Context>(null)
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
@@ -80,7 +80,13 @@ internal class ConfigurationManager {
                 dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
                 dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
             )
-        client.commonApi.configure(publicToken, deviceInfo, client::getSessionToken, dfpConfiguration)
+        client.commonApi.configure(
+            publicToken,
+            deviceInfo,
+            options.endpointOptions,
+            client::getSessionToken,
+            dfpConfiguration,
+        )
         val bootstrapJob = refreshBootstrapAndApi(true)
         val sessionRehydrationJob = client.rehydrateSession()
         externalScope.launch(dispatchers.io) {
