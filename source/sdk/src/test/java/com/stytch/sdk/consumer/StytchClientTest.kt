@@ -144,7 +144,7 @@ internal class StytchClientTest {
         every { mContextMock.getDeviceInfo() } returns deviceInfo
         val publicToken = UUID.randomUUID().toString()
         stytchClientObject.configure(mContextMock, publicToken)
-        verify { StytchApi.configure(publicToken, deviceInfo, any(), any()) }
+        verify { StytchApi.configure(publicToken, deviceInfo, any(), any(), any()) }
     }
 
     @Test
