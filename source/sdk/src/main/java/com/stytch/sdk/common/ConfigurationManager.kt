@@ -27,7 +27,7 @@ import java.util.UUID
 internal class ConfigurationManager {
     internal lateinit var deviceInfo: DeviceInfo
     internal lateinit var appSessionId: String
-    private var options: StytchClientOptions = StytchClientOptions()
+    internal var options: StytchClientOptions = StytchClientOptions()
     internal var applicationContext = WeakReference<Context>(null)
     internal var dispatchers: StytchDispatchers = StytchDispatchers()
     internal var externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
