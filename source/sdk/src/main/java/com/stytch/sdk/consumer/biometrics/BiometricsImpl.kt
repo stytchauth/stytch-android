@@ -21,6 +21,7 @@ import com.stytch.sdk.common.getValueOrThrow
 import com.stytch.sdk.consumer.BiometricsAuthResponse
 import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.DeleteFactorResponse
+import com.stytch.sdk.consumer.biometrics.BiometricAvailability.Unavailable.Reason
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -29,6 +30,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.InvalidAlgorithmParameterException
 import java.util.concurrent.CompletableFuture
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
@@ -73,6 +75,7 @@ internal class BiometricsImpl internal constructor(
         allowDeviceCredentials: Boolean,
     ): BiometricAvailability {
         val allowedAuthenticators = getAllowedAuthenticators(allowDeviceCredentials)
+        var errorEncounteredWhenGeneratingKey = false
         try {
             biometricsProvider.ensureSecretKeyIsAvailable(allowedAuthenticators)
         } catch (_: KeyPermanentlyInvalidatedException) {
@@ -81,11 +84,21 @@ internal class BiometricsImpl internal constructor(
             }
             return BiometricAvailability.RegistrationRevoked
         } catch (_: IllegalStateException) {
-            // Secret key is null/couldn't be created (likely because of missing biometric factor). Do nothing and fall
-            // back to regular areBiometricsAvailable check for full information
+            // Secret key is null/couldn't be created (likely because of missing biometric factor)
+            errorEncounteredWhenGeneratingKey = true
+        } catch (_: InvalidAlgorithmParameterException) {
+            errorEncounteredWhenGeneratingKey = true
         }
         return when (val result = biometricsProvider.areBiometricsAvailable(context, allowedAuthenticators)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
+                // if this returns success, BUT there were errors generating the key, biometrics aren't _really_
+                // available, see: https://issuetracker.google.com/issues/147374428. We wait until here to
+                // return the Unavailable case because it's possible one of the other error statuses is more
+                // informative/applicable. This is *just* to account for this known bug in the canAuthenticate()
+                // check.
+                if (errorEncounteredWhenGeneratingKey) {
+                    return BiometricAvailability.Unavailable(Reason.BIOMETRIC_ERROR_NONE_ENROLLED)
+                }
                 when (registrationExists()) {
                     true -> BiometricAvailability.AvailableRegistered
                     false -> BiometricAvailability.AvailableNoRegistrations
