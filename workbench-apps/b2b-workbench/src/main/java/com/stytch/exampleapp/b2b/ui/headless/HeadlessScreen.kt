@@ -124,7 +124,7 @@ fun HeadlessScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     NavHost(
-                        modifier = Modifier.weight(0.75f),
+                        modifier = Modifier.weight(0.75f).verticalScroll(rememberScrollState()),
                         navController = navController,
                         startDestination = HeadlessProducts.None,
                     ) {
