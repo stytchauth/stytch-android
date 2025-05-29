@@ -156,7 +156,7 @@ This repository is organized in three main parts:
 * **example-apps/** - These are two example apps (one in Kotlin, one in Java), demonstrating realistic use cases of the Stytch SDK, using both the Headless and Pre-Built UI implementations. Feel free to copy these projects and edit them to suit your needs
 * **source/sdk/** - This is the actual source code of the Stytch Android SDK
 
-For both the example apps and the workbench apps, you should consider them the same as if you were configuring your own custom app, and follow the setup instructions from above in regards to adding a string resource containing your `STYTCH_PUBLIC_TOKEN`. The `consumer-workbench` app also accepts the two following additional string resources:
+For both the example apps and the workbench apps, you should consider them the same as if you were configuring your own custom app, and follow the setup instructions from above in regards to adding a string resource containing your `STYTCH_PUBLIC_TOKEN`. The `consumer-workbench` app also requires the two following additional string resources (both of which may be blank, if you are not using these features, but the string resources themselves must exist):
 1. `PASSKEYS_DOMAIN` - for associating the workbench app with a domain on which you host your `.well-known/assetlinks.json` file
 2. `GOOGLE_CLIENT_ID` - for configuring Google OneTap
 

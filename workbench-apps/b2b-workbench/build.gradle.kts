@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     kotlin("android")
     alias(libs.plugins.kotlinPluginCompose)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -50,11 +51,12 @@ dependencies {
     implementation(libs.biometric.ktx)
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
-    implementation(libs.compose.material)
     implementation(libs.play.services.auth.api.phone)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.serialization)
+
     debugImplementation(libs.leakCanary)
 
     // Compose
