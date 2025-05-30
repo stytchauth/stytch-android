@@ -1,50 +1,39 @@
 package com.stytch.exampleapp.b2b
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.FragmentActivity
 import com.stytch.exampleapp.b2b.theme.AppTheme
+import com.stytch.exampleapp.b2b.ui.B2BWorkbenchApp
+import com.stytch.exampleapp.b2b.ui.B2BWorkbenchAppViewModel
+import com.stytch.sdk.b2b.StytchB2BClient
 
 class MainActivity : FragmentActivity() {
+    val viewModel by viewModels<B2BWorkbenchAppViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        StytchB2BClient.oauth.setOAuthReceiverActivity(this)
+        StytchB2BClient.sso.setSSOReceiverActivity(this)
         super.onCreate(savedInstanceState)
+        intent.data?.let {
+            viewModel.handleDeeplink(it)
+        }
         setContent {
+            val state = viewModel.uiState.collectAsState()
             AppTheme {
-                Column(
-                    modifier =
-                        Modifier
-                            .padding(64.dp)
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                ) {
-                    Button(onClick = ::launchHeadlessWorkbench) {
-                        Text(text = "Launch Headless Workbench")
-                    }
-                    Button(onClick = ::launchUIWorkbench) {
-                        Text(text = "Launch UI Workbench")
-                    }
-                }
+                B2BWorkbenchApp(
+                    state = state.value,
+                    logout = viewModel::logout,
+                )
             }
         }
     }
 
-    private fun launchHeadlessWorkbench() {
-        val intent = Intent(this, HeadlessWorkbenchActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun launchUIWorkbench() {
-        val intent = Intent(this, UIWorkbenchActivity::class.java)
-        startActivity(intent)
+    override fun onDestroy() {
+        super.onDestroy()
+        StytchB2BClient.oauth.setOAuthReceiverActivity(null)
+        StytchB2BClient.sso.setSSOReceiverActivity(null)
     }
 }

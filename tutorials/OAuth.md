@@ -19,7 +19,7 @@ There are two ways to listen for the result of this flow:
 2. **Direct Token Capture -** Configure the OAuth/SSO client with your currently running activity (using `oauth.setOAuthReceiverActivity()`/`sso.setSSOReceiverActivity()`, and use the appropriate `getTokenForProvider()` method. Under the hood, this works the same way as the first option, but will return the final token to the coroutine/callback/CompletableFuture. This method is a little easier to setup, as you don't need to specify an activity result listener, or parse the returned link manually
 
 ### Example Code
-For both flows in the following examples, we're going to use a redirect path of `app://oauth?type={}`, so make sure to add that as a valid redirect URL for the `Login` and `Signup` types in your Stytch Dashboard's [Redirect URL settings](stytch.com/dashboard/redirect-urls). You will also need to configure an [OAuth provider](https://stytch.com/dashboard/oauth). In this example, we are using GitHub.
+For both flows in the following examples, we're going to use a redirect path of `[YOUR-PUBLIC-TOKEN]://oauth?type={}`, so make sure to add that as a valid redirect URL for the `Login` and `Signup` types in your Stytch Dashboard's [Redirect URL settings](stytch.com/dashboard/redirect-urls). You will also need to configure an [OAuth provider](https://stytch.com/dashboard/oauth). In this example, we are using GitHub.
 
 #### Activity Result Callback flow:
 For this flow,  you will need to create an activity result handler in your main activity:
@@ -50,8 +50,8 @@ class MyViewModel : ViewModel() {
                 context = context,
                 oAuthRequestIdentifier = STYTCH_OAUTH_REQUEST_CODE,
                 // notice how we set the type here to identify between logins and signups
-                loginRedirectUrl = "app://oauth?type=login",
-                signupRedirectUrl = "app://oauth?type=signup",
+                loginRedirectUrl = "[YOUR-PUBLIC-TOKEN]://oauth?type=login",
+                signupRedirectUrl = "[YOUR-PUBLIC-TOKEN]://oauth?type=signup",
             )
          StytchClient.oauth.github.start(startParameters)
     }
@@ -119,8 +119,8 @@ class MyViewModel : ViewModel() {
     fun loginWithGithub() {
         val startParameters =
             OAuth.ThirdParty.GetTokenForProviderParams(
-                loginRedirectUrl = "app://oauth?type={}",
-                signupRedirectUrl = "app://oauth?type={}",
+                loginRedirectUrl = "[YOUR-PUBLIC-TOKEN]://oauth?type=login",
+                signupRedirectUrl = "[YOUR-PUBLIC-TOKEN]://oauth?type=signup",
             )
         viewModelScope.launch {
             when (val token = StytchClient.oauth.github.getTokenForProvider(startParameters)) {

@@ -22,26 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.stytch.exampleapp.b2b.HeadlessWorkbenchActivity"  android:exported="true">
-            <intent-filter android:label="Headless">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="app"
-                    android:host="b2bworkbench" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.stytch.exampleapp.b2b.UIWorkbenchActivity"  android:exported="true">
-            <intent-filter android:label="UI">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="app"
-                    android:host="b2bworkbenchui" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
