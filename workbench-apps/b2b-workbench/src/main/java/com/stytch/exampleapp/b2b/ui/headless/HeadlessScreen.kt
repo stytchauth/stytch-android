@@ -44,6 +44,7 @@ import com.stytch.exampleapp.b2b.ui.headless.oauth.OAuthScreen
 import com.stytch.exampleapp.b2b.ui.headless.organization.OrganizationScreen
 import com.stytch.exampleapp.b2b.ui.headless.otp.OTPScreen
 import com.stytch.exampleapp.b2b.ui.headless.passwords.PasswordsScreen
+import com.stytch.exampleapp.b2b.ui.headless.pkce.PKCEScreen
 import com.stytch.exampleapp.b2b.ui.headless.recoveryCodes.RecoveryCodesScreen
 import com.stytch.exampleapp.b2b.ui.headless.scim.SCIMScreen
 import com.stytch.exampleapp.b2b.ui.headless.sso.SSOScreen
@@ -152,6 +153,9 @@ fun HeadlessScreen() {
                         composable<HeadlessProducts.Passwords> {
                             PasswordsScreen(viewModel::setResponseState)
                         }
+                        composable<HeadlessProducts.PKCE> {
+                            PKCEScreen()
+                        }
                         composable<HeadlessProducts.RecoveryCodes> {
                             RecoveryCodesScreen(viewModel::setResponseState)
                         }
@@ -210,6 +214,8 @@ fun HeadlessScreen() {
     @Serializable data object SSO : HeadlessProducts("SSO")
 
     @Serializable data object TOTP : HeadlessProducts("TOTP")
+
+    @Serializable data object PKCE : HeadlessProducts("PKCE")
 }
 
 val AllHeadlessProducts =
@@ -221,6 +227,7 @@ val AllHeadlessProducts =
         HeadlessProducts.Organization,
         HeadlessProducts.OTP,
         HeadlessProducts.Passwords,
+        HeadlessProducts.PKCE,
         HeadlessProducts.RecoveryCodes,
         HeadlessProducts.SCIM,
         HeadlessProducts.SSO,
