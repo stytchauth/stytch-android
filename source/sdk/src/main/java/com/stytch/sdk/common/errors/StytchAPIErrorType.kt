@@ -134,6 +134,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CNAME_REQUIRED_FOR_HTTP_ONLY_COOKIES(
         type = "cname_required_for_http_only_cookies",
     ),
+    CNAME_REQUIRED_TO_ENABLE_HTTP_ONLY_COOKIES(
+        type = "cname_required_to_enable_http_only_cookies",
+    ),
     CONNECTED_APP_CONSENT_REVOKED(
         type = "connected_app_consent_revoked",
     ),
@@ -1009,6 +1012,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     INVALID_USER_ID(
         type = "invalid_user_id",
+    ),
+    INVALID_USER_LOCK_THRESHOLD(
+        type = "invalid_user_lock_threshold",
+    ),
+    INVALID_USER_LOCK_TTL(
+        type = "invalid_user_lock_ttl",
     ),
     INVALID_USERINFO_URL(
         type = "invalid_userinfo_url",
