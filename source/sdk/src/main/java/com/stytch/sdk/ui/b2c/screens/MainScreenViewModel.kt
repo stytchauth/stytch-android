@@ -2,6 +2,7 @@ package com.stytch.sdk.ui.b2c.screens
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,8 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.stytch.sdk.R
 import com.stytch.sdk.common.StytchResult
+import com.stytch.sdk.common.errors.StytchInternalError
+import com.stytch.sdk.common.errors.UnexpectedCredentialType
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.UserType
@@ -146,11 +150,20 @@ internal class MainScreenViewModel(
                             _eventFlow.emit(EventState.Authenticated(result))
                         }
                         is StytchResult.Error -> {
-                            onStartThirdPartyOAuth(
-                                context,
-                                provider = provider,
-                                oAuthOptions = productConfig.oAuthOptions,
-                            )
+                            val error = result.exception
+                            val cause = (error as? StytchInternalError)?.exception
+                            if (error is UnexpectedCredentialType ||
+                                cause is NoCredentialException ||
+                                cause is GoogleIdTokenParsingException
+                            ) {
+                                onStartThirdPartyOAuth(
+                                    context,
+                                    provider = provider,
+                                    oAuthOptions = productConfig.oAuthOptions,
+                                )
+                            } else {
+                                _eventFlow.emit(EventState.Authenticated(result))
+                            }
                         }
                     }
                 } ?: onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
