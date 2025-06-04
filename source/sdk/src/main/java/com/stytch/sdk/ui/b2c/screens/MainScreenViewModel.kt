@@ -141,7 +141,18 @@ internal class MainScreenViewModel(
                                 clientId = clientId,
                             ),
                         )
-                    _eventFlow.emit(EventState.Authenticated(result))
+                    when (result) {
+                        is StytchResult.Success -> {
+                            _eventFlow.emit(EventState.Authenticated(result))
+                        }
+                        is StytchResult.Error -> {
+                            onStartThirdPartyOAuth(
+                                context,
+                                provider = provider,
+                                oAuthOptions = productConfig.oAuthOptions,
+                            )
+                        }
+                    }
                 } ?: onStartThirdPartyOAuth(context, provider = provider, oAuthOptions = productConfig.oAuthOptions)
             }
         } else {
@@ -182,6 +193,7 @@ internal class MainScreenViewModel(
             OAuthProvider.TWITCH -> stytchClient.oauth.twitch.start(parameters)
             OAuthProvider.TWITTER -> stytchClient.oauth.twitter.start(parameters)
         }
+        savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] = uiState.value.copy(showLoadingDialog = false)
     }
 
     fun onCountryCodeChanged(countryCode: String) {
