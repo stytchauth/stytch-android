@@ -2018,6 +2018,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     TOTPS_NOT_FOUND_FOR_USER(
         type = "totps_not_found_for_user",
     ),
+    TRUSTED_TOKEN_PROFILE_NOT_FOUND(
+        type = "trusted_token_profile_not_found",
+    ),
     TWITTER_401(
         type = "twitter_401",
     ),
