@@ -6,6 +6,8 @@ import com.stytch.sdk.common.dfp.CaptchaProviderImpl
 import com.stytch.sdk.common.dfp.DFPConfiguration
 import com.stytch.sdk.common.dfp.DFPProvider
 import com.stytch.sdk.common.dfp.DFPProviderImpl
+import com.stytch.sdk.common.dfp.DFPType
+import com.stytch.sdk.common.dfp.WebviewActivityProvider
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.network.models.DFPProtectedAuthMode
@@ -56,12 +58,20 @@ internal class ConfigurationManager {
         this.applicationContext = WeakReference(context.applicationContext)
         this.deviceInfo = context.getDeviceInfo()
         this.appSessionId = "app-session-id-${UUID.randomUUID()}"
+        val activityProvider =
+            if (options.dfpType == DFPType.Webview) {
+                WebviewActivityProvider(context.applicationContext as Application)
+            } else {
+                null
+            }
         this.dfpProvider =
             DFPProviderImpl(
                 scope = externalScope,
                 context = context.applicationContext,
                 publicToken = publicToken,
                 dfppaDomain = options.endpointOptions.dfppaDomain,
+                dfpType = options.dfpType,
+                activityProvider = activityProvider,
             )
         this.smsRetriever =
             StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
