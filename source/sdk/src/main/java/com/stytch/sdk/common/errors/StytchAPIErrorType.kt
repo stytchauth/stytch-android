@@ -1544,6 +1544,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ORGANIZATION_SEARCH_EXPECTED_ARRAY_OF_STRINGS(
         type = "organization_search_expected_array_of_strings",
     ),
+    ORGANIZATION_SEARCH_EXPECTED_BOOLEAN(
+        type = "organization_search_expected_boolean",
+    ),
     ORGANIZATION_SEARCH_EXPECTED_STRING(
         type = "organization_search_expected_string",
     ),
@@ -1571,6 +1574,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ORGANIZATION_SEARCH_MISSING_FILTER_VALUE(
         type = "organization_search_missing_filter_value",
     ),
+    ORGANIZATION_SEARCH_MISSING_HAS_ACTIVE_SSO_CONNECTION(
+        type = "organization_search_missing_has_active_sso_connection",
+    ),
     ORGANIZATION_SEARCH_MISSING_MEMBER_EMAIL_FUZZY(
         type = "organization_search_missing_member_email_fuzzy",
     ),
@@ -1588,6 +1594,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     ORGANIZATION_SEARCH_MISSING_ORGANIZATION_SLUGS(
         type = "organization_search_missing_organization_slugs",
+    ),
+    ORGANIZATION_SEARCH_MISSING_SSO_CONNECTION_ID(
+        type = "organization_search_missing_sso_connection_id",
     ),
     ORGANIZATION_SEARCH_ORGANIZATION_NAME_FUZZY_TOO_SHORT(
         type = "organization_search_organization_name_fuzzy_too_short",
@@ -1958,6 +1967,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     TOO_MANY_OAUTH_ORGANIZATION_LOCATORS(
         type = "too_many_oauth_organization_locators",
     ),
+    TOO_MANY_PEM_FILES_FOR_TRUSTED_TOKEN_PROFILE(
+        type = "too_many_pem_files_for_trusted_token_profile",
+    ),
     TOO_MANY_PROJECTS(
         type = "too_many_projects",
     ),
@@ -1996,6 +2008,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     TOO_MANY_SSO_VERIFICATION_CERTIFICATES(
         type = "too_many_sso_verification_certificates",
+    ),
+    TOO_MANY_TRUSTED_TOKEN_PROFILES_FOR_PROJECT(
+        type = "too_many_trusted_token_profiles_for_project",
     ),
     TOO_MANY_UNVERIFIED_FACTORS(
         type = "too_many_unverified_factors",
