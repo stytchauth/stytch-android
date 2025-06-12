@@ -71,6 +71,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     BULK_MIGRATE_INVALID_USER_COUNT(
         type = "bulk_migrate_invalid_user_count",
     ),
+    CANNOT_ADD_PEM_FILE_TO_NON_PEM_TRUSTED_TOKEN_PROFILE(
+        type = "cannot_add_pem_file_to_non_pem_trusted_token_profile",
+    ),
     CANNOT_ASSIGN_DEFAULT_RBAC_ROLE_ID(
         type = "cannot_assign_default_rbac_role_id",
     ),
@@ -79,6 +82,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     CANNOT_DELETE_EMAIL(
         type = "cannot_delete_email",
+    ),
+    CANNOT_DELETE_LAST_PEM_FILE_FOR_TRUSTED_TOKEN_PROFILE(
+        type = "cannot_delete_last_pem_file_for_trusted_token_profile",
     ),
     CANNOT_DELETE_LAST_PRIMARY_FACTOR(
         type = "cannot_delete_last_primary_factor",
