@@ -1010,6 +1010,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_TOTP_ID(
         type = "invalid_totp_id",
     ),
+    INVALID_TRUSTED_AUTH_TOKEN(
+        type = "invalid_trusted_auth_token",
+    ),
     INVALID_URL(
         type = "invalid_url",
     ),
