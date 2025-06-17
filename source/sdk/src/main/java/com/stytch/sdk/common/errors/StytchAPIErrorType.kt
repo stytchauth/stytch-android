@@ -1952,6 +1952,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     THIRD_PARTY_CLIENTS_CANNOT_USE_FULL_ACCESS(
         type = "third_party_clients_cannot_use_full_access",
     ),
+    THIRD_PARTY_CLIENTS_REQUIRE_CONSENT_FOR_OFFLINE_ACCESS(
+        type = "third_party_clients_require_consent_for_offline_access",
+    ),
     TOO_FEW_TOKENS_AUTHENTICATED(
         type = "too_few_tokens_authenticated",
     ),
