@@ -89,16 +89,19 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/login_or_create")
+    @DFPPAEnabled
     suspend fun loginOrCreateUserByOTPWithEmail(
         @Body request: ConsumerRequests.OTP.Email,
     ): ConsumerResponses.LoginOrCreateOTPResponse
 
     @POST("otps/email/send/primary")
+    @DFPPAEnabled
     suspend fun sendOTPWithEmailPrimary(
         @Body request: ConsumerRequests.OTP.Email,
     ): ConsumerResponses.OTPSendResponse
 
     @POST("otps/email/send/secondary")
+    @DFPPAEnabled
     suspend fun sendOTPWithEmailSecondary(
         @Body request: ConsumerRequests.OTP.Email,
     ): ConsumerResponses.OTPSendResponse

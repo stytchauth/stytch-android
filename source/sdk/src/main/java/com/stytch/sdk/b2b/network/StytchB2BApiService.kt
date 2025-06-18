@@ -172,16 +172,19 @@ internal interface StytchB2BApiService : ApiService.ApiEndpoints {
     ): B2BResponses.Passwords.StrengthCheckResponse
 
     @POST("b2b/passwords/discovery/reset/start")
+    @DFPPAEnabled
     suspend fun passwordDiscoveryResetByEmailStart(
         @Body request: B2BRequests.Passwords.Discovery.ResetByEmailStartRequest,
     ): B2BResponses.Passwords.Discovery.ResetByEmailStartResponse
 
     @POST("b2b/passwords/discovery/reset")
+    @DFPPAEnabled
     suspend fun passwordDiscoveryResetByEmail(
         @Body request: B2BRequests.Passwords.Discovery.ResetByEmailRequest,
     ): B2BResponses.Passwords.Discovery.ResetByEmailResponse
 
     @POST("b2b/passwords/discovery/authenticate")
+    @DFPPAEnabled
     suspend fun passwordDiscoveryAuthenticate(
         @Body request: B2BRequests.Passwords.Discovery.AuthenticateRequest,
     ): B2BResponses.Passwords.Discovery.AuthenticateResponse
