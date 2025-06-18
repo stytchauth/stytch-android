@@ -188,6 +188,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     DESIRED_EMAIL_DEACTIVATED_BY_DIFFERENT_MEMBER(
         type = "desired_email_deactivated_by_different_member",
     ),
+    DESIRED_EMAIL_UPDATING_FOR_DIFFERENT_MEMBER(
+        type = "desired_email_updating_for_different_member",
+    ),
     DOWNSTREAM_CARRIER_ERROR(
         type = "downstream_carrier_error",
     ),
