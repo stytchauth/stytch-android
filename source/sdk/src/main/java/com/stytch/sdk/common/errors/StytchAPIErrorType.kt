@@ -1133,6 +1133,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     MEMBER_DOES_NOT_EXIST_IN_ORGANIZATION(
         type = "member_does_not_exist_in_organization",
     ),
+    MEMBER_HAS_NO_ACTIVE_VERIFIED_EMAIL(
+        type = "member_has_no_active_verified_email",
+    ),
     MEMBER_IMPERSONATION_NOT_ALLOWED(
         type = "member_impersonation_not_allowed",
     ),
