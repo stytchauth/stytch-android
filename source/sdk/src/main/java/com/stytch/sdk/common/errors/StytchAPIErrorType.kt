@@ -2111,6 +2111,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     UNABLE_TO_REPRESENT_CUSTOM_CLAIMS_JSON(
         type = "unable_to_represent_custom_claims_json",
     ),
+    UNABLE_TO_VERIFY_MEMBER_EMAIL_UPDATE(
+        type = "unable_to_verify_member_email_update",
+    ),
     UNAUTHORIZED_ACTION(
         type = "unauthorized_action",
     ),
