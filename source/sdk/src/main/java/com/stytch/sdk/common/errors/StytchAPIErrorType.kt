@@ -152,6 +152,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
+    COUNTRY_CODE_ALLOWLIST_B2B_WHATSAPP_NOT_SUPPORTED(
+        type = "country_code_allowlist_b2b_whatsapp_not_supported",
+    ),
     COUNTRY_CODE_ALLOWLIST_EMPTY(
         type = "country_code_allowlist_empty",
     ),
