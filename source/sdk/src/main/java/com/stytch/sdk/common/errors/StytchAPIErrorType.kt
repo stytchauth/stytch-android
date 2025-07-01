@@ -143,11 +143,44 @@ public enum class StytchAPIErrorType(public val type: String) {
     CNAME_REQUIRED_TO_ENABLE_HTTP_ONLY_COOKIES(
         type = "cname_required_to_enable_http_only_cookies",
     ),
+    CONNECTED_APP_ALREADY_ROTATING_SECRET(
+        type = "connected_app_already_rotating_secret",
+    ),
     CONNECTED_APP_CONSENT_REVOKED(
         type = "connected_app_consent_revoked",
     ),
+    CONNECTED_APP_INVALID_REDIRECT_URL(
+        type = "connected_app_invalid_redirect_url",
+    ),
+    CONNECTED_APP_MISCONFIGURED_CLIENT(
+        type = "connected_app_misconfigured_client",
+    ),
     CONNECTED_APP_NOT_ALLOWED_FOR_ORG(
         type = "connected_app_not_allowed_for_org",
+    ),
+    CONNECTED_APP_NOT_FOUND(
+        type = "connected_app_not_found",
+    ),
+    CONNECTED_APP_NOT_ROTATING_SECRET(
+        type = "connected_app_not_rotating_secret",
+    ),
+    CONNECTED_APP_REDIRECT_URL_CANNOT_USE_LOCALHOST(
+        type = "connected_app_redirect_url_cannot_use_localhost",
+    ),
+    CONNECTED_APP_REDIRECT_URL_HTTP_SCHEME_MUST_USE_LOOPBACK(
+        type = "connected_app_redirect_url_http_scheme_must_use_loopback",
+    ),
+    CONNECTED_APP_REDIRECT_URL_MUST_INCLUDE_SCHEME(
+        type = "connected_app_redirect_url_must_include_scheme",
+    ),
+    CONNECTED_APP_REDIRECT_URL_MUST_USE_HTTP_OR_HTTPS_SCHEME(
+        type = "connected_app_redirect_url_must_use_http_or_https_scheme",
+    ),
+    CONNECTED_APP_REDIRECT_URL_MUST_USE_HTTPS_SCHEME(
+        type = "connected_app_redirect_url_must_use_https_scheme",
+    ),
+    CONNECTED_APP_SUPPLIED_REDIRECT_URL_NOT_FOUND_IN_CLIENT(
+        type = "connected_app_supplied_redirect_url_not_found_in_client",
     ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
@@ -383,39 +416,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     IDP_AUTH_CODE_NOT_FOUND(
         type = "idp_auth_code_not_found",
     ),
-    IDP_CLIENT_ALREADY_ROTATING_SECRET(
-        type = "idp_client_already_rotating_secret",
-    ),
-    IDP_CLIENT_INVALID_REDIRECT_URL(
-        type = "idp_client_invalid_redirect_url",
-    ),
-    IDP_CLIENT_MISCONFIGURED_CLIENT(
-        type = "idp_client_misconfigured_client",
-    ),
-    IDP_CLIENT_NOT_FOUND(
-        type = "idp_client_not_found",
-    ),
-    IDP_CLIENT_NOT_ROTATING_SECRET(
-        type = "idp_client_not_rotating_secret",
-    ),
-    IDP_CLIENT_REDIRECT_URL_CANNOT_USE_LOCALHOST(
-        type = "idp_client_redirect_url_cannot_use_localhost",
-    ),
-    IDP_CLIENT_REDIRECT_URL_HTTP_SCHEME_MUST_USE_LOOPBACK(
-        type = "idp_client_redirect_url_http_scheme_must_use_loopback",
-    ),
-    IDP_CLIENT_REDIRECT_URL_MUST_INCLUDE_SCHEME(
-        type = "idp_client_redirect_url_must_include_scheme",
-    ),
-    IDP_CLIENT_REDIRECT_URL_MUST_USE_HTTP_OR_HTTPS_SCHEME(
-        type = "idp_client_redirect_url_must_use_http_or_https_scheme",
-    ),
-    IDP_CLIENT_REDIRECT_URL_MUST_USE_HTTPS_SCHEME(
-        type = "idp_client_redirect_url_must_use_https_scheme",
-    ),
-    IDP_CLIENT_SUPPLIED_REDIRECT_URL_NOT_FOUND_IN_CLIENT(
-        type = "idp_client_supplied_redirect_url_not_found_in_client",
-    ),
     IDP_INVALID_ACCESS_TOKEN_CUSTOM_AUDIENCE(
         type = "idp_invalid_access_token_custom_audience",
     ),
@@ -533,6 +533,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_CODE(
         type = "invalid_code",
     ),
+    INVALID_CONNECTED_APP_TYPE(
+        type = "invalid_connected_app_type",
+    ),
     INVALID_CONNECTION_FOR_JIT_PROVISIONING(
         type = "invalid_connection_for_jit_provisioning",
     ),
@@ -616,9 +619,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     INVALID_ID(
         type = "invalid_id",
-    ),
-    INVALID_IDP_CLIENT_TYPE(
-        type = "invalid_idp_client_type",
     ),
     INVALID_IDP_ENTITY_ID(
         type = "invalid_idp_entity_id",
@@ -1706,8 +1706,8 @@ public enum class StytchAPIErrorType(public val type: String) {
     PROJECT_USER_NOT_FOUND(
         type = "project_user_not_found",
     ),
-    PUBLIC_IDP_CLIENTS_DO_NOT_HAVE_SECRETS(
-        type = "public_idp_clients_do_not_have_secrets",
+    PUBLIC_CONNECTED_APPS_DO_NOT_HAVE_SECRETS(
+        type = "public_connected_apps_do_not_have_secrets",
     ),
     PUBLIC_KEY_MISSING(
         type = "public_key_missing",
@@ -1970,14 +1970,14 @@ public enum class StytchAPIErrorType(public val type: String) {
     TOO_MANY_BIOMETRIC_REGISTRATIONS_FOR_USER(
         type = "too_many_biometric_registrations_for_user",
     ),
+    TOO_MANY_CONNECTED_APPS(
+        type = "too_many_connected_apps",
+    ),
     TOO_MANY_DOMAINS(
         type = "too_many_domains",
     ),
     TOO_MANY_EMAIL_TEMPLATES(
         type = "too_many_email_templates",
-    ),
-    TOO_MANY_IDP_CLIENTS(
-        type = "too_many_idp_clients",
     ),
     TOO_MANY_M2M_CLIENT_SCOPES(
         type = "too_many_m2m_client_scopes",
