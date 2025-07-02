@@ -39,9 +39,8 @@ internal fun Context.clearPreferences(preferenceFileNames: List<String>) {
         }
     } else {
         preferenceFileNames.forEach {
-            getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().apply()
-            val dir = File(applicationInfo.dataDir, "shared_prefs")
-            File(dir, "$it.xml").delete()
+            val file = File(applicationInfo.dataDir, "shared_prefs/$it.xml")
+            file.exists() && file.delete()
         }
     }
 }

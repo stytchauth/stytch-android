@@ -28,8 +28,9 @@ import java.security.SecureRandom
 @Suppress("TooManyFunctions")
 internal object EncryptionManager {
     private const val KEY_ALIAS = "Stytch RSA 2048"
-    private const val KEY_PREFERENCES_FILE_NAME = "stytch_secured_pref"
-    private const val MASTER_KEY_URI = "android-keystore://stytch_master_key"
+    internal const val KEY_PREFERENCES_FILE_NAME = "stytch_secured_pref"
+    internal const val MASTER_KEY_ALIAS = "stytch_master_key"
+    private const val MASTER_KEY_URI = "android-keystore://$MASTER_KEY_ALIAS"
     private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
 

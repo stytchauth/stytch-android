@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<full-backup-content>
-    <exclude domain="sharedpref" path="stytch_secured_pref.xml"/>
-    <exclude domain="sharedpref" path="stytch_preferences.xml"/>
-</full-backup-content>

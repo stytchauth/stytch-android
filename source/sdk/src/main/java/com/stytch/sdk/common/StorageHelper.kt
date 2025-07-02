@@ -3,6 +3,9 @@ package com.stytch.sdk.common
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
+import com.stytch.sdk.common.EncryptionManager.KEY_PREFERENCES_FILE_NAME
+import com.stytch.sdk.common.EncryptionManager.MASTER_KEY_ALIAS
+import com.stytch.sdk.common.extensions.clearPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,6 +23,14 @@ internal object StorageHelper {
     fun initialize(context: Context) {
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             keyStore.load(null)
+            if (!keyStore.containsAlias(MASTER_KEY_ALIAS)) {
+                // If an app is restored on device, the encrypted shared preference files will be restored, but the key
+                // to decrypt them will NOT. If, on startup, we detect that there is no master key, we should clean
+                // up any potentially restored preference files
+                // NOTE: this is a slightly different flow than if the key is corrupted, which is checked in the
+                // `getOrGenerateNewAES256KeysetManager` method
+                context.clearPreferences(listOf(STYTCH_PREFERENCES_FILE_NAME, KEY_PREFERENCES_FILE_NAME))
+            }
             sharedPreferences = context.getSharedPreferences(STYTCH_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
             EncryptionManager.createNewKeys(context)
         }
