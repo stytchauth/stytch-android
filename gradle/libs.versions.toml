@@ -50,7 +50,6 @@ jimfs = "1.3.0"
 grpcNetty = "1.65.0"
 guava = "32.0.1-jre"
 woodstox = "6.4.0"
-nexus = "1.1.0"
 ktlint = "12.1.0"
 detekt = "1.23.6"
 ksp = "2.1.0-1.0.29"
@@ -144,7 +143,6 @@ androidApplication = { id = "com.android.application", version.ref = "gradle" }
 androidLibrary = { id = "com.android.library", version.ref = "gradle" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinPluginCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinGradlePlugin" }
-nexusPublishPlugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaGradlePlugin" }

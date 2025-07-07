@@ -271,46 +271,46 @@ project.afterEvaluate {
     }
 
     publishing {
-        publications.withType<MavenPublication>().configureEach {
-            groupId = publishGroupId
-            artifactId = publishArtifactId
-            version = publishVersion
-            artifact(tasks.getByName("androidSourcesJar"))
-            from(components.get("java"))
-            pom {
-                name = publishArtifactId
-                description = "Stytch Android SDK"
-                url = "https://github.com/stytchauth/stytch-android"
-                licenses {
-                    license {
-                        name = "Stytch License"
-                        url = "https://github.com/stytchauth/stytch-android/blob/main/LICENSE"
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = publishGroupId
+                artifactId = publishArtifactId
+                version = publishVersion
+                from(components["release"])
+                pom {
+                    name = publishArtifactId
+                    description = "Stytch Android SDK"
+                    url = "https://github.com/stytchauth/stytch-android"
+                    licenses {
+                        license {
+                            name = "Stytch License"
+                            url = "https://github.com/stytchauth/stytch-android/blob/main/LICENSE"
+                        }
                     }
-                }
-                developers {
-                    developer {
-                        id = "Stytch"
-                        name = "Stytch Developers"
-                        email = "developers@stytch.com"
+                    developers {
+                        developer {
+                            id = "Stytch"
+                            name = "Stytch Developers"
+                            email = "developers@stytch.com"
+                        }
                     }
-                }
-
-                scm {
-                    connection = "scm:git:github.com/stytchauth/stytch-android.git"
-                    developerConnection = "scm:git:ssh://github.com/stytchauth/stytch-android.git"
-                    url = "https://github.com/stytchauth/stytch-android/tree/main"
+                    scm {
+                        connection = "scm:git:github.com/stytchauth/stytch-android.git"
+                        developerConnection = "scm:git:ssh://github.com/stytchauth/stytch-android.git"
+                        url = "https://github.com/stytchauth/stytch-android/tree/main"
+                    }
                 }
             }
-        }
-    }
-    repositories {
-        maven {
-            url =
-                layout.buildDirectory
-                    .dir("staging-deploy")
-                    .get()
-                    .asFile
-                    .toURI()
+            repositories {
+                maven {
+                    url =
+                        layout.buildDirectory
+                            .dir("staging-deploy")
+                            .get()
+                            .asFile
+                            .toURI()
+                }
+            }
         }
     }
 }
@@ -327,7 +327,13 @@ jreleaser {
                 create("sonatype") {
                     setActive("ALWAYS")
                     url = "https://central.sonatype.com/api/v1/publisher"
-                    stagingRepository("build/staging-deploy")
+                    stagingRepository(
+                        layout.buildDirectory
+                            .dir("staging-deploy")
+                            .get()
+                            .asFile.absolutePath,
+                    )
+                    verifyPom = false
                 }
             }
         }

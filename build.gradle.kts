@@ -24,7 +24,6 @@ buildscript {
 }
 
 plugins {
-    alias(libs.plugins.nexusPublishPlugin) apply (true)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.dokka)
@@ -69,7 +68,7 @@ allprojects {
             force(rootProject.libs.guava)
             force(rootProject.libs.netty.codec.http)
             force("com.fasterxml.jackson.core:jackson-core:2.15.0")
-            force("com.fasterxml.jackson.core:jackson-databind:2.15.0.2")
+            force("com.fasterxml.jackson.core:jackson-databind:2.15.2")
         }
     }
 }
