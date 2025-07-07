@@ -35,8 +35,6 @@ plugins {
     alias(libs.plugins.ksp) apply (false)
 }
 
-apply("$rootDir/scripts/publish-root.gradle")
-
 subprojects {
     tasks.withType<Javadoc>().all { enabled = false }
     apply(

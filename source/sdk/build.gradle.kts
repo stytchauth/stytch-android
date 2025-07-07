@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.kotlin.dsl.archives
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
@@ -10,13 +11,13 @@ plugins {
     alias(libs.plugins.kotlinPluginCompose)
     alias(libs.plugins.serialization)
     id("jacoco")
+    id("maven-publish")
+    id("org.jreleaser").version("1.19.0")
 }
 
-extra["PUBLISH_GROUP_ID"] = "com.stytch.sdk"
-extra["PUBLISH_VERSION"] = "0.53.0"
-extra["PUBLISH_ARTIFACT_ID"] = "sdk"
-
-apply("${rootProject.projectDir}/scripts/publish-module.gradle")
+val publishGroupId = "com.stytch.sdk"
+val publishVersion = "0.53.0"
+val publishArtifactId = "sdk"
 
 android {
     compileSdk = 35
@@ -36,12 +37,12 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("Boolean", "DEBUG_MODE", "false")
-            buildConfigField("String", "STYTCH_SDK_VERSION", "\"${project.extra["PUBLISH_VERSION"]}\"")
+            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$publishVersion\"")
         }
         debug {
             isMinifyEnabled = false
             buildConfigField("Boolean", "DEBUG_MODE", "true")
-            buildConfigField("String", "STYTCH_SDK_VERSION", "\"${project.extra["PUBLISH_VERSION"]}\"")
+            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$publishVersion\"")
         }
     }
     compileOptions {
@@ -203,6 +204,24 @@ jacoco {
 
 tasks.register<JacocoReport>("jacocoTestReport")
 
+tasks.register<Jar>("androidSourcesJar") {
+    archiveClassifier.set("sources")
+    from(
+        android.sourceSets
+            .get("main")
+            .java.srcDirs,
+    )
+    from(
+        android.sourceSets
+            .get("main")
+            .kotlin.directories,
+    )
+}
+
+artifacts {
+    archives(tasks.getByName("androidSourcesJar"))
+}
+
 project.afterEvaluate {
     tasks.named<Test>("testDebugUnitTest").configure {
         finalizedBy(tasks["jacocoTestReport"])
@@ -248,6 +267,81 @@ project.afterEvaluate {
                 classDirectories.from(kotlinTree)
                 sourceDirectories.from(files(layout.projectDirectory.dir("src")))
             }
+        }
+    }
+
+    publishing {
+        publications.withType<MavenPublication>().configureEach {
+            groupId = publishGroupId
+            artifactId = publishArtifactId
+            version = publishVersion
+            artifact(tasks.getByName("androidSourcesJar"))
+            from(components.get("java"))
+            pom {
+                name = publishArtifactId
+                description = "Stytch Android SDK"
+                url = "https://github.com/stytchauth/stytch-android"
+                licenses {
+                    license {
+                        name = "Stytch License"
+                        url = "https://github.com/stytchauth/stytch-android/blob/main/LICENSE"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "Stytch"
+                        name = "Stytch Developers"
+                        email = "developers@stytch.com"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:github.com/stytchauth/stytch-android.git"
+                    developerConnection = "scm:git:ssh://github.com/stytchauth/stytch-android.git"
+                    url = "https://github.com/stytchauth/stytch-android/tree/main"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url =
+                layout.buildDirectory
+                    .dir("staging-deploy")
+                    .get()
+                    .asFile
+                    .toURI()
+        }
+    }
+}
+
+jreleaser {
+    gitRootSearch = true
+    signing {
+        setActive("ALWAYS")
+        armored = true
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                create("sonatype") {
+                    setActive("ALWAYS")
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepository("build/staging-deploy")
+                }
+            }
+        }
+    }
+    project {
+        name = publishArtifactId
+        description = "Stytch Android SDK"
+        version = publishVersion
+        authors.add("Stytch Developers")
+        license.set("Stytch License")
+    }
+    release {
+        github {
+            enabled.set(false)
         }
     }
 }
