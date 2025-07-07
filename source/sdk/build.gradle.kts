@@ -15,9 +15,9 @@ plugins {
     id("org.jreleaser").version("1.19.0")
 }
 
-val PUBLISH_GROUP_ID = "com.stytch.sdk"
-val PUBLISH_VERSION = "0.53.0"
-val PUBLISH_ARTIFACT_ID = "sdk"
+val publishGroupId = "com.stytch.sdk"
+val publishVersion = "0.53.0"
+val publishArtifactId = "sdk"
 
 android {
     compileSdk = 35
@@ -37,12 +37,12 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("Boolean", "DEBUG_MODE", "false")
-            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\"")
+            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$publishVersion\"")
         }
         debug {
             isMinifyEnabled = false
             buildConfigField("Boolean", "DEBUG_MODE", "true")
-            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$PUBLISH_VERSION\"")
+            buildConfigField("String", "STYTCH_SDK_VERSION", "\"$publishVersion\"")
         }
     }
     compileOptions {
@@ -272,13 +272,13 @@ project.afterEvaluate {
 
     publishing {
         publications.withType<MavenPublication>().configureEach {
-            groupId = PUBLISH_GROUP_ID
-            artifactId = PUBLISH_ARTIFACT_ID
-            version = PUBLISH_VERSION
+            groupId = publishGroupId
+            artifactId = publishArtifactId
+            version = publishVersion
             artifact(tasks.getByName("androidSourcesJar"))
             from(components.get("java"))
             pom {
-                name = PUBLISH_ARTIFACT_ID
+                name = publishArtifactId
                 description = "Stytch Android SDK"
                 url = "https://github.com/stytchauth/stytch-android"
                 licenses {
@@ -333,9 +333,9 @@ jreleaser {
         }
     }
     project {
-        name = PUBLISH_ARTIFACT_ID
+        name = publishArtifactId
         description = "Stytch Android SDK"
-        version = PUBLISH_VERSION
+        version = publishVersion
         authors.add("Stytch Developers")
         license.set("Stytch License")
     }
