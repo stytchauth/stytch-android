@@ -326,6 +326,7 @@ jreleaser {
             mavenCentral {
                 create("sonatype") {
                     setActive("ALWAYS")
+                    setStage("FULL")
                     url = "https://central.sonatype.com/api/v1/publisher"
                     stagingRepository(
                         layout.buildDirectory
