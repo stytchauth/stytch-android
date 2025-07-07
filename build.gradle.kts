@@ -24,7 +24,6 @@ buildscript {
 }
 
 plugins {
-    alias(libs.plugins.nexusPublishPlugin) apply (true)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.dokka)

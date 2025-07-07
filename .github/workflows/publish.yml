@@ -14,13 +14,16 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
-
+      - name: Clean
+        run: ./gradlew clean
       - name: Release build
         run: ./gradlew :source:sdk:assembleRelease
       - name: Source jar
         run: ./gradlew :source:sdk:androidSourcesJar
-      - name: Publish to Maven Central
-        run: ./gradlew clean && ./gradlew publish && ./gradlew jreleaserDeploy
+      - name: Publish
+        run: ./gradlew publish
+      - name: Deploy
+        run: ./gradlew jreleaserDeploy
         env:
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.JRELEASER_MAVENCENTRAL_USERNAME }}
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.JRELEASER_MAVENCENTRAL_PASSWORD }}
