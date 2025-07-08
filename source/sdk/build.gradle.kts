@@ -1,6 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.kotlin.dsl.archives
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     alias(libs.plugins.androidLibrary)
@@ -16,7 +16,7 @@ plugins {
 }
 
 val publishGroupId = "com.stytch.sdk"
-val publishVersion = "0.53.0"
+val publishVersion = "0.53.2"
 val publishArtifactId = "sdk"
 
 android {
@@ -74,9 +74,10 @@ android {
     }
 }
 
-tasks.named<DokkaTaskPartial>("dokkaHtmlPartial").configure {
+tasks.named<DokkaTask>("dokkaJavadoc").configure {
     dependsOn(tasks.named("kspDebugKotlin"))
     dependsOn(tasks.named("kspReleaseKotlin"))
+    outputDirectory.set(file("${rootProject.projectDir}/docs"))
     dependencies {
         dokkaPlugin(libs.versioning.plugin)
     }
