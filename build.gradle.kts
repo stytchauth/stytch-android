@@ -2,7 +2,6 @@ buildscript {
     dependencies {
         classpath(libs.gradle)
         classpath(libs.kotlin.gradle.plugin)
-        classpath(libs.dokka.gradle.plugin)
         classpath(libs.versioning.plugin)
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -21,12 +20,19 @@ buildscript {
             classpath(libs.guava)
         }
     }
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group.startsWith("com.fasterxml.jackson")) {
+                useVersion("2.19.1")
+            }
+        }
+    }
 }
 
 plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka) apply (false)
     alias(libs.plugins.androidLibrary) apply (false)
     alias(libs.plugins.androidApplication) apply (false)
     alias(libs.plugins.kotlinPluginCompose) apply (false)
@@ -67,8 +73,6 @@ allprojects {
             force(rootProject.libs.grpcNetty)
             force(rootProject.libs.guava)
             force(rootProject.libs.netty.codec.http)
-            force("com.fasterxml.jackson.core:jackson-core:2.15.0")
-            force("com.fasterxml.jackson.core:jackson-databind:2.15.2")
         }
     }
 }
@@ -85,8 +89,4 @@ tasks.register("runOnGitHub") {
     )
     group = "custom"
     description = "\$ ./gradlew runOnGitHub # runs on GitHub Action"
-}
-
-tasks.dokkaHtmlMultiModule.configure {
-    outputDirectory.set(file("$projectDir/docs"))
 }
