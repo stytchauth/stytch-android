@@ -1,1 +1,0 @@
-{"@class":"org.jetbrains.dokka.base.templating.AddToSourcesetDependencies","moduleName":"Stytch Android","content":{":sdk:dokkaHtmlPartial/debug":[],":sdk:dokkaHtmlPartial/main":[],":sdk:dokkaHtmlPartial/release":[]}}
