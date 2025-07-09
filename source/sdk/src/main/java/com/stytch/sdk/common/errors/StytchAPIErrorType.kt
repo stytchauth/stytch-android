@@ -83,9 +83,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     CANNOT_DELETE_EMAIL(
         type = "cannot_delete_email",
     ),
-    CANNOT_DELETE_LAST_PEM_FILE_FOR_TRUSTED_TOKEN_PROFILE(
-        type = "cannot_delete_last_pem_file_for_trusted_token_profile",
-    ),
     CANNOT_DELETE_LAST_PRIMARY_FACTOR(
         type = "cannot_delete_last_primary_factor",
     ),
@@ -1300,6 +1297,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     MISSING_SSO_CONNECTION_LOCATOR(
         type = "missing_sso_connection_locator",
+    ),
+    MUST_HAVE_JWKS_URL_FOR_TRUSTED_TOKEN_PROFILE_WITH_TYPE_JWK(
+        type = "must_have_jwks_url_for_trusted_token_profile_with_type_jwk",
+    ),
+    MUST_HAVE_PEM_FILES_FOR_TRUSTED_TOKEN_PROFILE_WITH_TYPE_PEM(
+        type = "must_have_pem_files_for_trusted_token_profile_with_type_pem",
     ),
     NO_ACTIVE_BIOMETRIC_REGISTRATIONS(
         type = "no_active_biometric_registrations",
