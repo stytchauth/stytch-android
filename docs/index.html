@@ -1,89 +1,240 @@
-<!DOCTYPE html>
-<html class="no-js">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>All modules</title>
-    <link href="images/logo-icon.svg" rel="icon" type="image/svg">
-    <script>var pathToRoot = "";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
-    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
-<script type="text/javascript" src="scripts/sourceset_dependencies.js" async="async"></script>
-<link href="styles/style.css" rel="Stylesheet">
-<link href="styles/main.css" rel="Stylesheet">
-<link href="styles/prism.css" rel="Stylesheet">
-<link href="styles/logo-styles.css" rel="Stylesheet">
-<link href="styles/font-jb-sans-auto.css" rel="Stylesheet">
-<script type="text/javascript" src="scripts/clipboard.js" async="async"></script>
-<script type="text/javascript" src="scripts/navigation-loader.js" async="async"></script>
-<script type="text/javascript" src="scripts/platform-content-handler.js" async="async"></script>
-<script type="text/javascript" src="scripts/main.js" defer="defer"></script>
-<script type="text/javascript" src="scripts/prism.js" async="async"></script>
-<script type="text/javascript" src="scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
-</head>
-<body>
-    <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
-                    <a class="library-name--link" href="index.html">
-                            Stytch Android SDK
-                    </a>
-            </div>
-            <div class="library-version">
-            </div>
-        </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
-            </div>
-            <div id="main">
-<div class="main-content" id="content" pageIds="Stytch Android SDK::.ext/allModules///PointingToDeclaration//0">
-  <div class="breadcrumbs"></div>
-  <div class="cover ">
-    <h2 class="">All modules:</h2>
-    <div class="table"><a data-name="1245062501%2FMain%2F0" anchor-label="Stytch Android" id="1245062501%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="source/sdk/index.html">Stytch Android</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1245062501%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment">
-              <p class="paragraph"><a href="https://stytch.com">Stytch</a> is an authentication platform, written by developers for developers, with a focus on improving security and user experience via passwordless authentication. Stytch offers direct API integrations, language-specific libraries, and SDKs (like this one) to make the process of setting up an authentication flow for your app as easy as possible.</p>
-            </span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!DOCTYPE HTML>
+<!-- NewPage -->
+<html lang="en"><head>
+    <title>Stytch Android </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="dc.created" content="2020-03-25">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+    <link rel="stylesheet" type="text/css" href="dokka-javadoc-stylesheet.css" title="Style">
+    <link rel="stylesheet" type="text/css" href="jquery/jquery-ui.css" title="Style">
+    <script type="text/javascript" src="jquery/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-migrate-3.4.0.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="search.js"></script>
+    <script async type="text/javascript" src="module-search-index.js"></script>
+    <script async type="text/javascript" src="package-search-index.js"></script>
+    <script async type="text/javascript" src="type-search-index.js"></script>
+    <script async type="text/javascript" src="member-search-index.js"></script>
+    <script async type="text/javascript" src="tag-search-index.js"></script>
+</head><body>
+<script type="text/javascript">
+var pathtoroot = "";
+</script>
+<noscript>
+    <div>JavaScript is disabled on your browser.</div>
+</noscript><header role="banner">
+    <nav role="navigation">
+        <div class="fixedNav">
+            <!-- ========= START OF TOP NAVBAR ======= -->
+            <div class="topNav"><a id="navbar.top">
+                <!--   -->
+            </a>
+                <div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a>
+                </div>
+                <a id="navbar.top.firstrow">
+                    <!--   -->
+                </a>
+                <ul class="navList" title="Navigation">
+    <li class="navBarCell1Rev">Overview</li>
+    
+    <li>Package</li>
+    
+    <li>Class</li>
+    
+    <li><a href="overview-tree.html">Tree</a></li>
+    
+    <li><a href="deprecated.html">Deprecated</a></li>
+    <li><a href="index-files/index-1.html">Index</a></li>
+    <li>Help</li>
+</ul></div>
+            <div class="subNav">
+<ul class="navList" id="allclasses_navbar_top" style="display: block;">
+    <li><a href="allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" class="ui-autocomplete-input" autocomplete="off" placeholder="Search">
+<input type="reset" id="reset" value="reset">
+</li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span
-                class="pull-right"><span>Generated by </span><a
-                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
-            </div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div><!-- ========= END OF TOP NAVBAR ========= -->
         </div>
+        <div class="navPadding">&nbsp;</div>
+        <script type="text/javascript"><!--
+        $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+        //-->
+        </script>
+    </nav>
+</header>
+<main role="main">
+    <div class="header">
+        <h1 class="title">Stytch Android </h1>
     </div>
+        <div class="header">
+            <div class="subtitle">
+                <div class="block"><p><a href=https://stytch.com.html>Stytch</a> is an authentication platform, written by developers for developers, with a focus on improving security and user experience via passwordless authentication. Stytch offers direct API integrations, language-specific libraries, and SDKs (like this one) to make the process of setting up an authentication flow for your app as easy as possible.</p><p>The module contains three packages that are of interest to a developer:</p><ul><li><p>com.stytch.sdk.b2b: Use this SDK to interact with your B2B Projects, Organizations and Members</p></li><li><p>com.stytch.sdk.consumer: Use this SDK to interact with your Consumer Projects and Users</p></li><li><p>com.stytch.sdk.common: This package contains resources shared between our B2B and Consumer SDKs</p></li></ul></div>
+            </div>
+            <p>See: <a href="#overview_description">Description</a></p>
+        </div>
+    <div class="contentContainer">
+        
+            <div class="overviewSummary">
+                
+<table>
+<caption><span>Packages</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Package</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/package-summary.html>com.stytch.sdk.b2b</a></th><td class="colLast">Stytch's B2B SDK makes it simple to seamlessly onboard, authenticate, and engage users.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/discovery/package-summary.html>com.stytch.sdk.b2b.discovery</a></th><td class="colLast">The Discovery.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/magicLinks/package-summary.html>com.stytch.sdk.b2b.magicLinks</a></th><td class="colLast">The B2BMagicLinks.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/member/package-summary.html>com.stytch.sdk.b2b.member</a></th><td class="colLast">The Member.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/oauth/package-summary.html>com.stytch.sdk.b2b.oauth</a></th><td class="colLast">The OAuth.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/organization/package-summary.html>com.stytch.sdk.b2b.organization</a></th><td class="colLast">The Organization.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/otp/package-summary.html>com.stytch.sdk.b2b.otp</a></th><td class="colLast">The OTP.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/passwords/package-summary.html>com.stytch.sdk.b2b.passwords</a></th><td class="colLast">The Passwords.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/rbac/package-summary.html>com.stytch.sdk.b2b.rbac</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/recoveryCodes/package-summary.html>com.stytch.sdk.b2b.recoveryCodes</a></th><td class="colLast">The RecoveryCodes.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/scim/package-summary.html>com.stytch.sdk.b2b.scim</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/searchManager/package-summary.html>com.stytch.sdk.b2b.searchManager</a></th><td class="colLast"></td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/sessions/package-summary.html>com.stytch.sdk.b2b.sessions</a></th><td class="colLast">The B2BSessions.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/sso/package-summary.html>com.stytch.sdk.b2b.sso</a></th><td class="colLast">Single-Sign On (SSO) refers to the ability for a user to use a single identity to authenticate and gain access to multiple apps and service.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/b2b/totp/package-summary.html>com.stytch.sdk.b2b.totp</a></th><td class="colLast">The TOTP.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/common/package-summary.html>com.stytch.sdk.common</a></th><td class="colLast">This package contains resources shared between our B2B and Consumer SDKs, including helpful typealiases, utility functions, data models, and internal support code.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/common/dfp/package-summary.html>com.stytch.sdk.common.dfp</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/common/errors/package-summary.html>com.stytch.sdk.common.errors</a></th><td class="colLast"></td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/common/sso/package-summary.html>com.stytch.sdk.common.sso</a></th><td class="colLast">Contains shared OAuth/SSO implementation code.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/package-summary.html>com.stytch.sdk.consumer</a></th><td class="colLast">Stytch's consumer SDK makes it simple to seamlessly onboard, authenticate, and engage users.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/biometrics/package-summary.html>com.stytch.sdk.consumer.biometrics</a></th><td class="colLast">The Biometrics.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/crypto/package-summary.html>com.stytch.sdk.consumer.crypto</a></th><td class="colLast">The CryptoWallet.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/magicLinks/package-summary.html>com.stytch.sdk.consumer.magicLinks</a></th><td class="colLast">The MagicLinks.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/oauth/package-summary.html>com.stytch.sdk.consumer.oauth</a></th><td class="colLast">The OAuth.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/otp/package-summary.html>com.stytch.sdk.consumer.otp</a></th><td class="colLast">The OTP.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/passkeys/package-summary.html>com.stytch.sdk.consumer.passkeys</a></th><td class="colLast">The Passkeys.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/passwords/package-summary.html>com.stytch.sdk.consumer.passwords</a></th><td class="colLast">The Passwords.</td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/sessions/package-summary.html>com.stytch.sdk.consumer.sessions</a></th><td class="colLast">The Sessions.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/totp/package-summary.html>com.stytch.sdk.consumer.totp</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/consumer/userManagement/package-summary.html>com.stytch.sdk.consumer.userManagement</a></th><td class="colLast">The UserManagement.</td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/ui/b2b/package-summary.html>com.stytch.sdk.ui.b2b</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/ui/b2b/data/package-summary.html>com.stytch.sdk.ui.b2b.data</a></th><td class="colLast"></td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/ui/b2c/package-summary.html>com.stytch.sdk.ui.b2c</a></th><td class="colLast"></td></tr>
+
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/ui/b2c/data/package-summary.html>com.stytch.sdk.ui.b2c.data</a></th><td class="colLast"></td></tr>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=com/stytch/sdk/ui/shared/data/package-summary.html>com.stytch.sdk.ui.shared.data</a></th><td class="colLast"></td></tr>
+</tbody>
+</table>
+
+            </div>
+        
+    </div>
+</main>
+<footer role="contentinfo">
+    <nav role="navigation">
+        <!-- ======= START OF BOTTOM NAVBAR ====== -->
+        <div class="bottomNav"><a id="navbar.bottom">
+            <!--   -->
+        </a>
+            <div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a>
+            </div>
+            <a id="navbar.bottom.firstrow">
+                <!--   -->
+            </a>
+            <ul class="navList" title="Navigation">
+    <li class="navBarCell1Rev">Overview</li>
+    
+    <li>Package</li>
+    
+    <li>Class</li>
+    
+    <li><a href="overview-tree.html">Tree</a></li>
+    
+    <li><a href="deprecated.html">Deprecated</a></li>
+    <li><a href="index-files/index-1.html">Index</a></li>
+    <li>Help</li>
+</ul></div>
+        <a id="skip.navbar.bottom">
+            <!--   -->
+        </a>
+        <div class="subNav">
+<ul class="navList" id="allclasses_navbar_top" style="display: block;">
+    <li><a href="allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div><!-- ======== END OF BOTTOM NAVBAR ======= -->
+    </nav>
+</footer><ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0"
+    style="display: none;"></ul>
+<span role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></span>
 </body>
 </html>
