@@ -188,6 +188,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     COUNTRY_CODE_ALLOWLIST_B2B_WHATSAPP_NOT_SUPPORTED(
         type = "country_code_allowlist_b2b_whatsapp_not_supported",
     ),
+    COUNTRY_CODE_ALLOWLIST_BILLING_NOT_VERIFIED(
+        type = "country_code_allowlist_billing_not_verified",
+    ),
     COUNTRY_CODE_ALLOWLIST_EMPTY(
         type = "country_code_allowlist_empty",
     ),
