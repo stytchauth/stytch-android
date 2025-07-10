@@ -1241,6 +1241,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     MEMBER_SEARCH_ORGANIZATION_SLUG_FUZZY_TOO_SHORT(
         type = "member_search_organization_slug_fuzzy_too_short",
     ),
+    MEMBER_SESSION_MEMBER_ID_MISMATCH(
+        type = "member_session_member_id_mismatch",
+    ),
     METADATA_INVALID_FORMAT(
         type = "metadata_invalid_format",
     ),
