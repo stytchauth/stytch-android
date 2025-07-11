@@ -323,6 +323,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     EMAIL_UNVERIFIED_FOR_REACTIVATION(
         type = "email_unverified_for_reactivation",
     ),
+    EMAIL_UPDATES_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
+        type = "email_updates_available_only_for_active_members",
+    ),
     EMAIL_VERIFICATION_REQUIRED(
         type = "email_verification_required",
     ),
