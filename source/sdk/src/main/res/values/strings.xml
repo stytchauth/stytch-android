@@ -60,7 +60,7 @@
     <string name="stytch_zxcvbn_suggestion_10">Capitalization doesn\'t help very much.</string>
     <string name="stytch_zxcvbn_suggestion_11">All-uppercase is almost as easy to guess as all-lowercase.</string>
     <string name="stytch_zxcvbn_suggestion_12">Reversed words aren\'t much harder to guess.</string>
-    <string name="stytch_zxcvbn_suggestion_13">Predictable substitutions like \"@\" instead of \"a\" don't help very much.</string>
+    <string name="stytch_zxcvbn_suggestion_13">Predictable substitutions like \"@\" instead of \"a\" don\'t help very much.</string>
     <string name="stytch_zxcvbn_suggestion_14">Short keyboard patterns are easy to guess.</string>
     <string name="stytch_zxcvbn_suggestion_15">Straight rows of keys are easy to guess.</string>
     <string name="stytch_zxcvbn_suggestion_16">Repeats like \"abcabcabc\" are only slightly harder to guess than \"abc\".</string>
