@@ -1,5 +1,6 @@
 package com.stytch.sdk.ui.shared.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +28,7 @@ import com.stytch.sdk.R
 import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.ui.shared.theme.LocalStytchTheme
 import com.stytch.sdk.ui.shared.theme.LocalStytchTypography
+import com.stytch.sdk.ui.shared.utils.mapZxcvbnToStringResource
 
 private const val MAX_SCORE = 3
 
@@ -57,19 +60,57 @@ internal fun PasswordStrengthIndicator(
                 }
             }
         }
-        Text(
-            text =
-                if (score < 3) {
-                    feedback.suggestions.joinToString()
-                } else {
-                    stringResource(id = R.string.stytch_feedback_good_password_message)
-                },
-            style =
-                type.caption.copy(
-                    color = filledColor,
-                    textAlign = TextAlign.Start,
-                ),
-        )
+        if (score < MAX_SCORE) {
+            if (feedback.warning.isNotBlank()) {
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.crossicon),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .width(16.dp)
+                                .padding(top = 6.dp, end = 4.dp),
+                    )
+                    Text(
+                        text = feedback.warning.mapZxcvbnToStringResource(),
+                        style =
+                            type.caption.copy(
+                                color = filledColor,
+                                textAlign = TextAlign.Start,
+                            ),
+                    )
+                }
+            }
+            feedback.suggestions.map {
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.checkicon),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .width(16.dp)
+                                .padding(top = 6.dp, end = 4.dp),
+                    )
+                    Text(
+                        text = it.mapZxcvbnToStringResource(),
+                        style =
+                            type.caption.copy(
+                                color = filledColor,
+                                textAlign = TextAlign.Start,
+                            ),
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = stringResource(id = R.string.stytch_feedback_good_password_message),
+                style =
+                    type.caption.copy(
+                        color = filledColor,
+                        textAlign = TextAlign.Start,
+                    ),
+            )
+        }
     }
 }
 
@@ -78,8 +119,8 @@ internal fun PasswordStrengthIndicator(
 private fun PreviewPasswordStrengthIndicator() {
     val mockFeedback =
         Feedback(
-            suggestions = listOf("A suggested improvement"),
-            warning = "",
+            suggestions = listOf("Repeats like \"aaa\" are easy to guess.", "Avoid recent years."),
+            warning = "Names and surnames by themselves are easy to guess.",
             ludsRequirements = null,
         )
     Surface(
