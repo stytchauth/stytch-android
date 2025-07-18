@@ -179,6 +179,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CONNECTED_APP_SUPPLIED_REDIRECT_URL_NOT_FOUND_IN_CLIENT(
         type = "connected_app_supplied_redirect_url_not_found_in_client",
     ),
+    CONSUMER_SESSION_AUTHORIZATION_ERROR(
+        type = "consumer_session_authorization_error",
+    ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
