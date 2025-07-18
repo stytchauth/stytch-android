@@ -48,6 +48,33 @@
     <string name="stytch_provider_name_twitter">Twitter</string>
     <string name="stytch_resend_code_title">Resend Code</string>
     <string name="stytch_watermark_text">Powered by Stytch</string>
+    <string name="stytch_zxcvbn_suggestion_1">Use a few words, avoid common phrases.</string>
+    <string name="stytch_zxcvbn_suggestion_2">No need for symbols, digits, or uppercase letters.</string>
+    <string name="stytch_zxcvbn_suggestion_3">Add another word or two. Uncommon words are better.</string>
+    <string name="stytch_zxcvbn_suggestion_4">Use a longer keyboard pattern with more turns.</string>
+    <string name="stytch_zxcvbn_suggestion_5">Avoid repeated words and characters.</string>
+    <string name="stytch_zxcvbn_suggestion_6">Avoid sequences.</string>
+    <string name="stytch_zxcvbn_suggestion_7">Avoid recent years.</string>
+    <string name="stytch_zxcvbn_suggestion_8">Avoid years that are associated with you.</string>
+    <string name="stytch_zxcvbn_suggestion_9">Avoid dates and years that are associated with you.</string>
+    <string name="stytch_zxcvbn_suggestion_10">Capitalization doesn\'t help very much.</string>
+    <string name="stytch_zxcvbn_suggestion_11">All-uppercase is almost as easy to guess as all-lowercase.</string>
+    <string name="stytch_zxcvbn_suggestion_12">Reversed words aren\'t much harder to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_13">Predictable substitutions like \"@\" instead of \"a\" don\'t help very much.</string>
+    <string name="stytch_zxcvbn_suggestion_14">Short keyboard patterns are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_15">Straight rows of keys are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_16">Repeats like \"abcabcabc\" are only slightly harder to guess than \"abc\".</string>
+    <string name="stytch_zxcvbn_suggestion_17">Repeats like \"aaa\" are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_18">Sequences like \"abc\" or \"6543\" are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_19">Recent years are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_20">Dates are often easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_21">This is a top-10 common password.</string>
+    <string name="stytch_zxcvbn_suggestion_22">This is a top-100 common password.</string>
+    <string name="stytch_zxcvbn_suggestion_23">This is a very common password.</string>
+    <string name="stytch_zxcvbn_suggestion_24">This is similar to a commonly used password.</string>
+    <string name="stytch_zxcvbn_suggestion_25">A word by itself is easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_26">Names and surnames by themselves are easy to guess.</string>
+    <string name="stytch_zxcvbn_suggestion_27">Common names and surnames are easy to guess.</string>
 
     <!-- B2C UI strings -->
     <string name="stytch_b2c_biometric_registration_body">Use biometrics to log into your account.</string>
