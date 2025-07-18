@@ -92,7 +92,7 @@ internal fun PasswordStrengthIndicator(
                             Modifier
                                 .width(16.dp)
                                 .padding(top = 6.dp, end = 4.dp),
-                        colorFilter = ColorFilter.tint(Color(theme.secondaryTextColor))
+                        colorFilter = ColorFilter.tint(Color(theme.secondaryTextColor)),
                     )
                     Text(
                         text = it.mapZxcvbnToStringResource(),
