@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -64,12 +65,13 @@ internal fun PasswordStrengthIndicator(
             if (feedback.warning.isNotBlank()) {
                 Row {
                     Image(
-                        painter = painterResource(id = R.drawable.crossicon),
+                        painter = painterResource(id = R.drawable.zxcvbn_warning),
                         contentDescription = null,
                         modifier =
                             Modifier
                                 .width(16.dp)
                                 .padding(top = 6.dp, end = 4.dp),
+                        colorFilter = ColorFilter.tint(filledColor),
                     )
                     Text(
                         text = feedback.warning.mapZxcvbnToStringResource(),
@@ -84,18 +86,19 @@ internal fun PasswordStrengthIndicator(
             feedback.suggestions.map {
                 Row {
                     Image(
-                        painter = painterResource(id = R.drawable.checkicon),
+                        painter = painterResource(id = R.drawable.zxcvbn_suggestion),
                         contentDescription = null,
                         modifier =
                             Modifier
                                 .width(16.dp)
                                 .padding(top = 6.dp, end = 4.dp),
+                        colorFilter = ColorFilter.tint(Color(theme.secondaryTextColor))
                     )
                     Text(
                         text = it.mapZxcvbnToStringResource(),
                         style =
                             type.caption.copy(
-                                color = filledColor,
+                                color = Color(theme.secondaryTextColor),
                                 textAlign = TextAlign.Start,
                             ),
                     )
