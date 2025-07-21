@@ -10,6 +10,7 @@ internal data class PhoneNumberState(
     val countryCode: String = "1",
     val phoneNumber: String = "",
     val error: String? = null,
+    val errorMessageId: Int? = null,
 ) : Parcelable {
     fun toE164(): String {
         val phone =

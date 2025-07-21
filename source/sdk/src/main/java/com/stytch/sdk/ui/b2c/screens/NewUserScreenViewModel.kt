@@ -18,6 +18,7 @@ import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails
 import com.stytch.sdk.ui.b2c.data.OTPOptions
 import com.stytch.sdk.ui.shared.data.EventTypes
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -71,6 +72,7 @@ internal class NewUserScreenViewModel(
                             emailState =
                                 emailState.copy(
                                     errorMessage = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                         )
                 }
@@ -117,6 +119,7 @@ internal class NewUserScreenViewModel(
                             emailState =
                                 emailState.copy(
                                     errorMessage = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                         )
                 }
@@ -176,6 +179,7 @@ internal class NewUserScreenViewModel(
                             passwordState =
                                 uiState.value.passwordState.copy(
                                     errorMessage = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                         )
                 }
@@ -212,6 +216,7 @@ internal class NewUserScreenViewModel(
                             passwordState =
                                 uiState.value.passwordState.copy(
                                     errorMessage = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                         )
                 }

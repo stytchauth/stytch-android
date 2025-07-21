@@ -34,6 +34,7 @@ internal fun PasswordInput(
     label: String? = null,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+    val passwordErrorString = passwordState.errorMessageId?.let { stringResource(it) } ?: passwordState.errorMessage
     Column {
         StytchInput(
             modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
@@ -83,7 +84,7 @@ internal fun PasswordInput(
                 }
             }
         }
-        passwordState.errorMessage?.let {
+        passwordErrorString?.let {
             FormFieldStatus(
                 text = it,
                 isError = true,

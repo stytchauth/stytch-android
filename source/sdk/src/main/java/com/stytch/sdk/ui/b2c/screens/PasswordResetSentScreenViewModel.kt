@@ -19,6 +19,7 @@ import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.OTPDetails
 import com.stytch.sdk.ui.b2c.data.OTPOptions
 import com.stytch.sdk.ui.shared.data.EventTypes
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -61,7 +62,11 @@ internal class PasswordResetSentScreenViewModel(
                 is StytchResult.Error -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }
@@ -110,7 +115,11 @@ internal class PasswordResetSentScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
             }
         }
@@ -153,7 +162,11 @@ internal class PasswordResetSentScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
             }
         }

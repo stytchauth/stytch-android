@@ -40,6 +40,7 @@ import com.stytch.sdk.ui.b2c.data.StytchProductConfig
 import com.stytch.sdk.ui.shared.data.EmailState
 import com.stytch.sdk.ui.shared.data.EventTypes
 import com.stytch.sdk.ui.shared.data.PhoneNumberState
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -216,6 +217,7 @@ internal class MainScreenViewModel(
                     PhoneNumberState(
                         countryCode = countryCode,
                         error = null,
+                        errorMessageId = null,
                     ),
                 genericErrorMessage = null,
             )
@@ -228,6 +230,7 @@ internal class MainScreenViewModel(
                     PhoneNumberState(
                         phoneNumber = phoneNumber,
                         error = null,
+                        errorMessageId = null,
                     ),
                 genericErrorMessage = null,
             )
@@ -355,8 +358,12 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = GenericErrorDetails(result.exception.message),
-                    ) // TODO
+                        genericErrorMessage =
+                            GenericErrorDetails(
+                                errorText = result.exception.message,
+                                errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                            ),
+                    )
                 null
             }
         }
@@ -390,8 +397,12 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = GenericErrorDetails(result.exception.message),
-                    ) // TODO
+                        genericErrorMessage =
+                            GenericErrorDetails(
+                                errorText = result.exception.message,
+                                errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                            ),
+                    )
                 null
             }
         }
@@ -423,8 +434,12 @@ internal class MainScreenViewModel(
             is StytchResult.Error -> {
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
-                        genericErrorMessage = GenericErrorDetails(result.exception.message),
-                    ) // TODO
+                        genericErrorMessage =
+                            GenericErrorDetails(
+                                errorText = result.exception.message,
+                                errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                            ),
+                    )
                 null
             }
         }
@@ -460,6 +475,7 @@ internal class MainScreenViewModel(
                             phoneNumberState =
                                 phoneNumberState.copy(
                                     error = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                             showLoadingDialog = false,
                         )
@@ -498,6 +514,7 @@ internal class MainScreenViewModel(
                             phoneNumberState =
                                 phoneNumberState.copy(
                                     error = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                             showLoadingDialog = false,
                         )

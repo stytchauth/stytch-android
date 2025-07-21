@@ -13,6 +13,7 @@ import com.stytch.sdk.ui.b2c.data.ApplicationUIState
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.GenericErrorDetails
 import com.stytch.sdk.ui.shared.data.SessionOptions
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -89,6 +90,7 @@ internal class SetPasswordScreenViewModel(
                             passwordState =
                                 uiState.value.passwordState.copy(
                                     errorMessage = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
                                 ),
                         )
                 }
@@ -117,7 +119,11 @@ internal class SetPasswordScreenViewModel(
                 is StytchResult.Error -> {
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }

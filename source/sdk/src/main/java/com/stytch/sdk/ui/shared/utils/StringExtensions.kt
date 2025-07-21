@@ -3,6 +3,8 @@ package com.stytch.sdk.ui.shared.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.stytch.sdk.R
+import com.stytch.sdk.common.errors.StytchAPIError
+import com.stytch.sdk.common.errors.StytchError
 import java.util.regex.Pattern
 
 private val EMAIL_ADDRESS_PATTERN =
@@ -73,4 +75,14 @@ internal fun String.mapZxcvbnToStringResource(): String =
             )
         "Common names and surnames are easy to guess." -> stringResource(R.string.stytch_zxcvbn_suggestion_27)
         else -> this
+    }
+
+internal fun StytchError.getUserFacingErrorMessageId(): Int? =
+    if (this is StytchAPIError) {
+        when (errorType) {
+            // TODO: based on error type, which ones do we want to localize? Add them here
+            else -> null
+        }
+    } else {
+        null
     }

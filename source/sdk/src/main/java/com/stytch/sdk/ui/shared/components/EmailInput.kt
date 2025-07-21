@@ -22,7 +22,7 @@ internal fun EmailInput(
     onEmailAddressChanged: (String) -> Unit,
 ) {
     val emailAddress = emailState.emailAddress
-    val isError = emailState.errorMessage != null || emailState.validEmail == false
+    val isError = emailState.errorMessage != null || emailState.errorMessageId != null || emailState.validEmail == false
     val semanticsInput = stringResource(id = R.string.stytch_semantics_email_input)
     val semanticsError = stringResource(id = R.string.stytch_semantics_email_error)
     Column {
@@ -45,7 +45,8 @@ internal fun EmailInput(
             FormFieldStatus(
                 modifier = Modifier.semantics { contentDescription = semanticsError },
                 text =
-                    emailState.errorMessage ?: stringResource(id = R.string.stytch_error_invalid_email_address),
+                    emailState.errorMessageId?.let { stringResource(it) }
+                        ?: emailState.errorMessage ?: stringResource(id = R.string.stytch_error_invalid_email_address),
                 isError = true,
             )
         }

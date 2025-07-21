@@ -24,6 +24,7 @@ import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.domain.B2BUIStateMachine
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.utils.B2BUIViewModelFactory
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -72,7 +73,12 @@ internal class B2BAuthenticationViewModel(
                 }
                 is StytchResult.Error -> {
                     dispatch(SetIsSearchingForOrganizationBySlug(false))
-                    dispatch(SetGenericError(response.exception.message))
+                    dispatch(
+                        SetGenericError(
+                            errorText = response.exception.message,
+                            errorMessageId = response.exception.getUserFacingErrorMessageId(),
+                        ),
+                    )
                 }
             }
         }

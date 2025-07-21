@@ -23,6 +23,7 @@ import com.stytch.sdk.ui.b2c.data.PasswordResetDetails
 import com.stytch.sdk.ui.b2c.data.PasswordResetType
 import com.stytch.sdk.ui.shared.data.EventTypes
 import com.stytch.sdk.ui.shared.data.SessionOptions
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -117,7 +118,11 @@ internal class OTPConfirmationScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(errorText = result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }
@@ -161,7 +166,11 @@ internal class OTPConfirmationScreenViewModel(
                         uiState.value.copy(
                             showLoadingDialog = false,
                             showResendDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }
@@ -203,7 +212,11 @@ internal class OTPConfirmationScreenViewModel(
                     is StytchResult.Error ->
                         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                             uiState.value.copy(
-                                genericErrorMessage = GenericErrorDetails(result.exception.message),
+                                genericErrorMessage =
+                                    GenericErrorDetails(
+                                        errorText = result.exception.message,
+                                        errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                    ),
                             )
                 }
             } ?: run {

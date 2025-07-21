@@ -124,6 +124,7 @@ private fun MainScreenComposable(
     val semanticsOAuthButton = stringResource(id = R.string.stytch_semantics_oauth_button)
     val context = LocalActivity.current as FragmentActivity
     val scope = rememberCoroutineScope()
+    val phoneError = phoneState.errorMessageId?.let { stringResource(it) } ?: phoneState.error
 
     fun loginWithBiometrics() {
         scope.launch {
@@ -233,7 +234,7 @@ private fun MainScreenComposable(
                                 phoneNumber = phoneState.phoneNumber,
                                 onPhoneNumberChanged = onPhoneNumberChanged,
                                 onPhoneNumberSubmit = { sendSmsOtp(productConfig.otpOptions) },
-                                statusText = phoneState.error,
+                                statusText = phoneError,
                             )
                         stringResource(id = R.string.stytch_b2c_whatsapp_tab_title) ->
                             PhoneEntry(
@@ -242,7 +243,7 @@ private fun MainScreenComposable(
                                 phoneNumber = phoneState.phoneNumber,
                                 onPhoneNumberChanged = onPhoneNumberChanged,
                                 onPhoneNumberSubmit = { sendWhatsAppOTP(productConfig.otpOptions) },
-                                statusText = phoneState.error,
+                                statusText = phoneError,
                             )
                         else -> Text(stringResource(id = R.string.stytch_b2c_misconfigured_otp_warning))
                     }
