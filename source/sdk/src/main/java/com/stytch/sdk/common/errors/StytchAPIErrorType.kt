@@ -1436,6 +1436,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     OAUTH_INVALID_CALLBACK_REQUEST(
         type = "oauth_invalid_callback_request",
     ),
+    OAUTH_INVALID_SCOPE_REQUESTED(
+        type = "oauth_invalid_scope_requested",
+    ),
     OAUTH_INVALID_STATE(
         type = "oauth_invalid_state",
     ),
