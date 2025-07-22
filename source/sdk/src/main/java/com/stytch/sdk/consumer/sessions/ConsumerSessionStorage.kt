@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_DATA
@@ -165,7 +164,7 @@ internal class ConsumerSessionStorage(
 
     var methodId: String? = null
 
-    init {
+    fun emitCurrent() {
         _sessionFlow.tryEmit(session)
         _userFlow.tryEmit(user)
         _lastValidatedAtFlow.tryEmit(lastValidatedAt)

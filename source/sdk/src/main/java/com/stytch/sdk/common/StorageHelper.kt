@@ -5,9 +5,11 @@ import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import com.stytch.sdk.common.EncryptionManager.KEY_PREFERENCES_FILE_NAME
 import com.stytch.sdk.common.EncryptionManager.MASTER_KEY_ALIAS
+import com.stytch.sdk.common.StorageHelper.sharedPreferences
 import com.stytch.sdk.common.extensions.clearPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.security.KeyStore
@@ -20,7 +22,7 @@ internal object StorageHelper {
     @VisibleForTesting
     internal lateinit var sharedPreferences: SharedPreferences
 
-    fun initialize(context: Context) {
+    fun initialize(context: Context): Job =
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
             keyStore.load(null)
             if (!keyStore.containsAlias(MASTER_KEY_ALIAS)) {
@@ -34,7 +36,6 @@ internal object StorageHelper {
             sharedPreferences = context.getSharedPreferences(STYTCH_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
             EncryptionManager.createNewKeys(context)
         }
-    }
 
     /**
      * Encrypt and save value to SharedPreferences

@@ -42,7 +42,7 @@ internal class OrganizationImpl(
             .stateIn(
                 externalScope,
                 SharingStarted.WhileSubscribed(),
-                stytchObjectMapper<OrganizationData>(sessionStorage.organization, sessionStorage.lastValidatedAt),
+                StytchObjectInfo.Loading,
             )
 
     init {

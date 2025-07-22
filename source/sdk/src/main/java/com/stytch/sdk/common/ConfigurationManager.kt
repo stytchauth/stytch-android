@@ -47,6 +47,7 @@ internal class ConfigurationManager {
         context: Context,
         publicToken: String,
         options: StytchClientOptions = StytchClientOptions(),
+        storageHelperInitializationJob: Job,
     ) {
         if (isAlreadyConfiguredFor(publicToken, options)) {
             return
@@ -97,9 +98,10 @@ internal class ConfigurationManager {
             client::getSessionToken,
             dfpConfiguration,
         )
-        val bootstrapJob = refreshBootstrapAndApi(true)
-        val sessionRehydrationJob = client.rehydrateSession()
         externalScope.launch(dispatchers.io) {
+            storageHelperInitializationJob.join()
+            val bootstrapJob = refreshBootstrapAndApi(true)
+            val sessionRehydrationJob = client.rehydrateSession()
             listOf(bootstrapJob, sessionRehydrationJob).joinAll()
             client.logEvent("client_initialization_success", null, null)
             isInitialized.value = true

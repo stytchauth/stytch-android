@@ -52,7 +52,7 @@ internal class SessionsImpl internal constructor(
             .stateIn(
                 externalScope,
                 SharingStarted.WhileSubscribed(),
-                stytchObjectMapper<SessionData>(sessionStorage.session, sessionStorage.lastValidatedAt),
+                StytchObjectInfo.Loading,
             )
 
     init {

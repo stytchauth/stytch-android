@@ -34,7 +34,7 @@ internal class MemberImpl(
             .stateIn(
                 externalScope,
                 SharingStarted.WhileSubscribed(),
-                stytchObjectMapper(sessionStorage.member, sessionStorage.lastValidatedAt),
+                StytchObjectInfo.Loading,
             )
 
     init {

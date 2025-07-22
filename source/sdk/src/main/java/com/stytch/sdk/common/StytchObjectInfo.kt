@@ -7,6 +7,8 @@ import java.util.Date
 public sealed interface StytchObjectInfo<out T> {
     @JacocoExcludeGenerated public data object Unavailable : StytchObjectInfo<Nothing>
 
+    @JacocoExcludeGenerated public data object Loading : StytchObjectInfo<Nothing>
+
     @JacocoExcludeGenerated
     public data class Available<out T>(
         val lastValidatedAt: Date,
