@@ -35,7 +35,7 @@ internal class UserManagementImpl(
             .stateIn(
                 externalScope,
                 SharingStarted.WhileSubscribed(),
-                stytchObjectMapper<UserData>(sessionStorage.user, sessionStorage.lastValidatedAt),
+                StytchObjectInfo.Loading,
             )
 
     init {

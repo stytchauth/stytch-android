@@ -237,7 +237,7 @@ internal class B2BSessionStorage(
     val persistedSessionIdentifiersExist: Boolean
         get() = sessionToken != null || sessionJwt != null
 
-    init {
+    fun emitCurrent() {
         _sessionFlow.tryEmit(memberSession)
         _memberFlow.tryEmit(member)
         _organizationFlow.tryEmit(organization)
