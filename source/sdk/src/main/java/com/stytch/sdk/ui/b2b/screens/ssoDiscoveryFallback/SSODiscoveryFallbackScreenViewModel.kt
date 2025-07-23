@@ -19,6 +19,7 @@ import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.navigation.Routes
 import com.stytch.sdk.ui.b2b.usecases.UseSSOStart
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +62,12 @@ internal class SSODiscoveryFallbackScreenViewModel(
                     }
                 }
                 is StytchResult.Error -> {
-                    dispatch(SetGenericError(response.exception.message))
+                    dispatch(
+                        SetGenericError(
+                            errorText = response.exception.message,
+                            errorMessageId = response.exception.getUserFacingErrorMessageId(),
+                        ),
+                    )
                 }
             }
         }

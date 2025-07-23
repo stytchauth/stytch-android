@@ -14,4 +14,5 @@ internal data class PasswordState(
     val score: Int = 0,
     val validPassword: Boolean = false,
     val errorMessage: String? = null,
+    val errorMessageId: Int? = null,
 ) : Parcelable

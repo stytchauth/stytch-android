@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.R
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+import com.stytch.sdk.common.errors.StytchError
 import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
@@ -18,6 +19,7 @@ import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoveryAuthenticate
 import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPDiscoverySend
 import com.stytch.sdk.ui.b2b.usecases.UseEmailOTPLoginOrSignup
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,14 +52,14 @@ internal class EmailOTPEntryScreenViewModel(
         viewModelScope.launch {
             if (state.value.authFlowType == AuthFlowType.ORGANIZATION) {
                 useEmailOTPAuthenticate(code).onFailure {
-                    handleFailure()
+                    handleFailure(it)
                 }
             } else {
                 useEmailOTPDiscoveryAuthenticate(code)
                     .onSuccess {
                         dispatch(SetNextRoute(Routes.Discovery))
                     }.onFailure {
-                        handleFailure()
+                        handleFailure(it)
                     }
             }
         }
@@ -71,10 +73,12 @@ internal class EmailOTPEntryScreenViewModel(
         }
     }
 
-    private fun handleFailure() {
+    private fun handleFailure(exception: Throwable) {
         _emailOtpEntryState.value =
             _emailOtpEntryState.value.copy(
-                errorMessage = R.string.stytch_b2b_error_invalid_passcode,
+                errorMessage =
+                    (exception as? StytchError)?.getUserFacingErrorMessageId()
+                        ?: R.string.stytch_b2b_error_invalid_passcode,
             )
     }
 
