@@ -65,7 +65,7 @@ internal fun PasswordStrengthIndicator(
             if (feedback.warning.isNotBlank()) {
                 Row {
                     Image(
-                        painter = painterResource(id = R.drawable.zxcvbn_warning),
+                        painter = painterResource(id = R.drawable.crossicon),
                         contentDescription = null,
                         modifier =
                             Modifier
@@ -85,14 +85,14 @@ internal fun PasswordStrengthIndicator(
             }
             feedback.suggestions.map {
                 Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.zxcvbn_suggestion),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .width(16.dp)
-                                .padding(top = 6.dp, end = 4.dp),
-                        colorFilter = ColorFilter.tint(Color(theme.secondaryTextColor)),
+                    Text(
+                        text = "•",
+                        style =
+                            type.caption.copy(
+                                color = Color(theme.secondaryTextColor),
+                                textAlign = TextAlign.Center,
+                            ),
+                        modifier = Modifier.width(16.dp).padding(end = 4.dp),
                     )
                     Text(
                         text = it.mapZxcvbnToStringResource(),
