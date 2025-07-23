@@ -12,6 +12,7 @@ import com.stytch.sdk.ui.b2b.data.HandleStepUpAuthentication
 import com.stytch.sdk.ui.b2b.data.SetGenericError
 import com.stytch.sdk.ui.b2b.data.SetLoading
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -52,7 +53,12 @@ internal open class BaseViewModel(
                     if (shouldSetLoadingIndicator) {
                         dispatch(SetLoading(false))
                     }
-                    dispatch(SetGenericError(response.exception.message))
+                    dispatch(
+                        SetGenericError(
+                            errorText = response.exception.message,
+                            errorMessageId = response.exception.getUserFacingErrorMessageId(),
+                        ),
+                    )
                     Result.failure(response.exception)
                 }
             }

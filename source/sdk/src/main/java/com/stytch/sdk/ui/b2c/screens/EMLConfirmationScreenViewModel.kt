@@ -19,6 +19,7 @@ import com.stytch.sdk.ui.b2c.data.PasswordOptions
 import com.stytch.sdk.ui.b2c.data.PasswordResetDetails
 import com.stytch.sdk.ui.b2c.data.PasswordResetType
 import com.stytch.sdk.ui.shared.data.EventTypes
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -58,7 +59,11 @@ internal class EMLConfirmationScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showResendDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }
@@ -108,7 +113,11 @@ internal class EMLConfirmationScreenViewModel(
                     is StytchResult.Error ->
                         savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                             uiState.value.copy(
-                                genericErrorMessage = GenericErrorDetails(result.exception.message),
+                                genericErrorMessage =
+                                    GenericErrorDetails(
+                                        errorText = result.exception.message,
+                                        errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                    ),
                             )
                 }
             } ?: run {

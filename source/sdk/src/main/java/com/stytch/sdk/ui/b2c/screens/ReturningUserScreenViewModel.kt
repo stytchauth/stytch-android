@@ -26,6 +26,7 @@ import com.stytch.sdk.ui.b2c.data.PasswordResetType
 import com.stytch.sdk.ui.shared.data.EmailState
 import com.stytch.sdk.ui.shared.data.EventTypes
 import com.stytch.sdk.ui.shared.data.SessionOptions
+import com.stytch.sdk.ui.shared.utils.getUserFacingErrorMessageId
 import com.stytch.sdk.ui.shared.utils.isValidEmailAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -107,7 +108,11 @@ internal class ReturningUserScreenViewModel(
                                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                                     uiState.value.copy(
                                         showLoadingDialog = false,
-                                        genericErrorMessage = GenericErrorDetails(result.exception.message),
+                                        genericErrorMessage =
+                                            GenericErrorDetails(
+                                                errorText = result.exception.message,
+                                                errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                            ),
                                     )
                             }
                         }
@@ -115,7 +120,11 @@ internal class ReturningUserScreenViewModel(
                             savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                                 uiState.value.copy(
                                     showLoadingDialog = false,
-                                    genericErrorMessage = GenericErrorDetails(result.exception.message),
+                                    genericErrorMessage =
+                                        GenericErrorDetails(
+                                            errorText = result.exception.message,
+                                            errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                        ),
                                 )
                         }
                     }
@@ -162,7 +171,11 @@ internal class ReturningUserScreenViewModel(
                 savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                     uiState.value.copy(
                         showLoadingDialog = false,
-                        genericErrorMessage = GenericErrorDetails(result.exception.message),
+                        genericErrorMessage =
+                            GenericErrorDetails(
+                                errorText = result.exception.message,
+                                errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                            ),
                     )
             }
         }
@@ -209,7 +222,11 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
             }
         }
@@ -251,7 +268,11 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
             }
         }
@@ -297,7 +318,11 @@ internal class ReturningUserScreenViewModel(
                     savedStateHandle[ApplicationUIState.SAVED_STATE_KEY] =
                         uiState.value.copy(
                             showLoadingDialog = false,
-                            genericErrorMessage = GenericErrorDetails(result.exception.message),
+                            genericErrorMessage =
+                                GenericErrorDetails(
+                                    errorText = result.exception.message,
+                                    errorMessageId = result.exception.getUserFacingErrorMessageId(),
+                                ),
                         )
                 }
             }

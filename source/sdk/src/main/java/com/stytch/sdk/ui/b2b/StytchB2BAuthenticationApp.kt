@@ -248,7 +248,12 @@ internal fun StytchB2BAuthenticationApp(
                         } ?: toastDetails.errorText
                     toastText?.let {
                         FormFieldStatus(text = it, isError = true, autoDismiss = {
-                            dispatch(SetGenericError(null))
+                            dispatch(
+                                SetGenericError(
+                                    errorText = null,
+                                    errorMessageId = null,
+                                ),
+                            )
                         })
                     }
                 }
