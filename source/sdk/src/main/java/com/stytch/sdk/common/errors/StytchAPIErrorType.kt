@@ -83,9 +83,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     CANNOT_DELETE_EMAIL(
         type = "cannot_delete_email",
     ),
-    CANNOT_DELETE_LAST_PEM_FILE_FOR_TRUSTED_TOKEN_PROFILE(
-        type = "cannot_delete_last_pem_file_for_trusted_token_profile",
-    ),
     CANNOT_DELETE_LAST_PRIMARY_FACTOR(
         type = "cannot_delete_last_primary_factor",
     ),
@@ -182,11 +179,17 @@ public enum class StytchAPIErrorType(public val type: String) {
     CONNECTED_APP_SUPPLIED_REDIRECT_URL_NOT_FOUND_IN_CLIENT(
         type = "connected_app_supplied_redirect_url_not_found_in_client",
     ),
+    CONSUMER_SESSION_AUTHORIZATION_ERROR(
+        type = "consumer_session_authorization_error",
+    ),
     COULD_NOT_PARSE_BIOMETRIC_SIGNATURE(
         type = "could_not_parse_biometric_signature",
     ),
     COUNTRY_CODE_ALLOWLIST_B2B_WHATSAPP_NOT_SUPPORTED(
         type = "country_code_allowlist_b2b_whatsapp_not_supported",
+    ),
+    COUNTRY_CODE_ALLOWLIST_BILLING_NOT_VERIFIED(
+        type = "country_code_allowlist_billing_not_verified",
     ),
     COUNTRY_CODE_ALLOWLIST_EMPTY(
         type = "country_code_allowlist_empty",
@@ -322,6 +325,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     EMAIL_UNVERIFIED_FOR_REACTIVATION(
         type = "email_unverified_for_reactivation",
+    ),
+    EMAIL_UPDATES_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
+        type = "email_updates_available_only_for_active_members",
     ),
     EMAIL_VERIFICATION_REQUIRED(
         type = "email_verification_required",
@@ -1241,6 +1247,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     MEMBER_SEARCH_ORGANIZATION_SLUG_FUZZY_TOO_SHORT(
         type = "member_search_organization_slug_fuzzy_too_short",
     ),
+    MEMBER_SESSION_MEMBER_ID_MISMATCH(
+        type = "member_session_member_id_mismatch",
+    ),
     METADATA_INVALID_FORMAT(
         type = "metadata_invalid_format",
     ),
@@ -1297,6 +1306,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     MISSING_SSO_CONNECTION_LOCATOR(
         type = "missing_sso_connection_locator",
+    ),
+    MUST_HAVE_JWKS_URL_FOR_TRUSTED_TOKEN_PROFILE_WITH_TYPE_JWK(
+        type = "must_have_jwks_url_for_trusted_token_profile_with_type_jwk",
+    ),
+    MUST_HAVE_PEM_FILES_FOR_TRUSTED_TOKEN_PROFILE_WITH_TYPE_PEM(
+        type = "must_have_pem_files_for_trusted_token_profile_with_type_pem",
     ),
     NO_ACTIVE_BIOMETRIC_REGISTRATIONS(
         type = "no_active_biometric_registrations",
@@ -1420,6 +1435,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     OAUTH_INVALID_CALLBACK_REQUEST(
         type = "oauth_invalid_callback_request",
+    ),
+    OAUTH_INVALID_SCOPE_REQUESTED(
+        type = "oauth_invalid_scope_requested",
     ),
     OAUTH_INVALID_STATE(
         type = "oauth_invalid_state",

@@ -53,7 +53,7 @@ internal class B2BSessionsImpl internal constructor(
             .stateIn(
                 externalScope,
                 SharingStarted.WhileSubscribed(),
-                stytchObjectMapper<B2BSessionData>(sessionStorage.memberSession, sessionStorage.lastValidatedAt),
+                StytchObjectInfo.Loading,
             )
 
     init {

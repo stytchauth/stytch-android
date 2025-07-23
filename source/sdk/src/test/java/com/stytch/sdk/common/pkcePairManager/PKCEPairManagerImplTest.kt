@@ -27,7 +27,7 @@ internal class PKCEPairManagerImplTest {
         mockkObject(EncryptionManager)
         every { EncryptionManager.createNewKeys(any()) } just runs
         mockkObject(StorageHelper)
-        every { StorageHelper.initialize(any()) } just runs
+        every { StorageHelper.initialize(any()) } returns mockk()
 
         impl = PKCEPairManagerImpl(StorageHelper, EncryptionManager)
     }
