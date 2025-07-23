@@ -123,8 +123,6 @@ internal fun StytchError.getUserFacingErrorMessageId(): Int? =
             StytchAPIErrorType.INACTIVE_EMAIL -> R.string.stytch_error_inactive_email
             StytchAPIErrorType.MEMBER_PASSWORD_NOT_FOUND -> R.string.stytch_error_member_password_not_found
             StytchAPIErrorType.SERVER_UNAVAILABLE -> R.string.stytch_error_server_unavailable
-            StytchAPIErrorType.UNABLE_TO_AUTHORIZE_OAUTH_PROVIDER ->
-                R.string.stytch_error_unable_to_authorize_oauth_provider
             StytchAPIErrorType.TOO_MANY_BIOMETRIC_REGISTRATIONS_FOR_USER ->
                 R.string.stytch_error_too_many_biometric_registrations_for_user
             StytchAPIErrorType.DUPLICATE_PHONE_NUMBER -> R.string.stytch_error_duplicate_phone_number

@@ -93,7 +93,7 @@
     <string name="stytch_error_unable_to_auth_magic_link">The magic link could not be authenticated because it was either already used or expired. Send another magic link to this user.</string>
     <string name="stytch_error_client_closed_request">Client closed request.</string>
     <string name="stytch_error_phone_number_not_found">Phone Number could not be found.</string>
-    <string name="stytch_error_invalid_phone_number_country_code">The phone number\'s country code is invalid, unsupported, or disabled for your Stytch Workspace. Please see here for additional information: https://stytch.com/docs/api/errors/400#invalid_phone_number_country_code</string>
+    <string name="stytch_error_invalid_phone_number_country_code">The phone number\'s country code is invalid, unsupported, or disabled.</string>
     <string name="stytch_error_session_too_old_to_reset_password">The provided session cannot be used to reset a password. It does not have an authentication_factor that was authenticated within the last 5 minutes. Please prompt the user to authenticate again before retrying the endpoint.</string>
     <string name="stytch_error_invalid_email">Email format is invalid.</string>
     <string name="stytch_error_unauthorized_action">Unauthorized action.</string>
@@ -114,24 +114,22 @@
     <string name="stytch_error_email_template_not_found">Email Template could not be found.</string>
     <string name="stytch_error_pkce_expected_code_verifier">This flow was started using a code_challenge but the authentication call is missing the corresponding code_verifier.</string>
     <string name="stytch_error_captcha_required">Captcha required</string>
-    <string name="stytch_error_inactive_email">The email provided has been marked as inactive by our email provider. This happens most often when the email is undeliverable due to a hard bounce. If the cause of the hard bounce has been resolved, you can reactivate the email address via the User management tab or the Members tab in the Stytch Dashboard.</string>
+    <string name="stytch_error_inactive_email">The email address is marked as inactive. Please try another email address, or contact your admin if you think this is a mistake.</string>
     <string name="stytch_error_member_password_not_found">Member password not found</string>
     <string name="stytch_error_too_many_unverified_factors">We were unable to create a new auth factor. This user already has too many unverified factors.</string>
-    <string name="stytch_error_endpoint_not_authorized_for_sdk">The project owner has not authorized the SDK to call this endpoint. Please enable it in the dashboard to continue: https://stytch.com/dashboard/sdk-configuration.</string>
     <string name="stytch_error_server_unavailable">Oops, something seems to have gone wrong. Please retry the request. If this issue persists, please reach out to support.</string>
-    <string name="stytch_error_unable_to_authorize_oauth_provider">Unable to authorize request to this OAuth provider. Please check the client ID and secret of your OAuth configuration.</string>
     <string name="stytch_error_too_many_biometric_registrations_for_user">The provided user_id has reached the maximum allowed mobile biometric registrations. The maximum is 25.</string>
     <string name="stytch_error_duplicate_phone_number">A user with the specified phone number already exists for this project.</string>
     <string name="stytch_error_oauth_invalid_callback_request">The OAuth callback request is invalid. Please reach out to the application developer for support.</string>
     <string name="stytch_error_intermediate_session_not_found">Intermediate session could not be found.</string>
-    <string name="stytch_error_no_match_for_provided_magic_link_url">The magic_link_url in the request did not match any redirect URLs set for this project. Please visit https://stytch.com/dashboard/redirect-urls to update the redirect URLs for this project. For more information on why this validation is necessary please visit https://stytch.com/docs/api/url-validation</string>
+    <string name="stytch_error_no_match_for_provided_magic_link_url">The magic_link_url in the request did not match any redirect URLs set for this project.</string>
     <string name="stytch_error_totp_code_already_authenticated">This TOTP code has already been authenticated. Please attempt with the next generated code.</string>
     <string name="stytch_error_invalid_session_duration_minutes">session_duration_minutes is invalid, should be between 5 to 527040 minutes.</string>
     <string name="stytch_error_invalid_consumer_endpoint">This endpoint is only enabled for consumer projects.</string>
-    <string name="stytch_error_cross_org_passwords_not_enabled">Cross-organization passwords are not enabled for this project. Please enable them in the dashboard to continue: https://stytch.com/dashboard/password-strength-config.</string>
-    <string name="stytch_error_invalid_session_duration">The submitted session duration exceeds the maximum session duration allowed for this project. If this is intentional, please update the maximum duration here: https://stytch.com/dashboard/sdk-configuration</string>
+    <string name="stytch_error_cross_org_passwords_not_enabled">Cross-organization passwords are not enabled for this project.</string>
+    <string name="stytch_error_invalid_session_duration">The submitted session duration exceeds the maximum session duration allowed for this project.</string>
     <string name="stytch_error_invalid_locale">locale is invalid.</string>
-    <string name="stytch_error_magic_link_not_found">The magic link could not be authenticated, try sending another magic link to the user.</string>
+    <string name="stytch_error_magic_link_not_found">The magic link could not be authenticated, try sending another magic link.</string>
 
     <!-- B2C UI strings -->
     <string name="stytch_b2c_biometric_registration_body">Use biometrics to log into your account.</string>
