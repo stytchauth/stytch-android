@@ -36,7 +36,7 @@ internal object SessionAutoUpdater {
         updateSession: suspend () -> StytchResult<CommonAuthenticationData>,
         saveSession: (CommonAuthenticationData) -> Unit,
         clearSession: () -> Unit = {},
-        getCurrentSessionId: () -> String?,
+        getCurrentSessionId: () -> String? = { null },
     ) {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
