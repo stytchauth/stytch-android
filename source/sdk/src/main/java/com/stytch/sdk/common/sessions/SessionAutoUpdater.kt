@@ -36,6 +36,7 @@ internal object SessionAutoUpdater {
         updateSession: suspend () -> StytchResult<CommonAuthenticationData>,
         saveSession: (CommonAuthenticationData) -> Unit,
         clearSession: () -> Unit = {},
+        getCurrentSessionId: () -> String?,
     ) {
         // prevent multiple update jobs running
         stopSessionUpdateJob()
@@ -44,13 +45,26 @@ internal object SessionAutoUpdater {
                 while (true) {
                     // wait before another update request
                     delay(sessionUpdateDelay)
-                    // save session data in SessionStorage if call successful
-                    when (val sessionResult = updateSession()) {
+                    val initialSessionId = getCurrentSessionId()
+                    val sessionResult = updateSession()
+                    if (initialSessionId != getCurrentSessionId()) {
+                        // The session was updated out from under us while the request was in flight;
+                        // discard the response and retry
+                        sessionUpdateDelay = 0
+                        continue
+                    }
+                    when (sessionResult) {
                         is StytchResult.Success -> {
                             resetDelay()
                             saveSession(sessionResult.value)
                         }
                         is StytchResult.Error -> {
+                            if (initialSessionId != getCurrentSessionId()) {
+                                // The session was updated out from under us while the request was in flight;
+                                // discard the response and retry
+                                sessionUpdateDelay = 0
+                                continue
+                            }
                             if ((sessionResult.exception as? StytchAPIError)?.isUnrecoverableError() == true) {
                                 clearSession()
                             }

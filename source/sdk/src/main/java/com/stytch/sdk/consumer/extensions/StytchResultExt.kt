@@ -50,6 +50,9 @@ internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater(
             clearSession = {
                 sessionStorage.revoke()
             },
+            getCurrentSessionId = {
+                sessionStorage.session?.sessionId
+            },
         )
     }
 }
