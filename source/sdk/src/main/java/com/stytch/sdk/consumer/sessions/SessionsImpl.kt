@@ -91,17 +91,29 @@ internal class SessionsImpl internal constructor(
 
     override suspend fun authenticate(authParams: Sessions.AuthParams): AuthResponse =
         withContext(dispatchers.io) {
-            var result =
-                api
-                    .authenticate(
-                        authParams.sessionDurationMinutes,
-                    ).apply {
+            val initialSessionId = sessionStorage.session?.sessionId
+            val result = api.authenticate(authParams.sessionDurationMinutes)
+            if (initialSessionId != sessionStorage.session?.sessionId) {
+                // The session was updated out from under us while the request was in flight;
+                // discard the response and retry
+                return@withContext authenticate(authParams)
+            }
+            return@withContext when (result) {
+                is StytchResult.Success -> {
+                    result.apply {
                         launchSessionUpdater(dispatchers, sessionStorage)
                     }
-            if (result is StytchResult.Error) {
-                result = maybeForceClearSession(result, false)
+                }
+                is StytchResult.Error -> {
+                    if (initialSessionId != sessionStorage.session?.sessionId) {
+                        // The session was updated out from under us while the request was in flight;
+                        // discard the response and retry
+                        return@withContext authenticate(authParams)
+                    }
+                    // Session was NOT updated, but was an error, so maybe clear session
+                    maybeForceClearSession(result, false)
+                }
             }
-            result
         }
 
     override fun authenticate(
