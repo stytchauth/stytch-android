@@ -54,7 +54,7 @@ ktlint = "12.1.0"
 detekt = "1.23.6"
 ksp = "2.1.0-1.0.29"
 kotlinCompilerExtension="1.5.15"
-stytchDfp="1.0.6"
+stytchDfp="1.0.7"
 leakCanary = "2.14"
 
 [libraries]
