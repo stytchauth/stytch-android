@@ -1928,8 +1928,8 @@ public enum class StytchAPIErrorType(public val type: String) {
     SESSION_NOT_FOUND(
         type = "session_not_found",
     ),
-    SESSION_NOT_MUTABLE_IMPERSONATED(
-        type = "session_not_mutable_impersonated",
+    SESSION_NOT_MUTABLE(
+        type = "session_not_mutable",
     ),
     SESSION_ON_CODE_DOES_NOT_MATCH_SESSION_PASSED_IN(
         type = "session_on_code_does_not_match_session_passed_in",
