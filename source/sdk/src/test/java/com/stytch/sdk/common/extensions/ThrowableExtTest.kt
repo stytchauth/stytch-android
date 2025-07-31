@@ -8,6 +8,7 @@ import com.stytch.sdk.utils.API_ERROR_RESPONSE_STRING
 import com.stytch.sdk.utils.EMPTY_ERROR_RESPONSE_STRING
 import com.stytch.sdk.utils.SCHEMA_ERROR_RESPONSE_STRING
 import com.stytch.sdk.utils.createHttpExceptionReturningString
+import org.junit.Assert.fail
 import org.junit.Test
 
 internal class ThrowableExtTest {
@@ -31,7 +32,11 @@ internal class ThrowableExtTest {
 
     @Test
     fun `Anything else returns StytchAPIUnreachableError`() {
-        val originalException = RuntimeException("Something BAAAAAAD happened")
-        assert(originalException.toStytchError() is StytchAPIUnreachableError)
+        try {
+            val originalException = RuntimeException("Something BAAAAAAD happened")
+            assert(originalException.toStytchError() is StytchAPIUnreachableError)
+        } catch (_: Exception) {
+            fail("Should not have thrown an exception")
+        }
     }
 }

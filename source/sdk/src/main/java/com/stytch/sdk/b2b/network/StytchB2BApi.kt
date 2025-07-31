@@ -92,7 +92,7 @@ import com.stytch.sdk.common.network.safeApiCall
 
 internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
-    private lateinit var deviceInfo: DeviceInfo
+    internal lateinit var deviceInfo: DeviceInfo
     private lateinit var apiServiceClass: ApiService
     private lateinit var dfpInterceptor: StytchDFPInterceptor
     private lateinit var endpointOptions: EndpointOptions

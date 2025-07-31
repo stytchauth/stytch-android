@@ -123,8 +123,8 @@ internal class ConfigurationManager {
     ) = this::publicToken.isInitialized && this.publicToken == publicToken && this.options == options
 
     fun emitAnalyticsEvent(event: ConfigurationAnalyticsEvent) {
-        // TODO: Align on naming with Nidal
-        println("ConfigurationAnalyticEvent_${event.step} = ${event.duration}")
+        // TODO: Align on naming with iOS
+        // println("ConfigurationAnalyticEvent_${event.step} = ${event.duration}")
         // client.logEvent("ConfigurationAnalyticEvent_${event.step}", mapOf("duration" to event.duration), null)
     }
 

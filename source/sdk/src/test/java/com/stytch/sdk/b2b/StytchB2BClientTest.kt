@@ -97,6 +97,7 @@ internal class StytchB2BClientTest {
         mockkObject(StorageHelper)
         mockkObject(StytchB2BApi)
         mockkObject(StytchB2BApi.Sessions)
+        mockkObject(StytchB2BApi.Events)
         mockkObject(Recaptcha)
         MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.fetchClient(any(), any()) } returns mockk(relaxed = true)
@@ -110,6 +111,9 @@ internal class StytchB2BClientTest {
         every { StorageHelper.getLong(any()) } returns 0
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns PKCECodePair("", "")
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
+        coEvery {
+            StytchB2BApi.Events.logEvent(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns mockk()
         coEvery { StytchB2BApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchB2BClient.configurationManager.externalScope = TestScope()
         StytchB2BClient.configurationManager.dispatchers = StytchDispatchers(dispatcher, dispatcher)

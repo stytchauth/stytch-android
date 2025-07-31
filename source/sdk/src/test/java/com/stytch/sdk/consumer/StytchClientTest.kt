@@ -95,6 +95,7 @@ internal class StytchClientTest {
         mockkObject(StorageHelper)
         mockkObject(StytchApi)
         mockkObject(StytchApi.Sessions)
+        mockkObject(StytchApi.Events)
         mockkObject(Recaptcha)
         MockKAnnotations.init(this, true, true)
         coEvery { Recaptcha.fetchClient(any(), any()) } returns mockk(relaxed = true)
@@ -108,6 +109,9 @@ internal class StytchClientTest {
         every { StorageHelper.getLong(any()) } returns 0
         every { mockPKCEPairManager.generateAndReturnPKCECodePair() } returns mockk()
         every { mockPKCEPairManager.getPKCECodePair() } returns mockk()
+        coEvery {
+            StytchApi.Events.logEvent(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns mockk()
         coEvery { StytchApi.getBootstrapData() } returns StytchResult.Error(mockk())
         StytchClient.configurationManager.externalScope = TestScope()
         StytchClient.configurationManager.dispatchers = StytchDispatchers(dispatcher, dispatcher)
