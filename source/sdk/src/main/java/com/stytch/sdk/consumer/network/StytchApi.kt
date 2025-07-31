@@ -51,7 +51,7 @@ import com.stytch.sdk.consumer.network.models.UserSearchResponseData
 
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
-    private lateinit var deviceInfo: DeviceInfo
+    internal lateinit var deviceInfo: DeviceInfo
     private lateinit var apiServiceClass: ApiService
     private lateinit var dfpInterceptor: StytchDFPInterceptor
     private lateinit var endpointOptions: EndpointOptions

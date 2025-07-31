@@ -84,7 +84,9 @@ private val MOCK_RBAC_POLICY =
     )
 
 @RunWith(Parameterized::class)
-internal class RBACPolicyCallerIsAuthorizedTest(private val testCase: TestCase) {
+internal class RBACPolicyCallerIsAuthorizedTest(
+    private val testCase: TestCase,
+) {
     data class TestCase(
         val name: String,
         val subjectRoles: List<String>,
@@ -170,7 +172,9 @@ internal class RBACPolicyCallerIsAuthorizedTest(private val testCase: TestCase) 
 }
 
 @RunWith(Parameterized::class)
-internal class RBACPolicyAllPermissionsForCaller(private val testCase: TestCase) {
+internal class RBACPolicyAllPermissionsForCaller(
+    private val testCase: TestCase,
+) {
     data class TestCase(
         val name: String,
         val subjectRoles: List<String>,
@@ -284,8 +288,6 @@ internal class RBACPolicyAllPermissionsForCaller(private val testCase: TestCase)
     @Test
     fun test() {
         val actual = MOCK_RBAC_POLICY.allPermissionsForCaller(memberRoles = testCase.subjectRoles)
-        println(actual)
-        println(testCase.expectedPermissions)
         assert(actual == testCase.expectedPermissions)
     }
 }
