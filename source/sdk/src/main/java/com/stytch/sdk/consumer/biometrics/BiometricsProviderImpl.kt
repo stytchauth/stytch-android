@@ -151,10 +151,6 @@ internal class BiometricsProviderImpl : BiometricsProvider {
         allowedAuthenticators: Int,
     ): Int = BiometricManager.from(context).canAuthenticate(allowedAuthenticators)
 
-    override fun deleteSecretKey() {
-        keyStore.deleteEntry(BIOMETRIC_KEY_NAME)
-    }
-
     override fun ensureSecretKeyIsAvailable(allowedAuthenticators: Int) {
         val secretKey = getSecretKey(allowedAuthenticators) ?: error("SecretKey cannot be null")
         // initialize a cipher (that we won't use) with the secretkey to ensure it hasn't been invalidated
