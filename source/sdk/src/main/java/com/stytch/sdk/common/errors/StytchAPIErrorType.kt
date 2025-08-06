@@ -1013,6 +1013,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_TOKEN_DOCS(
         type = "invalid_token_docs",
     ),
+    INVALID_TOKEN_ORGANIZATION_ID_CLAIM(
+        type = "invalid_token_organization_id_claim",
+    ),
     INVALID_TOKEN_URL(
         type = "invalid_token_url",
     ),
@@ -1981,6 +1984,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     THIRD_PARTY_CLIENTS_REQUIRE_CONSENT_FOR_OFFLINE_ACCESS(
         type = "third_party_clients_require_consent_for_offline_access",
+    ),
+    TOKEN_MISSING_ORGANIZATION_ID_CLAIM(
+        type = "token_missing_organization_id_claim",
     ),
     TOO_FEW_TOKENS_AUTHENTICATED(
         type = "too_few_tokens_authenticated",
