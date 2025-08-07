@@ -45,7 +45,11 @@ internal class AuthenticationActivity : FragmentActivity() {
         if (StytchClient.isInitialized.value) {
             StytchClient.events.logEvent(
                 eventName = "render_login_screen",
-                details = mapOf("options" to uiConfig.productConfig),
+                details =
+                    mapOf(
+                        "options" to uiConfig.productConfig,
+                        "bootstrap" to uiConfig.bootstrapData,
+                    ),
             )
         }
         lifecycleScope.launch {
