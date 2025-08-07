@@ -731,6 +731,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_ORGANIZATION_AUTH_METHOD_SETTINGS(
         type = "invalid_organization_auth_method_settings",
     ),
+    INVALID_ORGANIZATION_EXTERNAL_ID(
+        type = "invalid_organization_external_id",
+    ),
     INVALID_ORGANIZATION_ID(
         type = "invalid_organization_id",
     ),
@@ -1564,6 +1567,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     OPERATION_RESTRICTED_BY_ORGANIZATION_MFA_METHODS(
         type = "operation_restricted_by_organization_mfa_methods",
+    ),
+    ORGANIZATION_EXTERNAL_ID_ALREADY_USED(
+        type = "organization_external_id_already_used",
     ),
     ORGANIZATION_LOGO_URL_TOO_LONG(
         type = "organization_logo_url_too_long",
