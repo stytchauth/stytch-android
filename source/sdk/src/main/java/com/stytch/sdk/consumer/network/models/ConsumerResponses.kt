@@ -16,6 +16,26 @@ internal object ConsumerResponses {
         class PasswordsStrengthCheckResponse(
             data: StrengthCheckResponse,
         ) : StytchDataResponse<StrengthCheckResponse>(data)
+
+        @JsonClass(generateAdapter = true)
+        class B2CPasswordsAuthenticateResponse(
+            data: B2CPasswordsAuthenticateResponseData,
+        ) : StytchDataResponse<B2CPasswordsAuthenticateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class PasswordsEmailResetResponse(
+            data: PasswordsEmailResetResponseData,
+        ) : StytchDataResponse<PasswordsEmailResetResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class PasswordsExistingPasswordResetResponse(
+            data: PasswordsExistingPasswordResetResponseData,
+        ) : StytchDataResponse<PasswordsExistingPasswordResetResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class PasswordsSessionResetResponse(
+            data: PasswordsSessionResetResponseData,
+        ) : StytchDataResponse<PasswordsSessionResetResponseData>(data)
     }
 
     object Biometrics {
@@ -84,6 +104,11 @@ internal object ConsumerResponses {
         class UpdateResponse(
             data: WebAuthnUpdateResponseData,
         ) : StytchDataResponse<WebAuthnUpdateResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class WebAuthnAuthenticateResponse(
+            data: WebAuthnAuthenticateResponseData,
+        ) : StytchDataResponse<WebAuthnAuthenticateResponseData>(data)
     }
 
     object Crypto {
@@ -91,6 +116,18 @@ internal object ConsumerResponses {
         class AuthenticateStartResponse(
             data: CryptoWalletAuthenticateStartResponseData,
         ) : StytchDataResponse<CryptoWalletAuthenticateStartResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AuthenticateResponse(
+            data: CryptoWalletsAuthenticateResponseData,
+        ) : StytchDataResponse<CryptoWalletsAuthenticateResponseData>(data)
+    }
+
+    object OTP {
+        @JsonClass(generateAdapter = true)
+        class OTPsAuthenticateResponse(
+            data: OTPsAuthenticateResponseData,
+        ) : StytchDataResponse<OTPsAuthenticateResponseData>(data)
     }
 
     object TOTP {

@@ -3,6 +3,7 @@ package com.stytch.sdk.consumer
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
+import com.stytch.sdk.consumer.network.models.B2CPasswordsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletAuthenticateStartResponseData
@@ -11,6 +12,10 @@ import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
 import com.stytch.sdk.consumer.network.models.OAuthData
+import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsEmailResetResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsExistingPasswordResetResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsSessionResetResponseData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
@@ -19,6 +24,7 @@ import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
+import com.stytch.sdk.consumer.network.models.WebAuthnAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.WebAuthnAuthenticateStartData
 import com.stytch.sdk.consumer.network.models.WebAuthnRegisterData
 import com.stytch.sdk.consumer.network.models.WebAuthnRegisterStartData

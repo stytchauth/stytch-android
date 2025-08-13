@@ -9,7 +9,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.network.models.IAuthData
+import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
 import com.stytch.sdk.consumer.otp.OTP
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
@@ -131,7 +131,7 @@ internal class OTPConfirmationScreenViewModelTest {
     @Test
     fun `authenticate updates state and emits event on success`() =
         runTest(dispatcher) {
-            val result: StytchResult.Success<IAuthData> = mockk(relaxed = true)
+            val result: StytchResult.Success<OTPsAuthenticateResponseData> = mockk(relaxed = true)
             val eventFlow =
                 async {
                     viewModel.eventFlow.first()

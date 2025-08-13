@@ -5,6 +5,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchPasskeysNotSupportedError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -254,7 +255,7 @@ internal class PasskeysImplTest {
                 )
             } returns StytchResult.Success(mockk(relaxed = true))
             coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } returns mockk(relaxed = true)
-            val mockSuccessResponse = mockk<AuthResponse>(relaxed = true)
+            val mockSuccessResponse = mockk<WebAuthnAuthenticateResponse>(relaxed = true)
             coEvery { mockApi.authenticate(any(), any()) } returns mockSuccessResponse
             every { mockSuccessResponse.launchSessionUpdater(any(), any()) } just runs
             impl.authenticate(mockk(relaxed = true))
