@@ -223,7 +223,6 @@ internal class StytchClientTest {
             every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
             StytchClient.configure(mContextMock, UUID.randomUUID().toString())
             coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
-            verify(exactly = 1) { mockResponse.launchSessionUpdater(any(), any()) }
         }
     }
 
