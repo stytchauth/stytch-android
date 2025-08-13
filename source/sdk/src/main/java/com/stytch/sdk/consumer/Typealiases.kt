@@ -6,6 +6,7 @@ import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletAuthenticateStartResponseData
+import com.stytch.sdk.consumer.network.models.CryptoWalletsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
@@ -127,3 +128,11 @@ public typealias TOTPRecoveryCodesResponse = StytchResult<TOTPRecoveryCodesRespo
  * Type alias for StytchResult<TOTPRecoverResponseData> used for TOTP recovery responses
  */
 public typealias TOTPRecoverResponse = StytchResult<TOTPRecoverResponseData>
+
+public typealias CryptoWalletsAuthenticateResponse = StytchResult<CryptoWalletsAuthenticateResponseData>
+public typealias OTPsAuthenticateResponse = StytchResult<OTPsAuthenticateResponseData>
+public typealias PasswordsAuthenticateResponse = StytchResult<B2CPasswordsAuthenticateResponseData>
+public typealias PasswordsEmailResetResponse = StytchResult<PasswordsEmailResetResponseData>
+public typealias PasswordsExistingPasswordResetResponse = StytchResult<PasswordsExistingPasswordResetResponseData>
+public typealias PasswordsSessionResetResponse = StytchResult<PasswordsSessionResetResponseData>
+public typealias WebAuthnAuthenticateResponse = StytchResult<WebAuthnAuthenticateResponseData>

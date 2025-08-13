@@ -494,3 +494,31 @@ public data class Feedback(
     @Json(name = "luds_requirements")
     val ludsRequirements: LUDSRequirements? = null, // B2C LUDS
 ) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class DeviceAttributeDetails(
+    @Json(name = "is_new")
+    val isNew: Boolean,
+    @Json(name = "first_seen_at")
+    val firstSeenAt: String?,
+    @Json(name = "last_seen_at")
+    val lastSeenAt: String?,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SDKDeviceHistory(
+    @Json(name = "ip_address")
+    val ipAddress: String?,
+    @Json(name = "ip_address_details")
+    val ipAddressDetails: DeviceAttributeDetails?,
+    @Json(name = "ip_geo_city")
+    val ipGeoCity: String?,
+    @Json(name = "ip_geo_region")
+    val ipGeoRegion: String?,
+    @Json(name = "ip_geo_country")
+    val ipGeoCountry: String?,
+    @Json(name = "ip_geo_country_details")
+    val ipGeoCountryDetails: DeviceAttributeDetails?,
+) : Parcelable

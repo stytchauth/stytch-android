@@ -40,6 +40,7 @@ import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
+import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
@@ -361,7 +362,7 @@ internal object StytchApi : CommonApi {
             token: String,
             methodId: String,
             sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
-        ): StytchResult<AuthData> =
+        ): StytchResult<OTPsAuthenticateResponseData> =
             safeConsumerApiCall {
                 apiService.authenticateWithOTP(
                     ConsumerRequests.OTP.Authenticate(
