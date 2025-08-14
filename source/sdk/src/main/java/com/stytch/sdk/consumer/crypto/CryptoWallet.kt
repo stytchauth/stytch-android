@@ -2,8 +2,8 @@ package com.stytch.sdk.consumer.crypto
 
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
+import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import java.util.concurrent.CompletableFuture
 
@@ -70,24 +70,26 @@ public interface CryptoWallet {
     /**
      * Complete a crypto wallet authentication flow
      * @param parameters the parameters required to complete a crypto wallet authentication flow
-     * @return [AuthResponse]
+     * @return [CryptoWalletsAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthenticateParameters): CryptoWalletsAuthenticateResponse
 
     /**
      * Complete a crypto wallet authentication flow
      * @param parameters the parameters required to complete a crypto wallet authentication flow
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [CryptoWalletsAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthenticateParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (CryptoWalletsAuthenticateResponse) -> Unit,
     )
 
     /**
      * Complete a crypto wallet authentication flow
      * @param parameters the parameters required to complete a crypto wallet authentication flow
-     * @return [AuthResponse]
+     * @return [CryptoWalletsAuthenticateResponse]
      */
-    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<AuthResponse>
+    public fun authenticateCompletable(
+        parameters: AuthenticateParameters,
+    ): CompletableFuture<CryptoWalletsAuthenticateResponse>
 }

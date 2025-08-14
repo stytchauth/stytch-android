@@ -1,11 +1,13 @@
 package com.stytch.sdk.consumer.otp
 
+import coil3.util.CoilUtils.result
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
+import com.stytch.sdk.consumer.OTPsAuthenticateResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -27,28 +29,23 @@ internal class OTPImpl internal constructor(
     override val whatsapp: OTP.WhatsAppOTP = WhatsAppOTPImpl()
     override val email: OTP.EmailOTP = EmailOTPImpl()
 
-    override suspend fun authenticate(parameters: OTP.AuthParameters): AuthResponse {
-        val result: AuthResponse
+    override suspend fun authenticate(parameters: OTP.AuthParameters): OTPsAuthenticateResponse =
         withContext(dispatchers.io) {
-            // call backend endpoint
-            result =
-                api
-                    .authenticateWithOTP(
-                        token = parameters.token,
-                        methodId = parameters.methodId,
-                        sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    ).apply {
-                        sessionStorage.methodId = null
-                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OTP
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
+            api
+                .authenticateWithOTP(
+                    token = parameters.token,
+                    methodId = parameters.methodId,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    sessionStorage.methodId = null
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.OTP
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-        return result
-    }
 
     override fun authenticate(
         parameters: OTP.AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: OTPsAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
@@ -56,7 +53,7 @@ internal class OTPImpl internal constructor(
         }
     }
 
-    override fun authenticateCompletable(parameters: OTP.AuthParameters): CompletableFuture<AuthResponse> =
+    override fun authenticateCompletable(parameters: OTP.AuthParameters): CompletableFuture<OTPsAuthenticateResponse> =
         externalScope
             .async {
                 authenticate(parameters)

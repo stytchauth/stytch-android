@@ -9,7 +9,7 @@ import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.LoginOrCreateOTPData
 import com.stytch.sdk.consumer.StytchClient
-import com.stytch.sdk.consumer.network.models.IAuthData
+import com.stytch.sdk.consumer.network.models.B2CPasswordsAuthenticateResponseData
 import com.stytch.sdk.ui.b2c.data.EventState
 import com.stytch.sdk.ui.b2c.data.NavigationRoute
 import com.stytch.sdk.ui.b2c.data.PasswordOptions
@@ -90,7 +90,7 @@ internal class ReturningUserScreenViewModelTest {
     @Test
     fun `authenticate updates state and emits correct event on success`() =
         runTest(dispatcher) {
-            val result: StytchResult.Success<IAuthData> = mockk(relaxed = true)
+            val result: StytchResult.Success<B2CPasswordsAuthenticateResponseData> = mockk(relaxed = true)
             coEvery { mockStytchClient.passwords.authenticate(any()) } returns result
             val eventFlow =
                 async {

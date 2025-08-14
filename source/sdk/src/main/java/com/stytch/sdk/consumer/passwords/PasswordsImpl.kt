@@ -1,14 +1,18 @@
 package com.stytch.sdk.consumer.passwords
 
+import coil3.util.CoilUtils.result
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.ConsumerAuthMethod
+import com.stytch.sdk.consumer.PasswordsAuthenticateResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
+import com.stytch.sdk.consumer.PasswordsEmailResetResponse
+import com.stytch.sdk.consumer.PasswordsExistingPasswordResetResponse
+import com.stytch.sdk.consumer.PasswordsSessionResetResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
@@ -27,26 +31,22 @@ internal class PasswordsImpl internal constructor(
     private val api: StytchApi.Passwords,
     private val pkcePairManager: PKCEPairManager,
 ) : Passwords {
-    override suspend fun authenticate(parameters: Passwords.AuthParameters): AuthResponse {
-        val result: AuthResponse
+    override suspend fun authenticate(parameters: Passwords.AuthParameters): PasswordsAuthenticateResponse =
         withContext(dispatchers.io) {
-            result =
-                api
-                    .authenticate(
-                        email = parameters.email,
-                        password = parameters.password,
-                        sessionDurationMinutes = parameters.sessionDurationMinutes,
-                    ).apply {
-                        sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSWORDS
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
+            api
+                .authenticate(
+                    email = parameters.email,
+                    password = parameters.password,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    sessionStorage.lastAuthMethodUsed = ConsumerAuthMethod.PASSWORDS
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
-        return result
-    }
 
     override fun authenticate(
         parameters: Passwords.AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: PasswordsAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
@@ -54,7 +54,9 @@ internal class PasswordsImpl internal constructor(
         }
     }
 
-    override fun authenticateCompletable(parameters: Passwords.AuthParameters): CompletableFuture<AuthResponse> =
+    override fun authenticateCompletable(
+        parameters: Passwords.AuthParameters,
+    ): CompletableFuture<PasswordsAuthenticateResponse> =
         externalScope
             .async {
                 authenticate(parameters)
@@ -142,7 +144,7 @@ internal class PasswordsImpl internal constructor(
                 resetByEmailStart(parameters)
             }.asCompletableFuture()
 
-    override suspend fun resetByEmail(parameters: Passwords.ResetByEmailParameters): AuthResponse {
+    override suspend fun resetByEmail(parameters: Passwords.ResetByEmailParameters): PasswordsEmailResetResponse {
         val codeVerifier =
             pkcePairManager.getPKCECodePair()?.codeVerifier ?: return StytchResult.Error(StytchMissingPKCEError(null))
         return withContext(dispatchers.io) {
@@ -162,7 +164,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByEmail(
         parameters: Passwords.ResetByEmailParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: PasswordsEmailResetResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetByEmail(parameters)
@@ -172,7 +174,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByEmailCompletable(
         parameters: Passwords.ResetByEmailParameters,
-    ): CompletableFuture<AuthResponse> =
+    ): CompletableFuture<PasswordsEmailResetResponse> =
         externalScope
             .async {
                 resetByEmail(parameters)
@@ -180,7 +182,7 @@ internal class PasswordsImpl internal constructor(
 
     override suspend fun resetByExistingPassword(
         parameters: Passwords.ResetByExistingPasswordParameters,
-    ): AuthResponse =
+    ): PasswordsExistingPasswordResetResponse =
         withContext(dispatchers.io) {
             api
                 .resetByExisting(
@@ -195,7 +197,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByExistingPassword(
         parameters: Passwords.ResetByExistingPasswordParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsExistingPasswordResetResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             callback(resetByExistingPassword(parameters))
@@ -204,13 +206,13 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetByExistingPasswordCompletable(
         parameters: Passwords.ResetByExistingPasswordParameters,
-    ): CompletableFuture<AuthResponse> =
+    ): CompletableFuture<PasswordsExistingPasswordResetResponse> =
         externalScope
             .async {
                 resetByExistingPassword(parameters)
             }.asCompletableFuture()
 
-    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): AuthResponse =
+    override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): PasswordsSessionResetResponse =
         withContext(dispatchers.io) {
             api
                 .resetBySession(
@@ -224,7 +226,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetBySession(
         parameters: Passwords.ResetBySessionParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsSessionResetResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = resetBySession(parameters)
@@ -234,7 +236,7 @@ internal class PasswordsImpl internal constructor(
 
     override fun resetBySessionCompletable(
         parameters: Passwords.ResetBySessionParameters,
-    ): CompletableFuture<AuthResponse> =
+    ): CompletableFuture<PasswordsSessionResetResponse> =
         externalScope
             .async {
                 resetBySession(parameters)

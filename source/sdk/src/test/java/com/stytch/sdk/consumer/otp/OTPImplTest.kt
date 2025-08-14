@@ -9,7 +9,7 @@ import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.network.models.AuthData
+import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -43,7 +43,7 @@ internal class OTPImplTest {
     private lateinit var impl: OTPImpl
     private val dispatcher = Dispatchers.Unconfined
 
-    private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
+    private val successfulAuthResponse = StytchResult.Success<OTPsAuthenticateResponseData>(mockk(relaxed = true))
     private val authParameters = OTP.AuthParameters("", "", sessionDurationMinutes = 30)
 
     @Before

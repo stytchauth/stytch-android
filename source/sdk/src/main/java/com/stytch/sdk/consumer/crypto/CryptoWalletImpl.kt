@@ -1,9 +1,9 @@
 package com.stytch.sdk.consumer.crypto
 
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
+import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -54,7 +54,9 @@ internal class CryptoWalletImpl(
                 authenticateStart(parameters)
             }.asCompletableFuture()
 
-    override suspend fun authenticate(parameters: CryptoWallet.AuthenticateParameters): AuthResponse =
+    override suspend fun authenticate(
+        parameters: CryptoWallet.AuthenticateParameters,
+    ): CryptoWalletsAuthenticateResponse =
         withContext(dispatchers.io) {
             api
                 .authenticate(
@@ -70,7 +72,7 @@ internal class CryptoWalletImpl(
 
     override fun authenticate(
         parameters: CryptoWallet.AuthenticateParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (CryptoWalletsAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             callback(authenticate(parameters))
@@ -79,7 +81,7 @@ internal class CryptoWalletImpl(
 
     override fun authenticateCompletable(
         parameters: CryptoWallet.AuthenticateParameters,
-    ): CompletableFuture<AuthResponse> =
+    ): CompletableFuture<CryptoWalletsAuthenticateResponse> =
         externalScope
             .async {
                 authenticate(parameters)

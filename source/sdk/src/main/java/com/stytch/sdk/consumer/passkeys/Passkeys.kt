@@ -3,7 +3,7 @@ package com.stytch.sdk.consumer.passkeys
 import android.app.Activity
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
-import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import java.util.concurrent.CompletableFuture
@@ -83,26 +83,28 @@ public interface Passkeys {
     /**
      * Authenticates a Passkey registration.
      * @param parameters required to authenticate a Passkey registration
-     * @return [AuthResponse]
+     * @return [WebAuthnAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthenticateParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthenticateParameters): WebAuthnAuthenticateResponse
 
     /**
      * Authenticates a Passkey registration.
      * @param parameters required to authenticate a Passkey registration
-     * @param callback a callback that receives a [AuthResponse]
+     * @param callback a callback that receives a [WebAuthnAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthenticateParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: WebAuthnAuthenticateResponse) -> Unit,
     )
 
     /**
      * Authenticates a Passkey registration.
      * @param parameters required to authenticate a Passkey registration
-     * @return [AuthResponse]
+     * @return [WebAuthnAuthenticateResponse]
      */
-    public fun authenticateCompletable(parameters: AuthenticateParameters): CompletableFuture<AuthResponse>
+    public fun authenticateCompletable(
+        parameters: AuthenticateParameters,
+    ): CompletableFuture<WebAuthnAuthenticateResponse>
 
     /**
      * Updates a Passkey registration.

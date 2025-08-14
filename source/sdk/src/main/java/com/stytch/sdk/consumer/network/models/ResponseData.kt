@@ -13,6 +13,7 @@ import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.Password
 import com.stytch.sdk.common.network.models.PhoneNumber
 import com.stytch.sdk.common.network.models.Provider
+import com.stytch.sdk.common.network.models.SDKDeviceHistory
 import com.stytch.sdk.common.network.models.StrengthPolicy
 import com.stytch.sdk.common.network.models.TOTP
 import com.stytch.sdk.common.network.models.WebAuthNRegistrations
@@ -128,6 +129,8 @@ public data class CreateResponse(
     val emailId: String,
     @Json(name = "user_id")
     val userId: String,
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
 ) : IAuthData,
     Parcelable
 
@@ -146,6 +149,8 @@ public data class BiometricsAuthData(
     override val user: UserData,
     @Json(name = "biometric_registration_id")
     val biometricRegistrationId: String,
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
 ) : IAuthData,
     Parcelable
 
@@ -339,6 +344,8 @@ public data class TOTPAuthenticateResponseData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val user: UserData,
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
 ) : IAuthData,
     Parcelable
 
@@ -371,5 +378,105 @@ public data class TOTPRecoverResponseData(
     @Json(name = "session_token")
     override val sessionToken: String,
     override val user: UserData,
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
 ) : IAuthData,
     Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class CryptoWalletsAuthenticateResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OTPsAuthenticateResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class B2CPasswordsAuthenticateResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PasswordsEmailResetResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PasswordsExistingPasswordResetResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class PasswordsSessionResetResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class WebAuthnAuthenticateResponseData(
+    @Json(name = "user_device")
+    val userDevice: SDKDeviceHistory?,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData
