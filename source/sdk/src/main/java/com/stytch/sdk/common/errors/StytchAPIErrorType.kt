@@ -1379,6 +1379,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     NO_MATCH_FOR_PROVIDED_SSO_URL(
         type = "no_match_for_provided_sso_url",
     ),
+    NO_OAUTH_AUTHORIZE_MEMBER_SELECTOR(
+        type = "no_oauth_authorize_member_selector",
+    ),
+    NO_OAUTH_AUTHORIZE_USER_SELECTOR(
+        type = "no_oauth_authorize_user_selector",
+    ),
     NO_PASSWORD_RESET_REDIRECT_URL(
         type = "no_password_reset_redirect_url",
     ),
