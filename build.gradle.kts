@@ -5,25 +5,23 @@ buildscript {
         classpath(libs.versioning.plugin)
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-
-        constraints {
-            // Force upgrades of AGP dependencies
-            classpath(libs.commonsCompress)
-            classpath(libs.jose4j)
-            classpath(libs.netty.handler)
-            classpath(libs.netty.handler.proxy)
-            classpath(libs.netty.codec.http)
-            classpath(libs.netty.codec.http2)
-            classpath(libs.bcpkix.jdk18on)
-            classpath(libs.jimfs)
-            classpath(libs.grpcNetty)
-            classpath(libs.guava)
-        }
     }
     configurations.all {
         resolutionStrategy.eachDependency {
             if (requested.group.startsWith("com.fasterxml.jackson")) {
                 useVersion("2.19.1")
+            }
+            if (requested.group.startsWith("io.netty")) {
+                useVersion("4.2.4.Final")
+            }
+            if (requested.name == "jose4j") {
+                useVersion("0.9.6")
+            }
+            if (requested.name == "jimfs") {
+                useVersion("1.3.0")
+            }
+            if (requested.name == "commons-compress") {
+                useVersion("1.27.1")
             }
         }
     }
@@ -66,14 +64,6 @@ allprojects {
     ktlint {
         android = true
         version = "1.2.1"
-    }
-    configurations.all {
-        resolutionStrategy {
-            force(rootProject.libs.woodstox)
-            force(rootProject.libs.grpcNetty)
-            force(rootProject.libs.guava)
-            force(rootProject.libs.netty.codec.http)
-        }
     }
 }
 
