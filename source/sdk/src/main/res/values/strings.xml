@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Configuration Strings -->
-    <string name="STYTCH_PUBLIC_TOKEN">OVERRIDE_IN_YOUR_STRING_RESOURCES</string>
+    <string name="STYTCH_PUBLIC_TOKEN">override-in-your-string-resources</string>
 
     <!-- Headless SDK strings (these don't need to be localized; they can be overridden via params) -->
     <string name="stytch_biometric_prompt_title_default">Biometric Authentication</string>
