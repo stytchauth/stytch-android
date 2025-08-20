@@ -2015,6 +2015,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     TOO_MANY_EMAIL_TEMPLATES(
         type = "too_many_email_templates",
     ),
+    TOO_MANY_ENCRYPTION_CERTIFICATES(
+        type = "too_many_encryption_certificates",
+    ),
     TOO_MANY_M2M_CLIENT_SCOPES(
         type = "too_many_m2m_client_scopes",
     ),
