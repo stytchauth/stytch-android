@@ -113,8 +113,14 @@ internal class ConfigurationManager {
             )
             client.onFinishedInitialization()
         }
-        NetworkChangeListener.configure(context.applicationContext, ::refreshBootstrapAndApi)
-        AppLifecycleListener.configure(::refreshBootstrapAndApi)
+        NetworkChangeListener.configure(context.applicationContext) {
+            refreshBootstrapAndApi()
+            client.rehydrateSession()
+        }
+        AppLifecycleListener.configure {
+            refreshBootstrapAndApi()
+            client.rehydrateSession()
+        }
     }
 
     private fun isAlreadyConfiguredFor(
