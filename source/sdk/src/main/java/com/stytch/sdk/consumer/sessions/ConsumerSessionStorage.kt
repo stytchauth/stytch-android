@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import com.stytch.sdk.common.PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
@@ -19,9 +18,7 @@ import com.stytch.sdk.consumer.biometrics.LAST_USED_BIOMETRIC_REGISTRATION_ID
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
 
@@ -36,12 +33,10 @@ internal class ConsumerSessionStorage(
     private val _sessionFlow = MutableStateFlow<SessionData?>(null)
     private val _userFlow = MutableStateFlow<UserData?>(null)
     private val _lastValidatedAtFlow = MutableStateFlow<Date>(Date(0L))
-    private val _biometricCleanupNotificationFlow = MutableSharedFlow<String>()
 
     val sessionFlow = _sessionFlow.asStateFlow()
     val userFlow = _userFlow.asStateFlow()
     val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
-    val biometricCleanupNotificationFlow = _biometricCleanupNotificationFlow.asSharedFlow()
 
     private var lastAuthenticatedUserId: String?
         get() {
@@ -241,22 +236,9 @@ internal class ConsumerSessionStorage(
             // only clean up any local registrations that don't exist on the server
             currentUser.keepLocalBiometricRegistrationsInSync(storageHelper)
         } else {
-            // if they are different, process potential pending delete record for this user
-            val pendingDeleteRecord = "$PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE${currentUser.userId}"
-            storageHelper.loadValue(pendingDeleteRecord)?.let { biometricRegistrationIdToDelete ->
-                // try sending delete notification, if successful, remove pending delete record
-                if (_biometricCleanupNotificationFlow.tryEmit(biometricRegistrationIdToDelete)) {
-                    storageHelper.deletePreference(pendingDeleteRecord)
-                }
-            }
-            // if there is an existing biometric registration on the device
+            // if there is an existing biometric registration on the device, delete the local registration to enable the
+            // new user to create their own biometric registration
             storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let { existingBiometricRegistrationId ->
-                // add a pending delete record for the previous user id
-                storageHelper.saveValue(
-                    "$PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE$previousUserId",
-                    existingBiometricRegistrationId,
-                )
-                // delete the local registration
                 storageHelper.deleteAllBiometricsKeys()
             }
         }

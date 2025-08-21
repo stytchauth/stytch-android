@@ -230,12 +230,6 @@ public object StytchClient {
                 options = options,
                 storageHelperInitializationJob = storageHelperInitializationJob,
             )
-            configurationManager.externalScope.launch(configurationManager.dispatchers.io) {
-                sessionStorage.biometricCleanupNotificationFlow.collect { biometricRegistrationIdToDelete ->
-                    // TODO: this needs to use the new flag to indicate it's a PD deletion
-                    StytchApi.UserManagement.deleteBiometricRegistrationById(biometricRegistrationIdToDelete)
-                }
-            }
         }.onFailure {
             val error =
                 StytchInternalError(

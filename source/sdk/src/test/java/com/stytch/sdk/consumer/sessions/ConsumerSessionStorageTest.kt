@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.sessions
 
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
-import com.stytch.sdk.common.PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
@@ -93,17 +92,14 @@ internal class ConsumerSessionStorageTest {
                     every { keepLocalBiometricRegistrationsInSync(any()) } just runs
                 }
             // only local biometric registrations are cleaned up, and no pending deletes are processed
-            val pendingDeleteRecord = PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE + "current-user-id"
             impl.user = mockUserData
             verify(exactly = 1) { mockUserData.keepLocalBiometricRegistrationsInSync(any()) }
-            verify(exactly = 0) { StorageHelper.loadValue(pendingDeleteRecord) }
             verify(exactly = 0) { StorageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
         }
 
     @Test
     fun `setting a user keeps biometric registrations in check when a new user is logging in with nothing to update`() =
         runBlocking {
-            val pendingDeleteRecord = PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE + "current-user-id"
             every { StorageHelper.loadValue(PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID) } returns "previous-user-id"
             val mockUserData: UserData =
                 mockk(relaxed = true) {
@@ -112,28 +108,17 @@ internal class ConsumerSessionStorageTest {
                 }
 
             // if no pending deletes and no previous registrations, nothing is processed
-            every { StorageHelper.loadValue(pendingDeleteRecord) } returns null
             every { StorageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID) } returns null
             impl.user = mockUserData
             verify(exactly = 0) { mockUserData.keepLocalBiometricRegistrationsInSync(any()) }
-            verify(exactly = 1) { StorageHelper.loadValue(pendingDeleteRecord) }
-            verify(exactly = 0) { StorageHelper.deletePreference(pendingDeleteRecord) }
             verify(exactly = 1) { StorageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify(exactly = 0) {
-                StorageHelper.saveValue(
-                    eq(PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE + "previous-user-id"),
-                    any(),
-                )
-            }
             verify(exactly = 0) { StorageHelper.deleteAllBiometricsKeys() }
         }
 
     @Test
     fun `setting a user keeps biometric registrations in check when a new user is logging in with stuff to update`() =
         runBlocking {
-            val pendingDeleteRecord = PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE + "current-user-id"
             every { StorageHelper.loadValue(PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID) } returns "previous-user-id"
-            every { StorageHelper.loadValue(pendingDeleteRecord) } returns "pending-delete-record"
             every { StorageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID) } returns "previous-registration-id"
             val mockUserData: UserData =
                 mockk(relaxed = true) {
@@ -142,15 +127,7 @@ internal class ConsumerSessionStorageTest {
                 }
             // if there is a pending delete and a previous registration, everything is processed
             impl.user = mockUserData
-            verify(exactly = 1) { StorageHelper.loadValue(pendingDeleteRecord) }
-            verify(exactly = 1) { StorageHelper.deletePreference(pendingDeleteRecord) }
             verify(exactly = 1) { StorageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify(exactly = 1) {
-                StorageHelper.saveValue(
-                    eq(PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE + "previous-user-id"),
-                    "previous-registration-id",
-                )
-            }
             verify(exactly = 1) { StorageHelper.deleteAllBiometricsKeys() }
         }
 }

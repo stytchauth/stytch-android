@@ -41,4 +41,3 @@ internal const val PREFERENCES_NAME_ORGANIZATION_DATA = "stytch_organization_dat
 internal const val IST_EXPIRATION_TIME = 10 * 60 * 1000L // 10 minutes
 internal const val PREFERENCES_NAME_LAST_AUTH_METHOD_USED = "stytch_last_auth_method_used"
 internal const val PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID = "stytch_last_authenticated_user_id"
-internal const val PREFERENCES_NAME_BIOMETRIC_PENDING_DELETE = "stytch_biometric_registration_pending_delete_for_"
