@@ -7,6 +7,8 @@ import com.stytch.sdk.common.EncryptionManager.KEY_PREFERENCES_FILE_NAME
 import com.stytch.sdk.common.EncryptionManager.MASTER_KEY_ALIAS
 import com.stytch.sdk.common.StorageHelper.sharedPreferences
 import com.stytch.sdk.common.extensions.clearPreferences
+import com.stytch.sdk.consumer.biometrics.BIOMETRIC_KEY_NAME
+import com.stytch.sdk.consumer.biometrics.KEYS_REQUIRED_FOR_REGISTRATION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,7 +19,7 @@ import java.security.KeyStore
 internal const val STYTCH_PREFERENCES_FILE_NAME = "stytch_preferences"
 
 internal object StorageHelper {
-    internal val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
+    private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
 
     @VisibleForTesting
     internal lateinit var sharedPreferences: SharedPreferences
@@ -151,4 +153,9 @@ internal object StorageHelper {
         } catch (e: Exception) {
             false
         }
+
+    internal fun deleteAllBiometricsKeys() {
+        KEYS_REQUIRED_FOR_REGISTRATION.forEach { deletePreference(it) }
+        keyStore.deleteEntry(BIOMETRIC_KEY_NAME)
+    }
 }

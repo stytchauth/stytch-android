@@ -109,8 +109,7 @@ internal class BiometricsImpl internal constructor(
     }
 
     private fun removeLocalRegistrationOnly() {
-        KEYS_REQUIRED_FOR_REGISTRATION.forEach { key -> storageHelper.deletePreference(key) }
-        biometricsProvider.deleteSecretKey()
+        storageHelper.deleteAllBiometricsKeys()
     }
 
     override suspend fun removeRegistration(): Boolean =

@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
+import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_DATA
@@ -14,6 +15,7 @@ import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
 import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.ConsumerAuthMethod
+import com.stytch.sdk.consumer.biometrics.LAST_USED_BIOMETRIC_REGISTRATION_ID
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
 import com.stytch.sdk.consumer.network.models.SessionData
 import com.stytch.sdk.consumer.network.models.UserData
@@ -37,6 +39,17 @@ internal class ConsumerSessionStorage(
     val sessionFlow = _sessionFlow.asStateFlow()
     val userFlow = _userFlow.asStateFlow()
     val lastValidatedAtFlow = _lastValidatedAtFlow.asStateFlow()
+
+    private var lastAuthenticatedUserId: String?
+        get() {
+            synchronized(this) {
+                return storageHelper.loadValue(PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID)
+            }
+        }
+        set(value) {
+            // we're only ever setting this to a string, never deleting it
+            storageHelper.saveValue(PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID, value)
+        }
 
     var sessionToken: String?
         private set(value) {
@@ -128,10 +141,20 @@ internal class ConsumerSessionStorage(
             }
         }
         internal set(value) {
-            value?.let {
-                it.keepLocalBiometricRegistrationsInSync(storageHelper)
-                val stringValue = moshiUserDataAdapter.toJson(it)
+            value?.let { currentUser ->
+                // first, save the current user
+                val stringValue = moshiUserDataAdapter.toJson(currentUser)
                 storageHelper.saveValue(PREFERENCES_NAME_USER_DATA, stringValue)
+                // then, perform any necessary cleanup
+                lastAuthenticatedUserId?.let { previousUserId ->
+                    // if we have a record of a previous user, process/clean up local biometric registrations as needed
+                    processPotentialBiometricRegistrationCleanups(currentUser, previousUserId)
+                } ?: run {
+                    // if we have no previous user, just clean up any local registrations that don't exist on the server
+                    currentUser.keepLocalBiometricRegistrationsInSync(storageHelper)
+                }
+                // update lastAuthenticatedUserId with new user id
+                lastAuthenticatedUserId = currentUser.userId
             } ?: run {
                 storageHelper.saveValue(PREFERENCES_NAME_USER_DATA, null)
             }
@@ -205,6 +228,23 @@ internal class ConsumerSessionStorage(
     fun ensureSessionIsValidOrThrow() {
         if (sessionToken == null && sessionJwt == null) {
             throw StytchNoCurrentSessionError()
+        }
+    }
+
+    private fun processPotentialBiometricRegistrationCleanups(
+        currentUser: UserData,
+        previousUserId: String,
+    ) {
+        // if the previous and current user are the same
+        if (previousUserId == currentUser.userId) {
+            // only clean up any local registrations that don't exist on the server
+            currentUser.keepLocalBiometricRegistrationsInSync(storageHelper)
+        } else {
+            // if there is an existing biometric registration on the device, delete the local registration to enable the
+            // new user to create their own biometric registration
+            storageHelper.loadValue(LAST_USED_BIOMETRIC_REGISTRATION_ID)?.let { existingBiometricRegistrationId ->
+                storageHelper.deleteAllBiometricsKeys()
+            }
         }
     }
 }

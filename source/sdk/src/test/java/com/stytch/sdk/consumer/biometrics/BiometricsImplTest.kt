@@ -166,16 +166,14 @@ internal class BiometricsImplTest {
             every { mockStorageHelper.preferenceExists(any()) } returns true
             every { mockStorageHelper.deletePreference(any()) } returns true
             every { mockSessionStorage.ensureSessionIsValidOrThrow() } just runs
+            every { mockStorageHelper.deleteAllBiometricsKeys() } just runs
             coEvery {
                 mockBiometricsProvider.showBiometricPromptForRegistration(any(), any(), any())
             } throws RuntimeException("Testing")
-            every { mockBiometricsProvider.deleteSecretKey() } just runs
             val result = impl.register(mockk(relaxed = true))
             require(result is StytchResult.Error)
             assert((result.exception as StytchInternalError).exception is RuntimeException)
-            verify { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
-            verify { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            verify { mockStorageHelper.deleteAllBiometricsKeys() }
             coVerify(exactly = 0) { deleteBiometricsSpy.invoke(any()) }
         }
 
@@ -472,30 +470,25 @@ internal class BiometricsImplTest {
         runBlocking {
             every { mockStorageHelper.loadValue(any()) } returns "lastUsedRegistrationId"
             every { mockStorageHelper.deletePreference(any()) } returns true
+            every { mockStorageHelper.deleteAllBiometricsKeys() } just runs
             coEvery { mockUserManagerApi.deleteBiometricRegistrationById(any()) } returns mockk(relaxed = true)
-            every { mockBiometricsProvider.deleteSecretKey() } just runs
 
             // If remote deletion fails, we don't remove the local
             coEvery { deleteBiometricsSpy.invoke(any()) } returns StytchResult.Error(mockk(relaxed = true))
             assert(!impl.removeRegistration())
-            verify(exactly = 0) { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify(exactly = 0) { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
-            verify(exactly = 0) { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            verify(exactly = 0) { mockStorageHelper.deleteAllBiometricsKeys() }
             coVerify { deleteBiometricsSpy.invoke(any()) }
 
             // If remote deletion succeeds, we do remove the local
             coEvery { deleteBiometricsSpy.invoke(any()) } returns StytchResult.Success(mockk(relaxed = true))
             assert(impl.removeRegistration())
-            verify(exactly = 1) { mockStorageHelper.deletePreference(LAST_USED_BIOMETRIC_REGISTRATION_ID) }
-            verify(exactly = 1) { mockStorageHelper.deletePreference(PRIVATE_KEY_KEY) }
-            verify(exactly = 1) { mockStorageHelper.deletePreference(CIPHER_IV_KEY) }
+            verify(exactly = 1) { mockStorageHelper.deleteAllBiometricsKeys() }
             coVerify { deleteBiometricsSpy.invoke(any()) }
         }
 
     @Test
     fun `removeRegistration with callback calls callback`() {
         every { mockStorageHelper.deletePreference(any()) } returns true
-        every { mockBiometricsProvider.deleteSecretKey() } just runs
         val mockCallback = spyk<(Boolean) -> Unit>()
         impl.removeRegistration(mockCallback)
         verify { mockCallback.invoke(any()) }

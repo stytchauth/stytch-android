@@ -22,7 +22,5 @@ internal interface BiometricsProvider {
         allowedAuthenticators: Int,
     ): Int
 
-    fun deleteSecretKey()
-
     fun ensureSecretKeyIsAvailable(allowedAuthenticators: Int)
 }
