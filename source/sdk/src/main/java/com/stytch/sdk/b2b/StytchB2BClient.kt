@@ -5,7 +5,6 @@ import android.net.Uri
 import com.stytch.sdk.R
 import com.stytch.sdk.b2b.discovery.Discovery
 import com.stytch.sdk.b2b.discovery.DiscoveryImpl
-import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinks
 import com.stytch.sdk.b2b.magicLinks.B2BMagicLinksImpl
 import com.stytch.sdk.b2b.member.Member
@@ -684,14 +683,13 @@ public object StytchB2BClient {
                 sessionStorage.memberSession?.let {
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
-                    StytchB2BApi.Sessions.authenticate(null).apply {
+                    sessions.authenticate(B2BSessions.AuthParams()).apply {
                         configurationManager.emitAnalyticsEvent(
                             ConfigurationAnalyticsEvent(
                                 step = ConfigurationStep.SESSION_HYDRATION,
                                 duration = Date().time - start,
                             ),
                         )
-                        launchSessionUpdater(configurationManager.dispatchers, sessionStorage)
                     }
                 } ?: configurationManager.emitAnalyticsEvent(
                     ConfigurationAnalyticsEvent(

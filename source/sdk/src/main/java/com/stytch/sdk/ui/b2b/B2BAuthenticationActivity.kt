@@ -41,7 +41,11 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
         if (StytchB2BClient.isInitialized.value) {
             StytchB2BClient.events.logEvent(
                 eventName = "render_b2b_login_screen",
-                details = mapOf("options" to uiConfig.productConfig),
+                details =
+                    mapOf(
+                        "options" to uiConfig.productConfig,
+                        "bootstrap" to uiConfig.bootstrapData,
+                    ),
             )
         }
         setContent {

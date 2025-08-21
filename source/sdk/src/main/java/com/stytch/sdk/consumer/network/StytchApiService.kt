@@ -110,7 +110,7 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     @DFPPAEnabled
     suspend fun authenticateWithOTP(
         @Body request: ConsumerRequests.OTP.Authenticate,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.OTP.OTPsAuthenticateResponse
     //endregionOTP
 
     //region passwords
@@ -124,7 +124,7 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     @DFPPAEnabled
     suspend fun authenticateWithPasswords(
         @Body request: ConsumerRequests.Passwords.AuthenticateRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.Passwords.B2CPasswordsAuthenticateResponse
 
     @POST("passwords/email/reset/start")
     @DFPPAEnabled
@@ -136,19 +136,19 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     @DFPPAEnabled
     suspend fun resetByEmail(
         @Body request: ConsumerRequests.Passwords.ResetByEmailRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.Passwords.PasswordsEmailResetResponse
 
     @POST("passwords/session/reset")
     @DFPPAEnabled
     suspend fun resetBySession(
         @Body request: ConsumerRequests.Passwords.ResetBySessionRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.Passwords.PasswordsSessionResetResponse
 
     @POST("passwords/existing_password/reset")
     @DFPPAEnabled
     suspend fun resetByExistingPassword(
         @Body request: ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.Passwords.PasswordsExistingPasswordResetResponse
 
     @POST("passwords/strength_check")
     suspend fun strengthCheck(
@@ -273,7 +273,7 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     @DFPPAEnabled
     suspend fun webAuthnAuthenticate(
         @Body request: ConsumerRequests.WebAuthn.AuthenticateRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.WebAuthn.WebAuthnAuthenticateResponse
 
     @PUT("webauthn/update/{id}")
     suspend fun webAuthnUpdate(
@@ -305,7 +305,7 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     @DFPPAEnabled
     suspend fun cryptoWalletAuthenticate(
         @Body request: ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest,
-    ): ConsumerResponses.AuthenticateResponse
+    ): ConsumerResponses.Crypto.AuthenticateResponse
     //endregion
 
     //region TOTP

@@ -32,7 +32,6 @@ import com.stytch.sdk.consumer.biometrics.BiometricsImpl
 import com.stytch.sdk.consumer.biometrics.BiometricsProviderImpl
 import com.stytch.sdk.consumer.crypto.CryptoWallet
 import com.stytch.sdk.consumer.crypto.CryptoWalletImpl
-import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.magicLinks.MagicLinks
 import com.stytch.sdk.consumer.magicLinks.MagicLinksImpl
 import com.stytch.sdk.consumer.network.StytchApi
@@ -586,14 +585,13 @@ public object StytchClient {
                 sessionStorage.session?.let {
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
-                    StytchApi.Sessions.authenticate(null).apply {
+                    sessions.authenticate(Sessions.AuthParams()).apply {
                         configurationManager.emitAnalyticsEvent(
                             ConfigurationAnalyticsEvent(
                                 step = ConfigurationStep.SESSION_HYDRATION,
                                 duration = Date().time - start,
                             ),
                         )
-                        launchSessionUpdater(configurationManager.dispatchers, sessionStorage)
                     }
                 } ?: configurationManager.emitAnalyticsEvent(
                     ConfigurationAnalyticsEvent(

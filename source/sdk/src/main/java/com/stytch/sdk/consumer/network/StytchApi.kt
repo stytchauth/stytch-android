@@ -26,20 +26,26 @@ import com.stytch.sdk.common.network.models.NameData
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
+import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterStartResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.network.models.AuthData
+import com.stytch.sdk.consumer.network.models.B2CPasswordsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.BiometricsAuthData
 import com.stytch.sdk.consumer.network.models.ConsumerRequests
 import com.stytch.sdk.consumer.network.models.CreateResponse
 import com.stytch.sdk.consumer.network.models.CryptoWalletType
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.NativeOAuthData
+import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsEmailResetResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsExistingPasswordResetResponseData
+import com.stytch.sdk.consumer.network.models.PasswordsSessionResetResponseData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
@@ -361,7 +367,7 @@ internal object StytchApi : CommonApi {
             token: String,
             methodId: String,
             sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
-        ): StytchResult<AuthData> =
+        ): StytchResult<OTPsAuthenticateResponseData> =
             safeConsumerApiCall {
                 apiService.authenticateWithOTP(
                     ConsumerRequests.OTP.Authenticate(
@@ -378,7 +384,7 @@ internal object StytchApi : CommonApi {
             email: String,
             password: String,
             sessionDurationMinutes: Int,
-        ): StytchResult<AuthData> =
+        ): StytchResult<B2CPasswordsAuthenticateResponseData> =
             safeConsumerApiCall {
                 apiService.authenticateWithPasswords(
                     ConsumerRequests.Passwords.AuthenticateRequest(
@@ -436,7 +442,7 @@ internal object StytchApi : CommonApi {
             sessionDurationMinutes: Int,
             codeVerifier: String,
             locale: Locale?,
-        ): StytchResult<AuthData> =
+        ): StytchResult<PasswordsEmailResetResponseData> =
             safeConsumerApiCall {
                 apiService.resetByEmail(
                     ConsumerRequests.Passwords.ResetByEmailRequest(
@@ -453,7 +459,7 @@ internal object StytchApi : CommonApi {
             password: String,
             sessionDurationMinutes: Int,
             locale: Locale?,
-        ): StytchResult<AuthData> =
+        ): StytchResult<PasswordsSessionResetResponseData> =
             safeConsumerApiCall {
                 apiService.resetBySession(
                     ConsumerRequests.Passwords.ResetBySessionRequest(
@@ -469,7 +475,7 @@ internal object StytchApi : CommonApi {
             existingPassword: String,
             newPassword: String,
             sessionDurationMinutes: Int,
-        ): StytchResult<AuthData> =
+        ): StytchResult<PasswordsExistingPasswordResetResponseData> =
             safeConsumerApiCall {
                 apiService.resetByExistingPassword(
                     ConsumerRequests.Passwords.PasswordResetByExistingPasswordRequest(
@@ -713,7 +719,7 @@ internal object StytchApi : CommonApi {
         suspend fun authenticate(
             publicKeyCredential: String,
             sessionDurationMinutes: Int,
-        ): AuthResponse =
+        ): WebAuthnAuthenticateResponse =
             safeConsumerApiCall {
                 apiService.webAuthnAuthenticate(
                     ConsumerRequests.WebAuthn.AuthenticateRequest(
@@ -769,7 +775,7 @@ internal object StytchApi : CommonApi {
             cryptoWalletType: CryptoWalletType,
             signature: String,
             sessionDurationMinutes: Int,
-        ): AuthResponse =
+        ): CryptoWalletsAuthenticateResponse =
             safeConsumerApiCall {
                 apiService.cryptoWalletAuthenticate(
                     ConsumerRequests.Crypto.CryptoWalletAuthenticateRequest(

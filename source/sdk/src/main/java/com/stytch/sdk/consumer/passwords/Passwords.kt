@@ -5,8 +5,11 @@ import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
-import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.PasswordsAuthenticateResponse
 import com.stytch.sdk.consumer.PasswordsCreateResponse
+import com.stytch.sdk.consumer.PasswordsEmailResetResponse
+import com.stytch.sdk.consumer.PasswordsExistingPasswordResetResponse
+import com.stytch.sdk.consumer.PasswordsSessionResetResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.CompletableFuture
@@ -137,9 +140,9 @@ public interface Passwords {
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
      * the password is securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset a user's password
-     * @return [AuthResponse]
+     * @return [PasswordsSessionResetResponse]
      */
-    public suspend fun resetBySession(parameters: ResetBySessionParameters): AuthResponse
+    public suspend fun resetBySession(parameters: ResetBySessionParameters): PasswordsSessionResetResponse
 
     /**
      * Reset the user’s password and authenticate them. This endpoint checks that the session is valid and hasn’t
@@ -147,11 +150,11 @@ public interface Passwords {
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
      * the password is securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset a user's password
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordsSessionResetResponse]
      */
     public fun resetBySession(
         parameters: ResetBySessionParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsSessionResetResponse) -> Unit,
     )
 
     /**
@@ -160,9 +163,11 @@ public interface Passwords {
      * checked in advance with the password strength endpoint. If the password and accompanying parameters are accepted,
      * the password is securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset a user's password
-     * @return [AuthResponse]
+     * @return [PasswordsSessionResetResponse]
      */
-    public fun resetBySessionCompletable(parameters: ResetBySessionParameters): CompletableFuture<AuthResponse>
+    public fun resetBySessionCompletable(
+        parameters: ResetBySessionParameters,
+    ): CompletableFuture<PasswordsSessionResetResponse>
 
     /**
      * Data class used for wrapping parameters used with Passwords StrengthCheck endpoint
@@ -192,19 +197,19 @@ public interface Passwords {
      * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
      * account-takeover attack.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [PasswordsAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): PasswordsAuthenticateResponse
 
     /**
      * Authenticate a user with their email address and password. This endpoint verifies that the user has a password
      * currently set, and that the entered password is correct.
      * @param parameters required to authenticate
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordsAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: PasswordsAuthenticateResponse) -> Unit,
     )
 
     /**
@@ -221,9 +226,9 @@ public interface Passwords {
      * order to safely deduplicate the account by email address, without introducing the risk of a pre-hijack
      * account-takeover attack.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [PasswordsAuthenticateResponse]
      */
-    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<AuthResponse>
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<PasswordsAuthenticateResponse>
 
     /**
      * Create a new user with a password and an authenticated session for the user if requested. If a user with this
@@ -285,9 +290,9 @@ public interface Passwords {
      * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
      * securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset an account password
-     * @return [AuthResponse]
+     * @return [PasswordsEmailResetResponse]
      */
-    public suspend fun resetByEmail(parameters: ResetByEmailParameters): AuthResponse
+    public suspend fun resetByEmail(parameters: ResetByEmailParameters): PasswordsEmailResetResponse
 
     /**
      * Reset the user’s password and authenticate them. This endpoint checks that the magic link token is valid, hasn’t
@@ -295,11 +300,11 @@ public interface Passwords {
      * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
      * securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset an account password
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordsEmailResetResponse]
      */
     public fun resetByEmail(
         parameters: ResetByEmailParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: PasswordsEmailResetResponse) -> Unit,
     )
 
     /**
@@ -308,35 +313,39 @@ public interface Passwords {
      * be checked in advance with the [strengthCheck] method. If the token and password are accepted, the password is
      * securely stored for future authentication and the user is authenticated.
      * @param parameters required to reset an account password
-     * @return [AuthResponse]
+     * @return [PasswordsEmailResetResponse]
      */
-    public fun resetByEmailCompletable(parameters: ResetByEmailParameters): CompletableFuture<AuthResponse>
+    public fun resetByEmailCompletable(
+        parameters: ResetByEmailParameters,
+    ): CompletableFuture<PasswordsEmailResetResponse>
 
     /**
      * Reset a user's password and authenticate them
      * @param parameters required to reset a user's password
-     * @returns [AuthResponse]
+     * @returns [PasswordsExistingPasswordResetResponse]
      */
-    public suspend fun resetByExistingPassword(parameters: ResetByExistingPasswordParameters): AuthResponse
+    public suspend fun resetByExistingPassword(
+        parameters: ResetByExistingPasswordParameters,
+    ): PasswordsExistingPasswordResetResponse
 
     /**
      * Reset a user's password and authenticate them
      * @param parameters required to reset a user's password
-     * @param callback a callback that receives an [AuthResponse]
+     * @param callback a callback that receives an [PasswordsExistingPasswordResetResponse]
      */
     public fun resetByExistingPassword(
         parameters: ResetByExistingPasswordParameters,
-        callback: (AuthResponse) -> Unit,
+        callback: (PasswordsExistingPasswordResetResponse) -> Unit,
     )
 
     /**
      * Reset a user's password and authenticate them
      * @param parameters required to reset a user's password
-     * @returns [AuthResponse]
+     * @returns [PasswordsExistingPasswordResetResponse]
      */
     public fun resetByExistingPasswordCompletable(
         parameters: ResetByExistingPasswordParameters,
-    ): CompletableFuture<AuthResponse>
+    ): CompletableFuture<PasswordsExistingPasswordResetResponse>
 
     /**
      * This method allows you to check whether or not the user’s provided password is valid, and to provide feedback to

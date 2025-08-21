@@ -7,6 +7,7 @@ import com.stytch.sdk.common.network.models.CommonAuthenticationData
 import com.stytch.sdk.common.network.models.Feedback
 import com.stytch.sdk.common.network.models.IBasicData
 import com.stytch.sdk.common.network.models.LUDSRequirements
+import com.stytch.sdk.common.network.models.SDKDeviceHistory
 import com.stytch.sdk.common.network.models.StrengthPolicy
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -88,6 +89,8 @@ public data class SMSAuthenticateResponseData(
     override val sessionToken: String,
     override val member: MemberData,
     override val organization: OrganizationData,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthData,
     Parcelable
 
@@ -118,6 +121,8 @@ public data class B2BEMLAuthenticateData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -304,6 +309,8 @@ public data class PasswordsAuthenticateResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -334,6 +341,8 @@ public data class EmailResetResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -364,6 +373,8 @@ public data class PasswordResetByExistingPasswordResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -380,6 +391,8 @@ public data class SessionResetResponseData(
     val memberSession: B2BSessionData,
     val member: MemberData,
     val organization: OrganizationData,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -528,6 +541,8 @@ public data class SSOAuthenticateResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -694,6 +709,8 @@ public data class TOTPAuthenticateResponseData(
     override val memberSession: B2BSessionData,
     override val member: MemberData,
     override val organization: OrganizationData,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthData,
     Parcelable
 
@@ -738,6 +755,8 @@ public data class RecoveryCodeRecoverResponseData(
     override val organization: OrganizationData,
     @Json(name = "recovery_codes_remaining")
     val recoveryCodesRemaining: Int,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthData,
     Parcelable
 
@@ -768,6 +787,8 @@ public data class OAuthAuthenticateResponseData(
     override val mfaRequired: MFARequired?,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 
@@ -1278,6 +1299,8 @@ public data class B2BOTPsEmailAuthenticateResponseData(
     val methodId: String,
     @Json(name = "primary_required")
     override val primaryRequired: PrimaryRequired?,
+    @Json(name = "member_device")
+    val memberDevice: SDKDeviceHistory?,
 ) : IB2BAuthDataWithMFA,
     Parcelable
 

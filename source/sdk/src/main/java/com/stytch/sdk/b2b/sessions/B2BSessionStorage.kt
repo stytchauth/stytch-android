@@ -18,10 +18,12 @@ import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchLog
+import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import com.stytch.sdk.common.utils.getDateOrMin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
+import java.util.TimeZone
 
 internal class B2BSessionStorage(
     private val storageHelper: StorageHelper,
@@ -139,7 +141,9 @@ internal class B2BSessionStorage(
                         null
                     }
                 val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
-                val now = Date()
+                val formatter = SHORT_FORM_DATE_FORMATTER
+                formatter.timeZone = TimeZone.getTimeZone("UTC")
+                val now = formatter.format(Date()).getDateOrMin()
                 if (expirationDate.before(now)) {
                     revoke()
                     return null

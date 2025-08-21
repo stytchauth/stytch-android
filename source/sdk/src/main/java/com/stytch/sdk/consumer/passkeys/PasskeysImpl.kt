@@ -15,8 +15,8 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.errors.StytchPasskeysNotSupportedError
 import com.stytch.sdk.common.getValueOrThrow
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.ConsumerAuthMethod
+import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -146,7 +146,7 @@ internal class PasskeysImpl internal constructor(
                 register(parameters)
             }.asCompletableFuture()
 
-    override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): AuthResponse {
+    override suspend fun authenticate(parameters: Passkeys.AuthenticateParameters): WebAuthnAuthenticateResponse {
         if (!isSupported) return StytchResult.Error(StytchPasskeysNotSupportedError())
         return try {
             withContext(dispatchers.io) {
@@ -186,7 +186,7 @@ internal class PasskeysImpl internal constructor(
 
     override fun authenticate(
         parameters: Passkeys.AuthenticateParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: WebAuthnAuthenticateResponse) -> Unit,
     ) {
         externalScope.launch(dispatchers.ui) {
             val result = authenticate(parameters)
@@ -194,7 +194,9 @@ internal class PasskeysImpl internal constructor(
         }
     }
 
-    override fun authenticateCompletable(parameters: Passkeys.AuthenticateParameters): CompletableFuture<AuthResponse> =
+    override fun authenticateCompletable(
+        parameters: Passkeys.AuthenticateParameters,
+    ): CompletableFuture<WebAuthnAuthenticateResponse> =
         externalScope
             .async {
                 authenticate(parameters)

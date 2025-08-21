@@ -1,13 +1,12 @@
 package com.stytch.sdk.consumer.crypto
 
 import com.stytch.sdk.common.StytchDispatchers
-import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
+import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
-import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -39,7 +38,7 @@ internal class CryptoWalletImplTest {
 
     private lateinit var impl: CryptoWalletImpl
     private val dispatcher = Dispatchers.Unconfined
-    private val successfulAuthResponse = StytchResult.Success<AuthData>(mockk(relaxed = true))
+    private val successfulAuthResponse = mockk<CryptoWalletsAuthenticateResponse>(relaxed = true)
 
     @Before
     fun before() {

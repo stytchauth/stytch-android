@@ -731,6 +731,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_ORGANIZATION_AUTH_METHOD_SETTINGS(
         type = "invalid_organization_auth_method_settings",
     ),
+    INVALID_ORGANIZATION_EXTERNAL_ID(
+        type = "invalid_organization_external_id",
+    ),
     INVALID_ORGANIZATION_ID(
         type = "invalid_organization_id",
     ),
@@ -1012,6 +1015,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     INVALID_TOKEN_DOCS(
         type = "invalid_token_docs",
+    ),
+    INVALID_TOKEN_ORGANIZATION_ID_CLAIM(
+        type = "invalid_token_organization_id_claim",
     ),
     INVALID_TOKEN_URL(
         type = "invalid_token_url",
@@ -1373,6 +1379,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     NO_MATCH_FOR_PROVIDED_SSO_URL(
         type = "no_match_for_provided_sso_url",
     ),
+    NO_OAUTH_AUTHORIZE_MEMBER_SELECTOR(
+        type = "no_oauth_authorize_member_selector",
+    ),
+    NO_OAUTH_AUTHORIZE_USER_SELECTOR(
+        type = "no_oauth_authorize_user_selector",
+    ),
     NO_PASSWORD_RESET_REDIRECT_URL(
         type = "no_password_reset_redirect_url",
     ),
@@ -1561,6 +1573,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     OPERATION_RESTRICTED_BY_ORGANIZATION_MFA_METHODS(
         type = "operation_restricted_by_organization_mfa_methods",
+    ),
+    ORGANIZATION_EXTERNAL_ID_ALREADY_USED(
+        type = "organization_external_id_already_used",
     ),
     ORGANIZATION_LOGO_URL_TOO_LONG(
         type = "organization_logo_url_too_long",
@@ -1981,6 +1996,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     THIRD_PARTY_CLIENTS_REQUIRE_CONSENT_FOR_OFFLINE_ACCESS(
         type = "third_party_clients_require_consent_for_offline_access",
+    ),
+    TOKEN_MISSING_ORGANIZATION_ID_CLAIM(
+        type = "token_missing_organization_id_claim",
     ),
     TOO_FEW_TOKENS_AUTHENTICATED(
         type = "too_few_tokens_authenticated",

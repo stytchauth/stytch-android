@@ -6,9 +6,9 @@ import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
 import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
-import com.stytch.sdk.consumer.AuthResponse
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
+import com.stytch.sdk.consumer.OTPsAuthenticateResponse
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.CompletableFuture
 
@@ -54,9 +54,9 @@ public interface OTP {
      * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
      * will be invalidated.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [OTPsAuthenticateResponse]
      */
-    public suspend fun authenticate(parameters: AuthParameters): AuthResponse
+    public suspend fun authenticate(parameters: AuthParameters): OTPsAuthenticateResponse
 
     /**
      * Authenticate a user given a method_id (the associated email_id or phone_id) and a code. This endpoint verifies
@@ -64,11 +64,11 @@ public interface OTP {
      * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
      * will be invalidated.
      * @param parameters required to authenticate
-     * @param callback that receives an [AuthResponse]
+     * @param callback that receives an [OTPsAuthenticateResponse]
      */
     public fun authenticate(
         parameters: AuthParameters,
-        callback: (response: AuthResponse) -> Unit,
+        callback: (response: OTPsAuthenticateResponse) -> Unit,
     )
 
     /**
@@ -77,9 +77,9 @@ public interface OTP {
      * OTP code at any given time, if a user requests another OTP code before the first one has expired, the first one
      * will be invalidated.
      * @param parameters required to authenticate
-     * @return [AuthResponse]
+     * @return [OTPsAuthenticateResponse]
      */
-    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<AuthResponse>
+    public fun authenticateCompletable(parameters: AuthParameters): CompletableFuture<OTPsAuthenticateResponse>
 
     /**
      * Provides all possible ways to call SMS OTP endpoints

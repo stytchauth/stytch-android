@@ -12,6 +12,7 @@ import com.stytch.sdk.common.PREFERENCES_NAME_USER_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
+import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.biometrics.LAST_USED_BIOMETRIC_REGISTRATION_ID
@@ -21,6 +22,7 @@ import com.stytch.sdk.consumer.network.models.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
+import java.util.TimeZone
 
 internal class ConsumerSessionStorage(
     private val storageHelper: StorageHelper,
@@ -102,7 +104,9 @@ internal class ConsumerSessionStorage(
                         null
                     }
                 val expirationDate = sessionData?.expiresAt.getDateOrMin()
-                val now = Date()
+                val formatter = SHORT_FORM_DATE_FORMATTER
+                formatter.timeZone = TimeZone.getTimeZone("UTC")
+                val now = formatter.format(Date()).getDateOrMin()
                 if (expirationDate.before(now)) {
                     revoke()
                     return null
