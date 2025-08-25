@@ -1976,6 +1976,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     SSO_DISCOVERY_INCOMPATIBLE_WITH_SDK_CONFIG(
         type = "sso_discovery_incompatible_with_sdk_config",
     ),
+    SSO_ENCRYPTION_PRIVATE_KEY_NOT_FOUND(
+        type = "sso_encryption_private_key_not_found",
+    ),
     SSO_TOKEN_NOT_FOUND(
         type = "sso_token_not_found",
     ),
@@ -2092,6 +2095,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     TOTPS_NOT_FOUND_FOR_USER(
         type = "totps_not_found_for_user",
+    ),
+    TRUSTED_TOKEN_PROFILE_CANNOT_HAVE_MULTIPLE_EXTERNAL_IDS(
+        type = "trusted_token_profile_cannot_have_multiple_external_ids",
+    ),
+    TRUSTED_TOKEN_PROFILE_INCORRECT_EXTERNAL_ID_MAPPING(
+        type = "trusted_token_profile_incorrect_external_id_mapping",
     ),
     TRUSTED_TOKEN_PROFILE_NOT_FOUND(
         type = "trusted_token_profile_not_found",
