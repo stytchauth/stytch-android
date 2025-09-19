@@ -222,7 +222,7 @@ internal class StytchClientTest {
                     .toJson(mockValidSession)
             every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
             StytchClient.configure(mContextMock, UUID.randomUUID().toString())
-            coVerify(exactly = 1) { StytchApi.Sessions.authenticate() }
+            coVerify(exactly = 1) { StytchApi.Sessions.authenticate(any()) }
         }
     }
 

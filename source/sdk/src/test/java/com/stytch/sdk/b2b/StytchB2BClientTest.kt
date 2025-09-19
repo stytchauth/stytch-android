@@ -224,7 +224,7 @@ internal class StytchB2BClientTest {
                     .toJson(mockValidSession)
             every { StorageHelper.loadValue(any()) } returns mockValidSessionJSON
             StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString())
-            coVerify(exactly = 1) { StytchB2BApi.Sessions.authenticate() }
+            coVerify(exactly = 1) { StytchB2BApi.Sessions.authenticate(any()) }
         }
     }
 
