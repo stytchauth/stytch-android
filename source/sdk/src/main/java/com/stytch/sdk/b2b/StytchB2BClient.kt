@@ -684,7 +684,13 @@ public object StytchB2BClient {
                     // to validate it with the Stytch servers
                     sessions
                         .authenticate(
-                            B2BSessions.AuthParams(configurationManager.options.sessionDurationMinutes),
+                            B2BSessions.AuthParams(
+                                if (configurationManager.options.enableAutomaticSessionExtension) {
+                                    configurationManager.options.sessionDurationMinutes
+                                } else {
+                                    null
+                                },
+                            ),
                         ).apply {
                             configurationManager.emitAnalyticsEvent(
                                 ConfigurationAnalyticsEvent(

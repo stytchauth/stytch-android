@@ -586,7 +586,13 @@ public object StytchClient {
                     // to validate it with the Stytch servers
                     sessions
                         .authenticate(
-                            Sessions.AuthParams(configurationManager.options.sessionDurationMinutes),
+                            Sessions.AuthParams(
+                                if (configurationManager.options.enableAutomaticSessionExtension) {
+                                    configurationManager.options.sessionDurationMinutes
+                                } else {
+                                    null
+                                },
+                            ),
                         ).apply {
                             configurationManager.emitAnalyticsEvent(
                                 ConfigurationAnalyticsEvent(

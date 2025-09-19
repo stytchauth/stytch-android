@@ -40,7 +40,13 @@ internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater(
             dispatchers = dispatchers,
             updateSession = {
                 withContext(dispatchers.io) {
-                    StytchApi.Sessions.authenticate(StytchClient.configurationManager.options.sessionDurationMinutes)
+                    StytchApi.Sessions.authenticate(
+                        if (StytchClient.configurationManager.options.enableAutomaticSessionExtension) {
+                            StytchClient.configurationManager.options.sessionDurationMinutes
+                        } else {
+                            null
+                        },
+                    )
                 }
             },
             saveSession = { result ->

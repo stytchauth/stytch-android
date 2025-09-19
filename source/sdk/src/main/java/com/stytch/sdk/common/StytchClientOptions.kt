@@ -9,6 +9,8 @@ import com.stytch.sdk.common.dfp.DFPType
  * @property dfpType Determines if the webview or native DFP implementation is used. Defaults to Native.
  * @property sessionDurationMinutes Determines the default session duration for all authentication requests.
  * Defaults to 5 minutes.
+ * @property enableAutomaticSessionExtension If true, the session heartbeat will attempt to extend the session duration,
+ * instead of only checking the validity.
  */
 @JacocoExcludeGenerated
 public data class StytchClientOptions
@@ -17,4 +19,5 @@ public data class StytchClientOptions
         val endpointOptions: EndpointOptions = EndpointOptions(),
         val dfpType: DFPType = DFPType.Native,
         val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+        val enableAutomaticSessionExtension: Boolean = false,
     )
