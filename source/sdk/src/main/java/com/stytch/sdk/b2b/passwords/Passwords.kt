@@ -7,8 +7,8 @@ import com.stytch.sdk.b2b.PasswordResetByExistingPasswordResponse
 import com.stytch.sdk.b2b.PasswordStrengthCheckResponse
 import com.stytch.sdk.b2b.PasswordsAuthenticateResponse
 import com.stytch.sdk.b2b.SessionResetResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
@@ -44,7 +44,7 @@ public interface Passwords {
             val organizationId: String,
             val emailAddress: String,
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             val locale: Locale? = null,
         )
 
@@ -175,7 +175,7 @@ public interface Passwords {
         constructor(
             val token: String,
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             val locale: Locale? = null,
         )
 
@@ -231,7 +231,7 @@ public interface Passwords {
             val emailAddress: String,
             val existingPassword: String,
             val newPassword: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             val locale: Locale? = null,
         )
 

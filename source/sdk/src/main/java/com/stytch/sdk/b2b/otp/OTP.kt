@@ -6,8 +6,8 @@ import com.stytch.sdk.b2b.EmailOTPDiscoveryAuthenticateResponse
 import com.stytch.sdk.b2b.EmailOTPDiscoverySendResponse
 import com.stytch.sdk.b2b.EmailOTPLoginOrSignupResponse
 import com.stytch.sdk.b2b.SMSAuthenticateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
@@ -55,7 +55,8 @@ public interface OTP {
                 val mfaPhoneNumber: String? = null,
                 val locale: Locale? = null,
                 val enableAutofill: Boolean = false,
-                val autofillSessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val autofillSessionDurationMinutes: Int =
+                    StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             )
 
         /**
@@ -100,7 +101,7 @@ public interface OTP {
                 val memberId: String,
                 val code: String,
                 val setMFAEnrollment: SetMFAEnrollment? = null,
-                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             )
 
         /**
@@ -208,7 +209,7 @@ public interface OTP {
                 val organizationId: String,
                 val emailAddress: String,
                 val locale: Locale? = null,
-                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             )
 
         /**

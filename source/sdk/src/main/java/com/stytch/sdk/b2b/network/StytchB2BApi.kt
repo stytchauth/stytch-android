@@ -8,6 +8,7 @@ import com.stytch.sdk.b2b.SCIMRotateCancelResponse
 import com.stytch.sdk.b2b.SCIMRotateCompleteResponse
 import com.stytch.sdk.b2b.SCIMRotateStartResponse
 import com.stytch.sdk.b2b.SCIMUpdateConnectionResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.B2BDiscoveryOTPEmailAuthenticateResponseData
@@ -67,7 +68,6 @@ import com.stytch.sdk.b2b.network.models.StrengthCheckResponseData
 import com.stytch.sdk.b2b.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.TOTPCreateResponseData
 import com.stytch.sdk.b2b.network.models.UpdateMemberResponseData
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NoResponseResponse
@@ -182,7 +182,7 @@ internal object StytchB2BApi : CommonApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
                 codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
@@ -480,7 +480,7 @@ internal object StytchB2BApi : CommonApi {
             emailAddress: String,
             password: String,
             locale: Locale? = null,
-            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
@@ -527,7 +527,7 @@ internal object StytchB2BApi : CommonApi {
         suspend fun resetByEmail(
             passwordResetToken: String,
             password: String,
-            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
             locale: Locale? = null,
@@ -550,7 +550,7 @@ internal object StytchB2BApi : CommonApi {
             emailAddress: String,
             existingPassword: String,
             newPassword: String,
-            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             locale: Locale? = null,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {

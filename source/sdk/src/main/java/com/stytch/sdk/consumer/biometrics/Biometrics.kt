@@ -1,9 +1,9 @@
 package com.stytch.sdk.consumer.biometrics
 
 import androidx.fragment.app.FragmentActivity
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.BiometricsAuthResponse
+import com.stytch.sdk.consumer.StytchClient
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -28,7 +28,7 @@ public interface Biometrics {
         @JvmOverloads
         constructor(
             val context: FragmentActivity,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
             val allowFallbackToCleartext: Boolean = false,
             val promptData: PromptData? = null,
             val allowDeviceCredentials: Boolean = false,
@@ -46,7 +46,7 @@ public interface Biometrics {
         @JvmOverloads
         constructor(
             val context: FragmentActivity,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
             val promptData: PromptData? = null,
         )
 

@@ -36,7 +36,6 @@ import com.stytch.sdk.b2b.totp.TOTPImpl
 import com.stytch.sdk.common.ConfigurationAnalyticsEvent
 import com.stytch.sdk.common.ConfigurationManager
 import com.stytch.sdk.common.ConfigurationStep
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
@@ -712,7 +711,8 @@ public object StytchB2BClient {
                         organizationId = organizationId,
                         memberId = memberId,
                         code = parsedCode,
-                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        sessionDurationMinutes =
+                            sessionDurationMinutes ?: configurationManager.options.sessionDurationMinutes,
                     ),
                 )
             }

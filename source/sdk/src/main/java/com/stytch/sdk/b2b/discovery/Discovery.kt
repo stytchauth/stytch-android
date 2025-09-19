@@ -3,12 +3,12 @@ package com.stytch.sdk.b2b.discovery
 import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.AuthMethods
 import com.stytch.sdk.b2b.network.models.EmailInvites
 import com.stytch.sdk.b2b.network.models.EmailJitProvisioning
 import com.stytch.sdk.b2b.network.models.SsoJitProvisioning
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import java.util.concurrent.CompletableFuture
 
@@ -61,7 +61,7 @@ public interface Discovery {
         @JvmOverloads
         constructor(
             val organizationId: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**
@@ -139,7 +139,7 @@ public interface Discovery {
             val organizationName: String? = null,
             val organizationSlug: String? = null,
             val organizationLogoUrl: String? = null,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             val ssoJitProvisioning: SsoJitProvisioning? = null,
             val emailAllowedDomains: List<String>? = null,
             val emailJitProvisioning: EmailJitProvisioning? = null,

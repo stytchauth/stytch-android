@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.activity.ComponentActivity
 import com.stytch.sdk.b2b.OAuthAuthenticateResponse
 import com.stytch.sdk.b2b.OAuthDiscoveryAuthenticateResponse
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
@@ -247,7 +247,7 @@ public interface OAuth {
         constructor(
             val oauthToken: String,
             val locale: Locale? = null,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**

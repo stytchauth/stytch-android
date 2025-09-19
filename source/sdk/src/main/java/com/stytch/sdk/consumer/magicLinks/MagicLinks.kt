@@ -2,10 +2,10 @@ package com.stytch.sdk.consumer.magicLinks
 
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.StytchClient
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.CompletableFuture
 
@@ -24,7 +24,7 @@ public interface MagicLinks {
         @JvmOverloads
         constructor(
             val token: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**

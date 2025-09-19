@@ -3,12 +3,12 @@ package com.stytch.sdk.consumer.otp
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.DEFAULT_OTP_EXPIRATION_TIME_MINUTES
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.LoginOrCreateOTPResponse
 import com.stytch.sdk.consumer.OTPSendResponse
 import com.stytch.sdk.consumer.OTPsAuthenticateResponse
+import com.stytch.sdk.consumer.StytchClient
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.CompletableFuture
 
@@ -30,7 +30,7 @@ public interface OTP {
         constructor(
             val token: String,
             val methodId: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**
@@ -104,7 +104,8 @@ public interface OTP {
                 val phoneNumber: String,
                 val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
                 val enableAutofill: Boolean = false,
-                val autofillSessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val autofillSessionDurationMinutes: Int =
+                    StytchClient.configurationManager.options.sessionDurationMinutes,
                 val locale: Locale? = null,
             ) : Parcelable
 

@@ -3,8 +3,8 @@ package com.stytch.sdk.b2b.magicLinks
 import com.stytch.sdk.b2b.DiscoveryEMLAuthResponse
 import com.stytch.sdk.b2b.EMLAuthenticateResponse
 import com.stytch.sdk.b2b.MemberResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import java.util.concurrent.CompletableFuture
@@ -40,7 +40,7 @@ public interface B2BMagicLinks {
         @JvmOverloads
         constructor(
             val token: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**

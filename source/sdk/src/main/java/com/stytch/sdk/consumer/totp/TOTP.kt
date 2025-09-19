@@ -1,7 +1,7 @@
 package com.stytch.sdk.consumer.totp
 
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.TOTPAuthenticateResponse
 import com.stytch.sdk.consumer.TOTPCreateResponse
 import com.stytch.sdk.consumer.TOTPRecoverResponse
@@ -35,7 +35,7 @@ public interface TOTP {
         @JvmOverloads
         constructor(
             val totpCode: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**
@@ -48,7 +48,7 @@ public interface TOTP {
         @JvmOverloads
         constructor(
             val recoveryCode: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
         )
 
     /**

@@ -12,9 +12,9 @@ import com.stytch.sdk.b2b.B2BSSOSAMLDeleteVerificationCertificateResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.B2BSSOSAMLUpdateConnectionResponse
 import com.stytch.sdk.b2b.SSOAuthenticateResponse
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.ConnectionRoleAssignment
 import com.stytch.sdk.b2b.network.models.GroupRoleAssignment
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
@@ -111,7 +111,7 @@ public interface SSO {
         @JvmOverloads
         constructor(
             val ssoToken: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
             val locale: Locale? = null,
         )
 

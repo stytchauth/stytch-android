@@ -6,7 +6,6 @@ import com.stytch.sdk.R
 import com.stytch.sdk.common.ConfigurationAnalyticsEvent
 import com.stytch.sdk.common.ConfigurationManager
 import com.stytch.sdk.common.ConfigurationStep
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
@@ -612,7 +611,8 @@ public object StytchClient {
                     OTP.AuthParameters(
                         token = parsedCode,
                         methodId = methodId,
-                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        sessionDurationMinutes =
+                            sessionDurationMinutes ?: configurationManager.options.sessionDurationMinutes,
                     ),
                 )
             }
