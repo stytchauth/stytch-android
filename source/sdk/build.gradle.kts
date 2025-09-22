@@ -16,7 +16,7 @@ plugins {
 }
 
 val publishGroupId = "com.stytch.sdk"
-val publishVersion = "0.58.1"
+val publishVersion = "0.58.2"
 val publishArtifactId = "sdk"
 
 android {
