@@ -142,7 +142,6 @@ internal class B2BSessionStorage(
                     }
                 val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
                 val formatter = SHORT_FORM_DATE_FORMATTER
-                formatter.timeZone = TimeZone.getTimeZone("UTC")
                 val now = formatter.format(Date()).getDateOrMin()
                 if (expirationDate.before(now)) {
                     revoke()

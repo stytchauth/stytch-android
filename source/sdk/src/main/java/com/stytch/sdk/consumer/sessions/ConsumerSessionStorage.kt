@@ -105,7 +105,6 @@ internal class ConsumerSessionStorage(
                     }
                 val expirationDate = sessionData?.expiresAt.getDateOrMin()
                 val formatter = SHORT_FORM_DATE_FORMATTER
-                formatter.timeZone = TimeZone.getTimeZone("UTC")
                 val now = formatter.format(Date()).getDateOrMin()
                 if (expirationDate.before(now)) {
                     revoke()
