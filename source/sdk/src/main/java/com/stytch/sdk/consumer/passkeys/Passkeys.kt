@@ -1,8 +1,8 @@
 package com.stytch.sdk.consumer.passkeys
 
 import android.app.Activity
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
 import com.stytch.sdk.consumer.WebAuthnUpdateResponse
@@ -37,7 +37,7 @@ public interface Passkeys {
         constructor(
             val activity: Activity,
             val domain: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.network
 
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NoResponseResponse
@@ -29,6 +28,7 @@ import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
 import com.stytch.sdk.consumer.WebAuthnAuthenticateStartResponse
 import com.stytch.sdk.consumer.WebAuthnRegisterResponse
@@ -142,7 +142,7 @@ internal object StytchApi : CommonApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
                 codeVerifier: String,
             ): StytchResult<AuthData> =
                 safeConsumerApiCall {
@@ -366,7 +366,7 @@ internal object StytchApi : CommonApi {
         suspend fun authenticateWithOTP(
             token: String,
             methodId: String,
-            sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         ): StytchResult<OTPsAuthenticateResponseData> =
             safeConsumerApiCall {
                 apiService.authenticateWithOTP(

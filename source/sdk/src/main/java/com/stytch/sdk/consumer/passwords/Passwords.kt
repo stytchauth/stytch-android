@@ -2,7 +2,6 @@ package com.stytch.sdk.consumer.passwords
 
 import android.os.Parcelable
 import com.stytch.sdk.common.BaseResponse
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.consumer.PasswordsAuthenticateResponse
@@ -11,6 +10,7 @@ import com.stytch.sdk.consumer.PasswordsEmailResetResponse
 import com.stytch.sdk.consumer.PasswordsExistingPasswordResetResponse
 import com.stytch.sdk.consumer.PasswordsSessionResetResponse
 import com.stytch.sdk.consumer.PasswordsStrengthCheckResponse
+import com.stytch.sdk.consumer.StytchClient
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.CompletableFuture
 
@@ -40,7 +40,7 @@ public interface Passwords {
         constructor(
             val email: String,
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -57,7 +57,7 @@ public interface Passwords {
         constructor(
             val email: String,
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -98,7 +98,7 @@ public interface Passwords {
         constructor(
             val token: String,
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -112,7 +112,7 @@ public interface Passwords {
         @JvmOverloads
         constructor(
             val password: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -131,7 +131,7 @@ public interface Passwords {
             val email: String,
             val existingPassword: String,
             val newPassword: String,
-            val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

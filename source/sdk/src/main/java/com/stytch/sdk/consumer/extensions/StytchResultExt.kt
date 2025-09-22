@@ -6,6 +6,7 @@ package com.stytch.sdk.consumer.extensions
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
+import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
@@ -39,7 +40,13 @@ internal fun <T : IAuthData> StytchResult<T>.launchSessionUpdater(
             dispatchers = dispatchers,
             updateSession = {
                 withContext(dispatchers.io) {
-                    StytchApi.Sessions.authenticate(null)
+                    StytchApi.Sessions.authenticate(
+                        if (StytchClient.configurationManager.options.enableAutomaticSessionExtension) {
+                            StytchClient.configurationManager.options.defaultSessionDuration
+                        } else {
+                            null
+                        },
+                    )
                 }
             },
             saveSession = { result ->

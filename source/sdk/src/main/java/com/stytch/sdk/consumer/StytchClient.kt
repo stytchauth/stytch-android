@@ -6,7 +6,6 @@ import com.stytch.sdk.R
 import com.stytch.sdk.common.ConfigurationAnalyticsEvent
 import com.stytch.sdk.common.ConfigurationManager
 import com.stytch.sdk.common.ConfigurationStep
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
@@ -585,14 +584,23 @@ public object StytchClient {
                 sessionStorage.session?.let {
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
-                    sessions.authenticate(Sessions.AuthParams()).apply {
-                        configurationManager.emitAnalyticsEvent(
-                            ConfigurationAnalyticsEvent(
-                                step = ConfigurationStep.SESSION_HYDRATION,
-                                duration = Date().time - start,
+                    sessions
+                        .authenticate(
+                            Sessions.AuthParams(
+                                if (configurationManager.options.enableAutomaticSessionExtension) {
+                                    configurationManager.options.defaultSessionDuration
+                                } else {
+                                    null
+                                },
                             ),
-                        )
-                    }
+                        ).apply {
+                            configurationManager.emitAnalyticsEvent(
+                                ConfigurationAnalyticsEvent(
+                                    step = ConfigurationStep.SESSION_HYDRATION,
+                                    duration = Date().time - start,
+                                ),
+                            )
+                        }
                 } ?: configurationManager.emitAnalyticsEvent(
                     ConfigurationAnalyticsEvent(
                         step = ConfigurationStep.SESSION_HYDRATION,
@@ -612,7 +620,8 @@ public object StytchClient {
                     OTP.AuthParameters(
                         token = parsedCode,
                         methodId = methodId,
-                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        sessionDurationMinutes =
+                            sessionDurationMinutes ?: configurationManager.options.defaultSessionDuration,
                     ),
                 )
             }

@@ -2,11 +2,11 @@ package com.stytch.sdk.consumer.oauth
 
 import android.app.Activity
 import androidx.activity.ComponentActivity
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.NativeOAuthResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
+import com.stytch.sdk.consumer.StytchClient
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -134,7 +134,7 @@ public interface OAuth {
                 val context: Activity,
                 val clientId: String,
                 val autoSelectEnabled: Boolean = false,
-                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**
@@ -223,7 +223,7 @@ public interface OAuth {
             @JvmOverloads
             constructor(
                 val token: String,
-                val sessionDurationMinutes: Int = DEFAULT_SESSION_TIME_MINUTES,
+                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**

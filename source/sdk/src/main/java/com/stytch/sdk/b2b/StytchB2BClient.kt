@@ -36,7 +36,6 @@ import com.stytch.sdk.b2b.totp.TOTPImpl
 import com.stytch.sdk.common.ConfigurationAnalyticsEvent
 import com.stytch.sdk.common.ConfigurationManager
 import com.stytch.sdk.common.ConfigurationStep
-import com.stytch.sdk.common.DEFAULT_SESSION_TIME_MINUTES
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
@@ -683,14 +682,23 @@ public object StytchB2BClient {
                 sessionStorage.memberSession?.let {
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
-                    sessions.authenticate(B2BSessions.AuthParams()).apply {
-                        configurationManager.emitAnalyticsEvent(
-                            ConfigurationAnalyticsEvent(
-                                step = ConfigurationStep.SESSION_HYDRATION,
-                                duration = Date().time - start,
+                    sessions
+                        .authenticate(
+                            B2BSessions.AuthParams(
+                                if (configurationManager.options.enableAutomaticSessionExtension) {
+                                    configurationManager.options.defaultSessionDuration
+                                } else {
+                                    null
+                                },
                             ),
-                        )
-                    }
+                        ).apply {
+                            configurationManager.emitAnalyticsEvent(
+                                ConfigurationAnalyticsEvent(
+                                    step = ConfigurationStep.SESSION_HYDRATION,
+                                    duration = Date().time - start,
+                                ),
+                            )
+                        }
                 } ?: configurationManager.emitAnalyticsEvent(
                     ConfigurationAnalyticsEvent(
                         step = ConfigurationStep.SESSION_HYDRATION,
@@ -712,7 +720,8 @@ public object StytchB2BClient {
                         organizationId = organizationId,
                         memberId = memberId,
                         code = parsedCode,
-                        sessionDurationMinutes = sessionDurationMinutes ?: DEFAULT_SESSION_TIME_MINUTES,
+                        sessionDurationMinutes =
+                            sessionDurationMinutes ?: configurationManager.options.defaultSessionDuration,
                     ),
                 )
             }
