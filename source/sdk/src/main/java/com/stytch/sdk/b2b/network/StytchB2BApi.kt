@@ -182,7 +182,7 @@ internal object StytchB2BApi : CommonApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+                sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
                 codeVerifier: String? = null,
                 intermediateSessionToken: String? = null,
             ): StytchResult<B2BEMLAuthenticateData> =
@@ -480,7 +480,7 @@ internal object StytchB2BApi : CommonApi {
             emailAddress: String,
             password: String,
             locale: Locale? = null,
-            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             intermediateSessionToken: String? = null,
         ): StytchResult<PasswordsAuthenticateResponseData> =
             safeB2BApiCall {
@@ -527,7 +527,7 @@ internal object StytchB2BApi : CommonApi {
         suspend fun resetByEmail(
             passwordResetToken: String,
             password: String,
-            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             codeVerifier: String,
             intermediateSessionToken: String? = null,
             locale: Locale? = null,
@@ -550,7 +550,7 @@ internal object StytchB2BApi : CommonApi {
             emailAddress: String,
             existingPassword: String,
             newPassword: String,
-            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             locale: Locale? = null,
         ): StytchResult<PasswordResetByExistingPasswordResponseData> =
             safeB2BApiCall {

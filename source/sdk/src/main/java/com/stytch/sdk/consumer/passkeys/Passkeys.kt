@@ -37,7 +37,7 @@ public interface Passkeys {
         constructor(
             val activity: Activity,
             val domain: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

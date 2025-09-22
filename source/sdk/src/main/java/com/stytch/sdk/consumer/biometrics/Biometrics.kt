@@ -28,7 +28,7 @@ public interface Biometrics {
         @JvmOverloads
         constructor(
             val context: FragmentActivity,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val allowFallbackToCleartext: Boolean = false,
             val promptData: PromptData? = null,
             val allowDeviceCredentials: Boolean = false,
@@ -46,7 +46,7 @@ public interface Biometrics {
         @JvmOverloads
         constructor(
             val context: FragmentActivity,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val promptData: PromptData? = null,
         )
 

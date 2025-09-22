@@ -686,7 +686,7 @@ public object StytchB2BClient {
                         .authenticate(
                             B2BSessions.AuthParams(
                                 if (configurationManager.options.enableAutomaticSessionExtension) {
-                                    configurationManager.options.sessionDurationMinutes
+                                    configurationManager.options.defaultSessionDuration
                                 } else {
                                     null
                                 },
@@ -721,7 +721,7 @@ public object StytchB2BClient {
                         memberId = memberId,
                         code = parsedCode,
                         sessionDurationMinutes =
-                            sessionDurationMinutes ?: configurationManager.options.sessionDurationMinutes,
+                            sessionDurationMinutes ?: configurationManager.options.defaultSessionDuration,
                     ),
                 )
             }

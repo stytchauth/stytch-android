@@ -30,7 +30,7 @@ public interface OTP {
         constructor(
             val token: String,
             val methodId: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -105,7 +105,7 @@ public interface OTP {
                 val expirationMinutes: Int = DEFAULT_OTP_EXPIRATION_TIME_MINUTES,
                 val enableAutofill: Boolean = false,
                 val autofillSessionDurationMinutes: Int =
-                    StytchClient.configurationManager.options.sessionDurationMinutes,
+                    StytchClient.configurationManager.options.defaultSessionDuration,
                 val locale: Locale? = null,
             ) : Parcelable
 

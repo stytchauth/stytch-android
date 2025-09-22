@@ -588,7 +588,7 @@ public object StytchClient {
                         .authenticate(
                             Sessions.AuthParams(
                                 if (configurationManager.options.enableAutomaticSessionExtension) {
-                                    configurationManager.options.sessionDurationMinutes
+                                    configurationManager.options.defaultSessionDuration
                                 } else {
                                     null
                                 },
@@ -621,7 +621,7 @@ public object StytchClient {
                         token = parsedCode,
                         methodId = methodId,
                         sessionDurationMinutes =
-                            sessionDurationMinutes ?: configurationManager.options.sessionDurationMinutes,
+                            sessionDurationMinutes ?: configurationManager.options.defaultSessionDuration,
                     ),
                 )
             }

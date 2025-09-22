@@ -40,7 +40,7 @@ public interface Passwords {
         constructor(
             val email: String,
             val password: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -57,7 +57,7 @@ public interface Passwords {
         constructor(
             val email: String,
             val password: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -98,7 +98,7 @@ public interface Passwords {
         constructor(
             val token: String,
             val password: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -112,7 +112,7 @@ public interface Passwords {
         @JvmOverloads
         constructor(
             val password: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -131,7 +131,7 @@ public interface Passwords {
             val email: String,
             val existingPassword: String,
             val newPassword: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

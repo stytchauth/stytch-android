@@ -44,7 +44,7 @@ public interface Passwords {
             val organizationId: String,
             val emailAddress: String,
             val password: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -175,7 +175,7 @@ public interface Passwords {
         constructor(
             val token: String,
             val password: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
@@ -231,7 +231,7 @@ public interface Passwords {
             val emailAddress: String,
             val existingPassword: String,
             val newPassword: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 

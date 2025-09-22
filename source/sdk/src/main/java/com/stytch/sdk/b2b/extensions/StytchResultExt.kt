@@ -68,7 +68,7 @@ internal fun <T : CommonAuthenticationData> StytchResult<T>.launchSessionUpdater
                 withContext(dispatchers.io) {
                     StytchB2BApi.Sessions.authenticate(
                         if (StytchB2BClient.configurationManager.options.enableAutomaticSessionExtension) {
-                            StytchB2BClient.configurationManager.options.sessionDurationMinutes
+                            StytchB2BClient.configurationManager.options.defaultSessionDuration
                         } else {
                             null
                         },

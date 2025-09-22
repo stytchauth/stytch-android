@@ -134,7 +134,7 @@ public interface OAuth {
                 val context: Activity,
                 val clientId: String,
                 val autoSelectEnabled: Boolean = false,
-                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**
@@ -223,7 +223,7 @@ public interface OAuth {
             @JvmOverloads
             constructor(
                 val token: String,
-                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+                val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**

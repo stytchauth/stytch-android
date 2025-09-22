@@ -142,7 +142,7 @@ internal object StytchApi : CommonApi {
 
             suspend fun authenticate(
                 token: String,
-                sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+                sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
                 codeVerifier: String,
             ): StytchResult<AuthData> =
                 safeConsumerApiCall {
@@ -366,7 +366,7 @@ internal object StytchApi : CommonApi {
         suspend fun authenticateWithOTP(
             token: String,
             methodId: String,
-            sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         ): StytchResult<OTPsAuthenticateResponseData> =
             safeConsumerApiCall {
                 apiService.authenticateWithOTP(

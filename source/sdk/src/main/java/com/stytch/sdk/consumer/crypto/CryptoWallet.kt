@@ -38,7 +38,7 @@ public interface CryptoWallet {
             val cryptoWalletAddress: String,
             val cryptoWalletType: CryptoWalletType,
             val signature: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

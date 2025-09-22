@@ -35,7 +35,7 @@ public interface TOTP {
         @JvmOverloads
         constructor(
             val totpCode: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -48,7 +48,7 @@ public interface TOTP {
         @JvmOverloads
         constructor(
             val recoveryCode: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

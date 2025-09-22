@@ -73,7 +73,7 @@ public interface TOTP {
             val code: String,
             val setMFAEnrollment: SetMFAEnrollment? = null,
             val setDefaultMFAMethod: Boolean? = null,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

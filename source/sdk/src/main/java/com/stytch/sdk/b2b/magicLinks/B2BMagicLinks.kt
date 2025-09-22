@@ -40,7 +40,7 @@ public interface B2BMagicLinks {
         @JvmOverloads
         constructor(
             val token: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

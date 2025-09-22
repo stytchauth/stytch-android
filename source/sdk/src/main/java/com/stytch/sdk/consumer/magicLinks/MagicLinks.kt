@@ -24,7 +24,7 @@ public interface MagicLinks {
         @JvmOverloads
         constructor(
             val token: String,
-            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

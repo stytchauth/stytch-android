@@ -56,7 +56,7 @@ public interface OTP {
                 val locale: Locale? = null,
                 val enableAutofill: Boolean = false,
                 val autofillSessionDurationMinutes: Int =
-                    StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+                    StytchB2BClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**
@@ -101,7 +101,7 @@ public interface OTP {
                 val memberId: String,
                 val code: String,
                 val setMFAEnrollment: SetMFAEnrollment? = null,
-                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**
@@ -209,7 +209,7 @@ public interface OTP {
                 val organizationId: String,
                 val emailAddress: String,
                 val locale: Locale? = null,
-                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+                val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             )
 
         /**

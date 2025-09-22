@@ -247,7 +247,7 @@ public interface OAuth {
         constructor(
             val oauthToken: String,
             val locale: Locale? = null,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**

@@ -61,7 +61,7 @@ public interface Discovery {
         @JvmOverloads
         constructor(
             val organizationId: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
         )
 
     /**
@@ -139,7 +139,7 @@ public interface Discovery {
             val organizationName: String? = null,
             val organizationSlug: String? = null,
             val organizationLogoUrl: String? = null,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             val ssoJitProvisioning: SsoJitProvisioning? = null,
             val emailAllowedDomains: List<String>? = null,
             val emailJitProvisioning: EmailJitProvisioning? = null,

@@ -111,7 +111,7 @@ public interface SSO {
         @JvmOverloads
         constructor(
             val ssoToken: String,
-            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.sessionDurationMinutes,
+            val sessionDurationMinutes: Int = StytchB2BClient.configurationManager.options.defaultSessionDuration,
             val locale: Locale? = null,
         )
 
