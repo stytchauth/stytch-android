@@ -584,14 +584,23 @@ public object StytchClient {
                 sessionStorage.session?.let {
                     // if we have a session, it's expiration date has already been validated, now attempt
                     // to validate it with the Stytch servers
-                    sessions.authenticate(Sessions.AuthParams()).apply {
-                        configurationManager.emitAnalyticsEvent(
-                            ConfigurationAnalyticsEvent(
-                                step = ConfigurationStep.SESSION_HYDRATION,
-                                duration = Date().time - start,
+                    sessions
+                        .authenticate(
+                            Sessions.AuthParams(
+                                if (configurationManager.options.enableAutomaticSessionExtension) {
+                                    configurationManager.options.sessionDurationMinutes
+                                } else {
+                                    null
+                                },
                             ),
-                        )
-                    }
+                        ).apply {
+                            configurationManager.emitAnalyticsEvent(
+                                ConfigurationAnalyticsEvent(
+                                    step = ConfigurationStep.SESSION_HYDRATION,
+                                    duration = Date().time - start,
+                                ),
+                            )
+                        }
                 } ?: configurationManager.emitAnalyticsEvent(
                     ConfigurationAnalyticsEvent(
                         step = ConfigurationStep.SESSION_HYDRATION,

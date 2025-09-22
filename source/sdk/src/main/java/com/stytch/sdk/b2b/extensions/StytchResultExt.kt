@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.extensions
 
+import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.IB2BAuthData
 import com.stytch.sdk.b2b.network.models.IB2BAuthDataWithMFA
@@ -65,7 +66,13 @@ internal fun <T : CommonAuthenticationData> StytchResult<T>.launchSessionUpdater
             dispatchers = dispatchers,
             updateSession = {
                 withContext(dispatchers.io) {
-                    StytchB2BApi.Sessions.authenticate(null)
+                    StytchB2BApi.Sessions.authenticate(
+                        if (StytchB2BClient.configurationManager.options.enableAutomaticSessionExtension) {
+                            StytchB2BClient.configurationManager.options.sessionDurationMinutes
+                        } else {
+                            null
+                        },
+                    )
                 }
             },
             saveSession = { result ->
