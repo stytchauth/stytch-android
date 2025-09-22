@@ -22,7 +22,6 @@ import com.stytch.sdk.consumer.network.models.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
-import java.util.TimeZone
 
 internal class ConsumerSessionStorage(
     private val storageHelper: StorageHelper,
@@ -105,7 +104,7 @@ internal class ConsumerSessionStorage(
                     }
                 val expirationDate = sessionData?.expiresAt.getDateOrMin()
                 val formatter = SHORT_FORM_DATE_FORMATTER
-                val now = formatter.format(Date()).getDateOrMin()
+                val now = formatter?.format(Date()).getDateOrMin()
                 if (expirationDate.before(now)) {
                     revoke()
                     return null

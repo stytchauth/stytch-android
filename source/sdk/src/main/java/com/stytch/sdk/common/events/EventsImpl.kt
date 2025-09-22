@@ -29,7 +29,7 @@ internal class EventsImpl(
                 eventId = "event-id-${UUID.randomUUID()}",
                 appSessionId = appSessionId,
                 persistentId = "persistent-id-${UUID.randomUUID()}",
-                clientSentAt = ISO_DATE_FORMATTER.format(Date()),
+                clientSentAt = ISO_DATE_FORMATTER?.format(Date()) ?: "",
                 timezone = TimeZone.getDefault().id,
                 eventName = eventName,
                 infoHeaderModel = infoHeaderModel,

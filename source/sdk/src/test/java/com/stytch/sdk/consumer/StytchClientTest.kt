@@ -195,7 +195,7 @@ internal class StytchClientTest {
             // yes session data, but expired, no authentication/updater
             val mockExpiredSession =
                 mockk<SessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(0L))
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(0L))
                 }
             val mockExpiredSessionJSON =
                 Moshi
@@ -211,7 +211,7 @@ internal class StytchClientTest {
             // yes session data, and valid, yes authentication/updater
             val mockValidSession =
                 mockk<SessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER.format(Date(Date().time + 1000))
+                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(Date().time + 1000))
                 }
             val mockValidSessionJSON =
                 Moshi
