@@ -34,7 +34,7 @@ private object SdfPool {
         pattern: String,
         tz: TimeZone = TimeZone.getTimeZone("UTC"),
         locale: Locale = Locale.US,
-    ): SimpleDateFormat {
+    ): SimpleDateFormat? {
         val key = Key(pattern, tz.id, locale)
         var tl = cache[key]
         if (tl == null) {
@@ -42,7 +42,7 @@ private object SdfPool {
             val prev = cache.putIfAbsent(key, created)
             tl = prev ?: created
         }
-        return tl.get()!!
+        return tl.get()
     }
 }
 
@@ -54,13 +54,17 @@ internal val SHORT_FORM_DATE_FORMATTER get() = SdfPool.get(SHORT_PATTERN)
 
 internal fun String?.getDateOrMin(minimum: Date = Date(0L)): Date =
     this?.let { date ->
-        try {
-            ISO_DATE_FORMATTER.parse(date)
-        } catch (_: ParseException) {
-            try {
-                SHORT_FORM_DATE_FORMATTER.parse(date)
-            } catch (_: ParseException) {
-                minimum
-            }
-        }
+        parseOrNull(ISO_DATE_FORMATTER, date)
+            ?: parseOrNull(SHORT_FORM_DATE_FORMATTER, date)
+            ?: minimum
     } ?: minimum
+
+private fun parseOrNull(
+    formatter: SimpleDateFormat?,
+    date: String,
+): Date? =
+    try {
+        formatter?.parse(date)
+    } catch (_: ParseException) {
+        null
+    }
