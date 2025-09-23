@@ -20,6 +20,7 @@ import com.stytch.sdk.common.network.models.WebAuthNRegistrations
 import com.stytch.sdk.common.utils.IEnumValue
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+import java.util.Date
 
 public interface IAuthData : CommonAuthenticationData {
     public val session: SessionData
@@ -55,13 +56,13 @@ public data class SessionData(
     @Json(name = "custom_claims")
     val customClaims: @RawValue Map<String, Any?>?,
     @Json(name = "expires_at")
-    val expiresAt: String,
+    val expiresAt: Date,
     @Json(name = "last_accessed_at")
-    val lastAccessedAt: String,
+    val lastAccessedAt: Date,
     @Json(name = "session_id")
     val sessionId: String,
     @Json(name = "started_at")
-    val startedAt: String,
+    val startedAt: Date,
     @Json(name = "user_id")
     val userId: String,
     @Json(name = "authentication_factors")
@@ -81,7 +82,7 @@ public data class SessionData(
 @Parcelize
 public data class UserData(
     @Json(name = "created_at")
-    val createdAt: String,
+    val createdAt: Date,
     @Json(name = "crypto_wallets")
     val cryptoWallets: List<CryptoWalletData>,
     val emails: List<EmailData>,

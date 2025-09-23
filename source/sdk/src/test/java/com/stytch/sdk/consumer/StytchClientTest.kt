@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
@@ -22,7 +23,6 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
-import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
@@ -195,11 +195,12 @@ internal class StytchClientTest {
             // yes session data, but expired, no authentication/updater
             val mockExpiredSession =
                 mockk<SessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(0L))
+                    every { expiresAt } returns Date(0L)
                 }
             val mockExpiredSessionJSON =
                 Moshi
                     .Builder()
+                    .add(Date::class.java, Rfc3339DateJsonAdapter())
                     .build()
                     .adapter(SessionData::class.java)
                     .lenient()
@@ -211,11 +212,12 @@ internal class StytchClientTest {
             // yes session data, and valid, yes authentication/updater
             val mockValidSession =
                 mockk<SessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(Date().time + 1000))
+                    every { expiresAt } returns Date(Date().time + 1000)
                 }
             val mockValidSessionJSON =
                 Moshi
                     .Builder()
+                    .add(Date::class.java, Rfc3339DateJsonAdapter())
                     .build()
                     .adapter(SessionData::class.java)
                     .lenient()

@@ -16,7 +16,7 @@ plugins {
 }
 
 val publishGroupId = "com.stytch.sdk"
-val publishVersion = "0.58.2"
+val publishVersion = "0.59.0"
 val publishArtifactId = "sdk"
 
 android {
@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.moshi)
+    implementation(libs.moshi.adapters)
     ksp(libs.moshi.kotlin.codegen)
     runtimeOnly(libs.kotlinx.coroutines.android)
     implementation(libs.tink.android)

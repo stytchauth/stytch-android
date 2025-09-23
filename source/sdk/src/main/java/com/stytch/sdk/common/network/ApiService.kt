@@ -1,6 +1,7 @@
 package com.stytch.sdk.common.network
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.stytch.sdk.b2b.network.models.AllowedAuthMethods
 import com.stytch.sdk.b2b.network.models.MfaMethod
 import com.stytch.sdk.b2b.network.models.SetMFAEnrollment
@@ -11,6 +12,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 private const val ONE_HUNDRED_TWENTY = 120L
@@ -44,6 +46,7 @@ internal open class ApiService(
     private val moshi =
         Moshi
             .Builder()
+            .add(Date::class.java, Rfc3339DateJsonAdapter())
             .add(createEnumJsonAdapter<AllowedAuthMethods>())
             .add(createEnumJsonAdapter<MfaMethod>())
             .add(createEnumJsonAdapter<SetMFAEnrollment>())

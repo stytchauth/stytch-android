@@ -54,6 +54,7 @@ import com.stytch.sdk.consumer.network.models.TOTPRecoveryCodesResponseData
 import com.stytch.sdk.consumer.network.models.UpdateUserResponseData
 import com.stytch.sdk.consumer.network.models.UserData
 import com.stytch.sdk.consumer.network.models.UserSearchResponseData
+import java.util.Date
 
 internal object StytchApi : CommonApi {
     internal lateinit var publicToken: String
@@ -840,7 +841,7 @@ internal object StytchApi : CommonApi {
             eventId: String,
             appSessionId: String,
             persistentId: String,
-            clientSentAt: String,
+            clientSentAt: Date,
             timezone: String,
             eventName: String,
             infoHeaderModel: InfoHeaderModel,

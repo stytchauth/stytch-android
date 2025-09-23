@@ -20,8 +20,8 @@ fun LoggedInView(state: ConsumerWorkbenchAppUIState.LoggedIn) {
         )
         KeyValueRow(key = "User Id", value = state.userData.userId)
         KeyValueRow(key = "Session Id", value = state.sessionData.sessionId)
-        KeyValueRow(key = "Session Start", value = state.sessionData.startedAt)
-        KeyValueRow(key = "Session Expires", value = state.sessionData.expiresAt)
+        KeyValueRow(key = "Session Start", value = state.sessionData.startedAt.toString())
+        KeyValueRow(key = "Session Expires", value = state.sessionData.expiresAt.toString())
     }
 }
 
