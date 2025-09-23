@@ -3,6 +3,7 @@ package com.stytch.sdk.common.network.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.stytch.sdk.common.utils.IEnumValue
+import java.util.Date
 
 internal object CommonRequests {
     object Sessions {
@@ -29,7 +30,7 @@ internal object CommonRequests {
             @Json(name = "persistent_id")
             val persistentId: String,
             @Json(name = "client_sent_at")
-            val clientSentAt: String,
+            val clientSentAt: Date,
             val timezone: String,
             val app: VersionIdentifier,
             val os: VersionIdentifier,

@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTHENTICATED_USER_ID
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_AUTH_METHOD_USED
 import com.stytch.sdk.common.PREFERENCES_NAME_LAST_VALIDATED_AT
@@ -12,8 +13,6 @@ import com.stytch.sdk.common.PREFERENCES_NAME_USER_DATA
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.errors.StytchNoCurrentSessionError
-import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
-import com.stytch.sdk.common.utils.getDateOrMin
 import com.stytch.sdk.consumer.ConsumerAuthMethod
 import com.stytch.sdk.consumer.biometrics.LAST_USED_BIOMETRIC_REGISTRATION_ID
 import com.stytch.sdk.consumer.extensions.keepLocalBiometricRegistrationsInSync
@@ -26,7 +25,7 @@ import java.util.Date
 internal class ConsumerSessionStorage(
     private val storageHelper: StorageHelper,
 ) {
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().add(Date::class.java, Rfc3339DateJsonAdapter()).build()
     private val moshiSessionDataAdapter = moshi.adapter(SessionData::class.java).lenient()
     private val moshiUserDataAdapter = moshi.adapter(UserData::class.java).lenient()
     private val moshiLastAuthMethodUsedAdapter = moshi.adapter(ConsumerAuthMethod::class.java).lenient()
@@ -102,9 +101,8 @@ internal class ConsumerSessionStorage(
                         StytchLog.e(e.message ?: "Error parsing persisted SessionData")
                         null
                     }
-                val expirationDate = sessionData?.expiresAt.getDateOrMin()
-                val formatter = SHORT_FORM_DATE_FORMATTER
-                val now = formatter?.format(Date()).getDateOrMin()
+                val expirationDate = sessionData?.expiresAt ?: Date(0L)
+                val now = Date()
                 if (expirationDate.before(now)) {
                     revoke()
                     return null

@@ -89,6 +89,7 @@ import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.Locale
 import com.stytch.sdk.common.network.models.NoResponseData
 import com.stytch.sdk.common.network.safeApiCall
+import java.util.Date
 
 internal object StytchB2BApi : CommonApi {
     internal lateinit var publicToken: String
@@ -859,7 +860,7 @@ internal object StytchB2BApi : CommonApi {
             eventId: String,
             appSessionId: String,
             persistentId: String,
-            clientSentAt: String,
+            clientSentAt: Date,
             timezone: String,
             eventName: String,
             infoHeaderModel: InfoHeaderModel,

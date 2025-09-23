@@ -2,6 +2,7 @@ package com.stytch.sdk.b2b.sessions
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
@@ -18,8 +19,6 @@ import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_JWT
 import com.stytch.sdk.common.PREFERENCES_NAME_SESSION_TOKEN
 import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchLog
-import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
-import com.stytch.sdk.common.utils.getDateOrMin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Date
@@ -27,7 +26,7 @@ import java.util.Date
 internal class B2BSessionStorage(
     private val storageHelper: StorageHelper,
 ) {
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().add(Date::class.java, Rfc3339DateJsonAdapter()).build()
     private val moshiB2BSessionDataAdapter = moshi.adapter(B2BSessionData::class.java).lenient()
     private val moshiMemberDataAdapter = moshi.adapter(MemberData::class.java).lenient()
     private val moshiOrganizationDataAdapter = moshi.adapter(OrganizationData::class.java).lenient()
@@ -139,9 +138,8 @@ internal class B2BSessionStorage(
                         StytchLog.e(e.message ?: "Error parsing persisted B2BSessionData")
                         null
                     }
-                val expirationDate = memberSessionData?.expiresAt.getDateOrMin()
-                val formatter = SHORT_FORM_DATE_FORMATTER
-                val now = formatter?.format(Date()).getDateOrMin()
+                val expirationDate = memberSessionData?.expiresAt ?: Date(0L)
+                val now = Date()
                 if (expirationDate.before(now)) {
                     revoke()
                     return null

@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import com.google.gson.internal.bind.util.ISO8601Utils
 import com.stytch.sdk.common.network.ApiService
 import com.stytch.sdk.common.network.models.CommonRequests
 import com.stytch.sdk.common.network.models.Locale
@@ -18,6 +19,7 @@ import okio.EOFException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.util.Date
 
 private const val EMAIL = "email@email.com"
 private const val LOGIN_MAGIC_LINK = "loginMagicLink://"
@@ -1166,7 +1168,7 @@ internal class StytchApiServiceTests {
                             eventId = "event-id",
                             appSessionId = "app-session-id",
                             persistentId = "persistent-id",
-                            clientSentAt = "client sent at",
+                            clientSentAt = Date(),
                             timezone = "timezone",
                             app =
                                 CommonRequests.Events.VersionIdentifier(
@@ -1208,7 +1210,7 @@ internal class StytchApiServiceTests {
                                     "event_id" to parameters.telemetry.eventId,
                                     "app_session_id" to parameters.telemetry.appSessionId,
                                     "persistent_id" to parameters.telemetry.persistentId,
-                                    "client_sent_at" to parameters.telemetry.clientSentAt,
+                                    "client_sent_at" to ISO8601Utils.format(parameters.telemetry.clientSentAt, true),
                                     "timezone" to parameters.telemetry.timezone,
                                     "app" to
                                         mapOf(

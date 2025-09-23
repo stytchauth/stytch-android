@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.recaptcha.Recaptcha
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
@@ -28,7 +29,6 @@ import com.stytch.sdk.common.errors.StytchSDKNotConfiguredError
 import com.stytch.sdk.common.extensions.getDeviceInfo
 import com.stytch.sdk.common.network.models.BootstrapData
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
-import com.stytch.sdk.common.utils.SHORT_FORM_DATE_FORMATTER
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -197,11 +197,12 @@ internal class StytchB2BClientTest {
             // yes session data, but expired, no authentication/updater
             val mockExpiredSession =
                 mockk<B2BSessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(0L))
+                    every { expiresAt } returns Date(0L)
                 }
             val mockExpiredSessionJSON =
                 Moshi
                     .Builder()
+                    .add(Date::class.java, Rfc3339DateJsonAdapter())
                     .build()
                     .adapter(B2BSessionData::class.java)
                     .lenient()
@@ -213,11 +214,12 @@ internal class StytchB2BClientTest {
             // yes session data, and valid, yes authentication/updater
             val mockValidSession =
                 mockk<B2BSessionData>(relaxed = true) {
-                    every { expiresAt } returns SHORT_FORM_DATE_FORMATTER!!.format(Date(Date().time + 1000))
+                    every { expiresAt } returns Date(Date().time + 1000)
                 }
             val mockValidSessionJSON =
                 Moshi
                     .Builder()
+                    .add(Date::class.java, Rfc3339DateJsonAdapter())
                     .build()
                     .adapter(B2BSessionData::class.java)
                     .lenient()

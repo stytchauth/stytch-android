@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.moshi)
+    implementation(libs.moshi.adapters)
     ksp(libs.moshi.kotlin.codegen)
     runtimeOnly(libs.kotlinx.coroutines.android)
     implementation(libs.tink.android)

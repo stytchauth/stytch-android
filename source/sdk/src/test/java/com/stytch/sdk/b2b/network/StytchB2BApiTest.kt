@@ -39,6 +39,7 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
 import java.security.KeyStore
+import java.util.Date
 
 internal class StytchB2BApiTest {
     var mContextMock = mockk<Context>(relaxed = true)
@@ -587,11 +588,12 @@ internal class StytchB2BApiTest {
             coEvery { mockB2BApiService.logEvent(any()) } returns mockk(relaxed = true)
             val details = mapOf("test-key" to "test value")
             val header = InfoHeaderModel.fromDeviceInfo(mockDeviceInfo)
+            val now = Date()
             StytchB2BApi.Events.logEvent(
                 eventId = "event-id",
                 appSessionId = "app-session-id",
                 persistentId = "persistent-id",
-                clientSentAt = "ISO date string",
+                clientSentAt = now,
                 timezone = "Timezone/Identifier",
                 eventName = "event-name",
                 infoHeaderModel = header,
@@ -606,7 +608,7 @@ internal class StytchB2BApiTest {
                                     eventId = "event-id",
                                     appSessionId = "app-session-id",
                                     persistentId = "persistent-id",
-                                    clientSentAt = "ISO date string",
+                                    clientSentAt = now,
                                     timezone = "Timezone/Identifier",
                                     app =
                                         CommonRequests.Events.VersionIdentifier(

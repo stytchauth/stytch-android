@@ -11,6 +11,7 @@ import com.stytch.sdk.common.network.models.SDKDeviceHistory
 import com.stytch.sdk.common.network.models.StrengthPolicy
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
+import java.util.Date
 
 public interface IB2BAuthData : CommonAuthenticationData {
     public val memberSession: B2BSessionData
@@ -136,11 +137,11 @@ public data class B2BSessionData(
     @Json(name = "organization_id")
     val organizationId: String,
     @Json(name = "started_at")
-    val startedAt: String,
+    val startedAt: Date,
     @Json(name = "last_accessed_at")
-    val lastAccessedAt: String,
+    val lastAccessedAt: Date,
     @Json(name = "expires_at")
-    val expiresAt: String,
+    val expiresAt: Date,
     @Json(name = "authentication_factors")
     val authenticationFactors: List<B2BAuthenticationFactor>,
     @Json(name = "custom_claims")
@@ -853,9 +854,9 @@ public data class X509Certificate(
     @Json(name = "issuer")
     val issuer: String,
     @Json(name = "created_at")
-    val createdAt: String? = null,
+    val createdAt: Date? = null,
     @Json(name = "expires_at")
-    val expiresAt: String? = null,
+    val expiresAt: Date? = null,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -1050,11 +1051,11 @@ public data class SCIMConnection(
     @Json(name = "bearer_token_last_four")
     val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: String?,
+    val bearerTokenExpiresAt: Date?,
     @Json(name = "next_bearer_token_last_four")
     val nextBearerTokenLastFour: String?,
     @Json(name = "next_bearer_token_expires_at")
-    val nextBearerTokenExpiresAt: String?,
+    val nextBearerTokenExpiresAt: Date?,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1077,7 +1078,7 @@ public data class SCIMConnectionWithBearerToken(
     @Json(name = "bearer_token")
     val bearerToken: String,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: String,
+    val bearerTokenExpiresAt: Date,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1100,11 +1101,11 @@ public data class SCIMConnectionWithNextBearerToken(
     @Json(name = "next_bearer_token")
     val nextBearerToken: String?,
     @Json(name = "next_bearer_token_expires_at")
-    val nextBearerTokenExpiresAt: String?,
+    val nextBearerTokenExpiresAt: Date?,
     @Json(name = "bearer_token_last_four")
     val bearerTokenLastFour: String?,
     @Json(name = "bearer_token_expires_at")
-    val bearerTokenExpiresAt: String?,
+    val bearerTokenExpiresAt: Date?,
 ) : BaseSCIMConnection,
     Parcelable
 
@@ -1215,7 +1216,7 @@ public data class B2BAuthenticationFactor(
     val deliveryMethod: String,
     val type: String,
     @Json(name = "last_authenticated_at")
-    val lastAuthenticatedAt: String,
+    val lastAuthenticatedAt: Date,
     @Json(name = "email_factor")
     val emailFactor: EmailFactor?,
     @Json(name = "phone_number_factor")
