@@ -3,7 +3,7 @@ name: Dependency Submission
 on:
   workflow_dispatch:
   push:
-    branches: [ 'main' ]
+    branches: [ 'dependency-testing' ] # only works on the default branch in Github. Remember to change this back when the default is updated
 
 permissions:
   contents: write
