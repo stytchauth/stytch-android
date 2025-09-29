@@ -20,10 +20,10 @@ jobs:
         distribution: 'temurin'
         java-version: 17
     - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@v3
+      uses: gradle/actions/dependency-submission@v4
       with:
-        gradle-build-module: ":source:sdk"
-        sub-module-mode: IGNORE
+        dependency-graph-include-projects: ":source:sdk"
+        dependency-graph-exclude-projects: ":example-apps|:workbench-apps"
         build-scan-publish: true
         build-scan-terms-of-use-url: "https://gradle.com/help/legal-terms-of-use"
         build-scan-terms-of-use-agree: "yes"

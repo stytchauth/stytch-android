@@ -6,25 +6,6 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-    configurations.all {
-        resolutionStrategy.eachDependency {
-            if (requested.group.startsWith("com.fasterxml.jackson")) {
-                useVersion("2.19.1")
-            }
-            if (requested.group.startsWith("io.netty")) {
-                useVersion("4.2.4.Final")
-            }
-            if (requested.name == "jose4j") {
-                useVersion("0.9.6")
-            }
-            if (requested.name == "jimfs") {
-                useVersion("1.3.0")
-            }
-            if (requested.name == "commons-compress") {
-                useVersion("1.27.1")
-            }
-        }
-    }
 }
 
 plugins {
@@ -64,6 +45,40 @@ allprojects {
     ktlint {
         android = true
         version = "1.2.1"
+    }
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group.startsWith("com.fasterxml.jackson")) {
+                useVersion("2.19.1")
+            }
+            if (requested.group.startsWith("io.netty")) {
+                useVersion("4.2.5.Final")
+            }
+            if (requested.group == "org.bitbucket.b_c" && requested.name == "jose4j") {
+                useVersion("0.9.6")
+            }
+            if (requested.name == "jimfs") {
+                useVersion("1.3.0")
+            }
+            if (requested.group == "org.apache.commons" && requested.name == "commons-compress") {
+                useVersion("1.27.1")
+            }
+            if (requested.group == "com.google.protobuf" && requested.name == "protobuf-kotlin") {
+                useVersion("3.25.5")
+            }
+            if (requested.group == "org.jdom" && requested.name == "jdom2") {
+                useVersion("2.0.6.1")
+            }
+            if (requested.group == "com.google.guava" && requested.name == "guava") {
+                useVersion("32.0.0-android")
+            }
+            if (requested.group == "org.apache.commons" && requested.name == "commons-lang3") {
+                useVersion("3.18.0")
+            }
+            if (requested.group == "com.fasterxml.woodstox" && requested.name == "woodstox-core") {
+                useVersion("6.4.0")
+            }
+        }
     }
 }
 

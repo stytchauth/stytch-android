@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.serialization)
     id("jacoco")
     id("maven-publish")
-    id("org.jreleaser").version("1.19.0")
+    id("org.jreleaser").version("1.20.0")
 }
 
 val publishGroupId = "com.stytch.sdk"
