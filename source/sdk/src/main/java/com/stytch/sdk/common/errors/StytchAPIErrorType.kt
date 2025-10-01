@@ -98,6 +98,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     CANNOT_RESET_PASSWORD_WITH_EXISTING_PASSWORD(
         type = "cannot_reset_password_with_existing_password",
     ),
+    CANNOT_SPECIFY_WILDCARD_WITH_OTHER_ACTIONS(
+        type = "cannot_specify_wildcard_with_other_actions",
+    ),
     CANNOT_TOGGLE_CROSS_ORG_PASSWORDS_WHEN_PASSWORD_IN_USE(
         type = "cannot_toggle_cross_org_passwords_when_password_in_use",
     ),
@@ -614,6 +617,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_EXPIRATION_OTP(
         type = "invalid_expiration_otp",
     ),
+    INVALID_FROM_LOCAL_PART(
+        type = "invalid_from_local_part",
+    ),
     INVALID_GOOGLE_HOSTED_DOMAIN_ERROR(
         type = "invalid_google_hosted_domain_error",
     ),
@@ -877,6 +883,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     INVALID_REDIRECT_URL_TYPE(
         type = "invalid_redirect_url_type",
+    ),
+    INVALID_REPLY_TO_LOCAL_PART(
+        type = "invalid_reply_to_local_part",
     ),
     INVALID_REQUEST_ID(
         type = "invalid_request_id",
@@ -1967,6 +1976,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     SMS_TEMPLATE_NOT_FOUND(
         type = "sms_template_not_found",
     ),
+    SSO_CONNECTION_CUSTOM_DOMAIN_MISMATCH(
+        type = "sso_connection_custom_domain_mismatch",
+    ),
     SSO_CONNECTION_NOT_FOUND(
         type = "sso_connection_not_found",
     ),
@@ -1975,6 +1987,12 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     SSO_DISCOVERY_INCOMPATIBLE_WITH_SDK_CONFIG(
         type = "sso_discovery_incompatible_with_sdk_config",
+    ),
+    SSO_ENCRYPTION_PRIVATE_KEY_NOT_FOUND(
+        type = "sso_encryption_private_key_not_found",
+    ),
+    SSO_MULTIPLE_CONNECTIONS_FOUND(
+        type = "sso_multiple_connections_found",
     ),
     SSO_TOKEN_NOT_FOUND(
         type = "sso_token_not_found",
@@ -2092,6 +2110,15 @@ public enum class StytchAPIErrorType(public val type: String) {
     ),
     TOTPS_NOT_FOUND_FOR_USER(
         type = "totps_not_found_for_user",
+    ),
+    TRUSTED_TOKEN_PROFILE_CANNOT_HAVE_MULTIPLE_EXTERNAL_IDS(
+        type = "trusted_token_profile_cannot_have_multiple_external_ids",
+    ),
+    TRUSTED_TOKEN_PROFILE_INCORRECT_EXTERNAL_ID_MAPPING(
+        type = "trusted_token_profile_incorrect_external_id_mapping",
+    ),
+    TRUSTED_TOKEN_PROFILE_INVALID_REQUEST(
+        type = "trusted_token_profile_invalid_request",
     ),
     TRUSTED_TOKEN_PROFILE_NOT_FOUND(
         type = "trusted_token_profile_not_found",
