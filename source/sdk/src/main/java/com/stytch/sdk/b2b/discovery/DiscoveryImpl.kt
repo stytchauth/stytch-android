@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b.discovery
 
-import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
