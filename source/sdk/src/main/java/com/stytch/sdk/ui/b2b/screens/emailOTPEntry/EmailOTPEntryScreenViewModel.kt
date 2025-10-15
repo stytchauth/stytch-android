@@ -12,6 +12,7 @@ import com.stytch.sdk.ui.b2b.BaseViewModel
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.B2BUIAction
 import com.stytch.sdk.ui.b2b.data.B2BUIState
+import com.stytch.sdk.ui.b2b.data.SetDiscoveredOrganizations
 import com.stytch.sdk.ui.b2b.data.SetNextRoute
 import com.stytch.sdk.ui.b2b.data.StytchB2BProductConfig
 import com.stytch.sdk.ui.b2b.navigation.Routes
@@ -57,6 +58,7 @@ internal class EmailOTPEntryScreenViewModel(
             } else {
                 useEmailOTPDiscoveryAuthenticate(code)
                     .onSuccess {
+                        dispatch(SetDiscoveredOrganizations(it.discoveredOrganizations))
                         dispatch(SetNextRoute(Routes.Discovery))
                     }.onFailure {
                         handleFailure(it)
