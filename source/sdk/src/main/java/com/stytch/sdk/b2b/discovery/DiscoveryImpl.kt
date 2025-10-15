@@ -1,8 +1,10 @@
 package com.stytch.sdk.b2b.discovery
 
+import com.stytch.sdk.b2b.B2BAuthMethod
 import com.stytch.sdk.b2b.DiscoverOrganizationsResponse
 import com.stytch.sdk.b2b.IntermediateSessionExchangeResponse
 import com.stytch.sdk.b2b.OrganizationCreateResponse
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.StytchDispatchers
@@ -40,11 +42,14 @@ internal class DiscoveryImpl(
         parameters: Discovery.SessionExchangeParameters,
     ): IntermediateSessionExchangeResponse =
         withContext(dispatchers.io) {
-            api.exchangeSession(
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                organizationId = parameters.organizationId,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-            )
+            api
+                .exchangeSession(
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    organizationId = parameters.organizationId,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
     override fun exchangeIntermediateSession(
