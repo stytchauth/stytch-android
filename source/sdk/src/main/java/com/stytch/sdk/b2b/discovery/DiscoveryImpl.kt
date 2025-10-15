@@ -74,19 +74,22 @@ internal class DiscoveryImpl(
         parameters: Discovery.CreateOrganizationParameters,
     ): OrganizationCreateResponse =
         withContext(dispatchers.io) {
-            api.createOrganization(
-                intermediateSessionToken = sessionStorage.intermediateSessionToken,
-                organizationName = parameters.organizationName,
-                organizationSlug = parameters.organizationSlug,
-                organizationLogoUrl = parameters.organizationLogoUrl,
-                sessionDurationMinutes = parameters.sessionDurationMinutes,
-                ssoJitProvisioning = parameters.ssoJitProvisioning,
-                emailAllowedDomains = parameters.emailAllowedDomains,
-                emailInvites = parameters.emailInvites,
-                emailJitProvisioning = parameters.emailJitProvisioning,
-                authMethods = parameters.authMethods,
-                allowedAuthMethods = parameters.allowedAuthMethods,
-            )
+            api
+                .createOrganization(
+                    intermediateSessionToken = sessionStorage.intermediateSessionToken,
+                    organizationName = parameters.organizationName,
+                    organizationSlug = parameters.organizationSlug,
+                    organizationLogoUrl = parameters.organizationLogoUrl,
+                    sessionDurationMinutes = parameters.sessionDurationMinutes,
+                    ssoJitProvisioning = parameters.ssoJitProvisioning,
+                    emailAllowedDomains = parameters.emailAllowedDomains,
+                    emailInvites = parameters.emailInvites,
+                    emailJitProvisioning = parameters.emailJitProvisioning,
+                    authMethods = parameters.authMethods,
+                    allowedAuthMethods = parameters.allowedAuthMethods,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
     override fun createOrganization(

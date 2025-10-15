@@ -65,9 +65,7 @@ internal class RecoveryCodesImpl(
                     recoveryCode = parameters.recoveryCode,
                     intermediateSessionToken = sessionStorage.intermediateSessionToken,
                 ).apply {
-                    if (this is StytchResult.Success) {
-                        launchSessionUpdater(dispatchers, sessionStorage)
-                    }
+                    launchSessionUpdater(dispatchers, sessionStorage)
                 }
         }
 

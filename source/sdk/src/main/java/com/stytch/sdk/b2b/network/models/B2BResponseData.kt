@@ -389,12 +389,17 @@ public data class SessionResetResponseData(
     @Json(name = "member_id")
     val memberId: String,
     @Json(name = "member_session")
-    val memberSession: B2BSessionData,
-    val member: MemberData,
-    val organization: OrganizationData,
+    override val memberSession: B2BSessionData,
+    override val member: MemberData,
+    override val organization: OrganizationData,
     @Json(name = "member_device")
     val memberDevice: SDKDeviceHistory?,
-) : Parcelable
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+) : IB2BAuthData,
+    Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
