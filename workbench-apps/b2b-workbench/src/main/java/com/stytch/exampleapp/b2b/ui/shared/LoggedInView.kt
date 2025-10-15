@@ -20,8 +20,8 @@ fun LoggedInView(state: B2BWorkbenchAppUIState.LoggedIn) {
         )
         KeyValueRow(key = "Member Id", value = state.memberData.memberId)
         KeyValueRow(key = "Session Id", value = state.sessionData.memberSessionId)
-        KeyValueRow(key = "Session Start", value = state.sessionData.startedAt)
-        KeyValueRow(key = "Session Expires", value = state.sessionData.expiresAt)
+        KeyValueRow(key = "Session Start", value = state.sessionData.startedAt.toString())
+        KeyValueRow(key = "Session Expires", value = state.sessionData.expiresAt.toString())
     }
 }
 

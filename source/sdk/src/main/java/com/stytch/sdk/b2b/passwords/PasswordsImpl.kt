@@ -18,6 +18,7 @@ import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchFailedToCreateCodeChallengeError
 import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
+import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
@@ -186,11 +187,14 @@ internal class PasswordsImpl internal constructor(
 
     override suspend fun resetBySession(parameters: Passwords.ResetBySessionParameters): SessionResetResponse =
         withContext(dispatchers.io) {
-            api.resetBySession(
-                organizationId = parameters.organizationId,
-                password = parameters.password,
-                locale = parameters.locale,
-            )
+            api
+                .resetBySession(
+                    organizationId = parameters.organizationId,
+                    password = parameters.password,
+                    locale = parameters.locale,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
         }
 
     override fun resetBySession(
