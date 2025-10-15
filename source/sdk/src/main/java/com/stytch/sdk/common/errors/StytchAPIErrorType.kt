@@ -1544,9 +1544,6 @@ public enum class StytchAPIErrorType(public val type: String) {
     OIDC_CONNECTION_USERINFO_URL_INVALID_FORMAT(
         type = "oidc_connection_userinfo_url_invalid_format",
     ),
-    OIDC_CONNECTION_USERINFO_URL_REQUIRED(
-        type = "oidc_connection_userinfo_url_required",
-    ),
     OIDC_CSRF_COOKIE_MISMATCH(
         type = "oidc_csrf_cookie_mismatch",
     ),
