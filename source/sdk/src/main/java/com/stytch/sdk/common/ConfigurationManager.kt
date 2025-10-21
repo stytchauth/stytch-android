@@ -49,9 +49,6 @@ internal class ConfigurationManager {
         options: StytchClientOptions = StytchClientOptions(),
         storageHelperInitializationJob: Job,
     ) {
-        if (isAlreadyConfiguredFor(publicToken, options)) {
-            return
-        }
         configurationStartTime = Date().time
         this.client = client
         this.publicToken = publicToken
@@ -123,7 +120,7 @@ internal class ConfigurationManager {
         }
     }
 
-    private fun isAlreadyConfiguredFor(
+    fun isAlreadyConfiguredFor(
         publicToken: String,
         options: StytchClientOptions,
     ) = this::publicToken.isInitialized && this.publicToken == publicToken && this.options == options

@@ -26,6 +26,7 @@ internal object StorageHelper {
 
     fun initialize(context: Context): Job =
         CoroutineScope(SupervisorJob()).launch(Dispatchers.IO) {
+            if (::sharedPreferences.isInitialized) return@launch
             keyStore.load(null)
             if (!keyStore.containsAlias(MASTER_KEY_ALIAS)) {
                 // If an app is restored on device, the encrypted shared preference files will be restored, but the key
