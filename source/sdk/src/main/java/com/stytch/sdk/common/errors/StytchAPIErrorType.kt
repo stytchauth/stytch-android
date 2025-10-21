@@ -599,6 +599,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_EMAIL_SUBJECT(
         type = "invalid_email_subject",
     ),
+    INVALID_EMAIL_TEMPLATE_CONTENT(
+        type = "invalid_email_template_content",
+    ),
     INVALID_EMAIL_TEMPLATE_PARAMETERS(
         type = "invalid_email_template_parameters",
     ),
