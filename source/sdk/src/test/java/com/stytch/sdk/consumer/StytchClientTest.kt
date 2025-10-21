@@ -27,6 +27,7 @@ import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
 import com.stytch.sdk.consumer.network.models.SessionData
+import com.stytch.sdk.consumer.sessions.ConsumerSessionStorage
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -210,6 +211,7 @@ internal class StytchClientTest {
             coVerify(exactly = 0) { StytchApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, and valid, yes authentication/updater
+            StytchClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
             val mockValidSession =
                 mockk<SessionData>(relaxed = true) {
                     every { expiresAt } returns Date(Date().time + 1000)
@@ -237,6 +239,7 @@ internal class StytchClientTest {
                 }
             coEvery { StytchApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
+            StytchClient.sessionStorage = ConsumerSessionStorage(StorageHelper)
             StytchClient.configure(mContextMock, UUID.randomUUID().toString(), StytchClientOptions(), callback)
             // callback is called with expected value
             verify(exactly = 1) { callback(true) }

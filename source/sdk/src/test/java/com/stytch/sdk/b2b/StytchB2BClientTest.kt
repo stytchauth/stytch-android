@@ -10,6 +10,7 @@ import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
+import com.stytch.sdk.b2b.sessions.B2BSessionStorage
 import com.stytch.sdk.common.AppLifecycleListener
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeviceInfo
@@ -212,6 +213,7 @@ internal class StytchB2BClientTest {
             coVerify(exactly = 0) { StytchB2BApi.Sessions.authenticate() }
             verify(exactly = 0) { mockResponse.launchSessionUpdater(any(), any()) }
             // yes session data, and valid, yes authentication/updater
+            StytchB2BClient.sessionStorage = mockk(relaxed = true, relaxUnitFun = true)
             val mockValidSession =
                 mockk<B2BSessionData>(relaxed = true) {
                     every { expiresAt } returns Date(Date().time + 1000)
@@ -239,6 +241,7 @@ internal class StytchB2BClientTest {
                 }
             coEvery { StytchB2BApi.Sessions.authenticate(any()) } returns mockResponse
             val callback = spyk<(Boolean) -> Unit>()
+            StytchB2BClient.sessionStorage = B2BSessionStorage(StorageHelper)
             StytchB2BClient.configure(mContextMock, UUID.randomUUID().toString(), StytchClientOptions(), callback)
             // callback is called with expected value
             verify(exactly = 1) { callback(true) }

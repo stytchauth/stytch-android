@@ -129,8 +129,8 @@ private fun ProfileScreen(
         KeyValueRow(key = "User Id", value = userData.userId)
         KeyValueRow(key = "Phone Number", value = userData.phoneNumbers.first().phoneNumber)
         KeyValueRow(key = "Session Id", value = sessionData.sessionId)
-        KeyValueRow(key = "Session Start", value = sessionData.startedAt)
-        KeyValueRow(key = "Session Expires", value = sessionData.expiresAt)
+        KeyValueRow(key = "Session Start", value = sessionData.startedAt.toString())
+        KeyValueRow(key = "Session Expires", value = sessionData.expiresAt.toString())
         if (canRegisterBiometrics.value) {
             Row(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
                 OutlinedButton(

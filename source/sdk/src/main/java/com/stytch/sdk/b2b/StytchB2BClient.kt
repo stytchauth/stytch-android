@@ -47,6 +47,7 @@ import com.stytch.sdk.common.StorageHelper
 import com.stytch.sdk.common.StytchClientCommon
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchLazyDelegate
+import com.stytch.sdk.common.StytchLog
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
@@ -222,8 +223,14 @@ public object StytchB2BClient {
         // which requires the API to be configured (which happens in the configure call). So, catch and hold any error
         // until _after_ configuration completes, at which point it is safe to log it.
         runCatching {
+            if (configurationManager.isAlreadyConfiguredFor(publicToken, options)) {
+                StytchLog.w(
+                    "StytchB2BClient is already configured. You should only call configure once, at application start.",
+                )
+                return
+            }
             val storageHelperInitializationJob = StorageHelper.initialize(context)
-            sessionStorage = B2BSessionStorage(StorageHelper)
+            sessionStorage = if (::sessionStorage.isInitialized) sessionStorage else B2BSessionStorage(StorageHelper)
             configurationManager.configure(
                 client =
                     StytchB2BClientCommonConfiguration {
