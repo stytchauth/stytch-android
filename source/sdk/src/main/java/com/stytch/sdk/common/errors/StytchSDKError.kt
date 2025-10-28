@@ -2,6 +2,7 @@
 
 package com.stytch.sdk.common.errors
 
+import androidx.activity.result.ActivityResult
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 
 /**
@@ -225,9 +226,9 @@ public data class UnexpectedCredentialType(
     "You must supply a receiver activity before calling this method",
 )
 
-@JacocoExcludeGenerated public data object UnknownOAuthOrSSOError : StytchSDKError(
-    "The OAuth or SSO flow completed unexpectedly",
-)
+@JacocoExcludeGenerated public data class UnknownOAuthOrSSOError(
+    val result: ActivityResult,
+) : StytchSDKError("The OAuth or SSO flow completed unexpectedly")
 
 @JacocoExcludeGenerated public data object BiometricsAlreadyEnrolledError : StytchSDKError(
     "There is already a biometric factor enrolled on this device. Fully authenticate with all factors and remove the existing registration before attempting to register again.",

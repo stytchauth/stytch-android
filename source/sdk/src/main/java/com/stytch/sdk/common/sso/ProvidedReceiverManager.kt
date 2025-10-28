@@ -46,7 +46,7 @@ internal object ProvidedReceiverManager {
                                         is SSOError.NoBrowserFound -> NoBrowserFound
                                         is SSOError.NoURIFound -> NoURIFound
                                     }
-                                } ?: UnknownOAuthOrSSOError
+                                } ?: UnknownOAuthOrSSOError(result)
                             StytchResult.Error(error)
                         }
                     }
