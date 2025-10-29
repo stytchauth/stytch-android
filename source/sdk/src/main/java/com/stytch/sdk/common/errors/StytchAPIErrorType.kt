@@ -965,6 +965,9 @@ public enum class StytchAPIErrorType(public val type: String) {
     INVALID_SHA_1_HASH(
         type = "invalid_sha_1_hash",
     ),
+    INVALID_SHA_512_HASH(
+        type = "invalid_sha_512_hash",
+    ),
     INVALID_SIGNATURE(
         type = "invalid_signature",
     ),
