@@ -16,7 +16,7 @@ plugins {
 }
 
 val publishGroupId = "com.stytch.sdk"
-val publishVersion = "0.59.4"
+val publishVersion = "0.60.0"
 val publishArtifactId = "sdk"
 
 android {
@@ -34,7 +34,7 @@ android {
     }
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("Boolean", "DEBUG_MODE", "false")
             buildConfigField("String", "STYTCH_SDK_VERSION", "\"$publishVersion\"")
