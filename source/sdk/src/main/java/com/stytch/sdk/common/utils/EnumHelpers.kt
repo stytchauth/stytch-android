@@ -11,22 +11,20 @@ internal interface IEnumValue {
 }
 
 internal object GenericEnumFactory {
-    inline fun <reified T> fromValueOrNull(rawString: String?): T? where T : Enum<T>, T : IEnumValue {
-        return enumValues<T>().firstOrNull { it.jsonName == rawString }
-    }
+    inline fun <reified T> fromValueOrNull(rawString: String?): T? where T : Enum<T>, T : IEnumValue =
+        enumValues<T>().firstOrNull { it.jsonName == rawString }
 }
 
-internal inline fun <reified T> createEnumJsonAdapter(): JsonAdapter<T> where T : Enum<T>, T : IEnumValue {
-    return object : JsonAdapter<T>() {
+internal inline fun <reified T> createEnumJsonAdapter(): JsonAdapter<T> where T : Enum<T>, T : IEnumValue =
+    object : JsonAdapter<T>() {
         @FromJson
-        override fun fromJson(reader: JsonReader): T? {
-            return if (reader.peek() != JsonReader.Token.NULL) {
+        override fun fromJson(reader: JsonReader): T? =
+            if (reader.peek() != JsonReader.Token.NULL) {
                 val value = reader.nextString()
                 enumValues<T>().firstOrNull { it.jsonName == value }
             } else {
                 reader.nextNull()
             }
-        }
 
         @ToJson
         override fun toJson(
@@ -36,4 +34,3 @@ internal inline fun <reified T> createEnumJsonAdapter(): JsonAdapter<T> where T 
             writer.value(value?.jsonName)
         }
     }
-}

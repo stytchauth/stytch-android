@@ -35,7 +35,8 @@ internal class StytchAuthHeaderInterceptor(
             )
 
         return chain.proceed(
-            chain.request()
+            chain
+                .request()
                 .newBuilder()
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Basic $authHeader")

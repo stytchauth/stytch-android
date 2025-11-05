@@ -57,8 +57,8 @@ internal object BrowserSelector {
             browsers.also { allBrowsers = it }
         }
 
-    private fun IntentFilter.isRealBrowser(): Boolean {
-        return when {
+    private fun IntentFilter.isRealBrowser(): Boolean =
+        when {
             // must have supported  action
             !hasAction(Intent.ACTION_VIEW) ||
                 // must have supported category
@@ -72,7 +72,6 @@ internal object BrowserSelector {
             // every check has passed, this is a real browser
             else -> true
         }
-    }
 
     private fun Iterator<String>.supportsHttpAndHttps(): Boolean {
         var supportsHttp = false
