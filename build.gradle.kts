@@ -13,6 +13,9 @@ buildscript {
                 if (requested.name == "commons-compress") {
                     useVersion("1.27.1")
                 }
+                if (requested.group == "ch.qos.logback" && requested.name == "logback-core") {
+                    useVersion("1.5.20")
+                }
             }
         }
     }
@@ -54,7 +57,7 @@ allprojects {
     // Optionally configure plugin
     ktlint {
         android = true
-        version = "1.2.1"
+        version = "1.7.1"
     }
     configurations.all {
         resolutionStrategy.eachDependency {
