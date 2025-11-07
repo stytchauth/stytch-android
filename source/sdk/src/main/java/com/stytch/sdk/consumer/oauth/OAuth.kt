@@ -247,6 +247,7 @@ public interface OAuth {
          * error is returned.
          * @property customScopes Any additional scopes to be requested from the identity provider
          * @property providerParams An optional mapping of provider specific values to pass through to the OAuth provider.
+         * @property oauthAttachToken An optional token to pre-associate an OAuth flow with an existing Stytch User
          */
         @JacocoExcludeGenerated
         public data class GetTokenForProviderParams
@@ -256,6 +257,7 @@ public interface OAuth {
                 val signupRedirectUrl: String? = null,
                 val customScopes: List<String>? = null,
                 val providerParams: Map<String, String>? = null,
+                val oauthAttachToken: String? = null,
             )
 
         public suspend fun getTokenForProvider(parameters: GetTokenForProviderParams): StytchResult<String>
