@@ -122,7 +122,7 @@ internal class SessionsImpl internal constructor(
         callback: (AuthResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)
             // change to main thread to call callback
             callback(result)
@@ -156,7 +156,7 @@ internal class SessionsImpl internal constructor(
         callback: (BaseResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             val result = revoke(params)
             // change to main thread to call callback
             callback(result)
@@ -200,7 +200,7 @@ internal class SessionsImpl internal constructor(
         params: Sessions.AttestParams,
         callback: (SessionAttestResponse) -> Unit,
     ) {
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             callback(attest(params))
         }
     }

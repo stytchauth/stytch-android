@@ -121,7 +121,7 @@ internal class B2BSessionsImpl internal constructor(
         callback: (SessionsAuthenticateResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             val result = authenticate(authParams)
             // change to main thread to call callback
             callback(result)
@@ -157,7 +157,7 @@ internal class B2BSessionsImpl internal constructor(
         callback: (BaseResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             val result = revoke(params)
             // change to main thread to call callback
             callback(result)
@@ -202,7 +202,7 @@ internal class B2BSessionsImpl internal constructor(
         parameters: B2BSessions.ExchangeParameters,
         callback: (SessionExchangeResponse) -> Unit,
     ) {
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             val result = exchange(parameters)
             // change to main thread to call callback
             callback(result)
@@ -235,7 +235,7 @@ internal class B2BSessionsImpl internal constructor(
         params: B2BSessions.AttestParams,
         callback: (B2BSessionAttestResponse) -> Unit,
     ) {
-        externalScope.launch(dispatchers.io) {
+        externalScope.launch(dispatchers.ui) {
             callback(attest(params))
         }
     }
