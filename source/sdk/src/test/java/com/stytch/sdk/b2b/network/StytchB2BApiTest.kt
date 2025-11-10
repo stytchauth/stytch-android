@@ -155,6 +155,14 @@ internal class StytchB2BApiTest {
         }
 
     @Test
+    fun `StytchApi Sessions attest calls appropriate apiService method`() =
+        runBlocking {
+            coEvery { mockB2BApiService.attestSession(any()) } returns mockk(relaxed = true)
+            StytchB2BApi.Sessions.attest("", "")
+            coVerify { mockB2BApiService.attestSession(any()) }
+        }
+
+    @Test
     fun `StytchB2BApi Organizations getOrganization calls appropriate apiService method`() =
         runBlocking {
             coEvery { mockB2BApiService.getOrganization() } returns mockk(relaxed = true)

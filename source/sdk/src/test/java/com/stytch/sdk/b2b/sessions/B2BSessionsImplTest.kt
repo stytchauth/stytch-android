@@ -1,9 +1,11 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.stytch.sdk.b2b.B2BSessionAttestResponse
 import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.b2b.network.StytchB2BApi
+import com.stytch.sdk.b2b.network.models.B2BSessionAttestResponseData
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.SessionExchangeResponseData
 import com.stytch.sdk.b2b.network.models.SessionsAuthenticateResponseData
@@ -250,5 +252,25 @@ internal class B2BSessionsImplTest {
         verify(exactly = 1) { mockSessionStorage.revoke() }
         impl.maybeForceClearSession<Any>(recoverableError, true)
         verify(exactly = 2) { mockSessionStorage.revoke() }
+    }
+
+    @Test
+    fun `SessionsImpl attest delegates to api`() =
+        runBlocking {
+            val mockResponse = StytchResult.Success<B2BSessionAttestResponseData>(mockk(relaxed = true))
+            coEvery { mockApi.attest(any(), any()) } returns mockResponse
+            val response = impl.attest(B2BSessions.AttestParams("", ""))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.attest(any(), any()) }
+            verify { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+
+    @Test
+    fun `SessionsImpl attest with callback calls callback method`() {
+        val mockResponse = StytchResult.Success<B2BSessionAttestResponseData>(mockk(relaxed = true))
+        coEvery { mockApi.attest(any(), any()) } returns mockResponse
+        val mockCallback = spyk<(B2BSessionAttestResponse) -> Unit>()
+        impl.attest(B2BSessions.AttestParams("", ""), mockCallback)
+        verify { mockCallback.invoke(eq(mockResponse)) }
     }
 }

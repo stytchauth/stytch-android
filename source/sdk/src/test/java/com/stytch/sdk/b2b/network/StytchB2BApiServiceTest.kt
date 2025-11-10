@@ -240,6 +240,33 @@ internal class StytchB2BApiServiceTest {
         }
     }
 
+    @Test
+    fun `check Sessions attest request`() {
+        runBlocking {
+            val parameters =
+                B2BRequests.Session.SessionAttestRequest(
+                    profileId = "profile-id",
+                    token = "my-trusted-token",
+                    organizationId = "my-organization-id",
+                    sessionJwt = "session-jwt",
+                    sessionToken = "session-token",
+                )
+            requestIgnoringResponseException {
+                apiService.attestSession(parameters)
+            }.verifyPost(
+                expectedPath = "/b2b/sessions/attest",
+                expectedBody =
+                    mapOf(
+                        "profile_id" to parameters.profileId,
+                        "token" to parameters.token,
+                        "organization_id" to parameters.organizationId,
+                        "session_jwt" to parameters.sessionJwt,
+                        "session_token" to parameters.sessionToken,
+                    ),
+            )
+        }
+    }
+
     // endregion Sessions
 
     // region Organizations
