@@ -67,7 +67,12 @@ public interface Sessions {
 
     /**
      * Data class used for wrapping parameters used with Sessions attestation
+     * @property profileId The ID of the token profile used to validate the JWT string.
+     * @property token JWT string.
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property sessionJwt A JSON Web Token that contains standard claims about the user as well as information about
+     * the Stytch session
+     * @property sessionToken An opaque session token.
      */
     @JacocoExcludeGenerated
     public data class AttestParams

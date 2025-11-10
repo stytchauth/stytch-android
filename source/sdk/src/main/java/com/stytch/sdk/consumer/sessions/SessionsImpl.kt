@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchObjectInfo
