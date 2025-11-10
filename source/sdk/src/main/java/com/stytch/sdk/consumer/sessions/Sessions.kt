@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.sessions
 
-import com.squareup.moshi.Json
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated

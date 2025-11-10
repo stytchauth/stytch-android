@@ -1,6 +1,5 @@
 package com.stytch.sdk.consumer.network
 
-import com.squareup.moshi.Json
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NoResponseResponse

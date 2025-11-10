@@ -1,6 +1,5 @@
 package com.stytch.sdk.b2b.network
 
-import com.squareup.moshi.Json
 import com.stytch.sdk.b2b.B2BSessionAttestResponse
 import com.stytch.sdk.b2b.SCIMCreateConnectionResponse
 import com.stytch.sdk.b2b.SCIMDeleteConnectionResponse
