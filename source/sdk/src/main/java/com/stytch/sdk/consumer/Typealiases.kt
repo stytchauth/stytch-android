@@ -16,6 +16,7 @@ import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.PasswordsEmailResetResponseData
 import com.stytch.sdk.consumer.network.models.PasswordsExistingPasswordResetResponseData
 import com.stytch.sdk.consumer.network.models.PasswordsSessionResetResponseData
+import com.stytch.sdk.consumer.network.models.SessionAttestResponseData
 import com.stytch.sdk.consumer.network.models.StrengthCheckResponse
 import com.stytch.sdk.consumer.network.models.TOTPAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.TOTPCreateResponseData
@@ -142,3 +143,4 @@ public typealias PasswordsEmailResetResponse = StytchResult<PasswordsEmailResetR
 public typealias PasswordsExistingPasswordResetResponse = StytchResult<PasswordsExistingPasswordResetResponseData>
 public typealias PasswordsSessionResetResponse = StytchResult<PasswordsSessionResetResponseData>
 public typealias WebAuthnAuthenticateResponse = StytchResult<WebAuthnAuthenticateResponseData>
+public typealias SessionAttestResponse = StytchResult<SessionAttestResponseData>

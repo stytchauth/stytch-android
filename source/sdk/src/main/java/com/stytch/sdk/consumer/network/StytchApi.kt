@@ -516,6 +516,24 @@ internal object StytchApi : CommonApi {
             safeConsumerApiCall {
                 apiService.revokeSessions()
             }
+
+        suspend fun attest(
+            profileId: String,
+            token: String,
+            sessionDurationMinutes: Int? = null,
+            sessionJwt: String? = null,
+            sessionToken: String? = null,
+        ) = safeConsumerApiCall {
+            apiService.sessionAttest(
+                ConsumerRequests.Session.SessionAttestRequest(
+                    profileId = profileId,
+                    token = token,
+                    sessionDurationMinutes = sessionDurationMinutes,
+                    sessionJwt = sessionJwt,
+                    sessionToken = sessionToken,
+                ),
+            )
+        }
     }
 
     internal object Biometrics {

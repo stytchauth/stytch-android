@@ -33,6 +33,11 @@ internal object B2BResponses {
         class ExchangeResponse(
             data: SessionExchangeResponseData,
         ) : StytchDataResponse<SessionExchangeResponseData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AttestResponse(
+            data: B2BSessionAttestResponseData,
+        ) : StytchDataResponse<B2BSessionAttestResponseData>(data)
     }
 
     object Organizations {

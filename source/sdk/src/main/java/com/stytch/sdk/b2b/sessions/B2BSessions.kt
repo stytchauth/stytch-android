@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.stytch.sdk.b2b.B2BSessionAttestResponse
 import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.network.models.B2BSessionData
@@ -58,6 +59,26 @@ public interface B2BSessions {
         @JvmOverloads
         constructor(
             val forceClear: Boolean = false,
+        )
+
+    /**
+     * Data class used for wrapping parameters used with Sessions attestation
+     * @property profileId The ID of the token profile used to validate the JWT string.
+     * @property token JWT string.
+     * @property organizationId The ID of the organization that the new session should belong to.
+     * @property sessionJwt A JSON Web Token that contains standard claims about the user as well as information about
+     * the Stytch session
+     * @property sessionToken An opaque session token.
+     */
+    @JacocoExcludeGenerated
+    public data class AttestParams
+        @JvmOverloads
+        constructor(
+            val profileId: String,
+            val token: String,
+            val organizationId: String? = null,
+            val sessionJwt: String? = null,
+            val sessionToken: String? = null,
         )
 
     /**
@@ -167,4 +188,28 @@ public interface B2BSessions {
      * @return [SessionExchangeResponse]
      */
     public fun exchangeCompletable(parameters: ExchangeParameters): CompletableFuture<SessionExchangeResponse>
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @return [B2BSessionAttestResponse]
+     */
+    public suspend fun attest(params: AttestParams): B2BSessionAttestResponse
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @param callback a callback that receives a [B2BSessionAttestResponse]
+     */
+    public fun attest(
+        params: AttestParams,
+        callback: (B2BSessionAttestResponse) -> Unit,
+    )
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @return [B2BSessionAttestResponse]
+     */
+    public fun attestCompletable(params: AttestParams): CompletableFuture<B2BSessionAttestResponse>
 }

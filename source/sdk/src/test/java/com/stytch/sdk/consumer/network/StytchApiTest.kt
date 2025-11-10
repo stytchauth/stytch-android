@@ -267,6 +267,14 @@ internal class StytchApiTest {
         }
 
     @Test
+    fun `StytchApi Sessions attest calls appropriate apiService method`() =
+        runBlocking {
+            coEvery { mockApiService.sessionAttest(any()) } returns mockk(relaxed = true)
+            StytchApi.Sessions.attest("", "")
+            coVerify { mockApiService.sessionAttest(any()) }
+        }
+
+    @Test
     fun `StytchApi Biometrics registerStart calls appropriate apiService method`() =
         runBlocking {
             coEvery { mockApiService.biometricsRegisterStart(any()) } returns mockk(relaxed = true)

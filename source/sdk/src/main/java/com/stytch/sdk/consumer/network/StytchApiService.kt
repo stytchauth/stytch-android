@@ -49,6 +49,11 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
 
     @POST("sessions/revoke")
     suspend fun revokeSessions(): CommonResponses.Sessions.RevokeResponse
+
+    @POST("sessions/attest")
+    suspend fun sessionAttest(
+        @Body request: ConsumerRequests.Session.SessionAttestRequest,
+    ): ConsumerResponses.Session.SessionAttestResponse
     //endregion Sessions
 
     //region OTP

@@ -5,6 +5,7 @@ import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.SessionAttestResponse
 import com.stytch.sdk.consumer.network.models.SessionData
 import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.CompletableFuture
@@ -61,6 +62,26 @@ public interface Sessions {
         @JvmOverloads
         constructor(
             val forceClear: Boolean = false,
+        )
+
+    /**
+     * Data class used for wrapping parameters used with Sessions attestation
+     * @property profileId The ID of the token profile used to validate the JWT string.
+     * @property token JWT string.
+     * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property sessionJwt A JSON Web Token that contains standard claims about the user as well as information about
+     * the Stytch session
+     * @property sessionToken An opaque session token.
+     */
+    @JacocoExcludeGenerated
+    public data class AttestParams
+        @JvmOverloads
+        constructor(
+            val profileId: String,
+            val token: String,
+            val sessionDurationMinutes: Int? = null,
+            val sessionJwt: String? = null,
+            val sessionToken: String? = null,
         )
 
     /**
@@ -123,4 +144,28 @@ public interface Sessions {
         sessionToken: String,
         sessionJwt: String?,
     )
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @return [SessionAttestResponse]
+     */
+    public suspend fun attest(params: AttestParams): SessionAttestResponse
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @param callback a callback that receives a [SessionAttestResponse]
+     */
+    public fun attest(
+        params: AttestParams,
+        callback: (SessionAttestResponse) -> Unit,
+    )
+
+    /**
+     * Gets a Stytch session from a trusted JWT
+     * @param params required for attesting a session
+     * @return [SessionAttestResponse]
+     */
+    public fun attestCompletable(params: AttestParams): CompletableFuture<SessionAttestResponse>
 }

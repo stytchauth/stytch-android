@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.network
 
+import com.stytch.sdk.b2b.B2BSessionAttestResponse
 import com.stytch.sdk.b2b.SCIMCreateConnectionResponse
 import com.stytch.sdk.b2b.SCIMDeleteConnectionResponse
 import com.stytch.sdk.b2b.SCIMGetConnectionGroupsResponse
@@ -283,6 +284,25 @@ internal object StytchB2BApi : CommonApi {
                         organizationId = organizationId,
                         locale = locale,
                         sessionDurationMinutes = sessionDurationMinutes,
+                    ),
+                )
+            }
+
+        suspend fun attest(
+            profileId: String,
+            token: String,
+            organizationId: String? = null,
+            sessionJwt: String? = null,
+            sessionToken: String? = null,
+        ): B2BSessionAttestResponse =
+            safeB2BApiCall {
+                apiService.attestSession(
+                    B2BRequests.Session.SessionAttestRequest(
+                        profileId = profileId,
+                        token = token,
+                        organizationId = organizationId,
+                        sessionJwt = sessionJwt,
+                        sessionToken = sessionToken,
                     ),
                 )
             }

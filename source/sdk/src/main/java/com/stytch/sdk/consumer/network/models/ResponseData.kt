@@ -481,3 +481,19 @@ public data class WebAuthnAuthenticateResponseData(
     override val user: UserData,
 ) : Parcelable,
     IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class SessionAttestResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    override val session: SessionData,
+    @Json(name = "session_jwt")
+    override val sessionJwt: String,
+    @Json(name = "session_token")
+    override val sessionToken: String,
+    override val user: UserData,
+) : Parcelable,
+    IAuthData

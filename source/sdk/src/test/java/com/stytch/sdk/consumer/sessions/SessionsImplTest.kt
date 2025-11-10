@@ -10,9 +10,11 @@ import com.stytch.sdk.common.errors.StytchFailedToDecryptDataError
 import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.sessions.SessionAutoUpdater
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.SessionAttestResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.AuthData
+import com.stytch.sdk.consumer.network.models.SessionAttestResponseData
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -213,5 +215,25 @@ internal class SessionsImplTest {
         verify(exactly = 1) { mockSessionStorage.revoke() }
         impl.maybeForceClearSession<Any>(recoverableError, true)
         verify(exactly = 2) { mockSessionStorage.revoke() }
+    }
+
+    @Test
+    fun `SessionsImpl attest delegates to api`() =
+        runBlocking {
+            val mockResponse = StytchResult.Success<SessionAttestResponseData>(mockk(relaxed = true))
+            coEvery { mockApi.attest(any(), any()) } returns mockResponse
+            val response = impl.attest(Sessions.AttestParams("", ""))
+            assert(response is StytchResult.Success)
+            coVerify { mockApi.attest(any(), any()) }
+            verify { mockResponse.launchSessionUpdater(any(), any()) }
+        }
+
+    @Test
+    fun `SessionsImpl attest with callback calls callback method`() {
+        val mockResponse = StytchResult.Success<SessionAttestResponseData>(mockk(relaxed = true))
+        coEvery { mockApi.attest(any(), any()) } returns mockResponse
+        val mockCallback = spyk<(SessionAttestResponse) -> Unit>()
+        impl.attest(Sessions.AttestParams("", ""), mockCallback)
+        verify { mockCallback.invoke(eq(mockResponse)) }
     }
 }

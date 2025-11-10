@@ -1,5 +1,6 @@
 package com.stytch.sdk.b2b.sessions
 
+import com.stytch.sdk.b2b.B2BSessionAttestResponse
 import com.stytch.sdk.b2b.SessionExchangeResponse
 import com.stytch.sdk.b2b.SessionsAuthenticateResponse
 import com.stytch.sdk.b2b.extensions.launchSessionUpdater
@@ -215,4 +216,30 @@ internal class B2BSessionsImpl internal constructor(
             .async {
                 exchange(parameters)
             }.asCompletableFuture()
+
+    override suspend fun attest(params: B2BSessions.AttestParams): B2BSessionAttestResponse =
+        withContext(dispatchers.io) {
+            api
+                .attest(
+                    profileId = params.profileId,
+                    token = params.token,
+                    organizationId = params.organizationId,
+                    sessionJwt = params.sessionJwt,
+                    sessionToken = params.sessionToken,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
+        }
+
+    override fun attest(
+        params: B2BSessions.AttestParams,
+        callback: (B2BSessionAttestResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            callback(attest(params))
+        }
+    }
+
+    override fun attestCompletable(params: B2BSessions.AttestParams): CompletableFuture<B2BSessionAttestResponse> =
+        externalScope.async { attest(params) }.asCompletableFuture()
 }

@@ -26,6 +26,7 @@ import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionByURLResponse
 import com.stytch.sdk.b2b.network.models.B2BSSOSAMLUpdateConnectionResponseData
 import com.stytch.sdk.b2b.network.models.B2BSearchMemberResponseData
 import com.stytch.sdk.b2b.network.models.B2BSearchOrganizationResponseData
+import com.stytch.sdk.b2b.network.models.B2BSessionAttestResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveredOrganizationsResponseData
 import com.stytch.sdk.b2b.network.models.DiscoveryAuthenticateResponseData
 import com.stytch.sdk.b2b.network.models.EmailResetResponseData
@@ -359,3 +360,5 @@ public typealias B2BPasswordDiscoveryAuthenticateResponse = StytchResult<B2BPass
  * Type alias for StytchResult<B2BSSODiscoveryConnectionResponseData> used for SSO Discover Connections responses
  */
 public typealias B2BSSODiscoveryConnectionResponse = StytchResult<B2BSSODiscoveryConnectionResponseData>
+
+public typealias B2BSessionAttestResponse = StytchResult<B2BSessionAttestResponseData>

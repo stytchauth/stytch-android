@@ -337,4 +337,19 @@ internal object ConsumerRequests {
             val sessionDurationMinutes: Int,
         )
     }
+
+    object Session {
+        @JsonClass(generateAdapter = true)
+        data class SessionAttestRequest(
+            @Json(name = "profile_id")
+            val profileId: String,
+            val token: String,
+            @Json(name = "session_duration_minutes")
+            val sessionDurationMinutes: Int? = null,
+            @Json(name = "session_jwt")
+            val sessionJwt: String? = null,
+            @Json(name = "session_token")
+            val sessionToken: String? = null,
+        )
+    }
 }

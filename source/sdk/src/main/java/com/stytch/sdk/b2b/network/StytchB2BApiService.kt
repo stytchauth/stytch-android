@@ -59,6 +59,11 @@ internal interface StytchB2BApiService : ApiService.ApiEndpoints {
     suspend fun exchangeSession(
         @Body request: B2BRequests.Session.ExchangeRequest,
     ): B2BResponses.Sessions.ExchangeResponse
+
+    @POST("b2b/sessions/attest")
+    suspend fun attestSession(
+        @Body request: B2BRequests.Session.SessionAttestRequest,
+    ): B2BResponses.Sessions.AttestResponse
     //endregion Sessions
 
     //region Organizations

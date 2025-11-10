@@ -624,6 +624,33 @@ internal class StytchApiServiceTests {
         }
     }
 
+    @Test
+    fun `check Sessions attest request`() {
+        runBlocking {
+            val parameters =
+                ConsumerRequests.Session.SessionAttestRequest(
+                    profileId = "profile-id",
+                    token = "my-trusted-token",
+                    sessionDurationMinutes = 45,
+                    sessionJwt = "session-jwt",
+                    sessionToken = "session-token",
+                )
+            requestIgnoringResponseException {
+                apiService.sessionAttest(parameters)
+            }.verifyPost(
+                expectedPath = "/sessions/attest",
+                expectedBody =
+                    mapOf(
+                        "profile_id" to parameters.profileId,
+                        "token" to parameters.token,
+                        "session_duration_minutes" to parameters.sessionDurationMinutes,
+                        "session_jwt" to parameters.sessionJwt,
+                        "session_token" to parameters.sessionToken,
+                    ),
+            )
+        }
+    }
+
     // endregion Sessions
 
     // region Biometrics
