@@ -152,6 +152,13 @@ internal object ConsumerResponses {
         ) : StytchDataResponse<TOTPRecoverResponseData>(data)
     }
 
+    object Session {
+        @JsonClass(generateAdapter = true)
+        class SessionAttestResponse(
+            data: SessionAttestResponseData,
+        ) : StytchDataResponse<SessionAttestResponseData>(data)
+    }
+
     @JsonClass(generateAdapter = true)
     class AuthenticateResponse(
         data: AuthData,

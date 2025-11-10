@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.sessions
 
+import com.stytch.sdk.b2b.extensions.launchSessionUpdater
 import com.stytch.sdk.common.BaseResponse
 import com.stytch.sdk.common.StytchDispatchers
 import com.stytch.sdk.common.StytchObjectInfo
@@ -10,6 +11,7 @@ import com.stytch.sdk.common.errors.StytchInternalError
 import com.stytch.sdk.common.network.models.BasicData
 import com.stytch.sdk.common.stytchObjectMapper
 import com.stytch.sdk.consumer.AuthResponse
+import com.stytch.sdk.consumer.SessionAttestResponse
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
 import com.stytch.sdk.consumer.network.StytchApi
 import com.stytch.sdk.consumer.network.models.SessionData
@@ -121,7 +123,7 @@ internal class SessionsImpl internal constructor(
         callback: (AuthResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.ui) {
+        externalScope.launch(dispatchers.io) {
             val result = authenticate(authParams)
             // change to main thread to call callback
             callback(result)
@@ -155,7 +157,7 @@ internal class SessionsImpl internal constructor(
         callback: (BaseResponse) -> Unit,
     ) {
         // call endpoint in IO thread
-        externalScope.launch(dispatchers.ui) {
+        externalScope.launch(dispatchers.io) {
             val result = revoke(params)
             // change to main thread to call callback
             callback(result)
@@ -181,4 +183,29 @@ internal class SessionsImpl internal constructor(
             throw StytchInternalError(ex)
         }
     }
+
+    override suspend fun attest(params: Sessions.AttestParams): SessionAttestResponse =
+        withContext(dispatchers.io) {
+            api
+                .attest(
+                    profileId = params.profileId,
+                    token = params.token,
+                    sessionDurationMinutes = params.sessionDurationMinutes,
+                    sessionJwt = params.sessionJwt,
+                ).apply {
+                    launchSessionUpdater(dispatchers, sessionStorage)
+                }
+        }
+
+    override fun attest(
+        params: Sessions.AttestParams,
+        callback: (SessionAttestResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.io) {
+            callback(attest(params))
+        }
+    }
+
+    override fun attestCompletable(params: Sessions.AttestParams): CompletableFuture<SessionAttestResponse> =
+        externalScope.async { attest(params) }.asCompletableFuture()
 }

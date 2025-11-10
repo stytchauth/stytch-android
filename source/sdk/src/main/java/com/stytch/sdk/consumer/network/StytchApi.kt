@@ -1,5 +1,6 @@
 package com.stytch.sdk.consumer.network
 
+import com.squareup.moshi.Json
 import com.stytch.sdk.common.DeviceInfo
 import com.stytch.sdk.common.EndpointOptions
 import com.stytch.sdk.common.NoResponseResponse
@@ -516,6 +517,24 @@ internal object StytchApi : CommonApi {
             safeConsumerApiCall {
                 apiService.revokeSessions()
             }
+
+        suspend fun attest(
+            profileId: String,
+            token: String,
+            sessionDurationMinutes: Int? = null,
+            sessionJwt: String? = null,
+            sessionToken: String? = null,
+        ) = safeConsumerApiCall {
+            apiService.sessionAttest(
+                ConsumerRequests.Session.SessionAttestRequest(
+                    profileId = profileId,
+                    token = token,
+                    sessionDurationMinutes = sessionDurationMinutes,
+                    sessionJwt = sessionJwt,
+                    sessionToken = sessionToken,
+                ),
+            )
+        }
     }
 
     internal object Biometrics {
