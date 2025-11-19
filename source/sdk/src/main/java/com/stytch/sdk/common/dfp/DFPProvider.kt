@@ -52,7 +52,7 @@ internal class DFPProviderImpl(
                 dfp?.getTelemetryId { telemetryId ->
                     cont.resume(telemetryId)
                 } ?: run {
-                    cont.resume("")
+                    cont.resume(STATIC_UNABLE_TO_LOAD_BINARY)
                 }
             } else {
                 continuation = cont
@@ -62,7 +62,7 @@ internal class DFPProviderImpl(
                         it.addContentView(webview, ViewGroup.LayoutParams(0, 0))
                     }
                 } ?: run {
-                    cont.resume("")
+                    cont.resume(STATIC_UNABLE_TO_ACCESS_WEBVIEW)
                 }
             }
         }
@@ -107,4 +107,9 @@ internal class DFPProviderImpl(
                 continuation = null
             }
         }
+
+    companion object {
+        const val STATIC_UNABLE_TO_LOAD_BINARY = "9b595d97-f845-4de6-b0ef-014905bc92dc"
+        const val STATIC_UNABLE_TO_ACCESS_WEBVIEW = "cf147d0c-2948-4187-8f82-1c41d087284a"
+    }
 }
