@@ -27,6 +27,7 @@ import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
+import com.stytch.sdk.consumer.OAuthAttachResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
@@ -677,6 +678,15 @@ internal object StytchApi : CommonApi {
                         token = token,
                         sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
+                    ),
+                )
+            }
+
+        suspend fun attach(provider: String): OAuthAttachResponse =
+            safeConsumerApiCall {
+                apiService.oauthAttach(
+                    ConsumerRequests.OAuth.AttachRequest(
+                        provider = provider,
                     ),
                 )
             }

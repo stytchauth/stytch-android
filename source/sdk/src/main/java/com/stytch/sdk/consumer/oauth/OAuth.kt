@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.annotations.JacocoExcludeGenerated
 import com.stytch.sdk.consumer.NativeOAuthResponse
+import com.stytch.sdk.consumer.OAuthAttachResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import java.util.concurrent.CompletableFuture
@@ -297,4 +298,46 @@ public interface OAuth {
     public fun authenticateCompletable(
         parameters: ThirdParty.AuthenticateParameters,
     ): CompletableFuture<OAuthAuthenticatedResponse>
+
+    /**
+     * Data class used for wrapping parameters to start a third party OAuth flow and retrieve a token
+     * @property provider The OAuth provider's name.
+     */
+    public data class AttachParameters(
+        val provider: String,
+    )
+
+    /**
+     * Generate an OAuth Attach Token to pre-associate an OAuth flow with an existing Stytch User.
+     * You must have an active Stytch session to use this endpoint.
+     * Pass the returned oauth_attach_token to the same provider's OAuth Start endpoint to treat this OAuth flow as a
+     * login for that user instead of a signup
+     * @param parameters the parameters for the attach request
+     * @return [OAuthAttachResponse]
+     */
+    public suspend fun attach(parameters: AttachParameters): OAuthAttachResponse
+
+    /**
+     * Generate an OAuth Attach Token to pre-associate an OAuth flow with an existing Stytch User.
+     * You must have an active Stytch session to use this endpoint.
+     * Pass the returned oauth_attach_token to the same provider's OAuth Start endpoint to treat this OAuth flow as a
+     * login for that user instead of a signup
+     * @param parameters the parameters for the attach request
+     * @param callback a callback that receives an [OAuthAttachResponse]
+     * @return null
+     */
+    public fun attach(
+        parameters: AttachParameters,
+        callback: (OAuthAttachResponse) -> Unit,
+    )
+
+    /**
+     * Generate an OAuth Attach Token to pre-associate an OAuth flow with an existing Stytch User.
+     * You must have an active Stytch session to use this endpoint.
+     * Pass the returned oauth_attach_token to the same provider's OAuth Start endpoint to treat this OAuth flow as a
+     * login for that user instead of a signup
+     * @param parameters the parameters for the attach request
+     * @return CompletableFuture<[OAuthAttachResponse]>
+     */
+    public fun attachCompletable(parameters: AttachParameters): CompletableFuture<OAuthAttachResponse>
 }

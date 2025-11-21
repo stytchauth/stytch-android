@@ -7,6 +7,7 @@ import com.stytch.sdk.common.errors.StytchMissingPKCEError
 import com.stytch.sdk.common.pkcePairManager.PKCEPairManager
 import com.stytch.sdk.common.sso.ProvidedReceiverManager
 import com.stytch.sdk.consumer.ConsumerAuthMethod
+import com.stytch.sdk.consumer.OAuthAttachResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.extensions.launchSessionUpdater
@@ -234,5 +235,27 @@ internal class OAuthImpl(
         externalScope
             .async {
                 authenticate(parameters)
+            }.asCompletableFuture()
+
+    override suspend fun attach(parameters: OAuth.AttachParameters): OAuthAttachResponse =
+        withContext(dispatchers.io) {
+            api.attach(
+                provider = parameters.provider,
+            )
+        }
+
+    override fun attach(
+        parameters: OAuth.AttachParameters,
+        callback: (OAuthAttachResponse) -> Unit,
+    ) {
+        externalScope.launch(dispatchers.ui) {
+            attach(parameters)
+        }
+    }
+
+    override fun attachCompletable(parameters: OAuth.AttachParameters): CompletableFuture<OAuthAttachResponse> =
+        externalScope
+            .async {
+                attach(parameters)
             }.asCompletableFuture()
 }

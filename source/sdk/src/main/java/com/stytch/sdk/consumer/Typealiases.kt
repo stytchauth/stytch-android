@@ -11,6 +11,7 @@ import com.stytch.sdk.consumer.network.models.CryptoWalletsAuthenticateResponseD
 import com.stytch.sdk.consumer.network.models.DeleteAuthenticationFactorData
 import com.stytch.sdk.consumer.network.models.IAuthData
 import com.stytch.sdk.consumer.network.models.INativeOAuthData
+import com.stytch.sdk.consumer.network.models.OAuthAttachResponseData
 import com.stytch.sdk.consumer.network.models.OAuthData
 import com.stytch.sdk.consumer.network.models.OTPsAuthenticateResponseData
 import com.stytch.sdk.consumer.network.models.PasswordsEmailResetResponseData
@@ -144,3 +145,4 @@ public typealias PasswordsExistingPasswordResetResponse = StytchResult<Passwords
 public typealias PasswordsSessionResetResponse = StytchResult<PasswordsSessionResetResponseData>
 public typealias WebAuthnAuthenticateResponse = StytchResult<WebAuthnAuthenticateResponseData>
 public typealias SessionAttestResponse = StytchResult<SessionAttestResponseData>
+public typealias OAuthAttachResponse = StytchResult<OAuthAttachResponseData>

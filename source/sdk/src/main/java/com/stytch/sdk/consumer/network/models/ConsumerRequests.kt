@@ -230,6 +230,11 @@ internal object ConsumerRequests {
                 val codeVerifier: String,
             )
         }
+
+        @JsonClass(generateAdapter = true)
+        data class AttachRequest(
+            val provider: String,
+        )
     }
 
     object User {
