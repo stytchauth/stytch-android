@@ -27,6 +27,7 @@ import com.stytch.sdk.common.network.models.OTPSendResponseData
 import com.stytch.sdk.common.network.safeApiCall
 import com.stytch.sdk.consumer.CryptoWalletAuthenticateStartResponse
 import com.stytch.sdk.consumer.CryptoWalletsAuthenticateResponse
+import com.stytch.sdk.consumer.OAuthAttachResponse
 import com.stytch.sdk.consumer.OAuthAuthenticatedResponse
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.WebAuthnAuthenticateResponse
@@ -655,6 +656,7 @@ internal object StytchApi : CommonApi {
             idToken: String,
             nonce: String,
             sessionDurationMinutes: Int,
+            oauthAttachToken: String? = null,
         ): StytchResult<NativeOAuthData> =
             safeConsumerApiCall {
                 apiService.authenticateWithGoogleIdToken(
@@ -662,6 +664,7 @@ internal object StytchApi : CommonApi {
                         idToken = idToken,
                         nonce = nonce,
                         sessionDurationMinutes = sessionDurationMinutes,
+                        oauthAttachToken = oauthAttachToken,
                     ),
                 )
             }
@@ -677,6 +680,15 @@ internal object StytchApi : CommonApi {
                         token = token,
                         sessionDurationMinutes = sessionDurationMinutes,
                         codeVerifier = codeVerifier,
+                    ),
+                )
+            }
+
+        suspend fun attach(provider: String): OAuthAttachResponse =
+            safeConsumerApiCall {
+                apiService.oauthAttach(
+                    ConsumerRequests.OAuth.AttachRequest(
+                        provider = provider,
                     ),
                 )
             }

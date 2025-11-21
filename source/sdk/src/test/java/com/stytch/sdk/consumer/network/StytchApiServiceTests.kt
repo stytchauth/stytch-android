@@ -855,6 +855,7 @@ internal class StytchApiServiceTests {
                     idToken = "id_token",
                     nonce = "nonce",
                     sessionDurationMinutes = 30,
+                    oauthAttachToken = "oauth-attach-token",
                 )
             requestIgnoringResponseException {
                 apiService.authenticateWithGoogleIdToken(parameters)
@@ -865,6 +866,7 @@ internal class StytchApiServiceTests {
                         "id_token" to parameters.idToken,
                         "nonce" to parameters.nonce,
                         "session_duration_minutes" to parameters.sessionDurationMinutes,
+                        "oauth_attach_token" to parameters.oauthAttachToken,
                     ),
             )
         }

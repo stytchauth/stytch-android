@@ -244,6 +244,11 @@ internal interface StytchApiService : ApiService.ApiEndpoints {
     suspend fun authenticateWithThirdPartyToken(
         @Body request: ConsumerRequests.OAuth.ThirdParty.AuthenticateRequest,
     ): ConsumerResponses.OAuth.OAuthAuthenticateResponse
+
+    @POST("oauth/attach")
+    suspend fun oauthAttach(
+        @Body request: ConsumerRequests.OAuth.AttachRequest,
+    ): ConsumerResponses.OAuth.AttachResponse
     //endregion OAuth
 
     //region Bootstrap

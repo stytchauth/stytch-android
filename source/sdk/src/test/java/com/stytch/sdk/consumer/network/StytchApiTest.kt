@@ -396,6 +396,7 @@ internal class StytchApiTest {
                 idToken = "id_token",
                 nonce = "nonce",
                 sessionDurationMinutes = 30,
+                oauthAttachToken = "oauth-attach-token",
             )
             coVerify {
                 mockApiService.authenticateWithGoogleIdToken(
@@ -403,6 +404,7 @@ internal class StytchApiTest {
                         idToken = "id_token",
                         nonce = "nonce",
                         sessionDurationMinutes = 30,
+                        oauthAttachToken = "oauth-attach-token",
                     ),
                 )
             }

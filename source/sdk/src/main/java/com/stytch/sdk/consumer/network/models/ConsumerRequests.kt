@@ -211,6 +211,8 @@ internal object ConsumerRequests {
                 val nonce: String,
                 @Json(name = "session_duration_minutes")
                 val sessionDurationMinutes: Int,
+                @Json(name = "oauth_attach_token")
+                val oauthAttachToken: String? = null,
             )
         }
 
@@ -230,6 +232,11 @@ internal object ConsumerRequests {
                 val codeVerifier: String,
             )
         }
+
+        @JsonClass(generateAdapter = true)
+        data class AttachRequest(
+            val provider: String,
+        )
     }
 
     object User {

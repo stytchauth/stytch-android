@@ -173,10 +173,10 @@ internal class GoogleOneTapImplTest {
                     every { idToken } returns "my-id-token"
                 }
             coEvery {
-                mockApi.authenticateWithGoogleIdToken(any(), any(), any())
+                mockApi.authenticateWithGoogleIdToken(any(), any(), any(), any())
             } returns StytchResult.Success(mockk(relaxed = true))
             val result = impl.start(startParameters)
             assert(result is StytchResult.Success)
-            coVerify { mockApi.authenticateWithGoogleIdToken("my-id-token", any(), any()) }
+            coVerify { mockApi.authenticateWithGoogleIdToken("my-id-token", any(), any(), any()) }
         }
 }

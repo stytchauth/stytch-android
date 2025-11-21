@@ -82,6 +82,11 @@ internal object ConsumerResponses {
         class NativeOAuthAuthenticateResponse(
             data: NativeOAuthData,
         ) : StytchDataResponse<NativeOAuthData>(data)
+
+        @JsonClass(generateAdapter = true)
+        class AttachResponse(
+            data: OAuthAttachResponseData,
+        ) : StytchDataResponse<OAuthAttachResponseData>(data)
     }
 
     object WebAuthn {

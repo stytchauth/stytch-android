@@ -497,3 +497,14 @@ public data class SessionAttestResponseData(
     override val user: UserData,
 ) : Parcelable,
     IAuthData
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+public data class OAuthAttachResponseData(
+    @Json(name = "status_code")
+    val statusCode: Int,
+    @Json(name = "request_id")
+    val requestId: String,
+    @Json(name = "oauth_attach_token")
+    val oauthAttachToken: String,
+) : Parcelable
