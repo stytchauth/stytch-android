@@ -211,6 +211,8 @@ internal object ConsumerRequests {
                 val nonce: String,
                 @Json(name = "session_duration_minutes")
                 val sessionDurationMinutes: Int,
+                @Json(name = "oauth_attach_token")
+                val oauthAttachToken: String? = null,
             )
         }
 

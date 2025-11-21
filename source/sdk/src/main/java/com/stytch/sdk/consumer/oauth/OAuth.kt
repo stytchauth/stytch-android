@@ -127,6 +127,7 @@ public interface OAuth {
          * @property clientId is the Google Cloud OAuth Client Id
          * @property autoSelectEnabled toggles whether or not to autoselect an account if only one Google account exists
          * @property sessionDurationMinutes indicates how long the session should last before it expires
+         * @property oauthAttachToken An optional token to pre-associate an OAuth flow with an existing Stytch User
          */
         @JacocoExcludeGenerated
         public data class StartParameters
@@ -136,6 +137,7 @@ public interface OAuth {
                 val clientId: String,
                 val autoSelectEnabled: Boolean = false,
                 val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
+                val oauthAttachToken: String? = null,
             )
 
         /**

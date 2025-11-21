@@ -656,6 +656,7 @@ internal object StytchApi : CommonApi {
             idToken: String,
             nonce: String,
             sessionDurationMinutes: Int,
+            oauthAttachToken: String? = null,
         ): StytchResult<NativeOAuthData> =
             safeConsumerApiCall {
                 apiService.authenticateWithGoogleIdToken(
@@ -663,6 +664,7 @@ internal object StytchApi : CommonApi {
                         idToken = idToken,
                         nonce = nonce,
                         sessionDurationMinutes = sessionDurationMinutes,
+                        oauthAttachToken = oauthAttachToken,
                     ),
                 )
             }
