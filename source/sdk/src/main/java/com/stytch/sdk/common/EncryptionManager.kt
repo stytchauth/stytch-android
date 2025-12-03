@@ -6,7 +6,6 @@ import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.shaded.protobuf.ByteString
-import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException
 import com.google.crypto.tink.signature.SignatureConfig
 import com.stytch.sdk.common.errors.StytchChallengeSigningFailed
 import com.stytch.sdk.common.errors.StytchMissingPublicKeyError
@@ -21,7 +20,6 @@ import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
-import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.security.SecureRandom
 
@@ -33,13 +31,14 @@ internal object EncryptionManager {
     private const val MASTER_KEY_URI = "android-keystore://$MASTER_KEY_ALIAS"
     private var keysetManager: AndroidKeysetManager? = null
     private var aead: Aead? = null
+    private const val MAX_KEY_GEN_ATTEMPTS = 3
 
     init {
         AeadConfig.register()
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetManager(context: Context): AndroidKeysetManager =
+    private fun getOrGenerateNewAES256KeysetManager(context: Context): AndroidKeysetManager? =
         try {
             AndroidKeysetManager
                 .Builder()
@@ -47,16 +46,10 @@ internal object EncryptionManager {
                 .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
                 .withMasterKeyUri(MASTER_KEY_URI)
                 .build()
-        } catch (_: InvalidProtocolBufferException) {
-            // Possible that the signing key was changed, or the app was reinstalled. This causes the preferences file
-            // to be unreadable, so we need to destroy and recreate it
+        } catch (_: Exception) {
+            // If anything went wrong, the preferences file will be unreadable, so we should clear out and try again
             context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
-            getOrGenerateNewAES256KeysetManager(context)
-        } catch (_: InvalidKeyException) {
-            // Possible that the signing key was changed, or the app was reinstalled. This causes the preferences file
-            // to be unreadable, so we need to destroy and recreate it
-            context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
-            getOrGenerateNewAES256KeysetManager(context)
+            null
         }
 
     /**
@@ -94,8 +87,13 @@ internal object EncryptionManager {
      * @throws Exception - if failed to generate keys
      */
     fun createNewKeys(context: Context) {
-        val ksm = getOrGenerateNewAES256KeysetManager(context)
-        keysetManager = ksm
+        var ksm: AndroidKeysetManager? = null
+        var i = 0
+        while (ksm == null && i < MAX_KEY_GEN_ATTEMPTS) {
+            ksm = getOrGenerateNewAES256KeysetManager(context)
+            i++
+        }
+        keysetManager = ksm ?: error("Unrecoverable error attempting to retrieve keys")
         aead = ksm.keysetHandle.getPrimitive(Aead::class.java)
     }
 
