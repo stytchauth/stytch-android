@@ -20,6 +20,8 @@ import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters
 import org.bouncycastle.crypto.signers.Ed25519Signer
+import java.security.KeyStore
+import java.security.KeyStoreException
 import java.security.MessageDigest
 import java.security.SecureRandom
 
@@ -38,7 +40,10 @@ internal object EncryptionManager {
         SignatureConfig.register()
     }
 
-    private fun getOrGenerateNewAES256KeysetManager(context: Context): AndroidKeysetManager? =
+    private fun getOrGenerateNewAES256KeysetManager(
+        context: Context,
+        keyStore: KeyStore,
+    ): AndroidKeysetManager? =
         try {
             AndroidKeysetManager
                 .Builder()
@@ -46,8 +51,13 @@ internal object EncryptionManager {
                 .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
                 .withMasterKeyUri(MASTER_KEY_URI)
                 .build()
+        } catch (_: KeyStoreException) {
+            // if a keystore exception occurred, destroy the key and the preference files
+            keyStore.deleteEntry(MASTER_KEY_ALIAS)
+            context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
+            null
         } catch (_: Exception) {
-            // If anything went wrong, the preferences file will be unreadable, so we should clear out and try again
+            // If a non-keystore exception occurred, we can keep the key, but should clear the preference files
             context.clearPreferences(listOf(KEY_PREFERENCES_FILE_NAME, STYTCH_PREFERENCES_FILE_NAME))
             null
         }
@@ -86,11 +96,14 @@ internal object EncryptionManager {
     /**
      * @throws Exception - if failed to generate keys
      */
-    fun createNewKeys(context: Context) {
+    fun createNewKeys(
+        context: Context,
+        keyStore: KeyStore,
+    ) {
         var ksm: AndroidKeysetManager? = null
         var i = 0
         while (ksm == null && i < MAX_KEY_GEN_ATTEMPTS) {
-            ksm = getOrGenerateNewAES256KeysetManager(context)
+            ksm = getOrGenerateNewAES256KeysetManager(context, keyStore)
             i++
         }
         keysetManager = ksm ?: error("Unrecoverable error attempting to retrieve keys")

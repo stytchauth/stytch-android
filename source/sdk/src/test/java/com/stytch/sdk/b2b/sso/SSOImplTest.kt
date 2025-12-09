@@ -59,7 +59,7 @@ internal class SSOImplTest {
     fun before() {
         mockkStatic(KeyStore::class)
         mockkObject(EncryptionManager)
-        every { EncryptionManager.createNewKeys(any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         MockKAnnotations.init(this, true, true)
         mockkObject(SessionAutoUpdater)

@@ -36,8 +36,8 @@ internal object StorageHelper {
                 // `getOrGenerateNewAES256KeysetManager` method
                 context.clearPreferences(listOf(STYTCH_PREFERENCES_FILE_NAME, KEY_PREFERENCES_FILE_NAME))
             }
+            EncryptionManager.createNewKeys(context, keyStore)
             sharedPreferences = context.getSharedPreferences(STYTCH_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
-            EncryptionManager.createNewKeys(context)
         }
 
     /**
