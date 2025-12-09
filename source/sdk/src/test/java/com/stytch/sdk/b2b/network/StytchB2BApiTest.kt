@@ -75,7 +75,7 @@ internal class StytchB2BApiTest {
         mockkObject(AppLifecycleListener)
         every { AppLifecycleListener.configure(any()) } just runs
         MockKAnnotations.init(this, true, true)
-        every { EncryptionManager.createNewKeys(any()) } returns Unit
+        every { EncryptionManager.createNewKeys(any(), any()) } returns Unit
         every { KeyStore.getInstance(any()) } returns mockk(relaxed = true)
         StytchB2BApi.apiService = mockB2BApiService
         StytchB2BApi.publicToken = ""
