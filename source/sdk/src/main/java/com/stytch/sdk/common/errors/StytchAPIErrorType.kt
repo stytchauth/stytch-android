@@ -1,9 +1,7 @@
 package com.stytch.sdk.common.errors
 import java.util.Locale
 
-public enum class StytchAPIErrorType(
-    public val type: String,
-) {
+public enum class StytchAPIErrorType(public val type: String) {
     ACTION_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
         type = "action_available_only_for_active_members",
     ),
@@ -78,6 +76,9 @@ public enum class StytchAPIErrorType(
     ),
     CANNOT_ASSIGN_DEFAULT_RBAC_ROLE_ID(
         type = "cannot_assign_default_rbac_role_id",
+    ),
+    CANNOT_DELETE_DEFAULT_EMAIL_TEMPLATE(
+        type = "cannot_delete_default_email_template",
     ),
     CANNOT_DELETE_DEFAULT_SSO_CONNECTION(
         type = "cannot_delete_default_sso_connection",
@@ -1774,6 +1775,9 @@ public enum class StytchAPIErrorType(
     RBAC_ACTION_TOO_LONG(
         type = "rbac_action_too_long",
     ),
+    RBAC_CANNOT_DELETE_ATTRIBUTE_USED_IN_ORG_POLICY(
+        type = "rbac_cannot_delete_attribute_used_in_org_policy",
+    ),
     RBAC_DESCRIPTION_TOO_LONG(
         type = "rbac_description_too_long",
     ),
@@ -1782,6 +1786,9 @@ public enum class StytchAPIErrorType(
     ),
     RBAC_INVALID_DOMAIN(
         type = "rbac_invalid_domain",
+    ),
+    RBAC_ORG_CUSTOM_ROLES_ONLY(
+        type = "rbac_org_custom_roles_only",
     ),
     RBAC_PERMISSION_MISSING_ACTIONS(
         type = "rbac_permission_missing_actions",
