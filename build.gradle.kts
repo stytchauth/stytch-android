@@ -6,15 +6,19 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         configurations.all {
-            resolutionStrategy.eachDependency {
-                if (requested.group.startsWith("com.fasterxml.jackson")) {
-                    useVersion("2.19.1")
-                }
-                if (requested.name == "commons-compress") {
-                    useVersion("1.27.1")
-                }
-                if (requested.group == "ch.qos.logback" && requested.name == "logback-core") {
-                    useVersion("1.5.20")
+            resolutionStrategy {
+                force("org.apache.tika:tika-core:3.2.3")
+                force("org.eclipse.jgit:org.eclipse.jgit:5.13.4.202507202350-r")
+                eachDependency {
+                    if (requested.group.startsWith("com.fasterxml.jackson")) {
+                        useVersion("2.19.1")
+                    }
+                    if (requested.name == "commons-compress") {
+                        useVersion("1.27.1")
+                    }
+                    if (requested.group == "ch.qos.logback" && requested.name == "logback-core") {
+                        useVersion("1.5.20")
+                    }
                 }
             }
         }
@@ -30,6 +34,7 @@ plugins {
     alias(libs.plugins.kotlinPluginCompose) apply (false)
     alias(libs.plugins.hilt.android) apply (false)
     alias(libs.plugins.ksp) apply (false)
+    id("org.jreleaser") version "1.20.0" apply false
 }
 
 subprojects {
