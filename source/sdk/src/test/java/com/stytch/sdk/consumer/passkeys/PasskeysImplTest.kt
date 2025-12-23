@@ -92,7 +92,7 @@ internal class PasskeysImplTest {
             val result = impl.register(mockk(relaxed = true))
             assert(result is StytchResult.Error)
             coVerify(exactly = 1) { mockApi.registerStart(any(), any(), any(), any()) }
-            coVerify(exactly = 0) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 0) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 0) { mockApi.register(any()) }
         }
 
@@ -103,11 +103,11 @@ internal class PasskeysImplTest {
             coEvery {
                 mockApi.registerStart(any(), any(), any(), any())
             } returns StytchResult.Success(mockk(relaxed = true))
-            coEvery { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any()) } throws Exception()
+            coEvery { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any(), any()) } throws Exception()
             val result = impl.register(mockk(relaxed = true))
             assert(result is StytchResult.Error)
             coVerify(exactly = 1) { mockApi.registerStart(any(), any(), any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 0) { mockApi.register(any()) }
         }
 
@@ -123,13 +123,14 @@ internal class PasskeysImplTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns mockk(relaxed = true)
             coEvery { mockApi.register(any()) } returns StytchResult.Error(mockk(relaxed = true))
             val result = impl.register(mockk(relaxed = true))
             assert(result is StytchResult.Error)
             coVerify(exactly = 1) { mockApi.registerStart(any(), any(), any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 1) { mockApi.register(any()) }
         }
 
@@ -145,6 +146,7 @@ internal class PasskeysImplTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns mockk(relaxed = true)
             val mockSuccessResponse = mockk<WebAuthnRegisterResponse>(relaxed = true)
@@ -152,7 +154,7 @@ internal class PasskeysImplTest {
             every { mockSuccessResponse.launchSessionUpdater(any(), any()) } just runs
             impl.register(mockk(relaxed = true))
             coVerify(exactly = 1) { mockApi.registerStart(any(), any(), any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.createPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 1) { mockApi.register(any()) }
             verify(exactly = 1) { mockSuccessResponse.launchSessionUpdater(any(), any()) }
         }
@@ -184,7 +186,7 @@ internal class PasskeysImplTest {
             assert(result is StytchResult.Error)
             coVerify(exactly = 1) { mockApi.authenticateStartSecondary(any(), any()) }
             coVerify(exactly = 0) { mockApi.authenticateStartPrimary(any(), any()) }
-            coVerify(exactly = 0) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 0) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 0) { mockApi.authenticate(any(), any()) }
         }
 
@@ -198,7 +200,7 @@ internal class PasskeysImplTest {
             assert(result is StytchResult.Error)
             coVerify(exactly = 0) { mockApi.authenticateStartSecondary(any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticateStartPrimary(any(), any()) }
-            coVerify(exactly = 0) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 0) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 0) { mockApi.authenticate(any(), any()) }
         }
 
@@ -213,12 +215,12 @@ internal class PasskeysImplTest {
                     any(),
                 )
             } returns StytchResult.Success(mockk(relaxed = true))
-            coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } throws Exception()
+            coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) } throws Exception()
             val result = impl.authenticate(mockk(relaxed = true))
             assert(result is StytchResult.Error)
             coVerify(exactly = 0) { mockApi.authenticateStartSecondary(any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticateStartPrimary(any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 0) { mockApi.authenticate(any(), any()) }
         }
 
@@ -233,13 +235,14 @@ internal class PasskeysImplTest {
                     any(),
                 )
             } returns StytchResult.Success(mockk(relaxed = true))
-            coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } returns mockk(relaxed = true)
+            coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) } returns
+                mockk(relaxed = true)
             coEvery { mockApi.authenticate(any(), any()) } returns StytchResult.Error(mockk(relaxed = true))
             val result = impl.authenticate(mockk(relaxed = true))
             assert(result is StytchResult.Error)
             coVerify(exactly = 0) { mockApi.authenticateStartSecondary(any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticateStartPrimary(any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticate(any(), any()) }
         }
 
@@ -254,14 +257,16 @@ internal class PasskeysImplTest {
                     any(),
                 )
             } returns StytchResult.Success(mockk(relaxed = true))
-            coEvery { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) } returns mockk(relaxed = true)
+            coEvery {
+                mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any())
+            } returns mockk(relaxed = true)
             val mockSuccessResponse = mockk<WebAuthnAuthenticateResponse>(relaxed = true)
             coEvery { mockApi.authenticate(any(), any()) } returns mockSuccessResponse
             every { mockSuccessResponse.launchSessionUpdater(any(), any()) } just runs
             impl.authenticate(mockk(relaxed = true))
             coVerify(exactly = 0) { mockApi.authenticateStartSecondary(any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticateStartPrimary(any(), any()) }
-            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any()) }
+            coVerify(exactly = 1) { mockPasskeysProvider.getPublicKeyCredential(any(), any(), any(), any()) }
             coVerify(exactly = 1) { mockApi.authenticate(any(), any()) }
             verify(exactly = 1) { mockSuccessResponse.launchSessionUpdater(any(), any()) }
         }

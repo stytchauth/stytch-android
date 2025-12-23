@@ -19,6 +19,7 @@ internal class PasskeysTest {
                 activity = mockActivity,
                 domain = "test.domain.com",
                 sessionDurationMinutes = DEFAULT_SESSION_TIME_MINUTES,
+                options = Passkeys.PasskeyCredentialOptions(false),
             )
         assert(params == expected)
     }

@@ -15,14 +15,26 @@ import java.util.concurrent.CompletableFuture
 
 public interface Passkeys {
     /**
+     * Data class used for passing options to the Google Credential Manager
+     * @property preferImmediatelyAvailableCredentials set this to `true` if you prefer the operation to return
+     * immediately when there is no available passkey registration offering instead of falling back to discovering
+     * remote options, and false otherwise
+     */
+    public data class PasskeyCredentialOptions(
+        val preferImmediatelyAvailableCredentials: Boolean = false,
+    )
+
+    /**
      * Data class used for wrapping parameters used with Passkeys registration
      * @property activity an activity context for launching the native Passkeys UI
      * @property domain the domain of the Passkey registration. Do not include the protocol
+     * @property options options to pass to the credential creation request
      */
     @JacocoExcludeGenerated
     public data class RegisterParameters(
         val activity: Activity,
         val domain: String,
+        val options: PasskeyCredentialOptions = PasskeyCredentialOptions(true),
     )
 
     /**
@@ -30,6 +42,7 @@ public interface Passkeys {
      * @property activity an activity context for launching the native Passkeys UI
      * @property domain the domain of the Passkey registration. Do not include the protocol
      * @property sessionDurationMinutes indicates how long the session should last before it expires
+     * @property options options to pass to the credential retrieval request
      */
     @JacocoExcludeGenerated
     public data class AuthenticateParameters
@@ -38,6 +51,7 @@ public interface Passkeys {
             val activity: Activity,
             val domain: String,
             val sessionDurationMinutes: Int = StytchClient.configurationManager.options.defaultSessionDuration,
+            val options: PasskeyCredentialOptions = PasskeyCredentialOptions(false),
         )
 
     /**
