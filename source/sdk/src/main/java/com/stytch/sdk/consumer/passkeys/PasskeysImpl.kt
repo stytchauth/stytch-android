@@ -34,12 +34,14 @@ import java.util.concurrent.CompletableFuture
 internal interface PasskeysProvider {
     suspend fun createPublicKeyCredential(
         startResponse: WebAuthnRegisterStartData,
+        options: Passkeys.PasskeyCredentialOptions,
         activity: Activity,
         dispatchers: StytchDispatchers,
     ): CreatePublicKeyCredentialResponse
 
     suspend fun getPublicKeyCredential(
         startResponse: WebAuthnAuthenticateStartData,
+        options: Passkeys.PasskeyCredentialOptions,
         activity: Activity,
         dispatchers: StytchDispatchers,
     ): PublicKeyCredential
@@ -48,13 +50,14 @@ internal interface PasskeysProvider {
 private class PasskeysProviderImpl : PasskeysProvider {
     override suspend fun createPublicKeyCredential(
         startResponse: WebAuthnRegisterStartData,
+        options: Passkeys.PasskeyCredentialOptions,
         activity: Activity,
         dispatchers: StytchDispatchers,
     ): CreatePublicKeyCredentialResponse {
         val createPublicKeyCredentialRequest =
             CreatePublicKeyCredentialRequest(
                 requestJson = startResponse.publicKeyCredentialCreationOptions,
-                preferImmediatelyAvailableCredentials = true,
+                preferImmediatelyAvailableCredentials = options.preferImmediatelyAvailableCredentials,
             )
         val credentialManager = CredentialManager.create(activity)
         return withContext(dispatchers.ui) {
@@ -68,6 +71,7 @@ private class PasskeysProviderImpl : PasskeysProvider {
 
     override suspend fun getPublicKeyCredential(
         startResponse: WebAuthnAuthenticateStartData,
+        options: Passkeys.PasskeyCredentialOptions,
         activity: Activity,
         dispatchers: StytchDispatchers,
     ): PublicKeyCredential {
@@ -79,7 +83,11 @@ private class PasskeysProviderImpl : PasskeysProvider {
         return withContext(dispatchers.ui) {
             credentialManager.getCredential(
                 context = activity,
-                request = GetCredentialRequest(listOf(getPublicKeyCredentialOption)),
+                request =
+                    GetCredentialRequest(
+                        credentialOptions = listOf(getPublicKeyCredentialOption),
+                        preferImmediatelyAvailableCredentials = options.preferImmediatelyAvailableCredentials,
+                    ),
             )
         }.credential as PublicKeyCredential
         // if credential is not a PublicKeyCredential, it will error and be caught in the calling class
@@ -112,6 +120,7 @@ internal class PasskeysImpl internal constructor(
                 val credentialResponse =
                     provider.createPublicKeyCredential(
                         startResponse = startResponse,
+                        options = parameters.options,
                         activity = parameters.activity,
                         dispatchers = dispatchers,
                     )
@@ -167,6 +176,7 @@ internal class PasskeysImpl internal constructor(
                 val credentialResponse =
                     provider.getPublicKeyCredential(
                         startResponse = startResponse,
+                        options = parameters.options,
                         activity = parameters.activity,
                         dispatchers = dispatchers,
                     )
