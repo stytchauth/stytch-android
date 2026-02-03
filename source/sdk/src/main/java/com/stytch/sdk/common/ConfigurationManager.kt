@@ -38,9 +38,10 @@ internal class ConfigurationManager {
     internal var bootstrapData: BootstrapData = BootstrapData()
     internal lateinit var publicToken: String
     internal lateinit var smsRetriever: StytchSMSRetriever
-    internal var isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    internal var isInitialized: MutableStateFlow<InitializationStatus> = MutableStateFlow(InitializationStatus.Loading)
     private var configurationStartTime = 0L
     private lateinit var client: StytchClientCommon
+    internal var sessionHydrationError: Exception? = null
 
     fun configure(
         client: StytchClientCommon,
@@ -49,74 +50,85 @@ internal class ConfigurationManager {
         options: StytchClientOptions = StytchClientOptions(),
         storageHelperInitializationJob: Job,
     ) {
-        configurationStartTime = Date().time
-        this.client = client
-        this.publicToken = publicToken
-        this.options = options
-        this.applicationContext = WeakReference(context.applicationContext)
-        this.deviceInfo = context.getDeviceInfo()
-        this.appSessionId = "app-session-id-${UUID.randomUUID()}"
-        val activityProvider =
-            if (options.dfpType == DFPType.Webview) {
-                WebviewActivityProvider(context.applicationContext as Application)
-            } else {
-                null
-            }
-        this.dfpProvider =
-            DFPProviderImpl(
-                scope = externalScope,
-                context = context.applicationContext,
-                publicToken = publicToken,
-                dfppaDomain = options.endpointOptions.dfppaDomain,
-                dfpType = options.dfpType,
-                activityProvider = activityProvider,
+        try {
+            configurationStartTime = Date().time
+            this.client = client
+            this.publicToken = publicToken
+            this.options = options
+            this.applicationContext = WeakReference(context.applicationContext)
+            this.deviceInfo = context.getDeviceInfo()
+            this.appSessionId = "app-session-id-${UUID.randomUUID()}"
+            val activityProvider =
+                if (options.dfpType == DFPType.Webview) {
+                    WebviewActivityProvider(context.applicationContext as Application)
+                } else {
+                    null
+                }
+            this.dfpProvider =
+                DFPProviderImpl(
+                    scope = externalScope,
+                    context = context.applicationContext,
+                    publicToken = publicToken,
+                    dfppaDomain = options.endpointOptions.dfppaDomain,
+                    dfpType = options.dfpType,
+                    activityProvider = activityProvider,
+                )
+            this.smsRetriever =
+                StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
+                    smsRetriever.finish()
+                    client.smsAutofillCallback(code, sessionDurationMinutes)
+                }
+            val dfpConfiguration =
+                DFPConfiguration(
+                    dfpProvider = dfpProvider,
+                    captchaProvider =
+                        CaptchaProviderImpl(
+                            context.applicationContext as Application,
+                            externalScope,
+                            bootstrapData.captchaSettings.siteKey,
+                        ),
+                    dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
+                    dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
+                )
+            client.commonApi.configure(
+                publicToken,
+                deviceInfo,
+                options.endpointOptions,
+                client::getSessionToken,
+                dfpConfiguration,
             )
-        this.smsRetriever =
-            StytchSMSRetrieverImpl(context) { code, sessionDurationMinutes ->
-                smsRetriever.finish()
-                client.smsAutofillCallback(code, sessionDurationMinutes)
-            }
-        val dfpConfiguration =
-            DFPConfiguration(
-                dfpProvider = dfpProvider,
-                captchaProvider =
-                    CaptchaProviderImpl(
-                        context.applicationContext as Application,
-                        externalScope,
-                        bootstrapData.captchaSettings.siteKey,
+            externalScope.launch(dispatchers.io) {
+                storageHelperInitializationJob.join()
+                val bootstrapJob = refreshBootstrapAndApi(true)
+                val sessionRehydrationJob = client.rehydrateSession()
+                listOf(bootstrapJob, sessionRehydrationJob).joinAll()
+                client.logEvent("client_initialization_success", null, null)
+
+                val potentialErrors = listOf(bootstrapError, sessionHydrationError).mapNotNull { it }
+                if (potentialErrors.isNotEmpty()) {
+                    isInitialized.value = InitializationStatus.Failure(potentialErrors)
+                } else {
+                    isInitialized.value = InitializationStatus.Success
+                }
+                emitAnalyticsEvent(
+                    ConfigurationAnalyticsEvent(
+                        step = ConfigurationStep.IS_INITIALIZED,
+                        duration = Date().time - configurationStartTime,
                     ),
-                dfpProtectedAuthEnabled = bootstrapData.dfpProtectedAuthEnabled,
-                dfpProtectedAuthMode = bootstrapData.dfpProtectedAuthMode ?: DFPProtectedAuthMode.OBSERVATION,
-            )
-        client.commonApi.configure(
-            publicToken,
-            deviceInfo,
-            options.endpointOptions,
-            client::getSessionToken,
-            dfpConfiguration,
-        )
-        externalScope.launch(dispatchers.io) {
-            storageHelperInitializationJob.join()
-            val bootstrapJob = refreshBootstrapAndApi(true)
-            val sessionRehydrationJob = client.rehydrateSession()
-            listOf(bootstrapJob, sessionRehydrationJob).joinAll()
-            client.logEvent("client_initialization_success", null, null)
-            isInitialized.value = true
-            emitAnalyticsEvent(
-                ConfigurationAnalyticsEvent(
-                    step = ConfigurationStep.IS_INITIALIZED,
-                    duration = Date().time - configurationStartTime,
-                ),
-            )
-            client.onFinishedInitialization()
-        }
-        NetworkChangeListener.configure(context.applicationContext) {
-            refreshBootstrapAndApi()
-            client.rehydrateSession()
-        }
-        AppLifecycleListener.configure {
-            refreshBootstrapAndApi()
-            client.rehydrateSession()
+                )
+                client.onFinishedInitialization(isInitialized.value)
+            }
+            NetworkChangeListener.configure(context.applicationContext) {
+                refreshBootstrapAndApi()
+                client.rehydrateSession()
+            }
+            AppLifecycleListener.configure {
+                refreshBootstrapAndApi()
+                client.rehydrateSession()
+            }
+        } catch (e: Exception) {
+            // if ANYTHING went wrong and is unaccounted for, report it
+            isInitialized.value = InitializationStatus.Failure(listOf(e))
         }
     }
 
@@ -161,14 +173,21 @@ internal class ConfigurationManager {
         }
 
     private var isRefreshingBootstrap = false
+    private var bootstrapError: Exception? = null
 
     suspend fun refreshBootstrapData() {
         if (isRefreshingBootstrap) return
         isRefreshingBootstrap = true
         bootstrapData =
             when (val res = client.commonApi.getBootstrapData()) {
-                is StytchResult.Success -> res.value
-                else -> bootstrapData
+                is StytchResult.Success -> {
+                    res.value
+                }
+
+                is StytchResult.Error -> {
+                    bootstrapError = res.exception
+                    bootstrapData
+                }
             }
         when {
             client.expectedVertical == Vertical.CONSUMER && bootstrapData.vertical == Vertical.B2B -> {
@@ -178,6 +197,7 @@ internal class ConfigurationManager {
                         "correct.",
                 )
             }
+
             client.expectedVertical == Vertical.B2B && bootstrapData.vertical == Vertical.CONSUMER -> {
                 StytchLog.e(
                     "This application is using a Stytch client for B2B projects, but the public token is for a " +

@@ -22,7 +22,7 @@ internal interface StytchClientCommon {
         sessionDurationMinutes: Int?,
     )
 
-    var onFinishedInitialization: () -> Unit
+    var onFinishedInitialization: (InitializationStatus) -> Unit
 
     fun getSessionToken(): String?
 }
