@@ -9,6 +9,7 @@ import com.stytch.sdk.common.ConfigurationStep
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_TOKEN
 import com.stytch.sdk.common.QUERY_TOKEN_TYPE
@@ -17,6 +18,7 @@ import com.stytch.sdk.common.StytchClientCommon
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchLog
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
@@ -73,14 +75,13 @@ public object StytchClient {
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
     @JvmStatic
-    public val isInitialized: StateFlow<Boolean> = configurationManager.isInitialized.asStateFlow()
+    public val isInitialized: StateFlow<InitializationStatus> = configurationManager.isInitialized.asStateFlow()
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
-     * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
     @JvmStatic
@@ -102,7 +103,7 @@ public object StytchClient {
     public fun configure(
         context: Context,
         options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
         configure(context, publicToken, options, callback)
@@ -119,7 +120,7 @@ public object StytchClient {
     @JvmStatic
     public fun configure(
         context: Context,
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
         configure(context, publicToken, StytchClientOptions(), callback)
@@ -155,7 +156,7 @@ public object StytchClient {
     public fun configure(
         context: Context,
         publicToken: String,
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         configure(context, publicToken, StytchClientOptions(), callback)
     }
@@ -208,7 +209,7 @@ public object StytchClient {
         context: Context,
         publicToken: String,
         options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         // We must initialize the storagehelper/sessionstorage before configuration, because configuration kicks
         // off a task that relies on the storage being available (session hydration). HOWEVER, we don't want to handle
@@ -220,7 +221,6 @@ public object StytchClient {
                 StytchLog.w(
                     "StytchClient is already configured. You should only call configure once, at application start.",
                 )
-                return
             }
             val storageHelperInitializationJob = StorageHelper.initialize(context)
             sessionStorage =
@@ -229,7 +229,7 @@ public object StytchClient {
                 client =
                     StytchClientCommonConfiguration {
                         sessionStorage.emitCurrent()
-                        callback(true)
+                        callback(it)
                     },
                 context = context,
                 publicToken = publicToken,
@@ -486,6 +486,7 @@ public object StytchClient {
                         ),
                     )
                 }
+
                 ConsumerTokenType.OAUTH -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -494,10 +495,12 @@ public object StytchClient {
                         ),
                     )
                 }
+
                 ConsumerTokenType.RESET_PASSWORD -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.ManualHandlingRequired(type = ConsumerTokenType.RESET_PASSWORD, token = token)
                 }
+
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError())
@@ -574,7 +577,7 @@ public object StytchClient {
         get() = sessionStorage.lastAuthMethodUsed
 
     private class StytchClientCommonConfiguration(
-        override var onFinishedInitialization: () -> Unit,
+        override var onFinishedInitialization: (InitializationStatus) -> Unit,
     ) : StytchClientCommon {
         override val commonApi: CommonApi = StytchApi
 
@@ -602,6 +605,11 @@ public object StytchClient {
                                 },
                             ),
                         ).apply {
+                            if (this is StytchResult.Error) {
+                                configurationManager.sessionHydrationError = this.exception
+                            } else {
+                                configurationManager.sessionHydrationError = null
+                            }
                             configurationManager.emitAnalyticsEvent(
                                 ConfigurationAnalyticsEvent(
                                     step = ConfigurationStep.SESSION_HYDRATION,

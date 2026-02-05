@@ -11,6 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.androidx.AndroidScreen
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
@@ -42,7 +43,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                 StytchClient.biometrics.areBiometricsAvailable(this) == AvailableNoRegistrations,
         )
         // log render_login_screen
-        if (StytchClient.isInitialized.value) {
+        if (StytchClient.isInitialized.value == InitializationStatus.Success) {
             StytchClient.events.logEvent(
                 eventName = "render_login_screen",
                 details =
@@ -113,15 +114,19 @@ internal class AuthenticationActivity : FragmentActivity() {
         ) {
             renderApplicationAtScreen(BiometricRegistrationScreen(result))
         } else {
-            if (StytchClient.isInitialized.value) {
+            if (StytchClient.isInitialized.value == InitializationStatus.Success) {
                 when (result) {
-                    is StytchResult.Success -> StytchClient.events.logEvent("ui_authentication_success")
-                    is StytchResult.Error ->
+                    is StytchResult.Success -> {
+                        StytchClient.events.logEvent("ui_authentication_success")
+                    }
+
+                    is StytchResult.Error -> {
                         StytchClient.events.logEvent(
                             eventName = "ui_authentication_failure",
                             details = null,
                             error = result.exception,
                         )
+                    }
                 }
             }
             val data =
@@ -145,10 +150,11 @@ internal class AuthenticationActivity : FragmentActivity() {
     ) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID ->
+            STYTCH_THIRD_PARTY_OAUTH_REQUEST_ID -> {
                 data?.let {
                     viewModel.authenticateThirdPartyOAuth(resultCode, it, uiConfig.productConfig.sessionOptions)
                 }
+            }
         }
     }
 

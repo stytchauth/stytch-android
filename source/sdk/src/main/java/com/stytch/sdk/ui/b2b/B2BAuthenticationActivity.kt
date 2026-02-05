@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.stytch.sdk.b2b.StytchB2BClient
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.errors.StytchUIInvalidConfiguration
 import com.stytch.sdk.ui.b2b.data.AuthFlowType
 import com.stytch.sdk.ui.b2b.data.AuthenticationResult
@@ -38,7 +39,7 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
                 )
                 return@onCreate
             }
-        if (StytchB2BClient.isInitialized.value) {
+        if (StytchB2BClient.isInitialized.value == InitializationStatus.Success) {
             StytchB2BClient.events.logEvent(
                 eventName = "render_b2b_login_screen",
                 details =
@@ -110,15 +111,19 @@ internal class B2BAuthenticationActivity : ComponentActivity() {
     }
 
     private fun returnAuthenticationResult(result: AuthenticationResult) {
-        if (StytchB2BClient.isInitialized.value) {
+        if (StytchB2BClient.isInitialized.value == InitializationStatus.Success) {
             when (result) {
-                is AuthenticationResult.Authenticated -> StytchB2BClient.events.logEvent("ui_authentication_success")
-                is AuthenticationResult.Error ->
+                is AuthenticationResult.Authenticated -> {
+                    StytchB2BClient.events.logEvent("ui_authentication_success")
+                }
+
+                is AuthenticationResult.Error -> {
                     StytchB2BClient.events.logEvent(
                         eventName = "ui_authentication_failure",
                         details = null,
                         error = result.error,
                     )
+                }
             }
         }
         val data =

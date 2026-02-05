@@ -39,6 +39,7 @@ import com.stytch.sdk.common.ConfigurationStep
 import com.stytch.sdk.common.DeeplinkHandledStatus
 import com.stytch.sdk.common.DeeplinkResponse
 import com.stytch.sdk.common.DeeplinkTokenPair
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.PKCECodePair
 import com.stytch.sdk.common.QUERY_REDIRECT_TYPE
 import com.stytch.sdk.common.QUERY_TOKEN
@@ -48,6 +49,7 @@ import com.stytch.sdk.common.StytchClientCommon
 import com.stytch.sdk.common.StytchClientOptions
 import com.stytch.sdk.common.StytchLazyDelegate
 import com.stytch.sdk.common.StytchLog
+import com.stytch.sdk.common.StytchResult
 import com.stytch.sdk.common.dfp.DFP
 import com.stytch.sdk.common.dfp.DFPImpl
 import com.stytch.sdk.common.errors.StytchDeeplinkMissingTokenError
@@ -80,14 +82,13 @@ public object StytchB2BClient {
      * the `configure()` method, to know when the Stytch SDK has been fully initialized and is ready for use
      */
     @JvmStatic
-    public val isInitialized: StateFlow<Boolean> = configurationManager.isInitialized.asStateFlow()
+    public val isInitialized: StateFlow<InitializationStatus> = configurationManager.isInitialized.asStateFlow()
 
     /**
      * This configures the API for authenticating requests and the encrypted storage helper for persisting session data
      * across app launches.
      * You must call this method before making any Stytch authentication requests.
      * @param context The applicationContext of your app
-     * @param callback An optional callback that is triggered after configuration and initialization has completed
      * @throws StytchInternalError - if we failed to initialize for any reason
      */
     @JvmStatic
@@ -109,7 +110,7 @@ public object StytchB2BClient {
     public fun configure(
         context: Context,
         options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
         configure(context, publicToken, options, callback)
@@ -126,7 +127,7 @@ public object StytchB2BClient {
     @JvmStatic
     public fun configure(
         context: Context,
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         val publicToken = context.getString(R.string.STYTCH_PUBLIC_TOKEN)
         configure(context, publicToken, StytchClientOptions(), callback)
@@ -162,7 +163,7 @@ public object StytchB2BClient {
     public fun configure(
         context: Context,
         publicToken: String,
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         configure(context, publicToken, StytchClientOptions(), callback)
     }
@@ -215,7 +216,7 @@ public object StytchB2BClient {
         context: Context,
         publicToken: String,
         options: StytchClientOptions = StytchClientOptions(),
-        callback: ((Boolean) -> Unit) = {},
+        callback: ((InitializationStatus) -> Unit) = {},
     ) {
         // We must initialize the storagehelper/sessionstorage before configuration, because configuration kicks
         // off a task that relies on the storage being available (session hydration). HOWEVER, we don't want to handle
@@ -227,7 +228,6 @@ public object StytchB2BClient {
                 StytchLog.w(
                     "StytchB2BClient is already configured. You should only call configure once, at application start.",
                 )
-                return
             }
             val storageHelperInitializationJob = StorageHelper.initialize(context)
             sessionStorage = if (::sessionStorage.isInitialized) sessionStorage else B2BSessionStorage(StorageHelper)
@@ -235,7 +235,7 @@ public object StytchB2BClient {
                 client =
                     StytchB2BClientCommonConfiguration {
                         sessionStorage.emitCurrent()
-                        callback(true)
+                        callback(it)
                     },
                 context = context,
                 publicToken = publicToken,
@@ -541,6 +541,7 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+
                 B2BTokenType.DISCOVERY -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     if (redirectType == B2BRedirectType.RESET_PASSWORD) {
@@ -556,10 +557,12 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+
                 B2BTokenType.MULTI_TENANT_PASSWORDS -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.ManualHandlingRequired(type = tokenType, token = token)
                 }
+
                 B2BTokenType.SSO -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -573,6 +576,7 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+
                 B2BTokenType.OAUTH -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -586,6 +590,7 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+
                 B2BTokenType.DISCOVERY_OAUTH -> {
                     events.logEvent("deeplink_handled_success", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.Handled(
@@ -598,6 +603,7 @@ public object StytchB2BClient {
                         ),
                     )
                 }
+
                 else -> {
                     events.logEvent("deeplink_handled_failure", details = mapOf("token_type" to tokenType))
                     DeeplinkHandledStatus.NotHandled(StytchDeeplinkUnkownTokenTypeError())
@@ -671,7 +677,7 @@ public object StytchB2BClient {
         get() = sessionStorage.lastAuthMethodUsed
 
     private class StytchB2BClientCommonConfiguration(
-        override var onFinishedInitialization: () -> Unit,
+        override var onFinishedInitialization: (InitializationStatus) -> Unit,
     ) : StytchClientCommon {
         override val commonApi: CommonApi = StytchB2BApi
 
@@ -699,6 +705,11 @@ public object StytchB2BClient {
                                 },
                             ),
                         ).apply {
+                            if (this is StytchResult.Error) {
+                                configurationManager.sessionHydrationError = this.exception
+                            } else {
+                                configurationManager.sessionHydrationError = null
+                            }
                             configurationManager.emitAnalyticsEvent(
                                 ConfigurationAnalyticsEvent(
                                     step = ConfigurationStep.SESSION_HYDRATION,
