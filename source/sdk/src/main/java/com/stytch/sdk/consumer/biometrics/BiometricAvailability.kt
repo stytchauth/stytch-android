@@ -67,20 +67,33 @@ public sealed class BiometricAvailability {
             fun fromReason(reason: Int) =
                 Unavailable(
                     when (reason) {
-                        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
+                        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
                             Reason.BIOMETRIC_ERROR_NO_HARDWARE
-                        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
+                        }
+
+                        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
                             Reason.BIOMETRIC_ERROR_HW_UNAVAILABLE
-                        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
+                        }
+
+                        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                             Reason.BIOMETRIC_ERROR_NONE_ENROLLED
-                        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
+                        }
+
+                        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
                             Reason.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED
-                        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
+                        }
+
+                        BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
                             Reason.BIOMETRIC_ERROR_UNSUPPORTED
-                        BiometricManager.BIOMETRIC_STATUS_UNKNOWN ->
+                        }
+
+                        BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> {
                             Reason.BIOMETRIC_STATUS_UNKNOWN
-                        else ->
+                        }
+
+                        else -> {
                             Reason.BIOMETRIC_STATUS_UNKNOWN
+                        }
                     },
                 )
         }
@@ -92,6 +105,12 @@ public sealed class BiometricAvailability {
      */
 
     @JacocoExcludeGenerated public data object RegistrationRevoked : BiometricAvailability()
+
+    /**
+     * Indicates that a cryptographic operation could not be performed because the user has not been
+     * authenticated recently enough. Authenticating the user will resolve this issue.
+     */
+    @JacocoExcludeGenerated public data object UserAuthenticationRequired : BiometricAvailability()
 
     /**
      * Status indicating that biometrics are available, but no registrations have been made yet
