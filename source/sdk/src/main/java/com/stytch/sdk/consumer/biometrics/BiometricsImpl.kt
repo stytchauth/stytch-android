@@ -2,6 +2,7 @@ package com.stytch.sdk.consumer.biometrics
 
 import android.os.Build
 import android.security.keystore.KeyPermanentlyInvalidatedException
+import android.security.keystore.UserNotAuthenticatedException
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -31,6 +32,7 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.InvalidAlgorithmParameterException
+import java.security.InvalidKeyException
 import java.util.concurrent.CompletableFuture
 
 internal const val LAST_USED_BIOMETRIC_REGISTRATION_ID = "last_used_biometric_registration_id"
@@ -78,7 +80,13 @@ internal class BiometricsImpl internal constructor(
         var errorEncounteredWhenGeneratingKey = false
         try {
             biometricsProvider.ensureSecretKeyIsAvailable(allowedAuthenticators)
-        } catch (_: KeyPermanentlyInvalidatedException) {
+        } catch (_: UserNotAuthenticatedException) {
+            // Indicates that a cryptographic operation could not be performed because the user has not been
+            // authenticated recently enough. Authenticating the user will resolve this issue.
+            return BiometricAvailability.UserAuthenticationRequired
+        } catch (_: InvalidKeyException) {
+            // This covers all other instances of invalid keys, where a registration WAS available
+            // but the key is not valid, so we should revoke the registration and have them re-register
             externalScope.launch(dispatchers.io) {
                 removeRegistration()
             }
@@ -104,7 +112,10 @@ internal class BiometricsImpl internal constructor(
                     false -> BiometricAvailability.AvailableNoRegistrations
                 }
             }
-            else -> BiometricAvailability.Unavailable.fromReason(result)
+
+            else -> {
+                BiometricAvailability.Unavailable.fromReason(result)
+            }
         }
     }
 
@@ -121,7 +132,10 @@ internal class BiometricsImpl internal constructor(
                     removeLocalRegistrationOnly()
                     true
                 }
-                else -> false
+
+                else -> {
+                    false
+                }
             }
         }
 
