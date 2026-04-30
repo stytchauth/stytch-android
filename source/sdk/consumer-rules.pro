@@ -3,5 +3,5 @@
 -keep public class com.stytch.sdk.** {
     public protected *;
 }
--keep class com.stytch.** { ; }
+-keep class com.stytch.** { *; }
 -keepclassmembers class com.stytch.* { *; }
