@@ -3,6 +3,7 @@ package com.stytch.exampleapp.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.consumer.ConsumerTokenType
 import com.stytch.sdk.consumer.StytchClient
@@ -25,19 +26,28 @@ class ConsumerWorkbenchAppViewModel : ViewModel() {
             val userIsAvailable = userData is StytchObjectInfo.Available
             val sessionIsAvailable = sessionData is StytchObjectInfo.Available
             when {
-                !isInitialized -> ConsumerWorkbenchAppUIState.Loading
-                isInitialized && userIsAvailable && sessionIsAvailable ->
+                isInitialized is InitializationStatus.Loading -> {
+                    ConsumerWorkbenchAppUIState.Loading
+                }
+
+                isInitialized is InitializationStatus.Success && userIsAvailable && sessionIsAvailable -> {
                     ConsumerWorkbenchAppUIState.LoggedIn(
                         userData = userData.value,
                         sessionData = sessionData.value,
                     )
-                else -> ConsumerWorkbenchAppUIState.LoggedOut
+                }
+
+                else -> {
+                    ConsumerWorkbenchAppUIState.LoggedOut
+                }
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ConsumerWorkbenchAppUIState.Loading)
 
     fun logout() {
         viewModelScope.launch {
-            StytchClient.sessions.revoke()
+            // StytchClient.sessions.revoke()
+            val x = StytchClient.dfp.getTelemetryId()
+            println("JORDAN >>>>> $x")
         }
     }
 
@@ -53,6 +63,7 @@ class ConsumerWorkbenchAppViewModel : ViewModel() {
                         ),
                     )
                 }
+
                 ConsumerTokenType.OAUTH -> {
                     StytchClient.oauth.authenticate(
                         OAuth.ThirdParty.AuthenticateParameters(
@@ -60,7 +71,9 @@ class ConsumerWorkbenchAppViewModel : ViewModel() {
                         ),
                     )
                 }
+
                 ConsumerTokenType.RESET_PASSWORD -> {}
+
                 ConsumerTokenType.UNKNOWN -> {}
             }
         }

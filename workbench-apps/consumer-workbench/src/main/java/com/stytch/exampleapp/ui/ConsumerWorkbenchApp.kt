@@ -49,7 +49,7 @@ fun ConsumerWorkbenchApp(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text("Revoke Session") },
+                text = { Text("DFP") },
                 icon = { },
                 onClick = logout,
             )

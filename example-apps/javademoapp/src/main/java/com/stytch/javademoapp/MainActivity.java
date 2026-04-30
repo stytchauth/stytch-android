@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getStytchState().observe(this, stytchStateObserver);
 
         StytchClient.configure(
-            this.getApplicationContext(),
-            viewModel::handleInitializationChange
+            this.getApplicationContext()
+            //viewModel::handleInitializationChange
         );
 
         loginButton.setOnClickListener(v -> stytchUI.authenticate());

@@ -3,6 +3,7 @@ package com.stytch.stytchexampleapp
 import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.StytchObjectInfo
 import com.stytch.sdk.consumer.StytchClient
 import com.stytch.sdk.consumer.network.models.SessionData
@@ -34,7 +35,7 @@ class MainViewModel : ViewModel() {
                     null
                 }
             AuthenticationState(
-                isInitialized = isInitialized,
+                isInitialized = isInitialized !is InitializationStatus.Loading,
                 userData = userData,
                 sessionData = sessionData,
             )
