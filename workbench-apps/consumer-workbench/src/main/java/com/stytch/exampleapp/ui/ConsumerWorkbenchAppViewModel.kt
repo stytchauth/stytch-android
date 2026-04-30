@@ -45,9 +45,7 @@ class ConsumerWorkbenchAppViewModel : ViewModel() {
 
     fun logout() {
         viewModelScope.launch {
-            // StytchClient.sessions.revoke()
-            val x = StytchClient.dfp.getTelemetryId()
-            println("JORDAN >>>>> $x")
+            StytchClient.sessions.revoke()
         }
     }
 
