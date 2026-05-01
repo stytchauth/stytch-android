@@ -1,7 +1,9 @@
 package com.stytch.sdk.common.errors
 import java.util.Locale
 
-public enum class StytchAPIErrorType(public val type: String) {
+public enum class StytchAPIErrorType(
+    public val type: String,
+) {
     ACTION_AVAILABLE_ONLY_FOR_ACTIVE_MEMBERS(
         type = "action_available_only_for_active_members",
     ),

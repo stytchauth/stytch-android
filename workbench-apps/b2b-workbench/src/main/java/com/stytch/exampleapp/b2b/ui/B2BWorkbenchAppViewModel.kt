@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.stytch.sdk.b2b.StytchB2BClient
 import com.stytch.sdk.b2b.network.models.B2BSessionData
 import com.stytch.sdk.b2b.network.models.MemberData
+import com.stytch.sdk.common.InitializationStatus
 import com.stytch.sdk.common.StytchObjectInfo
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -22,13 +23,20 @@ class B2BWorkbenchAppViewModel : ViewModel() {
             val memberIsAvailabe = memberData is StytchObjectInfo.Available
             val sessionIsAvailable = sessionData is StytchObjectInfo.Available
             when {
-                !isInitialized -> B2BWorkbenchAppUIState.Loading
-                isInitialized && memberIsAvailabe && sessionIsAvailable ->
+                isInitialized is InitializationStatus.Loading -> {
+                    B2BWorkbenchAppUIState.Loading
+                }
+
+                isInitialized is InitializationStatus.Success && memberIsAvailabe && sessionIsAvailable -> {
                     B2BWorkbenchAppUIState.LoggedIn(
                         memberData = memberData.value,
                         sessionData = sessionData.value,
                     )
-                else -> B2BWorkbenchAppUIState.LoggedOut
+                }
+
+                else -> {
+                    B2BWorkbenchAppUIState.LoggedOut
+                }
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), B2BWorkbenchAppUIState.Loading)
 
