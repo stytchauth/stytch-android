@@ -74,6 +74,7 @@ internal class B2BSessionsImpl internal constructor(
     override val sessionToken: String?
         get() {
             try {
+                if (sessionStorage.memberSession == null) return null
                 return sessionStorage.sessionToken
             } catch (ex: Exception) {
                 throw StytchFailedToDecryptDataError(ex)
@@ -83,6 +84,7 @@ internal class B2BSessionsImpl internal constructor(
     override val sessionJwt: String?
         get() {
             try {
+                if (sessionStorage.memberSession == null) return null
                 return sessionStorage.sessionJwt
             } catch (ex: Exception) {
                 throw StytchFailedToDecryptDataError(ex)

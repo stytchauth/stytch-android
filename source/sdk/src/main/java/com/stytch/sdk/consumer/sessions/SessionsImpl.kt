@@ -73,6 +73,7 @@ internal class SessionsImpl internal constructor(
     override val sessionToken: String?
         get() {
             try {
+                if (sessionStorage.session == null) return null
                 return sessionStorage.sessionToken
             } catch (ex: Exception) {
                 throw StytchFailedToDecryptDataError(ex)
@@ -82,6 +83,7 @@ internal class SessionsImpl internal constructor(
     override val sessionJwt: String?
         get() {
             try {
+                if (sessionStorage.session == null) return null
                 return sessionStorage.sessionJwt
             } catch (ex: Exception) {
                 throw StytchFailedToDecryptDataError(ex)
